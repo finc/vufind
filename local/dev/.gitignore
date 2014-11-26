@@ -1,0 +1,2 @@
+config/vufind/*.ini
+httpd-vufind.conf
