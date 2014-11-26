@@ -4,6 +4,7 @@
   <property name="package"  value="${phing.project.name}" override="true" />
   <property name="builddir" value="${tmp}/build/${phing.project.name}" override="true" />
   <property name="srcdir"   value="${project.basedir}" override="true" />
+  <property name="composerdir" value="${srcdir}/vendor/bin" />
   <property name="apacheconfdir" value="/etc/apache2/conf.d" />
   <property name="apachectl" value="/etc/init.d/apache2" />
   <property name="vufindurl" value="http://localhost/vufind" />
@@ -57,27 +58,27 @@
 
   <!-- Report rule violations with PHPMD (mess detector) -->
   <target name="phpmd">
-    <exec command="phpmd ${srcdir}/module xml ${srcdir}/tests/phpmd.xml --exclude ${srcdir}/module/VuFind/tests,${srcdir}/module/VuFindSearch/tests --reportfile ${builddir}/reports/phpmd.xml" />
+    <exec command="${composerdir}/phpmd ${srcdir}/module xml ${srcdir}/tests/phpmd.xml --exclude ${srcdir}/module/VuFind/tests,${srcdir}/module/VuDL/tests,${srcdir}/module/VuFindSearch/tests --reportfile ${builddir}/reports/phpmd.xml" />
   </target>
 
   <!-- Measure project with phploc -->
   <target name="phploc">
-    <exec command="phploc --log-csv ${builddir}/reports/phploc.csv ${srcdir}/module" />
+    <exec command="${composerdir}/phploc --log-csv ${builddir}/reports/phploc.csv ${srcdir}/module" />
   </target>
 
   <!-- PHP_Depend code analysis -->
   <target name="pdepend">
-    <exec command="pdepend --jdepend-xml=${builddir}/reports/jdepend.xml --jdepend-chart=${builddir}/reports/dependencies.svg --overview-pyramid=${builddir}/reports/pdepend-pyramid.svg ${srcdir}/module" />
+    <exec command="${composerdir}/pdepend --jdepend-xml=${builddir}/reports/jdepend.xml --jdepend-chart=${builddir}/reports/dependencies.svg --overview-pyramid=${builddir}/reports/pdepend-pyramid.svg ${srcdir}/module" />
   </target>
 
   <!-- PHP copy-and-paste detection -->
   <target name="phpcpd">
-    <exec command="phpcpd --log-pmd ${builddir}/reports/pmd-cpd.xml --exclude tests ${srcdir}/module" />
+    <exec command="${composerdir}/phpcpd --log-pmd ${builddir}/reports/pmd-cpd.xml --exclude tests ${srcdir}/module" />
   </target>
 
   <!-- PHP CodeSniffer -->
   <target name="phpcs">
-    <exec command="phpcs --standard=PEAR --ignore=*/config/*,*/tests/* --extensions=php --report=checkstyle ${srcdir}/module &gt; ${builddir}/reports/checkstyle.xml" escape="false" />
+    <exec command="${composerdir}/phpcs --standard=PEAR --ignore=*/config/*,*/tests/* --extensions=php --report=checkstyle ${srcdir}/module &gt; ${builddir}/reports/checkstyle.xml" escape="false" />
   </target>
 
   <!-- PHP API Documentation -->
