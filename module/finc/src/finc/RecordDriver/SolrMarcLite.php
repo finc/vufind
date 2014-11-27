@@ -1,10 +1,11 @@
 <?php
 /**
- * Model for MARC records in Solr.
+ * Model for MARC records without a fullrecord in Solr. The fullrecord is being
+ * retrieved from an external source.
  *
  * PHP version 5
  *
- * Copyright (C) Villanova University 2010.
+ * Copyright (C) Leipzig University Library 2014.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -21,12 +22,12 @@
  *
  * @category VuFind2
  * @package  RecordDrivers
- * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>, Ulf Seltmann <seltmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 namespace finc\RecordDriver;
-use VuFind\Log\Logger;
+use \Zend\Log\LoggerInterface;
 
 /**
  * Model for MARC records without a fullrecord in Solr. The fullrecord is being
@@ -38,14 +39,14 @@ use VuFind\Log\Logger;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
-class SolrMarcLite extends \VuFind\RecordDriver\SolrMarc
+class SolrMarcLite extends \VuFind\RecordDriver\SolrMarc implements \Zend\Log\LoggerAwareInterface
 {
     /**
-     * Logger.
+     * Logger (or false for none)
      *
-     * @var VuFind\Log\Logger
+     * @var LoggerInterface|bool
      */
-    protected $logger;
+    protected $logger = false;
 
     /**
      * MARC record
@@ -74,10 +75,6 @@ class SolrMarcLite extends \VuFind\RecordDriver\SolrMarc
                                 $searchSettings = null
     ) {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
-
-        $this->logger = new Logger();
-
-        $this->setLogger($this->logger);
 
         if (!isset($mainConfig->Index)) {
             throw new \Exception('index setting missing.');
@@ -207,13 +204,13 @@ class SolrMarcLite extends \VuFind\RecordDriver\SolrMarc
     }
 
     /**
-     * Set the Logger.
+     * Set the logger
      *
-     * @param VuFind\Log\Logger $logger
+     * @param LoggerInterface $logger Logger to use.
      *
      * @return void
      */
-    protected function setLogger(Logger $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -228,7 +225,7 @@ class SolrMarcLite extends \VuFind\RecordDriver\SolrMarc
     protected function debug($msg)
     {
         if ($this->logger) {
-            $this->logger->debug($msg);
+            $this->logger->debug(get_class($this) . ": $msg");
         }
     }
 }

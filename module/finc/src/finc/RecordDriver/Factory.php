@@ -4,7 +4,7 @@
  *
  * PHP version 5
  *
- * Copyright (C) Villanova University 2014.
+ * Copyright (C) Leipzig University Library 2014.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -21,9 +21,9 @@
  *
  * @category VuFind2
  * @package  RecordDrivers
- * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:hierarchy_components Wiki
+ * @link     http://vufind.org/wiki/vufind2
  */
 namespace finc\RecordDriver;
 use Zend\ServiceManager\ServiceManager;
@@ -35,7 +35,7 @@ use Zend\ServiceManager\ServiceManager;
  * @package  RecordDrivers
  * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:hierarchy_components Wiki
+ * @link     http://vufind.org/wiki/vufind2
  * @codeCoverageIgnore
  */
 class Factory extends \VuFind\RecordDriver\Factory
