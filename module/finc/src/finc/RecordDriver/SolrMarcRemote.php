@@ -80,6 +80,7 @@ class SolrMarcRemote extends \VuFind\RecordDriver\SolrMarc
     ) {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
+    //TODO: use recordConfig for MarcRemoteServer-settings
         if (!isset($mainConfig->Index)) {
             throw new \Exception('index setting missing.');
         }
