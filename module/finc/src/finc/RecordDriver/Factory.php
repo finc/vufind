@@ -42,15 +42,15 @@ class Factory extends \VuFind\RecordDriver\Factory
 {
 
     /**
-     * Factory for SolrMarcLite record driver.
+     * Factory for SolrMarcRemote record driver.
      *
      * @param ServiceManager $sm Service manager.
      *
      * @return SolrMarc
      */
-    public static function getSolrMarcLite(ServiceManager $sm)
+    public static function getSolrMarcRemote(ServiceManager $sm)
     {
-        $driver = new SolrMarcLite(
+        $driver = new SolrMarcRemote(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
             $sm->getServiceLocator()->get('VuFind\Config')->get('searches')

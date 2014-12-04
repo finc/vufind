@@ -38,7 +38,7 @@ use VuFind\Log\Logger;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
-class SolrMarcLite extends \VuFind\RecordDriver\SolrMarc
+class SolrMarcRemote extends \VuFind\RecordDriver\SolrMarc
 {
     /**
      * Logger.
@@ -84,10 +84,10 @@ class SolrMarcLite extends \VuFind\RecordDriver\SolrMarc
         }
 
         // get config values for remote fullrecord service
-        if (! $mainConfig->Index->get('blob_server')) {
-            throw new \Exception('blob_server-setting missing.');
+        if (! $mainConfig->Index->get('marcRemoteServer')) {
+            throw new \Exception('marcRemoteServer-setting missing.');
         } else {
-            $this->uriPattern = $mainConfig->Index->get('blob_server');
+            $this->uriPattern = $mainConfig->Index->get('marcRemoteServer');
         }
     }
 

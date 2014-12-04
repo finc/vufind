@@ -6,12 +6,12 @@ $config = array(
         'plugin_managers' => array(
             'recorddriver' => array(
                 'factories' => array(
-                    'solrmarclite' => 'finc\RecordDriver\Factory::getSolrMarcLite'
+                    'solrmarcremote' => 'finc\RecordDriver\Factory::getSolrMarcRemote'
                 ),
             ),
         ),
         'recorddriver_tabs' => array(
-            'finc\RecordDriver\SolrMarcLite' => array(
+            'finc\RecordDriver\SolrMarcRemote' => array(
                 'tabs' => array(
                     'Holdings' => 'HoldingsILS', 'Description' => 'Description',
                     'TOC' => 'TOC', 'UserComments' => 'UserComments',
