@@ -52,7 +52,7 @@ class Factory extends \VuFind\RecordDriver\Factory
     {
         $driver = new SolrMarcRemote(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('SolrMarcRemote'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
         );
         $driver->attachILS(

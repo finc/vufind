@@ -39,11 +39,7 @@ use \Zend\Log\LoggerInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
-<<<<<<< HEAD:module/finc/src/finc/RecordDriver/SolrMarcLite.php
-class SolrMarcLite extends \VuFind\RecordDriver\SolrMarc implements \Zend\Log\LoggerAwareInterface
-=======
 class SolrMarcRemote extends \VuFind\RecordDriver\SolrMarc
->>>>>>> 80e847d998ac58c6c64af84eb0f0df8104812776:module/finc/src/finc/RecordDriver/SolrMarcRemote.php
 {
     /**
      * Logger (or false for none)
@@ -80,16 +76,15 @@ class SolrMarcRemote extends \VuFind\RecordDriver\SolrMarc
     ) {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
-    //TODO: use recordConfig for MarcRemoteServer-settings
-        if (!isset($mainConfig->Index)) {
-            throw new \Exception('index setting missing.');
+        if (!isset($recordConfig->General)) {
+            throw new \Exception('SolrMarcRemote General settings missing.');
         }
 
         // get config values for remote fullrecord service
-        if (! $mainConfig->Index->get('marcRemoteServer')) {
-            throw new \Exception('marcRemoteServer-setting missing.');
+        if (! $recordConfig->General->get('baseUrl')) {
+            throw new \Exception('SolrMarcRemote baseUrl-setting missing.');
         } else {
-            $this->uriPattern = $mainConfig->Index->get('marcRemoteServer');
+            $this->uriPattern = $recordConfig->General->get('baseUrl');
         }
     }
 
