@@ -1,0 +1,83 @@
+/*
+ * Copyright (C) 2014 Project finc http://finc.info
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import java.util.LinkedHashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/*
+ * Ticket #2897, TUF: Icons zuweisen
+ *
+ * @author   Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+static final Logger logger = Logger.getLogger("de.ubl.import.format_de105");
+
+static final HashMap qucosaMap = new HashMap(){{
+    put( "article"          , "QucosaArticles" );
+    put( "bachelorthesis"   , "QucosaThesis" );
+    put( "book"             , "EBOOK" );
+    put( "bookpart"         , "QucosaArticles" );
+    put( "conferenceobject" , "QucosaConferenceproceeding" );
+    put( "doctoralthesis"   , "QucosaThesis" );
+    put( "lecture"          , "QucosaArticles" );
+    put( "masterthesis"     , "QucosaThesis" );
+    put( "musicalnotation"  , "QucosaScore" );
+    put( "other"            , "QucosaElectronicResource" );
+    put( "periodical"       , "QucosaArticles" );
+    put( "periodicalpart"   , "QucosaArticles" );
+    put( "preprint"         , "QucosaArticles" );
+    put( "report"           , "EBOOK" );
+    put( "studythesis"      , "QucosaThesis" );
+    put( "workingpaper"     , "QucosaArticles" );
+}};
+
+
+public Set getFormat( Record record ) {
+
+    logger.setLevel( Level.WARNING ); // WARNING,FINE,INFO,ALL and so on
+
+	Set result = new LinkedHashSet();
+
+    String format_de105 = indexer.getFirstFieldVal( record, "972c" );
+
+    // Ticket #1555 Qucosa
+    if( format_de105 == null || format_de105.isEmpty() ) {
+        String source_id = indexer.getFirstFieldVal( record, "980b" );
+        if( source_id.equals( "22" ) ) {
+            String data = indexer.getFirstFieldVal( record, "500a" );
+            if( data != null ) {
+                format_de105 = qucosaMap.get( data.toLowerCase() );
+            }
+        }
+    }
+
+    if (format_de105 != null) {
+        logger.info( "TUF Format => " + format_de105);
+        result.add(format_de105);
+    } else {
+        logger.info( "TUF Format NOT FOUND" );
+    }
+
+    return result;
+}

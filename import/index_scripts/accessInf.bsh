@@ -1,0 +1,630 @@
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/*
+ * Copyright (C) 2012 Leander Seige, seige@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Leander Seige
+ * @author   Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+static final Logger logger = Logger.getLogger("de.ubl.import.accessInf");
+static final HashMap quocosaMap = new HashMap(){{
+    put( "article"          , "ElectronicArticle" );
+    put( "bachelorthesis"   , "ElectronicThesis" );
+    put( "book"             , "eBook" );
+    put( "bookpart"         , "ElectronicArticle" );
+    put( "conferenceobject" , "ElectronicArticle" );
+    put( "doctoralthesis"   , "ElectronicThesis" );
+    put( "lecture"          , "ElectronicArticle" );
+    put( "masterthesis"     , "ElectronicThesis" );
+    put( "musicalnotation"  , "ElectronicMusicalScore" );
+    put( "other"            , "ElectronicResourceRemoteAccess" );
+    put( "periodical"       , "ElectronicJournal" );
+    put( "periodicalpart"   , "ElectronicArticle" );
+    put( "preprint"         , "ElectronicArticle" );
+    put( "report"           , "eBook" );
+    put( "studythesis"      , "ElectronicThesis" );
+    put( "workingpaper"     , "ElectronicArticle" );
+}};
+// Ticket #2061
+// List of source id's
+static final HashSet erSet = new HashSet() {{
+    add("16");
+    add("17");
+    add("18");
+    add("19");
+}};
+
+public Set getAccessInfOld( Record record ) {
+
+	Set result = new LinkedHashSet();
+
+	String source_id = indexer.getFirstFieldVal(record, "980b");
+
+	// check the 007 - this is a repeating field
+	List fields = record.getVariableFields("007");
+	Iterator fieldsIter = fields.iterator();
+	if (fields != null) {
+		ControlField formatField;
+		while(fieldsIter.hasNext()) {
+			formatField = (ControlField) fieldsIter.next();
+			formatCode = formatField.getData().toUpperCase().charAt(0);
+			switch (formatCode) {
+				case 'A':
+					switch(formatField.getData().toUpperCase().charAt(1)) {
+						case 'D':
+							result.add("Atlas");
+							break;
+						default:
+							result.add("Map");
+							break;
+					}
+					break;
+				case 'C':
+					switch(formatField.getData().toUpperCase().charAt(1)) {
+						case 'A':
+							result.add("TapeCartridge");
+							break;
+						case 'B':
+							result.add("ChipCartridge");
+							break;
+						case 'C':
+							result.add("DiscCartridge");
+							break;
+						case 'F':
+							result.add("TapeCassette");
+							break;
+						case 'H':
+							result.add("TapeReel");
+							break;
+						case 'J':
+							result.add("FloppyDisk");
+							break;
+						case 'M':
+						case 'O':
+							result.add("CDROM");
+							break;
+						case 'R':
+							// Do not return - this will cause anything with an
+							// 856 field to be labeled as "Electronic"
+							break;
+						default:
+							result.add("Software");
+							break;
+					}
+					break;
+				case 'D':
+					result.add("Globe");
+					break;
+				case 'F':
+					result.add("Braille");
+					break;
+				case 'G':
+					switch(formatField.getData().toUpperCase().charAt(1)) {
+						case 'C':
+						case 'D':
+							result.add("Filmstrip");
+							break;
+						case 'T':
+							result.add("Transparency");
+							break;
+						default:
+							result.add("Slide");
+							break;
+					}
+					break;
+				case 'H':
+					result.add("Microfilm");
+					break;
+				case 'K':
+					switch(formatField.getData().toUpperCase().charAt(1)) {
+						case 'C':
+							result.add("Collage");
+							break;
+						case 'D':
+							result.add("Drawing");
+							break;
+						case 'E':
+							result.add("Painting");
+							break;
+						case 'F':
+							result.add("Print");
+							break;
+						case 'G':
+							result.add("Photonegative");
+							break;
+						case 'J':
+							result.add("Print");
+							break;
+						case 'L':
+							result.add("Drawing");
+							break;
+						case 'O':
+							result.add("FlashCard");
+							break;
+						case 'N':
+							result.add("Chart");
+							break;
+						default:
+							result.add("Photo");
+							break;
+					}
+					break;
+				case 'M':
+					switch(formatField.getData().toUpperCase().charAt(1)) {
+						case 'F':
+							result.add("VideoCassette");
+							break;
+						case 'R':
+							result.add("Filmstrip");
+							break;
+						default:
+							result.add("MotionPicture");
+							break;
+					}
+					break;
+				case 'O':
+					result.add("Kit");
+					break;
+				case 'Q':
+					result.add("MusicalScore");
+					break;
+				case 'R':
+					result.add("SensorImage");
+					break;
+				case 'S':
+					switch(formatField.getData().toUpperCase().charAt(1)) {
+						case 'D':
+							result.add("SoundDisc");
+							break;
+						case 'S':
+							result.add("SoundCassette");
+							break;
+						default:
+							result.add("SoundRecording");
+							break;
+					}
+					break;
+				case 'V':
+					switch(formatField.getData().toUpperCase().charAt(1)) {
+						case 'C':
+							result.add("VideoCartridge");
+							break;
+						case 'D':
+							result.add("VideoDisc");
+							break;
+						case 'F':
+							result.add("VideoCassette");
+							break;
+						case 'R':
+							result.add("VideoReel");
+							break;
+						default:
+							result.add("Video");
+							break;
+					}
+					break;
+			}
+		}
+	}
+    if (!result.isEmpty()) return result;
+
+	// check the Leader at position 6
+	String leader = record.getLeader().toString();
+    char leaderBit = leader.charAt(6);
+	switch (Character.toUpperCase(leaderBit)) {
+		case 'C':
+		case 'D':
+			result.add("MusicalScore");
+			break;
+		case 'E':
+		case 'F':
+			result.add("Map");
+			break;
+		case 'G':
+			result.add("Slide");
+			break;
+		case 'I':
+			result.add("SoundRecording");
+			break;
+		case 'J':
+			result.add("MusicRecording");
+			break;
+		case 'K':
+			result.add("Photo");
+			break;
+		case 'M':
+			result.add("Electronic");
+			break;
+		case 'O':
+		case 'P':
+			result.add("Kit");
+			break;
+		case 'R':
+			result.add("PhysicalObject");
+			break;
+		case 'T':
+			result.add("Manuscript");
+			break;
+	}
+    if (!result.isEmpty()) return result;
+
+    ControlField fixedField = (ControlField) record.getVariableField("008");
+	// check the Leader at position 7
+	leaderBit = leader.charAt(7);
+	switch (Character.toUpperCase(leaderBit)) {
+		// Monograph
+		case 'M':
+			if (formatCode == 'C') {
+				result.add("eBook");
+			} else {
+				result.add("Book");
+			}
+			break;
+			// Serial
+		case 'S':
+			// Look in 008 to determine what type of Continuing Resource
+			formatCode = fixedField.getData().toUpperCase().charAt(21);
+			switch (formatCode) {
+				case 'N':
+					result.add("Newspaper");
+                    break;
+                case 'P':
+                    result.add("Journal");
+                    break;
+                default:
+                    result.add("Serial");
+                    break;
+            }
+    }
+
+	// Nothing worked!
+	if ( result.isEmpty() ) {
+        result.add("Unknown");
+    }
+
+    return result;
+}
+
+public Set getAccessInf( Record record ) {
+
+    logger.setLevel( Level.WARNING ); // WARNING,FINE,INFO,ALL and so on
+
+	Set result = new LinkedHashSet();
+
+	String source_id = indexer.getFirstFieldVal(record, "980b");
+
+    // Ticket #2061
+    if( erSet.contains( source_id ) ) {
+		result.add( "Electronic" );
+		return result;
+    }
+
+    // Source Id '008' wird wie Source Id '000' behandelt
+
+    if (source_id.equals("3")) { // um NEP Facette erweitern
+		result.add("NewPublications");
+		logger.info( "access: 3 New Pub..");
+		return result;
+	} else if(source_id.equals("4")) { // um PDA erweitern
+		result.add("Electronic");
+		logger.info( "access: 4 Elec.. Res..");
+		return result;
+	} else if(source_id.equals("6")) { // Alle Datensätze mit 006 in Feld 980 b werden als ElectronicResources gekennzeichnet. #652
+		result.add("Electronic");
+		logger.info( "access: 6 Elec.. Res..");
+		return result;
+	} else if(source_id.equals("7")) { // HMT # PAO # Anpassung von format.bsh und accessInf.bsh für die Indexierung #655
+		result.add("Electronic");
+		logger.info( "access: 7 Elec.. Res..");
+		return result;
+	} else if(source_id.equals("8")) { // HMT # LFER # Anpassung von format.bsh und accessInf.bsh für die Indexierung #658
+		result.add("Electronic");
+		logger.info( "access: 8 Elec.. Res..");
+		return result;
+	} else if(source_id.equals("9")) { // HMT # Early Music Online # Anpassung von format.bsh und accessInf.bsh für die Indexierung #664
+		result.add("Electronic");
+		logger.info( "access: 9 Elec.. Res..");
+		return result;
+	} else if(source_id.equals("10")) { // MTC # Early Music Online # Anpassung von format.bsh und accessInf.bsh für die Indexierung #664
+		result.add("Electronic");
+		logger.info( "access: 10 Elec.. Res.." );
+		return result;
+	} else if(source_id.equals("15")) { // IMSLP # 015
+		result.add("Electronic");
+		logger.info( "access: 15 Elec.. Res..");
+		return result;
+	} else if(source_id.equals("20")) { // GALLICA Ticket #1258 und NEU #1574
+		result.add("ElectronicMusicalScore");
+		logger.info( "access: 20 Elec.. Res.. GALLICA");
+		return result;
+	}
+
+
+	String leader = record.getLeader().toString();
+	char leaderBit;
+	ControlField fixedField = (ControlField) record.getVariableField("008");
+	char formatCode = ' ';
+
+	String val;
+	Subfield s;
+
+	fs = record.getVariableFields("935");
+	if (fs != null) {
+		fsI = fs.iterator();
+		DataField hsf;
+		while (fsI.hasNext()) {
+
+			hsf = (DataField) fsI.next();
+
+            Subfield bSubfield = hsf.getSubfield('b');
+
+			List ss = hsf.getSubfields('c');
+			if (ss != null) {
+				Iterator ssI = ss.iterator();
+				while (ssI.hasNext()) {
+					s = (Subfield) ssI.next();
+					val = s.getData();
+					if(val.contains("hs")) {
+                        // Ticket #1055
+                        if( bSubfield != null && bSubfield.getData().contains("cofz")) {
+                            result.add("Electronic");
+                        }
+                    }
+				}
+			}
+		}
+	}
+
+    // Ticket #1555 Qucosa
+    if( source_id.equals( "22" ) ) {
+
+        List fields = record.getVariableFields( "500" );
+        if (fields != null) {
+            Iterator fieldsIter = fields.iterator();
+            while( fieldsIter.hasNext() ) {
+                DataField dataField = (DataField) fieldsIter.next();
+                List subfields = dataField.getSubfields( 'a' );
+                Iterator subfieldsIter = subfields.iterator();
+                if( subfields != null ) {
+                    if( subfieldsIter.hasNext() ) {
+                        String data = subfieldsIter.next().getData().toLowerCase();
+                        String value = quocosaMap.get( data );
+                        if( value != null ) {
+                            String record_id = indexer.getFirstFieldVal( record, "980a" );
+                            result.add( value );
+                            logger.info( "FOUND QUCOSA record_id => " + record_id + ", VALUE => " + value );
+                            return result;
+					}
+                    }
+                }
+            }
+        }
+    }
+
+    // Ticket #1496 #7
+    if( source_id.equals( "9" ) || source_id.equals( "10" )
+        || source_id.equals( "14" ) || source_id.equals( "15" ) ) {
+        result.add( "ElectronicMusicalScore" );
+        return result;
+    }
+
+    if(source_id.equals("12")) { // Ticket #595
+		result.add("Electronic");
+        logger.info( "format: 12 Elec.. Res.." );
+		return result;
+	}
+
+    if(source_id.equals("13")) { // Ticket #597
+		result.add("Electronic");
+        logger.info( "format: 13 Elec.. Res.." );
+		return result;
+	}
+
+    String leader = record.getLeader().toString();
+
+    if( source_id.equals( "0" ) || source_id.equals( "8" ) ) {
+
+        // check the Leader at position 7
+        // Distinguish serials, articles, monographs
+        leaderBit = leader.charAt(7);
+
+        DataField field935 = (DataField) record.getVariableField("935");
+
+        Set f935b = new LinkedHashSet();
+        Set f935c = new LinkedHashSet();
+
+        fs = record.getVariableFields("935");
+        if (fs != null) {
+            fsI = fs.iterator();
+            DataField hsf;
+            while (fsI.hasNext()) {
+                hsf = (DataField) fsI.next();
+                List ss = hsf.getSubfields('c');
+                if (ss != null) {
+                    Iterator ssI = ss.iterator();
+                    while (ssI.hasNext()) {
+                        s = (Subfield) ssI.next();
+                        val = s.getData();
+                        f935c.add(val);
+					}
+                }
+                ss = hsf.getSubfields('b');
+                if (ss != null) {
+                    Iterator ssI = ss.iterator();
+                    while (ssI.hasNext()) {
+                        s = (Subfield) ssI.next();
+                        val = s.getData();
+                        f935b.add(val);
+                    }
+                }
+            }
+        }
+
+        char leaderBit7 = Character.toUpperCase(leaderBit);
+        if( leaderBit7 == 'S' ) {
+            // Serial
+            // Look in 008 to determine what type of Continuing Resource
+            ControlField fixedField800 = (ControlField) record.getVariableField("008");
+            formatCode = fixedField800.getData().toUpperCase().charAt(21);
+            switch (formatCode) {
+                case 'N':
+                    if( f935b.contains( "cofz" )) {
+                        result.add( "ElectronicNewspaper" );
+                    } else {
+                        result.add( "Newspaper" );
+                    }
+					break;
+                case 'P':
+                    if( f935b.contains("cofz")) {
+							result.add("ElectronicJournal");
+                    } else if( f935b.contains( "soerd" )) {
+                        result.add( "ElectronicResourceDataCarrier" );
+                    } else {
+                        result.add("Journal");
+						}
+                    break;
+                case 'M':
+                    if( f935b.contains("cofz")) {
+                        result.add( "ElectronicSerial" );
+                    } else {
+					result.add("Serial");
+                    }
+					break;
+			}
+			// Article
+        } else if( leaderBit7 == 'A') {
+            if( f935b.contains( "cofz" )) {
+                result.add( "ElectronicArticle" );
+            } else {
+                result.add("Article");
+            }
+        // Monograph
+        } else if( leaderBit7 == 'M' ) {
+
+            if( f935c.contains( "hs" )) {
+                if( f935b.contains( "cofz" )) {
+                    result.add( "ElectronicThesis" );
+                } else {
+                    result.add( "Thesis" );
+                }
+                return result;
+            } else if( f935b.contains( "cofz" )) {
+                result.add( "eBook" );
+            } else {
+                // Check 935c (PICA 1140) to identify notated music and maps
+                if( f935c.contains( "muno" )) {
+                    result.add( "NotatedMusic" );
+                } else if( f935c.contains( "kart" )) {
+                    result.add( "Map" );
+                    // #1997
+                    if( f935b.contains("cofz") ) result.add( "ElectronicResourceRemoteAccess" );
+                // Check 935b (PICA 1130) to identify all kinds of formats
+                } else if( f935b.contains( "arbtrans" )) {
+                    result.add( "Transparency" );
+                } else if( f935b.contains("cdda") ) {
+                    result.add( "CD" );
+                } else if( f935b.contains("crom") ) {
+                    result.add( "CDROM" );
+                } else if( f935b.contains("dias") ) {
+                    result.add( "Slide" );
+                } else if( f935b.contains("disk") ) {
+                    result.add( "FloppyDisk" );
+                } else if( f935b.contains("druck") ) {
+                    result.add( "Book" );
+                } else if( f935b.contains("dvda") ) {
+                    result.add( "DVDAudio" );
+                } else if( f935b.contains("dvdr") ) {
+                    result.add( "DVDROM" );
+                } else if( f935b.contains("dvdv") ) {
+                    result.add( "DVDVideo" );
+                } else if( f935b.contains("anfi") ) {
+                    result.add( "AudioVisualMedia" );
+                } else if( f935b.contains("foto") ) {
+                    result.add( "Photo" );
+                } else if( f935b.contains("handschr") ) {
+                    result.add( "Manuscript" );
+                } else if( f935b.contains("kunstbl") ) {
+                    result.add( "ArtPrint" );
+                } else if( f935b.contains("nachl") ) {
+                    result.add( "Nachlass" );
+                } else if( f935b.contains("plakat") ) {
+                    result.add( "Placard" );
+                } else if( f935b.contains("scha") ) {
+                    result.add( "Record" );
+                } else if( f935b.contains("soerd") ) {
+                    result.add( "ElectronicResourceDataCarrier" );
+                } else if( f935b.contains("sobildtt") ) {
+                    result.add( "AudioVisualMedia" );
+                } else if( f935b.contains("sott") ) {
+                    result.add( "SoundRecordingMedium" );
+                } else if( f935b.contains("tonbd") ) {
+                    result.add( "AudioTape" );
+                } else if( f935b.contains("tonks") ) {
+                    result.add( "AudioTape" );
+                } else if( f935b.contains("vika") ) {
+                    result.add( "VideoTape" );
+                } else if( f935b.contains("blindendr") ) {
+                    result.add( "Braille" );
+                } else if( f935b.contains("bray") ) {
+                    result.add( "BluRayDisc" );
+                } else if( f935b.contains("ckop") ) {
+                    result.add( "Microfiche" );
+                } else if( f935b.contains("cofz") ) {
+                    result.add( "ElectronicResourceRemoteAccess" );
+                } else if( f935b.contains("gegenst") ) {
+                    result.add( "PhysicalObject" );
+                } else if( f935b.contains("lkop") ) {
+                    result.add( "Microfilm" );
+                } else if( f935b.contains("skop") ) {
+                    result.add( "Microform" );
+                } else {
+                    result.add( "Book" );
+                }
+            }
+        } // 'S', 'A' und 'M'
+
+        if (!result.isEmpty()) {
+            return result;
+        }
+
+        // Check for Combination of Media (Kit)
+        // if 007 = zm return "Kit" break
+        ControlField fixedField700 = (ControlField) record.getVariableField("007");
+        if( fixedField700 != null && fixedField700.equals( "zm")) {
+            result.add( "Kit" );
+        } else if( leader.charAt(6) == 'o') { // if LDR[6] = o return "Kit" break
+            result.add( "Kit" );
+        } 
+
+    } // source_id 0 or 8
+
+    if (!result.isEmpty()) {
+        return result;
+    }
+
+    return getAccessInfOld( record );
+}

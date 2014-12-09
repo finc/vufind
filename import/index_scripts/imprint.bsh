@@ -1,0 +1,54 @@
+/**
+ * Custom 260abc script
+ *
+ */
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+/**
+ * Read first values of 260abc.
+ * Ticket #3314
+ *
+ * @param  Record    record
+ * @return String    of first 260: first a, first b, first c
+ */
+
+static final Logger logger = Logger.getLogger("de.ubl.import.imprint");
+
+public String getImprint(Record record) {
+
+    // logger.setLevel( Level.INFO );
+
+    char[] subfield_codes = new char[]{'a', 'b', 'c'};
+    List result_parts = new ArrayList();
+    List fields = record.getVariableFields("260");
+    Iterator fieldsIter = fields.iterator();
+    if (fields != null) {
+        DataField df;
+        while(fieldsIter.hasNext()) {
+            df = (DataField) fieldsIter.next();
+            for (char subfield_code : subfield_codes) {
+                List subfields = df.getSubfields(subfield_code);
+                Iterator subfieldsIter = subfields.iterator();
+                if (subfields != null) {
+                    while (subfieldsIter.hasNext()) {
+                        String val = subfieldsIter.next().getData();
+                        // logger.info("imprint val: " + val);
+                        result_parts.add(val);
+                        break; // first subfield value only
+                    }
+                }
+            }
+            // break; // first 260 field only
+            return StringUtils.join(result_parts, " ");
+        }
+    }
+    return null;
+}

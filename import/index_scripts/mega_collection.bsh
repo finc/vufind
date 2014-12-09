@@ -1,0 +1,96 @@
+import org.marc4j.marc.Record;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/*
+ * Copyright (C) 2012 Leander Seige, seige@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Leander Seige
+ * @author   Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+org.solrmarc.index.SolrIndexer indexer = null;
+static final Logger logger = Logger.getLogger("de.ubl.import.getMegaCollection");
+
+public Set getMegaCollection(Record record) {
+
+    logger.setLevel( Level.WARNING ); // FINE,INFO,ALL,WARNING and so on
+
+    Set result = new LinkedHashSet();
+
+    String sid = indexer.getFirstFieldVal(record, "980b");
+    String rid = indexer.getFirstFieldVal(record, "980a");
+
+    List list = record.getVariableFields("912");
+    if( list != null && list.size() > 0 ) {
+        for( Object df_obj : list ) {
+            DataField df = (DataField)df_obj;
+            Subfield sbData = df.getSubfield( 'a' );
+            if ( sbData != null ) {
+                String data = sbData.getData();
+                data = data.trim();
+                // Ticket #1629: 912a=qucosa could be in sid 0, 8, 13 (22)
+                // check 912a for qucosa in any sid
+                if ( data.equals( "qucosa" ) || data.equals( "KEY" ) ) {
+                    logger.info( "QUCOSA => " + rid + " - " + data );
+                    result.add( data );
+                }
+                if ( sid.equals( "17" ) ) {
+                    result.add( data );
+                }
+            }
+        }
+    }
+
+    if ( sid.equals( "0") ) {
+
+        // Tickets #1565, #2038, #2399
+        // multiple 935 possible
+        List list935 = record.getVariableFields("935");
+        if( list935 != null && list935.size() > 0 ) {
+            for( Object df_obj : list935 ) {
+                DataField df = (DataField)df_obj;
+                Subfield sbData = df.getSubfield( 'a' );
+                if ( sbData != null ) {
+                    String data = sbData.getData();
+                    data = data.trim();
+                    if ( data.equals("TRCS") || data.equals("AMSP") ) {
+                        logger.info("935a => " + data);
+                        result.add(data);
+                    }
+                }
+            }	
+        }
+
+        // Ticket #1773, safe to assume single 971
+        String val = indexer.getFirstFieldVal( record, "971p" );
+        if ( val != null && val.equals( "pdam" ) ) {
+            logger.info( "971p => " + val );
+            result.add( val );
+        }
+
+    }
+
+    result.add( sid );
+    return result;
+}
