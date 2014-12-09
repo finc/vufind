@@ -1,0 +1,111 @@
+/*
+ * Copyright (C) 2012 Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+/*
+ * Suche Volltexte in Swb Plus Datenbank.
+ * Siehe Ticket #2483 {@link https://intern.finc.info/issues/2483}
+ */
+
+import java.io.*;
+import java.sql.*;
+import java.net.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.marc4j.marc.*;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+
+static final String baseURL = "http://139.18.19.240:8080/swbp/webresources/swbplus";
+static final Logger logger            = Logger.getLogger("de.ubl.import.getfincfulltext");
+static final Set acceptedSourceIds = new HashSet(){{
+    add("0");
+    add("8");
+    add("22");
+}};
+
+public String getFincFulltextSwbp(Record record) {
+
+    logger.setLevel(Level.WARNING); // FINE,INFO,WARNING,ALL and so on
+
+    String vufindHome = System.getenv( "VUFIND_HOME_SOLR4" );
+    if (vufindHome == null) {
+        vufindHome = "";
+    }
+
+    String finc_id = indexer.getFirstFieldVal( record, "001");
+
+    // nicht alle durchsuchen, da Z.b. NAXOS eine URL als RECORD ID enthält!!!
+    String source_id = indexer.getFirstFieldVal( record, "980b");
+
+    if(source_id == null || (!acceptedSourceIds.contains( source_id )) ) {
+        logger.info( "FULLTEXT: IGNORE SOURCE ID => " + source_id );
+        return ""; 
+    }
+
+    String record_id = indexer.getFirstFieldVal(record, "980a");
+    if( record_id == null ) {
+        logger.severe( "ERROR 'SWB+ FULLTEXT': could't not found record id");
+        return "ERROR 'SWB+ FULLTEXT': RECORD ID NOT FOUND";
+    }
+
+    // sind Resourcen vorhanden?
+    Set urlList = indexer.getFieldList(record, "856u");
+    if( urlList.isEmpty() ) return "";
+
+    // Indikator 1('4') und 2('0') beachten
+    boolean urlFound = false;
+    List list = record.getVariableFields( "856" );
+    Iterator urlFields = list.iterator();
+    while( urlFields.hasNext() ) {
+        DataField dataField = (DataField) urlFields.next();
+        urlFound = dataField.getIndicator1() == '4';
+        if( urlFound ) break;
+    }
+    if( !urlFound ) return "";
+
+    URL url = new URL( baseURL + "/" + finc_id);
+    URLConnection urlConnection = url.openConnection();
+
+    InputStreamReader in = new InputStreamReader( urlConnection.getInputStream(), "UTF-8" );
+
+    StringBuilder builder = new StringBuilder();
+
+    int c = 0;
+    char[] buff = new char[1024 * 8];
+
+    while( ( c = in.read( buff, 0, buff.length ) ) > 0 ) {
+        builder.append( buff, 0, c );
+    }
+
+    in.close();
+    in = null;
+
+    String text = builder.toString();
+    if ( text.length() > 0) {
+        logger.info( "SWB+ FULLTEXT: record_id => " + record_id + ", finc_id => " + finc_id + " => " + ( text.length() <= 80 ? text : text.substring( 0, 80 )));
+    }
+
+    return text;
+
+}

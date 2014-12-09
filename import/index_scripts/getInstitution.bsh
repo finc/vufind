@@ -1,0 +1,117 @@
+import java.io.*;
+import java.sql.*;
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+static final Properties properties = new Properties();
+static final String sDbDrv = "com.mysql.jdbc.Driver";
+static Connection cn = null;
+static PreparedStatement st = null;
+static final Logger logger = Logger.getLogger("de.ubl.import.getinstitution");
+static final HashMap patternCache = new HashMap();
+
+/*
+ * Copyright (C) 2013 Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Ticket #2048, mdma: ansigeln via mddb3
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+public Set getInstitution( Record record ) {
+    
+    logger.setLevel(Level.WARNING); // WARNING,FINE,INFO,ALL and so on
+
+    String vufindHome = System.getenv( "VUFIND_HOME_SOLR4" );
+    if (vufindHome == null) {
+        vufindHome = "";
+    }
+
+    Set result = new LinkedHashSet();
+
+    synchronized(properties) {
+        if(properties.size() == 0) {
+            Class.forName( sDbDrv );
+            try {
+                String ppPath = vufindHome + "/import/index_scripts/mddb.conf";
+                properties.load(new FileInputStream( ppPath ));
+                properties.put("LOAD","true");
+            } catch (IOException e) {
+                logger.severe("ERROR gI reading config file (getInstitution)");
+                return(result);
+            }
+            String sDbUrl=properties.getProperty("DatabaseUrl");
+            String sUsr=properties.getProperty("DatabaseUser");
+            String sPwd=properties.getProperty("DatabasePassword");
+            try {
+                logger.info("CONNECT gI to " + sDbUrl);
+                cn = DriverManager.getConnection( sDbUrl, sUsr, sPwd );
+                st = cn.prepareStatement(
+                    "SELECT DISTINCT(isil) " +
+                    "FROM sigels " + 
+                    "WHERE finc_id = ?"
+                );
+                logger.info("CONNECT gI OK => " + sDbUrl);
+            } catch(Exception e) {
+                logger.severe("ERROR gI create database connection: " + e.getMessage());
+                return(result);
+            }
+            logger.info("CONNECT gI to " + sDbUrl);
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable(){
+                public void run() {
+                    logger.info("SHUTTING DOWN gI statement");
+                    try { if( null != st ) st.close(); } catch( Exception ex ) {}
+                    logger.info("DISCONNECT gI from " + sDbUrl);
+                    try { if( null != cn ) cn.close(); } catch( Exception ex ) {}
+                }
+            }));
+        }
+    }
+      
+    String finc_id = indexer.getFirstFieldVal(record, "001");
+
+    ResultSet          rs = null;
+
+    try {
+
+        st.setLong( 1, Long.valueOf(finc_id) );
+        rs = st.executeQuery();
+        while( rs.next() ) {
+            if( rs.getString(1) == null ) continue;
+            result.add(rs.getString(1));
+        }
+
+    } catch( Exception ex ) {
+        logger.severe( "ERROR gI => " + ex.getMessage() );
+    } finally {
+        try { if( null != rs ) rs.close(); } catch( Exception ex ) {}
+    }
+
+    logger.info( "Institution: " + finc_id + " => " + result);
+
+    return result;
+}

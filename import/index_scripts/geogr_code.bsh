@@ -1,0 +1,55 @@
+/*
+ * Copyright (C) 2012 Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+import org.marc4j.marc.Record;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+static final Logger logger = Logger.getLogger("de.ubl.import.geogrcode");
+
+public Set getGeogrCode(Record record) {
+
+    logger.setLevel(Level.WARNING); // WARNING,FINE,INFO,ALL and so on
+
+    Set result = new LinkedHashSet();
+
+    Set geogrCodeList = indexer.getFieldList(record, "951a");
+
+    for( String geogr_code : geogrCodeList ) {
+        geogr_code = geogr_code.trim();
+        if(geogr_code.length() > 0) {
+            String[] split = geogr_code.split( "-" );
+            StringBuilder b = new StringBuilder();
+            for( String s : split ) {
+                if( b.length() > 0 ) b.append( "-" );
+                b.append(s);
+                String code = b.toString();
+                result.add(code);
+            }
+        }
+    }
+
+    return result;
+}

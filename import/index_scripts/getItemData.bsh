@@ -1,0 +1,141 @@
+import java.io.*;
+import java.sql.*;
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+static final Properties properties = new Properties();
+static final String sDbDrv = "com.mysql.jdbc.Driver";
+static Connection cn = null;
+static PreparedStatement st = null;
+static final Logger logger  = Logger.getLogger("de.ubl.import.getitemdata");
+static Pattern isilPattern;
+
+/*
+ * Copyright (C) 2012 Leander Seige, seige@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hospe that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+/**
+* Ticket #2648
+* Ticket #3962
+*
+*/
+public Set getItemData( Record record, String namespace, String isilRegex ) {  
+
+    logger.setLevel(Level.WARNING); // WARNING,FINE,INFO,ALL and so on
+
+    String vufindHome = System.getenv( "VUFIND_HOME_SOLR4" );
+    if (vufindHome == null) {
+        vufindHome = "";
+    }
+
+    Set result = new LinkedHashSet();
+
+    String source_id = indexer.getFirstFieldVal(record, "980b");
+    if(source_id == null || !source_id.equals("0")) {
+        return result; 
+    }
+
+    synchronized(properties) {
+        if(properties.size() == 0) {
+            Class.forName( sDbDrv );
+            try {
+                String ppPath = vufindHome + "/import/index_scripts/mddb.conf";
+                properties.load(new FileInputStream( ppPath ));
+                properties.put("LOAD","true");
+            } catch (IOException e) {
+                logger.severe("ERROR gID reading config file (getItemData)");
+                return result;
+            }
+            String sDbUrl=properties.getProperty("DatabaseUrl");
+            String sUsr=properties.getProperty("DatabaseUser");
+            String sPwd=properties.getProperty("DatabasePassword");
+            try {
+                logger.info("CONNECT gID to " + sDbUrl);
+                cn = DriverManager.getConnection( sDbUrl, sUsr, sPwd );
+                st = cn.prepareStatement(
+                    "SELECT   sigel,barcode,call_number " +
+                    "FROM     item " + 
+                    "WHERE    finc_id = ? " +
+                    "ORDER BY sigel"
+                );
+                logger.info("CONNECT gID OK => " + sDbUrl);
+            } catch(Exception e) {
+                logger.severe("ERROR gID create database connection: " + e.getMessage());
+                return result;
+            }
+            logger.info("CONNECT gID to " + sDbUrl);
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable(){
+                public void run() {
+                    logger.info("SHUTTING DOWN gID statement");
+                    try { if( null != st ) st.close(); } catch( Exception ex ) {}
+                    logger.info("DISCONNECT gID from " + sDbUrl);
+                    try { if( null != cn ) cn.close(); } catch( Exception ex ) {}
+                }
+            }));
+            isilPattern = Pattern.compile(isilRegex);
+        }
+    }
+
+    String finc_id  = indexer.getFirstFieldVal(record, "001");
+    Long fincNumber = Long.valueOf(finc_id);
+    ResultSet    rs = null;
+
+    try {
+        Matcher m = isilPattern.matcher("");
+        HashMap sigelMap = new HashMap();
+        st.setLong( 1, fincNumber);
+        rs = st.executeQuery();
+        while( rs.next() ) {
+            m.reset( rs.getString(1) );
+            if( m.find()) {
+                String value = "";
+                switch ( namespace ) {
+                    case "barcode" :
+                        value = rs.getString(2); // barcode
+                        break;
+                    case "signatur" :
+                        value = rs.getString(3); // call_number
+                        break;
+                    default :
+                        throw new Exception( "Unknown namespace " + namespace);
+                }
+                result.add( "(" + rs.getString(1) + ")" + value);
+            }
+        }
+        try { rs.close(); } catch( Exception ex ) {}
+        logger.info( "gID: " + namespace + " => " + result);
+    } catch( Exception ex ) {
+        logger.severe( "ERROR gID => " + ex.getMessage() );
+    } finally {
+        try { if( null != rs ) rs.close(); } catch( Exception ex ) {}
+    }
+
+    return result;
+}
