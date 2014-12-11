@@ -27,7 +27,7 @@ After that you can perform the task with the following command:
 Be aware that you will need several programs like java and mysql to setup a solr-index and a database-store in order to
 test the components of vufind that communicate with them.
 
-You might need to set up the mysql-user credentials, if case they do not agree with your mysql root-users credentials.
+You might need to set up the mysql-user credentials, in case they do not agree with your mysql root-users credentials.
 You can do that by providing optional parameters like that
 
     phing -Dmysqlrootpass=''
