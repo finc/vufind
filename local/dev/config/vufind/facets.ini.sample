@@ -170,7 +170,7 @@ translated_facets[] = mega_toplevel
 ; These facets will be displayed on the Home Page.  If this section is omitted,
 ; the [Advanced] section will be used instead.
 [HomePage]
-callnumber-first = "Call Number"
+;callnumber-first = "Call Number"
 language         = Language
 format           = Format
 ;hierarchy_top_title   = Collections

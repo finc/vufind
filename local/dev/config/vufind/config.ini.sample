@@ -2,9 +2,12 @@
 debug           = false
 
 [Index]
+; lokaler Solr
 url             = http://localhost:8080/solr
-; UBL Blob-Server for SolrMarcRemote-Webservice
-marcRemoteServer      = http://172.18.113.147/%s
+; Solr4Entwickler
+;url              = http://172.18.85.142:8085/solr
+; Solr-Devel (Ip-Freischaltung notwendig)
+;url              = http://139.18.19.239:8080/solr
 
 [Parent_Config]
 relative_path = ../../../config/vufind/config.ini
