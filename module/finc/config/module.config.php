@@ -5,6 +5,9 @@ $config = array(
     'vufind' => array(
         'plugin_managers' => array(
             'ils_driver' => array(
+                'factories' => array(
+                    'fincdaia' => 'finc\ILS\Driver\Factory::getDAIA',
+                ),
                 'invokables' => array(
                     'daia' => 'finc\ILS\Driver\DAIA',
                     'paia' => 'finc\ILS\Driver\PAIA',

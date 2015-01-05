@@ -28,7 +28,7 @@
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
 namespace finc\ILS\Driver;
-use DOMDocument, VuFind\Exception\ILS as ILSException, Zend\Log\LoggerInterface;
+use DOMDocument, VuFind\Exception\ILS as ILSException;
 
 /**
  * ILS Driver for VuFind to query availability information via DAIA.
@@ -41,46 +41,37 @@ use DOMDocument, VuFind\Exception\ILS as ILSException, Zend\Log\LoggerInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
-class DAIA extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\LoggerAwareInterface
+class FincDAIA extends DAIA implements \Zend\Log\LoggerAwareInterface
 {
     /**
-     * Base URL
+     * Identifier used for interaction with ILS
      *
      * @var string
      */
-    protected $baseURL;
+    protected $ilsIdentifier;
 
     /**
-     * Logger (or false for none)
+     * ISIL used for identifying the correct ILS-identifier if array is returned
      *
-     * @var LoggerInterface|bool
+     * @var string
      */
-    protected $logger = false;
+    protected $isil;
 
     /**
-     * Set the logger
+     * Record loader
      *
-     * @param LoggerInterface $logger Logger to use.
-     *
-     * @return void
+     * @var \VuFind\Record\Loader
      */
-    public function setLogger(LoggerInterface $logger)
+    protected $recordLoader;
+
+    /**
+     * Constructor
+     *
+     * @param \VuFind\Record\Loader $loader Record loader
+     */
+    public function __construct(\VuFind\Record\Loader $loader)
     {
-        $this->logger = $logger;
-    }
-
-    /**
-     * Log a debug message.
-     *
-     * @param string $msg Message to log.
-     *
-     * @return void
-     */
-    protected function debug($msg)
-    {
-        if ($this->logger) {
-            $this->logger->debug(get_class($this) . ": $msg");
-        }
+        $this->recordLoader = $loader;
     }
 
     /**
@@ -99,24 +90,37 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\LoggerAw
         }
 
         $this->baseURL = $this->config['DAIA']['baseUrl'];
+
+        // set the ILS-specific recordId for interaction with ILS
+        // get the ILS-specific identifier
+        if (!isset($this->config['DAIA']['ilsIdentifier'])) {
+            $this->debug("No ILS-specific identifier configured, setting ilsIdentifier=default.");
+            $this->ilsIdentifier = "default";
+        } else {
+            $this->ilsIdentifier = $this->config['DAIA']['ilsIdentifier'];
+        }
+
+        // get ISIL from config if ILS-specific recordId is barcode for interaction with ILS
+        // get the ILS-specific identifier
+        if (!isset($this->config['DAIA']['ISIL'])) {
+            $this->debug("No ISIL for ILS-driver configured.");
+            $this->isil = '';
+        } else {
+            $this->isil = $this->config['DAIA']['ISIL'];
+        }
+
     }
 
     /**
-     * Get Hold Link
+     * Get the Record-Object from the RecordDriver.
      *
-     * The goal for this method is to return a URL to a "place hold" web page on
-     * the ILS OPAC. This is used for ILSs that do not support an API or method
-     * to place Holds.
+     * @param string $id ID of record to retrieve
      *
-     * @param string $id      The id of the bib record
-     * @param array  $details Item details from getHoldings return array
-     *
-     * @return string         URL to ILS's OPAC's place hold screen.
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return \VuFind\RecordDriver\AbstractBase
      */
-    public function getHoldLink($id, $details)
+    public function getRecord($id)
     {
-        return ($details['ilslink'] != '') ? $details['ilslink'] : null;
+        return $this->recordLoader->load($id);
     }
 
     /**
@@ -133,7 +137,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\LoggerAw
      */
     public function getStatus($id)
     {
-        $holding = $this->daiaToHolding($id);
+        $holding = $this->daiaToHolding($this->getILSRecordId($id));
         return $holding;
     }
 
@@ -152,58 +156,9 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\LoggerAw
     {
         $items = array();
         foreach ($ids as $id) {
-            $items[] = $this->getShortStatus($id);
+            $items[] = $this->getShortStatus($this->getILSRecordId($id));
         }
         return $items;
-    }
-
-    /**
-     * Public Function which retrieves renew, hold and cancel settings from the
-     * driver ini file.
-     *
-     * @param string $function The name of the feature to be checked
-     *
-     * @return array An array with key-value pairs.
-     */
-    public function getConfig($function)
-    {
-        return isset($this->config[$function]) ? $this->config[$function] : false;
-    }
-
-    /**
-     * Get Holding
-     *
-     * This is responsible for retrieving the holding information of a certain
-     * record.
-     *
-     * @param string $id     The record id to retrieve the holdings for
-     * @param array  $patron Patron data
-     *
-     * @throws \VuFind\Exception\Date
-     * @throws ILSException
-     * @return array         On success, an associative array with the following
-     * keys: id, availability (boolean), status, location, reserve, callnumber,
-     * duedate, number, barcode.
-     */
-    public function getHolding($id, array $patron = null)
-    {
-        return $this->getStatus($id);
-    }
-
-    /**
-     * Get Purchase History
-     *
-     * This is responsible for retrieving the acquisitions history data for the
-     * specific record (usually recently received issues of a serial).
-     *
-     * @param string $id The record id to retrieve the info for
-     *
-     * @throws ILSException
-     * @return array     An array with the acquisitions data on success.
-     */
-    public function getPurchaseHistory($id)
-    {
-        return array();
     }
 
     /**
@@ -218,10 +173,60 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\LoggerAw
      */
     protected function queryDAIA($id)
     {
+        $opts = array(
+            'http' => array(
+                'ignore_errors' => 'true',
+            )
+        );
+
+        $context = stream_context_create($opts);
+        libxml_set_streams_context($context);
+
         $daia = new DOMDocument();
         $daia->load($this->baseURL . $id);
 
         return $daia;
+    }
+
+    /**
+     * Get the identifier for the record which will be used for ILS interaction
+     *
+     * @param string $id Document to look up.
+     *
+     * @return string $ilsRecordId
+     */
+    protected function getILSRecordId($id)
+    {
+        //get the ILS-specific recordId
+        if ($this->ilsIdentifier == "default") {
+            return $id;
+        } else {
+            $ilsRecordId = $this->getRecord($id)->getILSIdentifier($this->ilsIdentifier);
+            if ($ilsRecordId == '')
+            {
+                return $id;
+            } else {
+                if (is_array($ilsRecordId)) {
+                    // use ISIL for identifying the correct ILS-identifier if array is returned
+                    foreach ($ilsRecordId as $recordId) {
+                        if (preg_match($recordId, "/^(".$this->isil.").*$/")) {
+                            return substr($recordId, strpos($recordId, "(".$this->isil.")")+strlen("(".$this->isil.")"));
+                        }
+                    }
+                }
+
+                return $ilsRecordId;
+            }
+
+            // DAIA Request with PPN from MarcRecord
+            //$daia = $this->queryDAIA($this->getSolrRecord($id)->getFincPPN()->getData());
+
+            // DAIA Request with PPN from Solr
+            //$daia = $this->queryDAIA($this->getSolrRecord($id)->getFincPPNSolr());
+
+            // DAIA Request with barcode
+            //$daia = $this->queryDAIA($this->getSolrRecord($id)->getFincBarcode());
+        }
     }
 
     /**
@@ -236,6 +241,14 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\LoggerAw
         $daia = $this->queryDAIA($id);
         // get Availability information from DAIA
         $documentlist = $daia->getElementsByTagName('document');
+
+        // handle empty DAIA response
+        if ($documentlist->length == 0 &&
+            $daia->getElementsByTagName("message")->item(0)->attributes->getNamedItem("errno")->nodeValue == "404") {
+            $this->debug("Error: " . $daia->getElementsByTagName("message")->item(0)->attributes->getNamedItem("errno")->nodeValue
+                . " reported for DAIA request");
+        }
+
         $status = array();
         for ($b = 0; $documentlist->item($b) !== null; $b++) {
             $itemlist = $documentlist->item($b)->getElementsByTagName('item');
@@ -488,142 +501,4 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\LoggerAw
         return $status;
     }
 
-    /**
-     * Return an abbreviated set of status information.
-     *
-     * @param string $id The record id to retrieve the status for
-     *
-     * @return mixed     On success, an associative array with the following keys:
-     * id, availability (boolean), status, location, reserve, callnumber, duedate,
-     * number
-     */
-    public function getShortStatus($id)
-    {
-        $daia = $this->queryDAIA($id);
-        // get Availability information from DAIA
-        $itemlist = $daia->getElementsByTagName('item');
-        $label = "Unknown";
-        $storage = "Unknown";
-        $presenceOnly = '1';
-        $holding = array();
-        for ($c = 0; $itemlist->item($c) !== null; $c++) {
-            $earliest_href = '';
-            $storageElements = $itemlist->item($c)->getElementsByTagName('storage');
-            if ($storageElements->item(0)->nodeValue) {
-                if ($storageElements->item(0)->nodeValue === 'Internet') {
-                    $href = $storageElements->item(0)->attributes
-                        ->getNamedItem('href')->nodeValue;
-                    $storage = '<a href="'.$href.'">'.$href.'</a>';
-                } else {
-                    $storage = $storageElements->item(0)->nodeValue;
-                }
-            }
-            $labelElements = $itemlist->item($c)->getElementsByTagName('label');
-            if ($labelElements->item(0)->nodeValue) {
-                $label = $labelElements->item(0)->nodeValue;
-            }
-            $availableElements = $itemlist->item($c)
-                ->getElementsByTagName('available');
-            if ($availableElements->item(0) !== null) {
-                $availability = 1;
-                $status = 'Available';
-                $href = $availableElements->item(0)->attributes
-                    ->getNamedItem('href');
-                if ($href !== null) {
-                    $earliest_href = $href->nodeValue;
-                }
-                for ($n = 0; $availableElements->item($n) !== null; $n++) {
-                    $svc = $availableElements->item($n)->getAttribute('service');
-                    if ($svc === 'loan') {
-                        $presenceOnly = '0';
-                    }
-                    // $status .= ' ' . $svc;
-                }
-            } else {
-                $leanable = 1;
-                $unavailableElements = $itemlist->item($c)
-                    ->getElementsByTagName('unavailable');
-                if ($unavailableElements->item(0) !== null) {
-                    $earliest = array();
-                    $queue = array();
-                    $hrefs = array();
-                    for ($n = 0; $unavailableElements->item($n) !== null; $n++) {
-                        $unavailHref = $unavailableElements->item($n)->attributes
-                            ->getNamedItem('href');
-                        if ($unavailHref !== null) {
-                            $hrefs['item'.$n] = $unavailHref->nodeValue;
-                        }
-                        $expectedNode = $unavailableElements->item($n)->attributes
-                            ->getNamedItem('expected');
-                        if ($expectedNode !== null) {
-                            //$duedate = $expectedNode->nodeValue;
-                            //$duedate_arr = explode('-', $duedate);
-                            //$duedate_timestamp = mktime(
-                            //    '0', '0', '0', $duedate_arr[1], $duedate_arr[2],
-                            //    $duedate_arr[0]
-                            //);
-                            //array_push($earliest, array(
-                            //    'expected' => $expectedNode->nodeValue,
-                            //    'recall' => $unavailHref->nodeValue);
-                            //array_push($earliest, $expectedNode->nodeValue);
-                            $earliest['item'.$n] = $expectedNode->nodeValue;
-                        } else {
-                            array_push($earliest, "0");
-                        }
-                        $queueNode = $unavailableElements->item($n)->attributes
-                            ->getNamedItem('queue');
-                        if ($queueNode !== null) {
-                            $queue['item'.$n] = $queueNode->nodeValue;
-                        } else {
-                            array_push($queue, "0");
-                        }
-                    }
-                }
-                if (count($earliest) > 0) {
-                    arsort($earliest);
-                    $earliest_counter = 0;
-                    foreach ($earliest as $earliest_key => $earliest_value) {
-                        if ($earliest_counter === 0) {
-                            $earliest_duedate = $earliest_value;
-                            $earliest_href = $hrefs[$earliest_key];
-                            $earliest_queue = $queue[$earliest_key];
-                        }
-                        $earliest_counter = 1;
-                    }
-                } else {
-                    $leanable = 0;
-                }
-                $messageElements = $itemlist->item($c)
-                    ->getElementsByTagName('message');
-                if ($messageElements->length > 0) {
-                    $errno = $messageElements->item(0)->attributes
-                        ->getNamedItem('errno')->nodeValue;
-                    if ($errno === '404') {
-                        $status = 'missing';
-                    }
-                }
-                if (!$status) {
-                    $status = 'Unavailable';
-                }
-                $availability = 0;
-            }
-            $reserve = 'N';
-            if ($earliest_queue > 0) {
-                $reserve = 'Y';
-            }
-            $holding[] = array('availability' => $availability,
-                'id' => $id,
-                'status' => "$status",
-                'location' => "$storage",
-                'reserve' => $reserve,
-                'queue' => $earliest_queue,
-                'callnumber' => "$label",
-                'duedate' => $earliest_duedate,
-                'leanable' => $leanable,
-                'recallhref' => $earliest_href,
-                'number' => ($c+1),
-                'presenceOnly' => $presenceOnly);
-        }
-        return $holding;
-    }
 }

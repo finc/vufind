@@ -204,6 +204,18 @@ class SolrMarcRemote extends \VuFind\RecordDriver\SolrMarc
     }
 
     /**
+     * Get the field-value identified by $string
+     *
+     * @param String field-name
+     *
+     * @return String
+     */
+    public function getILSIdentifier($string)
+    {
+        return (isset($this->fields[$string]) ? $this->fields[$string] : '');
+    }
+
+    /**
      * Set the logger
      *
      * @param LoggerInterface $logger Logger to use.
