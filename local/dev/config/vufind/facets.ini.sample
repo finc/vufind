@@ -1,203 +1,23 @@
-; The order of display is as shown below
-; The name of the index field is on the left
-; The display name of the field is on the right
-[Results]
-; institution        = Institution
-; building           = Library
-access_facet	   = Access
-format             = Format
-; format_de15        = "Format UBL"
-branch_de15        = "Zweigbibliothek"
-; collcode_de15      = "Literaturabteilung UBL"
-; rvk_facet          = "RVK"
-finc_class_facet   = Fachgebiet
-
-mega_collection = Kollektion
-mega_toplevel = Status
-
-; Use callnumber-first for LC call numbers, dewey-hundreds for Dewey Decimal:
-;callnumber-first   = "Call Number"
-;dewey-hundreds     = "Call Number"
-
-language           = Language
-; authorStr          = Author
-author_facet	   = Author
-; genre_facet        = Genre
-; era_facet          = Era
-; geographic_facet   = Region
-publishDate        = "adv_search_year"  ; share year string w/advanced search page
-
-; Facets that will appear at the top of search results when the TopFacets
-; recommendations module is used.  See the [TopRecommendations] section of
-; searches.ini for more details.
-[ResultsTop]
-; topic_facet        = "Suggested Topics"
-
-; Facets must be stripped if you have a facet in your main index which is missing
-; from any index includable by shards.  This section can be ignored if you are
-; not using sharding or if all of your shards have identical schemas.
+;####################################################################
+;##################### DO NOT DELETE THIS HEADER ####################
+;################### Leipzig University Library © 2015 ##############
 ;
-; Put in the facets to strip here in the following format:
-; shard name = fieldname,another fieldname,...
-[StripFacets]
-
-; This section is used to identify facets for special treatment by the SideFacets
-; recommendations module.
-[SpecialFacets]
-; Any fields listed below will be treated as date ranges rather than plain facets:
-dateRange[] = publishDate
-
-;###########
-;BOF-VuFind2
-; Any fields listed below will be treated as numeric ranges rather than plain facets:
-;numericRange[] = example_field_str
-; Any fields listed below will be treated as free-form ranges rather than plain
-; facets:
-;genericRange[] = example_field_str
-;EOF-VuFind2
-;###########
-
-; This section is reserved for special boolean facets.  These are displayed
-; as checkboxes.  If the box is checked, the filter on the left side of the
-; equal sign is applied.  If the box is not checked, the filter is not applied.
-; The value on the right side of the equal sign is the text to display to the
-; user.  It will be run through the translation code, so be sure to update the
-; language files appropriately.
+; This is the default DEV-INI-file and inherits
+; all the settings from the INI-file defined in [Parent_Config] which
+; points to the default INI-file located in the folder vufind2/local
 ;
-; Leave the section empty if you do not need checkbox facets.
-[CheckboxFacets]
-;edition:1st* = "First Edition"     ; Contrived hypothetical example
-;access_facet:Local Holdings = "Local Holdings"
-;access_facet:Electronic Resources = "Electronic Resources"
 
-; These settings affect the way the [Results] facets are displayed
-; If using facets at the top of search results you have more room for text.
-[Results_Settings]
-facet_limit        = 30     ; how many values should we show for each facet?
-; Specify which facet fields are multi-select (filters are OR'ed instead of AND'ed)
-multiselect_facets = institution,format,language
-; Rows and columns for table used by top facets
-;top_rows = 2
-;top_cols = 3
+[Parent_Config]
+relative_path = ../../../config/vufind/facets.ini
 
-;###########
-;BOF-VuFind2
-; Should we show "exclude" links for some or all of the facets? Set to * for
-; all facets, use a comma-separated list to show for some of the facets, set
-; to false or omit to disable "exclude" links
-;exclude = *
-; Should we OR together facets rather than ANDing them? Set to * for
-; all facets, use a comma-separated list to apply to some of the facets, set
-; to false or omit to disable ORed facets.
-;orFacets = *
-; Do we want any facets to be collapsed by default?
-;collapsedFacets = *
-;EOF-VuFind2
-;###########
+; A comma-separated list of config sections from the parent which should be
+; completely overwritten by the equivalent sections in this configuration;
+; any sections not listed here will be merged on a section-by-section basis.
+;override_full_sections = "Languages,AlphaBrowse_Types"
 
-; The author home screen has different facets
-[Author]
-topic_facet = "Related Subjects"
+;
+;       Add DEV-specific customization after this header.
+;
+;##################### DO NOT DELETE THIS HEADER ####################
+;####################################################################
 
-; These facets will be displayed as limiters on the advanced search search screen
-[Advanced]
-;callnumber-first = "Call Number"
-;language         = Language
-;format           = Format
-
-;BOF-VuFind2
-;hierarchy_top_title   = Collections
-;EOF-VuFind2
-
-branch_de15	 = Zweigbibliothek
-
-; These settings affect the way the [Advanced] facets are displayed
-[Advanced_Settings]
-facet_limit      = 100      ; how many values should we show for each facet?
-
-;###########
-;BOF-VuFind2
-; Should we OR together facets rather than ANDing them? Set to * for
-; all facets, use a comma-separated list to apply to some of the facets, set
-; to false or omit to disable ORed facets.
-orFacets = *
-;EOF-VuFind2
-;###########
-
-; The facets listed under the [Advanced] section above will be used as limiters on
-; the advanced search screen and will be displayed uniformly as multi-select boxes.
-; Some facet types don't lend themselves to this format, and they can be turned on
-; by inclusion in the comma-separated list below, or turned off by being excluded.
-;###########
-;BOF-VuFind2
-; Supported values:
-; checkboxes - displays a list of checkbox facets as specified in the
-;      [CheckboxFacets] section above. You can specify the config file/section
-;      with colon-separated parameters following the checkboxes setting; e.g.
-;      checkboxes:facets:myCustomCheckboxes will load from the myCustomCheckboxes
-;      section of facets.ini. You can prefix the section name with a tilde (~)
-;      to reverse processing of the section to label => filter format (useful if your
-;      filters contain values that are illegal in configuration keys -- e.g. []).
-; daterange - for the range controls specified by the dateRange setting under
-;      [Special_Facets] above; if multiple fields are specified above but you
-;      only want certain ones on the advanced screen, you can filter with a
-;      colon separated list; e.g. "daterange:field1:field2:field3"
-; genericrange - just like daterange above, but for genericRange[] fields.
-; illustrated - for the "illustrated/not illustrated" radio button limiter
-; numericrange - just like daterange above, but for numericRange[] fields.
-;EOF-VuFind2
-;###########
-
-special_facets   = "illustrated,daterange"
-
-; Any facets named in the list below will have their values run through the
-; translation code; unlisted facets will displayed as-is without translation.  For
-; translated facets, be sure that all of the necessary strings are included in the
-; language files found in the web/lang directory.  By default, no facets are
-; translated -- uncomment or add lines below to turn on this feature.
-;translated_facets[] = institution
-;translated_facets[] = building
-translated_facets[] = format
-translated_facets[] = language
-translated_facets[] = access_facet
-translated_facets[] = finc_class_facet
-translated_facets[] = rvk_facet
-translated_facets[] = mega_collection
-translated_facets[] = mega_toplevel
-
-;###########
-;BOF-VuFind2
-; These facets will be displayed on the Home Page.  If this section is omitted,
-; the [Advanced] section will be used instead.
-[HomePage]
-;callnumber-first = "Call Number"
-language         = Language
-format           = Format
-;hierarchy_top_title   = Collections
-
-; These settings affect the way the [HomePage] facets are displayed
-; NOTE: To make changes take effect immediately, you may need to clear VuFind's
-; cache after changing this section.
-[HomePage_Settings]
-; how many values should we load for each facet?  depending on the column layout
-; of the homepage facet lists, we may not display all loaded values for every facet
-facet_limit      = 20
-
-[Visual_Settings]
-; Which two facetable fields should be used for creating the visual results?
-; See VisualFacets recommendation module in searches.ini for more details.
-;visual_facets = "callnumber-first,topic_facet"
-;EOF-VuFind2
-;###########
-
-; Added for finc project
-; Array of stricter facets hiding to diminsh displaying
-; facet contents by starting searching.
-[HideFacets]
-; Indicate facet which contents should be hided first.
-hide_facets = "genre_facet,era_facet,geographic_facet"
-
-; Special facets sorted alphabetically.
-[SortedByIndex]
-index[] = branch_de15
-;index[] = format
