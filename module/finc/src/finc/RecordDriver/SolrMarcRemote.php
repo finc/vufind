@@ -22,7 +22,9 @@
  *
  * @category VuFind2
  * @package  RecordDrivers
- * @author   André Lahmann <lahmann@ub.uni-leipzig.de>, Ulf Seltmann <seltmann@ub.uni-leipzig.de>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
+ * @author   Ulf Seltmann <seltmann@ub.uni-leipzig.de>
+ * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
@@ -35,11 +37,13 @@ use \Zend\Log\LoggerInterface;
  *
  * @category VuFind2
  * @package  RecordDrivers
- * @author   André Lahmann <lahmann@ub.uni-leipzig.de>, Ulf Seltmann <seltmann@ub.uni-leipzig.de>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
+ * @author   Ulf Seltmann <seltmann@ub.uni-leipzig.de>
+ * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
-class SolrMarcRemote extends \VuFind\RecordDriver\SolrMarc
+class SolrMarcRemote extends SolrMarc
 {
     /**
      * Logger (or false for none)
@@ -70,6 +74,13 @@ class SolrMarcRemote extends \VuFind\RecordDriver\SolrMarc
     protected $mainConfig;
 
     /**
+     * holds searches.ini data
+     *
+     * @var array
+     */
+    protected $searchesConfig;
+
+    /**
      * Constructor
      *
      * @param \Zend\Config\Config $mainConfig     VuFind main configuration (omit for
@@ -95,6 +106,7 @@ class SolrMarcRemote extends \VuFind\RecordDriver\SolrMarc
         }
         
         $this->mainConfig = $mainConfig;
+        $this->searchesConfig = $searchSettings;
     }
 
     /**
@@ -173,7 +185,7 @@ class SolrMarcRemote extends \VuFind\RecordDriver\SolrMarc
      * @throws \Exception
      * @throws \File_MARC_Exception
      */
-    private function getRemoteData() {
+    protected function getRemoteData() {
 
         // handle availability of fullrecord
         if (isset($this->fields['fullrecord'])) {

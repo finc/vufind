@@ -15,12 +15,46 @@ $config = array(
             ),
             'recorddriver' => array(
                 'factories' => array(
-                    'solrmarcremote' => 'finc\RecordDriver\Factory::getSolrMarcRemote'
+                    'solrdefault' => 'finc\RecordDriver\Factory::getSolrDefault',
+                    'solrmarc' => 'finc\RecordDriver\Factory::getSolrMarc',
+                    'solrmarcremote' => 'finc\RecordDriver\Factory::getSolrMarcRemote',
+                    'solrmarcremotefinc' => 'finc\RecordDriver\Factory::getSolrMarcRemoteFinc'
                 ),
             ),
         ),
         'recorddriver_tabs' => array(
+            'finc\RecordDriver\SolrDefault' => array(
+                'tabs' => array (
+                    'Holdings' => 'HoldingsILS', 'Description' => 'Description',
+                    'TOC' => 'TOC', 'UserComments' => 'UserComments',
+                    'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
+                    'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
+                    'Details' => 'StaffViewArray',
+                ),
+                'defaultTab' => null,
+            ),
+            'finc\RecordDriver\SolrMarc' => array(
+                'tabs' => array(
+                    'Holdings' => 'HoldingsILS', 'Description' => 'Description',
+                    'TOC' => 'TOC', 'UserComments' => 'UserComments',
+                    'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
+                    'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
+                    'Details' => 'StaffViewMARC',
+                ),
+                'defaultTab' => null,
+            ),
             'finc\RecordDriver\SolrMarcRemote' => array(
+                'tabs' => array(
+                    'Holdings' => 'HoldingsILS', 'Description' => 'Description',
+                    'TOC' => 'TOC', 'UserComments' => 'UserComments',
+                    'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
+                    'Preview' => 'preview',
+                    'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
+                    'Details' => 'StaffViewMARC',
+                ),
+                'defaultTab' => null,
+            ),
+            'finc\RecordDriver\SolrMarcRemoteFinc' => array(
                 'tabs' => array(
                     'Holdings' => 'HoldingsILS', 'Description' => 'Description',
                     'TOC' => 'TOC', 'UserComments' => 'UserComments',
