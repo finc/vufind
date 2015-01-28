@@ -6,7 +6,7 @@ $config = array(
         'plugin_managers' => array(
             'ils_driver' => array(
                 'factories' => array(
-                    'fincdaia' => 'finc\ILS\Driver\Factory::getDAIA',
+                    'fincdaia' => 'finc\ILS\Driver\Factory::getFincDAIA',
                 ),
                 'invokables' => array(
                     'daia' => 'finc\ILS\Driver\DAIA',

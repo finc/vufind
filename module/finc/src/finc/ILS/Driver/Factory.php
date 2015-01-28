@@ -47,7 +47,7 @@ class Factory extends \VuFind\ILS\Driver\Factory
      *
      * @return NoILS
      */
-    public static function getDAIA(ServiceManager $sm)
+    public static function getFincDAIA(ServiceManager $sm)
     {
         return new FincDAIA($sm->getServiceLocator()->get('VuFind\RecordLoader'));
     }
