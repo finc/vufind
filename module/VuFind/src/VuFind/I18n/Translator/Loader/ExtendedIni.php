@@ -148,7 +148,9 @@ class ExtendedIni implements FileLoaderInterface
         $data = false;
         foreach ($this->pathStack as $path) {
             if (file_exists($path . '/' . $filename)) {
-                $current = $this->languageFileToTextDomain($path . '/' . $filename);
+                $current = $this->loadParentData(
+                    $this->languageFileToTextDomain($path . '/' . $filename)
+                );
                 if ($data === false) {
                     $data = $current;
                 } else {
@@ -161,7 +163,7 @@ class ExtendedIni implements FileLoaderInterface
         }
 
         // Load parent data, if necessary:
-        return $this->loadParentData($data);
+        return $data;
     }
 
     /**
