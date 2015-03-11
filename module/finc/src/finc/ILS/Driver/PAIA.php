@@ -1,10 +1,6 @@
 <?php
 /**
- * ILS Driver for VuFind to get information from PAIA
- *
- * Authentication in this driver is handled via LDAP, not via normal PICA!
- * First check local vufind database, and if no user is found, check LDAP.
- * LDAP configuration settings are taken from vufinds config.ini
+ * PAIA ILS Driver for VuFind to get patron information
  *
  * PHP version 5
  *
@@ -28,16 +24,19 @@
  * @author   Oliver Goldschmidt <o.goldschmidt@tuhh.de>
  * @author   Magdalena Roos <roos@gbv.de>
  * @author   Till Kinstler <kinstler@gbv.de>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_an_ils_driver Wiki
  */
 
 namespace finc\ILS\Driver;
-use DOMDocument, VuFind\Exception\ILS as ILSException;
-//use VuFind\ILS\Driver\DAIA as DAIA;
+use VuFind\Exception\ILS as ILSException,
+    VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
+    Zend\Log\LoggerAwareInterface as LoggerAwareInterface,
+    Zend\Log\LoggerInterface as LoggerInterface;
 
 /**
- * ILS Driver for VuFind to get information from PICA
+ * PAIA ILS Driver for VuFind to get patron information
  *
  * Holding information is obtained by DAIA, so it's not necessary to implement those
  * functions here; we just need to extend the DAIA driver.
@@ -47,11 +46,27 @@ use DOMDocument, VuFind\Exception\ILS as ILSException;
  * @author   Oliver Goldschmidt <o.goldschmidt@tuhh.de>
  * @author   Magdalena Roos <roos@gbv.de>
  * @author   Till Kinstler <kinstler@gbv.de>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_an_ils_driver Wiki
  */
-class PAIA extends DAIA
+class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterface
 {
+
+    /**
+     * Logger (or false for none)
+     *
+     * @var LoggerInterface|bool
+     */
+    protected $logger = false;
+
+    /**
+     * HTTP service
+     *
+     * @var \VuFindHttp\HttpServiceInterface
+     */
+    protected $httpService = null;
+
     private $_username;
     private $_password;
 
@@ -62,6 +77,8 @@ class PAIA extends DAIA
      * Constructor
      *
      * @access public
+     * @return void
+     * @throws ILSException
      */
     public function init()
     {
@@ -183,10 +200,13 @@ class PAIA extends DAIA
      */
     public function getMyTransactions($patron)
     {
-        $loans_response = $this->_getAsArray('/core/'.$patron['cat_username'].'/items');
+        $loans_response = $this->_getAsArray(
+            '/core/'.$patron['cat_username'].'/items'
+        );
         $holds = count($loans_response['doc']);
         for ($i = 0; $i < $holds; $i++) {
-            if ($loans_response['doc'][$i]['status'] == '3') { //status: held (the document is on loan by the patron)
+            if ($loans_response['doc'][$i]['status'] == '3') {
+                // status: held (the document is on loan by the patron)
                 // TODO: set renewable dynamically (not yet supported by PAIA)
                 $renewable = true;
                 $renew_details = $loans_response['doc'][$i]['item'];
@@ -198,13 +218,17 @@ class PAIA extends DAIA
 
                 // hook for retrieving alternative ItemId in case PAIA does not
                 // the needed id
-                $alternativeItemId = $this->_getAlternativeItemId($loans_response['doc'][$i]['item']);
+                $alternativeItemId = $this->_getAlternativeItemId(
+                    $loans_response['doc'][$i]['item']
+                );
 
-                if ($loans_response['doc'][$i]['status'] == '4') { //status: provided (the document is ready to be used by the patron)
+                if ($loans_response['doc'][$i]['status'] == '4') {
+                    // status: provided (the document is ready to be used by the
+                    // patron)
                     $message = "hold_available";
                 }
 
-                $transList[] = array(
+                $transList[] = [
                     'id'             => $alternativeItemId ? $alternativeItemId : $loans_response['doc'][$i]['item'],
                     'duedate'        => $loans_response['doc'][$i]['endtime'],
                     'dueTime'        => null,
@@ -227,7 +251,7 @@ class PAIA extends DAIA
                     'upc'            => null,
                     'callnumber'     => $loans_response['doc'][$i]['label'], //non-standard
                     'borrowingLocation' => $loans_response['doc'][$i]['storage'],
-                );
+                ];
             }
         }
         return $transList;
@@ -256,48 +280,50 @@ class PAIA extends DAIA
     public function renewMyItems($details)
     {
         $it = $details['details'];
-        $items = array();
+        $items = [];
         foreach ($it as $item) {
-            $items[] = array('item' => stripslashes($item));
+            $items[] = ['item' => stripslashes($item)];
         }
         $patron = $details['patron'];
-        $post_data = array("doc" => $items);
-        $array_response = $this->_postAsArray('/core/'.$patron['cat_username'].'/renew', $post_data);
+        $post_data = ["doc" => $items];
+        $array_response = $this->_postAsArray(
+            '/core/'.$patron['cat_username'].'/renew', $post_data
+        );
 
-        $details = array();
+        $details = [];
 
         if (array_key_exists('error', $array_response)) {
-            $details[] = array('success' => false, 'sysMessage' => $array_response['error_description']);
-        }
-        else {
+            $details[] = [
+                'success' => false,
+                'sysMessage' => $array_response['error_description']
+            ];
+        } else {
             $elements = $array_response['doc'];
             foreach ($elements as $element) {
                 $item_id = $element['item'];
                 if (array_key_exists('error', $element)) {
-                    $details[$item_id] = array(
+                    $details[$item_id] = [
                         'success' => false,
                         'sysMessage' => $element['error']
-                    );
-                }
-                elseif ($element['status'] == '3') {
-                    $details[$item_id] = array(
+                    ];
+                } elseif ($element['status'] == '3') {
+                    $details[$item_id] = [
                         'success'  => true,
                         'new_date' => $element['endtime'],
                         'item_id'  => 0,
                         'sysMessage' => 'Successfully renewed'
-                    );
-                }
-                else {
-                    $details[$item_id] = array(
+                    ];
+                } else {
+                    $details[$item_id] = [
                             'success'  => false,
                             'new_date' => $element['endtime'],
                             'item_id'  => 0,
                             'sysMessage' => 'Request rejected'
-                    );
+                    ];
                 }
             }
         }
-        $returnArray = array('blocks' => false, 'details' => $details);
+        $returnArray = ['blocks' => false, 'details' => $details];
         return $returnArray;
     }
 
@@ -306,80 +332,82 @@ class PAIA extends DAIA
      * each hold item. (optional, but required if you implement the
      * renewMyItems method) Not supported prior to VuFind 1.2
      *
-     * @param $checkOutDetails - One of the individual item arrays returned by
-     *                           the getMyTransactions method
-     * @return string - A string to use as the input form value for renewing
-     *                  each item; you can pass any data that is needed by your
-     *                  ILS to identify the transaction to renew – the output
-     *                  of this method will be used as part of the input to the
-     *                  renewMyItems method.
+     * @param array $checkOutDetails One of the individual item arrays returned by
+     *                               the getMyTransactions method
+     *
+     * @return string A string to use as the input form value for renewing
+     *                each item; you can pass any data that is needed by your
+     *                ILS to identify the transaction to renew – the output
+     *                of this method will be used as part of the input to the
+     *                renewMyItems method.
      */
-    public function getRenewDetails($checkOutDetails) {
+    public function getRenewDetails($checkOutDetails)
+    {
         return($checkOutDetails['renew_details']);
     }
 
     /**
      * This method cancels a list of holds for a specific patron.
      *
-     * @param array $cancelDetails - An associative array with two keys:
-     *      patron - array returned by the driver's patronLogin method
-     *      details - an array of strings returned by the driver's
-     *        getCancelHoldDetails method
+     * @param array $cancelDetails An associative array with two keys:
+     *      patron   array returned by the driver's patronLogin method
+     *      details  an array of strings returned by the driver's
+     *               getCancelHoldDetails method
      *
-     * @return array - Associative array containing:
-     *      count – The number of items successfully cancelled
-     *      items – Associative array where key matches one of the item_id
+     * @return array Associative array containing:
+     *      count   The number of items successfully cancelled
+     *      items   Associative array where key matches one of the item_id
      *              values returned by getMyHolds and the value is an
      *              associative array with these keys:
-     *                success – Boolean true or false
-     *                status – A status message from the language file
-     *                         (required – VuFind-specific message,
-     *                          subject to translation)
-     *                sysMessage - A system supplied failure message
+     *                success    Boolean true or false
+     *                status     A status message from the language file
+     *                           (required – VuFind-specific message,
+     *                           subject to translation)
+     *                sysMessage A system supplied failure message
      */
     public function cancelHolds($cancelDetails)
     {
         $it = $cancelDetails['details'];
-        $items = array();
+        $items = [];
         foreach ($it as $item) {
-            $items[] = array('item' => stripslashes($item));
+            $items[] = ['item' => stripslashes($item)];
         }
         $patron = $cancelDetails['patron'];
-        $post_data = array("doc" => $items);
+        $post_data = ["doc" => $items];
 
-        $array_response = $this->_postAsArray('/core/'.$patron['cat_username'].'/cancel', $post_data);
-        $details = array();
+        $array_response = $this->_postAsArray(
+            '/core/'.$patron['cat_username'].'/cancel', $post_data
+        );
+        $details = [];
 
         if (array_key_exists('error', $array_response)) {
-            $details[] = array(
+            $details[] = [
                 'success' => false,
                 'status' => $array_response['error_description'],
                 'sysMessage' => $array_response['error']
-            );
-        }
-        else {
+            ];
+        } else {
             $count = 0;
             $elements = $array_response['doc'];
             foreach ($elements as $element) {
                 $item_id = $element['item'];
                 if ($element['error']) {
-                    $details[$item_id] = array(
+                    $details[$item_id] = [
                         'success' => false,
                         'status' => $element['error'],
                         'sysMessage' => 'Cancel request rejected'
-                    );
-                }
-                else {
-                    $details[$item_id] = array(
+                    ];
+                } else {
+                    $details[$item_id] = [
                         'success' => true,
                         'status' => 'Success',
                         'sysMessage' => 'Successfully cancelled'
-                    );
+                    ];
                     $count++;
                 }
             }
         }
-        $returnArray = array('count' => $count, 'items' => $details);
+        $returnArray = ['count' => $count, 'items' => $details];
 
         return $returnArray;
     }
@@ -389,15 +417,17 @@ class PAIA extends DAIA
      * cancelling each hold item. (optional, but required if you
      * implement cancelHolds). Not supported prior to VuFind 1.2
      *
-     * @param $checkOutDetails - One of the individual item arrays returned by
-     *                           the getMyHolds method
-     * @return string - A string to use as the input form value for cancelling
-     *                  each hold item; you can pass any data that is needed
-     *                  by your ILS to identify the hold – the output of this
-     *                  method will be used as part of the input to the
-     *                  cancelHolds method.
+     * @param array $checkOutDetails One of the individual item arrays returned by
+     *                               the getMyHolds method
+     *
+     * @return string  A string to use as the input form value for cancelling
+     *                 each hold item; you can pass any data that is needed
+     *                 by your ILS to identify the hold – the output of this
+     *                 method will be used as part of the input to the
+     *                 cancelHolds method.
      */
-    public function getCancelHoldDetails($checkOutDetails) {
+    public function getCancelHoldDetails($checkOutDetails)
+    {
         return($checkOutDetails['cancel_details']);
     }
 
@@ -414,12 +444,14 @@ class PAIA extends DAIA
      */
     public function getMyFines($patron)
     {
-        $fees_response = $this->_getAsArray('/core/'.$patron['cat_username'].'/fees');
+        $fees_response = $this->_getAsArray(
+            '/core/'.$patron['cat_username'].'/fees'
+        );
 
-        $fineList = array();
+        $fineList = [];
         foreach ($fees_response['fee'] as $fine) {
             $alternativeItemId = $this->_getAlternativeItemId($fine['item']);
-            $fineList[] = array(
+            $fineList[] = [
                 "id"       => $alternativeItemId ? $alternativeItemId : $fine['item'],
                 "amount"   => $fine['amount'],
                 "checkout" => "",
@@ -428,11 +460,11 @@ class PAIA extends DAIA
                 "duedate"  => "",
                 "fine"     => $fine['feetype'],
                 //"balance"  => "",
-            );
+            ];
         }
-        $fineList[] = array(
+        $fineList[] = [
             "balance"  => $fees_response['amount']
-        );
+        ];
 
         return $fineList;
     }
@@ -450,22 +482,28 @@ class PAIA extends DAIA
      */
     public function getMyHolds($patron)
     {
-        $loans_response = $this->_getAsArray('/core/'.$patron['cat_username'].'/items');
+        $loans_response = $this->_getAsArray(
+            '/core/'.$patron['cat_username'].'/items'
+        );
         $holds = count($loans_response['doc']);
         for ($i = 0; $i < $holds; $i++) {
             // TODO: get date of creation from a reservation
             // this is not yet supported by PAIA
-            if ($loans_response['doc'][$i]['status'] == '1' || $loans_response['doc'][$i]['status'] == '2') {
-                // get PPN from PICA catalog since it is not part of PAIA
-                $alternativeItemId = $this->_getAlternativeItemId($loans_response['doc'][$i]['label']);
+            if ($loans_response['doc'][$i]['status'] == '1'
+                || $loans_response['doc'][$i]['status'] == '2'
+            ) {
+                $alternativeItemId = $this->_getAlternativeItemId(
+                    $loans_response['doc'][$i]['label']
+                );
                 $cancel_details = false;
                 if ($loans_response['doc'][$i]['cancancel'] == 1) {
                     $cancel_details = $loans_response['doc'][$i]['item'];
                 }
-                // As long as PAIA-Server does not set cancancel, always populate $cancel_details
+                // As long as PAIA-Server does not set cancancel, always populate
+                // $cancel_details
                 $cancel_details = $loans_response['doc'][$i]['item'];
 
-                $transList[] = array(
+                $transList[] = [
                     'type'           => $loans_response['doc'][$i]['status'],
                     'id'             => $alternativeItemId ? $alternativeItemId : $loans_response['doc'][$i]['item'],
                     'location'       => $loans_response['doc'][$i]['storage'],
@@ -485,7 +523,7 @@ class PAIA extends DAIA
                     'message'        => $loans_response['doc'][$i]['label'],
                     'callnumber'     => $loans_response['doc'][$i]['label'],
                     'cancel_details' => $cancel_details,
-                );
+                ];
             }
         }
         return $transList;
@@ -510,33 +548,33 @@ class PAIA extends DAIA
     {
         $item = $holdDetails['item_id'];
 
-        $items = array();
-        $items[] = array('item' => stripslashes($item));
+        $items = [];
+        $items[] = ['item' => stripslashes($item)];
         $patron = $holdDetails['patron'];
-        $post_data = array("doc" => $items);
-        $array_response = $this->_postAsArray('/core/'.$patron['cat_username'].'/request', $post_data);
-        $details = array();
+        $post_data = ["doc" => $items];
+        $array_response = $this->_postAsArray(
+            '/core/'.$patron['cat_username'].'/request', $post_data
+        );
+        $details = [];
 
         if (array_key_exists('error', $array_response)) {
-            $details = array(
+            $details = [
                 'success' => false,
                 'sysMessage' => $array_response['error_description']
-            );
-        }
-        else {
+            ];
+        } else {
             $elements = $array_response['doc'];
             foreach ($elements as $element) {
                 if (array_key_exists('error', $element)) {
-                    $details = array(
+                    $details = [
                         'success' => false,
                         'sysMessage' => $element['error']
-                    );
-                }
-                else {
-                    $details = array(
+                    ];
+                } else {
+                    $details = [
                         'success' => true,
                         'sysMessage' => 'Successfully requested'
-                    );
+                    ];
                 }
             }
         }
@@ -556,51 +594,50 @@ class PAIA extends DAIA
         // If you do not want or support such limits, just return an empty
         // array here and the limit control on the new item search screen
         // will disappear.
-        return array();
+        return [];
     }
 
     /**
      * Public Function which changes the password in the library system
      * (not supported prior to VuFind 2.4)
      *
-     * @param string $function The name of the feature to be checked
+     * @param array  $patron      Array with patron information.
+     * @param string $oldPassword Old Password.
+     * @param string $newPassword New Password.
      *
      * @return array An array with patron information.
-     * @access public
      */
     public function changePassword($patron, $oldPassword, $newPassword)
     {
-        $post_data = array(
+        $post_data = [
             "patron"       => $patron['username'],
             "username"     => $patron['firstname']." ".$patron['lastname'],
             "old_password" => $oldPassword,
-            "new_password" => $newPassword);
+            "new_password" => $newPassword];
 
         $array_response = $this->_postAsArray('/auth/change', $post_data);
 
-        $details = array();
+        $details = [];
 
         if (array_key_exists('error', $array_response)) {
-            $details = array(
+            $details = [
                 'success' => false,
                 'status' => $array_response['error'],
                 'sysMessage' => $array_response['error_description']
-            );
-        }
-        else {
+            ];
+        } else {
             $element = $array_response['patron'];
             if (array_key_exists('error', $element)) {
-                $details = array(
+                $details = [
                     'success' => false,
                     'status' => 'Failure changing password',
                     'sysMessage' => $element['error']
-                );
-            }
-            else {
-                $details = array(
+                ];
+            } else {
+                $details = [
                     'success' => true,
                     'status' => 'Successfully changed'
-                );
+                ];
             }
         }
         return $details;
@@ -613,7 +650,7 @@ class PAIA extends DAIA
      * holds / recall retrieval
      *
      * @param array $patron      Patron information returned by the patronLogin
-     * method.
+     *                           method.
      * @param array $holdDetails Optional array, only passed in when getting a list
      * in the context of placing a hold; contains most of the same values passed to
      * placeHold, minus the patron data.  May be used to limit the pickup options
@@ -628,7 +665,7 @@ class PAIA extends DAIA
     public function getPickUpLocations($patron = false, $holdDetails = null)
     {
         // How to get valid PickupLocations for a PICA LBS?
-        return array();
+        return [];
     }
 
     /**
@@ -649,51 +686,98 @@ class PAIA extends DAIA
         return false;
     }
 
-
     // private functions to connect to PAIA
 
     /**
-     * post something to a foreign host
+     * Post something to a foreign host
      *
      * @param string $file         POST target URL
      * @param string $data_to_send POST data
+     * @param string $access_token PAIA access token for current session
      *
-     * @return string              POST response
+     * @return string POST response
      * @access private
+     * @throws \Exception
      */
     private function _postit($file, $data_to_send, $access_token = null)
     {
         // json-encoding
         $postData = stripslashes(json_encode($data_to_send));
 
-        $http = curl_init();
-        curl_setopt($http, CURLOPT_URL, $this->paiaURL . $file);
-        curl_setopt($http, CURLOPT_POST, true);
-        curl_setopt($http, CURLOPT_POSTFIELDS, $postData);
+        $http_headers = [];
         if (isset($access_token)) {
-            curl_setopt($http, CURLOPT_HTTPHEADER, array('Content-type: application/json; charset=UTF-8', 'Authorization: Bearer ' .$access_token));
-        } else {
-            curl_setopt($http, CURLOPT_HTTPHEADER, array('Content-type: application/json; charset=UTF-8'));
+            $http_headers['Authorization'] = 'Bearer ' .$access_token;
         }
-        curl_setopt($http, CURLOPT_RETURNTRANSFER, true);
-        $data = curl_exec($http);
 
-        curl_close($http);
+        try {
+            $result = $this->httpService->post(
+                $this->paiaURL . $file,
+                $postData,
+                'application/json; charset=UTF-8',
+                null,
+                $http_headers
+            );
+        } catch (\Exception $e) {
+            throw new ILSException($e->getMessage());
+        }
 
-        return $data;
+        if (!$result->isSuccess()) {
+            $this->debug(
+                'HTTP status ' . $result->getStatusCode() .
+                ' received'
+            );
+
+            // return false as request failed
+            return false;
+        }
+        return ($result->getBody());
     }
 
+    /**
+     * GET data from foreign host
+     *
+     * @param string $file         GET target URL
+     * @param string $access_token PAIA access token for current session
+     *
+     * @return bool|string
+     * @throws ILSException
+     */
     private function _getit($file, $access_token)
     {
-        $http = curl_init();
-        curl_setopt($http, CURLOPT_URL, $this->paiaURL . $file);
-        curl_setopt($http, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' .$access_token, 'Content-type: application/json; charset=UTF-8'));
-        curl_setopt($http, CURLOPT_RETURNTRANSFER, true);
-        $data = curl_exec($http);
-        curl_close($http);
-        return $data;
+        $http_headers = [
+            'Authorization' => 'Bearer ' .$access_token,
+            'Content-type' => 'application/json; charset=UTF-8',
+            ];
+
+        try {
+            $result = $this->httpService->get(
+                $this->paiaURL . $file,
+                [], null, $http_headers
+            );
+        } catch (\Exception $e) {
+            throw new ILSException($e->getMessage());
+        }
+
+        if (!$result->isSuccess()) {
+            $this->debug(
+                'HTTP status ' . $result->getStatusCode() .
+                ' received'
+            );
+
+            // return false as request failed
+            return false;
+        }
+        return ($result->getBody());
     }
 
+    /**
+     * Retrieve file at given URL and return it as json_decoded array
+     *
+     * @param string $file GET target URL
+     *
+     * @return array|mixed
+     * @throws ILSException
+     */
     private function _getAsArray($file)
     {
         $pure_response = $this->_getit($file, $_SESSION['paiaToken']);
@@ -701,16 +785,26 @@ class PAIA extends DAIA
         $json_response = substr($pure_response, $json_start);
         $loans_response = json_decode($json_response, true);
 
-        // if the login auth token is invalid, renew it (this is possible unless the session is expired)
+        // if the login auth token is invalid, renew it (this is possible unless the
+        // session is expired)
         if (isset($loans_response['error']) && $loans_response['code'] == '401') {
             //TODO: handling of expired auth token
             $this->debug("Auth token invalid - returning empty array");
-            return array();
+            return [];
         }
 
         return $loans_response;
     }
 
+    /**
+     * Post something at given URL and return it as json_decoded array
+     *
+     * @param string $file POST target URL
+     * @param array  $data POST data
+     *
+     * @return array|mixed
+     * @throws ILSException
+     */
     private function _postAsArray($file, $data)
     {
         $pure_response = $this->_postit($file, $data, $_SESSION['paiaToken']);
@@ -718,32 +812,36 @@ class PAIA extends DAIA
         $json_response = substr($pure_response, $json_start);
         $loans_response = json_decode($json_response, true);
 
-        // if the login auth token is invalid, renew it (this is possible unless the session is expired)
+        // if the login auth token is invalid, renew it (this is possible unless the
+        // session is expired)
         if ($loans_response['error'] && $loans_response['code'] == '401') {
             //TODO: handling of expired auth token
             $this->debug("Auth token invalid - returning empty array");
-            return array();
+            return [];
         }
 
         return $loans_response;
     }
 
     /**
-     * private authentication function
-     * use PAIA for authentication
+     * Private authentication function - use PAIA for authentication
+     *
+     * @param string $username Username
+     * @param string $password Password
      *
      * @return mixed Associative array of patron info on successful login,
      * null on unsuccessful login, PEAR_Error on error.
      * @access private
+     * @throws ILSException
      */
     private function _paiaLogin($username, $password)
     {
-        $post_data = array(
-                            "username" => $username,
-                            "password" => $password,
-                            "grant_type" => "password",
-                            "scope" => "read_patron read_fees read_items write_items change_password"
-                          );
+        $post_data = [
+            "username" => $username,
+            "password" => $password,
+            "grant_type" => "password",
+            "scope" => "read_patron read_fees read_items write_items change_password"
+        ];
         $login_response = $this->_postit('/auth/login', $post_data);
 
         $json_start = strpos($login_response, '{');
@@ -757,22 +855,25 @@ class PAIA extends DAIA
                 $patron['cat_username'] = $array_response['patron'];
                 $patron['cat_password'] = $password;
                 return $patron;
+            } else {
+                throw new ILSException(
+                    'Login credentials accepted, but got no patron ID?!?'
+                );
             }
-            else {
-                throw new ILSException('Login credentials accepted, but got no patron ID?!?');
-            }
+        } else if (array_key_exists('error', $array_response)) {
+            throw new ILSException(
+                $array_response['error'].": ".$array_response['error_description']
+            );
+        } else {
+            throw new ILSException('Unknown error! Access denied.');
         }
-        else if (array_key_exists('error', $array_response)) {
-            throw new ILSException($array_response['error'].": ".$array_response['error_description']);
-        }
-        else throw new ILSException('Unknown error! Access denied.');
     }
 
     /**
      * Support method for _paiaLogin() -- load user details into session and return
      * array of basic user data.
      *
-     * @param array $patron                    patron ID
+     * @param array $patron patron ID
      *
      * @return array
      * @access private
@@ -784,19 +885,30 @@ class PAIA extends DAIA
         $json_response = substr($pure_response, $json_start);
         $user_response = json_decode($json_response, true);
 
-        // if the login auth token is invalid, renew it (this is possible unless the session is expired)
+        // if the login auth token is invalid, renew it (this is possible unless the
+        // session is expired)
         if (isset($user_response['error']) && $user_response['code'] == '401') {
             //TODO: handling of expired auth token
             $this->debug("Auth token invalid - returning empty userdetails");
-            return array();
+            return [];
         }
 
         $username = $user_response['name'];
-        $nameArr = explode(',', $username);
-        $firstname = $nameArr[1];
-        $lastname = $nameArr[0];
+        if (count(explode(',', $username)) == 2) {
+            $nameArr = explode(',', $username);
+            $firstname = $nameArr[1];
+            $lastname = $nameArr[0];
+        } else {
+            $nameArr = explode(' ', $username);
+            $firstname = $nameArr[0];
+            $lastname = '';
+            array_shift($nameArr);
+            foreach ($nameArr as $value) {
+                $lastname .= $value;
+            }
+        }
 
-        $user = array();
+        $user = [];
         $user['id'] = $patron;
         $user['firstname'] = $firstname;
         $user['lastname'] = $lastname;
@@ -808,15 +920,16 @@ class PAIA extends DAIA
     }
 
     /**
-     * Support method to retrieve needed ItemId in case PAIA-resposne does not
+     * Support method to retrieve needed ItemId in case PAIA-response does not
      * contain it
      *
-     * @param string $id                    itemId
+     * @param string $id itemId
      *
      * @return string $id
      * @access private
      */
-    private function _getAlternativeItemId($id) {
+    private function _getAlternativeItemId($id)
+    {
         return $id;
     }
 
@@ -838,5 +951,43 @@ class PAIA extends DAIA
         }
         return $functionConfig;
     }
+
+    /**
+     * Set the logger
+     *
+     * @param LoggerInterface $logger Logger to use.
+     *
+     * @return void
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Log a debug message.
+     *
+     * @param string $msg Message to log.
+     *
+     * @return void
+     */
+    protected function debug($msg)
+    {
+        if ($this->logger) {
+            $this->logger->debug(get_class($this) . ": $msg");
+        }
+    }
+
+    /**
+     * Set the HTTP service to be used for HTTP requests.
+     *
+     * @param HttpServiceInterface $service HTTP service
+     *
+     * @return void
+     */
+    public function setHttpService(\VuFindHttp\HttpServiceInterface $service)
+    {
+        $this->httpService = $service;
+    }
+
 }
-?>
