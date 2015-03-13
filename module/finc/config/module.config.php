@@ -18,7 +18,13 @@ $config = array(
                     'solrdefault' => 'finc\RecordDriver\Factory::getSolrDefault',
                     'solrmarc' => 'finc\RecordDriver\Factory::getSolrMarc',
                     'solrmarcremote' => 'finc\RecordDriver\Factory::getSolrMarcRemote',
-                    'solrmarcremotefinc' => 'finc\RecordDriver\Factory::getSolrMarcRemoteFinc'
+                    'solrmarcremotefinc' => 'finc\RecordDriver\Factory::getSolrMarcRemoteFinc',
+                    'solrai' => 'finc\RecordDriver\Factory::getSolrAI',
+                ),
+            ),
+            'resolver_driver' => array(
+                'factories' => array(
+                    'redi' => 'finc\Resolver\Driver\Factory::getRedi',
                 ),
             ),
         ),
@@ -62,6 +68,16 @@ $config = array(
                     'Preview' => 'preview',
                     'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
                     'Details' => 'StaffViewMARC',
+				),
+                'defaultTab' => null,
+            ),
+            'finc\RecordDriver\SolrAI' => array(
+                'tabs' => array (
+                    'Holdings' => 'HoldingsILS', 'Description' => 'Description',
+                    'TOC' => 'TOC', 'UserComments' => 'UserComments',
+                    'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
+                    'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
+                    'Details' => 'StaffViewArray',
                 ),
                 'defaultTab' => null,
             ),

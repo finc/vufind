@@ -100,7 +100,6 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * @deprecated      Should also be possible to be dropped (@see getLocalFormat())
      *
      * @return array
-     * @access protected
      */
     public function getFormat()
     {
@@ -113,7 +112,6 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * format_{indexExtension}, format otherwise.
      *
      * @return array        Array with formats associated with the record.
-     * @access protected
      */
     public function getFormats()
     {
@@ -144,7 +142,6 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * @todo                Should be moved out of RecordDriver (Controller/View?)
      *
      * @return array
-     * @access protected
      */
 /*    protected function getFormatIcon()
     {
@@ -186,9 +183,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get the GND of an author.
      *
      * @return array
-     * @access protected
      */
-    protected function getAuthorId()
+    public function getAuthorId()
     {
         return isset($this->fields['author_id']) ?
             $this->fields['author_id'] : array();
@@ -200,10 +196,9 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * @todo    Check whether static call of getCorporateAuthor is necessary
      *
      * @return array
-     * @access protected
      * @link https://intern.finc.info/issues/1866
      */
-    protected function getCombinedAuthors()
+    public function getCombinedAuthors()
     {
         $retval = array();
 
@@ -233,9 +228,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get the original author of the record.
      *
      * @return string
-     * @access protected
      */
-    protected function getPrimaryAuthorOrig()
+    public function getPrimaryAuthorOrig()
     {
         return isset($this->fields['author_orig']) ?
             $this->_filterAuthorDates($this->fields['author_orig']) : '';
@@ -245,10 +239,9 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get the main author of the record.
      *
      * @return string
-     * @access protected
      * @deprecated
      */
-    protected function getPrimaryAuthorRaw()
+    public function getPrimaryAuthorRaw()
     {
         return isset($this->fields['author']) ?
             $this->_removeAuthorDates($this->fields['author']) : '';
@@ -270,9 +263,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get the secondary corporate authors (if any) for the record.
      *
      * @return array
-     * @access protected
      */
-    protected function getCorporateSecondaryAuthors()
+    public function getCorporateSecondaryAuthors()
     {
         return isset($this->fields['author_corp2']) ?
             $this->fields['author_corp2'] : array();
@@ -282,9 +274,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get an array of all ISMNs associated with the record (may be empty).
      *
      * @return array
-     * @access protected
      */
-    protected function getISMNs()
+    public function getISMNs()
     {
         return isset($this->fields['ismn']) && is_array($this->fields['ismn']) ?
             $this->fields['ismn'] : array();
@@ -294,9 +285,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get an array of newer titles for the record.
      *
      * @return array
-     * @access protected
      */
-    protected function getNewTitles()
+    public function getNewTitles()
     {
         return isset($this->fields['title_new']) ?
             $this->fields['title_new'] : array();
@@ -310,11 +300,10 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * @todo                    1. Check if this method is still needed
      * @todo                    2. Refactor Solr-Query to be compatible with VuFind2
      *
-     * @param array $rids       Array of record ids to test.
+     * @param array $rids Array of record ids to test.
      *
-     * @return int mixed        If success return at least one finc id otherwise null.
-     * @access protected
-     * @deprecated              Not used.
+     * @return int mixed  If success return at least one finc id otherwise null.
+     * @deprecated        Not used.
      */
     protected function addFincIDToRecord ( $array ) {
 /*
@@ -390,10 +379,9 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get percentage of relevance of a title. First implementaion for TUBAF.
      *
      * @return float        Percentage of Score / Maximum Score rounded by 5.
-     * @access protected
      * @link https://intern.finc.info/issues/1908
      */
-    protected function getRelevance() {
+    public function getRelevance() {
 
         $score = isset($this->fields['score']) ?  $this->fields['score'] : 0;
         $maxScore = isset($this->fields['score_maximum']) ? $this->fields['score_maximum'] : 0;
@@ -408,9 +396,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get RVK classifcation number from Solr index.
      *
      * @return string
-     * @access protected
      */
-    protected function getRvk() {
+    public function getRvk() {
         return isset($this->fields['rvk_facet']) ?
             $this->fields['rvk_facet'] : '';
     }
@@ -421,7 +408,6 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * @todo    refactor to a more meaningful name?
      *
      * @return string
-     * @access protected
      */
     public function getRID()
     {
@@ -433,9 +419,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get the original title of the record.
      *
      * @return string
-     * @access protected
      */
-    protected function getTitleOrig()
+    public function getTitleOrig()
     {
         return isset($this->fields['title_orig']) ?
             $this->fields['title_orig'] : '';
@@ -445,9 +430,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get the GND of topic.
      *
      * @return array
-     * @access protected
      */
-    protected function getTopicId()
+    public function getTopicId()
     {
         return isset($this->fields['topic_id']) ?
             $this->fields['topic_id'] : array();
@@ -457,9 +441,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get alternatives series titles as array.
      *
      * @return array
-     * @access protected
      */
-    protected function getSeriesAlternative()
+    public function getSeriesAlternative()
     {
         if (isset($this->fields['series2']) && !empty($this->fields['series2'])) {
             return $this->fields['series2'];
@@ -471,9 +454,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get alternatives series titles as array.
      *
      * @return array
-     * @access protected
      */
-    protected function getSeriesOrig()
+    public function getSeriesOrig()
     {
         if (isset($this->fields['series_orig']) && !empty($this->fields['series_orig'])) {
             return $this->fields['series_orig'];
@@ -485,11 +467,11 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Filter author data for author year of birth and death
      * to give a better mark up.
      *
-     * @param string authordata
+     * @param string $authordata
+     *
      * @return strings
-     * @access protected
      */
-    protected function _filterAuthorDates( $authordata )
+    private function _filterAuthorDates( $authordata )
     {
         if (preg_match('/^(\s|.*)(\d{4})\s?-?\s?(\d{4})?$/Uu',$authordata, $match)) {
             return (isset($match[3]))
@@ -505,10 +487,9 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * @param string authordata
      *
      * @return strings
-     * @access protected
      * @deprecated
      */
-    protected function _removeAuthorDates( $authordata )
+    private function _removeAuthorDates( $authordata )
     {
         if (preg_match('/^(\s|.*)\s(fl.\s|d.\s|ca.\s)*\s?(\d{4})\??(\sor\s\d\d?)?\s?(-|–)?\s?(ca.\s|after\s)?(\d{1,4})?(.|,)?$/Uu',$authordata, $match)) {
             return (isset($match[1])) ? $match[1] : $authordata;

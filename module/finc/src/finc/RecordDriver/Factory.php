@@ -64,6 +64,22 @@ class Factory
     }
 
     /**
+     * Factory for SolrAI record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrAI
+     */
+    public static function getSolrAI(ServiceManager $sm)
+    {
+        return new SolrAI(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('SolrAI'),
+            null
+        );
+    }
+
+    /**
      * Factory for SolrMarcRemoteFinc record driver.
      *
      * @param ServiceManager $sm Service manager.
