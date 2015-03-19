@@ -37,19 +37,19 @@ use Zend\ServiceManager\ServiceManager;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:hierarchy_components Wiki
  */
-class Factory extends \VuFind\ILS\Driver\Factory
+class Factory
 {
 
     /**
-     * Factory for NoILS driver.
+     * Factory for FincILS driver.
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return NoILS
+     * @return FincILS
      */
-    public static function getFincDAIA(ServiceManager $sm)
+    public static function getFincILS(ServiceManager $sm)
     {
-        return new FincDAIA($sm->getServiceLocator()->get('VuFind\RecordLoader'));
+        return new FincILS($sm->getServiceLocator()->get('VuFind\RecordLoader'));
     }
 
 }

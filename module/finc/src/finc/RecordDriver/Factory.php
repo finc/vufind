@@ -38,7 +38,7 @@ use Zend\ServiceManager\ServiceManager;
  * @link     http://vufind.org/wiki/vufind2
  * @codeCoverageIgnore
  */
-class Factory extends \VuFind\RecordDriver\Factory
+class Factory
 {
 
     /**
