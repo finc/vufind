@@ -335,29 +335,6 @@ class SolrAI extends SolrDefault
     }
 
     /**
-     * Return an associative array of URLs associated with this record (key = URL,
-     * value = description).
-     *
-     * @return array
-     * @access protected
-     */
-    public function getURLs()
-    {
-        $rediUrl = $this->mainConfig->OpenURL->rediUrl;
-        if (isset($rediUrl)) {
-            $urls = array();
-            $url = sprintf($rediUrl, $this->getOpenURL());
-            $filter = function ($url) {
-                return array('url' => $url, 'desc' => (strlen($url) > 200) ?
-                    $this->translate('full text') : $this->translate($url));
-            };
-            $urls[] = $url;
-            return array_map($filter, $urls);
-        }
-        return array();
-    }
-
-    /**
      * Return the jtitle field of ai records
      *
      * @return array   Return jtitle fields.
