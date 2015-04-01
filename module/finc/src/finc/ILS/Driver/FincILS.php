@@ -70,13 +70,23 @@ class FincILS extends PAIA implements \Zend\Log\LoggerAwareInterface
     protected $recordLoader;
 
     /**
+     * Main Config
+     *
+     * @var null|\Zend\Config\Config
+     */
+    protected $mainConfig;
+
+    /**
      * Constructor
      *
-     * @param \VuFind\Record\Loader $loader Record loader
+     * @param \VuFind\Record\Loader $loader     Record loader
+     * @param \Zend\Config\Config   $mainConfig VuFind main configuration (omit for
+     * built-in defaults)
      */
-    public function __construct(\VuFind\Record\Loader $loader)
+    public function __construct(\VuFind\Record\Loader $loader, $mainConfig = null)
     {
         $this->recordLoader = $loader;
+        $this->mainConfig = $mainConfig;
     }
 
     /**
@@ -108,13 +118,11 @@ class FincILS extends PAIA implements \Zend\Log\LoggerAwareInterface
 
             // get ISIL from config if ILS-specific recordId is barcode for
             // interaction with ILS
-
-            // get the ILS-specific identifier
-            if (!isset($this->config['Global']['ISIL'])) {
-                $this->debug("No ISIL for ILS-driver configured.");
+            if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
+                $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
                 $this->isil = '';
             } else {
-                $this->isil = $this->config['Global']['ISIL'];
+                $this->isil = $this->mainConfig['InstitutionInfo']['isil'];
             }
         } else {
             // set the ILS-specific recordId for interaction with ILS
@@ -131,13 +139,11 @@ class FincILS extends PAIA implements \Zend\Log\LoggerAwareInterface
 
             // get ISIL from config if ILS-specific recordId is barcode for
             // interaction with ILS
-
-            // get the ILS-specific identifier
-            if (!isset($this->config['DAIA']['ISIL'])) {
-                $this->debug("No ISIL for ILS-driver configured.");
+            if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
+                $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
                 $this->isil = '';
             } else {
-                $this->isil = $this->config['DAIA']['ISIL'];
+                $this->isil = $this->mainConfig['InstitutionInfo']['isil'];
             }
         }
     }

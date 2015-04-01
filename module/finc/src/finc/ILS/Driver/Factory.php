@@ -49,7 +49,10 @@ class Factory
      */
     public static function getFincILS(ServiceManager $sm)
     {
-        return new FincILS($sm->getServiceLocator()->get('VuFind\RecordLoader'));
+        return new FincILS(
+            $sm->getServiceLocator()->get('VuFind\RecordLoader'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        );
     }
 
 }
