@@ -168,18 +168,22 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
                         if ($address) {
                             $address = $address->getData();
 
+                            $tmpArr = array();
                             // Is there a description?  If not, just use the URL itself.
-                            foreach (array('3', 'y', 'z', 'x') as $current) {
+                            foreach (array('y', '3', 'z', 'x') as $current) {
                                 $desc = $url->getSubfield($current);
                                 if ($desc) {
-                                    break;
+                                    $desc = $desc->getData();
+                                    $tmpArr[] = $desc;
                                 }
                             }
-                            if ($desc) {
-                                $desc = $desc->getData();
-                            } else {
+                            $tmpArr = array_unique($tmpArr);
+                            $desc = implode(', ', $tmpArr);
+
+                            if (empty($desc)) {
                                 $desc = $address;
                             }
+
 
                             // If url doesn't exist as key so far write to return variable.
                             if (!in_array(array('url' => $address, 'desc' => $desc), $retVal)) {
