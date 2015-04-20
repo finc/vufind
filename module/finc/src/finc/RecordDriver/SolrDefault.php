@@ -282,6 +282,16 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
     }
 
     /**
+     * Get the eISSN from a record.
+     *
+     * @return array
+     */
+    public function getEISSNs()
+    {
+        return [];
+    }
+
+    /**
      * Get an array of newer titles for the record.
      *
      * @return array
