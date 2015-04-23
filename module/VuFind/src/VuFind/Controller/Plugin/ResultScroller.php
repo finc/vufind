@@ -80,7 +80,7 @@ class ResultScroller extends AbstractPlugin
     {
         // Do nothing if disabled:
         if (!$this->enabled) {
-            return;
+            return false;
         }
 
         // Save the details of this search in the session
@@ -171,9 +171,11 @@ class ResultScroller extends AbstractPlugin
      */
     protected function fetchNextPage($retVal, $lastSearch, $pos)
     {
-        // if the next page has not been fetched, then
-        // fetch the next page
-        if ($this->data->nextIds == null) {
+        // if the current page is NOT the last page, and the next page has not been
+        // fetched, then fetch the next page
+        if ($this->data->page < ceil($this->data->total / $this->data->limit)
+            && $this->data->nextIds == null
+        ) {
             $this->data->nextIds = $this->fetchPage(
                 $lastSearch, $this->data->page + 1
             );
@@ -297,10 +299,10 @@ class ResultScroller extends AbstractPlugin
      */
     public function getScrollData($driver)
     {
-        $retVal = array(
-            'previousRecord'=>null, 'nextRecord'=>null,
-            'currentPosition'=>null, 'resultTotal'=>null
-        );
+        $retVal = [
+            'previousRecord' => null, 'nextRecord' => null,
+            'currentPosition' => null, 'resultTotal' => null
+        ];
 
         // Do nothing if disabled or data missing:
         if ($this->enabled
@@ -389,7 +391,7 @@ class ResultScroller extends AbstractPlugin
             $searchObject->performAndProcessSearch();
         }
 
-        $retVal = array();
+        $retVal = [];
         foreach ($searchObject->getResults() as $record) {
             $retVal[] = $record->getResourceSource() . '|' . $record->getUniqueId();
         }

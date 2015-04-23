@@ -30,6 +30,7 @@ namespace VuFind\ILS\Driver;
 use SoapClient, SoapFault, SoapHeader, VuFind\Exception\ILS as ILSException,
     Zend\ServiceManager\ServiceLocatorAwareInterface,
     Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Log\LoggerAwareInterface;
 
 /**
  * Symphony Web Services (symws) ILS Driver
@@ -41,9 +42,12 @@ use SoapClient, SoapFault, SoapHeader, VuFind\Exception\ILS as ILSException,
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
-
-class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
+class Symphony extends AbstractBase
+    implements ServiceLocatorAwareInterface, LoggerAwareInterface
 {
+    use \VuFind\Log\LoggerAwareTrait;
+    use \Zend\ServiceManager\ServiceLocatorAwareTrait;
+
     /**
      * Cache for policy information
      *
@@ -59,13 +63,6 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     protected $policies;
 
     /**
-     * Service locator
-     *
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
-
-    /**
      * Initialize the driver.
      *
      * Validate configuration and perform all resource-intensive tasks needed to
@@ -77,49 +74,50 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     public function init()
     {
         // Merge in defaults.
-        $this->config += array(
-            'WebServices' => array(),
-            'PolicyCache' => array(),
-            'LibraryFilter' => array(),
-            '999Holdings' => array(),
-            'Behaviors' => array(),
-        );
+        $this->config += [
+            'WebServices' => [],
+            'PolicyCache' => [],
+            'LibraryFilter' => [],
+            'MarcHoldings' => [],
+            '999Holdings' => [],
+            'Behaviors' => [],
+        ];
 
-        $this->config['WebServices'] += array(
+        $this->config['WebServices'] += [
             'clientID' => 'VuFind',
             'baseURL' => 'http://localhost:8080/symws',
-            'soapOptions' => array(),
-        );
+            'soapOptions' => [],
+        ];
 
-        $this->config['PolicyCache'] += array(
+        $this->config['PolicyCache'] += [
             'backend' => 'file',
-            'backendOptions' => array(),
-            'frontendOptions' => array(),
-        );
+            'backendOptions' => [],
+            'frontendOptions' => [],
+        ];
 
-        $this->config['PolicyCache']['frontendOptions'] += array(
+        $this->config['PolicyCache']['frontendOptions'] += [
             'automatic_serialization' => true,
             'lifetime' => null,
-        );
+        ];
 
-        $this->config['LibraryFilter'] += array(
-            'include_only' => array(),
-            'exclude' => array(),
-        );
+        $this->config['LibraryFilter'] += [
+            'include_only' => [],
+            'exclude' => [],
+        ];
 
-        $this->config['999Holdings'] += array(
+        $this->config['999Holdings'] += [
             'entry_number' => 999,
             'mode' => 'off', // also off, failover
-        );
+        ];
 
-        $this->config['Behaviors'] += array(
+        $this->config['Behaviors'] += [
             'showBaseCallNumber' => true,
             'showAccountLogin' => true,
             'showStaffNotes' => true,
             'showFeeType' => 'ALL_FEES',
             'usernameField' => 'userID',
             'userProfileGroupField' => 'USER_PROFILE_ID'
-        );
+        ];
 
         // Initialize cache manager.
         if (isset($configArray['PolicyCache']['type'])) {
@@ -135,7 +133,9 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     /**
      * Return a SoapClient for the specified SymWS service.
      *
-     * This allows SoapClients to be shared and lazily instantiated.
+     * SoapClient instantiation fetches and parses remote files,
+     * so this method instantiates SoapClients lazily and keeps them around
+     * so that they can be reused for multiple requests.
      *
      * @param string $service The name of the SymWS service
      *
@@ -143,12 +143,12 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      */
     protected function getSoapClient($service)
     {
-        static $soapClients = array();
+        static $soapClients = [];
 
         if (!isset($soapClients[$service])) {
             try {
                 $soapClients[$service] = new SoapClient(
-                    $this->config['WebServices']['baseURL']."/soap/$service?wsdl",
+                    $this->config['WebServices']['baseURL'] . "/soap/$service?wsdl",
                     $this->config['WebServices']['soapOptions']
                 );
             } catch (SoapFault $e) {
@@ -171,16 +171,16 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     /**
      * Return a SoapHeader for the specified login and password.
      *
-     * @param mixed   $login    The login account name if logging in, otherwise null
-     * @param mixed   $password The login password if logging in, otherwise null
-     * @param boolean $reset    Whether or not the session token should be reset
+     * @param mixed $login    The login account name if logging in, otherwise null
+     * @param mixed $password The login password if logging in, otherwise null
+     * @param bool  $reset    Whether or not the session token should be reset
      *
      * @return object The SoapHeader object
      */
     protected function getSoapHeader($login = null, $password = null,
         $reset = false
     ) {
-        $data = array('clientID' => $this->config['WebServices']['clientID']);
+        $data = ['clientID' => $this->config['WebServices']['clientID']];
         if (!is_null($login)) {
             $data['sessionToken']
                 = $this->getSessionToken($login, $password, $reset);
@@ -193,34 +193,43 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Return or create the session token for current session.
+     * Return a SymWS session token for given credentials.
      *
-     * @param string  $login    The login account name
-     * @param string  $password The login password
-     * @param boolean $reset    If true, replace the currently cached token
+     * To avoid needing to repeatedly log in the same user,
+     * cache acquired session tokens by the credentials provided.
+     * If the cached session token is expired or otherwise defective,
+     * the caller can use the $reset parameter.
      *
-     * @return string The session token for the active session
+     * @param string $login    The login account name
+     * @param string $password The login password, or null for no password
+     * @param bool   $reset    If true, replace any currently cached token
+     *
+     * @return string The session token
      */
     protected function getSessionToken($login, $password, $reset = false)
     {
-        static $sessionTokens = array();
+        static $sessionTokens = [];
 
+        // If we keyed only by $login, we might mistakenly retrieve a valid
+        // session token when provided with an invalid password.
+        // We hash the credentials to reduce the potential for
+        // incompatibilities with key limitations of whatever cache backend
+        // an administrator might elect to use for session tokens,
+        // and though more expensive, we use a secure hash because
+        // what we're hashing contains a password.
         $key = hash('sha256', "$login:$password");
 
         if (!isset($sessionTokens[$key]) || $reset) {
             if (!$reset && $token = $_SESSION['symws']['session'][$key]) {
                 $sessionTokens[$key] = $token;
             } else {
-                $params = array('login' => $login);
-
+                $params = ['login' => $login];
                 if (isset($password)) {
                     $params['password'] = $password;
                 }
 
                 $response = $this->makeRequest('security', 'loginUser', $params);
-
                 $sessionTokens[$key] = $response->sessionToken;
-
                 $_SESSION['symws']['session'] = $sessionTokens;
             }
         }
@@ -234,31 +243,31 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      * @param string $service    the SymWS service name
      * @param string $operation  the SymWS operation name
      * @param array  $parameters the request parameters for the operation
-     * @param array  $options    An associative array of additional options,
-     *                           with the following elements:
-     *                           - 'login': (optional) login to use for
-     *                                      (re)establishing a SymWS session
-     *                           - 'password': (optional) password to use for
-     *                                         (re)establishing a SymWS session
-     *                           - 'header': SoapHeader to use, skipping
-     *                                       automatic session management
+     * @param array  $options    An associative array of additional options:
+     *                           - 'login': login to use for the operation;
+     *                                      omit for configured default
+     *                                      credentials or anonymous
+     *                           - 'password': password associated with login;
+     *                                         omit for no password
+     *                           - 'header': SoapHeader to use for the request;
+     *                                       omit to handle automatically
      *
      * @return mixed the result of the SOAP call
      */
-    protected function makeRequest($service, $operation, $parameters = array(),
-        $options = array()
+    protected function makeRequest($service, $operation, $parameters = [],
+        $options = []
     ) {
-        /* If a header was supplied, just use it, skipping everything else. */
+        // If provided, use the SoapHeader and skip the rest of makeRequest().
         if (isset($options['header'])) {
             return $this->getSoapClient($service)->soapCall(
                 $operation,
                 $parameters,
                 null,
-                array($options['header'])
+                [$options['header']]
             );
         }
 
-        /* Determine what credentials to use for the SymWS session, if any.
+        /* Determine what credentials, if any, to use for the SymWS request.
          *
          * If a login and password are specified in $options, use them.
          * If not, for any operation not exempted from SymWS'
@@ -273,7 +282,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
         } elseif (isset($options['WebServices']['login'])
             && !in_array(
                 $operation,
-                array('isRestrictedAccess', 'license', 'loginUser', 'version')
+                ['isRestrictedAccess', 'license', 'loginUser', 'version']
             )
         ) {
             $login    = $this->config['WebServices']['login'];
@@ -285,13 +294,8 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
             $password = null;
         }
 
-        /* Attempt the request.
-         *
-         * If it turns out the SoapHeader's session has expired,
-         * get a new one and try again.
-         */
+        // Attempt the request.
         $soapClient = $this->getSoapClient($service);
-
         try {
             $header = $this->getSoapHeader($login, $password);
             $soapClient->__setSoapHeaders($header);
@@ -300,7 +304,10 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
             $timeoutException = 'ns0:com.sirsidynix.symws.service.'
                 . 'exceptions.SecurityServiceException.sessionTimedOut';
             if ($e->faultcode == $timeoutException) {
+                // The SoapHeader's session has expired. Tell
+                // getSoapHeader() to have a new one established.
                 $header = $this->getSoapHeader($login, $password, true);
+                // Try the request again with the new SoapHeader.
                 $soapClient->__setSoapHeaders($header);
                 return $soapClient->$operation($parameters);
             } elseif ($operation == 'logoutUser') {
@@ -323,13 +330,13 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      * called when an error happens that might be correctable by upgrading
      * SymWS. In such a case it will produce a potentially more helpful error
      * message than the original error would have.
-     * 
+     *
      * @throws Exception if the SymWS version is too old
      * @return void
      */
     protected function checkSymwsVersion()
     {
-        $resp = $this->makeRequest('standard', 'version', array());
+        $resp = $this->makeRequest('standard', 'version', []);
         foreach ($resp->version as $v) {
             if ($v->product == 'SYM-WS') {
                 if (version_compare($v->version, 'v3.2', '<')) {
@@ -354,8 +361,8 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      */
     protected function getStatuses999Holdings($ids)
     {
-        $items   = array();
-        $marcMap = array(
+        $items   = [];
+        $marcMap = [
             'call number'            => 'marc|a',
             'copy number'            => 'marc|c',
             'barcode number'         => 'marc|i',
@@ -364,7 +371,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
             'home location'          => 'marc|l',
             'item type'              => 'marc|t',
             'circulate flag'         => 'marc|r'
-        );
+        ];
 
         $entryNumber = $this->config['999Holdings']['entry_number'];
 
@@ -389,7 +396,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
 
                 $material = $this->translatePolicyID('ITYP', $result['item type']);
 
-                $items[$result['id']][] = array(
+                $items[$result['id']][] = [
                     'id' => $result['id'],
                     'availability' => $available,
                     'status' => $curr_loc,
@@ -403,7 +410,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                     'item_id' => $result['barcode number'],
                     'library' => $library,
                     'material' => $material
-                );
+                ];
             }
         }
         return $items;
@@ -420,7 +427,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      */
     protected function lookupTitleInfo($ids)
     {
-        $ids = is_array($ids) ? $ids : array($ids);
+        $ids = is_array($ids) ? $ids : [$ids];
 
         // SymWS ignores invalid titleIDs instead of rejecting them, so
         // checking ahead of time for obviously invalid titleIDs is a useful
@@ -434,13 +441,25 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
         }
 
         // Prepare $params array for makeRequest().
-        $params = array(
+        $params = [
             'titleID' => $ids,
             'includeAvailabilityInfo' => 'true',
             'includeItemInfo' => 'true',
             'includeBoundTogether' => 'true',
             'includeOrderInfo' => 'true',
-        );
+        ];
+
+        // If the driver is configured to populate holdings_text_fields
+        // with MFHD, also request MARC holdings information from SymWS.
+        if (count(array_filter($this->config['MarcHoldings'])) > 0) {
+            $params['includeMarcHoldings'] = 'true';
+            // With neither marcEntryFilter nor marcEntryID, or with
+            // marcEntryFilter NONE, SymWS won't return MarcHoldingsInfo,
+            // and there doesn't seem to be another option for marcEntryFilter
+            // that returns just MarcHoldingsInfo without BibliographicInfo.
+            // So we filter BibliographicInfo for an unlikely entry.
+            $params['marcEntryID'] = '999';
+        }
 
         // If only one library is being exclusively included,
         // filtering can be done within Web Services.
@@ -453,51 +472,62 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     }
 
     /**
+     * Determine if a library is excluded by LibraryFilter configuration.
+     *
+     * @param string $libraryID the ID of the library in question
+     *
+     * @return bool             true if excluded, false if not
+     */
+    protected function libraryIsFilteredOut($libraryID)
+    {
+        $notInWhitelist = !empty($this->config['LibraryFilter']['include_only'])
+            && !in_array(
+                $libraryID, $this->config['LibraryFilter']['include_only']
+            );
+        $onBlacklist = in_array(
+            $libraryID, $this->config['LibraryFilter']['exclude']
+        );
+        return $notInWhitelist || $onBlacklist;
+    }
+
+    /**
      * Parse Call Info
      *
      * Protected support method for parsing the call info into items.
      *
-     * @param object  $callInfos   The call info of the title
-     * @param integer $titleID     The catalog key of the title in the catalog
-     * @param boolean $is_holdable Whether or not the title is holdable
-     * @param integer $bound_in    The ID of the parent title
+     * @param object $callInfos   The call info of the title
+     * @param int    $titleID     The catalog key of the title in the catalog
+     * @param bool   $is_holdable Whether or not the title is holdable
+     * @param int    $bound_in    The ID of the parent title
      *
      * @return array An array of items, an empty array otherwise
      */
     protected function parseCallInfo($callInfos, $titleID, $is_holdable = false,
         $bound_in = null
     ) {
-        $items = array();
+        $items = [];
 
-        $callInfos = is_array($callInfos) ? $callInfos : array($callInfos);
+        $callInfos = is_array($callInfos) ? $callInfos : [$callInfos];
 
         foreach ($callInfos as $callInfo) {
             $libraryID = $callInfo->libraryID;
-            $library = $this->translatePolicyID('LIBR', $libraryID);
 
-            $notInWhitelist = !empty($this->config['LibraryFilter']['include_only'])
-                && !in_array(
-                    $libraryID, $this->config['LibraryFilter']['include_only']
-                );
-            $onBlacklist = in_array(
-                $libraryID, $this->config['LibraryFilter']['exclude']
-            );
-
-            if ($notInWhitelist || $onBlacklist) {
+            if ($this->libraryIsFilteredOut($libraryID)) {
                 continue;
             }
-
-            $copyNumber = 0; // ItemInfo does not include copy numbers,
-                             // so we generate them under the assumption
-                             // that items are being listed in order.
 
             if (!isset($callInfo->ItemInfo)) {
                 continue; // no items!
             }
 
+            $library = $this->translatePolicyID('LIBR', $libraryID);
+            $copyNumber = 0; // ItemInfo does not include copy numbers,
+                             // so we generate them under the assumption
+                             // that items are being listed in order.
+
             $itemInfos = is_array($callInfo->ItemInfo)
                 ? $callInfo->ItemInfo
-                : array($callInfo->ItemInfo);
+                : [$callInfo->ItemInfo];
             foreach ($itemInfos as $itemInfo) {
                 $in_transit = isset($itemInfo->transitReason);
                 $currentLocation = $this->translatePolicyID(
@@ -552,7 +582,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                      * it is insufficient to provide just the location
                      * description as the "location."
                      */
-                    if (count($this->config['LibraryFilter']['include_only'])!=1) {
+                    if (count($this->config['LibraryFilter']['include_only']) != 1) {
                         $location = "$library - $location";
                     }
                 }
@@ -569,7 +599,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                             $itemInfo->numberOfHolds : 0;
 
                 // Handle item notes
-                $notes = array();
+                $notes = [];
 
                 if (isset($itemInfo->publicNote)) {
                     $notes[] = $itemInfo->publicNote;
@@ -603,7 +633,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
 
                 $holdtype = $available ? 'hold' : 'recall';
 
-                $items[] = array(
+                $items[] = [
                     'id' => $titleID,
                     'availability' => $available,
                     'status' => $status,
@@ -617,7 +647,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                     'requests_placed' => $requests_placed,
                     'barcode' => $itemInfo->itemID,
                     'notes' => $notes,
-                    'summary' => array(),
+                    'summary' => [],
                     'is_holdable' => $is_holdable,
                     'holdtype' => $holdtype,
                     'addLink' => $is_holdable,
@@ -636,7 +666,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                         $transitDestinationLibrary,
                     'transit_reason' => $transitReason,
                     'transit_date' => $transitDate
-                );
+                ];
             }
         }
         return $items;
@@ -647,19 +677,19 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      *
      * Protected support method for parsing bound with link information.
      *
-     * @param object  $boundwithLinkInfos The boundwithLinkInfos object of the title
-     * @param integer $ckey               The catalog key of the title in the catalog
+     * @param object $boundwithLinkInfos The boundwithLinkInfos object of the title
+     * @param int    $ckey               The catalog key of the title in the catalog
      *
      * @return array An array of parseCallInfo() return values on success,
      * an empty array otherwise.
      */
     protected function parseBoundwithLinkInfo($boundwithLinkInfos, $ckey)
     {
-        $items = array();
+        $items = [];
 
         $boundwithLinkInfos = is_array($boundwithLinkInfos)
             ? $boundwithLinkInfos
-            : array($boundwithLinkInfos);
+            : [$boundwithLinkInfos];
 
         foreach ($boundwithLinkInfos as $boundwithLinkInfo) {
             // Ignore BoundwithLinkInfos which do not refer to parents
@@ -680,12 +710,12 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
 
             $callInfos = is_array($resp->TitleInfo->CallInfo)
                 ? $resp->TitleInfo->CallInfo
-                : array($resp->TitleInfo->CallInfo);
+                : [$resp->TitleInfo->CallInfo];
 
             foreach ($callInfos as $callInfo) {
                 $itemInfos = is_array($callInfo->ItemInfo)
                     ? $callInfo->ItemInfo
-                    : array($callInfo->ItemInfo);
+                    : [$callInfo->ItemInfo];
                 foreach ($itemInfos as $itemInfo) {
                     if ($itemInfo->itemID == $linked_itemID) {
                         $items += $this->parseCallInfo(
@@ -707,17 +737,17 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      *
      * Protected support method for parsing order info.
      *
-     * @param object  $titleOrderInfos The titleOrderInfo object of the title
-     * @param integer $titleID         The ID of the title in the catalog
+     * @param object $titleOrderInfos The titleOrderInfo object of the title
+     * @param int    $titleID         The ID of the title in the catalog
      *
      * @return array An array of items that are on order, an empty array otherwise.
      */
     protected function parseTitleOrderInfo($titleOrderInfos, $titleID)
     {
-        $items = array();
+        $items = [];
 
         $titleOrderInfos = is_array($titleOrderInfos)
-            ? $titleOrderInfos : array($titleOrderInfos);
+            ? $titleOrderInfos : [$titleOrderInfos];
 
         foreach ($titleOrderInfos as $titleOrderInfo) {
             $library_id = $titleOrderInfo->orderLibraryID;
@@ -759,7 +789,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
             }
 
             for ($i = 1; $i <= $nr_copies; ++$i) {
-                $items[] = array(
+                $items[] = [
                     'id' => $titleID,
                     'availability' => false,
                     'status' => implode('; ', $statuses),
@@ -770,9 +800,54 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                     'number' => $i,
                     'barcode' => true,
                     'offsite' => $library_id == 'OFFSITE',
-                );
+                ];
             }
         }
+        return $items;
+    }
+
+    /**
+     * Parse MarcHoldingInfo into VuFind items.
+     *
+     * @param object $marcHoldingsInfos MarcHoldingInfo, from TitleInfo
+     * @param int    $titleID           The catalog key of the title record
+     *
+     * @return array  an array (possibly empty) of VuFind items
+     */
+    protected function parseMarcHoldingsInfo($marcHoldingsInfos, $titleID)
+    {
+        $items = [];
+        $marcHoldingsInfos = is_array($marcHoldingsInfos)
+            ? $marcHoldingsInfos
+            : [$marcHoldingsInfos];
+
+        foreach ($marcHoldingsInfos as $marcHoldingsInfo) {
+            $libraryID = $marcHoldingsInfo->holdingLibraryID;
+            if ($this->libraryIsFilteredOut($libraryID)) {
+                continue;
+            }
+
+            $marcEntryInfos = is_array($marcHoldingsInfo->MarcEntryInfo)
+                ? $marcHoldingsInfo->MarcEntryInfo
+                : [$marcHoldingsInfo->MarcEntryInfo];
+            $item = [];
+
+            foreach ($marcEntryInfos as $marcEntryInfo) {
+                foreach ($this->config['MarcHoldings'] as $textfield => $spec) {
+                    if (in_array($marcEntryInfo->entryID, $spec)) {
+                        $item[$textfield][] = $marcEntryInfo->text;
+                    }
+                }
+            }
+
+            if (!empty($item)) {
+                $items[] = $item + [
+                    'id' => $titleID,
+                    'location' => $this->translatePolicyID('LIBR', $libraryID),
+                ];
+            }
+        }
+
         return $items;
     }
 
@@ -789,7 +864,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     protected function getLiveStatuses($ids)
     {
         foreach ($ids as $id) {
-            $items[$id] = array();
+            $items[$id] = [];
         }
 
         /* In Symphony, a title record has at least one "callnum" record,
@@ -801,7 +876,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
         $response   = $this->lookupTitleInfo($ids);
         $titleInfos = is_array($response->TitleInfo)
             ? $response->TitleInfo
-            : array($response->TitleInfo);
+            : [$response->TitleInfo];
 
         foreach ($titleInfos as $titleInfo) {
             $ckey        = $titleInfo->titleID;
@@ -842,10 +917,18 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                     $this->parseTitleOrderInfo($titleInfo->TitleOrderInfo, $ckey)
                 );
             }
+
+            /* MARC holdings records are associated with title records rather
+             * than item records, so we make pseudo-items for VuFind. */
+            if (isset($titleInfo->MarcHoldingsInfo)) {
+                $items[$ckey] = array_merge(
+                    $items[$ckey],
+                    $this->parseMarcHoldingsInfo($titleInfo->MarcHoldingsInfo, $ckey)
+                );
+            }
         }
         return $items;
     }
-
 
     /**
      * Translate a Symphony policy ID into a policy description
@@ -888,8 +971,8 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      */
     public function getStatus($id)
     {
-        $statuses = $this->getStatuses(array($id));
-        return isset($statuses[$id]) ? $statuses[$id] : array();
+        $statuses = $this->getStatuses([$id]);
+        return isset($statuses[$id]) ? $statuses[$id] : [];
     }
 
     /**
@@ -944,7 +1027,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      */
     public function getPurchaseHistory($id)
     {
-        return array();
+        return [];
     }
 
      /**
@@ -963,23 +1046,23 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     {
         $usernameField = $this->config['Behaviors']['usernameField'];
 
-        $patron = array(
+        $patron = [
             'cat_username' => $username,
             'cat_password' => $password,
-        );
+        ];
 
         try {
             $resp = $this->makeRequest(
                 'patron',
                 'lookupMyAccountInfo',
-                array(
+                [
                     'includePatronInfo' => 'true',
                     'includePatronAddressInfo' => 'true'
-                ),
-                array(
+                ],
+                [
                     'login' => $username,
                     'password' => $password,
-                )
+                ]
             );
         } catch (SoapFault $e) {
             $unableToLogin = 'ns0:com.sirsidynix.symws.service.'
@@ -1000,7 +1083,33 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
             $patron['lastname']  = $matches[1];
         }
 
-        // @TODO: email, major, college
+        // There may be an email address in any of three numbered addresses,
+        // so we search each one until we find an email address,
+        // starting with the one marked primary.
+        $addrinfo_check_order = ['1','2','3'];
+        if (isset($resp->patronAddressInfo->primaryAddress)) {
+            $primary_addr_n = $resp->patronAddressInfo->primaryAddress;
+            array_unshift($addrinfo_check_order, $primary_addr_n);
+        }
+        foreach ($addrinfo_check_order as $n) {
+            $AddressNInfo = "Address{$n}Info";
+            if (isset($resp->patronAddressInfo->$AddressNInfo)) {
+                $addrinfos = is_array($resp->patronAddressInfo->$AddressNInfo)
+                    ? $resp->patronAddressInfo->$AddressNInfo
+                    : [$resp->patronAddressInfo->$AddressNInfo];
+                foreach ($addrinfos as $addrinfo) {
+                    if ($addrinfo->addressPolicyID == 'EMAIL'
+                        && !empty($addrinfo->addressValue)
+                    ) {
+                        $patron['email'] = $addrinfo->addressValue;
+                        break;
+                    }
+                }
+
+            }
+        }
+
+        // @TODO: major, college
 
         return $patron;
     }
@@ -1021,21 +1130,21 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
             $userProfileGroupField
                 = $this->config['Behaviors']['userProfileGroupField'];
 
-            $options = array(
+            $options = [
                 'includePatronInfo' => 'true',
                 'includePatronAddressInfo' => 'true',
                 'includePatronStatusInfo' => 'true',
                 'includeUserGroupInfo'     => 'true'
-            );
+            ];
 
             $result = $this->makeRequest(
                 'patron',
                 'lookupMyAccountInfo',
                 $options,
-                array(
+                [
                     'login' => $patron['cat_username'],
                     'password' => $patron['cat_password']
-                )
+                ]
             );
 
             $primaryAddress = $result->patronAddressInfo->primaryAddress;
@@ -1055,10 +1164,10 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                     'security',
                     'lookupSessionInfo',
                     $options,
-                    array(
+                    [
                         'login' => $patron['cat_username'],
                         'password' => $patron['cat_password']
-                    )
+                    ]
                 )->userProfileID;
             } elseif (strcmp($userProfileGroupField, 'PATRON_LIBRARY_ID') == 0) {
                 $group = $result->patronInfo->patronLibraryID;
@@ -1071,7 +1180,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
             list($lastname,$firstname)
                 = explode(', ', $result->patronInfo->displayName);
 
-            $profile = array(
+            $profile = [
                 'lastname' => $lastname,
                 'firstname' => $firstname,
                 'address1' => $address1,
@@ -1079,7 +1188,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                 'zip' => $zip,
                 'phone' => $phone,
                 'group' => $group
-            );
+            ];
 
             return $profile;
         } catch (\Exception $e) {
@@ -1101,32 +1210,32 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     public function getMyTransactions($patron)
     {
         try {
-            $transList = array();
-            $options   = array('includePatronCheckoutInfo' => 'ALL');
+            $transList = [];
+            $options   = ['includePatronCheckoutInfo' => 'ALL'];
 
             $result = $this->makeRequest(
                 'patron',
                 'lookupMyAccountInfo',
                 $options,
-                array(
+                [
                     'login' => $patron['cat_username'],
                     'password' => $patron['cat_password']
-                )
+                ]
             );
 
             if (isset($result->patronCheckoutInfo)) {
                 $transactions = $result->patronCheckoutInfo;
-                $transactions = !is_array($transactions) ? array($transactions) :
+                $transactions = !is_array($transactions) ? [$transactions] :
                     $transactions;
 
                 foreach ($transactions as $transaction) {
-                    if ($transaction->unseenRenewalsRemaining > 0) {
-                        $renewable = true;
-                    } else {
-                        $renewable = false;
-                    }
+                    $urr = !empty($transaction->unseenRenewalsRemaining)
+                        || !empty($transaction->unseenRenewalsRemainingUnlimited);
+                    $rr = !empty($transaction->renewalsRemaining)
+                        || !empty($transaction->renewalsRemainingUnlimited);
+                    $renewable = ($urr && $rr);
 
-                    $transList[] = array(
+                    $transList[] = [
                         'duedate' =>
                             date('F j, Y', strtotime($transaction->dueDate)),
                         'id' => $transaction->titleKey,
@@ -1139,7 +1248,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                         //'message' => null,
                         'title' => $transaction->title,
                         'item_id' => $transaction->itemID
-                    );
+                    ];
                 }
             }
             return $transList;
@@ -1161,17 +1270,17 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     public function getMyHolds($patron)
     {
         try {
-            $holdList = array();
-            $options  = array('includePatronHoldInfo' => 'ACTIVE');
+            $holdList = [];
+            $options  = ['includePatronHoldInfo' => 'ACTIVE'];
 
             $result = $this->makeRequest(
                 'patron',
                 'lookupMyAccountInfo',
                 $options,
-                array(
+                [
                     'login' => $patron['cat_username'],
                     'password' => $patron['cat_password']
-                )
+                ]
             );
 
             if (!property_exists($result, 'patronHoldInfo')) {
@@ -1179,10 +1288,10 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
             }
 
             $holds = $result->patronHoldInfo;
-            $holds = !is_array($holds) ? array($holds) : $holds;
+            $holds = !is_array($holds) ? [$holds] : $holds;
 
             foreach ($holds as $hold) {
-                $holdList[] = array(
+                $holdList[] = [
                     'id' => $hold->titleKey,
                     //'type' => ,
                     'location' => $hold->pickupLibraryID,
@@ -1195,7 +1304,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                     //'volume' => null,
                     //'publication_year' => null,
                     'title' => $hold->title
-                );
+                ];
             }
             return $holdList;
         } catch(SoapFault $e) {
@@ -1218,26 +1327,26 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     public function getMyFines($patron)
     {
         try {
-            $fineList = array();
+            $fineList = [];
             $feeType  = $this->config['Behaviors']['showFeeType'];
-            $options  = array('includeFeeInfo' => $feeType);
+            $options  = ['includeFeeInfo' => $feeType];
 
             $result = $this->makeRequest(
                 'patron',
                 'lookupMyAccountInfo',
                 $options,
-                array(
+                [
                     'login' => $patron['cat_username'],
                     'password' => $patron['cat_password']
-                )
+                ]
             );
 
             if (isset($result->feeInfo)) {
                 $fees = $result->feeInfo;
-                $fees = !is_array($fees) ? array($fees) : $fees;
+                $fees = !is_array($fees) ? [$fees] : $fees;
 
                 foreach ($fees as $fee) {
-                    $fineList[] = array(
+                    $fineList[] = [
                         'amount' => $fee->amount->_ * 100,
                         'checkout' =>
                             isset($fee->feeItemInfo->checkoutDate) ?
@@ -1252,7 +1361,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                             $fee->feeItemInfo->dueDate : null,
                         'id' => isset($fee->feeItemInfo->titleKey) ?
                             $fee->feeItemInfo->titleKey : null
-                    );
+                    ];
                 }
             }
 
@@ -1292,37 +1401,37 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     public function cancelHolds($cancelDetails)
     {
         $count  = 0;
-        $items  = array();
+        $items  = [];
         $patron = $cancelDetails['patron'];
 
         foreach ($cancelDetails['details'] as $holdKey) {
             try {
-                $options = array('holdKey' => $holdKey);
+                $options = ['holdKey' => $holdKey];
 
                 $this->makeRequest(
                     'patron',
                     'cancelMyHold',
                     $options,
-                    array(
+                    [
                         'login' => $patron['cat_username'],
                         'password' => $patron['cat_password']
-                    )
+                    ]
                 );
 
                 $count++;
-                $items[$holdKey] = array(
+                $items[$holdKey] = [
                     'success' => true,
                     'status' => 'hold_cancel_success'
-                );
+                ];
             } catch (\Exception $e) {
-                $items[$holdKey] = array(
+                $items[$holdKey] = [
                     'success' => false,
                     'status' => 'hold_cancel_fail',
                     'sysMessage' => $e->getMessage()
-                );
+                ];
             }
         }
-        $result = array('count' => $count, 'items' => $items);
+        $result = ['count' => $count, 'items' => $items];
         return $result;
     }
 
@@ -1331,12 +1440,15 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      * driver ini file.
      *
      * @param string $function The name of the feature to be checked
+     * @param array  $params   Optional feature-specific parameters (array)
      *
      * @return array An array with key-value pairs.
+      *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getConfig($function)
+    public function getConfig($function, $params = null)
     {
-        if (isset($this->config[$function]) ) {
+        if (isset($this->config[$function])) {
             $functionConfig = $this->config[$function];
         } else {
             $functionConfig = false;
@@ -1375,42 +1487,42 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      */
     public function renewMyItems($renewDetails)
     {
-        $details = array();
+        $details = [];
         $patron  = $renewDetails['patron'];
 
         foreach ($renewDetails['details'] as $barcode) {
             try {
-                $options = array('itemID' => $barcode);
+                $options = ['itemID' => $barcode];
 
                 $renewal = $this->makeRequest(
                     'patron',
                     'renewMyCheckout',
                     $options,
-                    array(
+                    [
                         'login' => $patron['cat_username'],
                         'password' => $patron['cat_password'],
-                    )
+                    ]
                 );
 
-                $details[$barcode] = array(
+                $details[$barcode] = [
                     'success' => true,
                     'new_date' => date('j-M-y', strtotime($renewal->dueDate)),
-                    'new_time' =>date('g:i a', strtotime($renewal->dueDate)),
+                    'new_time' => date('g:i a', strtotime($renewal->dueDate)),
                     'item_id' => $renewal->itemID,
                     'sysMessage' => $renewal->message
-                );
+                ];
             } catch (\Exception $e) {
-                $details[$barcode] = array(
+                $details[$barcode] = [
                     'success' => false,
                     'new_date' => false,
                     'new_time' => false,
                     'sysMessage' =>
                         'We could not renew this item: ' . $e->getMessage()
-                );
+                ];
             }
         }
 
-        $result = array('details' => $details);
+        $result = ['details' => $details];
         return $result;
     }
 
@@ -1427,7 +1539,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
     public function placeHold($holdDetails)
     {
         try {
-            $options = array();
+            $options = [];
             $patron  = $holdDetails['patron'];
 
             if ($holdDetails['item_id'] != null) {
@@ -1454,23 +1566,23 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                 'patron',
                 'createMyHold',
                 $options,
-                array(
+                [
                     'login' => $patron['cat_username'],
                     'password' => $patron['cat_password']
-                )
+                ]
             );
 
-            $result = array(
+            $result = [
                 'success' => true,
                 'sysMessage' => 'Your hold has been placed.'
-            );
+            ];
             return $result;
         } catch (SoapFault $e) {
-            $result = array(
+            $result = [
                 'success' => false,
                 'sysMessage' =>
                     'We could not place the hold: ' . $e->getMessage()
-            );
+            ];
             return $result;
         }
     }
@@ -1497,8 +1609,8 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                 $this->policies[$policyType] = $policyList;
                 return $policyList;
             } else {
-                $policyList = array();
-                $options    = array('policyType' => $policyType);
+                $policyList = [];
+                $options    = ['policyType' => $policyType];
                 $policies   = $this->makeRequest(
                     'admin', 'lookupPolicyList', $options
                 );
@@ -1515,7 +1627,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
                 return $policyList;
             }
         } catch (\Exception $e) {
-            return array();
+            return [];
         }
     }
 
@@ -1535,17 +1647,18 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      *
      * @return array        An array of associative arrays with locationID and
      * locationDisplay keys
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getPickUpLocations($patron = false, $holdDetails = null)
     {
-        $libraries = array();
+        $libraries = [];
 
-        foreach ($this->getPolicyList('LIBR') as $key=>$library) {
-            $libraries[] = array(
+        foreach ($this->getPolicyList('LIBR') as $key => $library) {
+            $libraries[] = [
                 'locationID' => $key,
                 'locationDisplay' => $library
-            );
+            ];
         }
 
         return $libraries;
@@ -1564,6 +1677,7 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
      * or may be ignored.
      *
      * @return string       The default pickup location for the patron.
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getDefaultPickUpLocation($patron = false, $holdDetails = null)
@@ -1580,28 +1694,5 @@ class Symphony extends AbstractBase implements ServiceLocatorAwareInterface
             $libraries = $this->getPickUpLocations();
             return $libraries[0]['locationID'];
         }
-    }
-
-    /**
-     * Set the service locator.
-     *
-     * @param ServiceLocatorInterface $serviceLocator Locator to register
-     *
-     * @return Symphony
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-        return $this;
-    }
-
-    /**
-     * Get the service locator.
-     *
-     * @return \Zend\ServiceManager\ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
     }
 }

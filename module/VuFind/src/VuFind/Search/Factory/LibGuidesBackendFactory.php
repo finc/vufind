@@ -26,7 +26,6 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org   Main Site
  */
-
 namespace VuFind\Search\Factory;
 
 use VuFindSearch\Backend\LibGuides\Connector;
@@ -120,12 +119,16 @@ class LibGuidesBackendFactory implements FactoryInterface
         $iid = isset($this->libGuidesConfig->General->iid)
             ? $this->libGuidesConfig->General->iid : null;
 
+        // Pick version:
+        $ver = isset($this->libGuidesConfig->General->version)
+            ? $this->libGuidesConfig->General->version : 1;
+
         // Build HTTP client:
         $client = $this->serviceLocator->get('VuFind\Http')->createClient();
         $timeout = isset($this->libGuidesConfig->General->timeout)
             ? $this->libGuidesConfig->General->timeout : 30;
-        $client->setOptions(array('timeout' => $timeout));
-        $connector = new Connector($iid, $client);
+        $client->setOptions(['timeout' => $timeout]);
+        $connector = new Connector($iid, $client, $ver);
         $connector->setLogger($this->logger);
         return $connector;
     }

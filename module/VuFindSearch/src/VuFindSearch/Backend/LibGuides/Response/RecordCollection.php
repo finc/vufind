@@ -26,7 +26,6 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org
  */
-
 namespace VuFindSearch\Backend\LibGuides\Response;
 
 use VuFindSearch\Response\AbstractRecordCollection;
@@ -69,7 +68,8 @@ class RecordCollection extends AbstractRecordCollection
      */
     public function getTotal()
     {
-        return $this->response['recordCount'];
+        return isset($this->response['recordCount'])
+            ? $this->response['recordCount'] : 0;
     }
 
     /**
@@ -80,7 +80,7 @@ class RecordCollection extends AbstractRecordCollection
     public function getFacets()
     {
         // Not supported:
-        return array();
+        return [];
     }
 
     /**

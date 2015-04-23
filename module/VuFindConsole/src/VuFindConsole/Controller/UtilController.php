@@ -30,6 +30,7 @@ use File_MARC, File_MARCXML, VuFind\Sitemap, Zend\Console\Console;
 use VuFind\Log\Logger;
 use VuFindSearch\Backend\Solr\Document\UpdateDocument;
 use VuFindSearch\Backend\Solr\Record\SerializableRecord;
+use Zend\Console\Console;
 
 /**
  * This controller handles various command-line tools
@@ -105,15 +106,15 @@ class UtilController extends AbstractBase
         ini_set('max_execution_time', '3600');
 
         $this->consoleOpts->setOptions(
-            array(\Zend\Console\Getopt::CONFIG_CUMULATIVE_PARAMETERS => true)
+            [\Zend\Console\Getopt::CONFIG_CUMULATIVE_PARAMETERS => true]
         );
         $this->consoleOpts->addRules(
-            array(
+            [
                 'h|help' => 'Get help',
                 'd-s' => 'Delimiter',
                 't-s' => 'Template',
                 'f-s' => 'File',
-            )
+            ]
         );
 
         if ($this->consoleOpts->getOption('h')
@@ -208,9 +209,9 @@ class UtilController extends AbstractBase
             $id = $course_id . '|' . $instructor_id . '|' . $department_id;
 
             if (!isset($index[$id])) {
-                $index[$id] = array(
+                $index[$id] = [
                     'id' => $id,
-                    'bib_id' => array(),
+                    'bib_id' => [],
                     'instructor_id' => $instructor_id,
                     'instructor' => isset($instructors[$instructor_id])
                         ? $instructors[$instructor_id] : '',
@@ -220,7 +221,7 @@ class UtilController extends AbstractBase
                     'department_id' => $department_id,
                     'department' => isset($departments[$department_id])
                         ? $departments[$department_id] : ''
-                );
+                ];
             }
             $index[$id]['bib_id'][] = $record['BIB_ID'];
         }
@@ -328,7 +329,7 @@ class UtilController extends AbstractBase
         }
 
         // Build list of records to delete:
-        $ids = array();
+        $ids = [];
 
         // Flat file mode:
         if ($mode == 'flat') {
@@ -367,6 +368,26 @@ class UtilController extends AbstractBase
      */
     public function expiresearchesAction()
     {
+        $this->consoleOpts->addRules(
+            [
+                'h|help' => 'Get help',
+            ]
+        );
+
+        if ($this->consoleOpts->getOption('h')
+            || $this->consoleOpts->getOption('help')
+        ) {
+            Console::writeLine('Expire old searches in the database.');
+            Console::writeLine('');
+            Console::writeLine(
+                'Optional parameter: the age (in days) of searches to expire;'
+            );
+            Console::writeLine(
+                'by default, searches more than 2 days old will be removed.'
+            );
+            return $this->getFailureResponse();
+        }
+
         return $this->expire(
             'Search',
             '%%count%% expired searches deleted.',
@@ -382,6 +403,26 @@ class UtilController extends AbstractBase
      */
     public function expiresessionsAction()
     {
+        $this->consoleOpts->addRules(
+            [
+                'h|help' => 'Get help',
+            ]
+        );
+
+        if ($this->consoleOpts->getOption('h')
+            || $this->consoleOpts->getOption('help')
+        ) {
+            Console::writeLine('Expire old sessions in the database.');
+            Console::writeLine('');
+            Console::writeLine(
+                'Optional parameter: the age (in days) of sessions to expire;'
+            );
+            Console::writeLine(
+                'by default, sessions more than 2 days old will be removed.'
+            );
+            return $this->getFailureResponse();
+        }
+
         return $this->expire(
             'Session',
             '%%count%% expired sessions deleted.',
@@ -398,10 +439,10 @@ class UtilController extends AbstractBase
     {
         // Setup Solr Connection
         $this->consoleOpts->addRules(
-            array(
+            [
                 'authorities' =>
                     'Delete authority records instead of bibliographic records'
-            )
+            ]
         );
         $backend = $this->consoleOpts->getOption('authorities')
             ? 'SolrAuth' : 'Solr';
@@ -588,25 +629,59 @@ class UtilController extends AbstractBase
     public function createhierarchytreesAction()
     {
         $recordLoader = $this->getServiceLocator()->get('VuFind\RecordLoader');
+        // Parse switches:
+        $this->consoleOpts->addRules(
+            [
+                'skip-xml|sx' => 'Skip the XML cache',
+                'skip-json|sj' => 'Skip the JSON cache'
+            ]
+        );
         $hierarchies = $this->getServiceLocator()
             ->get('VuFind\SearchResultsPluginManager')->get('Solr')
-            ->getFullFieldFacets(array('hierarchy_top_id'));
+            ->getFullFieldFacets(['hierarchy_top_id']);
         foreach ($hierarchies['hierarchy_top_id']['data']['list'] as $hierarchy) {
-            if (empty($hierarchy['value'])) {
+            $recordid = $hierarchy['value'];
+            $count = $hierarchy['count'];
+            if (empty($recordid)) {
                 continue;
             }
-            Console::writeLine("Building tree for {$hierarchy['value']}...");
+            Console::writeLine(
+                "\tBuilding tree for " . $recordid . '... '
+                . number_format($count) . ' records'
+            );
             try {
-                $driver = $recordLoader->load($hierarchy['value']);
+                $driver = $recordLoader->load($recordid);
+                // Only do this if the record is actually a hierarchy type record
                 if ($driver->getHierarchyType()) {
-                    // Only do this if the record is actually a hierarchy type record
-                    $driver->getHierarchyDriver()->getTreeSource()
-                        ->getXML($hierarchy['value'], array('refresh' => true));
+                    // JSON
+                    if (!$this->consoleOpts->getOption('skip-json')) {
+                        Console::writeLine("\t\tJSON cache...");
+                        $driver->getHierarchyDriver()->getTreeSource()->getJSON(
+                            $recordid, ['refresh' => true]
+                        );
+                    } else {
+                        Console::writeLine("\t\tJSON skipped.");
+                    }
+                    // XML
+                    if (!$this->consoleOpts->getOption('skip-xml')) {
+                        Console::writeLine("\t\tXML cache...");
+                        $driver->getHierarchyDriver()->getTreeSource()->getXML(
+                            $recordid, ['refresh' => true]
+                        );
+                    } else {
+                        Console::writeLine("\t\tXML skipped.");
+                    }
                 }
             } catch (\VuFind\Exception\RecordMissing $e) {
-                Console::writeLine("WARNING! - Caught exception: " . $e->getMessage() . "\n");
+                Console::writeLine(
+                    'WARNING! - Caught exception: ' . $e->getMessage() . "\n"
+                );
             }
         }
+        Console::writeLine(
+            count($hierarchies['hierarchy_top_id']['data']['list']) . ' files'
+        );
+
         return $this->getSuccessResponse();
     }
 
@@ -618,7 +693,10 @@ class UtilController extends AbstractBase
     public function cssbuilderAction()
     {
         $argv = $this->consoleOpts->getRemainingArgs();
-        $compiler = new \VuFindTheme\LessCompiler();
+        $compiler = new \VuFindTheme\LessCompiler(true);
+        $cacheManager = $this->getServiceLocator()->get('VuFind\CacheManager');
+        $cacheDir = $cacheManager->getCacheDir() . 'less/';
+        $compiler->setTempPath($cacheDir);
         $compiler->compile($argv);
         return $this->getSuccessResponse();
     }

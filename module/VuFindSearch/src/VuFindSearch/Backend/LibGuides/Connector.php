@@ -29,7 +29,6 @@
  */
 namespace VuFindSearch\Backend\LibGuides;
 use Zend\Http\Client as HttpClient;
-use Zend\Log\LoggerInterface;
 
 /**
  * LibGuides connector.
@@ -41,14 +40,9 @@ use Zend\Log\LoggerInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org
  */
-class Connector
+class Connector implements \Zend\Log\LoggerAwareInterface
 {
-    /**
-     * Logger instance.
-     *
-     * @var LoggerInterface
-     */
-    protected $logger;
+    use \VuFind\Log\LoggerAwareTrait;
 
     /**
      * The HTTP_Request object used for API transactions
@@ -72,30 +66,31 @@ class Connector
     protected $host;
 
     /**
+     * API version number
+     *
+     * @var float
+     */
+    protected $apiVersion;
+
+    /**
      * Constructor
      *
      * Sets up the LibGuides Client
      *
-     * @param string     $iid    Institution ID
-     * @param HttpClient $client HTTP client
+     * @param string     $iid        Institution ID
+     * @param HttpClient $client     HTTP client
+     * @param float      $apiVersion API version number
      */
-    public function __construct($iid, $client)
+    public function __construct($iid, $client, $apiVersion = 1)
     {
-        $this->host = "http://api.libguides.com/api_search.php?";
+        $this->apiVersion = $apiVersion;
+        if ($this->apiVersion < 2) {
+            $this->host = "http://api.libguides.com/api_search.php?";
+        } else {
+            $this->host = "http://lgapi.libapps.com/widgets.php?";
+        }
         $this->iid = $iid;
         $this->client = $client;
-    }
-
-    /**
-     * Set logger instance.
-     *
-     * @param LoggerInterface $logger Logger
-     *
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 
     /**
@@ -113,14 +108,7 @@ class Connector
      */
     public function query(array $params, $offset = 0, $limit = 20, $returnErr = true)
     {
-        // defaults for params
-        $args = array(
-            'iid' => $this->iid,
-            'type' => 'guides',
-            'more' => 'false',
-            'sortby' => 'relevance',
-        );
-        $args = array_merge($args, $params);
+        $args = $this->prepareParams($params);
 
         // run search, deal with exceptions
         try {
@@ -129,14 +117,12 @@ class Connector
                 = array_slice($result['documents'], $offset, $limit);
         } catch (\Exception $e) {
             if ($returnErr) {
-                if ($this->logger) {
-                    $this->logger->debug($e->getMessage());
-                }
-                $result = array(
+                $this->debug($e->getMessage());
+                $result = [
                     'recordCount' => 0,
-                    'documents' => array(),
+                    'documents' => [],
                     'error' => $e->getMessage()
-                );
+                ];
             } else {
                 throw $e;
             }
@@ -147,7 +133,7 @@ class Connector
     }
 
     /**
-     * small wrapper for sendRequest, process to simplify error handling.
+     * Small wrapper for sendRequest, process to simplify error handling.
      *
      * @param string $qs     Query string
      * @param string $method HTTP method
@@ -157,9 +143,7 @@ class Connector
      */
     protected function call($qs, $method = 'GET')
     {
-        if ($this->logger) {
-            $this->logger->debug("{$method}: {$this->host}{$qs}");
-        }
+        $this->debug("{$method}: {$this->host}{$qs}");
         $this->client->resetParameters();
         if ($method == 'GET') {
             $baseUrl = $this->host . $qs;
@@ -190,24 +174,66 @@ class Connector
             throw new \Exception('LibGuides did not return any data');
         }
 
-        $items = array();
+        $items = [];
 
         // Extract titles and URLs from response:
         $regex = '/<a href="([^"]*)"[^>]*>([^<]*)</';
         $count = preg_match_all($regex, $data, $matches);
 
         for ($i = 0; $i < $count; $i++) {
-            $items[] = array(
+            $items[] = [
                 'id' => $matches[1][$i],    // ID = URL
                 'title' => $matches[2][$i],
-            );
+            ];
         }
 
-        $results = array(
+        $results = [
             'recordCount' => count($items),
             'documents' => $items
-        );
+        ];
 
         return $results;
+    }
+
+    /**
+     * Prepare API parameters
+     *
+     * @param array $params Incoming parameters
+     *
+     * @return array
+     */
+    protected function prepareParams(array $params)
+    {
+        // defaults for params (vary by version)
+        if ($this->apiVersion < 2) {
+            $args = [
+                'iid' => $this->iid,
+                'type' => 'guides',
+                'more' => 'false',
+                'sortby' => 'relevance',
+            ];
+        } else {
+            $args = [
+                'site_id' => $this->iid,
+                'sort_by' => 'relevance',
+                'widget_type' => 1,
+                'search_match' => 2,
+                'search_type' => 0,
+                'sort_by' => 'relevance',
+                'list_format' => 1,
+                'output_format' => 1,
+                'load_type' => 2,
+                'enable_description' => 0,
+                'enable_group_search_limit' => 0,
+                'enable_subject_search_limit' => 0,
+                'widget_embed_type' => 2,
+            ];
+            // remap v1 --> v2 params:
+            if (isset($params['search'])) {
+                $params['search_terms'] = $params['search'];
+                unset($params['search']);
+            }
+        }
+        return array_merge($args, $params);
     }
 }

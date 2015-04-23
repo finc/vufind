@@ -1,4 +1,4 @@
-/*global ajaxLoadTab, checkSaveStatuses, console, extractSource, hexEncode, Lightbox, path, rc4Encrypt, refreshCommentList, vufindString */
+/*global ajaxLoadTab, btoa, checkSaveStatuses, console, extractSource, hexEncode, Lightbox, path, rc4Encrypt, refreshCommentList, unescape, vufindString */
 
 /* --- GLOBAL FUNCTIONS --- */
 function htmlEncode(value){
@@ -54,7 +54,7 @@ function deparam(url) {
   var pairs = url.substring(url.indexOf('?') + 1).split('&');
   for (var i = 0; i < pairs.length; i++) {
     var pair = pairs[i].split('=');
-    var name = decodeURIComponent(pair[0]);
+    var name = decodeURIComponent(pair[0].replace(/\+/g, ' '));
     if(name.length == 0) {
       continue;
     }
@@ -63,9 +63,9 @@ function deparam(url) {
       if(!request[name]) {
         request[name] = [];
       }
-      request[name].push(decodeURIComponent(pair[1]));
+      request[name].push(decodeURIComponent(pair[1].replace(/\+/g, ' ')));
     } else {
-      request[name] = decodeURIComponent(pair[1]);
+      request[name] = decodeURIComponent(pair[1].replace(/\+/g, ' '));
     }
   }
   return request;
@@ -81,18 +81,6 @@ function lessFacets(id) {
   $('#more-'+id).removeClass('hidden');
 }
 
-// Advanced facets
-function updateOrFacets(url, op) {
-  window.location.assign(url);
-  var list = $(op).parents('ul');
-  var header = $(list).find('li.nav-header');
-  list.html(header[0].outerHTML+'<div class="alert alert-info">'+vufindString.loading+'...</div>');
-}
-function setupOrFacets() {
-  $('.facetOR').find('.icon-check').replaceWith('<input type="checkbox" checked onChange="updateOrFacets($(this).parent().parent().attr(\'href\'), this)"/>');
-  $('.facetOR').find('.icon-check-empty').replaceWith('<input type="checkbox" onChange="updateOrFacets($(this).parent().attr(\'href\'), this)"/> ');
-}
-
 // Lightbox
 /*
  * This function adds jQuery events to elements in the lightbox
@@ -100,6 +88,24 @@ function setupOrFacets() {
  * This is a default open action, so it runs every time changeContent
  * is called and the 'shown' lightbox event is triggered
  */
+function bulkActionSubmit($form) {
+  var submit = $form.find('input[type="submit"][clicked=true]').attr('name');
+  var checks = $form.find('input.checkbox-select-item:checked');
+  if(checks.length == 0 && submit != 'empty') {
+    return Lightbox.displayError(vufindString['bulk_noitems_advice']);
+  }
+  if (submit == 'print') {
+    //redirect page
+    var url = path+'/Records/Home?print=true';
+    for(var i=0;i<checks.length;i++) {
+      url += '&id[]='+checks[i].value;
+    }
+    document.location.href = url;
+  } else {
+    Lightbox.submit($form, Lightbox.changeContent);
+  }
+  return false;
+}
 function registerLightboxEvents() {
   var modal = $("#modal");
   // New list
@@ -114,6 +120,10 @@ function registerLightboxEvents() {
     var parts = this.href.split('?');
     var get = deparam(parts[1]);
     return Lightbox.get('MyResearch', 'Account', get);
+  });
+  $('.back-to-login').click(function() {
+    Lightbox.getByUrl(Lightbox.openingURL);
+    return false;
   });
   // Select all checkboxes
   $(modal).find('.checkbox-select-all').change(function() {
@@ -205,8 +215,9 @@ function ajaxLogin(form) {
         // get the user entered password
         var password = form.password.value;
 
-        // encrypt the password with the salt
-        password = rc4Encrypt(salt, password);
+        // base-64 encode the password (to allow support for Unicode)
+        // and then encrypt the password with the salt
+        password = rc4Encrypt(salt, btoa(unescape(encodeURIComponent(password))));
 
         // hex encode the encrypted password
         password = hexEncode(password);
@@ -303,7 +314,7 @@ $(document).ready(function() {
             q:query,
             method:'getACSuggestions',
             searcher:searcher['searcher'],
-            type:$('#searchForm_type').val(),
+            type:$('#searchForm_type').val()
           },
           dataType:'json',
           success: function(json) {
@@ -317,7 +328,7 @@ $(document).ready(function() {
               cb([]);
             }
           }
-        })
+        });
       }
     }
   );
@@ -337,7 +348,17 @@ $(document).ready(function() {
     } else {
       $(this).html(vufindString.qrcode_hide).addClass("active");
     }
-    $(this).next('.qrcode').toggleClass('hidden');
+
+    var holder = $(this).next('.qrcode');
+
+    if (holder.find('img').length == 0) {
+      // We need to insert the QRCode image
+      var template = holder.find('.qrCodeImgTag').html();
+      holder.html(template);
+    }
+
+    holder.toggleClass('hidden');
+
     return false;
   });
 
@@ -353,18 +374,37 @@ $(document).ready(function() {
   }
 
   // Advanced facets
-  setupOrFacets();
+  $('.facetOR').click(function() {
+    $(this).closest('.collapse').html('<div class="list-group-item">'+vufindString.loading+'...</div>');
+    window.location.assign($(this).attr('href'));
+  });
+
+  $('[name=bulkActionForm]').submit(function() {
+    return bulkActionSubmit($(this));
+  });
+  $('[name=bulkActionForm]').find("input[type=submit]").click(function() {
+    // Abort requests triggered by the lightbox
+    $('#modal .fa-spinner').remove();
+    // Remove other clicks
+    $(this).closest('form').find('input[type="submit"][clicked=true]').attr('clicked', false);
+    // Add useful information
+    $(this).attr("clicked", "true");
+  });
 
   /******************************
    * LIGHTBOX DEFAULT BEHAVIOUR *
    ******************************/
   Lightbox.addOpenAction(registerLightboxEvents);
+
   Lightbox.addFormCallback('newList', Lightbox.changeContent);
-  Lightbox.addFormHandler('loginForm', function(evt) {
-    ajaxLogin(evt.target);
-    return false;
-  });
   Lightbox.addFormCallback('accountForm', newAccountHandler);
+  Lightbox.addFormCallback('bulkDelete', function(html) {
+    location.reload();
+  });
+  Lightbox.addFormCallback('bulkRecord', function(html) {
+    Lightbox.close();
+    checkSaveStatuses();
+  });
   Lightbox.addFormCallback('emailSearch', function(html) {
     Lightbox.confirm(vufindString['bulk_email_success']);
   });
@@ -372,9 +412,25 @@ $(document).ready(function() {
     Lightbox.close();
     checkSaveStatuses();
   });
-  Lightbox.addFormCallback('bulkRecord', function(html) {
-    Lightbox.close();
-    checkSaveStatuses();
+
+  Lightbox.addFormHandler('exportForm', function(evt) {
+    $.ajax({
+      url: path + '/AJAX/JSON?' + $.param({method:'exportFavorites'}),
+      type:'POST',
+      dataType:'json',
+      data:Lightbox.getFormData($(evt.target)),
+      success:function(data) {
+        if(data.data.needs_redirect) {
+          document.location.href = data.data.result_url;
+        } else {
+          Lightbox.changeContent(data.data.result_additional);
+        }
+      },
+      error:function(d,e) {
+        //console.log(d,e); // Error reporting
+      }
+    });
+    return false;
   });
   Lightbox.addFormHandler('feedback', function(evt) {
     var $form = $(evt.target);
@@ -393,6 +449,10 @@ $(document).ready(function() {
         Lightbox.changeContent('<div class="alert alert-info">'+formSuccess+'</div>');
       });
     }
+    return false;
+  });
+  Lightbox.addFormHandler('loginForm', function(evt) {
+    ajaxLogin(evt.target);
     return false;
   });
 

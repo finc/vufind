@@ -47,6 +47,13 @@ class LessCompiler
     protected $basePath;
 
     /**
+     * Temporary directory for cached files.
+     *
+     * @var string
+     */
+    protected $tempPath;
+
+    /**
      * Fake base path used for generating absolute paths in CSS.
      *
      * @var string
@@ -54,11 +61,46 @@ class LessCompiler
     protected $fakePath = '/zzzz_basepath_zzzz/';
 
     /**
-     * Constructor
+     * Console log?
+     *
+     * @var bool
      */
-    public function __construct()
+    protected $verbose;
+
+    /**
+     * Constructor
+     *
+     * @param bool $verbose Display messages while compiling?
+     */
+    public function __construct($verbose = false)
     {
         $this->basePath = realpath(__DIR__ . '/../../../../');
+        $this->tempPath = sys_get_temp_dir();
+        $this->verbose = $verbose;
+    }
+
+    /**
+     * Set base path
+     *
+     * @param string $path Path to set
+     *
+     * @return void
+     */
+    public function setBasePath($path)
+    {
+        $this->basePath = $path;
+    }
+
+    /**
+     * Set temporary directory
+     *
+     * @param string $path Path to set
+     *
+     * @return void
+     */
+    public function setTempPath($path)
+    {
+        $this->tempPath = rtrim($path, '/');
     }
 
     /**
@@ -90,17 +132,19 @@ class LessCompiler
     {
         $lessFiles = $this->getAllLessFiles($theme);
         if (empty($lessFiles)) {
-            Console::writeLine("No LESS in " . $theme);
+            $this->logMessage("No LESS in " . $theme);
             return;
         }
-        Console::writeLine("Processing " . $theme);
+        $this->logMessage("Processing " . $theme);
         foreach ($lessFiles as $less) {
             if (is_string($less)) {
                 $this->compileFile($theme, $less);
             }
         }
 
-        \Less_Cache::SetCacheDir(APPLICATION_PATH.'/themes/'.$theme.'/css/less/');
+        \Less_Cache::SetCacheDir(
+            APPLICATION_PATH . '/themes/' . $theme . '/css/less/'
+        );
         \Less_Cache::CleanCache(); // deletes week old files
     }
 
@@ -115,13 +159,13 @@ class LessCompiler
     {
         $config = $this->basePath . '/themes/' . $theme . '/theme.config.php';
         if (!file_exists($config)) {
-            return array();
+            return [];
         }
         $configArr = include $config;
         $base = (isset($configArr['extends']))
             ? $this->getAllLessFiles($configArr['extends'])
-            : array();
-        $current = isset($configArr['less']) ? $configArr['less'] : array();
+            : [];
+        $current = isset($configArr['less']) ? $configArr['less'] : [];
         return array_merge($base, $current);
     }
 
@@ -135,14 +179,17 @@ class LessCompiler
      */
     protected function compileFile($theme, $less)
     {
+        $parts = explode(':', $less);
+        $less = $parts[0];
+
         $finalOutDir = $this->basePath . '/themes/' . $theme . '/css/';
         list($fileName, ) = explode('.', $less);
         $finalFile = $finalOutDir . $fileName . '.css';
 
-        Console::writeLine("\tcompiling '" . $less .  "' into '" . $finalFile . "'");
+        $this->logMessage("\tcompiling '" . $less .  "' into '" . $finalFile . "'");
         $start = microtime(true);
 
-        $directories = array();
+        $directories = [];
         $info = new ThemeInfo($this->basePath . '/themes', $theme);
         foreach (array_keys($info->getThemeInfo()) as $curTheme) {
             $directories["{$this->basePath}/themes/$curTheme/less/"]
@@ -150,28 +197,27 @@ class LessCompiler
         }
         $lessDir = $this->basePath . '/themes/' . $theme . '/less/';
         if (!file_exists($lessDir . $less)) {
-            Console::writeLine(
+            $this->logMessage(
                 "\t\t" . $lessDir . $less . ' does not exist; skipping.'
             );
             return;
         }
-        $outDir = sys_get_temp_dir();
         $outFile = \Less_Cache::Regen(
-            array($lessDir . $less => $this->fakePath . "themes/$theme/css/less"),
-            array(
-                'cache_dir' => $outDir,
+            [$lessDir . $less => $this->fakePath . "themes/$theme/css/less"],
+            [
+                'cache_dir' => $this->tempPath,
                 'cache_method' => false,
                 'compress' => true,
                 'import_dirs' => $directories
-            )
+            ]
         );
-        $css = file_get_contents($outDir . '/' . $outFile);
+        $css = file_get_contents($this->tempPath . '/' . $outFile);
         if (!is_dir(dirname($finalFile))) {
             mkdir(dirname($finalFile));
         }
         file_put_contents($finalFile, $this->makeRelative($css, $less));
 
-        Console::writeLine("\t\t" . (microtime(true)-$start) . ' sec');
+        $this->logMessage("\t\t" . (microtime(true)-$start) . ' sec');
     }
 
     /**
@@ -181,6 +227,7 @@ class LessCompiler
      * @param string $less Relative LESS filename
      *
      * @return string
+     *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function makeRelative($css, $less)
@@ -206,7 +253,7 @@ class LessCompiler
     {
         $baseDir = $this->basePath . '/themes/';
         $dir = opendir($baseDir);
-        $list = array();
+        $list = [];
         while ($line = readdir($dir)) {
             if (is_dir($baseDir . $line)
                 && file_exists($baseDir . $line . '/theme.config.php')
@@ -216,5 +263,19 @@ class LessCompiler
         }
         closedir($dir);
         return $list;
+    }
+
+    /**
+     * Log a message to the console
+     *
+     * @param string $str message string
+     *
+     * @return void
+     */
+    protected function logMessage($str)
+    {
+        if ($this->verbose) {
+            Console::writeLine($str);
+        }
     }
 }

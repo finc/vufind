@@ -31,7 +31,6 @@
  */
 namespace VuFindSearch\Backend\Primo;
 use Zend\Http\Client as HttpClient;
-use Zend\Log\LoggerInterface;
 
 /**
  * Primo Central connector.
@@ -45,14 +44,9 @@ use Zend\Log\LoggerInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org
  */
-class Connector
+class Connector implements \Zend\Log\LoggerAwareInterface
 {
-    /**
-     * Logger instance.
-     *
-     * @var LoggerInterface
-     */
-    protected $logger;
+    use \VuFind\Log\LoggerAwareTrait;
 
     /**
      * The HTTP_Request object used for API transactions
@@ -90,25 +84,14 @@ class Connector
      * @param string     $apiId  Primo API ID
      * @param string     $inst   Institution code
      * @param HttpClient $client HTTP client
+     * @param int        $port   API connection port
      */
-    public function __construct($apiId, $inst, $client)
+    public function __construct($apiId, $inst, $client, $port = 1701)
     {
-        $this->host = "http://$apiId.hosted.exlibrisgroup.com:1701/"
+        $this->host = "http://$apiId.hosted.exlibrisgroup.com:{$port}/"
             . "PrimoWebServices/xservice/search/brief?";
         $this->inst = $inst;
         $this->client = $client;
-    }
-
-    /**
-     * Set logger instance.
-     *
-     * @param LoggerInterface $logger Logger
-     *
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 
     /**
@@ -116,7 +99,7 @@ class Connector
      * $this->client and returns the parsed response
      *
      * @param string $institution Institution
-     * @param string $terms       Associative array:
+     * @param array  $terms       Associative array:
      *     index       string: primo index to search (default "any")
      *     lookfor     string: actual search terms
      * @param array  $params      Associative array of optional arguments:
@@ -140,12 +123,13 @@ class Connector
      *
      * @throws \Exception
      * @return array             An array of query results
+     *
      * @link http://www.exlibrisgroup.org/display/PrimoOI/Brief+Search
      */
-    public function query($institution, $terms, $params=null)
+    public function query($institution, $terms, $params = null)
     {
         // defaults for params
-        $args = array(
+        $args = [
             "phrase" => false,
             "onCampus" => true,
             "didYouMean" => false,
@@ -154,7 +138,7 @@ class Connector
             "limit" => 20,
             "sort" => null,
             "returnErr" => true,
-        );
+        ];
         if (isset($params)) {
             $args = array_merge($args, $params);
         }
@@ -164,15 +148,13 @@ class Connector
             $result = $this->performSearch($institution, $terms, $args);
         } catch (\Exception $e) {
             if ($args["returnErr"]) {
-                if ($this->logger) {
-                    $this->logger->debug($e->getMessage());
-                }
-                return array(
+                $this->debug($e->getMessage());
+                return [
                     'recordCount' => 0,
-                    'documents' => array(),
-                    'facets' => array(),
+                    'documents' => [],
+                    'facets' => [],
                     'error' => $e->getMessage()
-                );
+                ];
             } else {
                 throw $e;
             }
@@ -180,12 +162,11 @@ class Connector
         return $result;
     }
 
-
     /**
      * Support method for query() -- perform inner search logic
      *
      * @param string $institution Institution
-     * @param string $terms       Associative array:
+     * @param array  $terms       Associative array:
      *     index       string: primo index to search (default "any")
      *     lookfor     string: actual search terms
      * @param array  $args        Associative array of optional arguments:
@@ -215,7 +196,7 @@ class Connector
         // we have to build a querystring because I think adding them
         //   incrementally is implemented as a dictionary, but we are allowed
         //   multiple querystring parameters with the same key.
-        $qs = array();
+        $qs = [];
 
         // QUERYSTRING: query (search terms)
         // re: phrase searches, turns out we can just pass whatever we got
@@ -274,7 +255,7 @@ class Connector
             // have a query to send to primo or it hates us
 
             // QUERYSTRING: institution
-            $qs[] ="institution=$institution";
+            $qs[] = "institution=$institution";
 
             // QUERYSTRING: onCampus
             if ($args["onCampus"]) {
@@ -287,7 +268,7 @@ class Connector
             if ($args["didYouMean"]) {
                 $qs[] = "dym=true";
             } else {
-                $qs[] ="dym=false";
+                $qs[] = "dym=false";
             }
 
             // QUERYSTRING: query (filter list)
@@ -343,7 +324,7 @@ class Connector
     }
 
     /**
-     * small wrapper for sendRequest, process to simplify error handling.
+     * Small wrapper for sendRequest, process to simplify error handling.
      *
      * @param string $qs     Query string
      * @param string $method HTTP method
@@ -353,9 +334,7 @@ class Connector
      */
     protected function call($qs, $method = 'GET')
     {
-        if ($this->logger) {
-            $this->logger->debug("{$method}: {$this->host}{$qs}");
-        }
+        $this->debug("{$method}: {$this->host}{$qs}");
         $this->client->resetParameters();
         if ($method == 'GET') {
             $baseUrl = $this->host . $qs;
@@ -373,7 +352,7 @@ class Connector
     }
 
     /**
-     * translate Primo's XML into array of arrays.
+     * Translate Primo's XML into array of arrays.
      *
      * @param array $data The raw xml from Primo
      *
@@ -395,10 +374,25 @@ class Connector
 
         // some useful data about these results
         $totalhitsarray = $sxe->xpath("//@TOTALHITS");
-        $totalhits = (int)$totalhitsarray[0];
+
+        // if totalhits is missing but we have a message, this is an error
+        // situation.
+        if (!isset($totalhitsarray[0])) {
+            $messages = $sxe->xpath("//@MESSAGE");
+            $message = isset($messages[0])
+                ? (string)$messages[0] : "TOTALHITS attribute missing.";
+            throw new \Exception($message);
+        } else {
+            $totalhits = (int)$totalhitsarray[0];
+        }
         // TODO: would these be useful?
         //$firsthit = $sxe->xpath('//@FIRSTHIT');
         //$lasthit = $sxe->xpath('//@LASTHIT');
+
+        // Register the 'sear' namespace at the top level to avoid problems:
+        $sxe->registerXPathNamespace(
+            'sear', 'http://www.exlibrisgroup.com/xsd/jaguar/search'
+        );
 
         // Get the available namespaces. The Primo API uses multiple namespaces.
         // Will be used to navigate the DOM for elements that have namespaces
@@ -407,15 +401,15 @@ class Connector
         // Get results set data and add to $items array
         // This foreach grabs all the child elements of sear:DOC,
         //   except those with namespaces
-        $items = array();
+        $items = [];
 
-        $docset = isset($namespaces['sear']) ? $sxe->xpath('//sear:DOC') : array();
+        $docset = $sxe->xpath('//sear:DOC');
         if (empty($docset) && isset($sxe->JAGROOT->RESULT->DOCSET->DOC)) {
             $docset = $sxe->JAGROOT->RESULT->DOCSET->DOC;
         }
 
         foreach ($docset as $doc) {
-            $item = array();
+            $item = [];
             // Due to a bug in the primo API, the first result has
             //   a namespace (prim:) while the rest of the results do not.
             //   Those child elements do not get added to $doc.
@@ -494,13 +488,12 @@ class Connector
             //    (string)$prefix->PrimoNMBib->record->display->lds50;
 
             // Get the URL, which has a separate namespace
-            if (isset($namespaces['sear'])) {
-                $sear = $doc->children($namespaces['sear']);
-                $item['url'] = !empty($sear->LINKS->openurl)
-                    ? (string)$sear->LINKS->openurl
-                    : (string)$sear->GETIT->attributes()->GetIt2;
-            }
+            $sear = $doc->children($namespaces['sear']);
+            $item['url'] = !empty($sear->LINKS->openurl)
+                ? (string)$sear->LINKS->openurl
+                : (string)$sear->GETIT->attributes()->GetIt2;
 
+            $item['fullrecord'] = $prefix->PrimoNMBib->record->asXml();
             $items[] = $item;
         }
 
@@ -515,10 +508,9 @@ class Connector
         //  which has the name of the facet as an attribute.
         // We only get the first level of elements
         //   because child elements have a namespace prefix
-        $facets = array();
+        $facets = [];
 
-        $facetSet = isset($namespaces['sear'])
-            ? $sxe->xpath('//sear:FACET') : array();
+        $facetSet = $sxe->xpath('//sear:FACET');
         if (empty($facetSet)) {
             if (!empty($sxe->JAGROOT->RESULT->FACETLIST)) {
                 $facetSet = $sxe->JAGROOT->RESULT->FACETLIST
@@ -541,19 +533,18 @@ class Connector
             }
         }
 
-        $didYouMean = array();
-        $suggestions = isset($namespaces['sear'])
-            ? $sxe->xpath('//sear:QUERYTRANSFORMS') : array();
+        $didYouMean = [];
+        $suggestions = $sxe->xpath('//sear:QUERYTRANSFORMS');
         foreach ($suggestions as $suggestion) {
             $didYouMean[] = (string)$suggestion->attributes()->QUERY;
         }
 
-        return array(
+        return [
             'recordCount' => $totalhits,
             'documents' => $items,
             'facets' => $facets,
             'didYouMean' => $didYouMean
-        );
+        ];
     }
 
     /**
@@ -569,7 +560,7 @@ class Connector
     {
         // Query String Parameters
         if (isset($recordId)) {
-            $qs   = array();
+            $qs   = [];
             $qs[] = "query=any,contains,\"$recordId\"";
             $qs[] = "institution=$inst_code";
             $qs[] = "onCampus=true";

@@ -1,4 +1,4 @@
-/*global checkSaveStatuses, confirm, extractController, extractSource, getItemsFromCartCookie, hexEncode, htmlEncode, path, printIDs, rc4Encrypt, Recaptcha, redrawCartStatus, refreshCommentList, removeRecordState, saveCartCookie, vufindString*/
+/*global btoa, checkSaveStatuses, confirm, extractController, extractSource, getItemsFromCartCookie, hexEncode, htmlEncode, path, printIDs, rc4Encrypt, Recaptcha, redrawCartStatus, refreshCommentList, removeRecordState, saveCartCookie, unescape, vufindString*/
 
 // keep a handle to the current opened dialog so we can access it later
 var __dialogHandle = {dialog: null, processFollowup:false, followupModule: null, followupAction: null, recordId: null, postParams: null};
@@ -104,8 +104,9 @@ function registerAjaxLogin() {
                     // get the user entered password
                     var password = form.password.value;
 
-                    // encrypt the password with the salt
-                    password = rc4Encrypt(salt, password);
+                    // base-64 encode the password (to allow support for Unicode)
+                    // and then encrypt the password with the salt
+                    password = rc4Encrypt(salt, btoa(unescape(encodeURIComponent(password))));
 
                     // hex encode the encrypted password
                     password = hexEncode(password);
@@ -466,7 +467,7 @@ function registerAjaxEmailSearch() {
 function registerAjaxBulkEmail() {
     $('#modalDialog form[name="bulkEmail"]').unbind('submit').submit(function(){
         if (!$(this).valid()) { return false; }
-        var url = path + '/AJAX/JSON?' + $.param({method:'emailSearch', 'subject':'bulk_email_title'});
+        var url = path + '/AJAX/JSON?' + $.param({method:'emailSearch', 'cart':'1'});
         var ids = [];
         $(':input[name="ids[]"]', this).each(function() {
             ids.push(encodeURIComponent('id[]') + '=' + encodeURIComponent(this.value));

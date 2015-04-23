@@ -36,9 +36,35 @@ use Zend\ServiceManager\ServiceManager;
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
+ *
+ * @codeCoverageIgnore
  */
 class Factory
 {
+    /**
+     * Construct the Auth Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Auth\PluginManager
+     */
+    public static function getAuthPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Auth');
+    }
+
+    /**
+     * Construct the Autocomplete Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Autocomplete\PluginManager
+     */
+    public static function getAutocompletePluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Autocomplete');
+    }
+
     /**
      * Construct the cache manager.
      *
@@ -69,8 +95,109 @@ class Factory
         $size = isset($config->Site->bookBagMaxSize)
             ? $config->Site->bookBagMaxSize : 100;
         return new \VuFind\Cart(
-            $sm->get('VuFind\RecordLoader'), $size, $active
+            $sm->get('VuFind\RecordLoader'), $sm->get('VuFind\CookieManager'),
+            $size, $active
         );
+    }
+
+    /**
+     * Construct the config manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Config\PluginManager
+     */
+    public static function getConfig(ServiceManager $sm)
+    {
+        $config = $sm->get('Config');
+        return new \VuFind\Config\PluginManager(
+            new \Zend\ServiceManager\Config($config['vufind']['config_reader'])
+        );
+    }
+
+    /**
+     * Construct the Content Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Content\PluginManager
+     */
+    public static function getContentPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Content');
+    }
+
+    /**
+     * Construct the Content\AuthorNotes Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Content\AuthorNotes\PluginManager
+     */
+    public static function getContentAuthorNotesPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Content\AuthorNotes');
+    }
+
+    /**
+     * Construct the Content\Covers Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Content\Covers\PluginManager
+     */
+    public static function getContentCoversPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Content\Covers');
+    }
+
+    /**
+     * Construct the Content\Excerpts Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Content\Excerpts\PluginManager
+     */
+    public static function getContentExcerptsPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Content\Excerpts');
+    }
+
+    /**
+     * Construct the Content\Reviews Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Content\Reviews\PluginManager
+     */
+    public static function getContentReviewsPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Content\Reviews');
+    }
+
+    /**
+     * Construct the cookie manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Cookie\CookieManager
+     */
+    public static function getCookieManager(ServiceManager $sm)
+    {
+        $config = $sm->get('VuFind\Config')->get('config');
+        $path = '/';
+        if (isset($config->Cookies->limit_by_path)
+            && $config->Cookies->limit_by_path
+        ) {
+            $path = $sm->get('Request')->getBasePath();
+        }
+        $secure = isset($config->Cookies->only_secure)
+            ? $config->Cookies->only_secure
+            : false;
+        $domain = isset($config->Cookies->domain)
+            ? $config->Cookies->domain
+            : null;
+        return new \VuFind\Cookie\CookieManager($_COOKIE, $path, $domain, $secure);
     }
 
     /**
@@ -114,6 +241,18 @@ class Factory
     }
 
     /**
+     * Construct the Db\Table Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Db\Table\PluginManager
+     */
+    public static function getDbTablePluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Db\Table');
+    }
+
+    /**
      * Construct the export helper.
      *
      * @param ServiceManager $sm Service manager.
@@ -129,6 +268,63 @@ class Factory
     }
 
     /**
+     * Generic plugin manager factory (support method).
+     *
+     * @param ServiceManager $sm Service manager.
+     * @param string         $ns VuFind namespace containing plugin manager
+     *
+     * @return object
+     */
+    public static function getGenericPluginManager(ServiceManager $sm, $ns)
+    {
+        $className = 'VuFind\\' . $ns . '\PluginManager';
+        $configKey = strtolower(str_replace('\\', '_', $ns));
+        $config = $sm->get('Config');
+        return new $className(
+            new \Zend\ServiceManager\Config(
+                $config['vufind']['plugin_managers'][$configKey]
+            )
+        );
+    }
+
+    /**
+     * Construct the Hierarchy\Driver Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Hierarchy\Driver\PluginManager
+     */
+    public static function getHierarchyDriverPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Hierarchy\Driver');
+    }
+
+    /**
+     * Construct the Hierarchy\TreeDataSource Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Hierarchy\TreeDataSource\PluginManager
+     */
+    public static function getHierarchyTreeDataSourcePluginManager(
+        ServiceManager $sm
+    ) {
+        return static::getGenericPluginManager($sm, 'Hierarchy\TreeDataSource');
+    }
+
+    /**
+     * Construct the Hierarchy\TreeRenderer Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Hierarchy\TreeRenderer\PluginManager
+     */
+    public static function getHierarchyTreeRendererPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Hierarchy\TreeRenderer');
+    }
+
+    /**
      * Construct the HTTP service.
      *
      * @param ServiceManager $sm Service manager.
@@ -138,7 +334,7 @@ class Factory
     public static function getHttp(ServiceManager $sm)
     {
         $config = $sm->get('VuFind\Config')->get('config');
-        $options = array();
+        $options = [];
         if (isset($config->Proxy->host)) {
             $options['proxy_host'] = $config->Proxy->host;
             if (isset($config->Proxy->port)) {
@@ -146,7 +342,7 @@ class Factory
             }
         }
         $defaults = isset($config->Http)
-            ? $config->Http->toArray() : array();
+            ? $config->Http->toArray() : [];
         return new \VuFindHttp\HttpService($options, $defaults);
     }
 
@@ -182,6 +378,18 @@ class Factory
     }
 
     /**
+     * Construct the ILS\Driver Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\ILS\Driver\PluginManager
+     */
+    public static function getILSDriverPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'ILS\Driver');
+    }
+
+    /**
      * Construct the ILS hold logic.
      *
      * @param ServiceManager $sm Service manager.
@@ -191,7 +399,7 @@ class Factory
     public static function getILSHoldLogic(ServiceManager $sm)
     {
         return new \VuFind\ILS\Logic\Holds(
-            $sm->get('VuFind\AuthManager'), $sm->get('VuFind\ILSConnection'),
+            $sm->get('VuFind\ILSAuthenticator'), $sm->get('VuFind\ILSConnection'),
             $sm->get('VuFind\HMAC'), $sm->get('VuFind\Config')->get('config')
         );
     }
@@ -220,7 +428,7 @@ class Factory
     public static function getILSTitleHoldLogic(ServiceManager $sm)
     {
         return new \VuFind\ILS\Logic\TitleHolds(
-            $sm->get('VuFind\AuthManager'), $sm->get('VuFind\ILSConnection'),
+            $sm->get('VuFind\ILSAuthenticator'), $sm->get('VuFind\ILSConnection'),
             $sm->get('VuFind\HMAC'), $sm->get('VuFind\Config')->get('config')
         );
     }
@@ -260,7 +468,7 @@ class Factory
             $translator = $sm->get('VuFind\Translator');
             $recaptcha->setOption(
                 'custom_translations',
-                array(
+                [
                     'audio_challenge' =>
                         $translator->translate('recaptcha_audio_challenge'),
                     'cant_hear_this' =>
@@ -283,10 +491,34 @@ class Factory
                         $translator->translate('recaptcha_refresh_btn'),
                     'visual_challenge' =>
                         $translator->translate('recaptcha_visual_challenge')
-                )
+                ]
             );
         }
         return $recaptcha;
+    }
+
+    /**
+     * Construct the Recommend Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Recommend\PluginManager
+     */
+    public static function getRecommendPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Recommend');
+    }
+
+    /**
+     * Construct the RecordDriver Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\RecordDriver\PluginManager
+     */
+    public static function getRecordDriverPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'RecordDriver');
     }
 
     /**
@@ -336,6 +568,42 @@ class Factory
     }
 
     /**
+     * Construct the RecordTab Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\RecordTab\PluginManager
+     */
+    public static function getRecordTabPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'RecordTab');
+    }
+
+    /**
+     * Construct the Related Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Related\PluginManager
+     */
+    public static function getRelatedPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Related');
+    }
+
+    /**
+     * Construct the Resolver\Driver Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Resolver\Driver\PluginManager
+     */
+    public static function getResolverDriverPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Resolver\Driver');
+    }
+
+    /**
      * Construct the search backend manager.
      *
      * @param ServiceManager $sm Service manager.
@@ -353,6 +621,42 @@ class Factory
         $manager  = new \VuFind\Search\BackendManager($registry);
 
         return $manager;
+    }
+
+    /**
+     * Construct the Search\Options Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Search\Options\PluginManager
+     */
+    public static function getSearchOptionsPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Search\Options');
+    }
+
+    /**
+     * Construct the Search\Params Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Search\Params\PluginManager
+     */
+    public static function getSearchParamsPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Search\Params');
+    }
+
+    /**
+     * Construct the Search\Results Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Search\Results\PluginManager
+     */
+    public static function getSearchResultsPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Search\Results');
     }
 
     /**
@@ -386,6 +690,43 @@ class Factory
     }
 
     /**
+     * Construct the Session Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \Zend\Session\SessionManager
+     */
+    public static function getSessionManager(ServiceManager $sm)
+    {
+        $cookieManager = $sm->get('VuFind\CookieManager');
+        $sessionConfig = new \Zend\Session\Config\SessionConfig();
+        $options = [
+            'cookie_path' => $cookieManager->getPath(),
+            'cookie_secure' => $cookieManager->isSecure()
+        ];
+        $domain = $cookieManager->getDomain();
+        if (!empty($domain)) {
+            $options['cookie_domain'] = $domain;
+        }
+
+        $sessionConfig->setOptions($options);
+
+        return new \Zend\Session\SessionManager($sessionConfig);
+    }
+
+    /**
+     * Construct the Session Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Session\PluginManager
+     */
+    public static function getSessionPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Session');
+    }
+
+    /**
      * Construct the Solr writer.
      *
      * @param ServiceManager $sm Service manager.
@@ -398,6 +739,18 @@ class Factory
             $sm->get('VuFind\Search\BackendManager'),
             $sm->get('VuFind\DbTablePluginManager')->get('changetracker')
         );
+    }
+
+    /**
+     * Construct the Statistics\Driver Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Statistics\Driver\PluginManager
+     */
+    public static function getStatisticsDriverPluginManager(ServiceManager $sm)
+    {
+        return static::getGenericPluginManager($sm, 'Statistics\Driver');
     }
 
     /**
@@ -420,23 +773,34 @@ class Factory
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return \Zend\I18n\Translator\Translator
+     * @return \Zend\I18n\Translator\TranslatorInterface
      */
     public static function getTranslator(ServiceManager $sm)
     {
-        $factory = new \Zend\I18n\Translator\TranslatorServiceFactory();
+        $factory = new \Zend\Mvc\Service\TranslatorServiceFactory();
         $translator = $factory->createService($sm);
 
         // Set up the ExtendedIni plugin:
         $config = $sm->get('VuFind\Config')->get('config');
-        $pathStack = array(
+        $pathStack = [
             APPLICATION_PATH  . '/languages',
             LOCAL_OVERRIDE_DIR . '/languages'
-        );
-        $translator->getPluginManager()->setService(
+        ];
+        $fallbackLocales = $config->Site->language == 'en'
+            ? 'en'
+            : [$config->Site->language, 'en'];
+        try {
+            $pm = $translator->getPluginManager();
+        } catch (\Zend\Mvc\Exception\BadMethodCallException $ex) {
+            // If getPluginManager is missing, this means that the user has
+            // disabled translation in module.config.php or PHP's intl extension
+            // is missing. We can do no further configuration of the object.
+            return $translator;
+        }
+        $pm->setService(
             'extendedini',
             new \VuFind\I18n\Translator\Loader\ExtendedIni(
-                $pathStack, $config->Site->language
+                $pathStack, $fallbackLocales
             )
         );
 
@@ -468,8 +832,11 @@ class Factory
     public static function getWorldCatUtils(ServiceManager $sm)
     {
         $config = $sm->get('VuFind\Config')->get('config');
-        $wcId = isset($config->WorldCat->id)
-            ? $config->WorldCat->id : false;
-        return new \VuFind\Connection\WorldCatUtils($wcId);
+        $client = $sm->get('VuFind\Http')->createClient();
+        $ip = $sm->get('Request')->getServer()->get('SERVER_ADDR');
+        return new \VuFind\Connection\WorldCatUtils(
+            isset($config->WorldCat) ? $config->WorldCat : null,
+            $client, true, $ip
+        );
     }
 }

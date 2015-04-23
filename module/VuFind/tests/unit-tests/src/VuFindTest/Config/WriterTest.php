@@ -59,22 +59,22 @@ class WriterTest extends \VuFindTest\Unit\TestCase
      */
     public function testReadArray()
     {
-        $cfg = array('Test' => array('key1' => 'val1', 'key2' => 'val2'));
-        $comments = array(
-            'sections' => array(
-                'Test' => array(
+        $cfg = ['Test' => ['key1' => 'val1', 'key2' => 'val2']];
+        $comments = [
+            'sections' => [
+                'Test' => [
                     'before' => "; section head\n",
                     'inline' => '; inline',
-                    'settings' => array(
-                        'key1' => array(
+                    'settings' => [
+                        'key1' => [
                             'before' => "; key head\n",
                             'inline' => '; key inline'
-                        )
-                    )
-                )
-            ),
+                        ]
+                    ]
+                ]
+            ],
             'after' => "; the end\n"
-        );
+        ];
         $target = "; section head\n[Test]\t; inline\n; key head\n"
             . "key1             = \"val1\"\t; key inline\n"
             . "key2             = \"val2\"\n; the end\n";
@@ -92,6 +92,51 @@ class WriterTest extends \VuFindTest\Unit\TestCase
         $cfg = "[test]\nkey1=val1\n";
         $test = new Writer('fake.ini', $cfg);
         $this->assertEquals($cfg, $test->getContent());
+    }
+
+    /**
+     * Test constructing text from a non-associative array.
+     *
+     * @return void
+     */
+    public function testStandardArray()
+    {
+        $cfg = ['Test' => ['test' => ['val1', 'val2']]];
+        $test = new Writer('fake.ini', $cfg);
+        $expected = "[Test]\ntest[]           = \"val1\"\n"
+            . "test[]           = \"val2\"\n\n";
+        $this->assertEquals($expected, $test->getContent());
+    }
+
+    /**
+     * Test constructing text from a non-associative array with
+     * non-consecutive keys.
+     *
+     * @return void
+     */
+    public function testOutOfOrderArray()
+    {
+        $cfg = ['Test' => ['test' => [6 => 'val1', 8 => 'val2']]];
+        $test = new Writer('fake.ini', $cfg);
+        $expected = "[Test]\ntest[6]          = \"val1\"\n"
+            . "test[8]          = \"val2\"\n\n";
+        $this->assertEquals($expected, $test->getContent());
+    }
+
+    /**
+     * Test constructing text from an associative array.
+     *
+     * @return void
+     */
+    public function testAssocArray()
+    {
+        $cfg = [
+            'Test' => ['test' => ['key1' => 'val1', 'key2' => 'val2']]
+        ];
+        $test = new Writer('fake.ini', $cfg);
+        $expected = "[Test]\ntest['key1']     = \"val1\"\n"
+            . "test['key2']     = \"val2\"\n\n";
+        $this->assertEquals($expected, $test->getContent());
     }
 
     /**

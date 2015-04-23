@@ -40,14 +40,6 @@ use Zend\View\Exception\RuntimeException;
 class Auth extends \Zend\View\Helper\AbstractHelper
 {
     /**
-     * Active auth class (used for auth methods that allow more than one type
-     * of authentication)
-     *
-     * @var string
-     */
-    protected $activeAuthClass;
-
-    /**
      * Authentication manager
      *
      * @var \VuFind\Auth\Manager
@@ -62,7 +54,6 @@ class Auth extends \Zend\View\Helper\AbstractHelper
     public function __construct(\VuFind\Auth\Manager $manager)
     {
         $this->manager = $manager;
-        $this->activeAuthClass = null;
     }
 
     /**
@@ -73,7 +64,7 @@ class Auth extends \Zend\View\Helper\AbstractHelper
      *
      * @return string
      */
-    protected function renderTemplate($name, $context = array())
+    protected function renderTemplate($name, $context = [])
     {
         // Set up the needed context in the view:
         $contextHelper = $this->getView()->plugin('context');
@@ -82,7 +73,7 @@ class Auth extends \Zend\View\Helper\AbstractHelper
         // Get the current auth module's class name, then start a loop
         // in case we need to use a parent class' name to find the appropriate
         // template.
-        $className = $this->getActiveAuthClass();
+        $className = $this->getManager()->getAuthClassForTemplateRendering();
         $topClassName = $className; // for error message
         while (true) {
             // Guess the template name for the current class:
@@ -135,7 +126,7 @@ class Auth extends \Zend\View\Helper\AbstractHelper
      *
      * @return string
      */
-    public function getCreateFields($context = array())
+    public function getCreateFields($context = [])
     {
         return $this->renderTemplate('create.phtml', $context);
     }
@@ -147,7 +138,7 @@ class Auth extends \Zend\View\Helper\AbstractHelper
      *
      * @return string
      */
-    public function getLoginFields($context = array())
+    public function getLoginFields($context = [])
     {
         return $this->renderTemplate('loginfields.phtml', $context);
     }
@@ -159,7 +150,7 @@ class Auth extends \Zend\View\Helper\AbstractHelper
      *
      * @return string
      */
-    public function getLogin($context = array())
+    public function getLogin($context = [])
     {
         return $this->renderTemplate('login.phtml', $context);
     }
@@ -171,48 +162,9 @@ class Auth extends \Zend\View\Helper\AbstractHelper
      *
      * @return string
      */
-    public function getLoginDesc($context = array())
+    public function getLoginDesc($context = [])
     {
         return $this->renderTemplate('logindesc.phtml', $context);
-    }
-
-    /**
-     * Setter
-     *
-     * @param string $classname Class to use in rendering
-     *
-     * @return void
-     */
-    public function setActiveAuthClass($classname)
-    {
-        $this->activeAuthClass = $classname;
-        $this->getManager()->setActiveAuthClass($this->getBriefClass($classname));
-    }
-
-    /**
-     * Accessor for the full class name
-     *
-     * @return string
-     */
-    protected function getActiveAuthClass()
-    {
-        if ($this->activeAuthClass == null) {
-            return $this->getManager()->getAuthClass();
-        }
-        return $this->activeAuthClass;
-    }
-
-    /**
-     * Accessor for just the last part of the class name
-     *
-     * @return string
-     */
-    public function getActiveAuthMethod()
-    {
-        if ($this->activeAuthClass == null) {
-            return $this->getManager()->getAuthClass();
-        }
-        return $this->getBriefClass($this->activeAuthClass);
     }
 
     /**
@@ -235,7 +187,7 @@ class Auth extends \Zend\View\Helper\AbstractHelper
      *
      * @return string
      */
-    public function getNewPasswordForm($context = array())
+    public function getNewPasswordForm($context = [])
     {
         return $this->renderTemplate('newpassword.phtml', $context);
     }
@@ -247,7 +199,7 @@ class Auth extends \Zend\View\Helper\AbstractHelper
      *
      * @return string
      */
-    public function getPasswordRecoveryForm($context = array())
+    public function getPasswordRecoveryForm($context = [])
     {
         return $this->renderTemplate('recovery.phtml', $context);
     }

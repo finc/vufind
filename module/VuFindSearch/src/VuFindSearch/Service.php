@@ -26,13 +26,13 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org
  */
-
 namespace VuFindSearch;
 
 use VuFindSearch\Backend\BackendInterface;
 use VuFindSearch\Feature\RetrieveBatchInterface;
 use VuFindSearch\Feature\RandomInterface;
 use VuFindSearch\Backend\Exception\BackendException;
+use VuFindSearch\Response\RecordCollectionInterface;
 
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventManager;
@@ -79,7 +79,7 @@ class Service
      */
     public function __construct()
     {
-        $this->backends = array();
+        $this->backends = [];
     }
 
     /**
@@ -91,7 +91,7 @@ class Service
      * @param integer             $limit   Search limit
      * @param ParamBag            $params  Search backend parameters
      *
-     * @return ResponseInterface
+     * @return RecordCollectionInterface
      */
     public function search($backend, Query\AbstractQuery $query, $offset = 0,
         $limit = 20, ParamBag $params = null
@@ -120,7 +120,7 @@ class Service
      * @param string   $id      Record identifier
      * @param ParamBag $params  Search backend parameters
      *
-     * @return ResponseInterface
+     * @return RecordCollectionInterface
      */
     public function retrieve($backend, $id, ParamBag $params = null)
     {
@@ -148,7 +148,7 @@ class Service
      * @param array    $ids     Record identifier
      * @param ParamBag $params  Search backend parameters
      *
-     * @return ResponseInterface
+     * @return RecordCollectionInterface
      */
     public function retrieveBatch($backend, $ids, ParamBag $params = null)
     {
@@ -199,12 +199,11 @@ class Service
      * @param integer             $limit   Search limit
      * @param ParamBag            $params  Search backend parameters
      *
-     * @return ResponseInterface
+     * @return RecordCollectionInterface
      */
     public function random($backend, $query, $limit = 20, $params = null)
     {
         $params  = $params ?: new ParamBag();
-        $backendString = $backend;
         $context = __FUNCTION__;
         $args = compact('backend', 'query', 'limit', 'params', 'context');
         $backend = $this->resolve($backend, $args);
@@ -247,8 +246,7 @@ class Service
             } else {
                 // Default case: retrieve n random records:
                 $response = false;
-                $retrievedIndexes = array();
-                $retrievedRecordIds = array();
+                $retrievedIndexes = [];
                 for ($i = 0; $i < $limit; $i++) {
                     $nextIndex = rand(0, $total_records - 1);
                     while (in_array($nextIndex, $retrievedIndexes)) {
@@ -290,12 +288,15 @@ class Service
         $params  = $params ?: new ParamBag();
         $context = __FUNCTION__;
         $args = compact('backend', 'id', 'params', 'context');
-        $backend = $this->resolve($backend, $args);
-        $args['backend_instance'] = $backend;
+        $backendInstance = $this->resolve($backend, $args);
+        $args['backend_instance'] = $backendInstance;
 
-        $this->triggerPre($backend, $args);
+        $this->triggerPre($backendInstance, $args);
         try {
-            $response = $backend->similar($id, $params);
+            if (!($backendInstance instanceof Feature\SimilarInterface)) {
+                throw new BackendException("$backend does not support similar()");
+            }
+            $response = $backendInstance->similar($id, $params);
         } catch (BackendException $e) {
             $this->triggerError($e, $args);
             throw $e;
@@ -314,7 +315,7 @@ class Service
      */
     public function setEventManager(EventManagerInterface $events)
     {
-        $events->setIdentifiers(array('VuFind\Search', 'VuFindSearch'));
+        $events->setIdentifiers(['VuFind\Search', 'VuFindSearch']);
         $this->events = $events;
     }
 
@@ -353,7 +354,7 @@ class Service
                 $this,
                 $args,
                 function ($o) {
-                    return ($o instanceOf BackendInterface);
+                    return ($o instanceof BackendInterface);
                 }
             );
             if (!$response->stopped()) {

@@ -26,7 +26,6 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org
  */
-
 namespace VuFindTest\Query;
 
 use VuFindSearch\Query\Query;
@@ -73,5 +72,17 @@ class QueryTest extends PHPUnit_Framework_TestCase
         $q = new Query('foo', 'bar');
         $q->setHandler('baz');
         $this->assertEquals('baz', $q->getHandler());
+    }
+
+    /**
+     * Test setOperator() method
+     *
+     * @return void
+     */
+    public function testSetOperator()
+    {
+        $q = new Query('foo', 'bar');
+        $q->setOperator('baz');
+        $this->assertEquals('baz', $q->getOperator());
     }
 }

@@ -62,7 +62,7 @@ class SwitchQuery implements RecommendInterface
      *
      * @var array
      */
-    protected $suggestions = array();
+    protected $suggestions = [];
 
     /**
      * Names of checks that should be skipped. These should correspond
@@ -71,7 +71,23 @@ class SwitchQuery implements RecommendInterface
      *
      * @var array
      */
-    protected $skipChecks = array();
+    protected $skipChecks = [];
+
+    /**
+     * Names of transforms to apply. These should correspond
+     * with transform method names -- e.g. to apply the transform found in the
+     * transformTruncateChar() method, you would put 'truncatechar' into this array.
+     *
+     * @var array
+     */
+    protected $transforms = [];
+
+    /**
+     * Search results object.
+     *
+     * @var \VuFind\Search\Base\Results
+     */
+    protected $results;
 
     /**
      * Constructor
@@ -84,8 +100,6 @@ class SwitchQuery implements RecommendInterface
     }
 
     /**
-     * setConfig
-     *
      * Store the configuration of the recommendation module.
      *
      * @param string $settings Settings from searches.ini.
@@ -100,12 +114,12 @@ class SwitchQuery implements RecommendInterface
             return trim(strtolower($i));
         };
         $this->skipChecks = !empty($params[1])
-            ? array_map($callback, explode(',', $params[1])) : array();
+            ? array_map($callback, explode(',', $params[1])) : [];
+        $this->transforms = !empty($params[2])
+            ? explode(',', $params[2]) : [];
     }
 
     /**
-     * init
-     *
      * Called at the end of the Search Params objects' initFromRequest() method.
      * This method is responsible for setting search parameters needed by the
      * recommendation module and for reading any existing search parameters that may
@@ -122,8 +136,6 @@ class SwitchQuery implements RecommendInterface
     }
 
     /**
-     * process
-     *
      * Called after the Search Results object has performed its main search.  This
      * may be used to extract necessary information from the Search Results object
      * or to perform completely unrelated processing.
@@ -158,6 +170,20 @@ class SwitchQuery implements RecommendInterface
                     $result = $this->$method($query);
                     if ($result) {
                         $this->suggestions['switchquery_' . $currentCheck] = $result;
+                    }
+                }
+            }
+        }
+
+        // Perform all transforms (based on naming convention):
+        $methods = get_class_methods($this);
+        foreach ($methods as $method) {
+            if (substr($method, 0, 9) == 'transform') {
+                $currTrans = strtolower(substr($method, 9));
+                if (in_array($currTrans, $this->transforms)) {
+                    $result = $this->$method($query);
+                    if ($result) {
+                        $this->suggestions['switchquery_' . $currTrans] = $result;
                     }
                 }
             }
@@ -233,7 +259,7 @@ class SwitchQuery implements RecommendInterface
         // Remove escaped quotes as they are of no consequence:
         $query = str_replace('\"', ' ', $query);
         return (strpos($query, '"') === false)
-            ? false : str_replace('"', ' ', $query);
+            ? false : trim(str_replace('"', ' ', $query));
     }
 
     /**
@@ -254,6 +280,23 @@ class SwitchQuery implements RecommendInterface
     }
 
     /**
+     * Broaden search by truncating one character (e.g. call number)
+     *
+     * @param string $query Query to transform
+     *
+     * @return string|bool
+     */
+    protected function transformTruncatechar($query)
+    {
+        // Don't truncate phrases:
+        if (substr($query, -1) == '"') {
+            return false;
+        }
+        $query = trim($query);
+        return (strlen($query) > 1) ? substr($query, 0, -1) : false;
+    }
+
+    /**
      * Extract a Lucene syntax helper from the search backend, if possible.
      *
      * @return bool|\VuFindSearch\Backend\Solr\LuceneSyntaxHelper
@@ -261,9 +304,9 @@ class SwitchQuery implements RecommendInterface
     protected function getLuceneHelper()
     {
         $backend = $this->backendManager->get($this->backend);
-        $qb = is_callable(array($backend, 'getQueryBuilder'))
+        $qb = is_callable([$backend, 'getQueryBuilder'])
             ? $backend->getQueryBuilder() : false;
-        return $qb && is_callable(array($qb, 'getLuceneHelper'))
+        return $qb && is_callable([$qb, 'getLuceneHelper'])
             ? $qb->getLuceneHelper() : false;
     }
 
@@ -278,7 +321,7 @@ class SwitchQuery implements RecommendInterface
     }
 
     /**
-     * Get the new search handler, or false if it does not apply.
+     * Get an array of suggestion messages.
      *
      * @return array
      */

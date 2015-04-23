@@ -104,8 +104,6 @@ class Recaptcha extends AbstractHelper
             $errorPart = '&error=' . urlencode($params['error']);
         }
 
-        $reCaptchaOptions = '';
-
         $options = $this->recaptcha->getOptions();
         if (!empty($options)) {
             $encoded = \Zend\Json\Json::encode($options);
@@ -121,7 +119,7 @@ class Recaptcha extends AbstractHelper
 
         return $this->view->render(
             'Service/recaptcha.phtml',
-            array(
+            [
                 'challengeField'   => $challengeField,
                 'errorPart'        => $errorPart,
                 'host'             => $host,
@@ -130,7 +128,7 @@ class Recaptcha extends AbstractHelper
                 'responseField'    => $responseField,
                 'theme'            => $options['theme'],
                 'useRecaptcha'     => $useRecaptcha,
-            )
+            ]
         );
     }
 

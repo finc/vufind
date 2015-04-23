@@ -50,9 +50,29 @@ class ConverterTest extends \VuFindTest\Unit\TestCase
      */
     public function testDates()
     {
+        // Get current default time zone
+        $real_zone = date_default_timezone_get();
+
+        // Try all the tests in different time zones to ensure consistency:
+        foreach (['America/New_York', 'Europe/Helsinki'] as $zone) {
+            date_default_timezone_set($zone);
+            $this->runTests();
+        }
+
+        // Restore original time zone
+        date_default_timezone_set($real_zone);
+    }
+
+    /**
+     * Support method for testDates()
+     *
+     * @return void
+     */
+    protected function runTests()
+    {
         // Build an object to test with (using empty configuration to ensure default
         // settings):
-        $date = new Converter(new Config(array()));
+        $date = new Converter(new Config([]));
 
         // Try some conversions:
         $this->assertEquals(

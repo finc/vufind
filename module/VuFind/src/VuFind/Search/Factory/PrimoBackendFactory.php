@@ -26,7 +26,6 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org   Main Site
  */
-
 namespace VuFind\Search\Factory;
 
 use VuFindSearch\Backend\Primo\Connector;
@@ -112,17 +111,19 @@ class PrimoBackendFactory implements FactoryInterface
      */
     protected function createConnector()
     {
-        // Load credentials:
+        // Load credentials and port number:
         $id = isset($this->primoConfig->General->apiId)
             ? $this->primoConfig->General->apiId : null;
+        $port = isset($this->primoConfig->General->port)
+            ? $this->primoConfig->General->port : 1701;
 
         // Build HTTP client:
         $client = $this->serviceLocator->get('VuFind\Http')->createClient();
         $timeout = isset($this->primoConfig->General->timeout)
             ? $this->primoConfig->General->timeout : 30;
-        $client->setOptions(array('timeout' => $timeout));
+        $client->setOptions(['timeout' => $timeout]);
 
-        $connector = new Connector($id, $this->getInstCode(), $client);
+        $connector = new Connector($id, $this->getInstCode(), $client, $port);
         $connector->setLogger($this->logger);
         return $connector;
     }
@@ -135,9 +136,9 @@ class PrimoBackendFactory implements FactoryInterface
     protected function getInstCode()
     {
         $codes = isset($this->primoConfig->Institutions->code)
-            ? $this->primoConfig->Institutions->code : array();
+            ? $this->primoConfig->Institutions->code : [];
         $regex = isset($this->primoConfig->Institutions->regex)
-            ? $this->primoConfig->Institutions->regex : array();
+            ? $this->primoConfig->Institutions->regex : [];
         if (empty($codes) || empty($regex) || count($codes) != count($regex)) {
             throw new \Exception('Check [Institutions] settings in Primo.ini');
         }
