@@ -1,0 +1,66 @@
+<?
+// Set up page title:
+$this->headTitle($this->translate('Suggestions for acquisition'));
+
+// Set up breadcrumbs:
+$this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') . '">' . $this->transEsc('Your Account') . '</a></li> <li class="active">' . $this->transEsc('Suggestions for acquisition') . '</li>';
+?>
+
+<div class="row">
+    <div class="<?=$this->layoutClass('mainbody')?>">
+        <h2><?=$this->transEsc('Your acquisition proposal') ?></h2>
+        <?=$this->flashmessages() ?>
+        <form class="form-horizontal" method="post" action="" name="acquisitionForm">
+            <h6><?=$this->transEsc('Please send only one form per acquisition proposal.') ?></h6>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="acquisition_subject"><?=$this->transEsc('Subject area') ?><span class="required">*</span></label>
+                <div class="col-sm-9">
+                    <select name="subject" class="form-control">
+                        <option value="-1"><?=$this->transEsc('Please select a subject area') ?></option>
+                        <? if (isset($subjectlist) && is_array($subjectlist)): ?>
+                            <? foreach ($subjectlist as $value): ?>
+                            <option value="<?=$value?>" <? if (isset($values['subject']) && ($values['subject'] != '-1') && ($values['subject'] == $value)): ?> selected="selected"<? endif; ?>><?=$this->transEsc($value)?></option>
+                            <? endforeach; ?>
+                        <? endif; ?>
+                    </select>
+                    <? /*if (isset($error) && in_array('subjectlist', $error)): ?>
+                        <span class="error-form"><?=$this->transEsc('Subject area should not be blank') ?></span>
+                    <? endif;*/ ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="acquistion_reasons"><?=$this->transEsc('Please give reasons for your suggestion') ?><span class="required">*</span></label>
+                <div class="col-sm-9">
+                    <textarea id="acquisition_reasons" type="text" cols="50" rows="5" name="reasons"><? if (isset($values['reasons']) && !empty($values['reasons'])): ?><?=$this->transEsc($values['reasons']) ?><? endif; ?></textarea>
+                    <br />
+                    <? /*if (isset($error) && in_array('reasons', $error)): ?>
+                        <span class="error-form"><?=$this->transEsc('Reasons for suggestion not be blank') ?></span>
+                    <? endif;*/ ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="acquistion_proposal"><?=$this->transEsc('Your acquisition proposal') ?><span class="required">*</span></label>
+                <div class="col-sm-9">
+                    <textarea id="acquisition_proposal" type="text" cols="50" rows="5" name="proposal"><? if (isset($values['proposal']) && !empty($values['proposal'])): ?><?=$this->transEsc($values['proposal']) ?><? endif; ?></textarea>
+                    <br />
+                    <? /*if (isset($error) && in_array('proposal', $error)): ?>
+                        <span class="error-form"><?=$this->transEsc('Proposal for acquisition should not be blank') ?></span>
+                    <? endif;*/ ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-9 col-sm-offset-3">
+                    <input class="btn btn-primary" type="submit" name="submit" value="<?=$this->transEsc('Submit') ?>"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-9 col-sm-offset-3">
+                    <?=$this->transEsc('note_mandatory_fields') ?>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="<?=$this->layoutClass('sidebar')?>">
+        <?=$this->context($this)->renderInContext("myresearch/menu.phtml", array('active' => 'aquisition'))?>
+    </div>
+</div>

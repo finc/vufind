@@ -1,0 +1,23 @@
+
+== Erwerbungsvorschlag ==
+
+Der Benutzer: <?=$user->lastname ?>, <?=$user->firstname ?>
+
+Benutzerkarte: <?=$user->username ?>
+
+E-Mail-Adresse: <?=$user->email ?>
+
+
+hat folgenden Titel zur Erwerbung empfohlen:
+
+<?=$proposal ?>
+
+
+Begründung für Empfehlung:
+
+<?=$reasons ?>
+
+
+für den Fachbereich: <?=$subject ?>
+
+<? if ($time): ?>Zeitpunkt: <?=$time ?><? endif; ?>

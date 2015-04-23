@@ -2,6 +2,11 @@
 namespace finc\Module\Configuration;
 
 $config = [
+    'controllers' => [
+        'invokables' => [
+            'my-research' => 'finc\Controller\MyResearchController',
+        ],
+    ],
     'vufind' => [
         'plugin_managers' => [
             'ils_driver' => [
@@ -84,5 +89,26 @@ $config = [
         ],
     ],
 ];
+
+// Define static routes -- Controller/Action strings
+$staticRoutes = [
+    'MyResearch/Acquisition'
+];
+
+// Build static routes
+foreach ($staticRoutes as $route) {
+    list($controller, $action) = explode('/', $route);
+    $routeName = str_replace('/', '-', strtolower($route));
+    $config['router']['routes'][$routeName] = [
+        'type' => 'Zend\Mvc\Router\Http\Literal',
+        'options' => [
+            'route'    => '/' . $route,
+            'defaults' => [
+                'controller' => $controller,
+                'action'     => $action,
+            ]
+        ]
+    ];
+}
 
 return $config;
