@@ -60,15 +60,15 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      */
     public function getLocalHeading() {
 
-        $array = array();
+        $array = [];
 
         if (isset($this->mainConfig->Site->indexExtension)) {
             $array = isset($this->fields['local_heading_' . ($this->mainConfig->Site->indexExtension)]) ?
-                $this->fields['local_heading_' . ($this->mainConfig->Site->indexExtension)] : array();
+                $this->fields['local_heading_' . ($this->mainConfig->Site->indexExtension)] : [];
             // Use local_heading_facet field if local_heading field delivers no results at first
             if (count($array) == 0) {
                 $array = isset($this->fields['local_heading_facet_' . ($this->mainConfig->Site->indexExtension)]) ?
-                    $this->fields['local_heading_facet_' . ($this->mainConfig->Site->indexExtension)] : array();
+                    $this->fields['local_heading_facet_' . ($this->mainConfig->Site->indexExtension)] : [];
             }
         }
         return $array;
@@ -103,7 +103,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      */
     public function getFormat()
     {
-        return isset($this->fields['format']) ? $this->fields['format'] : array();
+        return isset($this->fields['format']) ? $this->fields['format'] : [];
     }
 
     /**
@@ -127,7 +127,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
         $format = (false === $isGeneralFormat && true === $isExtension)
             ?  'format_' . $this->mainConfig->Site->indexExtension : 'format' ;
 
-        return isset($this->fields[$format]) ? $this->fields[$format] : array();
+        return isset($this->fields[$format]) ? $this->fields[$format] : [];
     }
 
 
@@ -187,7 +187,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
     public function getAuthorId()
     {
         return isset($this->fields['author_id']) ?
-            $this->fields['author_id'] : array();
+            $this->fields['author_id'] : [];
     }
 
     /**
@@ -200,7 +200,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      */
     public function getCombinedAuthors()
     {
-        $retval = array();
+        $retval = [];
 
         if ($this->getPrimaryAuthor() != '') {
             $original = '';
@@ -267,7 +267,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
     public function getCorporateSecondaryAuthors()
     {
         return isset($this->fields['author_corp2']) ?
-            $this->fields['author_corp2'] : array();
+            $this->fields['author_corp2'] : [];
     }
 
     /**
@@ -278,7 +278,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
     public function getISMNs()
     {
         return isset($this->fields['ismn']) && is_array($this->fields['ismn']) ?
-            $this->fields['ismn'] : array();
+            $this->fields['ismn'] : [];
     }
 
     /**
@@ -299,7 +299,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
     public function getNewTitles()
     {
         return isset($this->fields['title_new']) ?
-            $this->fields['title_new'] : array();
+            $this->fields['title_new'] : [];
     }
 
     /**
@@ -444,7 +444,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
     public function getTopicId()
     {
         return isset($this->fields['topic_id']) ?
-            $this->fields['topic_id'] : array();
+            $this->fields['topic_id'] : [];
     }
 
     /**
@@ -457,7 +457,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
         if (isset($this->fields['series2']) && !empty($this->fields['series2'])) {
             return $this->fields['series2'];
         }
-        return array();
+        return [];
     }
 
     /**
@@ -470,7 +470,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
         if (isset($this->fields['series_orig']) && !empty($this->fields['series_orig'])) {
             return $this->fields['series_orig'];
         }
-        return array();
+        return [];
     }
 
     /**

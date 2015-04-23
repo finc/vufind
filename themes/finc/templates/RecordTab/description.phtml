@@ -162,6 +162,14 @@
     </tr>
   <? endif; ?>
 
+  <? $doi = $this->driver->tryMethod('getCleanDOI'); if (!empty($doi)): ?>
+    <? $contentDisplayed = true; ?>
+    <tr>
+      <th><?=$this->transEsc('DOI')?>: </th>
+      <td><?=$this->escapeHtml($doi)?></td>
+    </tr>
+  <? endif; ?>
+
   <? $eissns = $this->driver->getEISSNs(); if (!empty($eissns)): ?>
       <? $contentDisplayed = true; ?>
       <tr>

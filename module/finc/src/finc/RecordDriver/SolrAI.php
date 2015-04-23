@@ -176,7 +176,7 @@ class SolrAI extends SolrDefault
             && is_array($this->record['authors'])
             && (count($this->record['authors']) > 0)
         ) {
-            $retval = array();
+            $retval = [];
             $i = 0;
             $authors = $this->record['authors'];
             foreach ($authors as $value) {
@@ -187,7 +187,7 @@ class SolrAI extends SolrDefault
             }
             return $retval;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -213,7 +213,7 @@ class SolrAI extends SolrDefault
     {
         $names =  $this->_getAIFullrecordArrayValue('rft.pub');
         $i = 0;
-        $retval = array();
+        $retval = [];
         while (isset($names[$i])) {
             // Build objects to represent each set of data; these will
             // transform seamlessly into strings in the view layer.
@@ -246,14 +246,14 @@ class SolrAI extends SolrDefault
      */
     public function getAIDataIn()
     {
-        return array(
+        return [
             'jtitle' => $this->getJTitle(),
             'volume' => $this->getVolume(),
             'date'   => $this->getDate(),
             'issue'  => $this->getIssues(),
             'issns'  => $this->getISSNs(),
             'pages'  => $this->getPages()
-        );
+        ];
     }
 
     /**
@@ -332,6 +332,8 @@ class SolrAI extends SolrDefault
         } else if ($this->hasEndpages()) {
             return $this->aiRecord['rft.epage'][0];
         }
+
+        return '';
     }
 
     /**
@@ -421,11 +423,11 @@ class SolrAI extends SolrDefault
     protected function getDefaultOpenURLParams()
     {
         // Start an array of OpenURL parameters:
-        return array(
+        return [
             'ctx_ver' => 'Z39.88-2004',
             'ctx_enc' => 'info:ofi/enc:UTF-8',
             'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator'
-        );
+        ];
     }
 
     /**
@@ -651,7 +653,7 @@ class SolrAI extends SolrDefault
      */
     public function getRawData()
     {
-        $tmp = array();
+        $tmp = [];
         $i = 0;
         if (!empty($this->aiRecord)) {
             foreach ($this->aiRecord as $key => $value) {
@@ -680,12 +682,12 @@ class SolrAI extends SolrDefault
 
         $url = sprintf($baseUrl, $id);
 
-        $curlDefaultOptions = array(
+        $curlDefaultOptions = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_USERAGENT => "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
-        );
-        $curlOptions = array();
+        ];
+        $curlOptions = [];
         $curlOptions[CURLOPT_URL] = $url;
         $handle = curl_init();
         $curl_options = $curlDefaultOptions + $curlOptions;
@@ -752,7 +754,7 @@ class SolrAI extends SolrDefault
      * @return mixed value of key
      * @access private
      */
-    private function _getAIFullrecordArrayValue($key, $default = array())
+    private function _getAIFullrecordArrayValue($key, $default = [])
     {
         if (!$this->_hasAIFullrecordArrayValue($key)) {
             return $default;

@@ -33,8 +33,7 @@
 namespace finc\ILS\Driver;
 use DOMDocument, VuFind\Exception\ILS as ILSException,
     VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
-    Zend\Log\LoggerAwareInterface as LoggerAwareInterface,
-    Zend\Log\LoggerInterface as LoggerInterface;
+    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
  * ILS Driver for VuFind to query availability information via DAIA.
@@ -49,6 +48,9 @@ use DOMDocument, VuFind\Exception\ILS as ILSException,
  */
 class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareInterface, LoggerAwareInterface
 {
+    use \VuFindHttp\HttpServiceAwareTrait;
+    use \VuFind\Log\LoggerAwareTrait;
+
     /**
      * Base URL for DAIA Service
      *
@@ -80,24 +82,10 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
     /**
      * DAIA legacySupport flag
      *
-     * @var boolean
-     * @deprecated  Will be removed in the next driver version
+     * @var        boolean
+     * @deprecated Will be removed in the next driver version
      */
     protected $legacySupport = false;
-
-    /**
-     * Logger (or false for none)
-     *
-     * @var LoggerInterface|bool
-     */
-    protected $logger = false;
-
-    /**
-     * HTTP service
-     *
-     * @var \VuFindHttp\HttpServiceInterface
-     */
-    protected $httpService = null;
 
     /**
      * Initialize the driver.
@@ -222,7 +210,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
      * queried ids.
      * If multiQueries are not supported, getStatus(id) is used.
      *
-     * @param array     $ids The array of record ids to retrieve the status for
+     * @param array $ids The array of record ids to retrieve the status for
      *
      * @return array    An array of status information values on success.
      */
@@ -297,18 +285,6 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
     public function getPurchaseHistory($id)
     {
         return [];
-    }
-
-    /**
-     * Set the HTTP service to be used for HTTP requests.
-     *
-     * @param HttpServiceInterface $service HTTP service
-     *
-     * @return void
-     */
-    public function setHttpService(\VuFindHttp\HttpServiceInterface $service)
-    {
-        $this->httpService = $service;
     }
 
     /**
@@ -390,7 +366,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
      *
      * @param string $id Id of the record whose DAIA document should be queried
      *
-     * @return string   URI of the DAIA document
+     * @return string     URI of the DAIA document
      *
      * @see http://gbv.github.io/daiaspec/daia.html#query-api
      */
@@ -408,7 +384,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
      *
      * @param array $ids Array of ids which shall be converted into URIs and
      *                  combined for querying multiple DAIA documents.
-     * 
+     *
      * @return string   Combined URIs (delimited by "|")
      *
      * @see http://gbv.github.io/daiaspec/daia.html#query-api
@@ -431,7 +407,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
      *      - array (for JSON results)
      *      - DOMNode (for XML results)
      *
-     * @param string $id Record Id corresponding to the DAIA document
+     * @param string $id      Record Id corresponding to the DAIA document
      * @param mixed  $daiaDoc The DAIA document, supported types are array and
      *                        DOMNode
      *
@@ -458,8 +434,8 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
      * the given DAIA response and returns the first document whose id matches
      * the given id.
      *
-     * @param string $id            Record Id of the DAIA document in question.
-     * @param string $daiaResponse  Raw response from DAIA request.
+     * @param string $id           Record Id of the DAIA document in question.
+     * @param string $daiaResponse Raw response from DAIA request.
      *
      * @return Array|DOMNode|null   The DAIA document identified by id and
      *                                  type depending on daiaResponseFormat.
@@ -479,8 +455,8 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
                     for ($i = 0; $i < $doc->length; $i++) {
                         $attr = $doc->item($i)->attributes;
                         // DAIA documents should use URIs as value for id
-                        if ($attr->getNamedItem("id")->nodeValue == $this->generateURI($id)
-                        ) {
+                        $nodeValue = $attr->getNamedItem("id")->nodeValue;
+                        if ($nodeValue == $this->generateURI($id)) {
                             // we've found the document element with the
                             // matching URI
                             return $doc->item($i);
@@ -527,7 +503,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
      * Parse an array with DAIA status information.
      *
      * @param string $id        Record id for the DAIA array.
-     * @param array $daiaArray  Array with raw DAIA status information.
+     * @param array  $daiaArray Array with raw DAIA status information.
      *
      * @return array            Array with VuFind compatible status information.
      */
@@ -553,7 +529,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
             foreach ($daiaArray["item"] as $item) {
                 $result_item = [];
                 $result_item["id"] = $id;
-                $result_item["item_id"] = $id;
+                $result_item["item_id"] = $item["id"];
                 $result_item["ilslink"] = $doc_href;
                 $number++; // count items
                 $result_item["number"] = $number;
@@ -586,9 +562,9 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
     /**
      * Parse a DOMNode Object with DAIA status information.
      *
-     * @param string $id        Record id for the DAIA array.
-     * @param DOMNode $daiaDom  DOMNode object with raw DAIA status information.
-     * 
+     * @param string  $id      Record id for the DAIA array.
+     * @param DOMNode $daiaDom DOMNode object with raw DAIA status information.
+     *
      * @return array            Array with VuFind compatible status information.
      */
     protected function parseDaiaDom($id, $daiaDom)
@@ -907,7 +883,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
      *
      * @return array
      *
-     * @deprecated      Only kept for legacySupport
+     * @deprecated Only kept for legacySupport
      */
     protected function getXMLStatus($id)
     {
@@ -935,19 +911,19 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
                     ->getNamedItem('href')->nodeValue;
             }
             $emptyResult = [
-                    'callnumber' => '-',
-                    'availability' => '0',
-                    'number' => 1,
-                    'reserve' => 'No',
-                    'duedate' => '',
-                    'queue'   => '',
-                    'delay'   => '',
-                    'barcode' => 'No samples',
-                    'status' => '',
-                    'id' => $id,
-                    'location' => '',
-                    'ilslink' => $ilslink,
-                    'label' => 'No samples'
+                'callnumber' => '-',
+                'availability' => '0',
+                'number' => 1,
+                'reserve' => 'No',
+                'duedate' => '',
+                'queue'   => '',
+                'delay'   => '',
+                'barcode' => 'No samples',
+                'status' => '',
+                'id' => $id,
+                'location' => '',
+                'ilslink' => $ilslink,
+                'label' => 'No samples'
             ];
             for ($c = 0; $itemlist->item($c) !== null; $c++) {
                 $result = [
@@ -1197,7 +1173,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
      * id, availability (boolean), status, location, reserve, callnumber, duedate,
      * number
      *
-     * @deprecated      Only kept for legacySupport
+     * @deprecated Only kept for legacySupport
      */
     public function getXMLShortStatus($id)
     {
@@ -1292,9 +1268,9 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
                         if ($earliest_counter === 0) {
                             $earliest_duedate = $earliest_value;
                             $earliest_href = isset($hrefs[$earliest_key])
-                                 ? $hrefs[$earliest_key] : '';
+                                ? $hrefs[$earliest_key] : '';
                             $earliest_queue = isset($queue[$earliest_key])
-                                 ? $queue[$earliest_key] : '';
+                                ? $queue[$earliest_key] : '';
                         }
                         $earliest_counter = 1;
                     }
@@ -1335,31 +1311,5 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
             ];
         }
         return $holding;
-    }
-
-    /**
-     * Set the logger
-     *
-     * @param LoggerInterface $logger Logger to use.
-     *
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * Log a debug message.
-     *
-     * @param string $msg Message to log.
-     *
-     * @return void
-     */
-    protected function debug($msg)
-    {
-        if ($this->logger) {
-            $this->logger->debug(get_class($this) . ": $msg");
-        }
     }
 }

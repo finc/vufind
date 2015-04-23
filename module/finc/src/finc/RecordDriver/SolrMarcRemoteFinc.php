@@ -56,7 +56,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     /**
      * @var array   Array of ISILs set in the LibraryGroup section in config.ini.
      */
-    protected $libraryGroup = array();
+    protected $libraryGroup = [];
 
     /**
      * @var string|null
@@ -135,13 +135,13 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             $this->getRemoteData();
         }
 
-        $retVal = array();
+        $retVal = [];
 
         // Which fields/subfields should we check for URLs?
-        $fieldsToCheck = array(
-            '856' => array('u'),   // Standard URL
-            '555' => array('a')         // Cumulative index/finding aids
-        );
+        $fieldsToCheck = [
+            '856' => ['u'],   // Standard URL
+            '555' => ['a']         // Cumulative index/finding aids
+        ];
 
         foreach ($fieldsToCheck as $field => $subfields) {
             $urls = $this->marcRecord->getFields($field);
@@ -168,9 +168,9 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
                         if ($address) {
                             $address = $address->getData();
 
-                            $tmpArr = array();
+                            $tmpArr = [];
                             // Is there a description?  If not, just use the URL itself.
-                            foreach (array('y', '3', 'z', 'x') as $current) {
+                            foreach (['y', '3', 'z', 'x'] as $current) {
                                 $desc = $url->getSubfield($current);
                                 if ($desc) {
                                     $desc = $desc->getData();
@@ -186,8 +186,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
 
 
                             // If url doesn't exist as key so far write to return variable.
-                            if (!in_array(array('url' => $address, 'desc' => $desc), $retVal)) {
-                                $retVal[] = array('url' => $address, 'desc' => $desc);
+                            if (!in_array(['url' => $address, 'desc' => $desc], $retVal)) {
+                                $retVal[] = ['url' => $address, 'desc' => $desc];
                             }
                         }
                     }
@@ -208,7 +208,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     public function getLocalCallnumber()
     {
-        $array = array();
+        $array = [];
 
         if (count($this->libraryGroup) > 0 && isset($this->fields['itemdata']))
         {
@@ -238,8 +238,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getLocalCallnumbersByLibrary()
     {
-        $array = array();
-        $callnumbers = array();
+        $array = [];
+        $callnumbers = [];
 
         if (count($this->libraryGroup) > 0 && isset($this->fields['itemdata']))
         {
@@ -274,8 +274,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getLocalGivenCallnumber()
     {
-        $retval = array();
-        $arrSignatur = $this->getFieldArray($this->localMarcFieldOfLibrary, array('i'));
+        $retval = [];
+        $arrSignatur = $this->getFieldArray($this->localMarcFieldOfLibrary, ['i']);
 
         foreach ($arrSignatur as $signatur) {
             foreach ($this->libraryGroup as $code) {
@@ -303,7 +303,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         }
 
         //return $this->_getFieldArray('770', array('i','t')); // has been originally 'd','h','n','x' but only 'i' and 't' for ubl requested;
-        $array = array();
+        $array = [];
         $supplement = $this->marcRecord->getFields('770');
         // if not return void value
         if (!$supplement) {
@@ -350,7 +350,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
 
         // define a false indicator
         $lookfor_indicator = '8';
-        $retval = array();
+        $retval = [];
 
         $fields = $this->marcRecord->getFields('024');
         if (!$fields) {
@@ -380,7 +380,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getInstrumentation()
     {
-        return $this->getFieldArray('590', array('b'));
+        return $this->getFieldArray('590', ['b']);
     }
 
     /**
@@ -392,7 +392,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getISSN()
     {
-        return $this->getFieldArray('022', array('a'));
+        return $this->getFieldArray('022', ['a']);
     }
 
     /**
@@ -404,7 +404,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getISSNsParallelTitles()
     {
-        return $this->getFieldArray('029', array('a'));
+        return $this->getFieldArray('029', ['a']);
     }
 
     /**
@@ -422,8 +422,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             $this->getRemoteData();
         }
 
-        $retval = array();
-        $match = array();
+        $retval = [];
+        $match = [];
 
         // Get ID and connect to catalog
         //$catalog = ConnectionManager::connectToCatalog();
@@ -431,7 +431,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
 
         $fields = $this->marcRecord->getFields('971');
         if (!$fields) {
-            return array();
+            return [];
         }
 
         $key = 0;
@@ -480,9 +480,9 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     protected function getLocalAccessNumber()
     {
         if (null != $this->localMarcFieldOfLibrary) {
-            return $this->getFieldArray($this->localMarcFieldOfLibrary, array('o'));
+            return $this->getFieldArray($this->localMarcFieldOfLibrary, ['o']);
         }
-        return array();
+        return [];
     }
 
     /**
@@ -499,7 +499,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             $this->getRemoteData();
         }
 
-        $array = array();
+        $array = [];
         $classsubjects = $this->marcRecord->getFields('979');
         // if not return void value
         if (!$classsubjects) {
@@ -543,7 +543,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     public function getLocalFormat()
     {
         if (null != $this->localMarcFieldOfLibrary) {
-            if (count($localformat = $this->getFieldArray($this->localMarcFieldOfLibrary, array('c'))) > 0) {
+            if (count($localformat = $this->getFieldArray($this->localMarcFieldOfLibrary, ['c'])) > 0) {
                 foreach ($localformat as &$line) {
                     if ($line != "") {
                         $line = trim('local_format_' . strtolower($line));
@@ -553,7 +553,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
                 return $localformat;
             }
         }
-        return array();
+        return [];
     }
 
     /**
@@ -567,9 +567,9 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     protected function getLocalNotice()
     {
         if (null != $this->localMarcFieldOfLibrary) {
-            return $this->getFieldArray($this->localMarcFieldOfLibrary, array('k'));
+            return $this->getFieldArray($this->localMarcFieldOfLibrary, ['k']);
         }
-        return array();
+        return [];
     }
 
     /**
@@ -586,7 +586,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             $this->getRemoteData();
         }
 
-        $retval = array();
+        $retval = [];
 
         $fields = $this->marcRecord->getFields('937');
         if (!$fields) {
@@ -615,7 +615,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getNotice()
     {
-        return $this->getFirstFieldValue('971', array('l'));
+        return $this->getFirstFieldValue('971', ['l']);
     }
 
     /**
@@ -627,7 +627,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getPieceStyle()
     {
-        return $this->getFieldArray('590', array('a'));
+        return $this->getFieldArray('590', ['a']);
     }
 
     /**
@@ -647,8 +647,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             $this->getRemoteData();
         }
 
-        $array = array();
-        $fields = array('775');
+        $array = [];
+        $fields = ['775'];
         $i = 0;
 
         foreach ($fields as $field) {
@@ -692,14 +692,14 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     public function getPrice()
     {
-        $currency = $this->getFirstFieldValue('365', array('c'));
-        $price = $this->getFirstFieldValue('365', array('b'));
+        $currency = $this->getFirstFieldValue('365', ['c']);
+        $price = $this->getFirstFieldValue('365', ['b']);
         if (!empty($currency) && !empty($price) ) {
             // if possible convert it in euro
             if (is_array($converted =
                 json_decode(str_replace(
-                    array('lhs','rhs','error','icc'),
-                    array('"lhs"','"rhs"','"error"','"icc"'),
+                    ['lhs','rhs','error','icc'],
+                    ['"lhs"','"rhs"','"error"','"icc"'],
                     file_get_contents("http://www.google.com/ig/calculator?q=".$price.$currency."=?EUR")
                 ),true)
             )) {
@@ -721,7 +721,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getProvenience()
     {
-        return $this->getFieldArray('561', array('a'));
+        return $this->getFieldArray('561', ['a']);
     }
 
     /**
@@ -735,7 +735,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     protected function getPurchaseInformation()
     {
         if (null != $this->localMarcFieldOfLibrary) {
-            if ( $this->getFirstFieldValue($this->localMarcFieldOfLibrary, array('m')) == 'e') {
+            if ( $this->getFirstFieldValue($this->localMarcFieldOfLibrary, ['m']) == 'e') {
                 return true;
             }
         }
@@ -752,7 +752,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getSeriesWithVolume()
     {
-        return $this->getFieldArray('830', array('a','v'), false);
+        return $this->getFieldArray('830', ['a','v'], false);
     }
 
     /**
@@ -769,7 +769,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             $this->getRemoteData();
         }
 
-        $array = array();
+        $array = [];
         if (null != $this->localMarcFieldOfLibrary) {
 
             $udk = $this->marcRecord->getFields($this->localMarcFieldOfLibrary);
@@ -826,7 +826,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         }
 
         // result array to return
-        $retval = array();
+        $retval = [];
 
         $results = $this->marcRecord->getFields('700');
         if (!$results) {
@@ -860,8 +860,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             $this->getRemoteData();
         }
 
-        $array = array();
-        $fields = array('770','775','776');
+        $array = [];
+        $fields = ['770','775','776'];
         $i = 0;
 
         foreach ($fields as $field) {
@@ -911,7 +911,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
 
         // define a false indicator
         $firstindicator = 'x';
-        $retval = array();
+        $retval = [];
 
         $fields = $this->marcRecord->getFields('689');
         if (!$fields) {
@@ -947,22 +947,22 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     protected function getBarcode()
     {
 
-        $barcodes = array();
+        $barcodes = [];
 
         //$driver = ConnectionManager::connectToCatalog();
         //$libraryCodes = $driver->getIniFieldAsArray('searches','LibraryGroup');
         $libraryCodes = $this->searchesConfig->LibrarayGroup;
 
         // get barcodes from marc
-        $barcodes = $this->getFieldArray('983', array('a'));
+        $barcodes = $this->getFieldArray('983', ['a']);
 
         if (!isset($libraryCodes->libraries)) {
             return $barcodes;
         } else {
             if (count($barcodes) > 0) {
                 $codes = explode(",", $libraryCodes->libraries);
-                $match = array();
-                $retval = array();
+                $match = [];
+                $retval = [];
                 foreach($barcodes as $barcode) {
                     if (preg_match('/^\((.*)\)(.*)$/', trim($barcode), $match));
                     if ( in_array($match[1], $codes) ) {
@@ -974,7 +974,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
                 }
             }
         }
-        return array();
+        return [];
     }
 
     /**
@@ -986,7 +986,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getCatalogueNumber()
     {
-        return $this->getFieldArray('245', array('b'));
+        return $this->getFieldArray('245', ['b']);
     }
 
     /**
@@ -997,7 +997,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getContentNote()
     {
-        return $this->getFieldArray('505', array('t'));
+        return $this->getFieldArray('505', ['t']);
     }
 
     /**
@@ -1008,7 +1008,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getDissertationNote()
     {
-        return $this->getFieldArray('502', array('a'));
+        return $this->getFieldArray('502', ['a']);
     }
 
     /**
@@ -1019,6 +1019,6 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getRelatedItems()
     {
-        return $this->getFirstFieldValue('776', array('z'));
+        return $this->getFirstFieldValue('776', ['z']);
     }
 }

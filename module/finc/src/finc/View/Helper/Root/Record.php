@@ -66,7 +66,7 @@ class Record extends \VuFind\View\Helper\Root\Record
     public function getLinkISN($issns)
     {
         return $this->renderTemplate(
-            'link-isn.phtml', array('issns' => $issns)
+            'link-isn.phtml', ['issns' => $issns]
         );
     }
 }

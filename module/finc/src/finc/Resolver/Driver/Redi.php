@@ -102,7 +102,7 @@ class Redi implements \VuFind\Resolver\Driver\DriverInterface
      */
     public function parseLinks($xmlstr)
     {
-        $retval = array();
+        $retval = [];
         $xml = new DOMDocument();
         if (!@$xml->loadHTML($xmlstr)) {
             return $retval;
@@ -229,10 +229,10 @@ class Redi implements \VuFind\Resolver\Driver\DriverInterface
                             if ($nodes->nodeName == 'div') {
                                 $text = trim(
                                     str_replace(
-                                        array('»',
+                                        ['»',
                                             chr(194).chr(160)
-                                        ),
-                                        array('', ''),
+                                        ],
+                                        ['', ''],
                                         $nodes->nodeValue
                                     )
                                 ); // hack to replace \u00a0
@@ -278,10 +278,10 @@ class Redi implements \VuFind\Resolver\Driver\DriverInterface
                             if ($nodes->nodeName == 'div') {
                                 $text = trim(
                                     str_replace(
-                                        array('»',
+                                        ['»',
                                             chr(194).chr(160)
-                                        ),
-                                        array('',''),
+                                        ],
+                                        ['',''],
                                         $nodes->nodeValue
                                     )
                                 ); // hack to replace \u00a0

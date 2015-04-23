@@ -153,7 +153,7 @@ class SolrMarcRemote extends SolrMarc
             $config['options']['timeout'] = 0.1;
         }
 
-        $options = array($parsed_url['scheme'] => $config['options']);
+        $options = [$parsed_url['scheme'] => $config['options']];
         $streamContext = stream_context_create($options);
 
         $url = sprintf($this->uriPattern, $id);
@@ -216,7 +216,7 @@ class SolrMarcRemote extends SolrMarc
                 // When indexing over HTTP, SolrMarc may use entities instead of certain
                 // control characters; we should normalize these:
                 $marc = str_replace(
-                    array('#29;', '#30;', '#31;'), array("\x1D", "\x1E", "\x1F"), $marc
+                    ['#29;', '#30;', '#31;'], ["\x1D", "\x1E", "\x1F"], $marc
                 );
                 $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
             }
