@@ -32,8 +32,7 @@
 namespace finc\ILS\Driver;
 use VuFind\Exception\ILS as ILSException,
     VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
-    Zend\Log\LoggerAwareInterface as LoggerAwareInterface,
-    Zend\Log\LoggerInterface as LoggerInterface;
+    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
  * PAIA ILS Driver for VuFind to get patron information
@@ -50,22 +49,11 @@ use VuFind\Exception\ILS as ILSException,
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_an_ils_driver Wiki
  */
-class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterface
+class PAIA extends DAIA implements
+    HttpServiceAwareInterface, LoggerAwareInterface
 {
-
-    /**
-     * Logger (or false for none)
-     *
-     * @var LoggerInterface|bool
-     */
-    protected $logger = false;
-
-    /**
-     * HTTP service
-     *
-     * @var \VuFindHttp\HttpServiceInterface
-     */
-    protected $httpService = null;
+    use \VuFindHttp\HttpServiceAwareTrait;
+    use \VuFind\Log\LoggerAwareTrait;
 
     private $_username;
     private $_password;
@@ -147,7 +135,7 @@ class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterfa
     public function patronLogin($username, $password)
     {
         if ($username == '' || $password == '') {
-            return new PEAR_Error('Invalid Login, Please try again.');
+            throw new ILSException('Invalid Login, Please try again.');
         }
         $this->_username = $username;
         $this->_password = $password;
@@ -218,7 +206,7 @@ class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterfa
 
                 // hook for retrieving alternative ItemId in case PAIA does not
                 // the needed id
-                $alternativeItemId = $this->_getAlternativeItemId(
+                $alternativeItemId = $this->getAlternativeItemId(
                     $loans_response['doc'][$i]['item']
                 );
 
@@ -450,7 +438,7 @@ class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterfa
 
         $fineList = [];
         foreach ($fees_response['fee'] as $fine) {
-            $alternativeItemId = $this->_getAlternativeItemId($fine['item']);
+            $alternativeItemId = $this->getAlternativeItemId($fine['item']);
             $fineList[] = [
                 "id"       => $alternativeItemId ? $alternativeItemId : $fine['item'],
                 "amount"   => $fine['amount'],
@@ -492,8 +480,8 @@ class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterfa
             if ($loans_response['doc'][$i]['status'] == '1'
                 || $loans_response['doc'][$i]['status'] == '2'
             ) {
-                $alternativeItemId = $this->_getAlternativeItemId(
-                    $loans_response['doc'][$i]['label']
+                $alternativeItemId = $this->getAlternativeItemId(
+                    $loans_response['doc'][$i]['item']
                 );
                 $cancel_details = false;
                 if ($loans_response['doc'][$i]['cancancel'] == 1) {
@@ -579,6 +567,23 @@ class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterfa
             }
         }
         return $details;
+    }
+
+    /**
+     * Get Hold Link
+     *
+     * The goal for this method is to return a URL to a "place hold" web page on
+     * the ILS OPAC. This is used for ILSs that do not support an API or method
+     * to place Holds.
+     *
+     * @param string $id      The id of the bib record
+     * @param array  $details Item details from getHoldings return array
+     *
+     * @return string         URL to ILS's OPAC's place hold screen.
+     */
+    public function getHoldLink($id, $details)
+    {
+        return $this->getILSHoldLink($id, $details);
     }
 
     /**
@@ -686,6 +691,90 @@ class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterfa
         return false;
     }
 
+    /**
+     * Support method to generate ILS specific HoldLink for public exposure through
+     * getHoldLink
+     *
+     * @param $id
+     * @param $details
+     * @return string
+     */
+    protected function getILSHoldLink($id, $details)
+    {
+        return parent::getHoldLink($id, $details);
+    }
+
+    /**
+     * Support method to retrieve needed ItemId in case PAIA-response does not
+     * contain it
+     *
+     * @param string $id itemId
+     *
+     * @return string $id
+     * @access private
+     */
+    protected function getAlternativeItemId($id)
+    {
+        return $id;
+    }
+
+    /**
+     * Support function to implement ILS specific parsing of user_details
+     *
+     * @param $patron
+     * @param $user_response
+     * @return array
+     */
+    protected function parseUserDetails($patron, $user_response)
+    {
+        $username = $user_response['name'];
+        if (count(explode(',', $username)) == 2) {
+            $nameArr = explode(',', $username);
+            $firstname = $nameArr[1];
+            $lastname = $nameArr[0];
+        } else {
+            $nameArr = explode(' ', $username);
+            $firstname = $nameArr[0];
+            $lastname = '';
+            array_shift($nameArr);
+            foreach ($nameArr as $value) {
+                $lastname .= $value;
+            }
+        }
+
+        // TODO: implement parsing of user details according to types set
+        // (cf. https://github.com/gbv/paia/issues/29)
+
+        $user = [];
+        $user['id'] = $patron;
+        $user['firstname'] = $firstname;
+        $user['lastname'] = $lastname;
+        $user['email'] = isset($user_response['email']) ? $user_response['email'] : "";
+        $user['major'] = null;
+        $user['college'] = null;
+
+        return $user;
+    }
+
+    /**
+     * Public Function which retrieves renew, hold and cancel settings from the
+     * driver ini file.
+     *
+     * @param string $function The name of the feature to be checked
+     *
+     * @return array An array with key-value pairs.
+     * @access public
+     */
+    public function getConfig($function)
+    {
+        if (isset($this->config[$function]) ) {
+            $functionConfig = $this->config[$function];
+        } else {
+            $functionConfig = false;
+        }
+        return $functionConfig;
+    }
+
     // private functions to connect to PAIA
 
     /**
@@ -696,7 +785,6 @@ class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterfa
      * @param string $access_token PAIA access token for current session
      *
      * @return string POST response
-     * @access private
      * @throws \Exception
      */
     private function _postit($file, $data_to_send, $access_token = null)
@@ -893,101 +981,7 @@ class PAIA extends DAIA implements HttpServiceAwareInterface, LoggerAwareInterfa
             return [];
         }
 
-        $username = $user_response['name'];
-        if (count(explode(',', $username)) == 2) {
-            $nameArr = explode(',', $username);
-            $firstname = $nameArr[1];
-            $lastname = $nameArr[0];
-        } else {
-            $nameArr = explode(' ', $username);
-            $firstname = $nameArr[0];
-            $lastname = '';
-            array_shift($nameArr);
-            foreach ($nameArr as $value) {
-                $lastname .= $value;
-            }
-        }
-
-        $user = [];
-        $user['id'] = $patron;
-        $user['firstname'] = $firstname;
-        $user['lastname'] = $lastname;
-        $user['email'] = isset($user_response['email']) ? $user_response['email'] : "";
-        $user['major'] = null;
-        $user['college'] = null;
-
-        return $user;
-    }
-
-    /**
-     * Support method to retrieve needed ItemId in case PAIA-response does not
-     * contain it
-     *
-     * @param string $id itemId
-     *
-     * @return string $id
-     * @access private
-     */
-    private function _getAlternativeItemId($id)
-    {
-        return $id;
-    }
-
-    /**
-     * Public Function which retrieves renew, hold and cancel settings from the
-     * driver ini file.
-     *
-     * @param string $function The name of the feature to be checked
-     *
-     * @return array An array with key-value pairs.
-     * @access public
-     */
-    public function getConfig($function)
-    {
-        if (isset($this->config[$function]) ) {
-            $functionConfig = $this->config[$function];
-        } else {
-            $functionConfig = false;
-        }
-        return $functionConfig;
-    }
-
-    /**
-     * Set the logger
-     *
-     * @param LoggerInterface $logger Logger to use.
-     *
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * Log a debug message.
-     *
-     * @param string $msg Message to log.
-     *
-     * @return void
-     */
-    protected function debug($msg)
-    {
-        if ($this->logger) {
-            $this->logger->debug(get_class($this) . ": $msg");
-        }
-    }
-
-    /**
-     * Set the HTTP service to be used for HTTP requests.
-     *
-     * @param HttpServiceInterface $service HTTP service
-     *
-     * @return void
-     */
-    public function setHttpService(\VuFindHttp\HttpServiceInterface $service)
-    {
-        $this->httpService = $service;
+        return $this->parseUserDetails($patron, $user_response);
     }
 
 }

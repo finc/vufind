@@ -26,7 +26,8 @@
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
 namespace finc\ILS\Driver;
-use VuFind\Exception\ILS as ILSException;
+use VuFind\Exception\ILS as ILSException,
+    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
  * Finc specific ILS Driver for VuFind, using PAIA and DAIA services.
@@ -37,7 +38,7 @@ use VuFind\Exception\ILS as ILSException;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
-class FincILS extends PAIA implements \Zend\Log\LoggerAwareInterface
+class FincILS extends PAIA implements LoggerAwareInterface
 {
 
     /**
@@ -209,10 +210,14 @@ class FincILS extends PAIA implements \Zend\Log\LoggerAwareInterface
     {
         $statuses = [];
         foreach ($array as $status) {
-            if ($status['item_id'] == $this->_idMapper[$id]) {
+            if (isset($status['item_id'])
+                && $status['item_id'] == $this->_idMapper[$id]
+            ) {
                 $status['item_id'] = $id;
             }
-            if ($status['id'] == $this->_idMapper[$id]) {
+            if (isset($status['id'])
+                && $status['id'] == $this->_idMapper[$id]
+            ) {
                 $status['id'] = $id;
             }
             $statuses[] = $status;
@@ -302,6 +307,8 @@ class FincILS extends PAIA implements \Zend\Log\LoggerAwareInterface
                             return $recordId;
                         }
                     }
+                    // no match was found for the given ISIL, therefore return $id
+                    return $id;
                 }
                 $this->_idMapper[$id] = $ilsRecordId;
 

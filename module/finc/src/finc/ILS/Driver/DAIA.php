@@ -46,7 +46,8 @@ use DOMDocument, VuFind\Exception\ILS as ILSException,
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
-class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareInterface, LoggerAwareInterface
+class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
+    HttpServiceAwareInterface, LoggerAwareInterface
 {
     use \VuFindHttp\HttpServiceAwareTrait;
     use \VuFind\Log\LoggerAwareTrait;
@@ -183,12 +184,14 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
         } else {
             // let's retrieve the DAIA document by URI
             $rawResult = $this->doHTTPRequest($this->generateURI($id));
-            // extract the DAIA document for the current id from the
-            // HTTPRequest's result
-            $doc = $this->extractDaiaDoc($id, $rawResult);
-            if (!is_null($doc)) {
-                // parse the extracted DAIA document and return the status info
-                return $this->parseDaiaDoc($id, $doc);
+            if ($rawResult != false) {
+                // extract the DAIA document for the current id from the
+                // HTTPRequest's result
+                $doc = $this->extractDaiaDoc($id, $rawResult);
+                if (!is_null($doc)) {
+                    // parse the extracted DAIA document and return the status info
+                    return $this->parseDaiaDoc($id, $doc);
+                }
             }
         }
         return [];
@@ -228,19 +231,21 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements HttpServiceAwareIn
             if ($this->multiQuery) {
                 // perform one DAIA query with multiple URIs
                 $rawResult = $this->doHTTPRequest($this->generateMultiURIs($ids));
-                // now we need to reestablish the key-value pair id=>document as
-                // the id used in VuFind can differ from the document-URI
-                // (depending on how the URI is generated)
-                foreach ($ids as $id) {
-                    // it is assumed that each DAIA document has a unique URI,
-                    // so get the document with the corresponding id
-                    $doc = $this->extractDaiaDoc($id, $rawResult);
-                    if (!is_null($doc)) {
-                        // a document with the corresponding id exists, which
-                        // means we got status information for that record
-                        $status[] = $this->parseDaiaDoc($id, $doc);
+                if ($rawResult != false) {
+                    // now we need to reestablish the key-value pair id=>document as
+                    // the id used in VuFind can differ from the document-URI
+                    // (depending on how the URI is generated)
+                    foreach ($ids as $id) {
+                        // it is assumed that each DAIA document has a unique URI,
+                        // so get the document with the corresponding id
+                        $doc = $this->extractDaiaDoc($id, $rawResult);
+                        if (!is_null($doc)) {
+                            // a document with the corresponding id exists, which
+                            // means we got status information for that record
+                            $status[] = $this->parseDaiaDoc($id, $doc);
+                        }
+                        unset($doc);
                     }
-                    unset($doc);
                 }
             } else {
                 // multiQuery is not supported, so retrieve DAIA documents by

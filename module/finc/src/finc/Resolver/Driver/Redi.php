@@ -27,7 +27,8 @@
  * @link     http://vufind.org/wiki/vufind2:link_resolver_drivers Wiki
  */
 namespace finc\Resolver\Driver;
-use DOMDocument;
+use DOMDocument,
+    \VuFind\Resolver\Driver\DriverInterface as DriverInterface;
 
 /**
  * ReDi Link Resolver Driver
@@ -38,20 +39,13 @@ use DOMDocument;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:link_resolver_drivers Wiki
  */
-class Redi implements \VuFind\Resolver\Driver\DriverInterface
+class Redi implements DriverInterface
 {
     /**
-     * Base URL for link resolver
-     *
-     * @var string
-     */
-    protected $baseUrl;
-
-    /**
-     * HTTP client
-     *
-     * @var \Zend\Http\Client
-     */
+    * HTTP client
+    *
+    * @var \Zend\Http\Client
+    */
     protected $httpClient;
 
     /**
@@ -59,7 +53,7 @@ class Redi implements \VuFind\Resolver\Driver\DriverInterface
      *
      * @var string
      */
-    protected $doc;
+    protected $baseUrl;
 
     /**
      * Constructor
@@ -88,7 +82,6 @@ class Redi implements \VuFind\Resolver\Driver\DriverInterface
         $feed = $this->httpClient->setUri($url)->send()->getBody();
         return $feed;
     }
-
 
     /**
      * Parse Links
