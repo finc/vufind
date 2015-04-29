@@ -130,6 +130,24 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
         return isset($this->fields[$format]) ? $this->fields[$format] : [];
     }
 
+    /**
+     * Gets ansigel date of the record
+     *
+     * @return string
+     */
+    public function getDateIsil()
+    {
+        // check if there's an extension defined for the library depended format
+        // index field
+        $isExtension = (isset($this->mainConfig->CustomIndex->indexExtension))
+            ? true : false;
+
+        $date = (true === $isExtension)
+            ?  'date_' . $this->mainConfig->CustomIndex->indexExtension : '' ;
+
+        return isset($this->fields[$date]) ? $this->fields[$date] : '';
+    }
+
 
     /**
      * Get the formats for displaying the icons. Renders the format information to
@@ -474,6 +492,28 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
     }
 
     /**
+     * Gets sorted publication date as string
+     *
+     * @return string
+     */
+    public function getPublishDateSort()
+    {
+        return isset($this->fields['publishDateSort']) ?
+            $this->fields['publishDateSort'] : '';
+    }
+
+    /**
+     * Get the item's place of publication.
+     *
+     * @return array
+     */
+    public function getPlacesOfPublication()
+    {
+        return isset($this->fields['publishPlace']) ?
+            $this->fields['publishPlace'] : [];
+    }
+
+    /**
      * Filter author data for author year of birth and death
      * to give a better mark up.
      *
@@ -506,6 +546,4 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
         }
         return $authordata;
     }
-
-
 }
