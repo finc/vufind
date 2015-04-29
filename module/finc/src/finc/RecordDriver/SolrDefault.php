@@ -31,6 +31,7 @@
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 namespace finc\RecordDriver;
+use VuFindSearch\ParamBag;
 
 /**
  * finc specific model for Solr records based on the stock
@@ -325,20 +326,16 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * This method can be used to indicate a direct link than to form a general
      * look for query.
      *
-     * @todo                    1. Check if this method is still needed
-     * @todo                    2. Refactor Solr-Query to be compatible with VuFind2
-     *
      * @param array $rids Array of record ids to test.
      *
      * @return int mixed  If success return at least one finc id otherwise null.
-     * @deprecated        Not used.
      */
-    protected function addFincIDToRecord ( $array ) {
-/*
+    protected function addFincIDToRecord ( $array )
+    {
         // record ids
-        $rids = array();
+        $rids = [];
         // return array
-        $retval = array();
+        $retval = [];
 
         // check if array contain record_ids and collect it as an array to
         // use only one solr request for all
@@ -349,47 +346,36 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
                 }
             }
         }
-        // solr call
-        // call index
-        $index = $this->getIndexEngine();
 
-        // build query and accept limit of solr
-        $limit = $index->getBooleanClauseLimit();
-        if (count($rids) > $limit) {
-            $rids = array_slice($rids, 0, $limit);
-            $retVal = array();
-        }
         // build the query:
         if (count($rids) == 1) {
             // single query:
-            $query = "(record_id:". $rids[0] .")";
+            $value = '"'. $rids[0] .'"';
         } elseif (count($rids) > 1) {
             // multi query:
-            $query = 'record_id:(' . implode(' OR ', $rids) . ')';
+            $value = '(' . implode(' OR ', $rids) . ')';
         } else {
             return $array;
         }
-        // set hidden filter to limited the range
-        $this->setHiddenFilters();
-        // limited search for id and record_id values only
-        $result = $index->search($query, null, $this->hiddenFilters, 0, 100, null, '', null, null, 'id, record_id',  HTTP_REQUEST_METHOD_POST , false, false);
+        $query = new \VuFindSearch\Query\Query(
+            'record_id:'. $value
+        );
+        //echo '</pre>'; print_r($query); echo '</pre>';
 
-        // log to find test data
-        // temporary logger
-        if (isset($result['response']['numFound'])
-            && isset($result['response']['numFound']) != 0) {
-        }
-        // if error break down
-        if (PEAR::isError($result)) {
-            return null;
-        }
-        if (isset($result['response']['docs'])
-            && !empty($result['response']['docs'])
+        $bag = new ParamBag();
+        $bag->set('fl', 'id,record_id');
+        $records =  $this->searchService
+            ->search('Solr', $query, 0, count($rids), $bag);
+
+        $records = $records->getRecords();
+        if (isset($records)
+            && !empty($records)
         ) {
-            foreach( $result['response']['docs'] as $key => $doc) {
-                $retval[($doc['record_id'])]=$doc['id'];
+            foreach ($records as $record) {
+                $retval[$record->getRID()] = $record->getUniqueID();
             }
         }
+
         // write back in array
         foreach ($array as &$val) {
             if (isset($val['record_id'])) {
@@ -399,7 +385,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
             }
         }
         unset($val);
-        //echo "<pre>"; print_r($array); echo "</pre>";*/
+
         return $array;
     }
 
@@ -511,6 +497,32 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
     {
         return isset($this->fields['publishPlace']) ?
             $this->fields['publishPlace'] : [];
+    }
+
+    /**
+     * Get specific marc information about additional items. Unflexible solution
+     * for UBL only implemented.
+     *
+     * @return array
+     * @access protected
+     * @link https://intern.finc.info/fincproject/issues/1315
+     */
+    public function getAdditionals()
+    {
+        return [];
+    }
+
+    /**
+     * Check if Additional Items exists. Realized for instance of UBL only.
+     *
+     * @return boolean      True if additional items exists.
+     * @access public
+     * @link https://intern.finc.info/fincproject/issues/1315
+     */
+    public function hasAdditionalItems()
+    {
+        $array = $this->getAdditionals();
+        return (is_array($array) && count($array) > 0) ? true : false;
     }
 
     /**

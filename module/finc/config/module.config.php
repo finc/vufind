@@ -32,6 +32,11 @@ $config = [
                     'redi' => 'finc\Resolver\Driver\Factory::getRedi',
                 ],
             ],
+            'recordtab' => [
+                'invokables' => [
+                    'additional' => 'finc\RecordTab\Additional',
+                ],
+            ],
         ],
         'recorddriver_tabs' => [
             'finc\RecordDriver\SolrDefault' => [
@@ -41,6 +46,7 @@ $config = [
                     'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
                     'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
                     'Details' => 'StaffViewArray',
+                    'Additional' => 'Additional',
                 ],
                 'defaultTab' => null,
             ],
@@ -51,6 +57,7 @@ $config = [
                     'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
                     'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
                     'Details' => 'StaffViewMARC',
+                    'Additional' => 'Additional',
                 ],
                 'defaultTab' => null,
             ],
@@ -62,6 +69,7 @@ $config = [
                     'Preview' => 'preview',
                     'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
                     'Details' => 'StaffViewMARC',
+                    'Additional' => 'Additional',
                 ],
                 'defaultTab' => null,
             ],
@@ -73,6 +81,7 @@ $config = [
                     'Preview' => 'preview',
                     'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
                     'Details' => 'StaffViewMARC',
+                    'Additional' => 'Additional',
                 ],
                 'defaultTab' => null,
             ],
@@ -83,6 +92,7 @@ $config = [
                     'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
                     'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
                     'Details' => 'StaffViewArray',
+                    'Additional' => 'Additional',
                 ],
                 'defaultTab' => null,
             ],

@@ -820,7 +820,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      * @access protected
      * @link https://intern.finc.info/fincproject/issues/1315
      */
-    protected function getAdditionals()
+    public function getAdditionals()
     {
         $array = [];
         $fields = ['770','775','776'];
@@ -854,6 +854,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
                 } // end foreach
             }
         }
+
         return $this->addFincIDToRecord($array);
     }
 
