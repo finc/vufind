@@ -28,6 +28,8 @@
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 namespace finc\RecordDriver;
+use \VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface;
+use ZendService\ReCaptcha\Exception;
 
 /**
  * Recorddriver for Solr records from the aggregated index of Leipzig University
@@ -41,14 +43,10 @@ namespace finc\RecordDriver;
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class SolrAI extends SolrDefault
+class SolrAI extends SolrDefault implements
+    HttpServiceAwareInterface
 {
-    /**
-     * Logger (or false for none)
-     *
-     * @var LoggerInterface|bool
-     */
-    protected $logger = false;
+    use \VuFindHttp\HttpServiceAwareTrait;
 
     /**
      * AI record
@@ -682,21 +680,22 @@ class SolrAI extends SolrDefault
 
         $url = sprintf($baseUrl, $id);
 
-        $curlDefaultOptions = [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_USERAGENT => "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
-        ];
-        $curlOptions = [];
-        $curlOptions[CURLOPT_URL] = $url;
-        $handle = curl_init();
-        $curl_options = $curlDefaultOptions + $curlOptions;
-        curl_setopt_array($handle, $curl_options);
-        $response = curl_exec($handle);
-        if (false === $response) {
-            throw new Exception(curl_error($handle));
+        try {
+            $response = $this->httpService->get($url);
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
         }
-        return $response;
+
+        if (!$response->isSuccess()) {
+            $this->debug(
+                'HTTP status ' . $response->getStatusCode() .
+                ' received, retrieving data for record: ' . $id
+            );
+
+            return false;
+        }
+
+        return $response->getBody();
     }
 
     /**
