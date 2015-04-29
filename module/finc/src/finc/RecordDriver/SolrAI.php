@@ -28,8 +28,8 @@
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 namespace finc\RecordDriver;
-use \VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface;
-use ZendService\ReCaptcha\Exception;
+use \VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
+    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
  * Recorddriver for Solr records from the aggregated index of Leipzig University
@@ -44,9 +44,10 @@ use ZendService\ReCaptcha\Exception;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 class SolrAI extends SolrDefault implements
-    HttpServiceAwareInterface
+    HttpServiceAwareInterface, LoggerAwareInterface
 {
     use \VuFindHttp\HttpServiceAwareTrait;
+    use \VuFind\Log\LoggerAwareTrait;
 
     /**
      * AI record

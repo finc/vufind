@@ -29,7 +29,8 @@
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 namespace finc\RecordDriver;
-use \Zend\Log\LoggerInterface;
+use VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
+    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
  * Model for MARC records without a fullrecord in Solr. The fullrecord is being
@@ -43,14 +44,11 @@ use \Zend\Log\LoggerInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
-class SolrMarcRemote extends SolrMarc
+class SolrMarcRemote extends SolrMarc implements
+    HttpServiceAwareInterface, LoggerAwareInterface
 {
-    /**
-     * Logger (or false for none)
-     *
-     * @var LoggerInterface|bool
-     */
-    protected $logger = false;
+    use \VuFindHttp\HttpServiceAwareTrait;
+    use \VuFind\Log\LoggerAwareTrait;
 
     /**
      * MARC record
@@ -143,40 +141,28 @@ class SolrMarcRemote extends SolrMarc
             throw new \Exception('empty id given');
         }
 
-        if (!$this->uriPattern) {
+        if (empty($this->uriPattern)) {
             throw new \Exception('no Marc-Server configured');
         }
 
-        $parsed_url = parse_url($this->uriPattern);
-
-        if (false === isset($config['options']) || false === is_array($config['options'])) {
-            $config['options']['timeout'] = 0.1;
-        }
-
-        $options = [$parsed_url['scheme'] => $config['options']];
-        $streamContext = stream_context_create($options);
-
         $url = sprintf($this->uriPattern, $id);
 
-        $loopCount = 0;
-
-        for ($loopCount=0; $loopCount<10;$loopCount++) {
-            $content = @file_get_contents($url , false, $streamContext);
-
-            if (false === $content) {
-                $this->debug('Unable to fetch marc from server ' . $url);
-                continue;
-            } else if (empty($content)) {
-                $this->debug('content is empty, trying again. If this happens very often, try to increase timeout');
-                continue;
-            }
-
-            return $content;
+        try {
+            $response = $this->httpService->get($url);
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
         }
 
-        $this->debug('tried too many times. aborting at record ' . $id);
-        return false;
+        if (!$response->isSuccess()) {
+            $this->debug(
+                'HTTP status ' . $response->getStatusCode() .
+                ' received, retrieving data for record: ' . $id
+            );
 
+            return false;
+        }
+
+        return $response->getBody();
     }
 
     /**
@@ -244,32 +230,6 @@ class SolrMarcRemote extends SolrMarc
         return (isset($this->fields[$string]) ? $this->fields[$string] : '');
     }
 
-    /**
-     * Set the logger
-     *
-     * @param LoggerInterface $logger Logger to use.
-     *
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * Log a debug message.
-     *
-     * @param string $msg Message to log.
-     *
-     * @return void
-     */
-    protected function debug($msg)
-    {
-        if ($this->logger) {
-            $this->logger->debug(get_class($this) . ": $msg");
-        }
-    }
-    
     /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
