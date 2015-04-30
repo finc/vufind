@@ -197,8 +197,8 @@ class SolrAI extends SolrDefault implements
      */
     public function getContainerTitle()
     {
-        return (isset($this->fields['hierarchy_parent_title']) ?
-                $this->fields['hierarchy_parent_title'][0] : '');
+        return (isset($this->fields['series']) ?
+                $this->fields['series'][0] : '');
     }
 
     /**
