@@ -130,11 +130,6 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     public function getURLs()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         $retVal = [];
 
         // Which fields/subfields should we check for URLs?
@@ -144,7 +139,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         ];
 
         foreach ($fieldsToCheck as $field => $subfields) {
-            $urls = $this->marcRecord->getFields($field);
+            $urls = $this->getMarcRecord()->getFields($field);
             if ($urls) {
                 foreach ($urls as $url) {
 
@@ -297,14 +292,9 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getSupplements()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         //return $this->_getFieldArray('770', array('i','t')); // has been originally 'd','h','n','x' but only 'i' and 't' for ubl requested;
         $array = [];
-        $supplement = $this->marcRecord->getFields('770');
+        $supplement = $this->getMarcRecord()->getFields('770');
         // if not return void value
         if (!$supplement) {
             return $array;
@@ -334,6 +324,18 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     }
 
     /**
+     * Get the field-value identified by $string
+     *
+     * @param String field-name
+     *
+     * @return String
+     */
+    public function getILSIdentifier($string)
+    {
+        return (isset($this->fields[$string]) ? $this->fields[$string] : '');
+    }
+
+    /**
      * Special method to extracting the index of German prints of the marc21
      * field 024 indicator 8 subfield a
      *
@@ -343,16 +345,11 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getIndexOfGermanPrints()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         // define a false indicator
         $lookfor_indicator = '8';
         $retval = [];
 
-        $fields = $this->marcRecord->getFields('024');
+        $fields = $this->getMarcRecord()->getFields('024');
         if (!$fields) {
             return null;
         }
@@ -417,11 +414,6 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     public function getJournalHoldings()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         $retval = [];
         $match = [];
 
@@ -429,7 +421,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         //$catalog = ConnectionManager::connectToCatalog();
         //$terms = $catalog->getConfig('OrderJournalTerms');
 
-        $fields = $this->marcRecord->getFields('971');
+        $fields = $this->getMarcRecord()->getFields('971');
         if (!$fields) {
             return [];
         }
@@ -494,13 +486,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getLocalClassSubjects()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         $array = [];
-        $classsubjects = $this->marcRecord->getFields('979');
+        $classsubjects = $this->getMarcRecord()->getFields('979');
         // if not return void value
         if (!$classsubjects) {
             return $array;
@@ -581,14 +568,9 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getMusicHeading()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         $retval = [];
 
-        $fields = $this->marcRecord->getFields('937');
+        $fields = $this->getMarcRecord()->getFields('937');
         if (!$fields) {
             return null;
         }
@@ -642,18 +624,13 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getParallelEditions()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         $array = [];
         $fields = ['775'];
         $i = 0;
 
         foreach ($fields as $field) {
 
-            $related = $this->marcRecord->getFields($field);
+            $related = $this->getMarcRecord()->getFields($field);
             // if no entry break it
             if ($related) {
                 foreach ($related as $key => $line) {
@@ -764,15 +741,10 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getUDKs()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         $array = [];
         if (null != $this->localMarcFieldOfLibrary) {
 
-            $udk = $this->marcRecord->getFields($this->localMarcFieldOfLibrary);
+            $udk = $this->getMarcRecord()->getFields($this->localMarcFieldOfLibrary);
             // if not return void value
             if (!$udk) {
                 return $array;
@@ -820,15 +792,10 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getAdditionalAuthors()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         // result array to return
         $retval = [];
 
-        $results = $this->marcRecord->getFields('700');
+        $results = $this->getMarcRecord()->getFields('700');
         if (!$results) {
             return $retval;
         }
@@ -855,18 +822,13 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getAdditionals()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         $array = [];
         $fields = ['770','775','776'];
         $i = 0;
 
         foreach ($fields as $field) {
 
-            $related = $this->marcRecord->getFields($field);
+            $related = $this->getMarcRecord()->getFields($field);
             // if no entry break it
             if ($related) {
                 foreach ($related as $key => $line) {
@@ -904,16 +866,11 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getAllSubjectHeadingsExtended()
     {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
         // define a false indicator
         $firstindicator = 'x';
         $retval = [];
 
-        $fields = $this->marcRecord->getFields('689');
+        $fields = $this->getMarcRecord()->getFields('689');
         if (!$fields) {
             return null;
         }

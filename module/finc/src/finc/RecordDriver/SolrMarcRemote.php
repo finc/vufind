@@ -51,11 +51,11 @@ class SolrMarcRemote extends SolrMarc implements
     use \VuFind\Log\LoggerAwareTrait;
 
     /**
-     * MARC record
+     * MARC record. Access only via getMarcRecord() as this is initialized lazily.
      *
      * @var \File_MARC_Record
      */
-    protected $marcRecord;
+    protected $lazyMarcRecord = null;
 
     /**
      * holds the URI-Pattern of the service that returns the marc binary blob by id
@@ -86,6 +86,8 @@ class SolrMarcRemote extends SolrMarc implements
      * @param \Zend\Config\Config $recordConfig   Record-specific configuration file
      * (omit to use $mainConfig as $recordConfig)
      * @param \Zend\Config\Config $searchSettings Search-specific configuration file
+     *
+     * @throws \Exception
      */
     public function __construct($mainConfig = null, $recordConfig = null,
                                 $searchSettings = null
@@ -108,33 +110,77 @@ class SolrMarcRemote extends SolrMarc implements
     }
 
     /**
-     * Set raw data to initialize the object.
+     * Get access to the raw File_MARC object.
      *
-     * @param mixed $data Raw data representing the record; Record Model
-     * objects are normally constructed by Record Driver objects using data
-     * passed in from a Search Results object.  In this case, $data is a Solr record
-     * array containing MARC data in the 'fullrecord' field.
-     *
+     * @return \File_MARCBASE
      * @throws \Exception
      * @throws \File_MARC_Exception
-     * @return void
      */
-    public function setRawData($data)
+    public function getMarcRecord()
     {
-        // Don't call the parent's set method as this would require the fullrecord in the Solr-Data
-        // Instead perform basic assignment of data to fields
-        $this->fields = $data;
+        if (null === $this->lazyMarcRecord) {
+            // handle availability of fullrecord
+            if (isset($this->fields['fullrecord'])) {
+                // standard Vufind2-behaviour
+
+                // also process the MARC record:
+                $marc = trim($this->fields['fullrecord']);
+
+            } else {
+                // fallback: retrieve fullrecord from external source
+
+                if (! isset($this->fields['id'])) {
+                    throw new \Exception(
+                        'No unique id given for fullrecord retrieval'
+                    );
+                }
+
+                $marc = $this->getRemoteFullrecord($this->fields['id']);
+
+            }
+
+            if (isset($marc)) {
+                // continue with standard Vufind2-behaviour if marcrecord is present
+
+                // check if we are dealing with MARCXML
+                if (substr($marc, 0, 1) == '<') {
+                    $marc = new \File_MARCXML($marc, \File_MARCXML::SOURCE_STRING);
+                } else {
+                    // When indexing over HTTP, SolrMarc may use entities instead of
+                    // certain control characters; we should normalize these:
+                    $marc = str_replace(
+                        ['#29;', '#30;', '#31;'], ["\x1D", "\x1E", "\x1F"], $marc
+                    );
+                    $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
+                }
+
+                $this->lazyMarcRecord = $marc->next();
+                if (!$this->lazyMarcRecord) {
+                    throw new \File_MARC_Exception('Cannot Process MARC Record');
+                }
+
+            } else {
+                // no marcrecord was found
+
+                throw new \Exception(
+                    'no Marc was found neither on the marc server ' .
+                    'nor in the solr-record for id ' . $this->fields['id']
+                );
+            }
+        }
+
+        return $this->lazyMarcRecord;
     }
 
     /**
      * Retrieves the full Marcrecord from a remote service defined by uriPattern
      *
-     * @params String $id - this record's unique identifier
-     * @throws \Exception
+     * @param String $id - this record's unique identifier
      *
-     * @return marc binary blob
+     * @return bool|string
+     * @throws \Exception
      */
-    private function retrieveFullrecord($id)
+    protected function getRemoteFullrecord($id)
     {
 
         if (empty($id)) {
@@ -150,7 +196,7 @@ class SolrMarcRemote extends SolrMarc implements
         try {
             $response = $this->httpService->get($url);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
 
         if (!$response->isSuccess()) {
@@ -163,300 +209,5 @@ class SolrMarcRemote extends SolrMarc implements
         }
 
         return $response->getBody();
-    }
-
-    /**
-     * Load data from remote server
-     *
-     * @throws \Exception
-     * @throws \File_MARC_Exception
-     */
-    protected function getRemoteData() {
-
-        // handle availability of fullrecord
-        if (isset($this->fields['fullrecord'])) {
-            // standard Vufind2-behaviour
-
-            // also process the MARC record:
-            $marc = trim($this->fields['fullrecord']);
-
-        } else {
-            // fallback: retrieve fullrecord from external source
-
-            if (! isset($this->fields['id'])) {
-                throw new \File_MARC_Exception('No unique id given for fullrecord retrieval');
-            }
-
-            $marc = $this->retrieveFullrecord($this->fields['id']);
-
-        }
-
-        if (isset($marc)) {
-            // continue with standard Vufind2-behaviour if marcrecord is present
-
-            // check if we are dealing with MARCXML
-            $xmlHead = '<?xml version';
-            if (strcasecmp(substr($marc, 0, strlen($xmlHead)), $xmlHead) === 0) {
-                $marc = new \File_MARCXML($marc, \File_MARCXML::SOURCE_STRING);
-            } else {
-                // When indexing over HTTP, SolrMarc may use entities instead of certain
-                // control characters; we should normalize these:
-                $marc = str_replace(
-                    ['#29;', '#30;', '#31;'], ["\x1D", "\x1E", "\x1F"], $marc
-                );
-                $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
-            }
-
-            $this->marcRecord = $marc->next();
-            if (!$this->marcRecord) {
-                throw new \File_MARC_Exception('Cannot Process MARC Record');
-            }
-        } else {
-            // no marcrecord was found
-
-            throw new \Exception('no Marc was found neither on the marc server nor in the solr-record for id ' . $this->fields['id']);
-        }
-    }
-
-    /**
-     * Get the field-value identified by $string
-     *
-     * @param String field-name
-     *
-     * @return String
-     */
-    public function getILSIdentifier($string)
-    {
-        return (isset($this->fields[$string]) ? $this->fields[$string] : '');
-    }
-
-    /**
-     * Return an array of associative URL arrays with one or more of the following
-     * keys:
-     *
-     * <li>
-     *   <ul>desc: URL description text to display (optional)</ul>
-     *   <ul>url: fully-formed URL (required if 'route' is absent)</ul>
-     *   <ul>route: VuFind route to build URL with (required if 'url' is absent)</ul>
-     *   <ul>routeParams: Parameters for route (optional)</ul>
-     *   <ul>queryString: Query params to append after building route (optional)</ul>
-     * </li>
-     *
-     * @return array
-     */
-    public function getURLs()
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getURLs();
-    }
-
-    /**
-     * Get all subject headings associated with this record.  Each heading is
-     * returned as an array of chunks, increasing from least specific to most
-     * specific.
-     *
-     * @return array
-     */
-    public function getAllSubjectHeadings()
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getAllSubjectHeadings();
-    }
-
-    /**
-     * Get the bibliographic level of the current record.
-     *
-     * @return string
-     */
-    public function getBibliographicLevel()
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getBibliographicLevel();
-    }
-
-    /**
-     * Return an array of all values extracted from the specified field/subfield
-     * combination.  If multiple subfields are specified and $concat is true, they
-     * will be concatenated together in the order listed -- each entry in the array
-     * will correspond with a single MARC field.  If $concat is false, the return
-     * array will contain separate entries for separate subfields.
-     *
-     * @param string $field     The MARC field number to read
-     * @param array  $subfields The MARC subfield codes to read
-     * @param bool   $concat    Should we concatenate subfields?
-     *
-     * @return array
-     */
-    protected function getFieldArray($field, $subfields = null, $concat = true)
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getFieldArray($field, $subfields, $concat);
-    }
-
-    /**
-     * Get the item's publication information
-     *
-     * @param string $subfield The subfield to retrieve ('a' = location, 'c' = date)
-     *
-     * @return array
-     */
-    protected function getPublicationInfo($subfield = 'a')
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getPublicationInfo($subfield);
-    }
-
-    /**
-     * Support method for getSeries() -- given a field specification, look for
-     * series information in the MARC record.
-     *
-     * @param array $fieldInfo Associative array of field => subfield information
-     * (used to find series name)
-     *
-     * @return array
-     */
-    protected function getSeriesFromMARC($fieldInfo)
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getSeriesFromMARC($fieldInfo);
-    }
-
-    /**
-     * Get an array of lines from the table of contents.
-     *
-     * @return array
-     */
-    public function getTOC()
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getTOC();
-    }
-
-    /**
-     * Get hierarchical place names (MARC field 752)
-     *
-     * returns an array of formatted hierarchical place names, consisting of all
-     * alpha-subfields, concatenated for display
-     *
-     * @return array
-     */
-    public function getHierarchicalPlaceNames()
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getHierarchicalPlaceNames();
-    }
-
-    /**
-     * Get all record links related to the current record. Each link is returned as
-     * array.
-     * Format:
-     * array(
-     *        array(
-     *               'title' => label_for_title
-     *               'value' => link_name
-     *               'link'  => link_URI
-     *        ),
-     *        ...
-     * )
-     *
-     * @return null|array
-     */
-    public function getAllRecordLinks()
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getAllRecordLinks();
-    }
-
-    /**
-     * Get Status/Holdings Information from the internally stored MARC Record
-     * (support method used by the NoILS driver).
-     *
-     * @param array $field The MARC Field to retrieve
-     * @param array $data  A keyed array of data to retrieve from subfields
-     *
-     * @return array
-     */
-    public function getFormattedMarcDetails($field, $data)
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getFormattedMarcDetails($field, $data);
-    }
-
-    /**
-     * Return an XML representation of the record using the specified format.
-     * Return false if the format is unsupported.
-     *
-     * @param string     $format     Name of format to use (corresponds with OAI-PMH
-     * metadataPrefix parameter).
-     * @param string     $baseUrl    Base URL of host containing VuFind (optional;
-     * may be used to inject record URLs into XML when appropriate).
-     * @param RecordLink $recordLink Record link helper (optional; may be used to
-     * inject record URLs into XML when appropriate).
-     *
-     * @return mixed         XML, or false if format unsupported.
-     */
-    public function getXML($format, $baseUrl = null, $recordLink = null)
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getXML($format, $baseUrl, $recordLink);
-    }
-
-    /**
-     * Get access to the raw File_MARC object.
-     *
-     * @return File_MARCBASE
-     */
-    public function getMarcRecord()
-    {
-
-        if(empty($this->marcRecord)) {
-            $this->getRemoteData();
-        }
-
-        return parent::getMarcRecord();
     }
 }

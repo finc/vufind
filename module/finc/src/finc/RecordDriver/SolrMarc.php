@@ -5,6 +5,7 @@
  * PHP version 5
  *
  * Copyright (C) Villanova University 2010.
+ * Copyright (C) The National Library of Finland 2015.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -22,6 +23,7 @@
  * @category VuFind2
  * @package  RecordDrivers
  * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
@@ -36,17 +38,18 @@ use VuFind\Exception\ILS as ILSException,
  * @category VuFind2
  * @package  RecordDrivers
  * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 class SolrMarc extends SolrDefault
 {
     /**
-     * MARC record
+     * MARC record. Access only via getMarcRecord() as this is initialized lazily.
      *
      * @var \File_MARC_Record
      */
-    protected $marcRecord;
+    protected $lazyMarcRecord = null;
 
     /**
      * ILS connection
@@ -68,43 +71,6 @@ class SolrMarc extends SolrDefault
      * @var \VuFind\ILS\Logic\TitleHolds
      */
     protected $titleHoldLogic;
-
-    /**
-     * Set raw data to initialize the object.
-     *
-     * @param mixed $data Raw data representing the record; Record Model
-     * objects are normally constructed by Record Driver objects using data
-     * passed in from a Search Results object.  In this case, $data is a Solr record
-     * array containing MARC data in the 'fullrecord' field.
-     *
-     * @return void
-     */
-    public function setRawData($data)
-    {
-        // Call the parent's set method...
-        parent::setRawData($data);
-
-        // Also process the MARC record:
-        $marc = trim($data['fullrecord']);
-
-        // check if we are dealing with MARCXML
-        $xmlHead = '<?xml version';
-        if (substr($marc, 0, 1) == '<') {
-            $marc = new \File_MARCXML($marc, \File_MARCXML::SOURCE_STRING);
-        } else {
-            // When indexing over HTTP, SolrMarc may use entities instead of certain
-            // control characters; we should normalize these:
-            $marc = str_replace(
-                ['#29;', '#30;', '#31;'], ["\x1D", "\x1E", "\x1F"], $marc
-            );
-            $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
-        }
-
-        $this->marcRecord = $marc->next();
-        if (!$this->marcRecord) {
-            throw new \File_MARC_Exception('Cannot Process MARC Record');
-        }
-    }
 
     /**
      * Get access restriction notes for the record.
@@ -136,7 +102,7 @@ class SolrMarc extends SolrDefault
         // Try each MARC field one at a time:
         foreach ($fields as $field) {
             // Do we have any results for the current field?  If not, try the next.
-            $results = $this->marcRecord->getFields($field);
+            $results = $this->getMarcRecord()->getFields($field);
             if (!$results) {
                 continue;
             }
@@ -185,24 +151,24 @@ class SolrMarc extends SolrDefault
      */
     public function getBibliographicLevel()
     {
-        $leader = $this->marcRecord->getLeader();
+        $leader = $this->getMarcRecord()->getLeader();
         $biblioLevel = strtoupper($leader[7]);
 
         switch ($biblioLevel) {
-        case 'M': // Monograph
-            return "Monograph";
-        case 'S': // Serial
-            return "Serial";
-        case 'A': // Monograph Part
-            return "MonographPart";
-        case 'B': // Serial Part
-            return "SerialPart";
-        case 'C': // Collection
-            return "Collection";
-        case 'D': // Collection Part
-            return "CollectionPart";
-        default:
-            return "Unknown";
+            case 'M': // Monograph
+                return "Monograph";
+            case 'S': // Serial
+                return "Serial";
+            case 'A': // Monograph Part
+                return "MonographPart";
+            case 'B': // Serial Part
+                return "SerialPart";
+            case 'C': // Collection
+                return "Collection";
+            case 'D': // Collection Part
+                return "CollectionPart";
+            default:
+                return "Unknown";
         }
     }
 
@@ -256,7 +222,7 @@ class SolrMarc extends SolrDefault
 
         // Try to look up the specified field, return empty array if it doesn't
         // exist.
-        $fields = $this->marcRecord->getFields($field);
+        $fields = $this->getMarcRecord()->getFields($field);
         if (!is_array($fields)) {
             return $matches;
         }
@@ -349,7 +315,7 @@ class SolrMarc extends SolrDefault
         // consistent with default SolrMarc handling of names/dates.
         $pubResults = $copyResults = [];
 
-        $fields = $this->marcRecord->getFields('264');
+        $fields = $this->getMarcRecord()->getFields('264');
         if (is_array($fields)) {
             foreach ($fields as $currentField) {
                 $currentVal = $currentField->getSubfield($subfield);
@@ -357,12 +323,12 @@ class SolrMarc extends SolrDefault
                     ? $currentVal->getData() : null;
                 if (!empty($currentVal)) {
                     switch ($currentField->getIndicator('2')) {
-                    case '1':
-                        $pubResults[] = $currentVal;
-                        break;
-                    case '4':
-                        $copyResults[] = $currentVal;
-                        break;
+                        case '1':
+                            $pubResults[] = $currentVal;
+                            break;
+                        case '4':
+                            $copyResults[] = $currentVal;
+                            break;
                     }
                 }
             }
@@ -497,7 +463,7 @@ class SolrMarc extends SolrDefault
         // Loop through the field specification....
         foreach ($fieldInfo as $field => $subfields) {
             // Did we find any matching fields?
-            $series = $this->marcRecord->getFields($field);
+            $series = $this->getMarcRecord()->getFields($field);
             if (is_array($series)) {
                 foreach ($series as $currentField) {
                     // Can we find a name using the specified subfield list?
@@ -635,7 +601,7 @@ class SolrMarc extends SolrDefault
     public function getTOC()
     {
         // Return empty array if we have no table of contents:
-        $fields = $this->marcRecord->getFields('505');
+        $fields = $this->getMarcRecord()->getFields('505');
         if (!$fields) {
             return [];
         }
@@ -664,7 +630,7 @@ class SolrMarc extends SolrDefault
     public function getHierarchicalPlaceNames()
     {
         $placeNames = [];
-        if ($fields = $this->marcRecord->getFields('752')) {
+        if ($fields = $this->getMarcRecord()->getFields('752')) {
             foreach ($fields as $field) {
                 $subfields = $field->getSubfields();
                 $current = [];
@@ -699,12 +665,12 @@ class SolrMarc extends SolrDefault
 
         // Which fields/subfields should we check for URLs?
         $fieldsToCheck = [
-            '856' => ['y', 'z'],   // Standard URL
+            '856' => ['y', 'z', '3'],   // Standard URL
             '555' => ['a']         // Cumulative index/finding aids
         ];
 
         foreach ($fieldsToCheck as $field => $subfields) {
-            $urls = $this->marcRecord->getFields($field);
+            $urls = $this->getMarcRecord()->getFields($field);
             if ($urls) {
                 foreach ($urls as $url) {
                     // Is there an address in the current field?
@@ -761,7 +727,7 @@ class SolrMarc extends SolrDefault
         $retVal = [];
         foreach ($fieldsNames as $value) {
             $value = trim($value);
-            $fields = $this->marcRecord->getFields($value);
+            $fields = $this->getMarcRecord()->getFields($value);
             if (!empty($fields)) {
                 foreach ($fields as $field) {
                     // Check to see if we should display at all
@@ -803,16 +769,16 @@ class SolrMarc extends SolrDefault
         // Assign notes based on the relationship type
         $value = $field->getTag();
         switch ($value) {
-        case '780':
-            if (in_array($relationshipIndicator, range('0', '7'))) {
-                $value .= '_' . $relationshipIndicator;
-            }
-            break;
-        case '785':
-            if (in_array($relationshipIndicator, range('0', '8'))) {
-                $value .= '_' . $relationshipIndicator;
-            }
-            break;
+            case '780':
+                if (in_array($relationshipIndicator, range('0', '7'))) {
+                    $value .= '_' . $relationshipIndicator;
+                }
+                break;
+            case '785':
+                if (in_array($relationshipIndicator, range('0', '8'))) {
+                    $value .= '_' . $relationshipIndicator;
+                }
+                break;
         }
 
         return 'note_' . $value;
@@ -847,46 +813,46 @@ class SolrMarc extends SolrDefault
         // If no reference found, check the next link type instead
         foreach ($linkTypes as $linkType) {
             switch (trim($linkType)){
-            case 'oclc':
-                foreach ($linkFields as $current) {
-                    if ($oclc = $this->getIdFromLinkingField($current, 'OCoLC')) {
-                        $link = ['type' => 'oclc', 'value' => $oclc];
+                case 'oclc':
+                    foreach ($linkFields as $current) {
+                        if ($oclc = $this->getIdFromLinkingField($current, 'OCoLC')) {
+                            $link = ['type' => 'oclc', 'value' => $oclc];
+                        }
                     }
-                }
-                break;
-            case 'dlc':
-                foreach ($linkFields as $current) {
-                    if ($dlc = $this->getIdFromLinkingField($current, 'DLC', true)) {
-                        $link = ['type' => 'dlc', 'value' => $dlc];
+                    break;
+                case 'dlc':
+                    foreach ($linkFields as $current) {
+                        if ($dlc = $this->getIdFromLinkingField($current, 'DLC', true)) {
+                            $link = ['type' => 'dlc', 'value' => $dlc];
+                        }
                     }
-                }
-                break;
-            case 'id':
-                foreach ($linkFields as $current) {
-                    if ($bibLink = $this->getIdFromLinkingField($current)) {
-                        $link = ['type' => 'bib', 'value' => $bibLink];
+                    break;
+                case 'id':
+                    foreach ($linkFields as $current) {
+                        if ($bibLink = $this->getIdFromLinkingField($current)) {
+                            $link = ['type' => 'bib', 'value' => $bibLink];
+                        }
                     }
-                }
-                break;
-            case 'isbn':
-                if ($isbn = $field->getSubfield('z')) {
-                    $link = [
-                        'type' => 'isn', 'value' => trim($isbn->getData()),
-                        'exclude' => $this->getUniqueId()
-                    ];
-                }
-                break;
-            case 'issn':
-                if ($issn = $field->getSubfield('x')) {
-                    $link = [
-                        'type' => 'isn', 'value' => trim($issn->getData()),
-                        'exclude' => $this->getUniqueId()
-                    ];
-                }
-                break;
-            case 'title':
-                $link = ['type' => 'title', 'value' => $title];
-                break;
+                    break;
+                case 'isbn':
+                    if ($isbn = $field->getSubfield('z')) {
+                        $link = [
+                            'type' => 'isn', 'value' => trim($isbn->getData()),
+                            'exclude' => $this->getUniqueId()
+                        ];
+                    }
+                    break;
+                case 'issn':
+                    if ($issn = $field->getSubfield('x')) {
+                        $link = [
+                            'type' => 'isn', 'value' => trim($issn->getData()),
+                            'exclude' => $this->getUniqueId()
+                        ];
+                    }
+                    break;
+                case 'title':
+                    $link = ['type' => 'title', 'value' => $title];
+                    break;
             }
             // Exit loop if we have a link
             if (isset($link)) {
@@ -945,7 +911,7 @@ class SolrMarc extends SolrDefault
 
         // Try to look up the specified field, return empty array if it doesn't
         // exist.
-        $fields = $this->marcRecord->getFields($field);
+        $fields = $this->getMarcRecord()->getFields($field);
         if (!is_array($fields)) {
             return $matches;
         }
@@ -1000,7 +966,7 @@ class SolrMarc extends SolrDefault
     {
         // Special case for MARC:
         if ($format == 'marc21') {
-            $xml = $this->marcRecord->toXML();
+            $xml = $this->getMarcRecord()->toXML();
             $xml = str_replace(
                 [chr(27), chr(28), chr(29), chr(30), chr(31)], ' ', $xml
             );
@@ -1035,8 +1001,8 @@ class SolrMarc extends SolrDefault
      * @return void
      */
     public function attachILS(\VuFind\ILS\Connection $ils,
-        \VuFind\ILS\Logic\Holds $holdLogic,
-        \VuFind\ILS\Logic\TitleHolds $titleHoldLogic
+                              \VuFind\ILS\Logic\Holds $holdLogic,
+                              \VuFind\ILS\Logic\TitleHolds $titleHoldLogic
     ) {
         $this->ils = $ils;
         $this->holdLogic = $holdLogic;
@@ -1117,11 +1083,32 @@ class SolrMarc extends SolrDefault
     /**
      * Get access to the raw File_MARC object.
      *
-     * @return File_MARCBASE
+     * @return \File_MARCBASE
      */
     public function getMarcRecord()
     {
-        return $this->marcRecord;
+        if (null === $this->lazyMarcRecord) {
+            $marc = trim($this->fields['fullrecord']);
+
+            // check if we are dealing with MARCXML
+            if (substr($marc, 0, 1) == '<') {
+                $marc = new \File_MARCXML($marc, \File_MARCXML::SOURCE_STRING);
+            } else {
+                // When indexing over HTTP, SolrMarc may use entities instead of
+                // certain control characters; we should normalize these:
+                $marc = str_replace(
+                    ['#29;', '#30;', '#31;'], ["\x1D", "\x1E", "\x1F"], $marc
+                );
+                $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
+            }
+
+            $this->lazyMarcRecord = $marc->next();
+            if (!$this->lazyMarcRecord) {
+                throw new \File_MARC_Exception('Cannot Process MARC Record');
+            }
+        }
+
+        return $this->lazyMarcRecord;
     }
 
     /**
@@ -1132,7 +1119,7 @@ class SolrMarc extends SolrDefault
     public function getRDFXML()
     {
         return XSLTProcessor::process(
-            'record-rdf-mods.xsl', trim($this->marcRecord->toXML())
+            'record-rdf-mods.xsl', trim($this->getMarcRecord()->toXML())
         );
     }
 
@@ -1144,5 +1131,25 @@ class SolrMarc extends SolrDefault
     public function getConsortialIDs()
     {
         return $this->getFieldArray('035', 'a', true);
+    }
+
+    /**
+     * Magic method for legacy compatibility with marcRecord property.
+     *
+     * @param string $key Key to access.
+     *
+     * @return mixed
+     */
+    public function __get($key)
+    {
+        if ($key === 'marcRecord') {
+            // property deprecated as of release 2.5.
+            trigger_error(
+                'marcRecord property is deprecated; use getMarcRecord()',
+                E_USER_DEPRECATED
+            );
+            return $this->getMarcRecord();
+        }
+        return null;
     }
 }
