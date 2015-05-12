@@ -13,7 +13,7 @@ relative_path = ../../../config/vufind/config.ini
 ; A comma-separated list of config sections from the parent which should be
 ; completely overwritten by the equivalent sections in this configuration;
 ; any sections not listed here will be merged on a section-by-section basis.
-;override_full_sections = "Languages,AlphaBrowse_Types"
+override_full_sections = "Http"
 
 ;
 ;       Add DEV-specific customization after this header.
@@ -41,6 +41,10 @@ hash_passwords = "1"
 encrypt_ils_password = "1"
 
 ils_encryption_key = "3e2ac9b644dd4e0b64b179a0309ead13bb59202a"
+
+[Http]
+; Pfad zu SSL-Zertifikaten in der docker-VM (global für CentOS konfiguriert)
+sslcapath = "/etc/ssl/certs"
 
 ; OpenURL configuration institution specified
 ; sample configuration for ubl
