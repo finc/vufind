@@ -671,12 +671,12 @@ class SolrAI extends SolrDefault implements
      * @param string $baseUrl The Ai fullrecord server url.
      *
      * @return mixed          Raw curl request response (should be json).
-     * @throws Exception
+     * @throws \Exception
      */
     protected function retrieveAiFullrecord($id, $baseUrl)
     {
         if (!isset($id)) {
-            throw new Exception('no id given');
+            throw new \Exception('no id given');
         }
 
         $url = sprintf($baseUrl, $id);
@@ -684,7 +684,7 @@ class SolrAI extends SolrDefault implements
         try {
             $response = $this->httpService->get($url);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
 
         if (!$response->isSuccess()) {
