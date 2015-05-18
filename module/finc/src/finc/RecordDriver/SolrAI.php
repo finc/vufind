@@ -419,7 +419,7 @@ class SolrAI extends SolrDefault implements
      *
      * @return array
      */
-    protected function getDefaultOpenURLParams()
+    /*protected function getDefaultOpenURLParams()
     {
         // Start an array of OpenURL parameters:
         return [
@@ -427,7 +427,7 @@ class SolrAI extends SolrDefault implements
             'ctx_enc' => 'info:ofi/enc:UTF-8',
             'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator'
         ];
-    }
+    }*/
 
     /**
      * Get OpenURL parameters for an article.

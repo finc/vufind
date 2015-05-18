@@ -22,6 +22,7 @@
  *
  * @category VuFind2
  * @package  Resolver_Drivers
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:link_resolver_drivers Wiki
@@ -29,12 +30,14 @@
 namespace finc\Resolver\Driver;
 use DOMDocument,
     \VuFind\Resolver\Driver\DriverInterface as DriverInterface;
+use Zend\Dom\DOMXPath;
 
 /**
  * ReDi Link Resolver Driver
  *
  * @category VuFind2
  * @package  Resolver_Drivers
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:link_resolver_drivers Wiki
@@ -42,10 +45,10 @@ use DOMDocument,
 class Redi implements DriverInterface
 {
     /**
-    * HTTP client
-    *
-    * @var \Zend\Http\Client
-    */
+     * HTTP client
+     *
+     * @var \Zend\Http\Client
+     */
     protected $httpClient;
 
     /**
@@ -54,6 +57,13 @@ class Redi implements DriverInterface
      * @var string
      */
     protected $baseUrl;
+
+    /**
+     * Parsed resolver links
+     *
+     * @var array
+     */
+    protected $links;
 
     /**
      * Constructor
@@ -78,7 +88,7 @@ class Redi implements DriverInterface
      */
     public function fetchLinks($openURL)
     {
-        $url = $this->baseUrl.'&'.$openURL;
+        $url = $this->baseUrl.'?'.$openURL;
         $feed = $this->httpClient->setUri($url)->send()->getBody();
         return $feed;
     }
@@ -95,217 +105,164 @@ class Redi implements DriverInterface
      */
     public function parseLinks($xmlstr)
     {
-        $retval = [];
         $xml = new DOMDocument();
         if (!@$xml->loadHTML($xmlstr)) {
-            return $retval;
+            return [];
         }
 
-        $this->parseDOI($xml, $retval);
-        $this->parseRediInfo($xml, $retval);
-        $this->parseRediOpenURLs($xml, $retval);
+        // parse the raw resolver-data
+        $this->links = array_merge(
+            $this->parseDOI($xml),
+            $this->parseRediOpenURLs($xml)
+        );
+
+        // perform (individual) postprocessing on parsed resolver-data
+        $this->postProcessing();
+
+        return $this->links;
+    }
+
+    /**
+     * Parse the Redi XML response and return array with DOI information.
+     *
+     * @param DOMDocument $xml Loaded xml document
+     *
+     * @return array Get back a array with title, URL and service_type
+     */
+    protected function parseDOI($xml)
+    {
+        $retval = [];
+
+        $xpath = new DOMXPath($xml);
+
+        $doiTerm = $xpath
+            ->query("//dt[@class='doi_t']");
+        $doiDefinition = $xpath
+            ->query("//dd[@class='doi_d']");
+
+        if ($doiTerm->length == $doiDefinition->length) {
+            for ($i=0; $i<$doiTerm->length; $i++) {
+                $href = $xpath
+                    ->query(".//@href", $doiDefinition->item($i))
+                    ->item(0)->textContent;
+                $retval[] = [
+                    'title' => $doiTerm->item($i)->textContent
+                        . $doiDefinition->item($i)->textContent,
+                    'href' => $href,
+                    'service_type' => 'getFullTxt',
+                ];
+            }
+        }
 
         return $retval;
     }
 
     /**
-     * Parse if the Redi xml snippet contains a DOI.
+     * Parse Redi additional information elements and return the one identified by
+     * the infoToken provided (e.g. "*")
      *
-     * @param DOMDocument $xml     Loaded xml document
-     * @param array       &$retval Get back a array with title, URL and service_type
+     * @param DOMDocument $xml       Loaded xml document
+     * @param string      $infoToken InfoToken to search for
      *
-     * @return void
-     * @access private
+     * @return string
      */
-    protected function parseDOI ($xml, &$retval)
+    protected function parseRediInfo($xml, $infoToken)
     {
-        $citation = $xml->getElementById('citation');
-        if (is_object($citation->childNodes)) {
-            foreach ($citation->childNodes as $deflist) {
-                if (is_object($deflist->childNodes)) {
-                    foreach ($deflist->childNodes as $defterm) {
-                        $tmp = [];
-                        if ($defterm->hasAttributes()) {
-                            $elem = $defterm->getAttribute('class');
-                            if ($elem == 'doi_t') {
-                                $doiText = trim($defterm->nodeValue);
-                                $tmp['title'] = $doiText;
-                            }
-                            if ($elem == 'doi_d') {
-                                $doiURL = trim($this->getRediLink($defterm));
-                                $tmp['href'] = $doiURL;
-                            }
-                        }
-                        $tmp['service_type'] = 'getDOI';
+        $xpath = new DOMXPath($xml);
 
-                        if (!empty($tmp['title']) && !empty($tmp['href'])) {
-                            $retval[] = $tmp;
-                        }
-                    }
+        // additional info nodes - marked by "<sup>*</sup>"
+        $infoTokenNodes = $xpath->query("//div[@id='t_ezb']/div[@class='t']/p/sup");
+
+        if ($infoTokenNodes->length > 0) {
+            for ($i=0; $i<$infoTokenNodes->length; $i++) {
+                if ($infoToken == $infoTokenNodes->item($i)->textContent) {
+                    return $xpath
+                        ->query("//div[@id='t_ezb']/div[@class='t']/p/sup/..")
+                        ->item($i)->textContent;
                 }
             }
         }
-    }
 
-    /**
-     * Parse if the Redi xml snippet contains information about the Redi offer.
-     *
-     * @param DOMDocument $xml     Loaded xml document
-     * @param array       &$retval Return array with Redi catalogue information
-     *                             consisting of Text & Link.
-     *
-     * @return void
-     * @access protected
-     */
-    protected function parseRediInfo($xml, &$retval)
-    {
-        if ($ezb = $xml->getElementById('t_ezb')) {
-            if (is_object($ezb->childNodes)) {
-                foreach ($ezb->childNodes as $divClassT) {
-                    if (is_object($divClassT->childNodes)) {
-                        foreach ($divClassT->childNodes as $nodes) {
-                            // infotext
-
-                            if ($nodes->nodeName == 'p') {
-                                $tmp = [];
-                                $rediInfoText = trim($nodes->firstChild->nodeValue);
-                                if ($this->isRediOpenURLsWithInfo($xml)) {
-                                    $rediInfoInfo = trim($nodes->nodeValue);
-                                }
-                                $rediInfoURL = trim($this->getRediLink($nodes));
-                                if (is_object($nodes->childNodes)) {
-                                    foreach ($nodes->childNodes as $bold) {
-                                        if ($bold->nodeName == 'b') {
-                                            $rediInfoText = $rediInfoText
-                                                .' '.trim($bold->nodeValue);
-                                        }
-                                    }
-                                }
-                                $tmp['title'] = (isset($rediInfoText)?
-                                    $rediInfoText:'');
-                                $tmp['href'] = (isset($rediInfoURL)?
-                                    $rediInfoURL:'');
-                                $tmp['info'] = (isset($rediInfoInfo)?
-                                    $rediInfoInfo:'');
-                                $tmp['service_type'] = 'getHolding';
-
-                                if (!empty($tmp['title']) && !empty($tmp['href'])) {
-                                    $retval[] = $tmp;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        return '';
     }
 
     /**
      * Parse if the Redi xml snippet contains Redi urls.
      *
-     * @param DOMDocument $xml     Loaded xml document
-     * @param array       &$retval Get back Redi direct link to sources
-     *                             containing title, URL and service_type
+     * @param DOMDocument $xml Loaded xml document
      *
-     * @return void
-     * @access protected
+     * @return array Get back Redi direct link to sources containing title, URL and
+     *               service_type
      */
-    protected function parseRediOpenURLs($xml, &$retval)
+    protected function parseRediOpenURLs($xml)
     {
-        if ($ezb = $xml->getElementById('t_ezb')) {
-            if (is_object($ezb->childNodes)) {
-                foreach ($ezb->childNodes as $divClassT) {
-                    if (is_object($divClassT->childNodes)) {
-                        foreach ($divClassT->childNodes as $nodes) {
-                            $tmp = [];
-                            // fulltext
-                            if ($nodes->nodeName == 'div') {
-                                $text = trim(
-                                    str_replace(
-                                        ['»',
-                                            chr(194).chr(160)
-                                        ],
-                                        ['', ''],
-                                        $nodes->nodeValue
-                                    )
-                                ); // hack to replace \u00a0
-                                $available = $nodes->getElementsByTagName('span');
-                                foreach ($available as $span) {
-                                    if ($span->hasAttributes()) {
-                                        $class = $span->getAttribute('class');
-                                        if ($class == 't_link') {
-                                            $url = $this->getRediLink($nodes);
-                                        }
-                                    }
-                                }
-                                $tmp['title'] = (isset($text)?$text:'');
-                                $tmp['href'] = (isset($url)?$url:'');
-                                $tmp['service_type'] = 'getFullTxt';
+        $retval = [];
 
-                                if (!empty($tmp['title']) && !empty($tmp['href'])) {
-                                    $retval[] = $tmp;
-                                }
-                            }
-                        } // end foreach
-                    } // end if
-                } // end foreach
-            } // end if
-        } // end if
-    }
+        $xpath = new DOMXPath($xml);
 
-    /**
-     * Is a star in ReDi links text snippet
-     *
-     * @param DOMDocument $xml loaded xml document
-     *
-     * @return bool
-     * @access protected
-     */
-    protected function isRediOpenURLsWithInfo($xml)
-    {
-        if ($ezb = $xml->getElementById('t_ezb')) {
-            if (is_object($ezb->childNodes)) {
-                foreach ($ezb->childNodes as $divClassT) {
-                    if (is_object($divClassT->childNodes)) {
-                        foreach ($divClassT->childNodes as $nodes) {
-                            if ($nodes->nodeName == 'div') {
-                                $text = trim(
-                                    str_replace(
-                                        ['»',
-                                            chr(194).chr(160)
-                                        ],
-                                        ['',''],
-                                        $nodes->nodeValue
-                                    )
-                                ); // hack to replace \u00a0
-                                if (preg_match('/.*(\*).*/', $text)) {
-                                    return true;
-                                }
-                            }
-                        } // end foreach
-                    } // end if
-                } // end foreach
-            } // end if
-        } // end if
-        return false;
-    }
+        $ezbResultsNodesText = $xpath
+            ->query("//div[@class='t_ezb_result']/p");
+        $ezbResultsNodesURL = $xpath
+            ->query("//div[@class='t_ezb_result']/p/span[@class='t_link']/a");
 
-    /**
-     * Get the ReDi links of a DOM document snippet.
-     *
-     * @param object $doc Document snippet from ReDi site
-     *
-     * @return string Url of ReDi
-     * @access protected
-     */
-    protected function getRediLink($doc)
-    {
-        $hrefs = $doc->getElementsByTagName('a');
-        foreach ($hrefs as $a) {
-            if ($a->hasAttributes()) {
-                return $a->getAttribute('href');
+        if ($ezbResultsNodesText->length == $ezbResultsNodesURL->length) {
+            for ($i=0; $i<$ezbResultsNodesText->length; $i++) {
+
+                $itemInfo = '';
+
+                $expression = "//div[@class='t_ezb_result']/p[{$i}]/sup";
+                if ($xpath->evaluate("count({$expression})") == 1) {
+                    $itemInfo = $this->parseRediInfo(
+                        $xml, $xpath->query($expression)->item(0)->textContent
+                    );
+                }
+
+                $retval[] = [
+                    'title' => $ezbResultsNodesText->item($i)->textContent,
+                    'href' => $ezbResultsNodesURL->item($i)
+                        ->attributes->getNamedItem("href")->textContent,
+                    'coverage'     => $itemInfo,
+                    'service_type' => 'getFullTxt',
+                ];
             }
         }
-        return '';
+
+        return $retval;
+    }
+
+    /**
+     * Hook for post processing of the parsed resolver response (e.g. by removing any
+     * double angle quotation mark from each link['title']).
+     *
+     * @return void
+     */
+    protected function postProcessing()
+    {
+        for ($i=0; $i < count($this->links); $i++) {
+            if (isset($this->links[$i]['title'])) {
+                $this->links[$i]['title'] = $this
+                    ->removeDoubleAngleQuotationMarks($this->links[$i]['title']);
+                $this->links[$i]['title'] = trim($this->links[$i]['title']);
+            }
+            if (isset($this->links[$i]['coverage'])) {
+                $this->links[$i]['coverage'] = trim($this->links[$i]['coverage']);
+            }
+        }
+    }
+
+    /**
+     * Helper function to remove hardcoded link-string "»" in Redi response
+     *
+     * @param string $string String to be manipulated
+     *
+     * @return string
+     */
+    protected function removeDoubleAngleQuotationMarks($string)
+    {
+        return str_replace(
+            ['»', chr(194).chr(160)],
+            ['', ''],
+            $string
+        ); // hack to replace \u00a0
     }
 }
