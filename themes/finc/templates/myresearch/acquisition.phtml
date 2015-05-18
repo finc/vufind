@@ -1,3 +1,4 @@
+<!-- myresearch - acquisition.phtml -->
 <?
 // Set up page title:
 $this->headTitle($this->translate('Suggestions for acquisition'));
@@ -13,8 +14,8 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
         <form class="form-horizontal" method="post" action="" name="acquisitionForm">
             <h6><?=$this->transEsc('Please send only one form per acquisition proposal.') ?></h6>
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="acquisition_subject"><?=$this->transEsc('Subject area') ?><span class="required">*</span></label>
-                <div class="col-sm-9">
+                <label class="col-sm-3 medium-3 columns control-label" for="acquisition_subject"><?=$this->transEsc('Subject area') ?><span class="required">*</span></label>
+                <div class="col-sm-9 medium-9 columns">
                     <select name="subject" class="form-control">
                         <option value="-1"><?=$this->transEsc('Please select a subject area') ?></option>
                         <? if (isset($subjectlist) && is_array($subjectlist)): ?>
@@ -29,8 +30,8 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="acquistion_reasons"><?=$this->transEsc('Please give reasons for your suggestion') ?><span class="required">*</span></label>
-                <div class="col-sm-9">
+                <label class="col-sm-3 medium-3 columns control-label" for="acquistion_reasons"><?=$this->transEsc('Please give reasons for your suggestion') ?><span class="required">*</span></label>
+                <div class="col-sm-9 medium-9 columns">
                     <textarea id="acquisition_reasons" type="text" cols="50" rows="5" name="reasons"><? if (isset($values['reasons']) && !empty($values['reasons'])): ?><?=$this->transEsc($values['reasons']) ?><? endif; ?></textarea>
                     <br />
                     <? /*if (isset($error) && in_array('reasons', $error)): ?>
@@ -39,8 +40,8 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="acquistion_proposal"><?=$this->transEsc('Your acquisition proposal') ?><span class="required">*</span></label>
-                <div class="col-sm-9">
+                <label class="col-sm-3 medium-3 columns control-label" for="acquistion_proposal"><?=$this->transEsc('Your acquisition proposal') ?><span class="required">*</span></label>
+                <div class="col-sm-9 medium-9 columns">
                     <textarea id="acquisition_proposal" type="text" cols="50" rows="5" name="proposal"><? if (isset($values['proposal']) && !empty($values['proposal'])): ?><?=$this->transEsc($values['proposal']) ?><? endif; ?></textarea>
                     <br />
                     <? /*if (isset($error) && in_array('proposal', $error)): ?>
@@ -49,12 +50,12 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-9 col-sm-offset-3">
-                    <input class="btn btn-primary" type="submit" name="submit" value="<?=$this->transEsc('Submit') ?>"/>
+                <div class="col-sm-9 col-sm-offset-3 medium-9 columns medium-offset-3">
+                    <input class="btn btn-primary button tiny" type="submit" name="submit" value="<?=$this->transEsc('Submit') ?>"/>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-9 col-sm-offset-3">
+                <div class="col-sm-9 col-sm-offset-3 medium-9 columns medium-offset-3">
                     <?=$this->transEsc('note_mandatory_fields') ?>
                 </div>
             </div>
@@ -64,3 +65,4 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
         <?=$this->context($this)->renderInContext("myresearch/menu.phtml", array('active' => 'aquisition'))?>
     </div>
 </div>
+<!-- myresearch - acquisition.phtml - END -->

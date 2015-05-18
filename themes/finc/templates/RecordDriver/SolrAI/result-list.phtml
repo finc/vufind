@@ -1,6 +1,6 @@
-<div class="<?=$this->driver->supportsAjaxStatus()?'ajaxItem ':''?>col-xs-11">
+<div class="<?=$this->driver->supportsAjaxStatus()?'ajaxItem ':''?>col-xs-11 small-11 columns">
   <div class="row">
-    <div class="col-sm-2 col-xs-3 left">
+    <div class="col-sm-2 col-xs-3 small-3 medium-2 columns left">
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
       <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
@@ -11,7 +11,7 @@
         <? endif; ?>
       </a>
     </div>
-    <div class="col-sm-7 col-xs-6 middle">
+    <div class="col-sm-7 col-xs-6 small-6 medium-7 columns middle">
       <div>
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title">
         <?
@@ -105,11 +105,11 @@
         <? if ($this->driver->supportsAjaxStatus()): ?>
           <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
           <span class="callnumber ajax-availability hidden">
-            <?=$this->transEsc('Loading')?>...<br/>
+            <?=$this->transEsc('Loading')?>&nbsp;...<br/>
           </span>
           <strong><?=$this->transEsc('Located')?>:</strong>
           <span class="location ajax-availability hidden">
-            <?=$this->transEsc('Loading')?>...
+            <?=$this->transEsc('Loading')?>&nbsp;...
           </span>
           <div class="locationDetails"></div>
         <? else: ?>
@@ -144,19 +144,19 @@
 
       <? if (!$openUrlActive && empty($urls) && $this->driver->supportsAjaxStatus()): ?>
         <span class="status ajax-availability hidden">
-          <span class="label label-default"><?=$this->transEsc('Loading')?>...</span>
+          <span class="label label-default"><?=$this->transEsc('Loading')?>&nbsp;...</span>
         </span>
       <? endif; ?>
       <?=$this->record($this->driver)->getPreviews()?>
     </div>
-    <div class="col-xs-3 right hidden-print">
+    <div class="col-xs-3 hidden-print small-3 columns  hide-for-print right">
       <? /* Display qrcode if appropriate: */ ?>
       <? if ($QRCode = $this->record($this->driver)->getQRCode("results")): ?>
         <?
           // Add JS Variables for QrCode
           $this->jsTranslations()->addStrings(array('qrcode_hide' => 'qrcode_hide', 'qrcode_show' => 'qrcode_show'));
         ?>
-        <span class="hidden-xs">
+        <span class="hidden-xs hide-for-small">
           <i class="fa fa-qrcode"></i> <a href="<?=$this->escapeHtmlAttr($QRCode);?>" class="qrcodeLink"><?=$this->transEsc('qrcode_show')?></a>
           <div class="qrcode hidden">
             <script type="text/template" class="qrCodeImgTag">
@@ -171,7 +171,7 @@
         <i class="fa fa-heart"></i> <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="save-record modal-link" id="<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('Add to favorites')?>"><?=$this->transEsc('Add to favorites')?></a><br/>
 
         <? /* Saved lists */ ?>
-        <div class="savedLists alert alert-info hidden">
+        <div class="savedLists alert alert-info alert-box info hidden">
           <strong><?=$this->transEsc("Saved in")?>:</strong>
         </div>
       <? endif; ?>
