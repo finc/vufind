@@ -74,8 +74,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      * @param \Zend\Config\Config $searchSettings Search-specific configuration file
      */
     public function __construct($mainConfig = null, $recordConfig = null,
-                                $searchSettings = null
-    )
+                                $searchSettings = null)
     {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
@@ -86,7 +85,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         }
 
         if (isset($mainConfig->LibraryGroup->libraries)) {
-            $this->libraryGroup = explode(',' , $this->mainConfig->LibraryGroup->libraries);
+            $this->libraryGroup
+                = explode(',', $this->mainConfig->LibraryGroup->libraries);
         } else {
             $this->debug('LibraryGroup setting is missing.');
         }
@@ -106,8 +106,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
                 'zit' => '976',
                 'zwi' => '975',
             ];
-            $this->localMarcFieldOfLibrary =
-                isset($map[$this->mainConfig->CustomSite->namespace]) ?
+            $this->localMarcFieldOfLibrary
+                = isset($map[$this->mainConfig->CustomSite->namespace]) ?
                     $map[$this->mainConfig->CustomSite->namespace] : null;
         } else {
             $this->debug('Namespace setting for localMarcField is missing.');
@@ -147,17 +147,16 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
 
                     $isISIL = false;
 
-                    if($isil) {
+                    if ($isil) {
                         $isil = $isil->getData();
-                        if(preg_match('/'.$this->isil.'.*/', $isil)) {
+                        if (preg_match('/'.$this->isil.'.*/', $isil)) {
                             $isISIL = true;
                         }
                     } else {
                         $isISIL = true;
                     }
 
-                    if($isISIL) {
-
+                    if ($isISIL) {
                         // Is there an address in the current field?
                         $address = $url->getSubfield('u');
                         if ($address) {
@@ -178,7 +177,6 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
                             if (empty($desc)) {
                                 $desc = $address;
                             }
-
 
                             // If url doesn't exist as key so far write to return variable.
                             if (!in_array(['url' => $address, 'desc' => $desc], $retVal)) {
@@ -205,8 +203,9 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     {
         $array = [];
 
-        if (count($this->libraryGroup) > 0 && isset($this->fields['itemdata']))
-        {
+        if (count($this->libraryGroup) > 0
+            && isset($this->fields['itemdata'])
+        ) {
             $itemdata = json_decode($this->fields['itemdata'], true);
             if (count($itemdata) > 0) {
                 // error_log('Test: '. print_r($this->fields['itemdata'], true));
@@ -236,8 +235,9 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         $array = [];
         $callnumbers = [];
 
-        if (count($this->libraryGroup) > 0 && isset($this->fields['itemdata']))
-        {
+        if (count($this->libraryGroup) > 0
+            && isset($this->fields['itemdata'])
+        ) {
             $itemdata = json_decode($this->fields['itemdata'], true);
             if (count($itemdata) > 0) {
                 $i = 0;
@@ -275,8 +275,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         foreach ($arrSignatur as $signatur) {
             foreach ($this->libraryGroup as $code) {
                 if (0 < preg_match('/^\('.$code.'\)/', $signatur)) {
-
-                    $retval[] = preg_replace( '/^\('.$code.'\)/','', $signatur);
+                    $retval[] = preg_replace('/^\('.$code.'\)/', '', $signatur);
                 }
             }
         }
@@ -357,7 +356,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             // ->getIndicator(position)
             $subjectrow = $field->getIndicator('1');
             if ($subjectrow == $lookfor_indicator) {
-                if ($subfield = $field->getSubfield('a')){
+                if ($subfield = $field->getSubfield('a')) {
                     if (preg_match('/^VD/i', $subfield->getData()) > 0) {
                         $retval[] = $subfield->getData();
                     }
@@ -712,7 +711,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     protected function getPurchaseInformation()
     {
         if (null != $this->localMarcFieldOfLibrary) {
-            if ( $this->getFirstFieldValue($this->localMarcFieldOfLibrary, ['m']) == 'e') {
+            if ($this->getFirstFieldValue($this->localMarcFieldOfLibrary, ['m']) == 'e') {
                 return true;
             }
         }
@@ -729,7 +728,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      */
     protected function getSeriesWithVolume()
     {
-        return $this->getFieldArray('830', ['a','v'], false);
+        return $this->getFieldArray('830', ['a', 'v'], false);
     }
 
     /**
@@ -881,13 +880,13 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
                 $key = (isset($key) ? $key +1 : 0);
                 $firstindicator = $subjectrow;
             }
-            if ($subfield = $field->getSubfield('a')){
+            if ($subfield = $field->getSubfield('a')) {
                 $retval[$key]['subject'][] = $subfield->getData();
             }
-            if ($subfield = $field->getSubfield('t')){
+            if ($subfield = $field->getSubfield('t')) {
                 $retval[$key]['subject'][] = $subfield->getData();
             }
-            if ($subfield = $field->getSubfield('9')){
+            if ($subfield = $field->getSubfield('9')) {
                 $retval[$key]['subsubject'] = $subfield->getData();
             }
         }
@@ -921,7 +920,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
                 $codes = explode(",", $libraryCodes->libraries);
                 $match = [];
                 $retval = [];
-                foreach($barcodes as $barcode) {
+                foreach ($barcodes as $barcode) {
                     if (preg_match('/^\((.*)\)(.*)$/', trim($barcode), $match));
                     if ( in_array($match[1], $codes) ) {
                         $retval[] = $match[2];

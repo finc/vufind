@@ -43,6 +43,7 @@ use VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
  * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
+ * @link     https://vufind.org/wiki/remote_marc_records
  */
 class SolrMarcRemote extends SolrMarc implements
     HttpServiceAwareInterface, LoggerAwareInterface
@@ -51,32 +52,11 @@ class SolrMarcRemote extends SolrMarc implements
     use \VuFind\Log\LoggerAwareTrait;
 
     /**
-     * MARC record. Access only via getMarcRecord() as this is initialized lazily.
-     *
-     * @var \File_MARC_Record
-     */
-    protected $lazyMarcRecord = null;
-
-    /**
-     * holds the URI-Pattern of the service that returns the marc binary blob by id
+     * Holds the URI-Pattern of the service that returns the marc binary blob by id
      *
      * @var string
      */
     protected $uriPattern = '';
-    
-    /**
-     * holds config.ini data
-     * 
-     * @var array
-     */
-    protected $mainConfig;
-
-    /**
-     * holds searches.ini data
-     *
-     * @var array
-     */
-    protected $searchesConfig;
 
     /**
      * Constructor
@@ -90,23 +70,16 @@ class SolrMarcRemote extends SolrMarc implements
      * @throws \Exception
      */
     public function __construct($mainConfig = null, $recordConfig = null,
-                                $searchSettings = null
+        $searchSettings = null
     ) {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
-        if (!isset($recordConfig->General)) {
-            throw new \Exception('SolrMarcRemote General settings missing.');
-        }
-
         // get config values for remote fullrecord service
-        if (! $recordConfig->General->get('baseUrl')) {
+        if (! $mainConfig->Record->get('remote_marc_url')) {
             throw new \Exception('SolrMarcRemote baseUrl-setting missing.');
         } else {
-            $this->uriPattern = $recordConfig->General->get('baseUrl');
+            $this->uriPattern = $mainConfig->Record->get('remote_marc_url');
         }
-        
-        $this->mainConfig = $mainConfig;
-        $this->searchesConfig = $searchSettings;
     }
 
     /**
@@ -118,58 +91,19 @@ class SolrMarcRemote extends SolrMarc implements
      */
     public function getMarcRecord()
     {
-        if (null === $this->lazyMarcRecord) {
-            // handle availability of fullrecord
-            if (isset($this->fields['fullrecord'])) {
-                // standard Vufind2-behaviour
-
-                // also process the MARC record:
-                $marc = trim($this->fields['fullrecord']);
-
-            } else {
-                // fallback: retrieve fullrecord from external source
-
-                if (! isset($this->fields['id'])) {
-                    throw new \Exception(
-                        'No unique id given for fullrecord retrieval'
-                    );
-                }
-
-                $marc = $this->getRemoteFullrecord($this->fields['id']);
-
-            }
-
-            if (isset($marc)) {
-                // continue with standard Vufind2-behaviour if marcrecord is present
-
-                // check if we are dealing with MARCXML
-                if (substr($marc, 0, 1) == '<') {
-                    $marc = new \File_MARCXML($marc, \File_MARCXML::SOURCE_STRING);
-                } else {
-                    // When indexing over HTTP, SolrMarc may use entities instead of
-                    // certain control characters; we should normalize these:
-                    $marc = str_replace(
-                        ['#29;', '#30;', '#31;'], ["\x1D", "\x1E", "\x1F"], $marc
-                    );
-                    $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
-                }
-
-                $this->lazyMarcRecord = $marc->next();
-                if (!$this->lazyMarcRecord) {
-                    throw new \File_MARC_Exception('Cannot Process MARC Record');
-                }
-
-            } else {
-                // no marcrecord was found
-
+        // handle availability of fullrecord
+        if (!isset($this->fields['fullrecord'])) {
+            // retrieve fullrecord from external source
+            if (! isset($this->fields['id'])) {
                 throw new \Exception(
-                    'no Marc was found neither on the marc server ' .
-                    'nor in the solr-record for id ' . $this->fields['id']
+                    'No unique id given for fullrecord retrieval'
                 );
             }
+            $this->fields['fullrecord']
+                = $this->getRemoteFullrecord($this->fields['id']);
         }
 
-        return $this->lazyMarcRecord;
+        return parent::getMarcRecord();
     }
 
     /**
