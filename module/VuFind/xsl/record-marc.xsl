@@ -11,8 +11,8 @@
   <xsl:template match="marc:record">
       <table class="citation table table-striped">
         <tr class="pace-car">
-		  <th width="15%"/>
-		  <td width="5%"/>
+          <th width="15%"/>
+          <td width="5%"/>
           <td width="5%"/>
           <td width="*"/>
         </tr>
