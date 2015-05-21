@@ -84,7 +84,7 @@ pre {display: block;	padding: .5rem;margin: 0 0 .75rem;font-size: .875rem;line-h
 /* MODALS - end */
 /*LIST GROUPS - do not exist in FNDTN */
 	.list-group {margin-left:0;padding-left:0;margin-bottom:1rem;}
-	.list-group-item {position: relative;display: block;padding: .75rem 1rem;margin-bottom: -1px;background-color: #fff;border: 1px solid #ddd}
+	.list-group-item {position: relative;display: block;padding: .75rem 1rem;margin-bottom: -1px;background-color: #fff;border: 1px solid #ddd;border-top: 0;}
 	.list-group-item:last-child {margin-bottom: 0;}
 	a.list-group-item {color: #555}
 	a.list-group-item .list-group-item-heading {color: #333}
@@ -92,7 +92,7 @@ pre {display: block;	padding: .5rem;margin: 0 0 .75rem;font-size: .875rem;line-h
 	a.list-group-item:focus {text-decoration: none;background-color: #f5f5f5}
 	a.list-group-item.active,
 	a.list-group-item.active:hover,
-	a.list-group-item.active:focus {z-index: 2;color: #fff;background-color: #2ba6cb;border-color: #2ba6cb}
+	a.list-group-item.active:focus {z-index: 2;color: #fff !important;background-color: #2ba6cb;border-color: #2ba6cb}
 	a.list-group-item.active .list-group-item-heading,
 	a.list-group-item.active:hover .list-group-item-heading,
 	a.list-group-item.active:focus .list-group-item-heading {color: inherit}
@@ -133,6 +133,10 @@ pre {display: block;	padding: .5rem;margin: 0 0 .75rem;font-size: .875rem;line-h
 	a.list-group-item-danger.active:focus {color: #fff;background-color: #c60f13;border-color: #c60f13}
 	.list-group-item-heading {margin-top: 0;margin-bottom: .25rem}
 	.list-group-item-text {	margin-bottom: 0;line-height: 1.3}
+  .accordion {margin-bottom: 6px; margin-left: 0;}
+  .side-nav {padding: 0;}
+  .side-nav li {margin: 0;}
+  .sidebar .accordion-navigation.active > a {border-bottom: 1px solid #ddd;}
 
 	/* CHECK relevance of the following - in use? - Fixme */
 	.panel > .list-group {margin-bottom: 0}
@@ -488,7 +492,7 @@ footer.panel {padding:1rem}
 
 		/* Remove-search-filters box */
 			/* Remove-search-filters header */
-			.filters  .list-group-item.title {background: none repeat scroll 0% 0% #0078A0;color: #222;padding: 1rem;display: block;font-size: 1rem; }
+			.filters  .list-group-item.title {background: #e8e8e8;color: #222;padding: 1rem;display: block;font-size: 1rem; }
 			/* Remove-search-filters header - end */
 		.filters li.list-group-item {border-color: #dddddd;}
 		.filters a.list-group-item {border-left: 1px solid #dddddd; border-right: 1px solid #dddddd}
