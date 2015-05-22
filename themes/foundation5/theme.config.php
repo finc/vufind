@@ -6,7 +6,7 @@ return array(
 		'vendor/foundation.min.css',
 		'vendor/font-awesome.min.css',
 		'default.css',
-		'mqueries.css',
+		//'mqueries.css',
 	),
 	'js' => array(
 		'vendor/base64.js:lt IE 10', // btoa polyfill
@@ -18,7 +18,7 @@ return array(
 		'foundation.min.js',		// This includes all components
 	//	'foundation/foundation.js', 	// Activate this plus individual FNDTN component scripts below, if desired
 	//	'foundation/foundation.topbar.js',
-		//'vendor/typeahead.js',
+		'vendor/typeahead.js',
 		'common.js',
 		'lightbox.js',
 	),
@@ -29,6 +29,10 @@ return array(
 	),
 	*/
 	// previous block commented out by CK - FIXME - check and use LESS, or better, find solution using SASS, which is FNDTN's preferred CSS-compiler
+
+    /* Chris - I have started using sassc to compile:
+             - https://github.com/sass/sassc
+             - ~/sassc/bin/sassc -t compact themes/foundation5/scss/default.scss > themes/foundation5/css.default.css */
 
 	'favicon' => 'vufind-favicon.ico',
 	'helpers' => array(
