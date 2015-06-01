@@ -47,6 +47,10 @@ table td[class*="col-"],table th[class*="col-"]{position: static;float: none;dis
 /* TABLES - end */
 
 /* MODALS */
+#modal .close-reveal-modal {
+  right: -2.5rem;
+  color: #fff;
+}
 /* legacy BS modals */
 
 /* copied from BS compiles.css + adapted slightly - replace when FNDTN modal is ready */
