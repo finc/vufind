@@ -248,7 +248,7 @@ ul[role=navigation] { list-style: none; }
 .form-inline.sort label, .form-inline.limit label { /*float: left; margin-right: .25em;*/ font-size: .875em; }
 
 /*.form-inline .jumpMenu {max-width: 100%} */
-.sort select, .limit select { width: auto; }
+.sort select, .limit select { width: 100%; }
 
 /* Limit, sort and view selector dropdowns - end */
 /* Bulk action buttons, e.g. favourites list */
