@@ -235,24 +235,44 @@ label.list-group-item {
 
 /* see also form-control below */
 .twitter-typeahead {
-  background: #fff;
-  vertical-align: top;
   width: 100%;
-  border: none;
+  height: 32px;
   padding-top: 0;
   margin-top: 0;
+  border: none;
+  background: #fff;
+  vertical-align: top;
 }
 
-/* is used in search and advanced search - css copied over - CK  */
+/* is used in search and advanced search - css copied over - CK */
 .top-bar .twitter-typeahead {line-height: 1.5;}
 .top-bar .twitter-typeahead input {top: 0;}
 .top-bar .twitter-typeahead {top: 0;}
-.top-bar #searchForm .columns {top: 0.53125rem;}
-.twitter-typeahead .tt-hint {display: none !important;}
 .tt-dropdown-menu {
   margin-bottom: 1.25rem;
   padding-left: 0;
+  background: $snow;
 }
+.tt-hint {color: $iron;}
+.tt-dropdown-menu {
+  max-width: 464px;
+  margin-top: 4px;
+  background-color: $snow;
+  border: 1px solid $iron;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.tt-suggestion {
+  border-bottom: 1px solid $iron;
+  padding: 3px 20px;
+  line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor {
+  background-color: $primary-color;
+  color: #fff;
+  cursor: pointer;
+}
+.tt-suggestion p {margin: 0;}
 
 /* Placement of Search and Advanced buttons */
 #searchForm .button-group.even-2 li:nth-of-type(2) {float: right;}
