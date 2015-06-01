@@ -27,6 +27,11 @@ body { background-color: #F9F9F9; }
 
 .main.panel { background: #fff; }
 
+/* ICONS */
+.fa-grid::before { content: "\f00a"; }
+
+.fa-visual::before { content: "\f1fe"; }
+
 /* LISTS */
 .list-unstyled { padding-left: 0; list-style: none none; }
 
@@ -164,17 +169,17 @@ label.list-group-item { font-weight: normal; margin-top: 0; padding-left: 2rem; 
 
 .top-bar .twitter-typeahead { top: 0; }
 
-.tt-dropdown-menu { margin-bottom: 1.25rem; padding-left: 0; background: #F9F9F9; }
-
 .tt-hint { color: #CCCCCC; }
 
-.tt-dropdown-menu { max-width: 464px; margin-top: 4px; background-color: #F9F9F9; border: 1px solid #CCCCCC; border: 1px solid rgba(0, 0, 0, 0.2); }
+.tt-dropdown-menu { width: 464px; margin-top: 2px; background-color: #FFFFFF; border: 1px solid #CCCCCC; }
 
-.tt-suggestion { border-bottom: 1px solid #CCCCCC; padding: 3px 20px; line-height: 24px; }
+.tt-suggestion { border-bottom: 1px solid #CCCCCC; padding: 6px 20px 4px; line-height: 24px; }
+
+.tt-suggestion:last-child { border: 0; }
 
 .tt-suggestion.tt-cursor { background-color: #008CBA; color: #fff; cursor: pointer; }
 
-.tt-suggestion p { margin: 0; }
+.tt-suggestion p { margin: 0; font-size: 85% !important; }
 
 /* Placement of Search and Advanced buttons */
 #searchForm .button-group.even-2 li:nth-of-type(2) { float: right; }

@@ -15,6 +15,10 @@ body {background-color: $snow;}
 
 .main.panel {background: #fff;}
 
+/* ICONS */
+.fa-grid::before   {content: "\f00a";}
+.fa-visual::before {content: "\f1fe";}
+
 /* LISTS */
 .list-unstyled {
   padding-left: 0;
@@ -248,31 +252,28 @@ label.list-group-item {
 .top-bar .twitter-typeahead {line-height: 1.5;}
 .top-bar .twitter-typeahead input {top: 0;}
 .top-bar .twitter-typeahead {top: 0;}
-.tt-dropdown-menu {
-  margin-bottom: 1.25rem;
-  padding-left: 0;
-  background: $snow;
-}
 .tt-hint {color: $iron;}
 .tt-dropdown-menu {
-  max-width: 464px;
-  margin-top: 4px;
-  background-color: $snow;
+  width: 464px;
+  margin-top: 2px;
+  background-color: $white;
   border: 1px solid $iron;
-  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 .tt-suggestion {
   border-bottom: 1px solid $iron;
-  padding: 3px 20px;
+  padding: 6px 20px 4px;
   line-height: 24px;
+  &:last-child {border: 0;}
+  &.tt-cursor {
+    background-color: $primary-color;
+    color: #fff;
+    cursor: pointer;
+  }
+  p {
+    margin: 0;
+    font-size: 85% !important;
+  }
 }
-
-.tt-suggestion.tt-cursor {
-  background-color: $primary-color;
-  color: #fff;
-  cursor: pointer;
-}
-.tt-suggestion p {margin: 0;}
 
 /* Placement of Search and Advanced buttons */
 #searchForm .button-group.even-2 li:nth-of-type(2) {float: right;}
