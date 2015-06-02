@@ -36,8 +36,8 @@
 
 /* min 768px wide */
 @media only screen and (min-width: 768px) {
-	/* Top-bar height (important if shard selector is visible - otherwise you may delete this next entry */
-	.top-bar {min-height: 3.5rem}
+	/* Top-bar height (important if shard selector is visible - otherwise you may delete this next entry
+	.top-bar {min-height: 3.5rem} */
 	/* Top-bar searchbox section placement */
 	#top-srchbx {/*min-width: 60%; max-width: 60%;*/ float: left;/* padding-right: 0; padding-left: 0*/}
 	#top-srchbx .has-form {padding-left: 0; padding-right: 0}
