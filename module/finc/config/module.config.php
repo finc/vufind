@@ -27,11 +27,6 @@ $config = [
                     'solrai' => 'finc\RecordDriver\Factory::getSolrAI',
                 ],
             ],
-            'resolver_driver' => [
-                'factories' => [
-                    'redi' => 'finc\Resolver\Driver\Factory::getRedi',
-                ],
-            ],
             'recordtab' => [
                 'invokables' => [
                     'additional' => 'finc\RecordTab\Additional',

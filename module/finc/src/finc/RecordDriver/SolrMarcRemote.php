@@ -116,7 +116,6 @@ class SolrMarcRemote extends SolrMarc implements
      */
     protected function getRemoteFullrecord($id)
     {
-
         if (empty($id)) {
             throw new \Exception('empty id given');
         }
@@ -138,7 +137,6 @@ class SolrMarcRemote extends SolrMarc implements
                 'HTTP status ' . $response->getStatusCode() .
                 ' received, retrieving data for record: ' . $id
             );
-
             return false;
         }
 

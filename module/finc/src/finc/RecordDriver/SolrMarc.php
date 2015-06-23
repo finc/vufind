@@ -155,20 +155,20 @@ class SolrMarc extends SolrDefault
         $biblioLevel = strtoupper($leader[7]);
 
         switch ($biblioLevel) {
-            case 'M': // Monograph
-                return "Monograph";
-            case 'S': // Serial
-                return "Serial";
-            case 'A': // Monograph Part
-                return "MonographPart";
-            case 'B': // Serial Part
-                return "SerialPart";
-            case 'C': // Collection
-                return "Collection";
-            case 'D': // Collection Part
-                return "CollectionPart";
-            default:
-                return "Unknown";
+        case 'M': // Monograph
+            return "Monograph";
+        case 'S': // Serial
+            return "Serial";
+        case 'A': // Monograph Part
+            return "MonographPart";
+        case 'B': // Serial Part
+            return "SerialPart";
+        case 'C': // Collection
+            return "Collection";
+        case 'D': // Collection Part
+            return "CollectionPart";
+        default:
+            return "Unknown";
         }
     }
 
@@ -323,12 +323,12 @@ class SolrMarc extends SolrDefault
                     ? $currentVal->getData() : null;
                 if (!empty($currentVal)) {
                     switch ($currentField->getIndicator('2')) {
-                        case '1':
-                            $pubResults[] = $currentVal;
-                            break;
-                        case '4':
-                            $copyResults[] = $currentVal;
-                            break;
+                    case '1':
+                        $pubResults[] = $currentVal;
+                        break;
+                    case '4':
+                        $copyResults[] = $currentVal;
+                        break;
                     }
                 }
             }
@@ -769,16 +769,16 @@ class SolrMarc extends SolrDefault
         // Assign notes based on the relationship type
         $value = $field->getTag();
         switch ($value) {
-            case '780':
-                if (in_array($relationshipIndicator, range('0', '7'))) {
-                    $value .= '_' . $relationshipIndicator;
-                }
-                break;
-            case '785':
-                if (in_array($relationshipIndicator, range('0', '8'))) {
-                    $value .= '_' . $relationshipIndicator;
-                }
-                break;
+        case '780':
+            if (in_array($relationshipIndicator, range('0', '7'))) {
+                $value .= '_' . $relationshipIndicator;
+            }
+            break;
+        case '785':
+            if (in_array($relationshipIndicator, range('0', '8'))) {
+                $value .= '_' . $relationshipIndicator;
+            }
+            break;
         }
 
         return 'note_' . $value;
@@ -813,46 +813,46 @@ class SolrMarc extends SolrDefault
         // If no reference found, check the next link type instead
         foreach ($linkTypes as $linkType) {
             switch (trim($linkType)){
-                case 'oclc':
-                    foreach ($linkFields as $current) {
-                        if ($oclc = $this->getIdFromLinkingField($current, 'OCoLC')) {
-                            $link = ['type' => 'oclc', 'value' => $oclc];
-                        }
+            case 'oclc':
+                foreach ($linkFields as $current) {
+                    if ($oclc = $this->getIdFromLinkingField($current, 'OCoLC')) {
+                        $link = ['type' => 'oclc', 'value' => $oclc];
                     }
-                    break;
-                case 'dlc':
-                    foreach ($linkFields as $current) {
-                        if ($dlc = $this->getIdFromLinkingField($current, 'DLC', true)) {
-                            $link = ['type' => 'dlc', 'value' => $dlc];
-                        }
+                }
+                break;
+            case 'dlc':
+                foreach ($linkFields as $current) {
+                    if ($dlc = $this->getIdFromLinkingField($current, 'DLC', true)) {
+                        $link = ['type' => 'dlc', 'value' => $dlc];
                     }
-                    break;
-                case 'id':
-                    foreach ($linkFields as $current) {
-                        if ($bibLink = $this->getIdFromLinkingField($current)) {
-                            $link = ['type' => 'bib', 'value' => $bibLink];
-                        }
+                }
+                break;
+            case 'id':
+                foreach ($linkFields as $current) {
+                    if ($bibLink = $this->getIdFromLinkingField($current)) {
+                        $link = ['type' => 'bib', 'value' => $bibLink];
                     }
-                    break;
-                case 'isbn':
-                    if ($isbn = $field->getSubfield('z')) {
-                        $link = [
-                            'type' => 'isn', 'value' => trim($isbn->getData()),
-                            'exclude' => $this->getUniqueId()
-                        ];
-                    }
-                    break;
-                case 'issn':
-                    if ($issn = $field->getSubfield('x')) {
-                        $link = [
-                            'type' => 'isn', 'value' => trim($issn->getData()),
-                            'exclude' => $this->getUniqueId()
-                        ];
-                    }
-                    break;
-                case 'title':
-                    $link = ['type' => 'title', 'value' => $title];
-                    break;
+                }
+                break;
+            case 'isbn':
+                if ($isbn = $field->getSubfield('z')) {
+                    $link = [
+                        'type' => 'isn', 'value' => trim($isbn->getData()),
+                        'exclude' => $this->getUniqueId()
+                    ];
+                }
+                break;
+            case 'issn':
+                if ($issn = $field->getSubfield('x')) {
+                    $link = [
+                        'type' => 'isn', 'value' => trim($issn->getData()),
+                        'exclude' => $this->getUniqueId()
+                    ];
+                }
+                break;
+            case 'title':
+                $link = ['type' => 'title', 'value' => $title];
+                break;
             }
             // Exit loop if we have a link
             if (isset($link)) {
@@ -1001,8 +1001,8 @@ class SolrMarc extends SolrDefault
      * @return void
      */
     public function attachILS(\VuFind\ILS\Connection $ils,
-                              \VuFind\ILS\Logic\Holds $holdLogic,
-                              \VuFind\ILS\Logic\TitleHolds $titleHoldLogic
+        \VuFind\ILS\Logic\Holds $holdLogic,
+        \VuFind\ILS\Logic\TitleHolds $titleHoldLogic
     ) {
         $this->ils = $ils;
         $this->holdLogic = $holdLogic;
