@@ -147,6 +147,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 $this->isil = $this->mainConfig['InstitutionInfo']['isil'];
             }
         }
+
+        $this->_testILSConnections();
     }
 
     /**
@@ -162,6 +164,9 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     public function getStatus($id)
     {
+        if ($this->checkForILSTestId($id)) {
+            return [];
+        }
         return $this->_replaceILSId(
             parent::getStatus($this->_getILSRecordId($id)), $id
         );
@@ -342,4 +347,37 @@ class FincILS extends PAIA implements LoggerAwareInterface
         return $ids;
     }
 
+    /**
+     * Private service test method
+     *
+     * @return void
+     * @throws ILSException
+     */
+    private function _testILSConnections()
+    {
+        try {
+            // test DAIA service
+            $this->httpService->get(
+                substr(
+                    $this->baseUrl,
+                    0,
+                    strrpos($this->baseUrl, "/", strrpos($this->baseUrl, "/"))
+                )
+            );
+            // test PAIA service
+            $this->httpService->get(
+                substr(
+                    $this->paiaURL,
+                    0,
+                    strrpos(
+                        $this->paiaURL,
+                        "/",
+                        strrpos($this->paiaURL, "/", strrpos($this->paiaURL, "/"))
+                    )
+                )
+            );
+        } catch (\Exception $e) {
+            throw new ILSException($e->getMessage());
+        }
+    }
 }
