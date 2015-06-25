@@ -34,7 +34,7 @@
         <? else: ?>
           <? $summAuthors = $this->driver->getCombinedAuthors(); if (!empty($summAuthors)): ?>
           <? foreach($summAuthors as $summAuthor) : ?>
-              <a href="<?=$this->record($this->driver)->getLink('author', $summAuthor)?> class="author"><?
+              <a href="<?=$this->record($this->driver)->getLink('author', $summAuthor)?>" class="author"><?
                 $summHighlightedAuthor = $this->driver->getHighlightedAuthor();
                 echo !empty($summHighlightedAuthor)
                     ? $this->highlight($summHighlightedAuthor)
