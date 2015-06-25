@@ -44,22 +44,21 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
 {
 
     /**
-     * pattern to identify bsz
+     * Pattern to identify bsz
      */
     const BSZ_PATTERN = '/^(\(DE-576\))(\d+)(\w|)/';
 
     /**
+     * List of isil of institution
+     *
      * @var string  ISIL of this instance's library
      */
-    protected $isil = '';
+    protected $isil = [];
 
     /**
-     * @var array   Array of ISILs set in the LibraryGroup section in config.ini.
-     */
-    protected $libraryGroup = [];
-
-    /**
-     * @var string|null
+     * Local marc field of institution participated in Finc.
+     *
+     * @var  string|null
      * @link https://intern.finc.info/fincproject/projects/finc-intern/wiki/FincMARC_-_Erweiterung_von_MARC21_f%C3%BCr_finc
      */
     protected $localMarcFieldOfLibrary = null;
@@ -74,21 +73,17 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      * @param \Zend\Config\Config $searchSettings Search-specific configuration file
      */
     public function __construct($mainConfig = null, $recordConfig = null,
-                                $searchSettings = null)
+                                $searchSettings = null
+    )
     {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
-        if (isset($mainConfig->InstitutionInfo->isil)) {
+        if (isset($mainConfig->InstitutionInfo->isil)
+            && count($mainConfig->InstitutionInfo->isil) > 0
+        ) {
             $this->isil = $this->mainConfig->InstitutionInfo->isil;
         } else {
-            $this->debug('InstitutionInfo setting is missing.');
-        }
-
-        if (isset($mainConfig->LibraryGroup->libraries)) {
-            $this->libraryGroup
-                = explode(',', $this->mainConfig->LibraryGroup->libraries);
-        } else {
-            $this->debug('LibraryGroup setting is missing.');
+            $this->debug('InstitutionInfo setting: isil is missing.');
         }
 
         if (isset($this->mainConfig->CustomSite->namespace)) {
@@ -142,14 +137,13 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             $urls = $this->getMarcRecord()->getFields($field);
             if ($urls) {
                 foreach ($urls as $url) {
-
                     $isil = $url->getSubfield('9');
 
                     $isISIL = false;
 
                     if ($isil) {
                         $isil = $isil->getData();
-                        if (preg_match('/'.$this->isil.'.*/', $isil)) {
+                        if (true === in_array($isil, $this->isil->toArray())) {
                             $isISIL = true;
                         }
                     } else {
@@ -197,20 +191,18 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array   Return fields.
      * @access public
-     * @link https://intern.finc.info/issues/2639
+     * @link   https://intern.finc.info/issues/2639
      */
     public function getLocalCallnumber()
     {
         $array = [];
 
-        if (count($this->libraryGroup) > 0
-            && isset($this->fields['itemdata'])
-        ) {
+        if (isset($this->fields['itemdata'])) {
             $itemdata = json_decode($this->fields['itemdata'], true);
             if (count($itemdata) > 0) {
                 // error_log('Test: '. print_r($this->fields['itemdata'], true));
                 $i = 0;
-                foreach ($this->libraryGroup as $isil) {
+                foreach ($this->isil as $isil) {
                     if (isset($itemdata[$isil])) {
                         foreach ($itemdata[$isil] as $val) {
                             $array[$i]['barcode'] = '(' . $isil . ')' . $val['bc'];
@@ -235,13 +227,11 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         $array = [];
         $callnumbers = [];
 
-        if (count($this->libraryGroup) > 0
-            && isset($this->fields['itemdata'])
-        ) {
+        if (isset($this->fields['itemdata'])) {
             $itemdata = json_decode($this->fields['itemdata'], true);
             if (count($itemdata) > 0) {
                 $i = 0;
-                foreach ($this->libraryGroup as $isil) {
+                foreach ($this->isil as $isil) {
                     if (isset($itemdata[$isil])) {
                         foreach ($itemdata[$isil] as $val) {
                             // exclude equal callnumbers
@@ -273,7 +263,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         $arrSignatur = $this->getFieldArray($this->localMarcFieldOfLibrary, ['i']);
 
         foreach ($arrSignatur as $signatur) {
-            foreach ($this->libraryGroup as $code) {
+            foreach ($this->isil as $code) {
                 if (0 < preg_match('/^\('.$code.'\)/', $signatur)) {
                     $retval[] = preg_replace('/^\('.$code.'\)/', '', $signatur);
                 }
@@ -285,7 +275,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     /**
      * Get an array of supplements and special issue entry.
      *
-     * @link http://www.loc.gov/marc/bibliographic/bd770.html
+     * @link   http://www.loc.gov/marc/bibliographic/bd770.html
      * @return array
      * @access protected
      */
@@ -372,7 +362,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array
      * @access protected
-     * @link https://intern.finc.info/fincproject/issues/969 description
+     * @link   https://intern.finc.info/fincproject/issues/969 description
      */
     protected function getISSN()
     {
@@ -384,7 +374,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array
      * @access protected
-     * @link https://intern.finc.info/fincproject/issues/969 description
+     * @link   https://intern.finc.info/fincproject/issues/969 description
      */
     protected function getISSNsParallelTitles()
     {
@@ -397,7 +387,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array
      * @access public
-     * @link https://intern.finc.info/fincproject/issues/338
+     * @link   https://intern.finc.info/fincproject/issues/338
      */
     public function getJournalHoldings()
     {
@@ -454,7 +444,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array
      * @access protected
-     * @link https://intern.finc.info/issues/1302
+     * @link   https://intern.finc.info/issues/1302
      */
     protected function getLocalAccessNumber()
     {
@@ -469,7 +459,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array
      * @access protected
-     * @link https://intern.finc.info/issues/2626
+     * @link   https://intern.finc.info/issues/2626
      */
     protected function getLocalClassSubjects()
     {
@@ -536,7 +526,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array
      * @access protected
-     * @link https://intern.finc.info/fincproject/issues/1308
+     * @link   https://intern.finc.info/fincproject/issues/1308
      */
     protected function getLocalNotice()
     {
@@ -603,11 +593,11 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      * Get specific marc information about parallel editions. Unflexible solution
      * for HMT only implemented.
      *
-     * @todo        more flexible implementation
+     * @todo More flexible implementation
      *
      * @return array
      * @access protected
-     * @link https://intern.finc.info/issues/4327
+     * @link   https://intern.finc.info/issues/4327
      */
     protected function getParallelEditions()
     {
@@ -649,7 +639,9 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     /**
      * Get an array of previous titles for the record.
      *
-     * @todo        use HttpService for URL query
+     * @todo use HttpService for URL query
+     * @todo change currency service
+     * @todo pass prices by euro currency
      *
      * @return string
      * @access protected
@@ -711,8 +703,8 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array
      * @access protected
-     * @link http://www.loc.gov/marc/bibliographic/bd830.html
-     * @link https://intern.finc.info/fincproject/issues/457
+     * @link   http://www.loc.gov/marc/bibliographic/bd830.html
+     * @link   https://intern.finc.info/fincproject/issues/457
      */
     protected function getSeriesWithVolume()
     {
@@ -722,9 +714,11 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     /**
      * Get local classification of UDK.
      *
+     * @todo Check if method is used by other institution than HTWK.
+     *
      * @return array
      * @access protected
-     * @link https://intern.finc.info/fincproject/issues/1135
+     * @link   https://intern.finc.info/fincproject/issues/1135
      */
     protected function getUDKs()
     {
@@ -775,7 +769,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array
      * @access protected
-     * @link http://www.loc.gov/marc/bibliographic/bd700.html
+     * @link   http://www.loc.gov/marc/bibliographic/bd700.html
      */
     protected function getAdditionalAuthors()
     {
@@ -805,7 +799,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      *
      * @return array
      * @access protected
-     * @link https://intern.finc.info/fincproject/issues/1315
+     * @link   https://intern.finc.info/fincproject/issues/1315
      */
     public function getAdditionals()
     {
@@ -884,10 +878,11 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     /**
      * Return all barcode of finc marc 983 $a at full marc record.
      *
-     * @param  string       Prefixes of library seals.
+     * @todo Method seems erroneous. Bugfixin needed.
      *
-     * @return array        List of barcodes.
-     * @access protected
+     * @return     array        List of barcodes.
+     * @access     protected
+     * @deprecated
      */
     protected function getBarcode()
     {
@@ -895,7 +890,6 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         $barcodes = [];
 
         //$driver = ConnectionManager::connectToCatalog();
-        //$libraryCodes = $driver->getIniFieldAsArray('searches','LibraryGroup');
         $libraryCodes = $this->searchesConfig->LibrarayGroup;
 
         // get barcodes from marc

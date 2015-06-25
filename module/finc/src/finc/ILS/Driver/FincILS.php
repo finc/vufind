@@ -121,9 +121,9 @@ class FincILS extends PAIA implements LoggerAwareInterface
             // interaction with ILS
             if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
                 $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
-                $this->isil = '';
+                $this->isil = [];
             } else {
-                $this->isil = $this->mainConfig['InstitutionInfo']['isil'];
+                $this->isil = $this->mainConfig['InstitutionInfo']['isil']->toArray();
             }
         } else {
             // set the ILS-specific recordId for interaction with ILS
@@ -142,9 +142,9 @@ class FincILS extends PAIA implements LoggerAwareInterface
             // interaction with ILS
             if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
                 $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
-                $this->isil = '';
+                $this->isil = [];
             } else {
-                $this->isil = $this->mainConfig['InstitutionInfo']['isil'];
+                $this->isil = $this->mainConfig['InstitutionInfo']['isil']->toArray();
             }
         }
 
@@ -295,20 +295,20 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 ->getILSIdentifier($this->ilsIdentifier);
             if ($ilsRecordId == '') {
                 $this->_idMapper[$id] = $id;
-
                 return $id;
             } else {
                 if (is_array($ilsRecordId)) {
                     // use ISIL for identifying the correct ILS-identifier if
                     // array is returned
+                    $isils = implode("|", $this->isil);
                     foreach ($ilsRecordId as $recordId) {
-                        if (preg_match("/^(\(".$this->isil."\)).*$/", $recordId)) {
-                            $recordId = substr(
-                                $recordId,
-                                strpos($recordId, "(".$this->isil.")")+strlen("(".$this->isil.")")
-                            );
+                        if (preg_match(
+                            "/^\((" . $isils . ")\)(.*)$/", $recordId, $match
+                        )
+                        ) {
+                            $recordId = (isset($match[2]) && strlen($match[2] > 0))
+                                ? $match[2] : null;
                             $this->_idMapper[$id] = $recordId;
-
                             return $recordId;
                         }
                     }
