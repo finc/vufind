@@ -2,33 +2,30 @@
 return array(
 	'extends' => 'root',
 	'css' => array(
-		'normalize.css',
-		'foundation.min.css',
+		'vendor/normalize.css',
+		'vendor/foundation.min.css',
 		'vendor/font-awesome.min.css',
 		'default.css',
-		'mqueries.css',
-	),
+		),
 	'js' => array(
 		'vendor/base64.js:lt IE 10', // btoa polyfill
-		'vendor/modernizr.js',
 		'vendor/jquery.min.js',
-		'foundation.min.js',		// This includes all components
-	//	'foundation/foundation.js', 	// Activate this plus individual FNDTN component scripts below, if desired
-	//	'foundation/foundation.topbar.js',
-		'vendor/bootstrap-modal.js',
+		'vendor/modernizr.js',
 		'vendor/fastclick.js',
-		'vendor/typeahead.js',
 		'vendor/rc4.js',
+		//'vendor/bootstrap-modal.js',  // remove this and the actual file - Fixme - CK
+		'foundation.min.js',		// This includes all components
+		//	'foundation/foundation.js', 	// Activate this plus individual FNDTN component scripts below, if desired
+		//	'foundation/foundation.topbar.js',
+		'vendor/typeahead.js',
 		'common.js',
 		'lightbox.js',
 	),
-	/*
-	   'less' => array(
-		'active' => false,
-		'compiled.less'
-	),
-	*/
-	// previous block commented out by CK - FIXME - check and use LESS, or better, find solution using SASS, which is FNDTN's preferred CSS-compiler
+
+	// CSS-compiler
+	/* Chris - I have started using sassc to compile:
+             - https://github.com/sass/sassc
+             - ~/sassc/bin/sassc -t compact themes/foundation5/scss/default.scss > themes/foundation5/css.default.css */
 
 	'favicon' => 'vufind-favicon.ico',
 	'helpers' => array(

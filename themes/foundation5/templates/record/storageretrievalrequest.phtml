@@ -15,9 +15,9 @@
 
 <?=$this->flashmessages()?>
 <div class="storage-retrieval-request-form">
-  <form name="placeStorageRetrievalRequest" action="" class="form-horizontal" method="post">
+  <form name="placeStorageRetrievalRequest" action="" method="post">
     <? if (in_array("item-issue", $this->extraFields)): ?>
-      <div class="form-group">
+      <div class="row">
         <div class="medium-3 columns controls">
           <div class="radio">
             <label>
@@ -34,29 +34,29 @@
           </div>
         </div>
       </div>
-      <div class="form-group">
+      <div class="row">
         <div id="storageRetrievalRequestReference" class="storageRetrievalRequestReference">
           <label class="medium-3 columns control-label"><?=$this->transEsc('storage_retrieval_request_volume')?>:</label>
           <div class="medium-9 columns">
-            <input type="text" name="gatheredDetails[volume]" value="<?=isset($this->gatheredDetails['volume']) ? $this->escapeHtmlAttr($this->gatheredDetails['volume']) : ''?>" class="form-control"/><br/>
+            <input type="text" name="gatheredDetails[volume]" value="<?=isset($this->gatheredDetails['volume']) ? $this->escapeHtmlAttr($this->gatheredDetails['volume']) : ''?>" class="auto"/><br/>
           </div>
           <label class="medium-3 columns control-label"><?=$this->transEsc('storage_retrieval_request_issue')?>:</label>
           <div class="medium-9 columns">
-            <input type="text" name="gatheredDetails[issue]" value="<?=isset($this->gatheredDetails['issue']) ? $this->escapeHtmlAttr($this->gatheredDetails['issue']) : ''?>" class="form-control"/><br/>
+            <input type="text" name="gatheredDetails[issue]" value="<?=isset($this->gatheredDetails['issue']) ? $this->escapeHtmlAttr($this->gatheredDetails['issue']) : ''?>" class="auto"/><br/>
           </div>
           <label class="medium-3 columns control-label"><?=$this->transEsc('storage_retrieval_request_year')?>:</label>
           <div class="medium-9 columns">
-            <input type="text" name="gatheredDetails[year]" value="<?=isset($this->gatheredDetails['year']) ? $this->escapeHtmlAttr($this->gatheredDetails['year']) : ''?>" class="form-control"/><br/>
+            <input type="text" name="gatheredDetails[year]" value="<?=isset($this->gatheredDetails['year']) ? $this->escapeHtmlAttr($this->gatheredDetails['year']) : ''?>" class="auto"/><br/>
           </div>
         </div>
       </div>
     <? endif; ?>
 
     <? if (in_array("requiredByDate", $this->extraFields)): ?>
-      <div class="form-group">
+      <div class="row">
         <label class="medium-3 columns control-label"><?=$this->transEsc("hold_required_by")?>:</label>
         <div class="medium-9 columns">
-          <input id="requiredByDate" type="text" name="gatheredDetails[requiredBy]" value="<?=(isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtmlAttr($this->gatheredDetails['requiredBy']) : $this->escapeHtmlAttr($this->defaultRequiredDate)?>" size="8" class="form-control"/>
+          <input id="requiredByDate" type="text" name="gatheredDetails[requiredBy]" value="<?=(isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtmlAttr($this->gatheredDetails['requiredBy']) : $this->escapeHtmlAttr($this->defaultRequiredDate)?>" size="8" class="auto"/>
           (<?=$this->dateTime()->getDisplayDateFormat()?>)
         </div>
       </div>
@@ -64,7 +64,7 @@
 
     <? if (in_array("pickUpLocation", $this->extraFields)): ?>
       <? if (count($this->pickup) > 1): ?>
-        <div class="form-group">
+        <div class="row">
           <?
             if (isset($this->gatheredDetails['pickUpLocation']) && $this->gatheredDetails['pickUpLocation'] !== "") {
                 $selected = $this->gatheredDetails['pickUpLocation'];
@@ -76,7 +76,7 @@
           ?>
           <label class="medium-3 columns control-label"><?=$this->transEsc("pick_up_location")?>:</label>
           <div class="medium-9 columns">
-            <select name="gatheredDetails[pickUpLocation]" class="form-control">
+            <select name="gatheredDetails[pickUpLocation]" class="auto">
             <? if ($selected === false): ?>
               <option value="" selected="selected">
                 <?=$this->transEsc('select_pickup_location')?>
@@ -96,15 +96,15 @@
     <? endif; ?>
 
     <? if (in_array("comments", $this->extraFields)): ?>
-      <div class="form-group">
+      <div class="row">
         <label class="medium-3 columns control-label"><?=$this->transEsc("Comments")?>:</label>
         <div class="medium-9 columns">
-          <textarea rows="3" cols="20" name="gatheredDetails[comment]" class="form-control"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
+          <textarea rows="3" cols="20" name="gatheredDetails[comment]" class="auto"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
         </div>
       </div>
     <? endif; ?>
 
-    <div class="form-group">
+    <div class="row">
       <div class="medium-9 columns medium-offset-3">
         <input class="button tiny" type="submit" name="placeStorageRetrievalRequest" role="button" value="<?=$this->transEsc('storage_retrieval_request_submit_text')?>"/>
       </div>

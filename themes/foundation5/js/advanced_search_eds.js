@@ -17,9 +17,9 @@ function addSearch(group, term, field, op)
   var newSearch ='<div class="search row" id="search'+inputID+'"><div class="medium-3 columns">';
   if (typeof groupSearches[group] == "undefined") {
     groupSearches[group] = 0;
-    newSearch += '<input type="hidden" name="op' + group + '[]" value="AND" class="form-control"/><label for="search_lookfor' + group + '_' + groupSearches[group] + '" class="help-block">' + searchLabel + ':</label>';
+    newSearch += '<input type="hidden" name="op' + group + '[]" value="AND" /><label for="search_lookfor' + group + '_' + groupSearches[group] + '" class="help-block">' + searchLabel + ':</label>';
   } else {
-    newSearch += '<select id="search_op' + group + '_' + groupSearches[group] + '" name="op' + group + '[]" class="medium-9 columns form-control">';
+    newSearch += '<select id="search_op' + group + '_' + groupSearches[group] + '" name="op' + group + '[]" class="medium-9 columns">';
     for(var i=0, len= booleanSearchOperators.length; i < len; i++) {
       var searchOp = booleanSearchOperators[i];
       var sel = '';
@@ -30,9 +30,9 @@ function addSearch(group, term, field, op)
     }
     newSearch += '</select>';
   }
-  newSearch += '</div><div class="medium-9 columns"><div class="medium-6 columns"><input class="form-control"" id="search_lookfor'+inputID+'" type="text" name="lookfor'+group+'[]" value="'+term+'"></div>'
+  newSearch += '</div><div class="medium-9 columns"><div class="medium-6 columns"><input id="search_lookfor'+inputID+'" type="text" name="lookfor'+group+'[]" value="'+term+'"></div>'
     + '<span class="medium-1 columns help-block">'+searchFieldLabel+'</span> '
-    + '<div class="medium-4 columns"><select class="form-control" id="search_type'+inputID+'" name="type'+group+'[]">';
+    + '<div class="medium-4 columns"><select id="search_type'+inputID+'" name="type'+group+'[]">';
   for (var key in searchFields) {
     newSearch += '<option value="' + key + '"';
     if (key == field) {

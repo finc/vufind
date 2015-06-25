@@ -1,9 +1,10 @@
+<!-- recorddriver - solrai - result-list -->
 <div class="<?=$this->driver->supportsAjaxStatus()?'ajaxItem ':''?>col-xs-11 small-11 columns">
   <div class="row">
     <div class="col-sm-2 col-xs-3 small-3 medium-2 columns left">
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
-      <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
+        <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="cover">
         <? if ($summThumb = $this->record($this->driver)->getThumbnail()): ?>
           <img class="recordcover" src="<?=$this->escapeHtmlAttr($summThumb)?>" alt="<?=$this->transEsc('Cover Image')?>"/>
         <? else: ?>
@@ -27,14 +28,13 @@
         ?>
         </a>
       </div>
-
       <div>
         <? if($this->driver->isCollection()): ?>
           <?=implode('<br>', $this->driver->getSummary()); ?>
         <? else: ?>
           <? $summAuthors = $this->driver->getCombinedAuthors(); if (!empty($summAuthors)): ?>
           <? foreach($summAuthors as $summAuthor) : ?>
-              <a href="<?=$this->record($this->driver)->getLink('author', $summAuthor)?>"><?
+              <a href="<?=$this->record($this->driver)->getLink('author', $summAuthor)?> class="author"><?
                 $summHighlightedAuthor = $this->driver->getHighlightedAuthor();
                 echo !empty($summHighlightedAuthor)
                     ? $this->highlight($summHighlightedAuthor)
@@ -101,14 +101,14 @@
       </div>
       <? endif; ?>
 
-      <div class="callnumAndLocation ajax-availability hidden">
+      <div class="callnumAndLocation ajax-availability hide">
         <? if ($this->driver->supportsAjaxStatus()): ?>
           <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
-          <span class="callnumber ajax-availability hidden">
+          <span class="callnumber ajax-availability hide">
             <?=$this->transEsc('Loading')?>&nbsp;...<br/>
           </span>
           <strong><?=$this->transEsc('Located')?>:</strong>
-          <span class="location ajax-availability hidden">
+          <span class="location ajax-availability hide">
             <?=$this->transEsc('Loading')?>&nbsp;...
           </span>
           <div class="locationDetails"></div>
@@ -140,16 +140,17 @@
         <? endif; ?>
       <? endif; ?>
 
-      <?=str_replace('class="', 'class="label label-info ', $this->record($this->driver)->getFormatList())?>
+      <?=str_replace('class="', 'class="label info label-info ', $this->record($this->driver)->getFormatList())?>
 
       <? if (!$openUrlActive && empty($urls) && $this->driver->supportsAjaxStatus()): ?>
-        <span class="status ajax-availability hidden">
-          <span class="label label-default"><?=$this->transEsc('Loading')?>&nbsp;...</span>
+        <span class="status ajax-availability hide">
+          <span class="label secondary label-default"><?=$this->transEsc('Loading')?>&nbsp;...</span>
         </span>
       <? endif; ?>
       <?=$this->record($this->driver)->getPreviews()?>
     </div>
-    <div class="col-xs-3 hidden-print small-3 columns  hide-for-print right">
+
+    <div class="small-3 columns right hide-for-print">
       <? /* Display qrcode if appropriate: */ ?>
       <? if ($QRCode = $this->record($this->driver)->getQRCode("results")): ?>
         <?
@@ -158,7 +159,7 @@
         ?>
         <span class="hidden-xs hide-for-small">
           <i class="fa fa-qrcode"></i> <a href="<?=$this->escapeHtmlAttr($QRCode);?>" class="qrcodeLink"><?=$this->transEsc('qrcode_show')?></a>
-          <div class="qrcode hidden">
+          <div class="qrcode hide">
             <script type="text/template" class="qrCodeImgTag">
               <img alt="<?=$this->transEsc('QR Code')?>" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
             </script>
@@ -168,10 +169,10 @@
 
       <? if ($this->userlist()->getMode() !== 'disabled'): ?>
         <? /* Add to favorites */ ?>
-        <i class="fa fa-heart"></i> <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="save-record modal-link" id="<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('Add to favorites')?>"><?=$this->transEsc('Add to favorites')?></a><br/>
+        <i class="fa fa-star"></i> <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="save-record modal-link" id="<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('Add to favorites')?>"><?=$this->transEsc('Add to favorites')?></a><br/>
 
         <? /* Saved lists */ ?>
-        <div class="savedLists alert alert-info alert-box info hidden">
+        <div class="savedLists alert alert-info alert-box info hide" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
           <strong><?=$this->transEsc("Saved in")?>:</strong>
         </div>
       <? endif; ?>
@@ -193,3 +194,4 @@
     </div>
   </div>
 </div>
+<!-- recorddriver - solrai - result-list - END -->

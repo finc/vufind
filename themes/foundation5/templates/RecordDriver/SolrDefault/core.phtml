@@ -1,8 +1,8 @@
 <!-- recordDriver - solrDefault - CORE.phtml -->
 <div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
   <div class="medium-3 columns bookimgs">
-    <!-- div class="text-center" --> <!-- deactivated, CK - reactivate to centre images -->
-    <ul  class="clearing-thumbs" data-clearing><!-- added clearing lightbox for images, CK, to remove, also remove data-caption+content in img links -->
+    <? /* div class="text-center" --> <!-- deactivated, CK - reactivate to centre images */ ?>
+    <ul  class="clearing-thumbs" data-clearing><? /* added clearing lightbox for images, CK, to remove, also remove data-caption+content in img links */ ?>
       <li>
         <? /* Display thumbnail if appropriate: */ ?>
         <? $mediumThumb = $this->record($this->driver)->getThumbnail('medium'); $largeThumb = $this->record($this->driver)->getThumbnail('large'); ?>
@@ -22,7 +22,7 @@
             <br/><img alt="<?=$this->transEsc('QR Code')?>" data-caption="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
           </span>
         <? endif; ?>
-    <!-- /div --> <!-- deactivated, CK - reactivate to centre image -->
+    <? /* /div> <!-- deactivated, CK - reactivate to centre image */ ?>
       </li>
     </ul>
     <? // if you have a preview tab but want to move or remove the preview link
@@ -46,7 +46,7 @@
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
       <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists hidden alert-box info" id="savedLists" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
+      <div class="savedLists hide alert-box info" id="savedLists" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
         <strong><?=$this->transEsc("Saved in")?>:</strong>
       </div>
     <? endif; ?>

@@ -1,7 +1,7 @@
 <!-- service - RECAPTCHA.phtml -->
 <? if(isset($this->useRecaptcha) && $this->useRecaptcha): ?>
   <?=$this->inlineScript(\Zend\View\Helper\HeadScript::FILE, 'vendor/recaptcha_ajax.js', 'SET') ?>
-  <div class="form-group">
+  <div class="row">
     <div class="medium-9 medium-offset-3 columns ">
       <?=$this->reCaptchaOptions ?>
 

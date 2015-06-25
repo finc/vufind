@@ -34,8 +34,8 @@
               ? $this->profile['home_library'] : $this->defaultPickupLocation
         ?>
         <td>
-          <form id="profile_form" class="form-inline" action="" method="post">
-            <select id="home_library" name="home_library" class="form-control">
+          <form id="profile_form" action="" method="post">
+            <select id="home_library" name="home_library" class="auto">
               <? foreach ($this->pickup as $lib): ?>
                 <option value="<?=$this->escapeHtmlAttr($lib['locationID'])?>"<?=($selected == $lib['locationID'])?' selected="selected"':''?>><?=$this->escapeHtml($lib['locationDisplay'])?></option>
               <? endforeach; ?>

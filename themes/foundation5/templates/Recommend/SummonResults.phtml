@@ -1,9 +1,9 @@
 <!-- recommend - SUMMONRESULTS.phtml -->
 <? $searchObject = $this->recommend->getResults(); $results = $searchObject->getResults(); if (!empty($results)): ?>
   <h4><?=$this->transEsc('Summon Results')?></h4>
-  <ul class="list-group">
+  <ul class="side-nav">
     <? foreach ($results as $driver): ?>
-      <li class="list-group-item">
+      <li>
         <span>
           <? $formats = $driver->getFormats(); $format = isset($formats[0]) ? $formats[0] : ''; ?>
           <a href="<?=$this->recordLink()->getUrl($driver)?>" class="title <?=$this->record($driver)->getFormatClass($format)?>">
@@ -35,7 +35,10 @@
         </span>
       </li>
     <? endforeach; ?>
-    <a class="list-group-item" href="<?=$this->url($searchObject->getOptions()->getSearchAction()) . $searchObject->getUrlQuery()->setLimit($searchObject->getOptions()->getDefaultLimit())?>"><?=$this->transEsc('More Summon results')?>...</a>
+    <li>
+      <a href="<?=$this->url($searchObject->getOptions()->getSearchAction()) . $searchObject->getUrlQuery()->setLimit($searchObject->getOptions()->getDefaultLimit())?>"><?=$this->transEsc('More
+      Summon results')?> ...</a>
+    </li>
   </ul>
 <? endif ?>
 <!-- recommend - SUMMONRESULTS.phtml - end -->

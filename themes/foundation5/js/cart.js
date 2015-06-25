@@ -208,7 +208,8 @@ $(document).ready(function() {
     });
     Lightbox.confirm(vufindString['bulk_save_success']);
   });
-  $('#modal').on('hidden.bs.modal', function() {
+  $('#modal').on('close.fndtn.reveal', function() {
+    // check the above for correctness - fixme CK
     // Update cart items (add to cart, remove from cart, cart lightbox interface)
     var cartCount = $('#cartItems strong');
     if(cartCount.length > 0) {
