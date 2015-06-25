@@ -32,7 +32,7 @@ $(document).ready(function() {
         var params = extractClassParams(this);
         var openUrl = $(this).children('span.openUrl:first').attr('title');
         $(this).hide();
-        loadResolverLinks($('#openUrlEmbed'+params.openurl_id).removeClass('hidden'), openUrl);
+        loadResolverLinks($('#openUrlEmbed'+params.openurl_id).removeClass('hide'), openUrl);
         return false;
     });
 });

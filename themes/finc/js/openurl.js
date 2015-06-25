@@ -23,7 +23,7 @@ var redi = {
         var params = extractClassParams(doc);
         var openUrl = $(doc).children('span.openUrl:first').attr('title');
         $(doc).hide();
-        loadResolverLinks($('#openUrlEmbed'+params.openurl_id).removeClass('hidden'), openUrl);
+        loadResolverLinks($('#openUrlEmbed'+params.openurl_id).removeClass('hide'), openUrl);
         return false;
     }
 }
