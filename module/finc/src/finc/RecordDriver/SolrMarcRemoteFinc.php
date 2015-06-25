@@ -323,24 +323,12 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
     }
 
     /**
-     * Get the field-value identified by $string
-     *
-     * @param String field-name
-     *
-     * @return String
-     */
-    public function getILSIdentifier($string)
-    {
-        return (isset($this->fields[$string]) ? $this->fields[$string] : '');
-    }
-
-    /**
      * Special method to extracting the index of German prints of the marc21
      * field 024 indicator 8 subfield a
      *
      * @return array
      * @access protected
-     * @link https://intern.finc.info/fincproject/issues/1442
+     * @link   https://intern.finc.info/fincproject/issues/1442
      */
     protected function getIndexOfGermanPrints()
     {
