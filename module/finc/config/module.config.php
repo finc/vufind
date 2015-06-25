@@ -22,6 +22,7 @@ $config = [
                 'factories' => [
                     'solrdefault' => 'finc\RecordDriver\Factory::getSolrDefault',
                     'solrmarc' => 'finc\RecordDriver\Factory::getSolrMarc',
+                    'solrmarcfinc' => 'finc\RecordDriver\Factory::getSolrMarcFinc',
                     'solrmarcremote' => 'finc\RecordDriver\Factory::getSolrMarcRemote',
                     'solrmarcremotefinc' => 'finc\RecordDriver\Factory::getSolrMarcRemoteFinc',
                     'solrai' => 'finc\RecordDriver\Factory::getSolrAI',

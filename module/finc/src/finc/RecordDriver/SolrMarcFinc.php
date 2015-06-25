@@ -40,26 +40,27 @@ namespace finc\RecordDriver;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
-class SolrMarcRemoteFinc extends SolrMarcRemote
+class SolrMarcFinc extends SolrMarc
 {
     use SolrMarcFincTrait;
 
     /**
-     * Pattern to identify bsz
+     * pattern to identify bsz
      */
     const BSZ_PATTERN = '/^(\(DE-576\))(\d+)(\w|)/';
 
     /**
-     * List of isil of institution
-     *
      * @var string  ISIL of this instance's library
      */
-    protected $isil = [];
+    protected $isil = '';
 
     /**
-     * Local marc field of institution participated in Finc.
-     *
-     * @var  string|null
+     * @var array   Array of ISILs set in the LibraryGroup section in config.ini.
+     */
+    protected $libraryGroup = [];
+
+    /**
+     * @var string|null
      * @link https://intern.finc.info/fincproject/projects/finc-intern/wiki/FincMARC_-_Erweiterung_von_MARC21_f%C3%BCr_finc
      */
     protected $localMarcFieldOfLibrary = null;
@@ -74,17 +75,21 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
      * @param \Zend\Config\Config $searchSettings Search-specific configuration file
      */
     public function __construct($mainConfig = null, $recordConfig = null,
-                                $searchSettings = null
-    )
+                                $searchSettings = null)
     {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
-        if (isset($mainConfig->InstitutionInfo->isil)
-            && count($mainConfig->InstitutionInfo->isil) > 0
-        ) {
+        if (isset($mainConfig->InstitutionInfo->isil)) {
             $this->isil = $this->mainConfig->InstitutionInfo->isil;
         } else {
-            $this->debug('InstitutionInfo setting: isil is missing.');
+            $this->debug('InstitutionInfo setting is missing.');
+        }
+
+        if (isset($mainConfig->LibraryGroup->libraries)) {
+            $this->libraryGroup
+                = explode(',', $this->mainConfig->LibraryGroup->libraries);
+        } else {
+            $this->debug('LibraryGroup setting is missing.');
         }
 
         if (isset($this->mainConfig->CustomSite->namespace)) {
