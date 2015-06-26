@@ -312,14 +312,9 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
      */
     protected function doHTTPRequest($id)
     {
-        $contentTypes = [
-            "xml"  => "application/xml",
-            "json" => "application/json",
-        ];
-
         $http_headers = [
-            "Content-type: " . $contentTypes[$this->daiaResponseFormat],
-            "Accept: " .  $contentTypes[$this->daiaResponseFormat],
+            "Content-type: " . $this->contentTypesRequest[$this->daiaResponseFormat],
+            "Accept: " .  $this->contentTypesRequest[$this->daiaResponseFormat],
         ];
 
         $params = [
@@ -838,3 +833,4 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
         }
     }
 }
+
