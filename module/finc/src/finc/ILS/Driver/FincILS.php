@@ -357,25 +357,19 @@ class FincILS extends PAIA implements LoggerAwareInterface
     {
         try {
             // test DAIA service
-            $this->httpService->get(
-                substr(
-                    $this->baseUrl,
-                    0,
-                    strrpos($this->baseUrl, "/", strrpos($this->baseUrl, "/"))
-                )
+            preg_match(
+                "/^(http[s:\/0-9\.]*(:[0-9]*)?\/[a-z]*)/",
+                $this->baseUrl,
+                $daiaMatches
             );
+            $this->httpService->get($daiaMatches[1]);
             // test PAIA service
-            $this->httpService->get(
-                substr(
-                    $this->paiaURL,
-                    0,
-                    strrpos(
-                        $this->paiaURL,
-                        "/",
-                        strrpos($this->paiaURL, "/", strrpos($this->paiaURL, "/"))
-                    )
-                )
+            preg_match(
+                "/^(http[s:\/0-9\.]*(:[0-9]*)?\/[a-z]*)/",
+                $this->paiaURL,
+                $paiaMatches
             );
+            $this->httpService->get($paiaMatches[1]);
         } catch (\Exception $e) {
             throw new ILSException($e->getMessage());
         }
