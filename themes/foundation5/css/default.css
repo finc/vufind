@@ -467,6 +467,9 @@ ul.date-range-slider {
   #searchForm .columns {
     padding: 0;
   }
+  #searchForm .columns .button, #searchForm .columns button {
+    padding: 0;
+  }
 }
 
 @media only screen and (min-width: 45rem) {

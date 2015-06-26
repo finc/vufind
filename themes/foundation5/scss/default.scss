@@ -441,6 +441,10 @@ ul.date-range-slider {
   .columns {
     @media only screen and (min-width: 20em) {
       padding: 0;
+
+      .button, button {
+        padding: 0;
+      }
     }
     @media only screen and (min-width: 45rem) {
       @include pad-l-r;
