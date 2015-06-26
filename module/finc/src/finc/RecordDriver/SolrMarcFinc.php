@@ -1,7 +1,6 @@
 <?php
 /**
- * finc specific model for MARC records without a fullrecord in Solr. The fullrecord is being
- * retrieved from an external source.
+ * finc specific model for MARC records with a fullrecord in Solr.
  *
  * PHP version 5
  *
@@ -30,8 +29,7 @@
 namespace finc\RecordDriver;
 
 /**
- * finc specific model for MARC records without a fullrecord in Solr. The fullrecord is being
- * retrieved from an external source.
+ * finc specific model for MARC records with a fullrecord in Solr.
  *
  * @category VuFind2
  * @package  RecordDrivers
@@ -50,17 +48,16 @@ class SolrMarcFinc extends SolrMarc
     const BSZ_PATTERN = '/^(\(DE-576\))(\d+)(\w|)/';
 
     /**
+     * List of isil of institution
+     *
      * @var string  ISIL of this instance's library
      */
-    protected $isil = '';
+    protected $isil = [];
 
     /**
-     * @var array   Array of ISILs set in the LibraryGroup section in config.ini.
-     */
-    protected $libraryGroup = [];
-
-    /**
-     * @var string|null
+     * Local marc field of institution participated in Finc.
+     *
+     * @var  string|null
      * @link https://intern.finc.info/fincproject/projects/finc-intern/wiki/FincMARC_-_Erweiterung_von_MARC21_f%C3%BCr_finc
      */
     protected $localMarcFieldOfLibrary = null;
@@ -75,21 +72,17 @@ class SolrMarcFinc extends SolrMarc
      * @param \Zend\Config\Config $searchSettings Search-specific configuration file
      */
     public function __construct($mainConfig = null, $recordConfig = null,
-                                $searchSettings = null)
+                                $searchSettings = null
+    )
     {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
-        if (isset($mainConfig->InstitutionInfo->isil)) {
-            $this->isil = $this->mainConfig->InstitutionInfo->isil;
+        if (isset($mainConfig->InstitutionInfo->isil)
+            && count($mainConfig->InstitutionInfo->isil) > 0
+        ) {
+            $this->isil = $this->mainConfig->InstitutionInfo->isil->toArray();
         } else {
-            $this->debug('InstitutionInfo setting is missing.');
-        }
-
-        if (isset($mainConfig->LibraryGroup->libraries)) {
-            $this->libraryGroup
-                = explode(',', $this->mainConfig->LibraryGroup->libraries);
-        } else {
-            $this->debug('LibraryGroup setting is missing.');
+            $this->debug('InstitutionInfo setting: isil is missing.');
         }
 
         if (isset($this->mainConfig->CustomSite->namespace)) {
@@ -109,7 +102,7 @@ class SolrMarcFinc extends SolrMarc
             ];
             $this->localMarcFieldOfLibrary
                 = isset($map[$this->mainConfig->CustomSite->namespace]) ?
-                    $map[$this->mainConfig->CustomSite->namespace] : null;
+                $map[$this->mainConfig->CustomSite->namespace] : null;
         } else {
             $this->debug('Namespace setting for localMarcField is missing.');
         }

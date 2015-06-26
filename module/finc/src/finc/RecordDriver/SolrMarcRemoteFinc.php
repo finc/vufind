@@ -82,7 +82,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
         if (isset($mainConfig->InstitutionInfo->isil)
             && count($mainConfig->InstitutionInfo->isil) > 0
         ) {
-            $this->isil = $this->mainConfig->InstitutionInfo->isil;
+            $this->isil = $this->mainConfig->InstitutionInfo->isil->toArray();
         } else {
             $this->debug('InstitutionInfo setting: isil is missing.');
         }

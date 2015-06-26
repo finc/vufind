@@ -74,7 +74,7 @@ trait SolrMarcFincTrait
 
                     if ($isil) {
                         $isil = $isil->getData();
-                        if (true === in_array($isil, $this->isil->toArray())) {
+                        if (true === in_array($isil, $this->isil)) {
                             $isISIL = true;
                         }
                     } else {
