@@ -103,49 +103,25 @@ class FincILS extends PAIA implements LoggerAwareInterface
     {
         parent::init();
 
-        // due to section naming changes in DAIA.ini switch legacySupport
-        if ($this->legacySupport) {
-            // set the ILS-specific recordId for interaction with ILS
+        // set the ILS-specific recordId for interaction with ILS
 
-            // get the ILS-specific identifier
-            if (!isset($this->config['Global']['ilsIdentifier'])) {
-                $this->debug(
-                    "No ILS-specific identifier configured, setting ilsIdentifier=default."
-                );
-                $this->ilsIdentifier = "default";
-            } else {
-                $this->ilsIdentifier = $this->config['Global']['ilsIdentifier'];
-            }
-
-            // get ISIL from config if ILS-specific recordId is barcode for
-            // interaction with ILS
-            if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
-                $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
-                $this->isil = [];
-            } else {
-                $this->isil = $this->mainConfig['InstitutionInfo']['isil']->toArray();
-            }
+        // get the ILS-specific identifier
+        if (!isset($this->config['DAIA']['ilsIdentifier'])) {
+            $this->debug(
+                "No ILS-specific identifier configured, setting ilsIdentifier=default."
+            );
+            $this->ilsIdentifier = "default";
         } else {
-            // set the ILS-specific recordId for interaction with ILS
+            $this->ilsIdentifier = $this->config['DAIA']['ilsIdentifier'];
+        }
 
-            // get the ILS-specific identifier
-            if (!isset($this->config['DAIA']['ilsIdentifier'])) {
-                $this->debug(
-                    "No ILS-specific identifier configured, setting ilsIdentifier=default."
-                );
-                $this->ilsIdentifier = "default";
-            } else {
-                $this->ilsIdentifier = $this->config['DAIA']['ilsIdentifier'];
-            }
-
-            // get ISIL from config if ILS-specific recordId is barcode for
-            // interaction with ILS
-            if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
-                $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
-                $this->isil = [];
-            } else {
-                $this->isil = $this->mainConfig['InstitutionInfo']['isil']->toArray();
-            }
+        // get ISIL from config if ILS-specific recordId is barcode for
+        // interaction with ILS
+        if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
+            $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
+            $this->isil = [];
+        } else {
+            $this->isil = $this->mainConfig['InstitutionInfo']['isil']->toArray();
         }
 
         $this->_testILSConnections();
