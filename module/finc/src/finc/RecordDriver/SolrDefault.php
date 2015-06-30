@@ -31,6 +31,7 @@
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 namespace finc\RecordDriver;
+use Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
  * finc specific model for Solr records based on the stock
@@ -46,7 +47,9 @@ namespace finc\RecordDriver;
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class SolrDefault extends \VuFind\RecordDriver\SolrDefault
+class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
+    LoggerAwareInterface
 {
+    use \VuFind\Log\LoggerAwareTrait;
     use SolrDefaultFincTrait;
 }
