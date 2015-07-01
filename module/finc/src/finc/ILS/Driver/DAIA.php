@@ -100,6 +100,23 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
     ];
 
     /**
+     * Date converter object
+     *
+     * @var \VuFind\Date\Converter
+     */
+    protected $dateConverter;
+
+    /**
+     * Constructor
+     *
+     * @param \VuFind\Date\Converter $converter Date converter
+     */
+    public function __construct(\VuFind\Date\Converter $converter)
+    {
+        $this->dateConverter = $converter;
+    }
+
+    /**
      * Initialize the driver.
      *
      * Validate configuration and perform all resource-intensive tasks needed to
@@ -186,10 +203,6 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
      */
     public function getStatus($id)
     {
-        if ($this->checkForILSTestId($id)) {
-            return [];
-        }
-
         // let's retrieve the DAIA document by URI
         try {
             $rawResult = $this->doHTTPRequest($this->generateURI($id));
@@ -406,22 +419,6 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
             $multiURI .= $this->generateURI($id) . "|";
         }
         return rtrim($multiURI, "|");
-    }
-
-    /**
-     * Autoconfigure tests ILS with getStatus('1') - use this method if you don't
-     * have a record with id='1' but don't want Autoconfigure to fail on ILS test.
-     *
-     * @param string $id Record id to be tested
-     *
-     * @return bool
-     */
-    protected function checkForILSTestId($id)
-    {
-        if ($id === '1') {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -707,7 +704,8 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
                 }
                 // attribute expected is mandatory for unavailable element
                 if (isset($unavailable["expected"])) {
-                    $duedate = $unavailable["expected"];
+                    $duedate = $this->dateConverter
+                        ->convertToDisplayDate("Y-m-d", $unavailable['expected']);
                 }
 
                 // attribute queue can be set
@@ -841,4 +839,3 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
         }
     }
 }
-

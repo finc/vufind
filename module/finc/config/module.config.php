@@ -12,10 +12,8 @@ $config = [
             'ils_driver' => [
                 'factories' => [
                     'fincils' => 'finc\ILS\Driver\Factory::getFincILS',
-                ],
-                'invokables' => [
-                    'daia' => 'finc\ILS\Driver\DAIA',
-                    'paia' => 'finc\ILS\Driver\PAIA',
+                    'daia' => 'finc\ILS\Driver\Factory::getDAIA',
+                    'paia' => 'finc\ILS\Driver\Factory::getPAIA',
                 ],
             ],
             'recorddriver' => [

@@ -71,6 +71,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
     protected $recordLoader;
 
     /**
+     * Date converter object
+     *
+     * @var \VuFind\Date\Converter
+     */
+    protected $dateConverter;
+
+    /**
      * Main Config
      *
      * @var null|\Zend\Config\Config
@@ -80,12 +87,15 @@ class FincILS extends PAIA implements LoggerAwareInterface
     /**
      * Constructor
      *
-     * @param \VuFind\Record\Loader $loader     Record loader
-     * @param \Zend\Config\Config   $mainConfig VuFind main configuration (omit for
+     * @param \VuFind\Date\Converter $converter  Date converter
+     * @param \VuFind\Record\Loader  $loader     Record loader
+     * @param \Zend\Config\Config    $mainConfig VuFind main configuration (omit for
      * built-in defaults)
      */
-    public function __construct(\VuFind\Record\Loader $loader, $mainConfig = null)
-    {
+    public function __construct(\VuFind\Date\Converter $converter,
+        \VuFind\Record\Loader $loader, $mainConfig = null
+    ) {
+        $this->dateConverter = $converter;
         $this->recordLoader = $loader;
         $this->mainConfig = $mainConfig;
     }

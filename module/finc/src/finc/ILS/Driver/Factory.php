@@ -50,8 +50,37 @@ class Factory
     public static function getFincILS(ServiceManager $sm)
     {
         return new FincILS(
+            $sm->getServiceLocator()->get('VuFind\DateConverter'),
             $sm->getServiceLocator()->get('VuFind\RecordLoader'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        );
+    }
+
+    /**
+     * Factory for DAIA driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return DAIA
+     */
+    public static function getDAIA(ServiceManager $sm)
+    {
+        return new DAIA(
+            $sm->getServiceLocator()->get('VuFind\DateConverter')
+        );
+    }
+
+    /**
+     * Factory for PAIA driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return PAIA
+     */
+    public static function getPAIA(ServiceManager $sm)
+    {
+        return new PAIA(
+            $sm->getServiceLocator()->get('VuFind\DateConverter')
         );
     }
 
