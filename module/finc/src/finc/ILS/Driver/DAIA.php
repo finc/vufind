@@ -422,6 +422,22 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
     }
 
     /**
+     * Autoconfigure tests ILS with getStatus('1') - use this method if you don't
+     * have a record with id='1' but don't want Autoconfigure to fail on ILS test.
+     *
+     * @param string $id Record id to be tested
+     *
+     * @return bool
+     */
+    protected function checkForILSTestId($id)
+    {
+        if ($id === '1') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Parse a DAIA document depending on its type.
      *
      * Parse a DAIA document depending on its type and return a VuFind
