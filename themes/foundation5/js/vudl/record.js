@@ -8,7 +8,6 @@ function ajaxGetView(pageObject) {
   pageObject['counts'] = counts;
   if (currentTab == 'master-tab' && currentID == pageObject['id']) {
     // Trigger file download
-    //alert('download');
     $('#file-download').submit();
   } else if (currentType != pageObject['filetype']) {
     if(viewLoadAjax) {
@@ -49,14 +48,7 @@ function updateTechInfo(record) {
       $('#techinfo').html(d.data.div);
       var downloadSrc = 'MASTER';
       if(typeof d.data.type !== "undefined") {
-        if(d.data.type.indexOf('image') > -1) {
-          downloadSrc = 'LARGE';
-          d.data.type = 'image/png';
-        } else if(d.data.type.indexOf('audio') > -1) {
-          downloadSrc = 'MP3';
-          d.data.type = 'audio/mp3';
-        }
-      $('#download-button .details').html(d.data.type+' ~ '+d.data.size);
+        $('#download-button .details').html(d.data.type+' ~ '+d.data.size);
       }
       $('#file-download').attr('action', path+'/files/'+record.id+'/'+downloadSrc+'?download=true');
     },
@@ -135,7 +127,6 @@ function scrollToSelected() {
   if($(listID).length > 0 && $(listID+' .selected').length > 0) {
     $(listID).finish();
     scrollAnimation = $(listID).animate({
-
       scrollTop: $(listID+' .selected').offset().top-$(listID).offset().top+$(listID).scrollTop()-12
     });
   }
@@ -145,12 +136,12 @@ function toggleSideNav() {
   $('#side-nav').toggle();
   var opener = $('#view .nav-tabs li.opener a');
   opener.toggleClass('hidden');
-  $('#view').toggleClass('medium-9 columns').toggleClass('medium-12 columns');
+  $('#view').toggleClass('col-sm-9').toggleClass('col-sm-12');
 }
 
 function resizeElements() {
-  var $height = $(window).height() + window.scrollY - $('.content.active').offset().top - 50;
-  $('.content').css('max-height', Math.max(300, Math.min($height, $(window).height() - 200)));
+  var $height = $(window).height() + window.scrollY - $('.panel-collapse.in').offset().top - 50;
+  $('.panel-collapse').css('max-height', Math.max(300, Math.min($height, $(window).height() - 200)));
 }
 
 // Ready? Let's go
@@ -169,7 +160,7 @@ $(document).ready(function() {
   $('.unloaded').click(function() {
     scrollToSelected();
     findVisible();
-    });
+  });
   // Scroll Event
   $('.item-list').parent().scroll(function() {
     if(loadWait) return;
@@ -195,7 +186,7 @@ $(document).ready(function() {
       return;
     }
     currentList = parseInt($(this).attr('href').substring(9));
-});
+  });
   scrollToSelected();
   resizeElements();
   $( window ).resize( resizeElements );

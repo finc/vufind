@@ -6,7 +6,7 @@
 ?>
 <? if (isset($topFacetSet)): ?>
   <? $row=0; foreach($topFacetSet as $title => $cluster): ?>
-    <? $moreClass = ' NarrowGroupHidden_'.$this->escapeHtml($title).' hidden'; ?>
+    <? $moreClass = ' NarrowGroupHidden_'.$this->escapeHtml($title).' hide'; ?>
     <? $allowExclude = $this->recommend->excludeAllowed($title); ?>
     <strong><?=$this->transEsc($cluster['label'])?></strong><?=$this->transEsc("top_facet_suffix") ?>
     <div class="row top-row">
@@ -15,7 +15,7 @@
       <? /* More link */ ?>
       <? if ($iter == $corner+1): ?>
         </div><div id="more-NarrowGroupHidden_<?=$this->escapeHtml($title)?>" class="row top-row">
-          <span class="medium-12 columns"><a href="#" onclick="moreFacets('NarrowGroupHidden_<?=$this->escapeHtml($title)?>'); return false;"><?=$this->transEsc('more') ?> ...</a></span>
+          <span class="medium-12 columns"><a href="#" onclick="moreFacets('NarrowGroupHidden_<?=$this->escapeHtml($title)?>'); return false;"><?=$this->transEsc('more') ?>&nbsp;...</a></span>
         </div><div class="row top-row <?=$moreClass ?>">
       <? endif; ?>
       <? /* Columns */ ?>
@@ -30,7 +30,7 @@
           <?=$this->escapeHtml($thisFacet['displayText'])?> <i class="fa fa-check"></i>
           </a>
         <? else: ?>
-          <a href="<?=$this->currentPath().$this->recommend->getResults()->getUrlQuery()->addFacet($title, $thisFacet['value'], $thisFacet['operator'])?>"><?=$this->escapeHtml($thisFacet['displayText'])?></a> <span class="badge"><?=$this->localizedNumber($thisFacet['count']) ?>
+          <a href="<?=$this->currentPath().$results->getUrlQuery()->addFacet($title, $thisFacet['value'], $thisFacet['operator'])?>"><?=$this->escapeHtml($thisFacet['displayText'])?></a> <span class="label"><?=$this->localizedNumber($thisFacet['count']) ?>
           <? if ($allowExclude): ?>
             <a href="<?=$this->currentPath().$results->getUrlQuery()->addFacet($title, $thisFacet['value'], 'NOT')?>" title="<?=$this->transEsc('exclude_facet')?>"><i class="fa fa-times"></i></a>
           <? endif; ?>
@@ -41,7 +41,7 @@
       <? if ($iter%$topFacetSettings['cols'] == 0 && $iter > 0): ?></div><div class="row top-row<? if(++$row > $topFacetSettings['rows']) echo $moreClass ?>"><? endif; ?>
       <? /* Less link */ ?>
       <? if (count($cluster['list']) > $corner && $iter == count($cluster['list'])): ?>
-        <a class="medium-12 columns" href="#" onclick="lessFacets('NarrowGroupHidden_<?=$title ?>'); return false;"><?=$this->transEsc('less') ?> ...</a>
+        <a class="medium-12 columns" href="#" onclick="lessFacets('NarrowGroupHidden_<?=$title ?>'); return false;"><?=$this->transEsc('less') ?>&nbsp;...</a>
       <? endif; ?>
       <? $iter++; ?>
     <? endforeach; ?>

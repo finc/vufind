@@ -290,6 +290,18 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
     }
 
     /**
+     * Get the field-value identified by $string
+     *
+     * @param string $string Name of field
+     *
+     * @return string
+     */
+    public function getILSIdentifier($string)
+    {
+        return (isset($this->fields[$string]) ? $this->fields[$string] : '');
+    }
+
+    /**
      * Get an array of all ISMNs associated with the record (may be empty).
      *
      * @return array
@@ -393,7 +405,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault
      * Get percentage of relevance of a title. First implementaion for TUBAF.
      *
      * @return float        Percentage of Score / Maximum Score rounded by 5.
-     * @link https://intern.finc.info/issues/1908
+     * @link   https://intern.finc.info/issues/1908
      */
     public function getRelevance() {
 

@@ -1,8 +1,16 @@
 <!-- recordDriver - solrDefault - CORE.phtml -->
+<?
+if($loggedin = $this->auth()->isLoggedIn()) {
+  $user_id = $loggedin->id;
+  $loggedin = true;
+} else {
+  $user_id = false;
+}
+?>
 <div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
   <div class="medium-3 columns bookimgs">
-    <!-- div class="text-center" --> <!-- deactivated, CK - reactivate to centre images -->
-    <ul  class="clearing-thumbs" data-clearing><!-- added clearing lightbox for images, CK, to remove, also remove data-caption+content in img links -->
+    <? /* div class="text-center" --> <!-- deactivated, CK - reactivate to centre images */ ?>
+    <ul  class="clearing-thumbs" data-clearing><? /* added clearing lightbox for images, CK, to remove, also remove data-caption+content in img links */ ?>
       <li>
         <? /* Display thumbnail if appropriate: */ ?>
         <? $mediumThumb = $this->record($this->driver)->getThumbnail('medium'); $largeThumb = $this->record($this->driver)->getThumbnail('large'); ?>
@@ -14,15 +22,17 @@
           <img src="<?=$this->url('cover-unavailable')?>" class="recordcover" alt="<?=$this->transEsc('No Cover Image')?>" data-caption="<?=$this->transEsc('No Cover Image')?>"/>
         <? endif; ?>
       </li>
+    </ul>
+    <ul class="clearing-thumbs" data-clearing>
       <li>
         <? /* Display qrcode if appropriate: */ ?>
         <? $QRCode = $this->record($this->driver)->getQRCode("core"); ?>
         <? if($QRCode): ?>
           <span class="hide-for-small">
-            <br/><img alt="<?=$this->transEsc('QR Code')?>" data-caption="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
+            <img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
           </span>
         <? endif; ?>
-    <!-- /div --> <!-- deactivated, CK - reactivate to centre image -->
+    <? /* /div> <!-- deactivated, CK - reactivate to centre image */ ?>
       </li>
     </ul>
     <? // if you have a preview tab but want to move or remove the preview link
@@ -46,13 +56,13 @@
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
       <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists hidden alert-box info" id="savedLists" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
+      <div class="savedLists hide alert-box info" id="savedLists" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
         <strong><?=$this->transEsc("Saved in")?>:</strong>
       </div>
     <? endif; ?>
 
     <?/* Display Main Details */?>
-    <table class="table" summary="<?=$this->transEsc('Bibliographic Details')?>">
+    <table class="table" width="100%" summary="<?=$this->transEsc('Bibliographic Details')?>">
       <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle)): ?>
       <tr>
         <th><?=$this->transEsc('Published in')?>:</th>
@@ -190,7 +200,7 @@
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
               <? $subject = trim($subject . ' ' . $subfield); ?>
-              <a class="backlink" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>"><?=trim($this->escapeHtml($subfield))?></a>
+              <a class="backlink" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>" rel="nofollow"><?=trim($this->escapeHtml($subfield))?></a>
             <? endforeach; ?>
           </div>
           <? endforeach; ?>
@@ -247,20 +257,14 @@
       <? endif; ?>
 
       <? if ($this->usertags()->getMode() !== 'disabled'): ?>
-        <? $tagList = $this->driver->getTags(); ?>
+        <? $tagList = $this->driver->getTags(null, null, 'count', $user_id); ?>
         <tr>
           <th><?=$this->transEsc('Tags')?>: </th>
           <td>
             <span class="pull-right hide-for-print">
-              <i class="fa fa-plus"></i> <a id="tagRecord" class="modal-link" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" title="<?=$this->transEsc('Add Tag')?>"><?=$this->transEsc('Add Tag')?></a>
+              <a id="tagRecord" class="modal-link" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" title="<?=$this->transEsc('Add Tag')?>"><i class="fa fa-plus"></i><?=$this->transEsc('Add Tag')?></a>
             </span>
-            <div id="tagList">
-              <? if (count($tagList) > 0): ?>
-                <? $i = 0; foreach ($tagList as $tag): ?><?=($i++ == 0)?'':', '?><a href="<?=$this->url('tag-home')?>?lookfor=<?=urlencode($tag->tag)?>"><?=$this->escapeHtml($tag->tag)?></a> (<?=$this->escapeHtml($tag->cnt)?>)<? endforeach; ?>
-              <? else: ?>
-                <?=$this->transEsc('No Tags')?>, <?=$this->transEsc('Be the first to tag this record')?>!
-              <? endif; ?>
-            </div>
+            <?=$this->context($this)->renderInContext('record/taglist', array('tagList'=>$tagList, 'loggedin'=>$loggedin)) ?>
           </td>
         </tr>
       <? endif; ?>

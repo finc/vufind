@@ -92,25 +92,11 @@ var Lightbox = {
    */
   titleSet: false,
   changeContent: function(html) {
-    var header = $('#modal .modal-header');
-    if(!Lightbox.titleSet) {
-      var h4 = html.match(/<h4>([^<]*)<\/h4>/);
-      if(h4) {
-        header.find('.modal-title').html(h4[1]);
-      } else {
-        var pLead = html.match(/<p class="lead[^>]*>([^<]*)<\/p>/);
-        if(pLead) {
-          header.find('.modal-title').html(pLead[1]);
-        }
-      }
-      Lightbox.titleSet = false;
+    $('#modal .modal-body').html(html);
+    if (Lightbox.shown === false) {
+      $('#modal').foundation('reveal', 'open');
+      Lightbox.shown = true;
     }
-    if(header.find('.modal-title').html().length == 0) {
-      header.css('border-bottom-width', '0');
-    } else {
-      header.css('border-bottom-width', '1px');
-    }
-    $('#modal .modal-body').html(html).modal({'show':true,'backdrop':false});
     Lightbox.openActions();
   },
 
@@ -118,7 +104,7 @@ var Lightbox = {
    * This is the function you call to manually close the lightbox
    */
   close: function(evt) {
-    $('#modal').modal('hide'); // This event calls closeActions
+    $('#modal').foundation('reveal', 'close'); // This event calls closeActions
   },
   /**
    * This function is attached to the lightbox close event,
@@ -136,7 +122,7 @@ var Lightbox = {
     // Reset content so we start fresh when we open a lightbox
     $('#modal').removeData('modal');
     $('#modal').find('.modal-title').html('');
-    $('#modal').find('.modal-body').html(vufindString.loading + "...");
+    $('#modal').find('.modal-body').html(vufindString.loading + "&nbsp;...");
   },
   /**
    * Call all the functions we need for when the modal loads
@@ -178,17 +164,17 @@ var Lightbox = {
    */
   displayError: function(message, type) {
     if(typeof type === "undefined") {
-      type = "danger";
+      type = "alert";
     }
     $('#modal .modal-body .alert-box').remove();
     var html = $.parseHTML($('#modal .modal-body').html());
     // Empty or alert only, change to message with button
-    if($('#modal .modal-body').html() == vufindString.loading+" ..."
+    if($('#modal .modal-body').html() == vufindString.loading+"&nbsp;..."
       || (html.length == 1 && $(html).hasClass('alert-'+type))) {
       Lightbox.changeContent('<div data-alert class="alert-box '+type+'" tabindex="0" aria-live="assertive" role="dialogalert">'+message+'</div><button class="button secondary tiny" onClick="Lightbox.close()" role="button">'+vufindString['close']+'</button>');
     // Page without alert
     } else {
-      $('#modal .modal-body').prepend('<div data-alert class="alert-box '+type+' alert-dismissible"  tabindex="0" aria-live="assertive" role="dialogalert"><button type="button" class="close" data-dismiss="alert" role="button"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><p class="message">'+message+'</p></div>');
+      $('#modal .modal-body').prepend('<div data-alert class="alert-box '+type+' alert-dismissible"  tabindex="0" aria-live="assertive" role="dialogalert"><p class="message">'+message+'</p></div><button type="button" class="close secondary small" href="#" role="button" tabindex="0" aria-label="Close Alert" data-dismiss="alert" onClick="Lightbox.close()">'+vufindString['close']+'</button>');
     }
     $('.fa-spinner').remove();
     if (typeof Recaptcha !== "undefined" && Recaptcha.widget) {
@@ -196,7 +182,7 @@ var Lightbox = {
     }
     // If the lightbox isn't visible, fix that
     if(this.shown == false) {
-      $('#modal').modal('show');
+      $('#modal').foundation('reveal', 'open');
       this.shown = true;
     }
   },
@@ -217,7 +203,7 @@ var Lightbox = {
     }
     // If the lightbox isn't visible, fix that
     if(this.shown == false) {
-      $('#modal').modal('show');
+      $('#modal').foundation('reveal', 'open');
       this.shown = true;
     }
     // Create our AJAX request, store it in case we need to cancel later
@@ -331,7 +317,7 @@ var Lightbox = {
    */
   registerForms: function() {
     var $form = $("#modal").find('form');
-    $form.validator();
+    //$form.validator();
     var name = $form.attr('name');
     // Assign form handler based on name
     if(typeof name !== "undefined" && typeof Lightbox.formHandlers[name] !== "undefined") {
@@ -364,10 +350,10 @@ var Lightbox = {
    * The default, automatic form submission
    *
    * This function gleans all the information in a form from the function above
-   * Then it uses the action="" attribute of the form to figure out where to send the data
+   * Then it uses the action="..." attribute of the form to figure out where to send the data
    * and the method="" attribute to send it the proper way
    *
-   * In the wild, forms without an action="" are submitted to the current URL.
+   * Forms without an action="..." are submitted to the current URL.
    * In the case where we have a form with no action in the lightbox,
    * we emulate that behaviour by submitting the last URL loaded through
    * .getByUrl, stored in lastURL in the Lightbox object.
@@ -397,7 +383,7 @@ var Lightbox = {
     } else {
       this.getByUrl(this.lastURL, {}, callback);
     }
-    $(this).find('.modal-body').html(vufindString.loading + "...");
+    $(this).find('.modal-body').html(vufindString.loading + "&nbsp;...");
   }
 };
 
@@ -413,7 +399,7 @@ $(document).ready(function() {
    *
    * Yes, the secret's out, our beloved Lightbox is a modal
    */
-  $('#modal').on('hidden.bs.modal', Lightbox.closeActions);
+  $('#modal').on('closed.fndtn.reveal', Lightbox.closeActions);
   /**
    * If a link with the class .modal-link triggers the lightbox,
    * look for a title="" to use as our lightbox title.

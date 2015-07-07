@@ -12,6 +12,9 @@
     // Set page title.
     $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
 ?>
+
+<?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
+
 <? if ($offlineMode == "ils-offline"): ?>
   <div data-alert class="alert-box warning" tabindex="0" aria-live="assertive" role="dialogalert">
     <h2><?=$this->transEsc('ils_offline_title')?></h2>
@@ -38,7 +41,7 @@
     <a class="placehold modal-link" title="<?=$this->transEsc('request_place_text')?>" href="<?=$this->recordLink()->getRequestUrl($holdingTitleHold)?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc('title_hold_place')?></a>
 <? endif; ?>
 <? if (!empty($urls) || $openUrl): ?>
-  <h5><?=$this->transEsc("Internet")?></h5>
+  <h3><?=$this->transEsc("Internet")?></h3>
   <? if (!empty($urls)): ?>
     <? foreach ($urls as $current): ?>
       <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
@@ -47,7 +50,7 @@
   <? if ($openUrl): ?><?=$this->openUrl($openUrl);?><? endif; ?>
 <? endif; ?>
 <? foreach ($holdings as $holding): ?>
-<h5><?=$this->transEsc('location_' . $holding['location'], array(), $holding['location'])?></h5>
+<h3><?=$this->transEsc('location_' . $holding['location'], array(), $holding['location'])?></h3>
 <table class="table" summary="<?=$this->transEsc('Holdings details from')?> <?=$this->transEsc($holding['location'])?>">
   <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
   <tr>
@@ -146,7 +149,7 @@
 
 <? $history = $this->driver->getRealTimeHistory(); ?>
 <? if (is_array($history) && !empty($history)): ?>
-<h5><?=$this->transEsc("Most Recent Received Issues")?></h5>
+<h3><?=$this->transEsc("Most Recent Received Issues")?></h3>
 <table class="table">
   <? foreach ($history as $row): ?>
     <tr><td><?=$this->escapeHtml($row['issue'])?></td></tr>

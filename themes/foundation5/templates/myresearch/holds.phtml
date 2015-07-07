@@ -13,13 +13,15 @@
 
     <?=$this->flashmessages()?>
 
+    <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
+
     <? if (!empty($this->recordList)): ?>
       <? if ($this->cancelForm): ?>
-        <form name="cancelForm" class="inline" action="" method="post" id="cancelHold">
+        <form name="cancelForm" class="inline"  method="post" id="cancelHold">
           <input type="hidden" id="submitType" name="cancelSelected" value="1"/>
           <input type="hidden" id="cancelConfirm" name="confirm" value="0"/>
           <div class="button-group">
-            <input id="cancelSelected" name="cancelSelected" type="submit" value="<?=$this->transEsc("hold_cancel_selected") ?>" class="button secondary tiny" data-dropdown="hold_cancel_selected-dd" role="button" aria-controls="hold_cancel_selected-dd" aria-expanded="false" />
+            <input id="cancelSelected" name="cancelSelected" type="submit" value="<?=$this->transEsc("hold_cancel_selected") ?>" class="button secondary small" data-dropdown="hold_cancel_selected-dd" role="button" aria-controls="hold_cancel_selected-dd" aria-expanded="false" />
             <ul id="hold_cancel_selected-dd" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
               <li class="disabled"><a><?=$this->transEsc("confirm_hold_cancel_selected_text") ?></a></li>
               <li><a href="#" onClick="$('#cancelConfirm').val(1);$('#submitType').attr('name','cancelSelected');$(this).parents('form').submit(); return false;"><?=$this->transEsc('confirm_dialog_yes') ?></a></li>
@@ -27,7 +29,7 @@
             </ul>
           </div>
           <div class="button-group">
-            <input id="cancelAll" name="cancelAll" type="submit" value="<?=$this->transEsc("hold_cancel_all") ?>" class="button secondary tiny" data-dropdown="hold_cancel_all-dd" role="button" aria-controls="hold_cancel_all-dd" aria-expanded="false" />
+            <input id="cancelAll" name="cancelAll" type="submit" value="<?=$this->transEsc("hold_cancel_all") ?>" class="button secondary small" data-dropdown="hold_cancel_all-dd" role="button" aria-controls="hold_cancel_all-dd" aria-expanded="false" />
             <ul id="hold_cancel_all-dd" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
               <li class="disabled"><a><?=$this->transEsc("confirm_hold_cancel_all_text") ?></a></li>
               <li><a href="#" onClick="$('#cancelConfirm').val(1);$('#submitType').attr('name','cancelAll');$(this).parents('form').submit(); return false;"><?=$this->transEsc('confirm_dialog_yes') ?></a></li>
@@ -45,18 +47,18 @@
           <? if ($this->cancelForm && isset($ilsDetails['cancel_details'])): ?>
             <? $safeId = preg_replace('/[^a-zA-Z0-9]/', '', $resource->getUniqueId()); ?>
             <input type="hidden" name="cancelAllIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['cancel_details']) ?>" />
-            <div class="pull-left">
+            <div class="small-1 column">
               <input type="checkbox" name="cancelSelectedIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['cancel_details']) ?>" id="checkbox_<?=$safeId?>" />
             </div>
           <? endif; ?>
-          <div class="medium-2 columns text-center">
+          <div class="small-11 medium-2 columns text-center">
             <? if ($summThumb = $this->record($resource)->getThumbnail()): ?>
               <img src="<?=$this->escapeHtmlAttr($summThumb)?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
             <? else: ?>
               <img src="<?=$this->url('cover-unavailable')?>" class="recordcover" alt="<?=$this->transEsc('No Cover Image')?>"/>
             <? endif; ?>
           </div>
-          <div class="medium-6 columns">
+          <div class="small-12 medium-6 columns">
             <?
               // If this is a non-missing Solr record, we should display a link:
               if (is_a($resource, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($resource, 'VuFind\\RecordDriver\\Missing')) {

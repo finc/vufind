@@ -9,7 +9,7 @@
 <?=$this->flashmessages()?>
 <? $errors = 0; foreach ($this->checks as $check): ?>
 <? if (!$check['status']) $errors++; ?>
-  <div class="alert-box <?=$check['status'] ? 'success':'alert'?>"><?=$this->escapeHtml($check['title'])?>... <?=$check['status'] ? $this->transEsc('test_ok') : $this->transesc('test_fail') . ' <a class="button tiny alert" role="button" href="' . $this->url('install-' . strtolower($check['fix'])) . '">' . $this->transEsc('test_fix') . '</a>' ?></div>
+  <div class="alert-box <?=$check['status'] ? 'success':'alert'?>"><?=$this->escapeHtml($check['title'])?>... <?=$check['status'] ? $this->transEsc('test_ok') : $this->transesc('test_fail') . ' <a class="button small alert" role="button" href="' . $this->url('install-' . strtolower($check['fix'])) . '">' . $this->transEsc('test_fix') . '</a>' ?></div>
 <? endforeach; ?>
 
 <? if ($errors == 0): ?>

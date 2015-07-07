@@ -27,18 +27,18 @@ function getRecord(recordID)
 function changeNoResultLabel(display)
 {
   if (display) {
-    $("#treeSearchNoResults").removeClass('hidden');
+    $("#treeSearchNoResults").removeClass('hide');
   } else {
-    $("#treeSearchNoResults").addClass('hidden');
+    $("#treeSearchNoResults").addClass('hide');
   }
 }
 
 function changeLimitReachedLabel(display)
 {
   if (display) {
-    $("#treeSearchLimitReached").removeClass('hidden');
+    $("#treeSearchLimitReached").removeClass('hide');
   } else {
-    $("#treeSearchLimitReached").addClass('hidden');
+    $("#treeSearchLimitReached").addClass('hide');
   }
 }
 
@@ -50,7 +50,7 @@ function htmlEncodeId(id)
 var searchAjax = false;
 function doTreeSearch()
 {
-  $('#treeSearchLoadingImg').removeClass('hidden');
+  $('#treeSearchLoadingImg').removeClass('hide');
   var keyword = $("#treeSearchText").val();
   var type = $("#treeSearchType").val();
   if(keyword.length == 0) {
@@ -58,7 +58,7 @@ function doTreeSearch()
     var tree = $('#hierarchyTree').jstree(true);
     tree.close_all();
     tree._open_to(htmlID);
-    $('#treeSearchLoadingImg').addClass('hidden');
+    $('#treeSearchLoadingImg').addClass('hide');
   } else {
     if(searchAjax) {
       searchAjax.abort();
@@ -87,7 +87,7 @@ function doTreeSearch()
         } else {
           changeNoResultLabel(true);
         }
-        $('#treeSearchLoadingImg').addClass('hidden');
+        $('#treeSearchLoadingImg').addClass('hide');
       }
     });
   }
@@ -210,7 +210,7 @@ $(document).ready(function()
       }
     });
 
-  $('#treeSearch').removeClass('hidden');
+  $('#treeSearch').removeClass('hide');
   $('#treeSearch [type=submit]').click(doTreeSearch);
   $('#treeSearchText').keyup(function (e) {
     var code = (e.keyCode ? e.keyCode : e.which);

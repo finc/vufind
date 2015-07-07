@@ -8,13 +8,13 @@
 ?>
 <div class="row">
     <h2><?=$this->transEsc('Find New Items')?></h2>
-    <form method="get" action="" class="form-horizontal">
-      <div class="form-group">
-        <label class="medium-3 columns control-label"><?=$this->transEsc('Range')?>:</label>
+    <form method="get">
+      <div class="row">
+        <label class="medium-3 columns"><?=$this->transEsc('Range')?>:</label>
     <div class="medium-9 columns">
       <div class="button-group">
           <? foreach ($this->ranges as $key => $range): ?>
-          <label class="button tiny<? if($key == 0): ?> active<? endif ?>">
+          <label class="button small<? if($key == 0): ?> active<? endif ?>">
                 <input type="radio" name="range" id="newitem_range_<?=$this->escapeHtmlAttr($key)?>" value="<?=$this->escapeHtmlAttr($range)?>"<?= ($key == 0) ? ' checked="checked"' : ''?>/>
                 <?=($range == 1) ? $this->transEsc('Yesterday') : $this->transEsc('Past') . ' ' . $this->escapeHtml($range) . ' ' . $this->transEsc('Days')?>
           </label>
@@ -23,10 +23,10 @@
       </div>
   </div>
       <? if (is_array($this->fundList) && !empty($this->fundList)): ?>
-        <div class="form-group">
-          <label class="medium-3 columns control-label" for="newitem_department"><?=$this->transEsc('Department')?>:</label>
+        <div class="row">
+          <label class="medium-3 columns" for="newitem_department"><?=$this->transEsc('Department')?>:</label>
           <div class="medium-9 columns">
-            <select id="newitem_department" name="department" size="10" class="form-control">
+            <select id="newitem_department" name="department" size="10" class="auto">
             <? foreach ($this->fundList as $fundId => $fund): ?>
               <option value="<?=$this->escapeHtmlAttr($fundId)?>"><?=$this->transEsc($fund)?></option>
             <? endforeach; ?>
@@ -34,9 +34,9 @@
           </div>
         </div>
       <? endif; ?>
-      <div class="form-group">
-        <div class="medium-9 medium-offset-3 columns ">
-          <input class="button tiny" type="submit" name="submit" role="button" value="<?=$this->transEsc('Find')?>"/>
+      <div class="row">
+        <div class="medium-9 medium-offset-3 columns">
+          <input class="button small" type="submit" name="submit" role="button" value="<?=$this->transEsc('Find')?>"/>
         </div>
       </div>
     </form>

@@ -177,6 +177,10 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
      */
     public function getStatus($id)
     {
+        if ($this->checkForILSTestId($id)) {
+            return [];
+        }
+
         if ($this->legacySupport) {
             // we are in legacySupport mode, so use the deprecated
             // getXMLStatus() method
@@ -401,6 +405,22 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
             $multiURI .= $this->generateURI($id) . "|";
         }
         return rtrim($multiURI, "|");
+    }
+
+    /**
+     * Autoconfigure tests ILS with getStatus('1') - use this method if you don't
+     * have a record with id='1' but don't want Autoconfigure to fail on ILS test.
+     *
+     * @param string $id Record id to be tested
+     *
+     * @return bool
+     */
+    protected function checkForILSTestId($id)
+    {
+        if ($id === '1') {
+            return true;
+        }
+        return false;
     }
 
     /**

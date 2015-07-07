@@ -1,4 +1,4 @@
-/*global htmlEncode, path */
+/*global htmlEncode, path, vufindString */
 function buildFacetNodes(data, currentPath, allowExclude, excludeTitle, counts)
 {
   var json = [];
@@ -6,7 +6,7 @@ function buildFacetNodes(data, currentPath, allowExclude, excludeTitle, counts)
   $(data).each(function() {
     var html = '';
     if (!this.isApplied && counts) {
-      html = '<span class="badge" style="float: right">' + this.count;
+      html = '<span class="label right">' + this.count.toString().replace(/\B(?=(\d{3})+\b)/g, vufindString.number_thousands_separator);
       if (allowExclude) {
         var excludeURL = currentPath + this.exclude;
         excludeURL.replace("'", "\\'");
@@ -68,7 +68,7 @@ function initFacetTree(treeNode, inSidebar)
   var query = window.location.href.split('?')[1];
 
   if (inSidebar) {
-    treeNode.prepend('<li class="list-group-item"><i class="fa fa-spinner fa-spin"></i></li>');
+    treeNode.prepend('<li><i class="fa fa-spinner fa-spin"></i></li>');
   } else {
     treeNode.prepend('<div><i class="fa fa-spinner fa-spin"></i><div>');  
   }
@@ -85,7 +85,7 @@ function initFacetTree(treeNode, inSidebar)
         treeNode.find('.fa-spinner').parent().remove();
         if (inSidebar) {
           treeNode.on('loaded.jstree open_node.jstree', function (e, data) {
-            treeNode.find('ul.jstree-container-ul > li.jstree-node').addClass('list-group-item');
+            treeNode.find('ul.jstree-container-ul > li.jstree-node').addClass('item'); // Where can I see this? - fixme - CK
           });
         }
         treeNode.jstree({

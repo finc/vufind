@@ -138,17 +138,18 @@ function registerUpdateCart($form) {
         if (updated.length >= vufindString.bookbagMax) {
           msg += "<br/>" + vufindString.bookbagFull;
         }
-        $('#'+elId).data('bs.popover').options.content = msg;
+        // is this correct? where can I test this? - CK - fixme
+        $('#'+elId).data('fndtn.tooltip').options.content = msg;
         $('#cartItems strong').html(updated.length);
       } else {
-        $('#'+elId).data('bs.popover').options.content = vufindString.bulk_noitems_advice;
+        $('#'+elId).data('fndtn.tooltip').options.content = vufindString.bulk_noitems_advice;
       }
-      $('#'+elId).popover('show');
+      $('#'+elId).tooltip('show');
       if (cartNotificationTimeout !== false) {
         clearTimeout(cartNotificationTimeout);
       }
       cartNotificationTimeout = setTimeout(function() {
-        $('#'+elId).popover('hide');
+        $('#'+elId).tooltip('hide');
       }, 5000);
       return false;
     });
@@ -162,21 +163,21 @@ $(document).ready(function() {
     cartId = cartId.val().split('|');
     currentId = cartId[1];
     currentSource = cartId[0];
-    $('#cart-add.correct,#cart-remove.correct').removeClass('correct hidden');
+    $('#cart-add.correct,#cart-remove.correct').removeClass('correct hide');
     $('#cart-add').click(function() {
       addItemToCart(currentId,currentSource);
-      $('#cart-add,#cart-remove').toggleClass('hidden');
+      $('#cart-add,#cart-remove').toggleClass('hide');
     });
     $('#cart-remove').click(function() {
       removeItemFromCart(currentId,currentSource);
-      $('#cart-add,#cart-remove').toggleClass('hidden');
+      $('#cart-add,#cart-remove').toggleClass('hide');
     });
   } else {
     // Search results
     var $form = $('form[name="bulkActionForm"]');
     registerUpdateCart($form);
   }
-  $("#updateCart, #bottom_updateCart").popover({content:'', html:true, trigger:'manual'});
+  $("#updateCart, #bottom_updateCart").tooltip({content:'', html:true, trigger:'manual'});
 
   // Setup lightbox behavior
   // Cart lightbox
@@ -208,7 +209,8 @@ $(document).ready(function() {
     });
     Lightbox.confirm(vufindString['bulk_save_success']);
   });
-  $('#modal').on('hidden.bs.modal', function() {
+  $('#modal').on('close.fndtn.reveal', function() {
+    // check the above for correctness - fixme CK
     // Update cart items (add to cart, remove from cart, cart lightbox interface)
     var cartCount = $('#cartItems strong');
     if(cartCount.length > 0) {
@@ -216,11 +218,11 @@ $(document).ready(function() {
       var id = $('#cartId');
       if(id.length > 0) {
         id = id.val();
-        $('#cart-add,#cart-remove').addClass('hidden');
+        $('#cart-add,#cart-remove').addClass('hide');
         if(cart.indexOf(id) > -1) {
-          $('#cart-remove').removeClass('hidden');
+          $('#cart-remove').removeClass('hide');
         } else {
-          $('#cart-add').removeClass('hidden');
+          $('#cart-add').removeClass('hide');
         }
       }
       cartCount.html(cart.length);

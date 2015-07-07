@@ -8,33 +8,52 @@
     . '<li class="active">' . $this->transEsc('Book Bag') . '</li>';
 ?>
 <?=$this->flashmessages()?>
-<form class="form-inline" action="<?=$this->url('cart-home')?>" method="post"  name="cartForm">
+<form action="<?=$this->url('cart-home')?>" method="post"  name="cartForm">
   <? if (!$this->cart()->isEmpty()): ?>
-    <div class="checkbox">
+    <div class="cart-controls clearfix">
+      <div class="checkbox pull-left select-all">
       <label>
-        <input type="checkbox" name="selectAll" class="checkbox-select-all"/> <?=$this->transEsc('select_page')?>
-          | <?=$this->transEsc('with_selected')?>:
+        <input type="checkbox" name="selectAll" class="checkbox-select-all"/>
+        <?=$this->transEsc('select_page')?>
       </label>
     </div>
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-      <input class="button secondary small" role="button" aria-label="submit form" type="submit" name="saveCart" value="<?=$this->transEsc('bookbag_save_selected')?>" title="<?=$this->transEsc('bookbag_save')?>"/>
+     <button type="submit" class="button secondary small" role="button" aria-label="submit form" name="saveCart"  title="<?=$this->transEsc('bookbag_save')?>" value="1"/>
+      <i class="fa fa-save"></i>
+      <?=$this->transEsc('Save')?>
+      </button>
     <? endif; ?>
-    <input class="button secondary small" role="button" aria-label="submit form" type="submit" name="email" value="<?=$this->transEsc('bookbag_email_selected')?>" title="<?=$this->transEsc('bookbag_email')?>"/>
+    <button type="submit" class="button secondary small" role="button" aria-label="submit form" name="email" title="<?=$this->transEsc('bookbag_email')?>" value="1"/>
+      <i class="fa fa-envelope-o"></i>
+      <?=$this->transEsc('Email')?>
+    </button>
     <? $exportOptions = $this->export()->getBulkOptions(); if (count($exportOptions) > 0): ?>
-      <input class="button secondary small" role="button" aria-label="submit form" type="submit" name="export" value="<?=$this->transEsc('bookbag_export_selected')?>" title="<?=$this->transEsc('bookbag_export')?>"/>
+      <button type="submit" class="button secondary small" role="button" aria-label="submit form" name="export" title="<?=$this->transEsc('bookbag_export')?>" value="1"/>
+        <i class="fa fa-list-alt"></i>
+          <?=$this->transEsc('Export')?>
+      </button>
     <? endif; ?>
-    <input class="button secondary small" role="button" aria-label="submit form" type="submit" name="print" value="<?=$this->transEsc('bookbag_print_selected')?>" title="<?=$this->transEsc('print_selected')?>"/>
-    <button type="submit" name="delete" id="cartDelete" class="button secondary small" data-dropdown="cart-delete-label-dd" role="button" aria-controls="cart-delete-label-dd" aria-expanded="false" id="cart-delete-label"><?=$this->transEsc('bookbag_delete_selected')?></button>
+    <button type="submit" class="button secondary small" role="button" aria-label="submit form" name="print" title="<?=$this->transEsc('print_selected')?>" value="1"/>
+      <i class="fa fa-print"></i>
+      <?=$this->transEsc('Print')?>
+    </button>
+    <button type="submit" name="delete" class="button secondary small" data-dropdown="cart-delete-label-dd" role="button" aria-controls="cart-delete-label-dd" aria-expanded="false" id="cart-delete-label" value="1">
+        <i class="fa fa-trash"></i>
+        <?=$this->transEsc('Delete')?>
+      </button>
       <ul id="cart-delete-label-dd" class="f-dropdown" data-dropdown-content role="menu" aria-labelledby="cart-delete-label" aria-hidden="true" tabindex="-1">
-        <li><a onClick="submitFormWithIds(this, {'delete':'delete'})" title="<?=$this->transEsc('confirm_delete')?>"><?=$this->transEsc('confirm_dialog_yes')?></a></li>
+        <li><a  id="cart-confirm-delete" onClick="submitFormWithIds(this, {'delete':'delete'})" title="<?=$this->transEsc('confirm_delete')?>"><?=$this->transEsc('confirm_dialog_yes')?></a></li>
         <li><a><?=$this->transEsc('confirm_dialog_no')?></a></li>
       </ul>
-    <input type="submit" name="empty" class="button secondary small" data-dropdown="cart-empty-label-dd" role="button" aria-controls="cart-empty-label-dd" aria-expanded="false" id="cart-empty-label" value="<?=$this->transEsc('Empty Book Bag')?>"/>
+     <button type="submit" class="button secondary small" name="empty" data-dropdown="cart-empty-label-dd" id="cart-empty-label" value="1" role="button" aria-controls="cart-empty-label-dd" aria-expanded="false"/>
+     <i class="fa fa-close"></i>
+     <?=$this->transEsc('Empty Book Bag')?>
+     </button>
       <ul id="cart-empty-label-dd" class="f-dropdown" data-dropdown-content role="menu" aria-labelledby="cart-empty-label" aria-hidden="true" tabindex="-1">
-        <li><a onClick="submitCartForm(this, {'empty':'empty'})" title="<?=$this->transEsc('bookbag_confirm_empty')?>"><?=$this->transEsc('confirm_dialog_yes')?></a></li>
+        <li><a id="cart-confirm-empty" onClick="submitCartForm(this, {'empty':'empty'})" title="<?=$this->transEsc('bookbag_confirm_empty')?>"><?=$this->transEsc('confirm_dialog_yes')?></a></li>
         <li><a onClick="$('.fa.fa-spinner').remove()"><?=$this->transEsc('confirm_dialog_no')?></a></li>
       </ul>
-
+ </div>
   <? endif; ?>
   <?=$this->render('cart/contents.phtml')?>
 </form>
@@ -76,7 +95,7 @@
       return true;
     }
   });
-  $('#cartDelete').on('click.fndtn.dropdown', function () {
+  $('#cart-delete-label').on('click.fndtn.dropdown', function () {
     var form = $(this).closest('form')[0];
     var checkboxes = form.querySelectorAll('[name="ids[]"]:checked');
     if(checkboxes.length == 0) {

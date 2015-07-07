@@ -14,17 +14,17 @@
 
     <? if (!empty($this->transactions)): ?>
       <? if ($this->renewForm): ?>
-      <form name="renewals" action="" method="post" id="renewals">
+      <form name="renewals"  method="post" id="renewals">
         <div class="toolbar">
-          <input type="submit" class="button secondary tiny" name="renewSelected" role="button" value="<?=$this->transEsc("renew_selected")?>" />
-          <input type="submit" class="button secondary tiny" name="renewAll" role="button" value="<?=$this->transEsc('renew_all')?>" />
+          <input type="submit" class="button secondary small" name="renewSelected" role="button" value="<?=$this->transEsc("renew_selected")?>" />
+          <input type="submit" class="button secondary small" name="renewAll" role="button" value="<?=$this->transEsc('renew_all')?>" />
         </div>
       <? endif; ?>
 
       <? $i = 0; foreach ($this->transactions as $resource): ?>
         <hr/>
         <? $ilsDetails = $resource->getExtraDetail('ils_details'); ?>
-        <div id="record<?=$this->escapeHtmlAttr($resource->getUniqueId())?>" class="row">
+        <div id="record<?=$this->escapeHtmlAttr($resource->getUniqueId())?>">
           <? if ($this->renewForm): ?>
             <? if (isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details'])): ?>
               <? $safeId = preg_replace('/[^a-zA-Z0-9]/', '', $ilsDetails['renew_details']); ?>

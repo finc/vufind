@@ -5,7 +5,6 @@
   // Multiple breadcrumbs
   $this->layout()->breadcrumbs = $this->parents;
   $this->layout()->title = $this->details['title']['value'];
-  $this->layout()->breadcrumbEnd = $this->breadcrumbEnd;
   $this->layout()->from = $this->from;
 
   // Facebook image meta
@@ -44,7 +43,7 @@
       <? $index=0; foreach($this->outline['lists'] as $key=>$list): ?>
         <!-- PRE LOADING PLACEHOLDERS -->
         <? for($i=0;$i<current(array_keys($list))-1;$i++, $index++): ?>
-          <a class="medium-3 columns page-grid" id="item<?=$i ?>" title="<?=$i ?>">Loading...</a>
+          <a class="medium-3 columns page-grid" id="item<?=$i ?>" title="<?=$i ?>">Loading&nbsp;...</a>
         <? endfor; ?>
         <!-- LOADED ITEMS -->
         <? foreach($list as $i=>$item): ?>
@@ -61,7 +60,7 @@
         <!-- POST LOADING PLACEHOLDERS -->
         <? if(isset($this->outline['counts'][$key])): ?>
           <? for($i=$this->initPage+count($list);$i<$this->outline['counts'][$key];$i++, $index++): ?>
-            <a class="medium-3 columns page-grid" id="item<?=$i ?>" title="<?=$i ?>">Loading...</a>
+            <a class="medium-3 columns page-grid" id="item<?=$i ?>" title="<?=$i ?>">Loading&nbsp;...</a>
           <? endfor; ?>
         <? endif; ?>
       <? endforeach; ?>
@@ -78,7 +77,7 @@
     }
   });
   counts = $.parseJSON('<?=json_encode($this->outline['counts'], JSON_HEX_APOS | JSON_HEX_AMP) ?>');
-  $('.accordion').removeClass('hidden');
+  $('.accordion').removeClass('hide');
   $('#collapse_details').addClass('active');
 </script>
 <!-- vudl - GRID.phtml end -->

@@ -6,7 +6,7 @@
   $recordNumber = $this->results->getStartRecord()+$i-$this->indexStart; ?>
   <div id="result<?=$i++ ?>" class="row result clearfix">
     <div class="small-1 columns hide-for-print<? if ($showCheckboxes): ?> checkbox<? endif; ?>">
-      <label>
+      <label class="checkbox-select-items">
         <? if ($showCheckboxes): ?>
           <?=$this->record($current)->getCheckbox()?>
         <? endif; ?>

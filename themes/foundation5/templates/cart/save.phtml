@@ -11,17 +11,17 @@
 
 <?=$this->flashmessages()?>
 
-<form class="form-horizontal" method="post" action="<?=$this->url('cart-save')?>" name="bulkSave">
+<form method="post" action="<?=$this->url('cart-save')?>" name="bulkSave">
   <? $idParams = array(); ?>
   <? foreach ($this->records as $current): ?>
     <? $idParams[] = urlencode('ids[]') . '=' . urlencode($current->getResourceSource() . '|' . $current->getUniqueId()) ?>
     <input type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($current->getResourceSource() . '|' . $current->getUniqueId())?>" />
   <? endforeach; ?>
-  <div class="form-group">
-    <label class="medium-3 columns control-label"><?=$this->transEsc('Title')?></label>
+  <div class="row">
+    <label class="medium-3 columns"><?=$this->transEsc('Title')?></label>
     <div class="medium-9 columns">
     <? if(count($this->records) > 1): ?>
-      <button type="button" class="button secondary tiny hidden" data-dropdown="itemhide" role="button" aria-controls="itemhide" aria-expanded="false">
+      <button type="button" class="button secondary small hide" data-dropdown="itemhide" role="button" aria-controls="itemhide" aria-expanded="false">
         <?=count($this->records).' '.$this->transEsc('items') ?>
       </button>
       <ul id="itemhide" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
@@ -30,15 +30,15 @@
           <? endforeach; ?>
       </ul>
     <? else: ?>
-      <p class="form-control-static"><?=$this->records[0]->getBreadcrumb() ?></p>
+      <p><?=$this->records[0]->getBreadcrumb() ?></p>
     <? endif; ?>
     </div>
   </div>
 
-  <div class="form-group">
-    <label class="medium-3 columns control-label" for="save_list"><?=$this->transEsc('Choose a List') ?></label>
+  <div class="row">
+    <label class="medium-3 columns" for="save_list"><?=$this->transEsc('Choose a List') ?></label>
     <div class="medium-9 columns">
-      <select id="save_list" name="list" class="form-control">
+      <select id="save_list" name="list" class="auto">
         <? if (count($this->lists) > 0): ?>
           <? foreach ($this->lists as $list): ?>
             <option value="<?=$list['id'] ?>"<? if ($list['id']==$this->userList()->lastUsed()): ?> selected="selected"<? endif; ?>><?=$this->escapeHtml($list['title'])?></option>
@@ -47,30 +47,30 @@
           <option value=""><?=$this->transEsc('My Favorites') ?></option>
         <? endif; ?>
       </select>
-      <a class="button link" id="make-list" role="button" href="<?=$this->url('editList', array('id' => 'NEW')) . '?' . implode('&', $idParams) ?>" title="<?=$this->transEsc('Create a List') ?>"><?=$this->transEsc('or create a new list'); ?></a>
+      <a class="button small secondary" id="make-list" role="button" href="<?=$this->url('editList', array('id' => 'NEW')) . '?' . implode('&', $idParams) ?>" title="<?=$this->transEsc('Create a List') ?>"><?=$this->transEsc('or create a new list'); ?></a>
     </div>
   </div>
 
   <? if ($this->usertags()->getMode() !== 'disabled'): ?>
-    <div class="form-group">
-      <label class="medium-3 columns control-label" for="add_mytags"><?=$this->transEsc('Add Tags') ?></label>
+    <div class="row">
+      <label class="medium-3 columns" for="add_mytags"><?=$this->transEsc('Add Tags') ?></label>
       <div class="medium-9 columns">
-        <input id="add_mytags" type="text" name="mytags" value="" class="form-control"/>
+        <input id="add_mytags" type="text" name="mytags" value="" class="auto"/>
         <span class="help-block"><?=$this->transEsc("add_tag_note") ?></span>
       </div>
     </div>
   <? endif; ?>
-  <div class="form-group">
+  <div class="row">
     <div class="medium-9 medium-offset-3 columns">
-      <input class="button secondary tiny" type="submit" name="submit" role="button" value="<?=$this->transEsc('Save') ?>"/>
+      <input class="button secondary small" type="submit" name="submit" role="button" value="<?=$this->transEsc('Save') ?>"/>
     </div>
   </div>
 </form>
 
 <?
   $script = <<<JS
-  $('button.button.hidden').removeClass('hidden');
-  JS;
+  $('button.button.hide').removeClass('hide');
+JS;
 ?>
 <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET') ?>
 <!-- cart - SAVE.phtml end -->

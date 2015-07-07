@@ -14,7 +14,7 @@
       <?=$this->escapeHtml($favorite->getBreadcrumb())?><br />
     <? endforeach; ?>
     <br />
-    <input class="button tiny" type="submit" name="submit" role="button" value="<?=$this->transEsc('Delete')?>"/>
+    <input class="button small" type="submit" name="submit" role="button" value="<?=$this->transEsc('Delete')?>"/>
     <? foreach ($this->deleteIDS as $deleteID): ?>
       <input type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($deleteID)?>" />
     <? endforeach; ?>

@@ -13,20 +13,20 @@
   in order to demonstrate the capabilities of the system.  If you want real patron and status information to display,
   you should change your configuration to communicate with a real ILS.</p>
 
-  <form method="post" action="" class="form-horizontal" role="form">
-    <div class="form-group">
-      <label for="driver" class="medium-2 columns control-label">Pick a driver:</label>
+  <form method="post" role="form">
+    <div class="row">
+      <label for="driver" class="medium-2 columns">Pick a driver:</label>
       <div class="medium-10 columns">
-        <select id="driver" name="driver" class="form-control">
+        <select id="driver" name="driver" class="auto">
           <? foreach ($this->drivers as $driver): ?>
             <option value="<?=$this->escapeHtmlAttr($driver)?>"><?=$this->escapeHtml($driver)?></option>
           <? endforeach; ?>
         </select>
       </div>
     </div>
-    <div class="form-group">
+    <div class="row">
       <div class="medium-10 columns medium-offset-2">
-        <input type="submit" class="button tiny" role="button" aria-label="submit form"/>
+        <input type="submit" class="button small" role="button" aria-label="submit form"/>
       </div>
     </div>
   </form>

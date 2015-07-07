@@ -47,7 +47,7 @@
 							</a>
 						<div id="missing_<?=$langCode ?>" class="content">
 							<div class="accordion-inner">
-								<textarea class="form-control" rows="15"><? foreach ($diffs['notInL2'] as $key): ?><?=$this->escapeHtml($key)?> = "<?=$this->escapeHtml($main[$key])?>"
+								<textarea class="auto" rows="15"><? foreach ($diffs['notInL2'] as $key): ?><?=$this->escapeHtml($key)?> = "<?=$this->escapeHtml($main[$key])?>"
 		<? endforeach; ?></textarea>
 							</div>
 						</div>

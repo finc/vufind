@@ -4,6 +4,6 @@
         . "\$('#EuropeanaDeferredRecommend').load(url);";
 ?>
 <div id="EuropeanaDeferredRecommend">
-    <p><?=$this->transEsc("Loading")?>... <img src="<?=$this->imageLink('ajax_loading.gif')?>" /></p>
+    <p><?=$this->transEsc("Loading")?>&nbsp;... <img src="<?=$this->imageLink('ajax_loading.gif')?>" /></p>
     <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $loadJs, 'SET')?>
 </div>

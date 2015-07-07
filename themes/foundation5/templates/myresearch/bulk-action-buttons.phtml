@@ -4,7 +4,7 @@
   <input type="hidden" name="listName" value="<?=$this->escapeHtmlAttr($list->title)?>" />
 <? endif; ?>
 <? $user = $this->auth()->isLoggedIn(); ?>
-<div class="checkbox hide-for-print">
+<div class="checkbox select-all hide-for-print">
   <label>
     <input type="checkbox" name="selectAll" class="checkbox-select-all"/>
     <?=$this->transEsc('select_page')?> | <?=$this->transEsc('with_selected')?>:

@@ -24,7 +24,7 @@
   <ul class="nav navbar-nav">
     <? if(count($uniqueParents) > 1): ?>
       <li class="dropdown">
-        <a id="sibling-prev" class="button secondary tiny" role="button" data-toggle="dropdown" title="<?=$this->transEsc('Prev Item in Collection')?>">
+        <a id="sibling-prev" class="button secondary small" role="button" data-toggle="dropdown" title="<?=$this->transEsc('Prev Item in Collection')?>">
           <?=$this->transEsc('Prev Item')?> <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="sibling-prev">
@@ -40,22 +40,31 @@
       </li>
     <? else: ?>
       <li>
-        <a href="<?=$siblingHref ?>&prev=1" class="button secondary tiny" role="button" title="<?=$this->transEsc('Prev Item in Collection')?>">
+        <a href="<?=$siblingHref ?>&prev=1" class="button secondary small" role="button" title="<?=$this->transEsc('Prev Item in Collection')?>">
           <i class="fa fa-angle-left"></i>
           <?=$this->transEsc('Prev Item')?>
         </a>
       </li>
     <? endif; ?>
     <li>
-			<ul class="button-group">
-				<li><a href="javascript:prevPage()" role="button" class="turn-button button secondary tiny<? if($this->outline['counts'][$this->initList] <= 1): ?> hidden<? endif; ?>">Prev Page</a></li>
-				<li><a href="<?=$this->url('vudl-grid', array('id'=>$this->id)) ?>" class="button secondary tiny" role="button"><i class="fa fa-th"></i></a></li>
-				<li><a href="javascript:nextPage()" role="button" class="button secondary tiny<? if($this->outline['counts'][$this->initList] <= 1): ?> hidden<? endif; ?>">Next Page</a></li>
-			</ul>
+      <ul class="button-group">
+        <li>
+          <a href="javascript:prevPage()" role="button" class="turn-button button secondary small<? if($this->outline['counts'][$this->initList] <= 1): ?> hide<? endif; ?>">Prev Page</a>
+        </li>
+        <li>
+          <a href="<?=$this->url('vudl-grid', array('id'=>$this->id)) ?>" class="button secondary small" role="button">
+            <i class="fa fa-th hide-for-small"></i>
+            <span class="visible-small-inline"><?=$this->transEsc('grid_view') ?></span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:nextPage()" class="button secondary small<? if($this->outline['counts'][$this->initList] <= 1): ?> hide<? endif; ?>" role="button">Next Page</a>
+        </li>
+      </ul>
     </li>
     <? if(count($uniqueParents) > 1): ?>
       <li class="dropdown">
-        <a id="sibling-next" class="button secondary tiny" role="button" data-toggle="dropdown" title="<?=$this->transEsc('Next Item in Collection')?>">
+        <a id="sibling-next" class="button secondary small" role="button" data-toggle="dropdown" title="<?=$this->transEsc('Next Item in Collection')?>">
           <?=$this->transEsc('Next Item')?> <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="sibling-next">
@@ -71,7 +80,7 @@
       </li>
     <? else: ?>
       <li>
-        <a href="<?=$siblingHref ?>&next=1" class="button secondary tiny" role="button" title="<?=$this->transEsc('Next Item in Collection')?>">
+        <a href="<?=$siblingHref ?>&next=1" class="button secondary small" role="button" title="<?=$this->transEsc('Next Item in Collection')?>">
           <?=$this->transEsc('Next Item')?>
           <i class="fa fa-angle-right"></i>
         </a>

@@ -1,25 +1,34 @@
+<!-- recorddriver - solrai - core -->
 <div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
-  <div class="col-sm-3 medium-3 columns">
-    <div class="text-center">
+  <div class="col-sm-3 medium-3 columns bookimgs">
+    <? /* div class="text-center" --> <!-- deactivated, CK - reactivate to centre images */ ?>
+    <ul  class="clearing-thumbs" data-clearing><? /* added clearing lightbox for images, CK, to remove, also remove data-caption+content in img links */ ?>
+      <li>
       <? /* Display thumbnail if appropriate: */ ?>
       <? $mediumThumb = $this->record($this->driver)->getThumbnail('medium'); $largeThumb = $this->record($this->driver)->getThumbnail('large'); ?>
       <? if ($mediumThumb): ?>
         <? if ($largeThumb): ?><a href="<?=$this->escapeHtmlAttr($largeThumb)?>"><? endif; ?>
-          <img alt="<?=$this->transEsc('Cover Image')?>" class="recordcover" src="<?=$this->escapeHtmlAttr($mediumThumb);?>"/>
+            <img alt="<?=$this->transEsc('Cover Image')?>" class="recordcover" src="<?=$this->escapeHtmlAttr($mediumThumb);?>" data-caption="<?=$this->transEsc('Cover Image')?>"/>
         <? if ($largeThumb): ?></a><? endif; ?>
       <? else: ?>
-        <img src="<?=$this->url('cover-unavailable')?>" class="recordcover" alt="<?=$this->transEsc('No Cover Image')?>"/>
+          <img src="<?=$this->url('cover-unavailable')?>" class="recordcover" alt="<?=$this->transEsc('No Cover Image')?>" data-caption="<?=$this->transEsc('No Cover Image')?>"/>
       <? endif; ?>
-
+      </li>
+      <li>
       <? /* Display qrcode if appropriate: */ ?>
       <? $QRCode = $this->record($this->driver)->getQRCode("core"); ?>
       <? if($QRCode): ?>
         <span class="hidden-xs hide-for-small">
-          <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
+            <br/><img alt="<?=$this->transEsc('QR Code')?>" data-caption="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
         </span>
       <? endif; ?>
-    </div>
-
+    <? /* /div> <!-- deactivated, CK - reactivate to centre image */ ?>
+      </li>
+    </ul>
+    <? // if you have a preview tab but want to move or remove the preview link
+    // from this area of the record view, this can be split into
+    // getPreviewData() (should stay here) and
+    // getPreviewLink() (can go in your desired tab) ?>
     <?=$this->record($this->driver)->getPreviews()?>
   </div>
 
@@ -37,7 +46,7 @@
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
       <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists hidden alert alert-info" id="savedLists">
+      <div class="savedLists hide alert-box info alert alert-info" id="savedLists" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
         <strong><?=$this->transEsc("Saved in")?>:</strong>
       </div>
     <? endif; ?>
@@ -245,7 +254,7 @@
         <tr>
           <th><?=$this->transEsc('Tags')?>: </th>
           <td>
-            <span class="pull-right">
+            <span class="pull-right hide-for-print">
               <i class="fa fa-plus"></i> <a id="tagRecord" class="modal-link" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" title="<?=$this->transEsc('Add Tag')?>"><?=$this->transEsc('Add Tag')?></a>
             </span>
             <div id="tagList">
@@ -262,3 +271,4 @@
     <?/* End Main Details */?>
   </div>
 </div>
+<!-- recorddriver - solrai - core - END -->

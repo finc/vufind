@@ -13,15 +13,15 @@ $this->layout()->breadcrumbs = '<li>' . $this->getLastSearchLink($this->transEsc
 <?=$this->flashmessages()?>
 
 <? if (!empty($this->exportOptions)): ?>
-  <form class="form-horizontal" method="post" action="<?=$this->url('cart-export')?>" name="exportForm" title="<?=$this->transEsc('Export Items')?>">
+  <form method="post" action="<?=$this->url('cart-export')?>" name="exportForm" title="<?=$this->transEsc('Export Items')?>">
     <? foreach ($this->records as $current): ?>
       <input type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($current->getResourceSource() . '|' . $current->getUniqueId())?>" />
     <? endforeach; ?>
-    <div class="form-group">
-      <label class="medium-3 columns control-label"><?=$this->transEsc('Title')?></label>
+    <div class="row">
+      <label class="medium-3 columns"><?=$this->transEsc('Title')?></label>
       <div class="medium-9 columns">
         <? if(count($this->records) > 1): ?>
-          <button type="button" class="button secondary tiny hidden" data-dropdown="itemhide" role="button" aria-controls="itemhide" aria-expanded="false">
+          <button type="button" class="button secondary small hide" data-dropdown="itemhide" role="button" aria-controls="itemhide" aria-expanded="false">
             <?=count($this->records).' '.$this->transEsc('items') ?>
           </button>
           <ul id="itemhide" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
@@ -30,30 +30,30 @@ $this->layout()->breadcrumbs = '<li>' . $this->getLastSearchLink($this->transEsc
             <? endforeach; ?>
           </ul>
         <? else: ?>
-          <p class="form-control-static"><?=$this->records[0]->getBreadcrumb() ?></p>
+          <p class="auto"><?=$this->records[0]->getBreadcrumb() ?></p>
         <? endif; ?>
       </div>
     </div>
-    <div class="form-group">
-      <label for="format" class="medium-3 columns control-label"><?=$this->transEsc('Format')?>:</label>
+    <div class="row">
+      <label for="format" class="medium-3 columns"><?=$this->transEsc('Format')?>:</label>
       <div class="medium-9 columns">
-        <select name="format" id="format" class="form-control">
+        <select name="format" id="format" class="auto">
           <? foreach ($this->exportOptions as $exportOption): ?>
             <option value="<?=$this->escapeHtmlAttr($exportOption)?>"><?=$this->transEsc($this->export()->getLabelForFormat($exportOption))?></option>
           <? endforeach; ?>
         </select>
       </div>
     </div>
-    <div class="form-group">
+    <div class="row">
       <div class="medium-9 columns medium-offset-3">
-        <input class="button secondary tiny" role="button" type="submit" name="submit" value="<?=$this->transEsc('Export')?>"/>
+        <input class="button secondary small" role="button" type="submit" name="submit" value="<?=$this->transEsc('Export')?>"/>
       </div>
     </div>
   </form>
 <? endif; ?>
 <?
 $script = <<<JS
-  $('button.button.hidden').removeClass('hidden');
+  $('button.button.hide').removeClass('hide');
 JS;
 ?>
 <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET') ?>

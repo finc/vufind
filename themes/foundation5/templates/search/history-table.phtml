@@ -5,7 +5,7 @@
     <th><?=$this->transEsc("history_search")?></th>
     <th><?=$this->transEsc("history_limits")?></th>
     <th><?=$this->transEsc("history_results")?></th>
-    <th><?=$this->transEsc($this->showSaved ? "history_delete" : "history_save")?></th>
+    <th width="12%"><?=$this->transEsc($this->showSaved ? "history_delete" : "history_save")?></th>
   </tr>
   <? foreach (($this->showSaved ? array_reverse($this->saved) : array_reverse($this->unsaved)) as $iteration => $info): ?>
     <tr class="<?=$iteration % 2 == 1 ? 'even' : 'odd'?>row">

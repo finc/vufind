@@ -23,16 +23,28 @@
 <? $pageLinks = ob_get_contents(); ?>
 <? ob_end_clean(); ?>
 
-<form class="form-inline" method="get" action="<?=$this->url('alphabrowse-home')?>" name="alphaBrowseForm" id="alphaBrowseForm">
-  <label for="alphaBrowseForm_source"><?=$this->transEsc('Browse Alphabetically') ?></label>
-  <select id="alphaBrowseForm_source" name="source" class="form-control">
-    <? foreach ($this->alphaBrowseTypes as $key => $item): ?>
+<form method="get" action="<?=$this->url('alphabrowse-home')?>" name="alphaBrowseForm" id="alphaBrowseForm">
+  <div class="row">
+    <div class="small-3 columns">
+    <label for="alphaBrowseForm_source" class="right"><?=$this->transEsc('Browse Alphabetically') ?></label>
+  </div>
+  <div class="small-9 columns">
+    <select id="alphaBrowseForm_source" name="source" class="auto">
+      <? foreach ($this->alphaBrowseTypes as $key => $item): ?>
       <option value="<?=$this->escapeHtmlAttr($key) ?>"<? if ($this->source == $key): ?> selected="selected"<? endif; ?>><?=$this->transEsc($item) ?></option>
-    <? endforeach; ?>
-  </select>
-  <label for="alphaBrowseForm_from"><?=$this->transEsc('starting from') ?></label>
-  <input type="text" name="from" id="alphaBrowseForm_from" value="<?=$this->escapeHtmlAttr($this->from) ?>" class="form-control"/>
-  <input class="button secondary tiny" type="submit" value="<?=$this->transEsc('Browse') ?>" role="button" aria-label="submit form"/>
+      <? endforeach; ?>
+    </select>
+  </div>
+</div>
+  <div class="row">
+    <div class="small-3 columns">
+      <label for="alphaBrowseForm_from" class="right"><?=$this->transEsc('starting from') ?></label>
+    </div>
+    <div class="small-9 columns">
+      <input type="text" name="from" id="alphaBrowseForm_from" value="<?=$this->escapeHtmlAttr($this->from) ?>" class="auto"/>
+      <input class="button secondary small" type="submit" value="<?=$this->transEsc('Browse') ?>" role="button" aria-label="submit form"/>
+    </div>
+  </div>
 </form>
 
 <? if ($this->result): ?>

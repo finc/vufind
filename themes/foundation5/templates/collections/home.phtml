@@ -13,7 +13,7 @@
 
 <? /* LOAD THE LINK INFORMATION INTO $pageLinks, similar to smarty's {capture} */ ?>
 <? ob_start(); ?>
-  <form class="form-inline" method="GET" action="<?=$this->url('collections-home')?>">
+  <form method="GET" action="<?=$this->url('collections-home')?>">
     <ul class="pager">
       <? if (isset($prevpage)): ?>
         <li><a href="<?=$this->url('collections-home')?>?from=<?=urlencode($from)?>&amp;page=<?=urlencode($prevpage)?><?=$this->escapeHtmlAttr($filterString)?>">&laquo; <?=$this->transEsc('Prev')?></a></li>
@@ -25,7 +25,7 @@
       <? else: ?>
         <li class="disabled"><a href="#"><?=$this->transEsc('Next')?> &raquo;</a></li>
       <? endif; ?>
-      <input type="submit" class="button secondary tiny" role="button" value="<?=$this->transEsc('Jump to')?>" />
+      <input type="submit" class="button secondary small" role="button" value="<?=$this->transEsc('Jump to')?>" />
       <input type="text" name="from" value="<?=$this->escapeHtmlAttr($from)?>" />
     </ul>
   </form>

@@ -6,7 +6,7 @@
     // Grab clean ISBN for convenience:
     $isbn = $this->driver->getCleanISBN();
 ?>
-<table class="table" summary="<?=$this->transEsc('Description')?>">
+<table class="table" summary="<?=$this->transEsc('Description')?>" width="100%">
   <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
     <? $contentDisplayed = true; ?>
     <tr>

@@ -9,7 +9,7 @@
     . '<li class="active">' . $this->transEsc('Save') . '</li>';
 ?>
 <h4><?=$this->transEsc("add_favorite_prefix") ?> <span class="title-in-heading"><?=$this->escapeHtml($this->driver->getBreadcrumb())?></span> <?=$this->transEsc("add_favorite_suffix") ?></h4>
-<form id="edit-save-form" class="form-horizontal" method="post" action="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" name="saveRecord">
+<form id="edit-save-form" method="post" action="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" name="saveRecord">
   <input type="hidden" name="submit" value="1" />
   <input type="hidden" name="id" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueId()) ?>" />
   <input type="hidden" name="source" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" />
@@ -25,13 +25,13 @@
   this item OR if they have no lists at all and need to create a default list */?>
   <? $showLists = (!empty($this->nonContainingLists) || (empty($this->containingLists) && empty($this->nonContainingLists))); ?>
 
-  <div class="form-group">
+  <div class="row">
     <? if ($showLists): ?>
-      <label class="medium-3 columns control-label" for="save_list"><?=$this->transEsc('Choose a List') ?></label>
+      <label class="medium-3 columns" for="save_list"><?=$this->transEsc('Choose a List') ?></label>
     <? endif; ?>
     <div class="medium-9 columns">
     <? if ($showLists): ?>
-      <select class="form-control" id="save_list" name="list">
+      <select class="auto" id="save_list" name="list">
       <? if ($this->nonContainingLists): ?>
         <? foreach ($this->nonContainingLists as $list): ?>
           <option value="<?=$list['id'] ?>"<? if ($list['id']==$this->userList()->lastUsed()): ?> selected="selected"<? endif; ?>><?=$this->escapeHtml($list['title'])?></option>
@@ -41,29 +41,29 @@
       <? endif; ?>
       </select>
     <? endif; ?>
-      <a class="button link" id="make-list" role="button" href="<?=$this->url('editList', array('id' => 'NEW'))?>?recordId=<?=urlencode($this->driver->getUniqueId())?>&amp;recordSource=<?=urlencode($this->driver->getResourceSource())?>" title="<?=$this->transEsc('Create a List') ?>"><?=$showLists ? $this->transEsc('or create a new list') : $this->transEsc('Create a List'); ?></a>
+      <a class="button small secondary" id="make-list" role="button" href="<?=$this->url('editList', array('id' => 'NEW'))?>?recordId=<?=urlencode($this->driver->getUniqueId())?>&amp;recordSource=<?=urlencode($this->driver->getResourceSource())?>" title="<?=$this->transEsc('Create a List') ?>"><?=$showLists ? $this->transEsc('or create a new list') : $this->transEsc('Create a List'); ?></a>
     </div>
   </div>
 
   <? if ($showLists): ?>
     <? if ($this->usertags()->getMode() !== 'disabled'): ?>
-      <div class="form-group">
-        <label class="medium-3 columns control-label" for="add_mytags"><?=$this->transEsc('Add Tags') ?></label>
+      <div class="row">
+        <label class="medium-3 columns" for="add_mytags"><?=$this->transEsc('Add Tags') ?></label>
         <div class="medium-9 columns">
-          <input class="form-control" id="add_mytags" type="text" name="mytags" value=""/>
+          <input class="auto" id="add_mytags" type="text" name="mytags" value=""/>
           <span class="help-block"><?=$this->transEsc("add_tag_note") ?></span>
         </div>
       </div>
     <? endif; ?>
-    <div class="form-group">
-      <label class="medium-3 columns control-label" for="add_notes"><?=$this->transEsc('Add a Note') ?></label>
+    <div class="row">
+      <label class="medium-3 columns" for="add_notes"><?=$this->transEsc('Add a Note') ?></label>
       <div class="medium-9 columns">
-        <textarea class="form-control" id="add_notes" name="notes" rows="3"></textarea>
+        <textarea class="auto" id="add_notes" name="notes" rows="3"></textarea>
       </div>
     </div>
-    <div class="form-group">
-      <div class="medium-9 medium-offset-3 columns ">
-        <input class="button tiny" type="submit" role="button" value="<?=$this->transEsc('Save') ?>"/>
+    <div class="row">
+      <div class="medium-9 medium-offset-3 columns">
+        <input class="button small" type="submit" role="button" value="<?=$this->transEsc('Save') ?>"/>
       </div>
     </div>
   <? endif; ?>
