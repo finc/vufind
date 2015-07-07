@@ -4,7 +4,8 @@
  *
  * PHP version 5
  *
- * Copyright (C) Oliver Goldschmidt, Magda Roos, Till Kinstler 2013, 2014.
+ * Copyright (C) Oliver Goldschmidt, Magda Roos, Till Kinstler, André Lahmann 2013,
+ * 2014, 2015.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -73,7 +74,7 @@ class PAIA extends DAIA implements
         parent::init();
 
         if (!(isset($this->config['PAIA']['baseUrl']))) {
-            throw new ILSException('PAIA/URL configuration needs to be set.');
+            throw new ILSException('PAIA/baseUrl configuration needs to be set.');
         }
 
         $this->paiaURL = $this->config['PAIA']['baseUrl'];
@@ -303,10 +304,10 @@ class PAIA extends DAIA implements
                     ];
                 } else {
                     $details[$item_id] = [
-                            'success'  => false,
-                            'new_date' => $element['endtime'],
-                            'item_id'  => 0,
-                            'sysMessage' => 'Request rejected'
+                        'success'  => false,
+                        'new_date' => $element['endtime'],
+                        'item_id'  => 0,
+                        'sysMessage' => 'Request rejected'
                     ];
                 }
             }
@@ -835,7 +836,7 @@ class PAIA extends DAIA implements
         $http_headers = [
             'Authorization' => 'Bearer ' .$access_token,
             'Content-type' => 'application/json; charset=UTF-8',
-            ];
+        ];
 
         try {
             $result = $this->httpService->get(
@@ -931,7 +932,6 @@ class PAIA extends DAIA implements
             "scope" => "read_patron read_fees read_items write_items change_password"
         ];
         $login_response = $this->_postit('/auth/login', $post_data);
-
         $json_start = strpos($login_response, '{');
         $json_response = substr($login_response, $json_start);
         $array_response = json_decode($json_response, true);

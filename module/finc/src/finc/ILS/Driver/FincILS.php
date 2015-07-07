@@ -71,6 +71,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
     protected $recordLoader;
 
     /**
+     * Date converter object
+     *
+     * @var \VuFind\Date\Converter
+     */
+    protected $dateConverter;
+
+    /**
      * Main Config
      *
      * @var null|\Zend\Config\Config
@@ -80,12 +87,15 @@ class FincILS extends PAIA implements LoggerAwareInterface
     /**
      * Constructor
      *
-     * @param \VuFind\Record\Loader $loader     Record loader
-     * @param \Zend\Config\Config   $mainConfig VuFind main configuration (omit for
+     * @param \VuFind\Date\Converter $converter  Date converter
+     * @param \VuFind\Record\Loader  $loader     Record loader
+     * @param \Zend\Config\Config    $mainConfig VuFind main configuration (omit for
      * built-in defaults)
      */
-    public function __construct(\VuFind\Record\Loader $loader, $mainConfig = null)
-    {
+    public function __construct(\VuFind\Date\Converter $converter,
+        \VuFind\Record\Loader $loader, $mainConfig = null
+    ) {
+        $this->dateConverter = $converter;
         $this->recordLoader = $loader;
         $this->mainConfig = $mainConfig;
     }
@@ -103,49 +113,25 @@ class FincILS extends PAIA implements LoggerAwareInterface
     {
         parent::init();
 
-        // due to section naming changes in DAIA.ini switch legacySupport
-        if ($this->legacySupport) {
-            // set the ILS-specific recordId for interaction with ILS
+        // set the ILS-specific recordId for interaction with ILS
 
-            // get the ILS-specific identifier
-            if (!isset($this->config['Global']['ilsIdentifier'])) {
-                $this->debug(
-                    "No ILS-specific identifier configured, setting ilsIdentifier=default."
-                );
-                $this->ilsIdentifier = "default";
-            } else {
-                $this->ilsIdentifier = $this->config['Global']['ilsIdentifier'];
-            }
-
-            // get ISIL from config if ILS-specific recordId is barcode for
-            // interaction with ILS
-            if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
-                $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
-                $this->isil = [];
-            } else {
-                $this->isil = $this->mainConfig['InstitutionInfo']['isil']->toArray();
-            }
+        // get the ILS-specific identifier
+        if (!isset($this->config['DAIA']['ilsIdentifier'])) {
+            $this->debug(
+                "No ILS-specific identifier configured, setting ilsIdentifier=default."
+            );
+            $this->ilsIdentifier = "default";
         } else {
-            // set the ILS-specific recordId for interaction with ILS
+            $this->ilsIdentifier = $this->config['DAIA']['ilsIdentifier'];
+        }
 
-            // get the ILS-specific identifier
-            if (!isset($this->config['DAIA']['ilsIdentifier'])) {
-                $this->debug(
-                    "No ILS-specific identifier configured, setting ilsIdentifier=default."
-                );
-                $this->ilsIdentifier = "default";
-            } else {
-                $this->ilsIdentifier = $this->config['DAIA']['ilsIdentifier'];
-            }
-
-            // get ISIL from config if ILS-specific recordId is barcode for
-            // interaction with ILS
-            if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
-                $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
-                $this->isil = [];
-            } else {
-                $this->isil = $this->mainConfig['InstitutionInfo']['isil']->toArray();
-            }
+        // get ISIL from config if ILS-specific recordId is barcode for
+        // interaction with ILS
+        if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
+            $this->debug("No ISIL defined in section InstitutionInfo in config.ini.");
+            $this->isil = [];
+        } else {
+            $this->isil = $this->mainConfig['InstitutionInfo']['isil']->toArray();
         }
 
         $this->_testILSConnections();
@@ -357,25 +343,19 @@ class FincILS extends PAIA implements LoggerAwareInterface
     {
         try {
             // test DAIA service
-            $this->httpService->get(
-                substr(
-                    $this->baseUrl,
-                    0,
-                    strrpos($this->baseUrl, "/", strrpos($this->baseUrl, "/"))
-                )
+            preg_match(
+                "/^(http[s:\/0-9\.]*(:[0-9]*)?\/[a-z]*)/",
+                $this->baseUrl,
+                $daiaMatches
             );
+            $this->httpService->get($daiaMatches[1]);
             // test PAIA service
-            $this->httpService->get(
-                substr(
-                    $this->paiaURL,
-                    0,
-                    strrpos(
-                        $this->paiaURL,
-                        "/",
-                        strrpos($this->paiaURL, "/", strrpos($this->paiaURL, "/"))
-                    )
-                )
+            preg_match(
+                "/^(http[s:\/0-9\.]*(:[0-9]*)?\/[a-z]*)/",
+                $this->paiaURL,
+                $paiaMatches
             );
+            $this->httpService->get($paiaMatches[1]);
         } catch (\Exception $e) {
             throw new ILSException($e->getMessage());
         }

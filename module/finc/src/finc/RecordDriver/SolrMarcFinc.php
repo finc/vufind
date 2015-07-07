@@ -1,7 +1,6 @@
 <?php
 /**
- * finc specific model for MARC records without a fullrecord in Solr. The fullrecord is being
- * retrieved from an external source.
+ * finc specific model for MARC records with a fullrecord in Solr.
  *
  * PHP version 5
  *
@@ -30,8 +29,7 @@
 namespace finc\RecordDriver;
 
 /**
- * finc specific model for MARC records without a fullrecord in Solr. The fullrecord is being
- * retrieved from an external source.
+ * finc specific model for MARC records with a fullrecord in Solr.
  *
  * @category VuFind2
  * @package  RecordDrivers
@@ -40,12 +38,12 @@ namespace finc\RecordDriver;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
-class SolrMarcRemoteFinc extends SolrMarcRemote
+class SolrMarcFinc extends SolrMarc
 {
     use SolrMarcFincTrait;
 
     /**
-     * Pattern to identify bsz
+     * pattern to identify bsz
      */
     const BSZ_PATTERN = '/^(\(DE-576\))(\d+)(\w|)/';
 
@@ -104,7 +102,7 @@ class SolrMarcRemoteFinc extends SolrMarcRemote
             ];
             $this->localMarcFieldOfLibrary
                 = isset($map[$this->mainConfig->CustomSite->namespace]) ?
-                    $map[$this->mainConfig->CustomSite->namespace] : null;
+                $map[$this->mainConfig->CustomSite->namespace] : null;
         } else {
             $this->debug('Namespace setting for localMarcField is missing.');
         }

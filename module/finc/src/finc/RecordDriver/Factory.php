@@ -86,7 +86,7 @@ class Factory
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return SolrMarc
+     * @return SolrMarcRemote
      */
     public static function getSolrMarcRemote(ServiceManager $sm)
     {
@@ -125,11 +125,34 @@ class Factory
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return SolrMarc
+     * @return SolrMarcRemoteFinc
      */
     public static function getSolrMarcRemoteFinc(ServiceManager $sm)
     {
         $driver = new SolrMarcRemoteFinc(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+        );
+        $driver->attachILS(
+            $sm->getServiceLocator()->get('VuFind\ILSConnection'),
+            $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
+            $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+        );
+        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
+        return $driver;
+    }
+
+    /**
+     * Factory for SolrMarcFinc record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarcFinc
+     */
+    public static function getSolrMarcFinc(ServiceManager $sm)
+    {
+        $driver = new SolrMarcFinc(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
             $sm->getServiceLocator()->get('VuFind\Config')->get('searches')

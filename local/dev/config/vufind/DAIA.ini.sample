@@ -20,10 +20,3 @@ relative_path = ../../../config/vufind/DAIA.ini
 ;
 ;##################### DO NOT DELETE THIS HEADER ####################
 ;####################################################################
-
-;[DAIA]
-; refer to http://data.ub.uni-leipzig.de/ldinfo for setting up specific DAIA-urls
-;baseUrl        = http://data.ub.uni-leipzig.de/item/DE-15/finc/
-
-; DAIATheca
-; http://139.18.19.238:8080/DaiaThecaMssql/
