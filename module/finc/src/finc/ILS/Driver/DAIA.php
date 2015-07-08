@@ -720,8 +720,13 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
                 }
                 // attribute expected is mandatory for unavailable element
                 if (isset($unavailable["expected"])) {
-                    $duedate = $this->dateConverter
-                        ->convertToDisplayDate("Y-m-d", $unavailable['expected']);
+                    try {
+                        $duedate = $this->dateConverter
+                            ->convertToDisplayDate("Y-m-d", $unavailable['expected']);
+                    } catch (\Exception $e) {
+                        $this->debug("Date conversion failed: " . $e->getMessage());
+                        $duedate = null;
+                    }
                 }
 
                 // attribute queue can be set
