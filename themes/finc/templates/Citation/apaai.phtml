@@ -1,0 +1,9 @@
+<? if (!empty($this->authors)): ?><?=$this->escapeHtml($this->authors)?>
+<? if (!empty($this->year)): ?>(<?=$this->escapeHtml($this->year)?>). <? endif; ?>
+<? endif; ?>
+<span style="font-style:italic;"><?=$this->escapeHtml($this->title)?></span><? if ($this->periodAfterTitle): ?>. <? endif ?>
+<? if (empty($this->authors)): ?>
+<? if (!empty($this->year)): ?>(<?=$this->escapeHtml($this->year)?>). <? endif; ?>
+<? endif; ?>
+<? if (!empty($this->edition)): ?>(<?=$this->escapeHtml($this->edition)?>). <? endif; ?>
+<? if (!empty($this->publisher)): ?><?=$this->escapeHtml($this->publisher)?>.<? endif; ?>

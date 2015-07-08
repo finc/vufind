@@ -71,7 +71,7 @@ class SolrAI extends SolrDefault implements
      */
     public function getDescriptions()
     {
-        return $this->_getAIFullrecordArrayValue('abstract');
+        return $this->getAIRecord('abstract');
     }
 
     /**
@@ -81,18 +81,17 @@ class SolrAI extends SolrDefault implements
      */
     public function getEdition()
     {
-        return $this->_getAIFullrecordStringValue('rft.edition');
+        return $this->getAIRecord('rft.edition');
     }
 
     /**
-     * gets the publication date of the record
+     * gets the doi of the record
      *
      * @return string publication date
      */
-    public function getDate()
+    public function getDOI()
     {
-        return isset($this->fields['publishDateSort']) ?
-            $this->fields['publishDateSort'] : '';
+        return $this->getAIRecord('doi');
     }
 
     /**
@@ -102,7 +101,7 @@ class SolrAI extends SolrDefault implements
      */
     public function getIssues()
     {
-        return $this->_getAIFullrecordStringValue('rft.issue');
+        return $this->getAIRecord('rft.issue');
     }
 
 
@@ -171,17 +170,22 @@ class SolrAI extends SolrDefault implements
      */
     protected function getAdditionalAuthors()
     {
-        if (isset($this->record['authors'])
-            && is_array($this->record['authors'])
-            && (count($this->record['authors']) > 0)
+        $authors = $this->getAIRecord('authors');
+        if (!empty($authors)
+            && is_array($authors)
+            && (count($authors) > 0)
         ) {
             $retval = [];
             $i = 0;
-            $authors = $this->record['authors'];
             foreach ($authors as $value) {
-                $retval[$i]['name'] = (isset($value['rft.aulast']) ?
-                        $value['rft.aulast'].', ' : '')
-                    .(isset($value['rft.aufirst']) ? $value['rft.aufirst'] : '');
+                $author = false;
+                if (isset($value['rft.aulast']) || isset($value['rft.aufirst'])) {
+                    $author = (isset($value['rft.aulast']) ? $value['rft.aulast'].', ' : '')
+                        .(isset($value['rft.aufirst']) ? $value['rft.aufirst'] : '');
+                } else {
+                    $author = (isset($value['rft.au']) ? $value['rft.au'] : '');
+                }
+                $retval[$i]['name'] = $author;
                 $i++;
             }
             return $retval;
@@ -197,8 +201,8 @@ class SolrAI extends SolrDefault implements
      */
     public function getContainerTitle()
     {
-        return (isset($this->fields['series']) ?
-                $this->fields['series'][0] : '');
+        return (isset($this->fields['container_title']) ?
+                $this->fields['container_title'] : '');
     }
 
     /**
@@ -210,7 +214,7 @@ class SolrAI extends SolrDefault implements
      */
     public function getPublicationDetails()
     {
-        $names =  $this->_getAIFullrecordArrayValue('rft.pub');
+        $names =  $this->getAIRecord('rft.pub');
         $i = 0;
         $retval = [];
         while (isset($names[$i])) {
@@ -248,7 +252,7 @@ class SolrAI extends SolrDefault implements
         return [
             'jtitle' => $this->getJTitle(),
             'volume' => $this->getVolume(),
-            'date'   => $this->getDate(),
+            'date'   => $this->getPublicationDates(),
             'issue'  => $this->getIssues(),
             'issns'  => $this->getISSNs(),
             'pages'  => $this->getPages()
@@ -262,7 +266,7 @@ class SolrAI extends SolrDefault implements
      */
     public function getSeries()
     {
-        return $this->_getAIFullrecordArrayValue('rft.series');
+        return $this->getAIRecord('rft.series');
     }
 
     /**
@@ -272,7 +276,7 @@ class SolrAI extends SolrDefault implements
      */
     public function getVolume()
     {
-        return $this->_getAIFullrecordStringValue('rft.volume');
+        return $this->getAIRecord('rft.volume');
     }
 
     /**
@@ -284,7 +288,7 @@ class SolrAI extends SolrDefault implements
      */
     public function getISSNs()
     {
-        return $this->_getAIFullrecordArrayValue('rft.issn');
+        return $this->getAIRecord('rft.issn');
     }
 
     /**
@@ -296,7 +300,7 @@ class SolrAI extends SolrDefault implements
      */
     public function getEISSNs()
     {
-        return $this->_getAIFullrecordArrayValue('rft.eissn');
+        return $this->getAIRecord('rft.eissn');
     }
 
     /**
@@ -308,7 +312,7 @@ class SolrAI extends SolrDefault implements
      */
     public function getISBNs()
     {
-        return $this->_getAIFullrecordArrayValue('rft.isbn');
+        return $this->getAIRecord('rft.isbn');
     }
 
     /**
@@ -326,10 +330,12 @@ class SolrAI extends SolrDefault implements
                 $this->aiRecord['rft.spage'],
                 $this->aiRecord['rft.epage']
             );
-        } else if ($this->hasStartpages()) {
+        } elseif ($this->hasStartpages()) {
             return $this->aiRecord['rft.spage'][0];
-        } else if ($this->hasEndpages()) {
+        } elseif ($this->hasEndpages()) {
             return $this->aiRecord['rft.epage'][0];
+        } elseif (isset($this->aiRecord['rft.pages'])) {
+            return $this->aiRecord['rft.pages'];
         }
 
         return '';
@@ -341,9 +347,9 @@ class SolrAI extends SolrDefault implements
      * @return array   Return jtitle fields.
      * @access public
      */
-    public function getJTitle ()
+    public function getJTitle()
     {
-        return $this->_getAIFullrecordStringValue('rft.jtitle');
+        return $this->getAIRecord('rft.jtitle');
     }
 
     /**
@@ -352,9 +358,9 @@ class SolrAI extends SolrDefault implements
      * @return array   Return jtitle fields.
      * @access public
      */
-    public function getATitle ()
+    public function getATitle()
     {
-        return $this->_getAIFullrecordStringValue('rft.atitle');
+        return $this->getAIRecord('rft.atitle');
     }
 
     /**
@@ -363,9 +369,9 @@ class SolrAI extends SolrDefault implements
      * @return array   Return jtitle fields.
      * @access public
      */
-    public function getBTitle ()
+    public function getBTitle()
     {
-        return $this->_getAIFullrecordStringValue('rft.btitle');
+        return $this->getAIRecord('rft.btitle');
     }
 
     /**
@@ -374,7 +380,12 @@ class SolrAI extends SolrDefault implements
      *
      * @return string OpenURL parameters.
      */
-    public function getOpenURL() {
+    public function getOpenURL()
+    {
+        $id = $this->getID();
+        if (empty($this->aiRecord) && !empty($id)) {
+            $this->aiRecord = $this->getAIJSONFullrecord($id);
+        }
         // Set up parameters based on the format of the record:
         switch ($this->aiRecord['rft.genre']) {
             case 'book':
@@ -654,6 +665,10 @@ class SolrAI extends SolrDefault implements
     {
         $tmp = [];
         $i = 0;
+        $id = $this->getID();
+        if (empty($this->aiRecord) && !empty($id)) {
+            $this->aiRecord = $this->getAIJSONFullrecord($id);
+        }
         if (!empty($this->aiRecord)) {
             foreach ($this->aiRecord as $key => $value) {
                 $tmp[$i]['key'] = $key;
@@ -725,89 +740,29 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * returns the value of a certain record key or the default value if not exists
+     * Returns the value of a certain record key or the default value if not exists
      *
      * @param string $key     of record array
-     * @param mixed  $default [optional] return value
      *
      * @return mixed value of key
-     * @access private
+     * @access public
      */
-    private function _getAIFullrecordStringValue($key, $default = '')
+    public function getAIRecord($key)
     {
-        if (!$this->_hasAIFullrecordStringValue($key)) {
-            if ($this->_hasAIFullrecordArrayValue($key)) {
-                return implode(',', $this->aiRecord[$key]);
-            }
-            return $default;
+        $id = $this->getID();
+        if (empty($this->aiRecord) && !empty($id)) {
+            $this->aiRecord = $this->getAIJSONFullrecord($id);
         }
-
-        return $this->aiRecord[$key];
-    }
-
-    /**
-     * returns the value of a certain record key or the default value if not exists
-     *
-     * @param string $key     of record array
-     * @param mixed  $default [optional] return value
-     *
-     * @return mixed value of key
-     * @access private
-     */
-    private function _getAIFullrecordArrayValue($key, $default = [])
-    {
-        if (!$this->_hasAIFullrecordArrayValue($key)) {
-            return $default;
-        }
-        return $this->aiRecord[$key];
-    }
-
-    /**
-     * checks whether a certain array key exists and is not empty in record data array
-     *
-     * @param string $key Key to be checked.
-     *
-     * @return boolean true or false
-     * @access private
-     */
-    private function _hasAIFullrecordStringValue($key)
-    {
-        if (empty($this->aiRecord)) {
-            $this->aiRecord = $this->getAIJSONFullrecord($this->fields['id']);
-        }
-        if (isset($this->aiRecord[$key])
+        if (!isset($this->aiRecord[$key])
             && !empty($this->aiRecord[$key])
             && !is_array($this->aiRecord[$key])
+            && (count($this->aiRecord[$key]) == 0)
         ) {
-            return true;
+            return '';
+        } elseif (empty($this->aiRecord[$key])) {
+            return [];
         }
-
-        return false;
-    }
-
-
-    /**
-     * checks whether a certain array key exists, is an array and has elements in
-     * record data array
-     *
-     * @param string $key Key to be checked
-     *
-     * @return boolean true or false
-     * @access private
-     */
-    private function _hasAIFullrecordArrayValue($key)
-    {
-        if (empty($this->aiRecord)) {
-            $this->aiRecord = $this->getAIJSONFullrecord($this->fields['id']);
-        }
-        if (isset($this->aiRecord[$key])
-            && is_array($this->aiRecord[$key])
-            && count($this->aiRecord[$key]) > 0
-        ) {
-            return true;
-        }
-
-        return false;
+        return $this->aiRecord[$key];
     }
 
     /**
@@ -817,8 +772,11 @@ class SolrAI extends SolrDefault implements
      */
     public function hasStartpages()
     {
+        $id = $this->getID();
+        if (empty($this->aiRecord) && !empty($id)) {
+            $this->aiRecord = $this->getAIJSONFullrecord($id);
+        }
         if (isset($this->aiRecord['rft.spage'])
-            && !empty($this->aiRecord['rft.spage'])
         ) {
             return true;
         }
@@ -833,8 +791,11 @@ class SolrAI extends SolrDefault implements
      */
     public function hasEndpages()
     {
+        $id = $this->getID();
+        if (empty($this->aiRecord) && !empty($id)) {
+            $this->aiRecord = $this->getAIJSONFullrecord($id);
+        }
         if (isset($this->aiRecord['rft.epage'])
-            && !empty($this->aiRecord['rft.epage'])
         ) {
             return true;
         }
@@ -842,5 +803,35 @@ class SolrAI extends SolrDefault implements
         return false;
     }
 
+    /**
+     * Gets an array of publishers from the AI-blob
+     *
+     * @return array of publishers
+     */
+    public function getPublishersFromRawData()
+    {
+        return $this->getAIRecord('rft.pub');
+    }
 
+    /**
+     * Gets id of ai record
+     *
+     * @returns string id
+     */
+    public function getID()
+    {
+        return isset($this->fields['id']) ? $this->fields['id'] : '';
+    }
+
+    /**
+     * Get an array of strings representing citation formats supported
+     * by this record's data (empty if none).  For possible legal values,
+     * see /application/themes/root/helpers/Citation.php.
+     *
+     * @return array Strings representing citation formats.
+     */
+    protected function getSupportedCitationFormats()
+    {
+        return ['APAAI', 'MLAAI'];
+    }
 }

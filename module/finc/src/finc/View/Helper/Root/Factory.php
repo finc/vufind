@@ -53,4 +53,16 @@ class Factory
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }
+
+    /**
+     * Construct the Citation helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return Citation
+     */
+    public static function getCitation(ServiceManager $sm)
+    {
+        return new Citation($sm->getServiceLocator()->get('VuFind\DateConverter'));
+    }
 }

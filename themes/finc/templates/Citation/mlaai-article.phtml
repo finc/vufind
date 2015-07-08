@@ -1,0 +1,10 @@
+<? if (!empty($this->authors)): ?><?=$this->escapeHtml($this->authors)?>. <? endif; ?>
+"<?=$this->escapeHtml($this->title)?>"<? if ($this->periodAfterTitle): ?>.<? endif ?> <span style="font-style:italic;"><?=$this->escapeHtml($this->journal)?>,
+<? if (!empty($this->volume)): ?> <?=$this->escapeHtml($this->volume)?><? endif; ?></span><? if (!empty($this->issue)): ?>.<?=$this->escapeHtml($this->issue)?><? endif; ?>
+<? if (!empty($this->year)): ?>
+<? if (!empty($this->volume) || !empty($this->issue)): ?> (<? endif; ?>
+<?=$this->escapeHtml($this->year)?>
+<? if (!empty($this->volume) || !empty($this->issue)): ?>)<? endif; ?>
+<? endif; ?>
+<? if (!empty($this->pageRange)): ?>: <?=$this->escapeHtml($this->pageRange)?>. <? endif; ?>
+<? /*if (!empty($this->year)): ?><? if (!empty($this->publisher)): ?>, <? endif; ?>(<?=$this->escapeHtml($this->year)?>)<? endif;*/ ?><? if (!empty($this->year) || !empty($this->publisher)): ?>.<? endif; ?>
