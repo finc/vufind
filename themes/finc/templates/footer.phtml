@@ -14,7 +14,7 @@
       <li><a href="<?=$this->url('alphabrowse-home')?>"><?=$this->transEsc('Browse Alphabetically')?></a></li>
       <li><a href="<?=$this->url('search-reserves')?>"><?=$this->transEsc('Course Reserves')?></a></li>
       <li><a href="<?=$this->url('search-newitem')?>"><?=$this->transEsc('New Items')?></a></li>
-      <li><a href="<?=$this->url('myresearch-acquisition')?>"><?=$this->transEsc('Suggestions for acquisition')?></a></li>
+      <!--<li><a href="<?=$this->url('myresearch-acquisition')?>"><?=$this->transEsc('Suggestions for acquisition')?></a></li>-->
     </ul>
   </li>
   <li>
@@ -26,4 +26,14 @@
     </ul>
   </li>
 </ul>
+
+<? /* finc branding footer */ ?>
+<hr>
+<div class="row powered-by">
+  <div class="col-sm-12 medium-12 columns">
+    <span>Powered by</span>
+    <a href="https://www.vufind.org" title="vufind.org" target="_blank"><img src="<?=$this->imageLink('vufind_logo.png')?>" alt="powered by VuFind - VuFind Logo" /></a>
+    <a href="http://blog.finc.info" title="Blog FinC-Team" target="_blank"><img src="<?=$this->imageLink('finc_logo.png')?>" alt="powered by finc - finc Logo" /></a>
+  </div>
+</div>
 <!-- FOOTER.PHTML end -->

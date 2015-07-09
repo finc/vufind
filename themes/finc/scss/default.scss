@@ -1,0 +1,45 @@
+//  Create a default.SCSS file for all sub-themes which imports the respective parent theme's default.scss
+//  in the cascade plus extends it - this way we ALWAYS have an UP-TO-DATE default.CSS imported
+//  which includes foundation plus all subsequent customizations
+//  i.e. finc's default.scss imports foundation5/scss/default - the house-specific branches such as
+//  de_15 then import finc/scss/default
+
+// 0. Note for developers
+/* Do NOT EDIT  default.css */
+
+// 1.   Define or re-define key variables
+// 1.1 Define standard colour variables here which are used in variables below prior to foundation.scss import
+// eg. $white: #FFFFFF;
+
+// 1.2  DO NOT define site-specific colours here - this will be done in site-specific themes
+
+// 2.    Re-define variables for key styles
+// 2.1  DO NOT re-define top-bar  and top-bar dropdown backgrounds here - this will be done in site-specific themes
+// 2.2  DO NOT re-define top-bar link bg on hover here - this will be done in site-specific themes
+// 2.3  DO NOT re-define dropdown colors here - this will be done in site-specific themes
+// 2.4  DO NOT re-define the breadcrumbs bg here - this will be done in site-specific themes
+
+// 3. import entire FOUNDATION-FOLDER default.scss to have the variables and mixins defined above applied to it
+@import "../../foundation5/scss/default";
+
+// 4. Customize further - this for BASIC SETTINGS ONLY - all colour customization will be done in in site-specific themes
+//     ATTENTION: any change made here will affect ALL subsequent branches !!!
+.title-area .name h1 {
+  min-width: 13rem;
+}
+
+.navbar-brand {
+  margin: .5rem .5rem .5rem 0;
+}
+
+.powered-by {
+  img {
+    height: 1.75em;
+    margin-left: .5em;
+    margin-right: .5em;
+  }
+  span {
+  font-size: small;
+  }
+}
+
