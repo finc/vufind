@@ -534,11 +534,16 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
                 if ($node->hasChildNodes()) {
                     $prepare($node);
                 } else {
-                    if ($domNode->hasAttributes() && strlen($domNode->nodeValue)) {
+                    if (($domNode->hasAttributes() && strlen($domNode->nodeValue))
+                        || (in_array(
+                            $domNode->nodeName,
+                            ['storage', 'limitation', 'department', 'institution']
+                        ) && strlen($domNode->nodeValue))) {
                         if (trim($node->textContent)) {
                             $domNode->setAttribute("content", $node->textContent);
+                            $node->nodeValue = "";
                         }
-                        $node->nodeValue = "";
+
                     }
                 }
             }
@@ -570,7 +575,8 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
 
         // restructure the array, moving single elements to their parent's index [0]
         $restructure = function ($array) use (&$restructure) {
-            $elements = ["document", "item", "available", "unavailable"];
+            $elements
+                = ["document", "item", "available", "unavailable", "limitation"];
             foreach ($array as $key => $value) {
                 if (is_array($value)) {
                     $value = $restructure($value);
@@ -831,13 +837,20 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
     /**
      * Returns the evaluated value of the provided limitation element
      *
-     * @param array $limitation Array with DAIA limitation data
+     * @param array $limitations Array with DAIA limitation data
      *
      * @return string
      */
-    protected function getItemLimitation($limitation)
+    protected function getItemLimitation($limitations)
     {
-        return (isset($limitation['content']) ? $limitation['content'] : '');
+        foreach ($limitations as $limitation) {
+            // return the first limitation with content set
+            if (isset($limitation['content'])) {
+                return $limitation['content'];
+            }
+        }
+        return '';
+
     }
 
     /**
