@@ -96,6 +96,28 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get an array of all footnotes in the record.
+     *
+     * @return array
+     * @access public
+     */
+    public function getFootnotes()
+    {
+        return isset($this->fields['footnote']) ? $this->fields['footnote'] : [];
+    }
+
+    /**
+     * Get an array of dissertation notes.
+     *
+     * @return null
+     * @access protected
+     */
+    protected function getDissertationNote()
+    {
+        return null;
+    }
+
+    /**
      * Get back the standardizied format field of Solr index.
      *
      * @deprecated      Should also be possible to be dropped (@see getLocalFormat())
@@ -241,6 +263,18 @@ trait SolrDefaultFincTrait
         }
 
         return $retval;
+    }
+
+    /**
+     * Get the main author of the record.
+     *
+     * @return string
+     * @access protected
+     */
+    public function getPrimaryAuthor()
+    {
+        return isset($this->fields['author']) ?
+            $this->_filterAuthorDates($this->fields['author']) : '';
     }
 
     /**
@@ -564,11 +598,30 @@ trait SolrDefaultFincTrait
      * @return strings
      * @deprecated
      */
-    private function _removeAuthorDates( $authordata )
+    public function _removeAuthorDates( $author )
     {
-        if (preg_match('/^(\s|.*)\s(fl.\s|d.\s|ca.\s)*\s?(\d{4})\??(\sor\s\d\d?)?\s?(-|–)?\s?(ca.\s|after\s)?(\d{1,4})?(.|,)?$/Uu',$authordata, $match)) {
-            return (isset($match[1])) ? $match[1] : $authordata;
+        $match = array();
+        if (preg_match('/^(\s|.*)\s(fl.\s|d.\s|ca.\s|\*)*\s?(\d{4})\??(\sor\s\d\d?)?\s?(-|–)?\s?(ca.\s|after\s|†)?(\d{1,4})?(.|,)?$/Uu', $author, $match))
+        {
+            $author = (isset($match[1])) ? trim($match[1]) : $author;
         }
-        return $authordata;
+        // delete unnormalized characters of gallica ressource with source_id:20
+        if (preg_match('/(.*)(\d.*)/Uus', $author, $match))
+        {
+            $author = (isset($match[1])) ? trim($match[1]) : $author;
+        }
+        return $author;
+    }
+
+    /**
+     * Get an array of strings representing citation formats supported
+     * by this record's data (empty if none).  For possible legal values,
+     * see /application/themes/root/helpers/Citation.php.
+     *
+     * @return array Strings representing citation formats.
+     */
+    protected function getSupportedCitationFormats()
+    {
+        return ['APA', 'ISBD', 'MLA'];
     }
 }
