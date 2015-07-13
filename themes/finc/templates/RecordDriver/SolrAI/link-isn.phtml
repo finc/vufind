@@ -1,3 +1,1 @@
-<!-- recorddriver - solrai - link-isn -->
 <?=$this->url('search-results')?>?join=AND&amp;bool0[]=AND&amp;<? $issns = $this->issns; if (isset($issns)): ?><? foreach ($issns as $issn): ?>lookfor0[]=<?=$this->escapeHtml($issn)?>&amp;type0[]=ISN&amp;<? endforeach; ?><? endif; ?>sort=year&amp;view=list
-<!-- recorddriver - solrai - link-isn - END -->
