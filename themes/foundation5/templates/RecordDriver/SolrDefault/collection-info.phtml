@@ -1,8 +1,10 @@
 <!-- recordDriver - solrDefault - COLLECTION-INFO.phtml -->
 <? $this->headScript()->appendFile('collection_record.js'); ?>
 <div class="row">
-  <div class="medium-3 columns">
-    <div class="text-center">
+  <div class="medium-3 columns bookimgs">
+    <? /* div class="text-center" --> <!-- deactivated, CK - reactivate to centre images */ ?>
+    <ul  class="clearing-thumbs" data-clearing><? /* added clearing lightbox for images, CK, to remove, also remove data-caption+content in img links */ ?>
+      <li>
       <? /* Display thumbnail if appropriate: */ ?>
       <? $mediumThumb = $this->record($this->driver)->getThumbnail('medium'); $largeThumb = $this->record($this->driver)->getThumbnail('large'); ?>
       <? if ($mediumThumb): ?>
@@ -12,19 +14,23 @@
       <? else: ?>
         <img src="<?=$this->url('cover-unavailable')?>" class="recordcover" alt="<?=$this->transEsc('No Cover Image')?>"/>
       <? endif; ?>
-
+      </li>
+    </ul>
+    <ul class="clearing-thumbs" data-clearing>
+      <li>
       <? /* Display qrcode if appropriate: */ ?>
       <? $QRCode = $this->record($this->driver)->getQRCode("core"); ?>
       <? if($QRCode): ?>
         <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
       <? endif; ?>
-    </div>
-
+    <? /* /div> <!-- deactivated, CK - reactivate to centre image */ ?>
+      </li>
+    </ul>
     <?=$this->record($this->driver)->getPreviews()?>
   </div>
 
-  <div class="medium-6 columns">
-    <h2><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h2>
+  <div class="medium-6 columns left">
+    <h3><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h3>
 
     <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $summary[0] : false; ?>
     <? if ($summary): ?>

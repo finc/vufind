@@ -71,7 +71,7 @@
           if (!$obj->isVisible()) { $tab_classes[] = 'hide'; }
           if (!$obj->supportsAjax()) { $tab_classes[] = 'noajax'; }
 		?>
-        <li<?=count($tab_classes) > 0 ? ' class="' . implode(' ', $tab_classes) . '"' : ''?>>
+        <li<?=count($tab_classes) > 0 ? ' class="tab-title ' . implode(' ', $tab_classes) . '"' : ''?>>
           <a id="<?=strtolower($tab) ?>" href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>#tabnav"><?=$this->transEsc($desc)?></a>
 		</li>
 		<? endforeach; ?>
@@ -80,9 +80,9 @@
 
 
     <div class="collectionDetails<?=$tree ? 'Tree' : ''?> tabs-content" id="record-tabs">
-		<div class="content active" id="<?=$this->activeTab ?>-tab">
+	    <div class="content active" id="<?=$this->activeTab ?>-tab">
 	        <?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : '' ?>
-		</div>
+	    </div>
     </div>
 
 	<span class="Z3988" title="<?=$this->escapeHtmlAttr($this->driver->getOpenURL())?>"></span>

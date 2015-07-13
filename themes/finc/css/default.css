@@ -8057,7 +8057,7 @@ ul.date-range-slider {
 .contain-to-grid .breadcrumbs {
   margin: 0 auto;
   margin-bottom: 0;
-  max-width: 1152px;
+  max-width: 82rem;
 }
 
 .breadcrumbs.columns {
@@ -8065,15 +8065,26 @@ ul.date-range-slider {
 }
 
 .breadcrumbs {
+  background-color: inherit;
   border: none;
   border-radius: 0;
+  /*border-top: 1px solid $steel; */
   clear: both;
+  color: #FFFFFF;
+}
+
+.breadcrumbs > * {
+  color: #FFFFFF;
+}
+
+.breadcrumbs > * a {
+  color: #DDDDDD;
 }
 
 @media (min-width: 62rem) {
   .breadcrumbs {
     clear: both;
-    max-width: 1152px;
+    max-width: 82rem;
   }
 }
 
@@ -8195,7 +8206,7 @@ ul.date-range-slider {
 .searchHomeContent .panel {
   padding-bottom: 0;
   /*padding-left: 0;
-  padding-right: 0; */
+  padding-right: 0;*/
 }
 
 .nav.searchbox.large-12.hide-for-large-up {
@@ -8575,6 +8586,115 @@ img.recordcover {
 
 #hierarchyTreeHolder ul li ul {
   margin-left: .5rem;
+}
+
+.facet .jstree-ocl:before {
+  float: left;
+  width: 10px;
+  padding: 0;
+  margin-left: -10px;
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  cursor: pointer;
+  speak: none;
+}
+
+.facet .jstree-default .jstree-open > .jstree-ocl:before {
+  content: "\f0d7";
+}
+
+.facet .jstree-default .jstree-closed > .jstree-ocl:before {
+  content: "\f0da";
+}
+
+.facet .jstree-default .jstree-leaf > .jstree-ocl:before {
+  content: " ";
+}
+
+.jstree-facet li span.main {
+  display: block;
+  padding-left: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jstree-facet .jstree-container-ul {
+  padding: 0;
+}
+
+.jstree-facet .jstree-container-ul > li.active,
+.jstree-facet .jstree-container-ul > li.active a.jstree-anchor {
+  background-color: rgba(0, 0, 0, 0.025);
+  color: #1cc7ff;
+}
+
+li.jstree-facet,
+li.jstree-node {
+  list-style: none;
+}
+
+li.jstree-facet .badge {
+  cursor: text;
+}
+
+li.jstree-facet ul {
+  padding-left: 1rem;
+}
+
+.hierarchy-tree .jstree-ocl:before {
+  /*float: left;*/
+  width: 10px;
+  padding: 0;
+  margin-left: -10px;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  cursor: pointer;
+  text-decoration: inherit;
+  speak: none;
+}
+
+.hierarchy-tree .jstree-open > .jstree-ocl:before {
+  content: "\f0d7";
+}
+
+.hierarchy-tree .jstree-closed > .jstree-ocl:before {
+  content: "\f0da";
+}
+
+.hierarchy-tree .jstree-leaf > .jstree-ocl:before {
+  content: " ";
+}
+
+.hierarchy-tree .jstree-icon {
+  width: 16px;
+  color: #000;
+}
+
+.hierarchy-tree .jstree-anchor {
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+
+.hierarchy-tree .jstree-container-ul,
+.hierarchy-tree .jstree-children {
+  padding-left: 16px;
+}
+
+.hierarchy-tree .jstree-initial-node {
+  display: none;
+}
+
+.hierarchy-tree .jstree-clicked {
+  color: #FFFFFF;
+  background-color: #008CBA;
+}
+
+.hierarchy-tree .jstree-clicked .jstree-icon {
+  color: #fff;
 }
 
 #similar-items-carousel .hover-overlay {

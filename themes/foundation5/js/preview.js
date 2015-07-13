@@ -34,8 +34,8 @@ function getHTPreviews(skeys) {
 }
 
 function applyPreviewUrl($link, url) {
-    // Update the preview button:
-    $link.attr('href', url).removeClass('hidden');
+    // Update the preview button: // check for correctness - fixme CK
+    $link.attr('href', url).removeClass('hide');
 
     // Update associated record thumbnail, if any:
     $link.parents('.result,.record')
@@ -67,8 +67,8 @@ function processGBSBookInfo(booksInfo) {
             if (bookInfo) {
                 if (viewOptions['tab'].indexOf(bookInfo.preview)>= 0
                 && (bookInfo.embeddable)) {
-                    // make tab visible
-                    $('ul.recordTabs li.hidden a#preview').parent().removeClass('hidden');
+                    // make tab visible // check for correctness - fixme CK
+                    $('ul.recordTabs li.hide a#preview').parent().removeClass('hide');
                 }
             }
         }

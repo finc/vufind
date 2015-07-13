@@ -1,4 +1,4 @@
-<h2><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h2>
+<h3><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h3>
 <a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc('View Full ' . ($this->driver->isCollection() ? 'Collection' : 'Record'))?></a>
 
 <table class="table" summary="<?=$this->transEsc('Bibliographic Details')?>">
