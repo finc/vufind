@@ -57,15 +57,14 @@ class SolrAI extends SolrDefault implements
     protected $aiRecord;
 
     /**
-     * holds config.ini data
+     * Holds config.ini data
      *
      * @var array
      */
     protected $mainConfig;
 
-
     /**
-     * gets the description of the record
+     * Gets the description of the record
      *
      * @return string description
      */
@@ -75,7 +74,7 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * gets the edition key from the record
+     * Gets the edition key from the record
      *
      * @return string edition
      */
@@ -85,7 +84,7 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * gets the doi of the record
+     * Gets the doi of the record
      *
      * @return string publication date
      */
@@ -95,7 +94,7 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * gets an array of issues from record
+     * Gets an array of issues from record
      *
      * @return array of issues
      */
@@ -180,8 +179,11 @@ class SolrAI extends SolrDefault implements
             foreach ($authors as $value) {
                 $author = false;
                 if (isset($value['rft.aulast']) || isset($value['rft.aufirst'])) {
-                    $author = (isset($value['rft.aulast']) ? $value['rft.aulast'].', ' : '')
-                        .(isset($value['rft.aufirst']) ? $value['rft.aufirst'] : '');
+                    $author
+                        = (isset($value['rft.aulast'])
+                            ? $value['rft.aulast'].', '
+                            : '') .
+                        (isset($value['rft.aufirst']) ? $value['rft.aufirst'] : '');
                 } else {
                     $author = (isset($value['rft.au']) ? $value['rft.au'] : '');
                 }
@@ -217,7 +219,7 @@ class SolrAI extends SolrDefault implements
         $names =  $this->getAIRecord('rft.pub');
         $i = 0;
         $retval = [];
-        while (isset($names[$i])) {
+        while (!empty($names[$i])) {
             // Build objects to represent each set of data; these will
             // transform seamlessly into strings in the view layer.
             $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
@@ -260,7 +262,7 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * gets an array of series from record
+     * Gets an array of series from record
      *
      * @return array of series
      */
@@ -270,7 +272,7 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * gets an array of volumes from record
+     * Gets an array of volumes from record
      *
      * @return array of volumes
      */
@@ -322,20 +324,20 @@ class SolrAI extends SolrDefault implements
      */
     public function getPages()
     {
-        if ($this->hasStartpages()
-            && $this->hasEndpages()
-        ) {
-            return sprintf(
-                '%s - %s',
-                $this->aiRecord['rft.spage'],
-                $this->aiRecord['rft.epage']
-            );
-        } elseif ($this->hasStartpages()) {
-            return $this->aiRecord['rft.spage'][0];
-        } elseif ($this->hasEndpages()) {
-            return $this->aiRecord['rft.epage'][0];
-        } elseif (isset($this->aiRecord['rft.pages'])) {
-            return $this->aiRecord['rft.pages'];
+        // startpage
+        $spage = $this->getAIRecord('rft.spage');
+        // endpage
+        $epage = $this->getAIRecord('rft.epage');
+        // pages
+        $pages = $this->getAIRecord('rft.pages');
+        if (!empty($spage) && !empty($epage)) {
+            return sprintf('%s - %s', $spage, $epage);
+        } elseif (!empty($spage)) {
+            return $spage[0];
+        } elseif (!empty($epage)) {
+            return $epage[0];
+        } elseif (!empty($pages)) {
+            return $pages;
         }
 
         return '';
@@ -382,25 +384,22 @@ class SolrAI extends SolrDefault implements
      */
     public function getOpenURL()
     {
-        $id = $this->getID();
-        if (empty($this->aiRecord) && !empty($id)) {
-            $this->aiRecord = $this->getAIJSONFullrecord($id);
-        }
+        $genre = $this->getAIRecord('rft.genre');
         // Set up parameters based on the format of the record:
-        switch ($this->aiRecord['rft.genre']) {
-            case 'book':
-                $params = $this->getBookOpenURLParams();
-                break;
-            case 'article':
-                $params = $this->getArticleOpenURLParams();
-                break;
-            case 'journal':
-                $params = $this->getJournalOpenURLParams();
-                break;
-            default:
-                $format = $this->getFormats();
-                $params = $this->getUnknownFormatOpenURLParams($format);
-                break;
+        switch ($genre) {
+        case 'book':
+            $params = $this->getBookOpenURLParams();
+            break;
+        case 'article':
+            $params = $this->getArticleOpenURLParams();
+            break;
+        case 'journal':
+            $params = $this->getJournalOpenURLParams();
+            break;
+        default:
+            $format = $this->getFormats();
+            $params = $this->getUnknownFormatOpenURLParams($format);
+            break;
         }
 
         // Assemble the URL:
@@ -426,21 +425,6 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * Get default OpenURL parameters.
-     *
-     * @return array
-     */
-    /*protected function getDefaultOpenURLParams()
-    {
-        // Start an array of OpenURL parameters:
-        return [
-            'ctx_ver' => 'Z39.88-2004',
-            'ctx_enc' => 'info:ofi/enc:UTF-8',
-            'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator'
-        ];
-    }*/
-
-    /**
      * Get OpenURL parameters for an article.
      *
      * @return array
@@ -451,65 +435,84 @@ class SolrAI extends SolrDefault implements
         // unset default title -- we only want jtitle/atitle here:
         //$params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
         $params['genre'] = 'article';
-        if (isset($this->aiRecord['finc.record_id'])) {
-            $params['rft_id'] = $this->aiRecord['finc.record_id'];
+        $value = $this->getAIRecord('finc.record_id');
+        if (!empty($value)) {
+            $params['rft_id'] = $value;
         }
-        if (isset($this->aiRecord['rft.issn'])) {
-            foreach ($this->aiRecord['rft.issn'] as $issn) {
+        $value = $this->getAIRecord('rft.issn');
+        if (!empty($value)) {
+            foreach ($value as $issn) {
                 $params['issn'] = $issn;
             }
         }
         // an article may have also an ISBN:
-        if (isset($this->aiRecord['rft.isbn'])) {
-            $params['isbn'] = $this->aiRecord['rft.isbn'];
+        $value = $this->getAIRecord('rft.isbn');
+        if (!empty($value)) {
+            $params['isbn'] = $value;
         }
-        if (isset($this->aiRecord['rft.ssn'])) {
-            $params['ssn'] = $this->aiRecord['rft.ssn'];
+        $value = $this->getAIRecord('rft.ssn');
+        if (!empty($value)) {
+            $params['ssn'] = $value;
         }
-        if (isset($this->aiRecord['rft.volume'])) {
-            $params['volume'] = $this->aiRecord['rft.volume'];
+        $value = $this->getAIRecord('rft.volume');
+        if (!empty($value)) {
+            $params['volume'] = $value;
         }
-        if (isset($this->aiRecord['rft.issue'])) {
-            $params['issue'] = $this->aiRecord['rft.issue'];
+        $value = $this->getAIRecord('rft.issue');
+        if (!empty($value)) {
+            $params['issue'] = $value;
         }
-        if (isset($this->aiRecord['rft.spage'])) {
-            $params['spage'] = $this->aiRecord['rft.spage'];
+        $value = $this->getAIRecord('rft.spage');
+        if (!empty($value)) {
+            $params['spage'] = $value;
         }
-        if (isset($this->aiRecord['rft.epage'])) {
-            $params['epage'] = $this->aiRecord['rft.epage'];
+        $value = $this->getAIRecord('rft.epage');
+        if (!empty($value)) {
+            $params['epage'] = $value;
         }
-        if (isset($this->aiRecord['rft.pages'])) {
-            $params['pages'] = $this->aiRecord['rft.pages'];
+        $value = $this->getAIRecord('rft.pages');
+        if (!empty($value)) {
+            $params['pages'] = $value;
         }
-        if (isset($this->aiRecord['rft.coden'])) {
-            $params['coden'] = $this->aiRecord['rft.coden'];
+        $value = $this->getAIRecord('rft.coden');
+        if (!empty($value)) {
+            $params['coden'] = $value;
         }
-        if (isset($this->aiRecord['rft.artnum'])) {
-            $params['artnum'] = $this->aiRecord['rft.artnum'];
+        $value = $this->getAIRecord('rft.artnum');
+        if (!empty($value)) {
+            $params['artnum'] = $value;
         }
-        if (isset($this->aiRecord['rft.sici'])) {
-            $params['sici'] = $this->aiRecord['rft.sici'];
+        $value = $this->getAIRecord('rft.sici');
+        if (!empty($value)) {
+            $params['sici'] = $value;
         }
-        if (isset($this->aiRecord['rft.chron'])) {
-            $params['chron'] = $this->aiRecord['rft.chron'];
+        $value = $this->getAIRecord('rft.chron');
+        if (!empty($value)) {
+            $params['chron'] = $value;
         }
-        if (isset($this->aiRecord['rft.quarter'])) {
-            $params['quarter'] = $this->aiRecord['rft.quarter'];
+        $value = $this->getAIRecord('rft.quarter');
+        if (!empty($value)) {
+            $params['quarter'] = $value;
         }
-        if (isset($this->aiRecord['rft.part'])) {
-            $params['part'] = $this->aiRecord['rft.part'];
+        $value = $this->getAIRecord('rft.part');
+        if (!empty($value)) {
+            $params['part'] = $value;
         }
-        if (isset($this->aiRecord['rft.jtitle'])) {
-            $params['jtitle'] = $this->getJTitle();
+        $value = $this->getAIRecord('rft.jtitle');
+        if (!empty($value)) {
+            $params['jtitle'] = $value;
         }
-        if (isset($this->aiRecord['rft.atitle'])) {
-            $params['atitle'] = $this->getATitle();
+        $value = $this->getAIRecord('rft.atitle');
+        if (!empty($value)) {
+            $params['atitle'] = $value;
         }
-        if (isset($this->aiRecord['rft.stitle'])) {
-            $params['stitle'] = $this->aiRecord['rft.stitle'];
+        $value = $this->getAIRecord('rft.stitle');
+        if (!empty($value)) {
+            $params['stitle'] = $value;
         }
-        if (isset($this->aiRecord['authors'])) {
-            foreach ($this->aiRecord['authors'] as $author) {
+        $value = $this->getAIRecord('authors');
+        if (!empty($value)) {
+            foreach ($value as $author) {
                 if (isset($author['rft.au'])) {
                     $params['au'] = $author['rft.au'];
                 }
@@ -536,18 +539,21 @@ class SolrAI extends SolrDefault implements
                 }
             }
         }
-
-        if (isset($this->aiRecord['rft.format'])) {
-            $params['format'] = $this->aiRecord['rft.format'];
+        $value = $this->getAIRecord('rft.format');
+        if (!empty($value)) {
+            $params['format'] = $value;
         }
-        if (isset($this->aiRecord['doi'])) {
-            $params['rft_id'] = 'info:doi/'.$this->aiRecord['doi'];
+        $value = $this->getAIRecord('doi');
+        if (!empty($value)) {
+            $params['rft_id'] = 'info:doi/'.$value;
         }
-        if (isset($this->aiRecord['languages'])) {
-            $params['rft.language'] = $this->aiRecord['languages'];
+        $value = $this->getAIRecord('languages');
+        if (!empty($value)) {
+            $params['rft.language'] = $value;
         }
-        if (isset($this->aiRecord['rft.date'])) {
-            $params['rft.date'] = $this->aiRecord['rft.date'];
+        $value = $this->getAIRecord('rft.date');
+        if (!empty($value)) {
+            $params['rft.date'] = $value;
         }
         return $params;
     }
@@ -562,59 +568,75 @@ class SolrAI extends SolrDefault implements
         $params = $this->getDefaultOpenURLParams();
         $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
         $params['genre'] = 'book';
-        if (isset($this->aiRecord['rft.atitle'])) {
+        $value = $this->getAIRecord('rft.atitle');
+        if (!empty($value)) {
             $params['atitle'] = $this->getATitle();
         }
-        if (isset($this->aiRecord['rft.btitle'])) {
+        $value = $this->getAIRecord('rft.btitle');
+        if (!empty($value)) {
             $params['rft.btitle'] = $this->getBTitle();
         }
-        if (isset($this->aiRecord['finc.record_id'])) {
-            $params['rft_id'] = $this->aiRecord['finc.record_id'];
+        $value = $this->getAIRecord('finc.record_id');
+        if (!empty($value)) {
+            $params['rft_id'] = $value;
         }
-        if (isset($this->aiRecord['rft.issn'])) {
-            foreach ($this->aiRecord['rft.issn'] as $issn) {
+        $value = $this->getAIRecord('rft.issn');
+        if (!empty($value)) {
+            foreach ($value as $issn) {
                 $params['issn'] = $issn;
             }
         }
-        if (isset($this->aiRecord['rft.edition'])) {
-            $params['edition'] = $this->aiRecord['rft.edition'];
+        $value = $this->getAIRecord('rft.edition');
+        if (!empty($value)) {
+            $params['edition'] = $value;
         }
-        // an article may have also an ISBN:
-        if (isset($this->aiRecord['rft.isbn'])) {
-            $params['isbn'] = $this->aiRecord['rft.isbn'];
+        $value = $this->getAIRecord('rft.isbn');
+        if (!empty($value)) {
+            $params['isbn'] = $value;
         }
-        if (isset($this->aiRecord['rft.ssn'])) {
-            $params['ssn'] = $this->aiRecord['rft.ssn'];
+        $value = $this->getAIRecord('rft.ssn');
+        if (!empty($value)) {
+            $params['ssn'] = $value;
         }
-        if (isset($this->aiRecord['rft.eissn'])) {
-            $params['eissn'] = $this->aiRecord['rft.eissn'];
+        $value = $this->getAIRecord('rft.eissn');
+        if (!empty($value)) {
+            $params['eissn'] = $value;
         }
-        if (isset($this->aiRecord['rft.volume'])) {
-            $params['volume'] = $this->aiRecord['rft.volume'];
+        $value = $this->getAIRecord('rft.volume');
+        if (!empty($value)) {
+            $params['volume'] = $value;
         }
-        if (isset($this->aiRecord['rft.issue'])) {
-            $params['issue'] = $this->aiRecord['rft.issue'];
+        $value = $this->getAIRecord('rft.issue');
+        if (!empty($value)) {
+            $params['issue'] = $value;
         }
-        if (isset($this->aiRecord['rft.spage'])) {
-            $params['spage'] = $this->aiRecord['rft.spage'];
+        $value = $this->getAIRecord('rft.spage');
+        if (!empty($value)) {
+            $params['spage'] = $value;
         }
-        if (isset($this->aiRecord['rft.epage'])) {
-            $params['epage'] = $this->aiRecord['rft.epage'];
+        $value = $this->getAIRecord('rft.epage');
+        if (!empty($value)) {
+            $params['epage'] = $value;
         }
-        if (isset($this->aiRecord['rft.pages'])) {
-            $params['pages'] = $this->aiRecord['rft.pages'];
+        $value = $this->getAIRecord('rft.pages');
+        if (!empty($value)) {
+            $params['pages'] = $value;
         }
-        if (isset($this->aiRecord['rft.series'])) {
-            $params['series'] = $this->aiRecord['rft.series'];
+        $value = $this->getAIRecord('rft.series');
+        if (!empty($value)) {
+            $params['series'] = $value;
         }
-        if (isset($this->aiRecord['rft.tpages'])) {
+        $value = $this->getAIRecord('rft.tpages');
+        if ($value) {
             $params['tpages'] = $this->aiRecord['rft.tpages'];
         }
-        if (isset($this->aiRecord['rft.bici'])) {
-            $params['bici'] = $this->aiRecord['rft.bici'];
+        $value = $this->getAIRecord('rft.bici');
+        if (!empty($value)) {
+            $params['bici'] = $value;
         }
-        if (isset($this->aiRecord['authors'])) {
-            foreach ($this->aiRecord['authors'] as $author) {
+        $value = $this->getAIRecord('authors');
+        if (!empty($value)) {
+            foreach ($value as $author) {
                 if (isset($author['rft.au'])) {
                     $params['au'] = $author['rft.au'];
                 }
@@ -641,12 +663,13 @@ class SolrAI extends SolrDefault implements
                 }
             }
         }
-
-        if (isset($this->aiRecord['rft.format'])) {
-            $params['format'] = $this->aiRecord['rft.format'];
+        $value = $this->getAIRecord('rft.format');
+        if (!empty($value)) {
+            $params['format'] = $value;
         }
-        if (isset($this->aiRecord['doi'])) {
-            $params['rft_id'] = 'info:doi/'.$this->aiRecord['doi'];
+        $value = $this->getAIRecord('doi');
+        if (!empty($value)) {
+            $params['rft_id'] = 'info:doi/'.$value;
         }
         $publishers = $this->getPublishers();
         if (count($publishers) > 0) {
@@ -665,12 +688,9 @@ class SolrAI extends SolrDefault implements
     {
         $tmp = [];
         $i = 0;
-        $id = $this->getID();
-        if (empty($this->aiRecord) && !empty($id)) {
-            $this->aiRecord = $this->getAIJSONFullrecord($id);
-        }
-        if (!empty($this->aiRecord)) {
-            foreach ($this->aiRecord as $key => $value) {
+        $record = $this->getAIRecord();
+        if (!empty($record)) {
+            foreach ($record as $key => $value) {
                 $tmp[$i]['key'] = $key;
                 $tmp[$i]['value'] = $value;
                 $i++;
@@ -742,65 +762,30 @@ class SolrAI extends SolrDefault implements
     /**
      * Returns the value of a certain record key or the default value if not exists
      *
-     * @param string $key     of record array
+     * @param string $key Key of record array
      *
      * @return mixed value of key
      * @access public
      */
-    public function getAIRecord($key)
+    public function getAIRecord($key = null)
     {
         $id = $this->getID();
         if (empty($this->aiRecord) && !empty($id)) {
             $this->aiRecord = $this->getAIJSONFullrecord($id);
         }
-        if (!isset($this->aiRecord[$key])
-            && !empty($this->aiRecord[$key])
-            && !is_array($this->aiRecord[$key])
-            && (count($this->aiRecord[$key]) == 0)
-        ) {
-            return '';
-        } elseif (empty($this->aiRecord[$key])) {
-            return [];
+        if (!is_null($key)) {
+            if (!isset($this->aiRecord[$key])
+                && !empty($this->aiRecord[$key])
+                && !is_array($this->aiRecord[$key])
+                && (count($this->aiRecord[$key]) == 0)
+            ) {
+                return '';
+            } elseif (empty($this->aiRecord[$key])) {
+                return [];
+            }
+            return $this->aiRecord[$key];
         }
-        return $this->aiRecord[$key];
-    }
-
-    /**
-     * checks whether record has start pages
-     *
-     * @return boolean
-     */
-    public function hasStartpages()
-    {
-        $id = $this->getID();
-        if (empty($this->aiRecord) && !empty($id)) {
-            $this->aiRecord = $this->getAIJSONFullrecord($id);
-        }
-        if (isset($this->aiRecord['rft.spage'])
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * checks whether record has Endpages
-     *
-     * @return boolean
-     */
-    public function hasEndpages()
-    {
-        $id = $this->getID();
-        if (empty($this->aiRecord) && !empty($id)) {
-            $this->aiRecord = $this->getAIJSONFullrecord($id);
-        }
-        if (isset($this->aiRecord['rft.epage'])
-        ) {
-            return true;
-        }
-
-        return false;
+        return $this->aiRecord;
     }
 
     /**
@@ -816,7 +801,7 @@ class SolrAI extends SolrDefault implements
     /**
      * Gets id of ai record
      *
-     * @returns string id
+     * @return string id
      */
     public function getID()
     {
