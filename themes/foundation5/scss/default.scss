@@ -697,9 +697,14 @@ ul[role=navigation] {
 // Limit, sort and select-boxes
 .sort,
 .limit {
+  // Display form labels and select fields as inline blocks; Apply to label and select boxes
+  label {
+    display: inline-block;
+   &.inline {margin-bottom: 1px}
+  }
   select {
-    width: 100%;
-    margin-bottom: 0 !important;
+        margin-bottom: 0 !important;
+        display: inline-block;
   }
 }
 
@@ -775,6 +780,14 @@ img.recordcover {
 
 
 // DETAILS VIEW
+// create smaller small buttons that fit the height of Select inputs
+button,
+.button {
+  &.small {
+    padding: .75rem 1rem .75rem;
+  }
+}
+
 // Page browser
 .pager {
   list-style: outside none none;
@@ -1027,7 +1040,7 @@ li.jstree-facet ul {padding-left: 1rem;}
     width: 10px;
     padding: 0;
     margin-left: -10px;
-    font-family: FontAwesome;
+    font-family: 'FontAwesome';
     font-style: normal;
     font-weight: normal;
     cursor: pointer;

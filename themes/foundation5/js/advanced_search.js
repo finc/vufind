@@ -86,7 +86,7 @@ function addGroup(firstTerm, firstField, join)
     .removeClass('hide');
   $newGroup.find('.group-close')
     .attr('onClick', 'deleteGroup('+nextGroup+')');
-  $newGroup.find('select.form-control')
+  $newGroup.find('select.auto')
     .attr('id', 'search_bool'+nextGroup)
     .attr('name', 'bool'+nextGroup+'[]');
   $newGroup.find('.search_bool')
