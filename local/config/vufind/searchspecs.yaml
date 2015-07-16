@@ -364,7 +364,7 @@ JournalTitle:
     series2:
       - [onephrase, 50]
       - [and , ~]
-  FilterQuery: "format:Journal"
+  FilterQuery: "format:Journal OR format:Article OR format:ElectronicBookPart"
 #  ExactSettings:
 #    DismaxFields:
 #      - title_full_unstemmed^450
@@ -596,7 +596,7 @@ AllFields:
       - [onephrase, 500]
     imprint:
       - [onephrase, 500]
-      
+
 #  ExactSettings:
 #    DismaxFields:
 #      - title_full_unstemmed^600

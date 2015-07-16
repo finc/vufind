@@ -119,7 +119,6 @@ class SolrAI extends SolrDefault implements
      * place, publisher and data.
      *
      * @return array
-     * @access protected
      */
     /*public function getFirstPublicationDetails()
     {
@@ -152,7 +151,6 @@ class SolrAI extends SolrDefault implements
      * Has FirstPublicationsDetails a Date in it
      *
      * @return boolean
-     * @access protected
      */
     protected function getIsPublicationDetailsDate()
     {
@@ -163,7 +161,6 @@ class SolrAI extends SolrDefault implements
      * Get the main author of the record.
      *
      * @return string
-     * @access protected
      */
     public function getPrimaryAuthor()
     {
@@ -174,7 +171,6 @@ class SolrAI extends SolrDefault implements
      * Get additional entries for personal names.
      *
      * @return array
-     * @access protected
      * @link http://www.loc.gov/marc/bibliographic/bd700.html
      */
     protected function getAdditionalAuthors()
@@ -222,7 +218,6 @@ class SolrAI extends SolrDefault implements
      * getPublicationDates(), getPublishers() and getPlacesOfPublication().
      *
      * @return array
-     * @access protected
      */
     public function getPublicationDetails()
     {
@@ -291,23 +286,19 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * Get the ISSN from a record.
+     * Get an array of all ISSNs associated with the record (may be empty).
      *
      * @return array
-     * @access protected
-     * @link https://intern.finc.info/fincproject/issues/969 description
      */
     public function getISSNs()
     {
-        return $this->getAIRecord('rft.issn');
+        return isset($this->fields['issn']) ? $this->fields['issn'] : [];
     }
 
     /**
      * Get the eISSN from a record.
      *
      * @return array
-     * @access protected
-     * @link https://intern.finc.info/fincproject/issues/969 description
      */
     public function getEISSNs()
     {
@@ -315,15 +306,13 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * Get an array of all ISSNs associated with the record (may be empty).
-     * Can be the main ISSN and the parent ISSNs.
+     * Get an array of all ISBNs associated with the record (may be empty).
      *
      * @return array
-     * @access protected
      */
     public function getISBNs()
     {
-        return $this->getAIRecord('rft.isbn');
+        return isset($this->fields['isbn']) ? $this->fields['isbn'] : [];
     }
 
     /**
@@ -356,7 +345,6 @@ class SolrAI extends SolrDefault implements
      * Return the jtitle field of ai records
      *
      * @return array   Return jtitle fields.
-     * @access public
      */
     public function getJTitle()
     {
@@ -367,7 +355,6 @@ class SolrAI extends SolrDefault implements
      * Return the jtitle field of ai records
      *
      * @return array   Return jtitle fields.
-     * @access public
      */
     public function getATitle()
     {
@@ -378,7 +365,6 @@ class SolrAI extends SolrDefault implements
      * Return the jtitle field of ai records
      *
      * @return array   Return jtitle fields.
-     * @access public
      */
     public function getBTitle()
     {
@@ -774,7 +760,6 @@ class SolrAI extends SolrDefault implements
      * @param string $key Key of record array
      *
      * @return mixed value of key
-     * @access public
      */
     public function getAIRecord($key = null)
     {

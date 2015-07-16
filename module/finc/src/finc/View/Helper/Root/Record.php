@@ -94,20 +94,6 @@ class Record extends \VuFind\View\Helper\Root\Record
     }
 
     /**
-     * Render the link of the type ISN.
-     *
-     * @param array $issns Array with ISSNS
-     *
-     * @return string
-     */
-    public function getLinkISN($issns)
-    {
-        return $this->renderTemplate(
-            'link-isn.phtml', ['issns' => $issns]
-        );
-    }
-
-    /**
      * Render a (list of) record icons.
      *
      * @param string $tpl Define alternative template for record icon. Default:

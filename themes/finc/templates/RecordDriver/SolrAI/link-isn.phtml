@@ -1,1 +1,14 @@
-<?=$this->url('search-results')?>?join=AND&amp;bool0[]=AND&amp;<? $issns = $this->issns; if (isset($issns)): ?><? foreach ($issns as $issn): ?>lookfor0[]=<?=$this->escapeHtml($issn)?>&amp;type0[]=ISN&amp;<? endforeach; ?><? endif; ?>sort=year&amp;view=list
+<?
+  // use advanced search if we have multiple issns
+  if (is_array($this->lookfor) && count($this->lookfor) > 1) {
+      $query = '?join=AND&amp;bool0[]=AND&amp;';
+      foreach ($this->lookfor as $issn) {
+          $query .= 'lookfor0[]=' . urlencode($issn) . '&amp;type0[]=ISN';
+      }
+  } elseif (count($this->lookfor) == 1) {
+      $query = '?lookfor=%22' . urlencode($this->lookfor[0]) . '%22&amp;type=ISN';
+  } else {
+      $query = '?lookfor=%22' . urlencode($this->lookfor) . '%22&amp;type=ISN';
+  }
+?>
+<?=$this->url('search-results') . $query?>

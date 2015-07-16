@@ -71,8 +71,27 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           <?
           $containerSource = $this->driver->getSourceIdentifier();
           $containerID = $this->driver->getContainerRecordID();
+
+          // finc specific journalLink generation
+          $journalLink = '';
+          $issns = $this->driver->getISSNs();
+
+          // first try to link to container id (VuFind stock-behaviour)
+          if ($containerID) {
+            $journalLink = $this->recordLink()->getUrl("$containerSource|$containerID");
+          }
+
+          // second try to search issn (finc specific)
+          elseif (!empty($issns)) {
+            $journalLink = $this->record($this->driver)->getLink('isn', $issns);
+          }
+
+          // third search for journal title (VuFind stock-behaviour)
+          else {
+            $journalLink = $this->record($this->driver)->getLink('journaltitle', $journalTitle);
+          }
           ?>
-          <a href="<?=($containerID ? $this->recordLink()->getUrl("$containerSource|$containerID") : $this->record($this->driver)->getLink('journaltitle', $journalTitle))?>"><?=$this->escapeHtml($journalTitle)?></a>
+          <a href="<?=$journalLink?>"><?=$this->escapeHtml($journalTitle)?></a>
           <? $ref = $this->driver->getContainerReference(); if (!empty($ref)) { echo $this->escapeHtml($ref); } ?>
         </td>
       </tr>
@@ -148,10 +167,12 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           <th><?=$this->transEsc('In')?>: </th>
             <td>
               <? $jtitle = $aidatain['jtitle']; $issns = $aidatain['issns']; if (!empty($issns)): ?>
-                <a href="<?=$this->record($this->driver)->getLinkISN($issns)?>">
-                <? if (!empty($jtitle)): ?><?=$this->escapeHtml($jtitle)?><? endif; ?>
-                </a><? elseif (!empty($jtitle)): ?><?=$this->escapeHtml($jtitle)?><? endif; ?><? $volume = $aidatain['volume']; if (!empty($volume)): ?><? if (empty($jtitle)): ?>, <? endif; ?><?=$this->escapeHtml($volume) ?><? endif; ?><? $date = $aidatain['date']; if (!empty($date)): ?><? if (empty($volume)): ?>, <? endif; ?>(<?=$this->escapeHtml($date) ?>)<? endif; ?><? $issue = $aidatain['issue']; if (!empty($issue)): ?>, <?=$this->escapeHtml($issue) ?><? endif; ?><? $pages = $aidatain['pages']; if (!empty($pages)): ?>, <?=$this->transEsc('p.')?> <?=$this->escapeHtml($pages) ?><? endif; ?>
-              </td>
+                <a href="<?=$this->record($this->driver)->getLink('isn', $issns)?>"><? if (!empty($jtitle)): ?><?=$this->escapeHtml($jtitle)?><? endif; ?></a>
+              <? elseif (!empty($jtitle)): ?>
+                <?=$this->escapeHtml($jtitle)?>
+              <? endif; ?>
+              <? $volume = $aidatain['volume']; if (!empty($volume)): ?><? if (empty($jtitle)): ?>, <? endif; ?><?=$this->escapeHtml($volume) ?><? endif; ?><? $date = $aidatain['date']; if (!empty($date)): ?><? if (empty($volume)): ?>, <? endif; ?>(<?=$this->escapeHtml($date) ?>)<? endif; ?><? $issue = $aidatain['issue']; if (!empty($issue)): ?>, <?=$this->escapeHtml($issue) ?><? endif; ?><? $pages = $aidatain['pages']; if (!empty($pages)): ?>, <?=$this->transEsc('p.')?> <?=$this->escapeHtml($pages) ?><? endif; ?>
+            </td>
           </tr>
       <? endif; ?>
 
