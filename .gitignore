@@ -9,3 +9,4 @@ TAGS
 .idea
 .composer
 **/.sass-cache/
+node_modules
