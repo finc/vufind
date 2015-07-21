@@ -174,7 +174,7 @@ var Lightbox = {
       Lightbox.changeContent('<div data-alert class="alert-box '+type+'" tabindex="0" aria-live="assertive" role="dialogalert">'+message+'</div><button class="button secondary tiny" onClick="Lightbox.close()" role="button">'+vufindString['close']+'</button>');
     // Page without alert
     } else {
-      $('#modal .modal-body').prepend('<div data-alert class="alert-box '+type+' alert-dismissible"  tabindex="0" aria-live="assertive" role="dialogalert"><p class="message">'+message+'</p></div><button type="button" class="close secondary small" href="#" role="button" tabindex="0" aria-label="Close Alert" data-dismiss="alert" onClick="Lightbox.close()">'+vufindString['close']+'</button>');
+      $('#modal .modal-body').prepend('<div data-alert class="alert-box '+type+' alert-dismissible" role="dialogalert"><button type="button" class="close secondary small" href="#" role="button" tabindex="0" aria-label="Close Alert" data-dismiss="alert" onClick="Lightbox.close()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><span class="message">'+message+'</span></div>');
     }
     $('.fa-spinner').remove();
     if (typeof Recaptcha !== "undefined" && Recaptcha.widget) {
