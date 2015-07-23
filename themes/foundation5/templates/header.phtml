@@ -9,24 +9,10 @@
             <li class="toggle-topbar menu-icon"><a href="#"><span>Toggle Menu</span></a></li>
         </ul>
         <section class="top-bar-section">
-            <? // Set default value if necessary:
-            if (!isset($this->searchClassId)) {
-                $this->searchClassId = 'Solr';
-            } ?>
-            <? $searchTabs = $this->searchtabs($this->searchClassId, $this->lookfor, $this->searchIndex, $this->searchType); ?>
             <? if ($this->layout()->searchbox !== false): ?>
-                <? if(count($searchTabs) > 0): ?>
-                    <!-- search - searchtabs.PHTML -->
-                    <ul class="left">
-                        <? foreach ($searchTabs as $tab): ?>
-                            <li<?=$tab['selected'] ? ' class="active"' : ''?>>
-                                <a <?=$tab['selected'] ? '#' : 'href="' . $this->escapeHtmlAttr($tab['url']) . '"' ?>><?=$this->transEsc($tab['label']); ?></a>
-                            </li>
-                        <? endforeach; ?>
-                    </ul>
-                <? else: ?>
-                    <?= $this->render('search/searchbox-topbar'); ?>
-                <? endif; ?>
+              <ul class="left list-unstyled show-for-medium-up">
+                <?=$this->layout()->searchbox ?>
+              </ul>
             <? endif; ?>
             <? if (!isset($this->layout()->renderingError)): ?>
                 <!-- Right-hand  Nav Section -->
@@ -88,11 +74,4 @@
             <? endif; ?>
         </section>
     </nav>
-    <? if ($this->layout()->searchbox !== false && count($searchTabs) > 0): ?>
-        <nav class="top-bar search">
-            <section class="top-bar-section">
-                <?= $this->render('search/searchbox-topbar'); ?>
-            </section>
-        </nav>
-    <? endif; ?>
 <!-- HEADER.PHTML end -->

@@ -8840,27 +8840,14 @@ ul.date-range-slider {
   margin-left: 0;
 }
 
-.top-bar #searchForm,
-.top-bar #searchFormTopBar {
+.top-bar #searchForm {
   margin-left: 81px;
 }
 
-.top-bar #searchForm li.has-form,
-.top-bar #searchFormTopBar li.has-form {
+.top-bar #searchForm li.has-form {
   height: auto;
   padding-left: 2px;
   padding-right: 2px;
-}
-
-@media only screen and (min-width: 45rem) {
-  .top-bar #searchForm .columns:first-of-type,
-  .top-bar #searchFormTopBar .columns:first-of-type {
-    padding-left: 0;
-  }
-  .top-bar #searchForm .columns:last-of-type,
-  .top-bar #searchFormTopBar .columns:last-of-type {
-    padding-right: 0;
-  }
 }
 
 .top-bar input,
@@ -8885,11 +8872,6 @@ ul.date-range-slider {
 .top-bar .has-form,
 .top-bar.search {
   height: auto;
-}
-
-.top-bar .has-form .button,
-.top-bar.search .button {
-  line-height: 1.25rem;
 }
 
 .top-bar .has-form li.has-form,
@@ -8951,10 +8933,6 @@ ul.date-range-slider {
   }
 }
 
-#searchFormForm .twitter-typeahead {
-  height: 32px;
-}
-
 .top-bar .twitter-typeahead {
   line-height: 1.5;
   top: .4rem;
@@ -8996,85 +8974,62 @@ ul.date-range-slider {
   margin: 0;
 }
 
-@media only screen and (min-width: 20em) {
-  #searchForm .columns,
-  #searchFormTopBar .columns {
-    padding: 0;
-  }
-  #searchForm .columns .button,
-  #searchForm .columns button,
-  #searchFormTopBar .columns .button, #searchFormTopBar .columns button {
-    padding: 0;
-  }
-}
-
-@media only screen and (min-width: 45rem) {
-  #searchForm .columns,
-  #searchFormTopBar .columns {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-#searchForm input[type="text"],
-#searchFormTopBar input[type="text"] {
+#searchForm ul {
   margin-bottom: 0;
 }
 
-#searchForm select,
-#searchFormTopBar select {
+#searchForm input[type="text"] {
+  margin-bottom: 0;
+}
+
+#searchForm select {
   margin-bottom: .5em;
 }
 
-#searchForm .button-group.even-2 li,
-#searchFormTopBar .button-group.even-2 li {
-  width: 48.25%;
-}
-
-#searchForm .button-group.even-2 li:nth-of-type(2),
-#searchFormTopBar .button-group.even-2 li:nth-of-type(2) {
-  float: right;
-}
-
-#searchForm .checkbox label,
-#searchFormTopBar .checkbox label {
+#searchForm .checkbox label {
   color: #FFFFFF;
   /*font-size: .75rem;*/
   line-height: 0.2;
   margin-left: .75rem;
 }
 
-#searchForm input[type="checkbox"],
-#searchFormTopBar input[type="checkbox"] {
-  margin-left: 1rem;
+#searchForm input[type="checkbox"] {
+  margin-left: 0;
   top: .8rem;
 }
 
-.searchHomeContent .panel {
-  padding-bottom: 0;
-  /*padding-left: 0;
-  padding-right: 0;*/
+.top-bar + .nav.searchbox {
+  background-color: #333333;
 }
 
-.nav.searchbox.large-12.hide-for-large-up {
-  background-color: #333;
+.top-bar + .nav.searchbox ul {
+  width: 100%;
 }
 
-.top-bar #searchFormTopBar input[type="checkbox"] {
+.top-bar + .nav.searchbox ul button,
+.top-bar + .nav.searchbox ul .button {
+  margin-bottom: 0;
+}
+
+@media only screen and (min-width: 48rem) {
+  .top-bar + .nav.searchbox ul li {
+    display: inline;
+  }
+}
+
+.top-bar #searchForm input[type="checkbox"] {
   margin-left: 0;
 }
 
 @media only screen and (min-width: 20em) {
-  #shard-selector,
-  #shard-selector-topbar {
+  #shard-selector {
     clear: both;
     color: #CCCCCC;
   }
 }
 
 @media only screen and (min-width: 45rem) {
-  #shard-selector,
-  #shard-selector-topbar {
+  #shard-selector {
     float: left;
     font-size: .7rem;
     line-height: 1;
@@ -9083,56 +9038,75 @@ ul.date-range-slider {
 }
 
 @media (min-width: 62rem) {
-  #shard-selector,
-  #shard-selector-topbar {
+  #shard-selector {
     left: 1rem;
     top: 2.5rem;
   }
 }
 
 @media (min-width: 80rem) {
-  #shard-selector,
-  #shard-selector-topbar {
+  #shard-selector {
     left: 0;
   }
 }
 
-@media only screen and (max-width: 767px) {
-  .grid {
-    min-height: 250px;
-  }
+.searchHomeContent .panel {
+  padding-bottom: 0;
+  /*padding-left: 0;
+  padding-right: 0;*/
 }
 
-#top-srchbx .tabs-content {
-  border: none;
+.searchHomeContent .panel ul {
+  width: 100%;
 }
 
 @media only screen and (min-width: 48rem) {
-  #top-srchbx {
-    float: left;
+  .searchHomeContent .panel ul {
+    display: inline;
   }
-  #top-srchbx .has-form {
-    padding-left: 0;
-    padding-right: 0;
+  .searchHomeContent .panel ul li {
+    float: left;
+    padding-right: 1rem;
+  }
+  .searchHomeContent .panel ul li .postfix.button {
+    padding: 0 2.28571rem 1.21429rem;
   }
 }
 
 p.adv_search_terms {
   background-color: #f1f1f1;
   border: 1px solid #CCCCCC;
-  font-size: 0.8rem;
   margin-bottom: .25rem;
-  margin-top: .25rem;
   padding: 0.35rem 0.5rem;
   width: 100%;
 }
 
 ul.adv_search_links {
   list-style: none;
+  margin-bottom: 0;
+  margin-left: 0;
 }
 
 ul.adv_search_links li {
-  border: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
+  border-top: none;
+  padding-left: .5em;
+}
+
+ul.adv_search_links li:last-of-type {
+  border-bottom: none;
+}
+
+@media only screen and (min-width: 48rem) {
+  ul.adv_search_links li {
+    border-bottom: none;
+    border-right: 1px solid #CCCCCC;
+    display: inline;
+    padding-right: .5em;
+  }
+  ul.adv_search_links li:last-of-type {
+    border-right: none;
+  }
 }
 
 .top-bar-section .adv_search_links {
@@ -9142,6 +9116,12 @@ ul.adv_search_links li {
 
 .top-bar-section .adv_search_links > a {
   font-size: .80rem;
+}
+
+@media only screen and (max-width: 767px) {
+  .grid {
+    min-height: 250px;
+  }
 }
 
 ul[role=navigation] {
@@ -9195,10 +9175,6 @@ ul[role=navigation] {
   background-color: #EFEFEF;
 }
 
-.search-controls {
-  /*@include fs-smaller;*/
-}
-
 .sort label,
 .limit label {
   display: inline-block;
@@ -9247,10 +9223,6 @@ img.recordcover {
 
 .pagination {
   margin-top: 1rem;
-}
-
-.searchtools {
-  /*@include fs-smaller;*/
 }
 
 .checkbox.select-all {
@@ -9455,7 +9427,7 @@ button.small,
   width: 10px;
   padding: 0;
   margin-left: -10px;
-  font-family: 'FontAwesome';
+  font-family: FontAwesome;
   font-weight: normal;
   font-style: normal;
   text-decoration: inherit;
@@ -9511,7 +9483,7 @@ li.jstree-facet ul {
   width: 10px;
   padding: 0;
   margin-left: -10px;
-  font-family: 'FontAwesome';
+  font-family: FontAwesome;
   font-style: normal;
   font-weight: normal;
   cursor: pointer;

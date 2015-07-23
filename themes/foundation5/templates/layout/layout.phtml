@@ -99,7 +99,7 @@
         <header role="banner" class="sticky contain-to-grid hide-for-print">
             <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
             <?=$this->render('header.phtml')?>
-                <nav class="nav searchbox large-12 large-centered columns hide-for-large-up hide-for-print">
+                <nav class="nav searchbox large-12 large-centered columns hide-for-medium-up hide-for-print">
                   <?=$this->layout()->searchbox ?>
                 </nav>
                 <? if((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)

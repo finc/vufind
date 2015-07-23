@@ -38,32 +38,32 @@ $lastLimit = $options->getLastLimit();
       <? if (!empty($tabs)): ?></div><? endif; ?>
   </div>
 <? else: ?>
-<form role="search" method="get" action="<?= $this->url($basicSearch) ?>" name="searchForm" id="searchFormForm" autocomplete="off"><? /* had duplicate ID searchForm - check if required here - fimxe - CK */  ?>
+<form role="search" method="get" action="<?= $this->url($basicSearch) ?>" name="searchForm" id="searchForm" autocomplete="off" class="inline">
   <?= $this->render('search/searchTabs'); ?>
-  <div class="row">
-    <div class="small-12 medium-5 columns">
+  <ul class="left list-unstyled">
+    <li class="has-form">
       <input class="search-query<? if ($this->searchbox()->autocompleteEnabled($this->searchClassId)): ?> autocomplete searcher:<?= $this->escapeHtmlAttr($this->searchClassId) ?><? endif ?>" id="searchForm_lookfor" type="text" name="lookfor" value="<?= $this->escapeHtmlAttr($this->lookfor) ?>"/>
-    </div>
+    </li>
     <? if ($handlerCount > 1): ?>
-      <div class="small-12 medium-3 columns">
+      <li class="has-form">
         <select id="searchForm_type" name="type" data-native-menu="false">
           <? foreach ($handlers as $handler): ?>
             <option value="<?= $this->escapeHtmlAttr($handler['value']) ?>"<?= $handler['selected'] ? ' selected="selected"' : '' ?>><?= $handler['indent'] ? '-- ' : '' ?><?= $this->transEsc($handler['label']) ?></option>
           <? endforeach; ?>
         </select>
-      </div>
+      </li>
     <? elseif ($handlerCount == 1): ?>
       <input type="hidden" name="type" value="<?= $this->escapeHtmlAttr($handlers[0]['value']) ?>"/>
     <? endif; ?>
-    <div class="small-12 medium-<?= $advSearch ? 2 : 4 ?> columns">
+    <li class="has-form">
       <button type="submit" class="postfix" role="button"><i class="fa fa-search"></i> <?= $this->transEsc("Find") ?></button>
-    </div>
+    </li>
     <? if ($advSearch): ?>
-      <div class="small-12 medium-2 columns">
+      <li class="has-form">
         <a href="<?= $this->url($advSearch) ?>" class="button secondary postfix" role="button" rel="nofollow"><?= $this->transEsc("Advanced") ?></a>
-      </div>
+      </li>
     <? endif; ?>
-  </div>
+  </ul>
   <!-- ? endif; ? --> <? /* Verify if correct - file had no endif in last line but here - fixme - CK  */ ?>
   <div id="shard-selector">
     <? $shards = $options->getShards(); if ($options->showShardCheckboxes() && !empty($shards)): ?>

@@ -80,8 +80,6 @@ ul {
   table-layout: fixed;
 }
 
-
-
 .citation {
   // This combination in staffviewarray record tab and record-marc.xsl only !
   &.table {
@@ -89,7 +87,7 @@ ul {
     word-wrap: break-word;
   }
 
-// the following only in module - finc - xsl - record-marc.xsl
+// the following only in module - finc - xsl - record-marc.xsl - move to finc.scss - fixme CK
   .pace-car th, .pace-car td {
     border: 0;
     padding: 0;
@@ -316,7 +314,7 @@ ul.date-range-slider {
 // SCREENREADER-specifics - END
 
 // HEADER
-// Sticky header, TopBar, search box, breadcrumbs
+// Sticky header, top-bar, search box in top-bar, breadcrumbs
 // Do NOT set top-bar height to auto in default or toggles wont work on small devices
 .top-bar {
   @media only screen and (min-width: 45rem) {
@@ -326,26 +324,14 @@ ul.date-range-slider {
     margin-left: 0;
   }
 
-  #searchForm,
-  #searchFormTopBar {
-    margin-left: 81px;
+  #searchForm {
+    margin-left: 81px; // verify - this should be solved more elegantly - fixme CK
 
-    li.has-form {
-      height: auto;
-      padding-left: 2px;
-      padding-right: 2px;
-    }
-    // Search form - distance between elements
-    @media only screen and (min-width: 45rem) {
-      .columns {
-        &:first-of-type {
-          padding-left: 0;
-        }
-        &:last-of-type {
-          padding-right: 0;
-        }
+      li.has-form {
+        height: auto;
+        padding-left: 2px;
+        padding-right: 2px;
       }
-    }
   }
 
   input,
@@ -370,10 +356,6 @@ ul.date-range-slider {
   .has-form,
   &.search {
     height: auto;
-
-    .button {
-      line-height: 1.25rem;
-    }
 
     li.has-form {
       height: 2.5rem;
@@ -415,9 +397,9 @@ ul.date-range-slider {
   }
 }
 
-// Sticky header, TopBar, search box, breadcrumbs - END
+// Sticky header, top-bar, searchbox in top-bar, breadcrumbs - END
 
-// Searchbox
+// Searchbox typeahead
 .twitter-typeahead {
   background: $white;
   border: none;
@@ -431,11 +413,8 @@ ul.date-range-slider {
     width: 100%
   }
 }
-// second searchbox on home page
-#searchFormForm .twitter-typeahead {
-  height: 32px;
-}
 
+// This following still needed? fixme - CK
 .top-bar {
   .twitter-typeahead {
     line-height: 1.5;
@@ -480,20 +459,11 @@ ul.date-range-slider {
   }
 }
 
-// Search form
-#searchForm,
-#searchFormTopBar {
-  .columns {
-    @media only screen and (min-width: 20em) {
-      padding: 0;
+// Search form general - top-bar searchForm above
+#searchForm {
 
-      .button, button {
-        padding: 0;
-      }
-    }
-    @media only screen and (min-width: 45rem) {
-      @include pad-l-r;
-    }
+  ul {
+    margin-bottom: 0;
   }
 
   input[type="text"] {
@@ -503,17 +473,6 @@ ul.date-range-slider {
     margin-bottom: .5em;
   }
 
-  // Placement of Search and Advanced buttons
-  .button-group.even-2 {
-    li {
-      width: 48.25%;
-
-      &:nth-of-type(2) {
-        float: right;
-      }
-    }
-  }
-  // Placement of Search and Advanced buttons - END
   // Keep filter checkbox
   .checkbox label {
     color: $white;
@@ -521,33 +480,44 @@ ul.date-range-slider {
     line-height: 0.2;
     margin-left: .75rem;
   }
-
   // Keep filter checkbox - END
+
   // Shard selector checkboxes for developer machines - see also below
   input[type="checkbox"] {
-    margin-left: 1rem;
+    margin-left: 0;
     top: .8rem;
   }
 }
 
-.searchHomeContent .panel {
-  padding-bottom: 0;
-  /*padding-left: 0;
-  padding-right: 0;*/
-}
+// Searchbox BG for search box when located directly under top-bar, used for search box AND adv search terms display
+.top-bar + .nav.searchbox {
+  background-color: $topbar-bg-color;
 
-// Dark BG for search box when located directly under header
-.nav.searchbox.large-12.hide-for-large-up {
-  background-color: #333;
+  // stacked full width lis on small devices
+  ul {
+    width: 100%;
+
+    // bottom margin for buttons on small devices
+    button,
+    .button {
+      margin-bottom: 0;
+    }
+  }
+  
+  // Inline on larger devices
+  @media only screen and (min-width: 48rem) {
+    ul li {
+      display: inline; // CHECK - FIXME CK
+    }
+  }
 }
 
 // Shard selector checkboxes for developer machines in top-bar and search form
-.top-bar #searchFormTopBar input[type="checkbox"] {
+.top-bar #searchForm input[type="checkbox"] {
   margin-left: 0;
 }
 
-#shard-selector,
-#shard-selector-topbar {
+#shard-selector {
   @media only screen and (min-width: 20em) {
     clear: both;
     color: $iron;
@@ -568,45 +538,72 @@ ul.date-range-slider {
 }
 
 // Shard selector checkboxes for developer machines - END
-// Searchbox - END
 
-.grid {
-  @media only screen and (max-width: 767px) {
-    min-height: 250px; // e.g. search/list-grid.phtml
-  }
-}
+// Searchbox on Home page - special case - searchbox not in header!
+.searchHomeContent .panel {
+  padding-bottom: 0;
+  /*padding-left: 0;
+  padding-right: 0;*/
 
-// Advanced Search: search term insert
-// top-bar search box section placement
-#top-srchbx {
-  .tabs-content {
-    border: none;
+  // full width lis on small
+  ul {
+    width: 100%
   }
 
+  // Inline on larger displays, stacked on small
   @media only screen and (min-width: 48rem) {
-    float: left;
+    ul {
+      display: inline;
 
-    .has-form {
-      padding-left: 0; padding-right: 0
+      li {
+        float: left;
+        padding-right: 1rem;
+
+        // Reset Advanced Search button to normal appearance  on home page (not in top-bar)
+        .postfix.button {
+          padding: 0 2.28571rem 1.21429rem;
+        }
+      }
     }
   }
 }
 
+// Advanced Search terms
 p.adv_search_terms {
   background-color: #f1f1f1;
   border: 1px solid $iron;
-  font-size: 0.8rem;
   margin-bottom: .25rem;
-  margin-top: .25rem;
   padding: .35rem .5rem;
   width: 100%;
 }
 
 ul.adv_search_links {
   list-style: none; // shorten this? - Fixme - CK
+  margin-bottom: 0;
+  margin-left: 0;
 
   li {
-    border: 1px solid $iron;
+    border-bottom: 1px solid $iron;
+    border-top: none;
+    padding-left: .5em;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+  }
+  // 786px and above as inline list
+  @media only screen and (min-width: 48rem) {
+    li {
+      border-bottom: none;
+      border-right: 1px solid $iron;
+      display: inline;
+
+      padding-right: .5em;
+
+      &:last-of-type {
+        border-right: none;
+      }
+    }
   }
 }
 
@@ -620,6 +617,16 @@ ul.adv_search_links {
 }
 
 // Advanced Search: search term insert - END
+
+
+// Searchbox - END
+
+.grid {
+  @media only screen and (max-width: 767px) {
+    min-height: 250px; // e.g. search/list-grid.phtml
+  }
+}
+
 
 // HEADER - END
 
@@ -683,16 +690,10 @@ ul[role=navigation] {
 
   &:nth-of-type(even) {
     background-color: $silver;
-}
+  }
 }
 
 // Rows - END
-
-// Search-controls row
-.search-controls {
- /*@include fs-smaller;*/
-}
-// Search-controls row - END
 
 // Limit, sort and select-boxes
 .sort,
@@ -757,12 +758,6 @@ img.recordcover {
 .pagination {margin-top: 1rem}
 // Pagination - END
 
-// Search tools
-
-// Search tools - END
-.searchtools {
-  /*@include fs-smaller;*/
-}
 // LIST VIEW  - END
 
 // Select all checkboxes in bookbag, search results, account bulk actions ...
@@ -881,8 +876,7 @@ button,
     width: 100%;
   }
 
-  // Clearing lightboxes for book images
-  // are these used ? - fixme ck
+  // Clearing lightboxes for book images  // are these used ? - fixme ck
   .clearing-blackout {
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.45);
     //height: 80%; width:80%;margin: 2em 10%;
@@ -899,9 +893,9 @@ button,
     max-width: 90%;
   }
 
-  // this following stacking necessary ? can we use standard FNDTN values?- fixme CK
+  // is this following stacking necessary ? can we use standard FNDTN values?- fixme CK
   .clearing-assembled .clearing-container .visible-img {
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7);
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7); // use variable here - fixme CK
   }
 
   .visible-img img {
@@ -916,7 +910,7 @@ button,
 
   // This is the container for the thumbnails - only useful for multiple images
   p.clearing-caption {
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7);
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7); // use variable here - fixme CK
     color: $iron;
   }
 
@@ -1036,11 +1030,11 @@ li.jstree-facet ul {padding-left: 1rem;}
 // jsTree arrows in hierarchy tree !
 .hierarchy-tree {
   .jstree-ocl:before {
-    /*float: left;*/ // otherwise blank line in tree above active link
+    /*float: left;*/ // otherwise blank line in tree above active link // // check - fixme CK
     width: 10px;
     padding: 0;
     margin-left: -10px;
-    font-family: 'FontAwesome';
+    font-family: FontAwesome;
     font-style: normal;
     font-weight: normal;
     cursor: pointer;
@@ -1086,7 +1080,7 @@ li.jstree-facet ul {padding-left: 1rem;}
     text-align: center;
 
     .content {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.5); // use variable here - fixme CK
       color: $white;
       display: none;
       height: 100%;
@@ -1115,7 +1109,7 @@ li.jstree-facet ul {padding-left: 1rem;}
 }
 
 .slick-prev, .slick-next {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.1); // use variable here - fixme CK
   color: white;
   height: 3rem;
   line-height: 4rem;
@@ -1128,7 +1122,7 @@ li.jstree-facet ul {padding-left: 1rem;}
   z-index: 10;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.3); // use variable here - fixme CK
   }
 
   > span {
@@ -1201,7 +1195,7 @@ footer {
 // Indent the labels to position radios/checkboxes as hanging controls.
 // https://github.com/twbs/bootstrap/blob/b6e6a05b951aac3fad30da441c765dbb86518644/less/forms.less
 
-// Input fields as in maintenance - home.phmtl + auto-width for select fields
+// Input fields as in maintenance - home.phtml + auto-width for select fields
 input,
 select {
   &.auto {
@@ -1271,7 +1265,7 @@ select {
 .offcanvas-overlay,
 .offcanvas-toggle {display: none;}
 
-// Print styles
+// PRINT STYLES
 @media print {
   .columns {
     width: auto
@@ -1294,3 +1288,4 @@ select {
     text-decoration: underline
   }
 }
+// PRINT STYLES - end
