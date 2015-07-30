@@ -9700,6 +9700,10 @@ select.left {
   margin-top: -5px;
 }
 
+.nomargins {
+  margin: 0 !important;
+}
+
 .hide {
   display: none;
 }

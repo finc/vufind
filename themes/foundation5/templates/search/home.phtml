@@ -49,8 +49,8 @@ $(document).ready(function() {
 JS;
         ?>
         <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
-        <div class="facet <?=$field=='callnumber-first' ? 'small-6 columns' : 'small-6 medium-3 columns' ?>">
-          <p class="lead"><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></p>
+        <div class="facet <?=$field=='callnumber-first' ? 'medium-6 columns' : 'medium-3 columns' ?>">
+          <h2><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></h2>
           <div id="facet_<?=$this->escapeHtml($field)?>" class="jstree-facet"
               data-facet="<?=$this->escapeHtml($field)?>"
               data-path="<?=$this->url($basicSearch)?>"
@@ -63,8 +63,8 @@ JS;
         <noscript>
       <? endif; ?>
       <? $sortedList = $this->sortFacetList($this->results, $field, $details['list'], $basicSearch); ?>
-      <div class="<?=$field=='callnumber-first' ? 'small-6 columns' : 'small-6 medium-3 columns' ?>">
-        <p class="lead"><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></p>
+      <div class="<?=$field=='callnumber-first' ? 'medium-6 columns' : 'medium-3 columns' ?>">
+        <h2><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></h2>
         <div class="row">
           <ul class="list-unstyled <?=$field == "callnumber-first" ? 'medium-6 columns' : 'medium-12 columns' ?>">
           <? /* Special case: two columns for LC call numbers... */ ?>
@@ -76,7 +76,7 @@ JS;
               <? endif; ?>
               <? if (++$i == 10): ?>
                 </ul>
-				<ul class="list-unstyled small-6 columns">
+				<ul class="list-unstyled medium-6 columns">
               <? endif; ?>
             <? endforeach; ?>
           <? /* Special case: collections */ ?>

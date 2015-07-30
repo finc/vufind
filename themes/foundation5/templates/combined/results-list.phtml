@@ -24,7 +24,7 @@
   <p><i><?=$this->transEsc($currentSearch['sublabel'])?></i></p>
 <? endif; ?>
 <div class="clearfix">
-  <div class="pull-left help-block">
+  <div class="left help-block">
     <? if ($recordTotal > 0): ?>
       <? foreach (($top = $results->getRecommendations('top')) as $current): ?>
         <?=$this->recommend($current)?>

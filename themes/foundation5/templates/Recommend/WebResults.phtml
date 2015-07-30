@@ -3,7 +3,7 @@
 <div class="sidegroup">
   <h4><?=$this->transEsc('Library Web Search')?></h4>
 
-  <ul class="side-nav">
+  <ul class="side-nav similar">
     <? foreach ($results as $driver): ?>
     <li>
       <a href="<?=$this->escapeHtmlAttr($driver->getUrl())?>" class="title">
@@ -19,7 +19,7 @@
     </li>
     <? endforeach; ?>
   </ul>
-  <p><a href="<?=$this->url($searchObject->getOptions()->getSearchAction()) . $searchObject->getUrlQuery()->setLimit($searchObject->getOptions()->getDefaultLimit())?>"><?=$this->transEsc('Find More')?>...</a></p>
+  <p><a href="<?=$this->url($searchObject->getOptions()->getSearchAction()) . $searchObject->getUrlQuery()->setLimit($searchObject->getOptions()->getDefaultLimit())?>"><?=$this->transEsc('Find More')?>&nbsp;...</a></p>
 </div>
 <? endif ?>
 <!-- recommend - WEBRESULTS.phtml - end -->

@@ -23,7 +23,11 @@
     </p>
   <? else: ?>
     <? foreach ($this->savedData as $i=>$current): ?>
-      <fieldset>
+        <div class="row collapse">
+          <div class="small-12 columns ">
+            <a ref="<?=$this->url('userList', array('id' => $current['listId'])) ?>?delete=<?=urlencode($this->driver->getUniqueId())?>&amp;source=<?=urlencode($this->driver->getResourceSource())?>" id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>delete<?=$current['listId'] ?>" title="<?=$this->transEsc('confirm_delete')?>" class="button alert small right nomargins"><?=$this->transEsc('List') ?>: <?=$this->escapeHtml($current['listTitle'])?> <?=$this->transEsc('Delete')?></a>
+          </div>
+      <fieldset class="small-12 columns">
         <legend>
           <?=$this->transEsc('List') ?>: <?=$this->escapeHtml($current['listTitle'])?>
         </legend>
@@ -39,20 +43,20 @@
         <? endif; ?>
         <div class="row">
           <label class="medium-2 columns" for="edit_notes<?=$current['listId'] ?>"><?=$this->transEsc('Notes') ?>:</label>
-          <div class="medium-10 columns">
+          <div class="medium-8 columns end">
             <textarea class="auto" id="edit_notes<?=$current['listId'] ?>" name="notes<?=$current['listId'] ?>" rows="3"><?=$this->escapeHtml($current['notes'])?></textarea>
           </div>
         </div>
       </fieldset>
+     </div>
       <? if($i < count($this->savedData)-1): ?>
         <hr/>
       <? endif; ?>
     <? endforeach; ?>
   <? endif; ?>
   <? if (count($this->lists) > 0): ?>
-    <hr />
     <div class="row">
-      <div class="medium-10 columns medium-offset-2">
+      <div class="medium-10 columns medium-push-2">
         <select name="addToList" class="auto">
           <option value="-1">- <?=$this->transEsc('Add to another list')?> -</option>
           <? foreach ($this->lists as $listID=>$listTitle): ?>
@@ -64,12 +68,9 @@
   <? endif; ?>
   <? if (!empty($this->savedData) || count($this->lists) > 0): ?>
     <div class="row">
-      <div class="medium-10 columns medium-offset-2">
-        <input class="button small" type="submit" name="submit" role="button" value="<?=$this->transEsc('Save') ?>"/>
-      </div>
-      <div class="medium-10 columns medium-offset-2">
-        <a href="<?=$this->url('userList', array('id' => $current['listId'])) ?>?delete=<?=urlencode($this->driver->getUniqueId())?>&amp;source=<?=urlencode($this->driver->getResourceSource())?>" id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>delete<?=$current['listId'] ?>" title="<?=$this->transEsc('confirm_delete')?>" class="button secondary small"><?=$this->transEsc('List') ?>: <?=$this->escapeHtml($current['listTitle'])?> <?=$this->transEsc('Delete')?></a>
-      </div>
+       <div class="medium-10 columns medium-offset-2">
+          <input class="button small" type="submit" name="submit" role="button" value="<?=$this->transEsc('Save') ?>"/>
+        </div>
     </div>
   <? endif; ?>
   </form>

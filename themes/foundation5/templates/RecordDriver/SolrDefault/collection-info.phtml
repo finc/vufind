@@ -1,36 +1,34 @@
 <!-- recordDriver - solrDefault - COLLECTION-INFO.phtml -->
 <? $this->headScript()->appendFile('collection_record.js'); ?>
 <div class="row">
-  <div class="medium-3 columns bookimgs">
-    <? /* div class="text-center" --> <!-- deactivated, CK - reactivate to centre images */ ?>
-    <ul  class="clearing-thumbs" data-clearing><? /* added clearing lightbox for images, CK, to remove, also remove data-caption+content in img links */ ?>
-      <li>
+  <? $QRCode = $this->record($this->driver)->getQRCode("core");
+     $cover = $this->record($this->driver)->getCover('collection-info', 'medium', $this->record($this->driver)->getThumbnail('large'));
+     $preview = $this->record($this->driver)->getPreviews(); ?>
+  <? if ($QRCode || $cover || $preview): ?>
+  <div class="medium-3 columns">
+    <div class="text-center">
       <? /* Display thumbnail if appropriate: */ ?>
-      <? $mediumThumb = $this->record($this->driver)->getThumbnail('medium'); $largeThumb = $this->record($this->driver)->getThumbnail('large'); ?>
-      <? if ($mediumThumb): ?>
-        <? if ($largeThumb): ?><a href="<?=$this->escapeHtmlAttr($largeThumb)?>"><? endif; ?>
-          <img alt="<?=$this->transEsc('Cover Image')?>" class="recordcover" src="<?=$this->escapeHtmlAttr($mediumThumb);?>"/>
-        <? if ($largeThumb): ?></a><? endif; ?>
-      <? else: ?>
-        <img src="<?=$this->url('cover-unavailable')?>" class="recordcover" alt="<?=$this->transEsc('No Cover Image')?>"/>
+      <? if($cover): ?>
+        <?=$cover?>
       <? endif; ?>
-      </li>
-    </ul>
-    <ul class="clearing-thumbs" data-clearing>
-      <li>
+
       <? /* Display qrcode if appropriate: */ ?>
-      <? $QRCode = $this->record($this->driver)->getQRCode("core"); ?>
       <? if($QRCode): ?>
-        <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
+          <span class="hide-for-small">
+            <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
+          </span>
       <? endif; ?>
-    <? /* /div> <!-- deactivated, CK - reactivate to centre image */ ?>
-      </li>
-    </ul>
-    <?=$this->record($this->driver)->getPreviews()?>
   </div>
 
-  <div class="medium-6 columns left">
-    <h3><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h3>
+    <? if ($preview): ?><?=$preview?><? endif; ?>
+  </div>
+
+  <div class="medium-6 columns">
+  <? else: ?>
+  <div class="medium-9 columns">
+  <? endif; ?>
+
+    <h2><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h2>
 
     <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $summary[0] : false; ?>
     <? if ($summary): ?>
@@ -156,19 +154,20 @@
       <? endif; ?>
 
       <?
-          $openUrl = $this->driver->openURLActive('record') ? $this->driver->getOpenURL() : false;
+        $openUrl = $this->openUrl($this->driver, 'record');
+        $openUrlActive = $openUrl->isActive();
           // Account for replace_other_urls setting
-          $urls = ($openUrl && $this->driver->replaceURLsWithOpenURL()) ? array() : $this->record($this->driver)->getLinkDetails();
+        $urls = $openUrlActive ? $this->record($this->driver)->getLinkDetailsForOpenUrl() : $this->record($this->driver)->getLinkDetails() ;
       ?>
-      <? if (!empty($urls) || $openUrl): ?>
+      <? if (!empty($urls) || $openUrlActive): ?>
       <tr>
         <th><?=$this->transEsc('Online Access')?>: </th>
         <td>
           <? foreach ($urls as $current): ?>
             <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
           <? endforeach; ?>
-          <? if ($openUrl): ?>
-            <?=$this->openUrl($openUrl)?><br/>
+          <? if ($openUrlActive): ?>
+            <?=$openUrl->renderTemplate()?><br/>
           <? endif; ?>
         </td>
       </tr>

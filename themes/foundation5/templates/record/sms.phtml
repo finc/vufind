@@ -42,8 +42,7 @@ $this->layout()->breadcrumbs = '<li>' . $this->getLastSearchLink($this->transEsc
   <?= $this->recaptcha()->html($this->useRecaptcha) ?>
   <div class="row">
     <div class="medium-9 columns medium-offset-3">
-      <input class="button small" type="submit" name="submit" role="button"
-             value="<?= $this->transEsc('Send Text') ?>"<? if (isset($this->validation) && !empty($this->validation)): ?> onClick="return phoneNumberFormHandler('sms_to', '<?= $this->validation ?>')"<? endif; ?>/>
+      <input class="button small" type="submit" name="submit" role="button" value="<?= $this->transEsc('Send Text') ?>"<? if (isset($this->validation) && !empty($this->validation)): ?> onClick="return phoneNumberFormHandler('sms_to', '<?= $this->validation ?>')"<? endif; ?>/>
     </div>
   </div>
 </form>

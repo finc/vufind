@@ -232,7 +232,7 @@ $(document).ready(function(){
       $('#'+tabid).tab('show');
       return false;
     } else {
-      $('#record-tabs').append('<div class="content" id="'+tabid+'-tab"><i class="fa fa-spinner fa-spin"></i> '+vufindString.loading+'&nbsp;...</div>');
+      $('#record-tabs').append('<div class="content" id="'+tabid+'-tab"><i class="fa fa-spinner fa-spin"></i> '+vufindString['loading']+'&nbsp;...</div>');
       $('#record-tabs .content.active').removeClass('active');
       $('#'+tabid+'-tab').addClass('active');
       return ajaxLoadTab(tabid);
