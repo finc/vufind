@@ -176,10 +176,7 @@ function registerLightboxEvents() {
    * if it matches the title bar of the lightbox
    */
   var header = $('#modal .modal-title').html();
-  var contentHeader = $('#modal .modal-body .lead');
-  if(contentHeader.length == 0) {
-    contentHeader = $('#modal .modal-body h4');
-  }
+  var contentHeader = $('#modal .modal-body h2');
   contentHeader.each(function(i,op) {
     if (op.innerHTML == header) {
       $(op).hide();
@@ -299,7 +296,7 @@ function ajaxLogin(form) {
 
 $(document).ready(function() {
   // Off canvas
-  // fixme offcanvas adapt if necessary
+  // fixme offcanvas - adapt if necessary - CK
   if($('.sidebar').length > 0) {
     $('[data-toggle="offcanvas"]').click(function () {
       $('body.offcanvas').toggleClass('active');

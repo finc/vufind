@@ -12,6 +12,8 @@
     <h2><?=$this->transEsc('Your Checked Out Items')?></h2>
     <?=$this->flashmessages()?>
 
+    <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
+
     <? if (!empty($this->transactions)): ?>
       <? if ($this->renewForm): ?>
       <form name="renewals"  method="post" id="renewals">
@@ -21,25 +23,56 @@
         </div>
       <? endif; ?>
 
+      <? if ($paginator): ?>
+        <?=$this->transEsc("Showing")?>
+        <? $start = $paginator->getAbsoluteItemNumber(1);
+           $end = $paginator->getAbsoluteItemNumber($paginator->getItemCountPerPage());
+           $total = $paginator->getTotalItemCount();
+        ?>
+        <strong><?=$this->localizedNumber($start)?></strong> - <strong><?=$this->localizedNumber($end > $total ? $total : $end)?></strong>
+        <?=$this->transEsc('of')?> <strong><?=$this->localizedNumber($total)?></strong>
+      <? endif; ?>
+
+      <? foreach ($hiddenTransactions as $ilsDetails): ?>
+        <? if (isset($this->renewResult[$ilsDetails['item_id']])): ?>
+          <? $renewDetails = $this->renewResult[$ilsDetails['item_id']]; ?>
+          <? $prefix = isset($ilsDetails['title']) ? $ilsDetails['title'] : $ilsDetails['item_id']; ?>
+          <? if (isset($renewDetails['success']) && $renewDetails['success']): ?>
+            <div class="alert-box success"><?=$this->escapeHtml($prefix . ': ') . $this->transEsc('renew_success')?></div>
+          <? else: ?>
+            <div class="alert-box alert"><?=$this->escapeHtml($prefix . ': ') . $this->transEsc('renew_fail')?><? if (isset($renewDetails['sysMessage'])): ?>: <?=$this->escapeHtml($renewDetails['sysMessage'])?><? endif; ?></div>
+          <? endif; ?>
+        <? endif; ?>
+        <? if (isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details'])): ?>
+          <? $safeId = preg_replace('/[^a-zA-Z0-9]/', '', $ilsDetails['renew_details']); ?>
+          <input class="left" type="hidden" name="renewAllIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['renew_details'])?>" />
+        <? endif; ?>
+      <? endforeach; ?>
+
       <? $i = 0; foreach ($this->transactions as $resource): ?>
         <hr/>
         <? $ilsDetails = $resource->getExtraDetail('ils_details'); ?>
-        <div id="record<?=$this->escapeHtmlAttr($resource->getUniqueId())?>">
+        <div id="record<?=$this->escapeHtmlAttr($resource->getUniqueId())?>" class="row">
           <? if ($this->renewForm): ?>
             <? if (isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details'])): ?>
               <? $safeId = preg_replace('/[^a-zA-Z0-9]/', '', $ilsDetails['renew_details']); ?>
-              <input class="pull-left" type="checkbox" name="renewSelectedIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['renew_details'])?>" id="checkbox_<?=$safeId?>" />
-              <input class="pull-left" type="hidden" name="renewAllIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['renew_details'])?>" />
+              <input class="left" type="checkbox" name="renewSelectedIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['renew_details'])?>" id="checkbox_<?=$safeId?>" />
+              <input class="left" type="hidden" name="renewAllIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['renew_details'])?>" />
             <? endif; ?>
           <? endif; ?>
-          <div class="medium-2 columns text-center">
-            <? if ($summThumb = $this->record($resource)->getThumbnail()): ?>
-              <img src="<?=$this->escapeHtmlAttr($summThumb)?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
+
+          <? $cover = $this->record($resource)->getCover('checkedout', 'small'); ?>
+          <? if ($cover): ?>
+            <div class="medium-2 columns text-center">
+            <? /* Display thumbnail if appropriate: */ ?>
+              <?=$cover?>
+            </div>
+
+            <div class="medium-6 columns">
             <? else: ?>
-              <img src="<?=$this->url('cover-unavailable')?>" class="recordcover" alt="<?=$this->transEsc('No Cover Image')?>"/>
+            <div class="medium-9 columns">
             <? endif; ?>
-          </div>
-          <div class="medium-6 columns">
+
             <?
               // If this is a non-missing Solr record, we should display a link:
               if (is_a($resource, 'VuFind\\RecordDriver\\SolrDefault') && !is_a($resource, 'VuFind\\RecordDriver\\Missing')) {
@@ -124,6 +157,7 @@
         </div>
       <? endforeach; ?>
       <? if ($this->renewForm): ?></form><? endif; ?>
+      <?=$paginator ? $this->paginationControl($paginator, 'Sliding', 'Helpers/pagination.phtml') : ''?>
     <? else: ?>
       <?=$this->transEsc('You do not have any items checked out')?>.
     <? endif; ?>

@@ -11,7 +11,7 @@
 <form action="<?=$this->url('cart-home')?>" method="post"  name="cartForm">
   <? if (!$this->cart()->isEmpty()): ?>
     <div class="cart-controls clearfix">
-      <div class="checkbox pull-left select-all">
+      <div class="checkbox left select-all">
       <label>
         <input type="checkbox" name="selectAll" class="checkbox-select-all"/>
         <?=$this->transEsc('select_page')?>

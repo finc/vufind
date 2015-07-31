@@ -21,7 +21,7 @@
     <script type="text/javascript">$("#reservesSearchForm_lookfor").focus()</script>
 
     <div class="resulthead">
-      <div class="pull-left">
+      <div class="left">
         <? if (($recordTotal = $this->results->getResultTotal()) > 0): ?>
           <?=$this->transEsc("Showing")?>
           <strong><?=$this->localizedNumber($this->results->getStartRecord())?></strong> - <strong><?=$this->localizedNumber($this->results->getEndRecord())?></strong>

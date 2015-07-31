@@ -2,7 +2,7 @@
 <? if((isset($this->showBulkOptions)  && $this->showBulkOptions)
    || (isset($this->showCartControls) && $this->showCartControls)): ?>
   <div class="bulkActionButtons hide-for-print">
-    <div class="<? if (isset($this->showBulkOptions) && $this->showBulkOptions): ?>checkbox <? else: ?>checkbox pull-left<? endif; ?> select-all"> <? /* solve this more elegantly - CK - fixme */ ?>
+    <div class="<? if (isset($this->showBulkOptions) && $this->showBulkOptions): ?>checkbox <? else: ?>checkbox left<? endif; ?> select-all"> <? /* solve this more elegantly - CK - fixme */ ?>
       <label>
         <input type="checkbox" class="checkbox-select-all" name="selectAll" id="<?=$this->idPrefix?>addFormCheckboxSelectAll"/> <?=$this->transEsc('select_page')?>
         &#124; <?=$this->transEsc('with_selected')?>:

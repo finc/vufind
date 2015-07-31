@@ -3,6 +3,7 @@
   // TODO: This file needs love
   $topFacetSet = $this->recommend->getTopFacetSet();
   $topFacetSettings = $this->recommend->getTopFacetSettings();
+  $results = $this->recommend->getResults();
 ?>
 <? if (isset($topFacetSet)): ?>
   <? $row=0; foreach($topFacetSet as $title => $cluster): ?>

@@ -66,7 +66,7 @@ $this->headScript()->appendFile("check_save_statuses.js");
             <?= $this->transEsc('query time') ?>: <?= $this->localizedNumber($qtime, 2) . $this->transEsc('seconds_abbrev') ?>
           <? endif; ?>
         <? else: ?>
-          <p class="lead"><?= $this->transEsc('nohit_heading') ?></p>
+          <h2><?= $this->transEsc('nohit_heading') ?></h2>
         <? endif; ?>
       </div>
 
@@ -109,7 +109,6 @@ $this->headScript()->appendFile("check_save_statuses.js");
 
       <div class="searchtools hide-for-print">
         <strong><?= $this->transEsc('Search Tools') ?>:</strong><br/>
-
         <div class="text-center">
           <a href="<?= $this->results->getUrlQuery()->setViewParam('rss') ?>"><i class="fa fa-bell"></i> <?= $this->transEsc('Get RSS Feed') ?></a>
           &ndash;

@@ -21,66 +21,86 @@
 #      - field2^boost
 #      - field3^boost
 #    # DismaxParams is optional and allows you to override default Dismax settings
-#    #     (i.e. mm / bf) on a search-by-search basis.  If you want global default
-#    #     values for these settings, you can edit the "dismax" search handler in
+#    #     (i.e. mm / bf) on a search-by-search basis. Enclose the parameter values
+#    #     in quotes for proper behavior. If you want global default values for these
+#    #     settings, you can edit the appropriate search handler in
 #    #     solr/biblio/conf/solrconfig.xml.
 #    DismaxParams:
 #      - [param1_name, param1_value]
 #      - [param2_name, param2_value]
 #      - [param3_name, param3_value]
-#    # QueryFields define the fields we are searching when not using Dismax
+#    # This optional setting may be used to specify which Dismax handler to use. By
+#    #     default, VuFind provides two options: dismax (for the old, standard
+#    #     Dismax) and edismax (for Extended Dismax). You can also configure your own
+#    #     in solrconfig.xml, but VuFind relies on the name "edismax" to identify an
+#    #     Extended Dismax handler. If you omit this setting, the default value from
+#    #     the default_dismax_handler setting in the [Index] section of config.ini
+#    #     will be used.
+#    DismaxHandler: dismax|edismax
+#    # QueryFields define the fields we are searching when not using Dismax; VuFind
+#    #     detects queries that will not work with Dismax and switches to QueryFields
+#    #     as needed.
 #    QueryFields:
-#      - SolrField:
+#      SolrField:
 #        - [howToMungeSearchstring, weight]
 #        - [differentMunge, weight]
-#      - DifferentSolrField:
+#      DifferentSolrField:
 #        - [howToMunge, weight]
 #    # The optional FilterQuery section allows you to AND a static query to the
 #    #     dynamic query generated using the QueryFields; see JournalTitle below
-#    #     for an example.  This is applied whether we use DismaxFields or 
+#    #     for an example.  This is applied whether we use DismaxFields or
 #    #     QueryFields.
 #    FilterQuery: (optional Lucene filter query)
-# 
+#    ExactSettings:
+#      DismaxFields: ...
+#      QueryFields: ...
+#    # All the same settings as above, but for exact searches, i.e. search terms
+#    #     enclosed in quotes. Allows different fields or weights for exact
+#    #     searches. See below for commented-out examples.
+#
 # ...etc.
 #
 #-----------------------------------------------------------------------------------
 #
-# Within the QueryFields area, fields are OR'd together, unless they're in an 
-# anonymous array, in which case the first element is a two-value array that tells 
-# us what the type (AND or OR) and weight of the whole group should be.
+# Within the QueryFields area, fields are OR'd together, unless they're in an
+# anonymous array with a numeric instead of alphanumeric key, in which case the
+# first element is a two-value array that tells us what the type (AND or OR) and
+# weight of the whole group should be.
 #
 # So, given:
 #
 # test:
 #   QueryFields:
-#     - A:
+#     A:
 #       - [onephrase, 500]
 #       - [and, 200]
-#     - B:
-#       - [and, 100]   
-#       - [or, 50]  
-#     # Start an anonymous array to group; first element indicates AND grouping 
+#     B:
+#       - [and, 100]
+#       - [or, 50]
+#     # Start an anonymous array to group; first element indicates AND grouping
 #     #     and a weight of 50
-#     -
-#       - [AND, 50]                 
-#       - C:
+#     0:
+#       0:
+#         - AND
+#         - 50
+#       C:
 #         - [onephrase, 200]
-#       - D:
+#       D:
 #         - [onephrase, 300]
-#       # Note the "not" attached to the field name as a minus, and the use of ~ 
+#       # Note the "not" attached to the field name as a minus, and the use of ~
 #       #     to mean null ("no special weight")
-#       - -E:
+#       -E:
 #         - [or, ~]
-#     - D:
+#     D:
 #       - [or, 100]
-# 
-#  ...and the search string 
+#
+#  ...and the search string
 #
 #      test "one two"
 #
 #  ...we'd get
-#   
-#   (A:"test one two"^500 OR 
+#
+#   (A:"test one two"^500 OR
 #    A:(test AND "one two")^ 200 OR
 #    B:(test AND "one two")^100 OR
 #    B:(test OR "one two")^50
@@ -108,6 +128,10 @@
 #  testing "one two"
 #   ...becomes (testing OR "one two")
 #
+# identity: Use the search as-is
+#  testing "one two"
+#   ...becomes (testing "one two")
+#
 # Additional Munge types can be defined in the CustomMunge section.  Each array
 # entry under CustomMunge defines a new named munge type.  Each array entry under
 # the name of the munge type specifies a string manipulation operation.  Operations
@@ -119,7 +143,8 @@
 # [append, text] - Append text to the end of the user's search string
 # [lowercase] - Convert string to lowercase
 # [preg_replace, pattern, replacement] - Perform a regular expression replace
-#                                        using the preg_replace() PHP function
+#     using the preg_replace() PHP function.  If you use backreferences in your
+#     replacement phrase, be sure to escape dollar signs (i.e. \$1, not $1).
 # [uppercase] - Convert string to uppercase
 #
 # See the CallNumber search below for an example of custom munging in action.
@@ -256,7 +281,20 @@ Subject:
     #- era:
     #  - [and, 100]
     #  - [or, ~]
+#  ExactSettings:
+#    DismaxFields:
+#      - topic_unstemmed^150
+#    QueryFields:
+#      - topic_unstemmed:
+#        - [onephrase, 350]
+#        - [and, 150]
+#        - [or, ~]
 
+# This field definition is a compromise that supports both journal-level and
+# article-level data.  The disadvantage is that hits in article titles will
+# be mixed in.  If you are building a purely article-oriented index, you should
+# customize this to remove all of the title_* fields and focus entirely on the
+# container_title field.
 JournalTitle:
   DismaxFields:
     - title_short^500
@@ -292,6 +330,14 @@ JournalTitle:
       - [onephrase, 50]
       - [and , ~]
   FilterQuery: "format:Journal"
+#  ExactSettings:
+#    DismaxFields:
+#      - title_full_unstemmed^450
+#    QueryFields:
+#      - title_full_unstemmed:
+#        - [onephrase, 450]
+#        - [and, 400]
+#    FilterQuery: "format:Journal OR format:Article"
 
 Title:
   DismaxParams:
@@ -338,6 +384,13 @@ Title:
     - series_orig:
       - [onephrase, 100]
       - [and, 50]
+#  ExactSettings:
+#    DismaxFields:
+#      - title_full_unstemmed^450
+#    QueryFields:
+#      - title_full_unstemmed:
+#        - [onephrase, 450]
+#        - [and, 400]
 
 Series:
   DismaxFields:
@@ -494,6 +547,29 @@ AllFields:
       - [onephrase, 500]
     ismn:
       - [onephrase, 500]
+#  ExactSettings:
+#    DismaxFields:
+#      - title_full_unstemmed^600
+#      - topic_unstemmed^550
+#      - allfields_unstemmed^10
+#      - fulltext_unstemmed^10
+#      - isbn
+#      - issn
+#    QueryFields:
+#      title_full_unstemmed:
+#        - [onephrase, 600]
+#        - [and, 500]
+#      topic_unstemmed:
+#        - [onephrase, 550]
+#        - [and, 500]
+#      allfields_unstemmed:
+#        - [or, 10]
+#      fulltext_unstemmed:
+#        - [or, 10]
+#      isbn:
+#        - [onephrase, ~]
+#      issn:
+#        - [onephrase, ~]
 
 # These are advanced searches that never use Dismax:
 id:
@@ -538,30 +614,33 @@ LccBrowse:
   # We use two similar munges here -- one for exact matches, which will get
   # a very high boost factor, and one for left-anchored wildcard searches,
   # which will return a larger number of hits at a lower boost.
-  # CustomMunge:
-    # callnumber_exact:
-      # - [uppercase]
+  #CustomMunge:
+    #callnumber_exact:
+      #- [uppercase]
       # Strip whitespace and quotes:
-      # - [preg_replace, '/[ "]/', ""]
+      #- [preg_replace, '/[ "]/', ""]
+      # Escape colons (unescape first to avoid double-escapes):
+      #- [preg_replace, "/(\\\:)/", ':']
+      #- [preg_replace, '/:/', '\:']
       # Strip pre-existing trailing asterisks:
-      # - [preg_replace, "/\*+$/", ""]
-    # callnumber_fuzzy:
-      # - [uppercase]
+      #- [preg_replace, "/\*+$/", ""]
+    #callnumber_fuzzy:
+      #- [uppercase]
       # Strip whitespace and quotes:
-      # - [preg_replace, '/[ "]/', ""]
-      # Strip pre-existing trailing asterisks:
-      # - [preg_replace, "/\*+$/", ""]
-      # Ensure we have just one trailing asterisk.  The trailing space inside
-      #     the quotes has no effect on searching; it is a workaround for a
-      #     Horde::YAML parsing glitch -- see VUFIND-160 in JIRA for details.
-      # - [append, "* "]
-  # QueryFields:
-    # - callnumber:
-      # - [callnumber_exact, 1000]
-      # - [callnumber_fuzzy, ~]
-    # - dewey-full:
-      # - [callnumber_exact, 1000]
-      # - [callnumber_fuzzy, ~]
+      #- [preg_replace, '/[ "]/', ""]
+      # Escape colons (unescape first to avoid double-escapes):
+      #- [preg_replace, "/(\\\:)/", ':']
+      #- [preg_replace, '/:/', '\:']
+      # Strip pre-existing trailing asterisks, then add a new one:
+      #- [preg_replace, "/\*+$/", ""]
+      #- [append, "*"]
+  QueryFields:
+    callnumber-search:
+      - [callnumber_exact, 1000]
+      - [callnumber_fuzzy, ~]
+    dewey-search:
+      - [callnumber_exact, 1000]
+      - [callnumber_fuzzy, ~]
 
 publisher:
   DismaxFields:

@@ -168,12 +168,12 @@ JS;
           <noscript>
             <? endif; ?>
             <ul class="side-nav" role="navigation">
-              <? foreach ($cluster['list'] as $i => $thisFacet): ?>
-                <?
-                if (strlen($thisFacet['displayText']) == 0) {
-                  $thisFacet['displayText'] = "-";
-                }
-                ?>
+           <? foreach ($cluster['list'] as $i=>$thisFacet): ?>
+           <?
+             if(strlen($thisFacet['displayText']) == 0) {
+             $thisFacet['displayText'] = "-";
+              }
+           ?>
                 <? $moreClass = 'narrowGroupHidden-' . $this->escapeHtmlAttr($title) . ' hide'; ?>
                 <? if ($i == 6): ?>
                   <li id="more-narrowGroupHidden-<?= $this->escapeHtmlAttr($title) ?>"><a href="javascript:moreFacets('narrowGroupHidden-<?= $title ?>')"><?= $this->transEsc('more') ?>&nbsp;...</a>
@@ -196,24 +196,24 @@ JS;
                   <? if ($allowExclude): ?>
                     <li class="facet<?= $thisFacet['operator'] ?><? if ($i > 5): ?> <?= $moreClass ?><? endif ?>">
                   <? else: ?>
-                    <li<? if ($i > 5): ?> class="<?= $moreClass ?>"<? endif ?>><a href="<?= $addURL ?>" class="facet<?= $thisFacet['operator'] ?>">
+                    <li <? if ($i > 5): ?> class="<?= $moreClass ?>"<? endif ?>><a href="<?= $addURL ?>" class="facet<?= $thisFacet['operator'] ?>">
                   <? endif; ?>
                   <span class="label pull-right">
-                <?= $this->localizedNumber($thisFacet['count']) ?>
+                    <?= $this->localizedNumber($thisFacet['count']) ?>
                     <? if ($allowExclude): ?>
-                      <a href="<?= $this->currentPath() . $results->getUrlQuery()->addFacet($title, $thisFacet['value'], 'NOT') ?>" title="<?= $this->transEsc('exclude_facet') ?>"><i
-                            class="fa fa-times"></i></a>
+                      <a href="<?= $this->currentPath() . $results->getUrlQuery()->addFacet($title, $thisFacet['value'], 'NOT') ?>" title="<?= $this->transEsc('exclude_facet') ?>"><i class="fa fa-times"></i></a>
                     <? endif; ?>
-              </span>
-                  <? if ($allowExclude): ?>
-                  <a href="<?= $addURL ?>">
-                <? endif; ?>
-                  <? if ($thisFacet['operator'] == 'OR'): ?>
-                    <i class="fa fa-square-o"></i>
-                  <? endif; ?>
-                  <?= $this->escapeHtml($thisFacet['displayText']) ?>
-                  </a>
-                  </li>
+                  </span>
+               <? if ($allowExclude): ?>
+               <a href="<?= $addURL ?>">
+             <? endif; ?>
+               <? if ($thisFacet['operator'] == 'OR'): ?>
+                 <i class="fa fa-square-o"></i>
+               <? endif; ?>
+               <?= $this->escapeHtml($thisFacet['displayText']) ?>
+               <? /* No <? if ($allowExclude): ?> here! - CK */ ?>
+               </a>
+               </li>
                 <? endif; ?>
               <? endforeach; ?>
               <? if ($i > 5): ?>

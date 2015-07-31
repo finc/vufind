@@ -992,12 +992,12 @@ button,
   width: 10px;
   padding: 0;
   margin-left: -10px;
-  font-family: FontAwesome;
+  font-family: "FontAwesome", sans-serif;
   font-weight: normal;
   font-style: normal;
   text-decoration:inherit;
   cursor: pointer;
-  speak: none;
+  /*speak: none;*/
 }
 .facet .jstree-default {
   & .jstree-open > .jstree-ocl:before {content: "\f0d7";}
@@ -1034,12 +1034,12 @@ li.jstree-facet ul {padding-left: 1rem;}
     width: 10px;
     padding: 0;
     margin-left: -10px;
-    font-family: FontAwesome;
+    font-family: "FontAwesome", sans-serif;
     font-style: normal;
     font-weight: normal;
     cursor: pointer;
     text-decoration: inherit;
-    speak: none;
+    /*speak: none; */
   }
   .jstree-open > .jstree-ocl:before {content: "\f0d7";}
   .jstree-closed > .jstree-ocl:before {content: "\f0da";}
@@ -1250,6 +1250,13 @@ select {
   // Move up sibling radios or checkboxes for tighter spacing
 }
 
+// SPECIAL CLASSES
+
+// No Margins, used for buttons on top of content etc
+.nomargins {
+  margin: 0 !important;
+}
+
 // visibility classes - leave at end of file to overrule other display settings
 .hide {
   display: none
@@ -1260,6 +1267,8 @@ select {
     display: inline !important;
   }
 }
+
+// SPECIAL CLASSES - End
 
 // Offcanvas - move later fixme - CK
 .offcanvas-overlay,

@@ -25,9 +25,9 @@ $user = $this->auth()->isLoggedIn();
 <div class="row">
   <div class="<?= $this->layoutClass('mainbody') ?>">
     <div class="clearfix hide-for-print">
-      <p class="lead pull-left"><?= $list ? $this->escapeHtml($list->title) : $this->transEsc("Your Favorites") ?></p>
+      <h2 class="left"><?= $list ? $this->escapeHtml($list->title) : $this->transEsc("Your Favorites") ?></h2>
 
-      <ul class="button-group pull-right">
+      <ul class="button-group right">
         <? if (isset($list)): ?>
           <? if ($list->editAllowed($account->isLoggedIn())): ?>
             <li>

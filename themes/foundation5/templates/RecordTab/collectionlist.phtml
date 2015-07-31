@@ -13,7 +13,7 @@
     <?=$this->recommend($current)?>
   <? endforeach; ?>
   <div class="clearfix hide-for-print">
-    <div class="pull-left">
+    <div class="left">
       <?=$this->transEsc("Showing")?>
       <strong><?=$this->localizedNumber($results->getStartRecord())?></strong> - <strong><?=$this->localizedNumber($results->getEndRecord())?></strong>
       <? if (!isset($this->skipTotalCount)): ?>
