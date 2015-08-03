@@ -316,6 +316,36 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
     }
 
     /**
+     * Support method to handle date uniformly
+     *
+     * @param string $date String representing a date
+     *
+     * @return string Formatted date
+     */
+    protected function convertDate($date)
+    {
+        try {
+            return $this->dateConverter
+                ->convertToDisplayDate("Y-m-d", $date);
+        } catch (\Exception $e) {
+            $this->debug("Date conversion failed: " . $e->getMessage());
+            return '';
+        }
+    }
+
+    /**
+     * Support method to handle datetime uniformly
+     *
+     * @param string $datetime String representing a datetime
+     *
+     * @return string Formatted datetime
+     */
+    protected function convertDatetime($datetime)
+    {
+        return $this->convertDate($datetime);
+    }
+
+    /**
      * Perform an HTTP request.
      *
      * @param string $id id for query in daia
@@ -490,6 +520,11 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
         }
 
         if (count($docs)) {
+            // check for error messages and write those to log
+            if (array_key_exists("message", $docs)) {
+                $this->logMessages($docs["message"], "document");
+            }
+
             // do DAIA documents exist?
             if (array_key_exists("document", $docs) && $this->multiQuery) {
                 // now loop through the found DAIA documents
@@ -543,7 +578,6 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
                             $domNode->setAttribute("content", $node->textContent);
                             $node->nodeValue = "";
                         }
-
                     }
                 }
             }
@@ -830,6 +864,10 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
             && array_key_exists('content', $item['storage'])
         ) {
             return $item['storage']['content'];
+        } elseif (isset($item['department'])
+            && array_key_exists('content', $item['department'])
+        ) {
+            return $item['department']['content'];
         }
         return "Unknown";
     }
