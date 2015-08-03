@@ -150,9 +150,6 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     public function getStatus($id)
     {
-        if ($this->checkForILSTestId($id)) {
-            return [];
-        }
         return $this->_replaceILSId(
             parent::getStatus($this->_getILSRecordId($id)), $id
         );
@@ -277,8 +274,16 @@ class FincILS extends PAIA implements LoggerAwareInterface
     {
         //get the ILS-specific recordId
         if ($this->ilsIdentifier != "default") {
-            $ilsRecordId = $this->_getRecord($id)
-                ->getILSIdentifier($this->ilsIdentifier);
+
+            try {
+                $ilsRecordId = $this->_getRecord($id)
+                    ->getILSIdentifier($this->ilsIdentifier);
+            } catch (\Exception $e) {
+                $this->debug($e);
+                $this->_idMapper[$id] = $id;
+                return $id;
+            }
+
             if ($ilsRecordId == '') {
                 $this->_idMapper[$id] = $id;
                 return $id;

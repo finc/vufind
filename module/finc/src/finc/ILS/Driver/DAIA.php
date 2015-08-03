@@ -81,8 +81,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
     protected $multiQuery = false;
 
     /**
-     * acceptable ContentTypes delivered by DAIA server
-     * in HTTP header
+     * Acceptable ContentTypes delivered by DAIA server in HTTP header
      *
      * @var array
      */
@@ -452,22 +451,6 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
     }
 
     /**
-     * Autoconfigure tests ILS with getStatus('1') - use this method if you don't
-     * have a record with id='1' but don't want Autoconfigure to fail on ILS test.
-     *
-     * @param string $id Record id to be tested
-     *
-     * @return bool
-     */
-    protected function checkForILSTestId($id)
-    {
-        if ($id === '1') {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Parse a DAIA document depending on its type.
      *
      * Parse a DAIA document depending on its type and return a VuFind
@@ -677,7 +660,7 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
                 // get location
                 $result_item["location"] = $this->getItemLocation($item);
                 // status and availability will be calculated in own function
-                $result_item = $this->getItemStatus($item)+$result_item;
+                $result_item = $this->getItemStatus($item) + $result_item;
                 // add result_item to the result array
                 $result[] = $result_item;
             } // end iteration on item
@@ -762,7 +745,9 @@ class DAIA extends \VuFind\ILS\Driver\AbstractBase implements
                 if (isset($unavailable["expected"])) {
                     try {
                         $duedate = $this->dateConverter
-                            ->convertToDisplayDate("Y-m-d", $unavailable['expected']);
+                            ->convertToDisplayDate(
+                                "Y-m-d", $unavailable['expected']
+                            );
                     } catch (\Exception $e) {
                         $this->debug("Date conversion failed: " . $e->getMessage());
                         $duedate = null;
