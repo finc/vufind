@@ -8551,6 +8551,37 @@ th.hide-for-touch {
   }
 }
 
+.small-padding-panel {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #d8d8d8;
+  margin-bottom: 1.4285714286rem;
+  padding: 0.5rem;
+  background: #f2f2f2;
+  color: #333333;
+}
+
+.small-padding-panel > :first-child {
+  margin-top: 0;
+}
+
+.small-padding-panel > :last-child {
+  margin-bottom: 0;
+}
+
+.small-padding-panel h1, .small-padding-panel h2, .small-padding-panel h3, .small-padding-panel h4, .small-padding-panel h5, .small-padding-panel h6, .small-padding-panel p, .small-padding-panel li, .small-padding-panel dl {
+  color: #333333;
+}
+
+.small-padding-panel h1, .small-padding-panel h2, .small-padding-panel h3, .small-padding-panel h4, .small-padding-panel h5, .small-padding-panel h6 {
+  line-height: 1;
+  margin-bottom: 0.7142857143rem;
+}
+
+.small-padding-panel h1.subheader, .small-padding-panel h2.subheader, .small-padding-panel h3.subheader, .small-padding-panel h4.subheader, .small-padding-panel h5.subheader, .small-padding-panel h6.subheader {
+  line-height: 1.4;
+}
+
 html {
   overflow: -moz-scrollbars-vertical !important;
 }
@@ -9136,20 +9167,30 @@ ul[role=navigation] {
   margin-bottom: .875rem;
 }
 
+#advSearchForm .small-padding-panel {
+  margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 767px) {
+  #advSearchForm div[id^="search0_"] {
+    border: 1px solid #e7e7e7;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+  }
+  #advSearchForm div[id^="search0_"] .close {
+    margin-top: -2rem;
+  }
+}
+
 #advSearchForm .close,
 #advSearchForm .group-close {
   float: right;
   font-weight: bold;
+  font-size: x-large;
 }
 
-#advSearchForm .group-close {
-  font-size: 120%;
-  margin-right: -1rem;
-  margin-top: -1.5rem;
-}
-
-#advSearchForm .panel {
-  margin-bottom: 1rem;
+#advSearchForm .close a {
+  color: #f08a24 !important;
 }
 
 #advSearchForm #limit {
@@ -9159,6 +9200,12 @@ ul[role=navigation] {
 #advSearchForm #groupPlaceHolder {
   display: block;
   margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 767px) {
+  #advSearchForm .match {
+    margin-top: 1rem;
+  }
 }
 
 .row.result {
@@ -9427,12 +9474,12 @@ button.small,
   width: 10px;
   padding: 0;
   margin-left: -10px;
-  font-family: FontAwesome;
+  font-family: "FontAwesome", sans-serif;
   font-weight: normal;
   font-style: normal;
   text-decoration: inherit;
   cursor: pointer;
-  speak: none;
+  /*speak: none;*/
 }
 
 .facet .jstree-default .jstree-open > .jstree-ocl:before {
@@ -9483,12 +9530,12 @@ li.jstree-facet ul {
   width: 10px;
   padding: 0;
   margin-left: -10px;
-  font-family: FontAwesome;
+  font-family: "FontAwesome", sans-serif;
   font-style: normal;
   font-weight: normal;
   cursor: pointer;
   text-decoration: inherit;
-  speak: none;
+  /*speak: none; */
 }
 
 .hierarchy-tree .jstree-open > .jstree-ocl:before {
@@ -9701,6 +9748,10 @@ select.left {
   margin-top: -5px;
 }
 
+.nomargins {
+  margin: 0 !important;
+}
+
 .hide {
   display: none;
 }
@@ -9709,6 +9760,62 @@ select.left {
   .visible-small-inline {
     display: inline !important;
   }
+}
+
+.traffic-light {
+  display: inline;
+  padding: 0;
+}
+
+.traffic-light span {
+  background-color: #EFEFEF;
+  background-image: -webkit-gradient(radial, 50% 0, 100, 50% 0, 0, from(rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.38)));
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  display: inline-block;
+  height: 1em;
+  margin: 0 -3px 0 0;
+  padding-right: .5rem;
+  width: 1em;
+}
+
+.traffic-light span.last {
+  margin-right: .5em;
+}
+
+.traffic-light.access-denied span.first {
+  background-color: #f04124;
+}
+
+.traffic-light.access-denied span.second {
+  background-color: #DDDDDD;
+}
+
+.traffic-light.access-denied span.last {
+  background-color: #DDDDDD;
+}
+
+.traffic-light.access-limited span.first {
+  background-color: #DDDDDD;
+}
+
+.traffic-light.access-limited span.second {
+  background-color: #f08a24;
+}
+
+.traffic-light.access-limited span.last {
+  background-color: #DDDDDD;
+}
+
+.traffic-light.access-open span.first {
+  background-color: #DDDDDD;
+}
+
+.traffic-light.access-open span.second {
+  background-color: #DDDDDD;
+}
+
+.traffic-light.access-open span.last {
+  background-color: #43AC6A;
 }
 
 .offcanvas-overlay,
