@@ -64,7 +64,7 @@ $lastLimit = $options->getLastLimit();
       </li>
     <? endif; ?>
   </ul>
-  <!-- ? endif; ? --> <? /* Verify if correct - file had no endif in last line but here - fixme - CK  */ ?>
+
   <div id="shard-selector">
     <? $shards = $options->getShards(); if ($options->showShardCheckboxes() && !empty($shards)): ?>
       <?
@@ -73,10 +73,11 @@ $lastLimit = $options->getLastLimit();
       ?>
       <? foreach ($shards as $shard => $val): ?>
         <? $isSelected = empty($selectedShards) || in_array($shard, $selectedShards); ?>
-        <input type="checkbox" <?= $isSelected ? 'checked="checked" ' : '' ?>name="shard[]" value='<?= $this->escapeHtmlAttr($shard) ?>'/> <?= $this->transEsc($shard) ?>
+        <input type="checkbox" <?= $isSelected ? 'checked="checked" ' : '' ?>name="shard[]" value='<?= $this->escapeHtmlAttr($shard) ?>' id='checkbox_<?= $this->escapeHtmlAttr($shard) ?>' /> <label for="checkbox_<?= $this->escapeHtmlAttr($shard) ?>"><?= $this->transEsc($shard) ?></label>
       <? endforeach; ?>
     <? endif; ?>
   </div>
+
   <?
   $filterDetails = $this->searchbox()->getFilterDetails(
       isset($this->filterList) && is_array($this->filterList) ? $this->filterList : array(),
@@ -85,11 +86,9 @@ $lastLimit = $options->getLastLimit();
   ?>
   <? if ((isset($hasDefaultsApplied) && $hasDefaultsApplied) || !empty($filterDetails)): ?>
     <? $defaultFilterState = $options->getRetainFilterSetting() ? ' checked="checked"' : ''; ?>
-    <div class="checkbox">
-      <label>
+    <div class="checkbox" id="keepfilters">
         <input onChange="$('.applied-filter').click()" type="checkbox"<?= $defaultFilterState ?> id="searchFormKeepFilters"/>
-        <?= $this->transEsc("basic_search_keep_filters") ?>
-      </label>
+      <label for="searchFormKeepFilters"><?= $this->transEsc("basic_search_keep_filters") ?></label>
     </div>
     <div class="hide">
       <? foreach ($filterDetails as $current): ?>

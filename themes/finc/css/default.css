@@ -8621,7 +8621,7 @@ ul.list-unstyled li, .savedLists ul li {
   margin-left: 0;
 }
 
-ul .label {
+ul.label {
   float: right;
 }
 
@@ -8698,9 +8698,19 @@ ul .label {
   font-size: .875rem;
 }
 
+.sidebar .side-nav .label a {
+  color: #F9F9F9;
+}
+
 .sidebar .side-nav li {
   border-bottom: 1px solid #e8e8e8;
   margin: 0;
+}
+
+.sidebar .side-nav li.facetOR .label,
+.sidebar .side-nav li.facetAND .label {
+  margin-top: .4em;
+  padding-left: .5em;
 }
 
 .sidebar .side-nav li .active {
@@ -8710,11 +8720,7 @@ ul .label {
 }
 
 .sidebar .side-nav li .active:hover {
-  background-color: #f08a24;
-}
-
-.sidebar .side-nav li .active:focus {
-  background-color: #a0d3e8;
+  background-color: #008CBA;
 }
 
 .sidebar .side-nav li:not(.accordion-navigation) {
@@ -8724,6 +8730,12 @@ ul .label {
 
 .sidebar .side-nav li:not(.accordion-navigation):first-of-type {
   border-top: 1px solid #e8e8e8;
+}
+
+.sidebar .side-nav li.facetOR span.label > a:not(.button),
+.sidebar .side-nav li.facetAND span.label > a:not(.button) {
+  display: inline-block;
+  padding: 0.25em 0 0.25em 0.25em;
 }
 
 .sidebar h4 {
@@ -8736,7 +8748,7 @@ ul .label {
 }
 
 .sidebar .list-unstyled li, .sidebar .savedLists ul li, .savedLists .sidebar ul li {
-  border-color: #DDDDDD #DDDDDD -moz-use-text-color;
+  border-color: #DDDDDD;
   border-image: none;
   border-style: solid solid none;
   border-width: 1px 1px medium;
@@ -8910,10 +8922,6 @@ ul.date-range-slider {
   height: 2.5rem;
 }
 
-.top-bar .logoutLink > a {
-  color: #F00;
-}
-
 .contain-to-grid .breadcrumbs {
   margin: 0 auto;
   margin-bottom: 0;
@@ -8966,7 +8974,7 @@ ul.date-range-slider {
 
 .top-bar .twitter-typeahead {
   line-height: 1.5;
-  top: .4rem;
+  top: .5rem;
 }
 
 .top-bar .twitter-typeahead input {
@@ -9005,6 +9013,10 @@ ul.date-range-slider {
   margin: 0;
 }
 
+#searchForm_lookfor, #searchForm_type {
+  margin-top: 1px;
+}
+
 #searchForm ul {
   margin-bottom: 0;
 }
@@ -9017,16 +9029,19 @@ ul.date-range-slider {
   margin-bottom: .5em;
 }
 
-#searchForm .checkbox label {
-  color: #FFFFFF;
-  /*font-size: .75rem;*/
-  line-height: 0.2;
-  margin-left: .75rem;
+#searchForm .checkbox {
+  margin-bottom: 0;
+  margin-left: 1.4em;
+  margin-top: -.8em;
 }
 
-#searchForm input[type="checkbox"] {
-  margin-left: 0;
-  top: .8rem;
+#searchForm .checkbox input[type="checkbox"] {
+  margin-top: 4px;
+}
+
+#searchForm .checkbox label {
+  color: #FFFFFF;
+  padding-left: 0;
 }
 
 .top-bar + .nav.searchbox {
@@ -9048,47 +9063,63 @@ ul.date-range-slider {
   }
 }
 
-.top-bar #searchForm input[type="checkbox"] {
-  margin-left: 0;
+#shard-selector:before {
+  content: " ";
+  display: block;
+  clear: both;
 }
 
-@media only screen and (min-width: 20em) {
-  #shard-selector {
-    clear: both;
-    color: #CCCCCC;
-  }
+#shard-selector input[type="checkbox"] + label {
+  color: #e7e7e7;
 }
 
-@media only screen and (min-width: 45rem) {
+@media only screen and (max-width: 767px) {
   #shard-selector {
     float: left;
-    font-size: .7rem;
-    line-height: 1;
-    padding: 0;
+    margin-top: 1rem;
   }
 }
 
-@media (min-width: 62rem) {
-  #shard-selector {
-    left: 1rem;
-    top: 2.5rem;
-  }
+.searchHomeContent #shard-selector input[type="checkbox"] + label {
+  color: #333333;
 }
 
-@media (min-width: 80rem) {
-  #shard-selector {
-    left: 0;
-  }
+#keepfilters {
+  clear: left;
+  display: inline-block;
+  float: left;
+}
+
+#keepfilters:before {
+  content: " ";
+  display: block;
+  clear: both;
+}
+
+#keepfilters.checkbox {
+  margin-top: 0;
+}
+
+#keepfilters input[type="checkbox"] {
+  margin-top: 0 !important;
+}
+
+#keepfilters input[type="checkbox"] + label {
+  color: #e7e7e7;
+  margin-top: 1em;
 }
 
 .searchHomeContent .panel {
   padding-bottom: 0;
-  /*padding-left: 0;
-  padding-right: 0;*/
 }
 
 .searchHomeContent .panel ul {
   width: 100%;
+}
+
+.searchHomeContent .panel ul button,
+.searchHomeContent .panel ul .button {
+  margin-bottom: 0;
 }
 
 @media only screen and (min-width: 48rem) {
@@ -9431,6 +9462,27 @@ button.small,
 .tabs .tab-title > a {
   font-size: 1rem;
   padding: 0.5rem 1rem;
+}
+
+header #searchForm .tabs {
+  border: 0;
+}
+
+header #searchForm .tabs:before {
+  display: none;
+}
+
+header #searchForm .tabs a {
+  color: #FFFFFF;
+}
+
+.searchHomeContent .tabs {
+  border: 0;
+}
+
+.searchHomeContent .tabs:before,
+.searchHomeContent .tabs:after {
+  display: none;
 }
 
 .tabs-content {
