@@ -43,7 +43,7 @@ body {
   /*@include fs-smaller;*/
 }
 
-// ICONS 
+// ICONS
 .fa-grid:before {
   content: "\f00a";
 }
@@ -83,7 +83,7 @@ ul {
 
 // LISTS - END
 
-// TABLES 
+// TABLES
 .alphabrowse.table {
   margin-bottom: 0;
   table-layout: fixed;
@@ -507,12 +507,12 @@ ul.date-range-slider {
       margin-top: 4px;
     }
     label {
-    color: $white;
+      color: $white;
       padding-left: 0;
     }
   }
   // Keep filter checkbox - END
-  }
+}
 
 // Searchbox BG and sizes, test for search box AND adv search terms display
 .top-bar + .nav.searchbox {
@@ -528,7 +528,7 @@ ul.date-range-slider {
       margin-bottom: 0;
     }
   }
-  
+
   // Inline on larger devices
   @media only screen and (min-width: 48rem) {
     ul li {
@@ -552,7 +552,7 @@ ul.date-range-slider {
     float: left;
     margin-top: 1rem;
   }
-  }
+}
   // shard selector on home page
 .searchHomeContent #shard-selector {
   input[type="checkbox"] + label {
@@ -599,101 +599,101 @@ ul.date-range-slider {
       .button {
         margin-bottom: 0;
       }
-  }
+    }
 
-  // Inline on larger displays, stacked on small
-  @media only screen and (min-width: 48rem) {
-    ul {
-      display: inline;
+    // Inline on larger displays, stacked on small
+    @media only screen and (min-width: 48rem) {
+      ul {
+        display: inline;
 
-      li {
-        float: left;
-        padding-right: 1rem;
+        li {
+          float: left;
+          padding-right: 1rem;
 
-        // Reset Advanced Search button to normal appearance  on home page (not in top-bar)
-        .postfix.button {
-          padding: 0 2.28571rem 1.21429rem;
+         // Reset Advanced Search button to normal appearance  on home page (not in top-bar)
+          .postfix.button {
+            padding: 0 2.28571rem 1.21429rem;
+          }
         }
       }
     }
   }
-}
 
-// Advanced Search terms
-p.adv_search_terms {
-  background-color: #f1f1f1;
-  border: 1px solid $iron;
-  margin-bottom: .25rem;
-  padding: .35rem .5rem;
-  width: 100%;
-}
-
-ul.adv_search_links {
-  list-style: none; // shorten this? - Fixme - CK
-  margin-bottom: 0;
-  margin-left: 0;
-
-  li {
-    border-bottom: 1px solid $iron;
-    border-top: none;
-    padding-left: .5em;
-
-    &:last-of-type {
-      border-bottom: none;
-    }
+  // Advanced Search terms
+  p.adv_search_terms {
+    background-color: #f1f1f1;
+    border: 1px solid $iron;
+    margin-bottom: .25rem;
+    padding: .35rem .5rem;
+    width: 100%;
   }
-  // 786px and above as inline list
-  @media only screen and (min-width: 48rem) {
-    li {
-      border-bottom: none;
-      border-right: 1px solid $iron;
-      display: inline;
 
-      padding-right: .5em;
+  ul.adv_search_links {
+    list-style: none; // shorten this? - Fixme - CK
+    margin-bottom: 0;
+    margin-left: 0;
+
+    li {
+      border-bottom: 1px solid $iron;
+      border-top: none;
+      padding-left: .5em;
 
       &:last-of-type {
-        border-right: none;
+        border-bottom: none;
+      }
+    }
+    // 786px and above as inline list
+    @media only screen and (min-width: 48rem) {
+      li {
+        border-bottom: none;
+        border-right: 1px solid $iron;
+        display: inline;
+
+        padding-right: .5em;
+
+        &:last-of-type {
+          border-right: none;
+        }
       }
     }
   }
-}
 
-.top-bar-section .adv_search_links {
-  float: left;
-  margin-bottom: 1rem;
+  .top-bar-section .adv_search_links {
+    float: left;
+    margin-bottom: 1rem;
 
-  > a {
-    font-size: .80rem;
+    > a {
+      font-size: .80rem;
+    }
   }
-}
 
-// Advanced Search: search term insert - END
+  // Advanced Search: search term insert - END
 
 
-// Searchbox - END
+  // Searchbox - END
 
-.grid {
-  @media only screen and (max-width: 767px) {
-    min-height: 250px; // e.g. search/list-grid.phtml
+  .grid {
+    @media only screen and (max-width: 767px) {
+      min-height: 250px; // e.g. search/list-grid.phtml
+    }
   }
-}
 
 
-// HEADER - END
+  // HEADER - END
 
-// NAVIGATION BAR
-ul[role=navigation] {
-  list-style: none;
-}
+  // NAVIGATION BAR
+  ul[role=navigation] {
+    list-style: none;
+  }
 
-// NAVIGATION BAR - END
+  // NAVIGATION BAR - END
 
-// MAIN content area
-// for Search Box see header, above, for Advanced Search fields see below
+  // MAIN content area
+  // for Search Box see header, above, for Advanced Search fields see below
 
-// padding for main content including sidebar
-#content.panel {
-  padding: 1rem;
+  // padding for main content including sidebar
+  #content.panel {
+    padding: 1rem;
 
   p.lead {margin-bottom: .875rem}
 }
