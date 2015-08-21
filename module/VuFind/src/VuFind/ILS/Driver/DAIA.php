@@ -710,6 +710,7 @@ class DAIA extends AbstractBase implements
                         // set item available if service is loan, presentation or
                         // openaccess
                         $availability = true;
+                        $status = 'Available';
                         if ($available['service'] == "loan"
                             && isset($available['service']['href'])
                         ) {
@@ -743,7 +744,7 @@ class DAIA extends AbstractBase implements
 		    // set item unavailable if service is loan, presentation or
                     // openaccess
                     $availability = false;
-                	
+		    $status='Checked Out';                	
                     if ($unavailable['service'] == "loan"
                         && isset($unavailable['service']['href'])
                     ) {
