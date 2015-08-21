@@ -690,7 +690,7 @@ class DAIA extends AbstractBase implements
     protected function getItemStatus($item)
     {
         $availability = false;
-        $status = ''; // status cannot be null as this will crash the translator
+        $status = 'Check catalogue for availability'; // initial status message, changed if available/unavailable information present
         $duedate = null;
         $availableLink = '';
         $queue = '';
@@ -740,6 +740,10 @@ class DAIA extends AbstractBase implements
                         ['loan', 'presentation', 'openaccess']
                     )
                 ) {
+		    // set item unavailable if service is loan, presentation or
+                    // openaccess
+                    $availability = false;
+                	
                     if ($unavailable['service'] == "loan"
                         && isset($unavailable['service']['href'])
                     ) {
