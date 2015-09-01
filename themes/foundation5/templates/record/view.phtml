@@ -66,7 +66,7 @@
 		  if (!$obj->supportsAjax()) { $tab_classes[] = 'noajax'; }
 		?>
 		<li class="tab-title<?=count($tab_classes) > 0 ? ' ' . implode(' ', $tab_classes) . '' : ''?>">
-		  <a id="<?=strtolower($tab) ?>" href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>#tabnav"><?=$this->transEsc($desc)?></a>
+		  <a id="<?=strtolower($tab) ?>" href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>"><?=$this->transEsc($desc)?></a>
 		</li>
 		<? endforeach; ?>
 	  </ul>
