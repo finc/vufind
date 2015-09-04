@@ -9056,6 +9056,14 @@ ul.date-range-slider {
   margin-bottom: 0;
 }
 
+@media only screen and (max-width: 767px) {
+  .top-bar + .nav.searchbox ul button,
+  .top-bar + .nav.searchbox ul .button {
+    max-width: 50%;
+    float: left;
+  }
+}
+
 @media only screen and (min-width: 48rem) {
   .top-bar + .nav.searchbox ul li {
     display: inline;

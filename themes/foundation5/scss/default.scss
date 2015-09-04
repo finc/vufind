@@ -526,6 +526,12 @@ ul.date-range-slider {
     button,
     .button {
       margin-bottom: 0;
+      // small buttons for mobile
+      @media only screen and (max-width: 767px) {
+        max-width: 50%;
+        float: left;
+      }
+
     }
   }
 
