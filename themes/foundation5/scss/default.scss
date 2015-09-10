@@ -764,6 +764,7 @@ ul.date-range-slider {
 // LIST VIEW
 // Rows
 .row.result {
+  margin-bottom: 1.5rem; // important for toolbars beneath list such as bulkActionButtons
   padding-bottom: 1rem;
   padding-top: 1rem;
   /*@include fs-smaller;*/
@@ -796,6 +797,7 @@ ul.date-range-slider {
 // Limit, sort and view selector dropdowns - END
 
 // Bulk action buttons, e.g. favourites list
+// seems to appear ONLY in myresearch/bulk-action-buttons.phtml
 .bulk-action-buttons {
   clear: both;
 }
