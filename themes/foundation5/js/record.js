@@ -226,17 +226,11 @@ $(document).ready(function(){
       return true;
     }
     var tabid = $(this).attr('id').toLowerCase();
-    if($('#'+tabid+'-tab').length > 0) {
-      $('#record-tabs .content.active').removeClass('active');
-      $('#'+tabid+'-tab').addClass('active');
-      $('#'+tabid).tab('show');
-      return false;
-    } else {
-      $('#record-tabs').append('<div class="content" id="'+tabid+'-tab"><i class="fa fa-spinner fa-spin"></i> '+vufindString['loading']+'&nbsp;...</div>');
-      $('#record-tabs .content.active').removeClass('active');
-      $('#'+tabid+'-tab').addClass('active');
-      return ajaxLoadTab(tabid);
-    }
+    $('#record-tabs').append('<div class="content" id="'+tabid+'-tab"><i class="fa fa-spinner fa-spin"></i> '+vufindString['loading']+'&nbsp;...</div>');
+    $('#record-tabs .content.active').removeClass('active');
+    $('#'+tabid+'-tab').addClass('active');
+    $('#'+tabid).tab('show');
+    return ajaxLoadTab(tabid);
   });
 
   /* --- LIGHTBOX --- */
