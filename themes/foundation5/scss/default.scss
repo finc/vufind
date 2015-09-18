@@ -1,21 +1,22 @@
 $include-html-classes: false;
-// import entire Foundation CSS - remove in header via theme.config.php
+// import entire Foundation CSS - remove redundant css-imports in page header via theme.config.php
 @import "vendor/foundation";
 
-// Our own mixins here
+// Our own mixins, variables and placeholders here
 
-// Change the grid width, if desired, in _settings.scss lines 89 or thereabouts
+// Change the GRID WIDTH, if desired, in _settings.scss lines 89 or thereabouts
 // Change the BASEFONT size, if desired, in _settings.scss lines 69 or thereabouts - make sure to remove or adapt the fs-smaller mixin
-// This is used to adjust the font size in the sidebar, labels and browse collections panels
+// This is used to adjust the FONT SIZE in the SIDEBAR, LABELS and BROWSE COLLECTIONS panels
+
 @mixin fs-smaller {
-  font-size: .875rem
+  font-size: .875rem;
 }
-// This is used for adjusting the max width (breadcrumbs etc.) to the max width of the content as set in _settings.scss
+// This is used for SETTING the MAX WIDTH (breadcrumbs etc.) TO MAX WIDTH of CONTENT as set in _settings.scss
 // 72 rem for 16px base font and 82px (82.285) for 14 px base font
 @mixin max-cont-width {
   max-width:82rem;
 }
-// Equal 1rem padding left and right used for boxes, standard spacing
+// Equal 1rem PADDING LEFT and RIGHT used for BOXES, standard spacing
 @mixin pad-l-r {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -28,6 +29,8 @@ $include-html-classes: false;
     $padding: .5rem
   );
 }
+
+// Our own mixins, variables and placeholders - END
 
 // Avoid Mozilla horizontal jumps
 html {
@@ -1327,7 +1330,7 @@ select {
     padding-left: 1.25rem;
     margin-bottom: 0;
     font-weight: normal;
-    line-height: .8rem;
+    // line-height: .8rem; causes faulty alignment refs #5991 - check and remove this comment if ok - fixme CK
     cursor: pointer;
 
     // set all checkbox-select-item labels to same font-size as select-all
