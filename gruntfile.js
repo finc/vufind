@@ -1,4 +1,7 @@
 module.exports = function (grunt) {
+    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         // ADAPT THIS FOR FOUNDATION BASE THEME
@@ -26,10 +29,6 @@ module.exports = function (grunt) {
             }
         }
     });
-    grunt.loadNpmTasks('grunt-sass');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.registerTask('default', ['watch']);
-
     grunt.registerMultiTask('foundation', function (arg1, arg2) {
         var fs = require('fs')
             , path = require('path')
@@ -67,4 +66,6 @@ module.exports = function (grunt) {
         grunt.config.set('sass', sassConfig);
         grunt.task.run('sass');
     });
+
+    grunt.registerTask('default', ['foundation']);
 };
