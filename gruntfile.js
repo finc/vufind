@@ -1,112 +1,70 @@
 module.exports = function (grunt) {
     grunt.initConfig({
-        pkg  : grunt.file.readJSON('package.json'),
+        pkg: grunt.file.readJSON('package.json'),
         // ADAPT THIS FOR FOUNDATION BASE THEME
-        sass : {
-            dist: {
-                options: {
-                    outputStyle: 'expanded' // specify style here
+        foundation: {
+            sass: {
+                dist: {
+                    options: {
+                        outputStyle: 'compressed' // specify style here
+                    }
                 },
-                files: [{
-                    expand: true, // allows you to specify directory instead of indiv. files
-                    cwd: 'themes/foundation5/scss', // current working directory
-                    src: ['**/*.scss'],
-                    dest: 'themes/foundation5/css',
-                    ext: '.css'
-                }]
-            },
-            // ADAPT THIS FOR FINC THEME
-            distfinc: {
-                options: {
-                    outputStyle: 'expanded' // specify style here
+                tmp: {
+                    options: {
+                        outputStyle: 'expanded'
+                    }
                 },
-                files: [{
-                    expand: true, // allows you to specify directory instead of indiv. files
-                    cwd: 'themes/finc/scss', // current working directory
-                    src: ['**/*.scss'],
-                    dest: 'themes/finc/css',
-                    ext: '.css'
-                }]
-            },
-            // ADAPT THIS FOR HOUSE-specific THEMES
-            distDE_15: {
                 options: {
-                    outputStyle: 'expanded' // specify style here
-                },
-                files: [{
-                    expand: true, // allows you to specify directory instead of indiv. files
-                    cwd: 'themes/de_15/scss', // current working directory
-                    src: ['**/*.scss'],
-                    dest: 'themes/de_15/css',
-                    ext: '.css'
-                }]
-            },
-            // to here
-            // ADAPT THIS FOR HOUSE-specific THEMES
-            distDE_GLA1: {
-                options: {
-                    outputStyle: 'expanded' // specify style here
-                },
-                files: [{
-                    expand: true, // allows you to specify directory instead of indiv. files
-                    cwd: 'themes/de_gla1/scss', // current working directory
-                    src: ['**/*.scss'],
-                    dest: 'themes/de_gla1/css',
-                    ext: '.css'
-                }]
-            },
-            // to here
-            // ADAPT THIS FOR HOUSE-specific THEMES
-            distDE_BN3: {
-                options: {
-                    outputStyle: 'expanded' // specify style here
-                },
-                files: [{
-                    expand: true, // allows you to specify directory instead of indiv. files
-                    cwd: 'themes/de_bn3/scss', // current working directory
-                    src: ['**/*.scss'],
-                    dest: 'themes/de_bn3/css',
-                    ext: '.css'
-                }]
-            },
-            // to here
-            // ADAPT THIS FOR HOUSE-specific THEMES
-            distDE_J59: {
-                options: {
-                    outputStyle: 'expanded' // specify style here
-                },
-                files: [{
-                    expand: true, // allows you to specify directory instead of indiv. files
-                    cwd: 'themes/de_j59/scss', // current working directory
-                    src: ['**/*.scss'],
-                    dest: 'themes/de_j59/css',
-                    ext: '.css'
-                }]
-            },
-            // to here
-            // ADAPT THIS FOR HOUSE-specific THEMES
-            distADLR_LINK: {
-                options: {
-                    outputStyle: 'expanded' // specify style here
-                },
-                files: [{
-                    expand: true, // allows you to specify directory instead of indiv. files
-                    cwd: 'themes/adlr_link/scss', // current working directory
-                    src: ['**/*.scss'],
-                    dest: 'themes/adlr_link/css',
-                    ext: '.css'
-                }]
+                    themeFolder: 'themes'
+                }
             }
-            // to here - don't forget comma after brace above  when adding new house
         },
         watch: {
             css: {
                 files: '**/*.scss',
-                tasks: ['sass']
+                tasks: ['foundation:sass:dev']
             }
         }
     });
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.registerTask('default', ['watch']);
+
+    grunt.registerMultiTask('foundation', function (arg1, arg2) {
+        var fs = require('fs')
+            , path = require('path')
+            , options = (arguments.length > 0 && this.data[arg1] && this.data[arg1].options) ? this.data[arg1].options : this.data.dist.options
+            , theme = (arguments.length > 1) ? arg2 : null
+            , themeFolder = this.data.options.themeFolder || 'themes'
+            , themeList = fs.readdirSync(path.resolve(themeFolder))
+            , sassConfig = {}
+            ;
+
+        for (var i in themeList) {
+            if (theme && themeList[i] !== theme) {
+                continue;
+            }
+            var sassDir = path.join(themeFolder, themeList[i], 'scss');
+            var cssDir = path.join(themeFolder, themeList[i], 'css');
+
+            try {
+                fs.statSync(sassDir);
+                sassConfig[themeList[i]] = {
+                    options: options,
+                    files: [{
+                        expand: true,
+                        cwd: sassDir,
+                        src: ['**/*.scss'],
+                        dest: cssDir,
+                        ext: '.css'
+                    }]
+                };
+            } catch (err) {
+                // silently suppress thrown errors when no sass sources exist in a theme
+            }
+        }
+
+        grunt.config.set('sass', sassConfig);
+        grunt.task.run('sass');
+    });
 };
