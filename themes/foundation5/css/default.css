@@ -8891,6 +8891,10 @@ li.jstree-facet ul {
 }
 
 /* Similar items tab carousel - END */
+.browsesuggest.columns + .columns:last-child {
+  float: left;
+}
+
 footer {
   /*@include fs-smaller;*/
 }
