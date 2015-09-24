@@ -595,6 +595,7 @@ ul.date-range-slider {
 }
 
 // Shard selector checkboxes for developer machines + Keep Filters  - END
+
 // Searchbox on Home page - special case - searchbox not in header!
 .searchHomeContent .panel {
   padding-bottom: 0;
@@ -628,7 +629,7 @@ ul.date-range-slider {
     }
   }
 
-  // Advanced Search terms
+// Advanced Search terms
   p.adv_search_terms {
     background-color: #f1f1f1;
     border: 1px solid $iron;
@@ -678,8 +679,7 @@ ul.date-range-slider {
 
   // Advanced Search: search term insert - END
 
-
-  // Searchbox - END
+// Searchbox - END
 
   .grid {
     @media only screen and (max-width: 767px) {
@@ -1282,6 +1282,12 @@ li.jstree-facet ul {padding-left: 1rem;}
 /* Similar items tab carousel - END */
 // Tabs - END
 // DETAILS VIEW - END
+
+// BROWSE SUGGESTIONS lists on home/start page (prevent torn-apart look when 2 columns only)
+.browsesuggest.columns + .columns:last-child {
+  float: left;
+}
+// BROWSE SUGGESTIONS lists on home/start page - END
 
 // FOOTER
 footer {
