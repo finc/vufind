@@ -4,8 +4,7 @@ return array(
 	'css' => array(
 		'vendor/normalize.css',
 		// import foundation into default.scss and leave next line out
-    // 	'vendor/foundation.min.css',
-		'vendor/font-awesome.min.css',
+		'vendor/font-awesome.css',
 		'default.css',
 		),
 	'js' => array(
