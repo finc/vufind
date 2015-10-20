@@ -1,3 +1,5 @@
 config/vufind/*.ini
+config/vufind/*.json
+config/vufind/*.yaml
 httpd-vufind.conf
 cache/*
