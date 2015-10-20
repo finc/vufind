@@ -151,7 +151,7 @@ function registerLightboxEvents() {
     Lightbox.getByUrl(Lightbox.openingURL);
     return false;
   });
-  // Select all checkboxes
+  // Select-all checkboxes
   $(modal).find('.checkbox-select-all').change(function() {
     $(this).closest('.modal-body').find('.checkbox-select-item').prop('checked', this.checked);
   });
