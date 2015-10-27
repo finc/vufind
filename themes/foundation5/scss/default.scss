@@ -1545,6 +1545,10 @@ $offcanvas-padding: 2em;
   .columns {
     width: auto
   }
+  // List view alignment
+  .column+.column:last-child,
+  .columns+.columns:last-child {float: left}
+
   // for similar layout as on screen
   // Print links
   // Show verbose links for certain elements
@@ -1562,5 +1566,9 @@ $offcanvas-padding: 2em;
     content: " (" attr(href) ")";
     text-decoration: underline
   }
+
+  // List view checkboxes
+  .checkbox-select-item, .checkbox-select-items {display: none; visibility: hidden}
+
 }
 // PRINT STYLES - end
