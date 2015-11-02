@@ -125,18 +125,21 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
         $error = false;
 
         if ($validatorAlnum->isValid($subject)) {
-            $this->flashMessenger()->setNamespace('error')
-                ->addMessage('Subject area should not be blank');
+            $this->flashMessenger()->addMessage(
+                'Subject area should not be blank', 'error'
+            );
             $error = true;
         }
         if (!$validatorString->isValid($proposal)) {
-            $this->flashMessenger()->setNamespace('error')
-                ->addMessage('Reasons for suggestion not be blank');
+            $this->flashMessenger()->addMessage(
+                'Reasons for suggestion not be blank', 'error'
+            );
             $error = true;
         }
         if (!$validatorString->isValid($reasons)) {
-            $this->flashMessenger()->setNamespace('error')
-                ->addMessage('Proposal for acquisition should not be blank');
+            $this->flashMessenger()->addMessage(
+                'Proposal for acquisition should not be blank', 'error'
+            );
             $error = true;
         }
 
@@ -198,11 +201,9 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
                     $message_html,
                     $message_text
                 );
-                $this->flashMessenger()->setNamespace('info')
-                    ->addMessage('acquisition_success');
+                $this->flashMessenger()->addMessage('acquisition_success', 'info');
             } catch (MailException $e) {
-                $this->flashMessenger()->setNamespace('error')
-                    ->addMessage($e->getMessage());
+                $this->flashMessenger()->addMessage($e->getMessage(), 'error');
             }
         }
 

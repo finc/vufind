@@ -12,7 +12,6 @@ $config = [
             'ils_driver' => [
                 'factories' => [
                     'fincils' => 'finc\ILS\Driver\Factory::getFincILS',
-                    'daia' => 'finc\ILS\Driver\Factory::getDAIA',
                     'paia' => 'finc\ILS\Driver\Factory::getPAIA',
                 ],
             ],

@@ -57,20 +57,6 @@ class Factory
     }
 
     /**
-     * Factory for DAIA driver.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return DAIA
-     */
-    public static function getDAIA(ServiceManager $sm)
-    {
-        return new DAIA(
-            $sm->getServiceLocator()->get('VuFind\DateConverter')
-        );
-    }
-
-    /**
      * Factory for PAIA driver.
      *
      * @param ServiceManager $sm Service manager.
