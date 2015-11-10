@@ -57,7 +57,7 @@
 	</div>
 
 	<? if (count($this->tabs) > 0): ?>
-	  <a name="tabnavi"></a>
+	  <a name="tabnav"></a>
 	  <ul class="recordTabs tabs"><? /*<!-- DO NOT use standard data-tab option (<ul class="recordTabs tabs" data-tab>) here as it triggers Foundation's normal tab behaviour while Vufind only uses tab appearance! FIXME CK */ ?>
 		<? foreach ($this->tabs as $tab => $obj): ?>
 		<? // add current tab to breadcrumbs if applicable:

@@ -9,7 +9,7 @@
 <h2><?=$this->transEsc('User Account')?></h2>
 <?=$this->flashmessages()?>
 
-<form method="post"  name="accountForm" id="accountForm" data-abide role="form">
+<form method="post" name="accountForm" id="accountForm" data-abide role="form">
   <?=$this->auth()->getCreateFields()?>
   <?=$this->recaptcha()->html($this->useRecaptcha) ?>
   <div class="row">
