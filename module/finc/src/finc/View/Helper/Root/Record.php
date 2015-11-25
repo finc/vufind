@@ -69,4 +69,39 @@ class Record extends \VuFind\View\Helper\Root\Record
             'link-isn.phtml', ['issns' => $issns]
         );
     }
+
+    /**
+     * Render a (list of) record icons.
+     *
+     * @return string
+     */
+    public function getRecordIcon()
+    {
+        return $this->renderTemplate('record-icon.phtml');
+    }
+
+    /**
+     * Get the CSS class used to properly render an icon for given value
+     *
+     * @param string $value Value to convert into CSS class
+     *
+     * @return string
+     */
+    public function getRecordIconClass($value)
+    {
+        return $this->renderTemplate(
+            'record-icon-class.phtml', ['value' => $value]
+        );
+    }
+
+    /**
+     * Returns if style based icons should be shown (if covers are disabled!)
+     *
+     * @return bool
+     */
+    public function showStyleBasedIcons()
+    {
+        return isset($this->config->Content->showStyleBasedIcons) ?
+            $this->config->Content->showStyleBasedIcons : false;
+    }
 }

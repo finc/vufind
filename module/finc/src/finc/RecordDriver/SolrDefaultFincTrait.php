@@ -547,6 +547,17 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get value of access_facet field
+     *
+     * @return string
+     */
+    public function getAccessFacet()
+    {
+        return isset($this->fields['access_facet'])
+            ? $this->fields['access_facet'] : '';
+    }
+
+    /**
      * Get specific marc information about additional items. Unflexible solution
      * for UBL only implemented.
      *

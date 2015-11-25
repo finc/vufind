@@ -1,0 +1,16 @@
+<?
+
+$normalizedValue = preg_replace('/[^a-z0-9]/', '', strtolower($this->value));
+// Convert normalizedValue to styles
+switch ($normalizedValue) {
+    case 'localholdings':
+        echo 'fa-book';
+        break;
+    case 'electronicresources':
+        echo 'fa-book';
+        break;
+    default:
+        echo 'fa-book';
+        break;
+}
+?>

@@ -58,3 +58,7 @@ show_in_record = false     ; include in core record metadata
 show_in_holdings = true    ; include in holdings tab of record view
 embed = true
 replace_other_urls = true
+
+[Content]
+coversize[result-list] = false
+showStyleBasedIcons = true

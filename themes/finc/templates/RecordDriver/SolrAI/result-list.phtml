@@ -5,16 +5,25 @@
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
     </div>
-    <? if ($cover = $this->record($this->driver)->getCover('result-list', 'medium', $this->recordLink()->getUrl($this->driver))): ?>
-      <div class="small-3 medium-2 columns left"><?= $cover ?></div>
+    <? $cover = $this->record($this->driver)->getCover('result-list', 'small', $this->recordLink()->getUrl($this->driver)); ?>
+    <? if ($cover): ?>
+    <div class="small-3 medium-2 columns left">
+      <?=$cover ?>
+    </div>
+    <div class="small-6 medium-7 columns middle">
+    <? elseif ($this->record($this->driver)->showStyleBasedIcons()): ?>
+    <div class="small-3 medium-2 columns left">
+      <?=$this->record($this->driver)->getRecordIcon()?>
+    </div>
+    <div class="small-6 medium-7 columns middle">
+    <? else : ?>
+    <div class="small-9 columns middle">
     <? endif ?>
-    <div class="<?=$cover ? 'small-6 medium-7' : 'small-9'?> columns middle">
       <div>
-        <a href="<?=$this->recordLink()->getUrl($this->driver) ?>" class="title">
-          <?= $this->record($this->driver)->getTitleHtml() ?>
+        <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title">
+          <?=$this->record($this->driver)->getTitleHtml()?>
         </a>
       </div>
-
       <div>
         <? if ($this->driver->isCollection()): ?>
           <?=implode('<br>', array_map(array($this, 'escapeHtml'), $this->driver->getSummary())); ?>
@@ -127,11 +136,7 @@
         <? if (!is_array($urls)) $urls = array();
         if (!$this->driver->isCollection()):
           foreach ($urls as $current): ?>
-            <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fulltext" target="new">
-              <i class="fa fa-external-link"></i>
-              <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?>
-            </a>
-            <br/>
+            <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fulltext" target="new"><i class="fa fa-external-link"></i><?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></a><br/>
           <? endforeach; ?>
         <? endif; ?>
       <? endif; ?>

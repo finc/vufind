@@ -17,7 +17,9 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <? /* Display thumbnail if appropriate: */ ?>
       <? if($cover): ?>
         <?=$cover?>
-        <? endif; ?>
+      <? elseif ($this->record($this->driver)->showStyleBasedIcons()): ?>
+        <?=$this->record($this->driver)->getFormatIcon()?>
+      <? endif; ?>
 
         <? /* Display qrcode if appropriate: */ ?>
         <? if($QRCode): ?>
@@ -230,8 +232,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         $openUrl = $this->openUrl($this->driver, 'record');
         $openUrlActive = $openUrl->isActive();
         // Account for replace_other_urls setting
-     //   $urls = $openUrlActive ? $this->record($this->driver)->getLinkDetailsForOpenUrl() : $this->record($this->driver)->getLinkDetails() ;
-      $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+        $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
       ?>
       <? if (!empty($urls) || $openUrlActive): ?>
       <tr>

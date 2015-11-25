@@ -1,0 +1,14 @@
+<?
+/*$formats = [];
+foreach ($this->driver->getFormats() as $format) {
+  $formats[] = $this->record($this->driver)->getFormatClass($format);
+}
+$formats = array_unique($formats);
+asort($formats);
+?>
+<span class="fa-stack"><?foreach ($formats as $format):?><i class="fa <?=$format?> fa-stack-1x"></i><? endforeach; ?></span>
+*/
+
+$iconClass = $this->record($this->driver)->getRecordIconClass($this->driver->getAccessFacet());
+?>
+<span><i class="fa <?=$iconClass?>"></i></span>
