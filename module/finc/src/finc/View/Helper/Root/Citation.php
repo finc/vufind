@@ -100,6 +100,33 @@ class Citation extends \VuFind\View\Helper\Root\Citation
     }
 
     /**
+     * Strip the dates off the end of a name.
+     *
+     * @param string $str Name to clean.
+     *
+     * @return string     Cleaned name.
+     */
+    protected function cleanNameDates($str)
+    {
+        $fincDateStrip = function ($string) {
+            if (preg_match('/^(\s|.*)\s(fl.\s|d.\s|ca.\s|\*)*\s?(\d{4})\??(\sor\s\d\d?)?\s?(-|–)?\s?(ca.\s|after\s|†)?(\d{1,4})?(.|,)?$/Uu', $string, $match)) {
+                return (isset($match[1])) ? trim($match[1]) : $string;
+            }
+            return $string;
+        };
+
+        $fincGallicaStrip = function ($string) {
+            // delete unnormalized characters of gallica ressource with source_id:20
+            if (preg_match('/(.*)(\d.*)/Uus', $string, $match)) {
+                return (isset($match[1])) ? trim($match[1]) : $string;
+            }
+            return $string;
+        };
+
+        return parent::cleanNameDates($fincGallicaStrip($fincDateStrip($str)));
+    }
+
+    /**
      * Get an array of authors for an MLA or Chicago Style citation.
      *
      * @param int $etAlThreshold The number of authors to abbreviate with 'et al.'
@@ -119,7 +146,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
                 $authorStr = $this->cleanNameDates($author) . ', et al';
             } else {
                 foreach ($this->details['authors'] as $author) {
-                    $author = $this->driver->_removeAuthorDates($author);
+                    $author = $this->cleanNameDates($author);
                     if (($i+1 == count($this->details['authors'])) && ($i > 0)) {
                         // Last
                         $authorStr .= ', and ' .
@@ -154,7 +181,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
             foreach ($this->details['authors'] as $author) {
                 $author = $this->abbreviateName($author);
                 $author = preg_replace('/[\(|\.]/','',$author);
-                $author = $this->driver->_removeAuthorDates($author);
+                $author = $this->cleanNameDates($author);
                 if (($i + 1 == count($this->details['authors']))
                     && ($i > 0)
                 ) { // Last
@@ -286,20 +313,17 @@ class Citation extends \VuFind\View\Helper\Root\Citation
     }
 
     /**
-     * Get an array of authors for an ISBD citation.
+     * Get the primary author for an ISBD citation.
      *
-     * @return array
+     * @return string
      */
     protected function getISBDAuthor()
     {
-        $authorStr = '';
-        if (isset($this->details['primaryauthor'])
+        return isset($this->details['primaryauthor'])
             && is_array($this->details['primaryauthor'])
-        ) {
-            $authorStr
-                = $this->driver->_removeAuthorDates($this->details['primaryauthor']);
-        }
-        return (empty($authorStr) ? false : $this->stripPunctuation($authorStr));
+                ? $this->stripPunctuation(
+                    $this->cleanNameDates($this->details['primaryauthor']))
+                : false;
     }
 
     /**
@@ -343,7 +367,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
     {
         $noteStr = '';
         $footnote = '';
-        if (is_array($this->details['footnote'])
+        if (isset($this->details['footnote'])
             && count($this->details['footnote']) > 0
         ) {
             foreach ($this->details['footnote'] as $line) {
@@ -351,7 +375,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
             }
         }
         $dissertation = '';
-        if (is_array($this->details['dissertationNote'])
+        if (isset($this->details['dissertationNote'])
             && count($this->details['dissertationNote']) > 0
         ) {
             foreach ($this->details['dissertationNote'] as $line) {
@@ -359,7 +383,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
             }
         }
         if (!empty($footnote)) {
-            $footnote = $footnote .'.';
+            $footnote .= '.';
         }
         if (!empty($footnote) && !empty($dissertation)) {
             $noteStr = $footnote . ' - ' . $dissertation;

@@ -1,1 +1,1 @@
-<?=$this->url('author-home')?>?author=<?=urlencode($this->driver->_removeAuthorDates($this->lookfor))?>
+<?=$this->url('author-home')?>?author=<?=urlencode($this->record($this->driver)->removeAuthorDates($this->lookfor))?>

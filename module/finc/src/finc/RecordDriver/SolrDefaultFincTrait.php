@@ -289,18 +289,6 @@ trait SolrDefaultFincTrait
     }
 
     /**
-     * Get the main author of the record.
-     *
-     * @return string
-     * @deprecated
-     */
-    public function getPrimaryAuthorRaw()
-    {
-        return isset($this->fields['author']) ?
-            $this->_removeAuthorDates($this->fields['author']) : '';
-    }
-
-    /**
      * Get the main corporate author (if any) for the record.
      *
      * @return string
@@ -599,29 +587,6 @@ trait SolrDefaultFincTrait
                 : $match[1] .' *'. $match[2] . '-';
         }
         return $authordata;
-    }
-
-    /**
-     * Remove author dates if exists.
-     *
-     * @param string authordata
-     *
-     * @return strings
-     * @deprecated
-     */
-    public function _removeAuthorDates( $author )
-    {
-        $match = array();
-        if (preg_match('/^(\s|.*)\s(fl.\s|d.\s|ca.\s|\*)*\s?(\d{4})\??(\sor\s\d\d?)?\s?(-|–)?\s?(ca.\s|after\s|†)?(\d{1,4})?(.|,)?$/Uu', $author, $match))
-        {
-            $author = (isset($match[1])) ? trim($match[1]) : $author;
-        }
-        // delete unnormalized characters of gallica ressource with source_id:20
-        if (preg_match('/(.*)(\d.*)/Uus', $author, $match))
-        {
-            $author = (isset($match[1])) ? trim($match[1]) : $author;
-        }
-        return $author;
     }
 
     /**

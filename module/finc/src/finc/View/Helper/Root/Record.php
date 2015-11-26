@@ -104,4 +104,27 @@ class Record extends \VuFind\View\Helper\Root\Record
         return isset($this->config->Content->showStyleBasedIcons) ?
             $this->config->Content->showStyleBasedIcons : false;
     }
+
+    /**
+     * Remove author dates from author string (used for using author names as search
+     * term).
+     *
+     * @param string authordata
+     *
+     * @return strings
+     */
+    public function removeAuthorDates( $author )
+    {
+        $match = array();
+        if (preg_match('/^(\s|.*)\s(fl.\s|d.\s|ca.\s|\*)*\s?(\d{4})\??(\sor\s\d\d?)?\s?(-|–)?\s?(ca.\s|after\s|†)?(\d{1,4})?(.|,)?$/Uu', $author, $match))
+        {
+            $author = (isset($match[1])) ? trim($match[1]) : $author;
+        }
+        // delete unnormalized characters of gallica ressource with source_id:20
+        if (preg_match('/(.*)(\d.*)/Uus', $author, $match))
+        {
+            $author = (isset($match[1])) ? trim($match[1]) : $author;
+        }
+        return $author;
+    }
 }
