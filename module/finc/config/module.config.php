@@ -2,6 +2,11 @@
 namespace finc\Module\Configuration;
 
 $config = [
+    'service_manager' => [
+        'factories' => [
+            'VuFind\Mailer' => 'finc\Mailer\Factory'
+        ]
+    ],
     'controllers' => [
         'invokables' => [
             'my-research' => 'finc\Controller\MyResearchController',
@@ -9,6 +14,11 @@ $config = [
     ],
     'vufind' => [
         'plugin_managers' => [
+            'auth' => [
+                'invokables' => [
+                    'shibboleth' => 'finc\Auth\Shibboleth',
+                ],
+            ],
             'ils_driver' => [
                 'factories' => [
                     'fincils' => 'finc\ILS\Driver\Factory::getFincILS',
