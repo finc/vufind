@@ -27,6 +27,7 @@
  */
 namespace finc\ILS\Driver;
 use VuFind\Exception\ILS as ILSException,
+    VuFindSearch\Query\Query, VuFindSearch\Service as SearchService,
     Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
@@ -76,6 +77,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
     protected $recordLoader;
 
     /**
+     * Connection used when searching for fincid
+     *
+     * @var SearchService
+     */
+    protected $searchService;
+
+    /**
      * Date converter object
      *
      * @var \VuFind\Date\Converter
@@ -98,10 +106,11 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * built-in defaults)
      */
     public function __construct(\VuFind\Date\Converter $converter,
-        \VuFind\Record\Loader $loader, $mainConfig = null
+        \VuFind\Record\Loader $loader, SearchService $ss, $mainConfig = null
     ) {
         $this->dateConverter = $converter;
         $this->recordLoader = $loader;
+        $this->searchService = $ss;
         $this->mainConfig = $mainConfig;
     }
 
@@ -148,6 +157,18 @@ class FincILS extends PAIA implements LoggerAwareInterface
         }
 
         $this->_testILSConnections();
+    }
+
+    /**
+     * PAIA support method - try to find fincid for last segment of PAIA id
+     *
+     * @param string $id itemId
+     *
+     * @return string $id
+     */
+    protected function getAlternativeItemId($id)
+    {
+        return $this->_getFincId(end(explode(":", $id)));
     }
 
     /**
@@ -435,6 +456,35 @@ class FincILS extends PAIA implements LoggerAwareInterface
         }
 
         return $ids;
+    }
+
+    /**
+     * Get the finc id of the record with the given ilsIdentifier value
+     *
+     * @param string $ilsId Document to look up.
+     *
+     * @return string $fincId if ilsIdentifier is configured, otherwise $ilsId
+     */
+    private function _getFincId($ilsId)
+    {
+        if ($this->ilsIdentifier != "default") {
+            // different ilsIdentifier is configured, retrieve fincid
+            try {
+                $query = $this->ilsIdentifier . ':' . $ilsId;
+                $result = $this->searchService->search('VuFind', new Query($query));
+                if (count($result) === 0) {
+                    throw new \Exception(
+                        'Problem retrieving finc id for record with '
+                        . $this->ilsIdentifier . ":" . $ilsId
+                    );
+                }
+                return current($result->getRecords())->getUniqueId();
+            } catch (\Exception $e) {
+                $this->debug($e);
+                return $ilsId;
+            }
+        }
+        return $ilsId;
     }
 
     /**

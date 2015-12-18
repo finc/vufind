@@ -388,23 +388,38 @@ class PAIA extends \VuFind\ILS\Driver\DAIA implements
             'core/'.$patron['cat_username'].'/fees'
         );
 
+        // PAIA simple data type money: a monetary value with currency (format
+        // [0-9]+\.[0-9][0-9] [A-Z][A-Z][A-Z]), for instance 0.80 USD.
+        $feeConverter = function ($fee) {
+            $paiaCurrencyPattern = "/^([0-9]+\.[0-9][0-9]) ([A-Z][A-Z][A-Z])$/";
+            if (preg_match($paiaCurrencyPattern, $fee, $feeMatches)) {
+                // VuFind expects fees in PENNIES
+                return ($feeMatches[1]*100);
+            }
+            return $fee;
+        };
+
         $results = [];
         if (isset($fees['fee'])) {
             foreach ($fees['fee'] as $fee) {
                 $results[] = [
-                    // fee.amount (1..1) amount of a single fee
-                    'amount'      => $fee['amount'],
+                    // fee.amount 	1..1 	money 	amount of a single fee
+                    'amount'      => $feeConverter($fee['amount']),
                     'checkout'    => '',
-                    // fee.feetype (0..1) textual description of the type of fee
+                    // fee.feetype 	0..1 	string 	textual description of the type of service that caused the fee
                     'fine'    => (isset($fee['feetype']) ? $fee['feetype'] : null),
                     'balance' => '',
-                    // fee.date (0..1) date when the fee was claimed
+                    // fee.date 	0..1 	date 	date when the fee was claimed
                     'createdate'  => (isset($fee['date'])
                         ? $this->convertDate($fee['date']) : null),
                     'duedate' => '',
-                    // fee.edition (0..1) edition that caused the fee
+                    // fee.edition 	0..1 	URI 	edition that caused the fee
                     'id' => (isset($fee['edition'])
                         ? $this->getAlternativeItemId($fee['edition']) : ''),
+                    // custom PAIA fields
+                    // fee.about 	0..1 	string 	textual information about the fee
+                    // fee.item 	0..1 	URI 	item that caused the fee
+                    // fee.feeid 	0..1 	URI 	URI of the type of service that caused the fee
                 ];
             }
         }
@@ -951,7 +966,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA implements
             $result = [];
             // canrenew (0..1) whether a document can be renewed (bool)
             $result['renewable'] = (isset($doc['canrenew'])
-                ? $doc['canrenew'] : true);
+                ? $doc['canrenew'] : false);
 
             // item (0..1) URI of a particular copy
             $result['item_id'] = (isset($doc['item']) ? $doc['item'] : '');
