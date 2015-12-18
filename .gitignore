@@ -10,3 +10,5 @@ TAGS
 .composer
 **/.sass-cache/
 node_modules
+import/solrmarc.log
+vendor/.git

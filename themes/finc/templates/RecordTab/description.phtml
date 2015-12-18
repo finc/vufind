@@ -1,4 +1,4 @@
-<!-- recordtab - description -->
+<!-- recordtab - description.phtml -->
 <?
     // Set page title.
     $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
@@ -6,7 +6,7 @@
     // Grab clean ISBN for convenience:
     $isbn = $this->driver->getCleanISBN();
 ?>
-<table class="table table-striped" summary="<?=$this->transEsc('Description')?>">
+<table class="table table-striped" summary="<?=$this->transEsc('Description')?>" width="100%">
   <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
@@ -170,7 +170,7 @@
       <td><?=$this->escapeHtml($doi)?></td>
     </tr>
   <? endif; ?>
-
+  <? /* Finc-specific eissns */ ?>
   <? $eissns = $this->driver->getEISSNs(); if (!empty($eissns)): ?>
       <? $contentDisplayed = true; ?>
       <tr>
@@ -182,7 +182,7 @@
           </td>
       </tr>
   <? endif; ?>
-
+  <? /* Finc-specific eissns - END */ ?>
   <? $related = $this->driver->getRelationshipNotes(); if (!empty($related)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
@@ -249,4 +249,4 @@
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
 </table>
-<!-- recordtab - description - END -->
+<!-- recordtab - description.phtml - END -->

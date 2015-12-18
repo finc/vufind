@@ -1,4 +1,4 @@
-<!-- recordDriver - solrAI - CORE.phtml -->
+<!-- recordDriver - solrDefault - CORE.phtml -->
 <?
 if($loggedin = $this->auth()->isLoggedIn()) {
   $user_id = $loggedin->id;
@@ -40,7 +40,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
   <? else: ?>
   <div class="medium-12 columns">
   <? endif; ?>
-
+    <? /* This following line is a finc-specific change */ ?>
     <h3 property="name"><?=$this->escapeHtml($this->driver->getTitle())?></h3>
 
     <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $this->escapeHtml($summary[0]) : false; ?>
@@ -48,7 +48,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       <p><?=$this->truncate($summary, 300)?></p>
 
       <? if(strlen($summary) > 300): ?>
-        <p><a href='<?=$this->recordLink()->getTabUrl($this->driver, 'Description')?>#tabnav'><?=$this->transEsc('Full description')?></a></p>
+        <p><a href='<?=$this->recordLink()->getTabUrl($this->driver, 'Description')?>'><?=$this->transEsc('Full description')?></a></p>
       <? endif; ?>
     <? endif; ?>
 
@@ -60,7 +60,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
     <? endif; ?>
 
     <?/* Display Main Details */?>
-    <table class="table" summary="<?=$this->transEsc('Bibliographic Details')?>">
+    <table class="table" width="100%" summary="<?=$this->transEsc('Bibliographic Details')?>">
       <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle)): ?>
       <tr>
         <th><?=$this->transEsc('Published in')?>:</th>
@@ -129,7 +129,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       <? $langs = $this->driver->getLanguages(); if (!empty($langs)): ?>
         <tr>
           <th><?=$this->transEsc('Language')?>: </th>
-          <td><? foreach ($langs as $lang): ?><?= $this->transEsc($lang)?><br/><? endforeach; ?></td>
+          <td><? foreach ($langs as $lang): ?><?= $this->escapeHtml($lang)?><br/><? endforeach; ?></td>
         </tr>
       <? endif; ?>
 
@@ -198,7 +198,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
               <? $subject = trim($subject . ' ' . $subfield); ?>
-              <a class="backlink" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>"><?=trim($this->escapeHtml($subfield))?></a>
+              <a class="backlink" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>" rel="nofollow"><?=trim($this->escapeHtml($subfield))?></a>
             <? endforeach; ?>
           </div>
           <? endforeach; ?>

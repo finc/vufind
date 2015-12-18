@@ -18,8 +18,14 @@
       <? if ($this->renewForm): ?>
       <form name="renewals"  method="post" id="renewals">
         <div class="toolbar">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="selectAll" class="checkbox-select-all"/>
+            <?=$this->transEsc('select_page')?> |
+          </label>
           <input type="submit" class="button secondary small" name="renewSelected" role="button" value="<?=$this->transEsc("renew_selected")?>" />
           <input type="submit" class="button secondary small" name="renewAll" role="button" value="<?=$this->transEsc('renew_all')?>" />
+        </div>
         </div>
       <? endif; ?>
 
@@ -58,7 +64,8 @@
             <? if (isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_details'])): ?>
             <div class="small-1 columns">
               <? $safeId = preg_replace('/[^a-zA-Z0-9]/', '', $ilsDetails['renew_details']); ?>
-              <input class="left" type="checkbox" name="renewSelectedIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['renew_details'])?>" id="checkbox_<?=$safeId?>" />
+              <input class="left checkbox-select-item" type="checkbox" name="renewSelectedIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['renew_details'])?>" id="checkbox_<?=$safeId?>" />
+              <input class="left" type="hidden" name="selectAllIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['renew_details'])?>" />
               <input class="left" type="hidden" name="renewAllIDS[]" value="<?=$this->escapeHtmlAttr($ilsDetails['renew_details'])?>" />
             </div>
             <? endif; ?>
@@ -70,9 +77,9 @@
               <?=$cover?>
             </div>
 
-            <div class="small-9 columns">
+            <div class="small-6 columns">
             <? else: ?>
-            <div class="small-11 columns">
+            <div class="small-9 columns">
             <? endif; ?>
           <? else: ?>
           <? /* If renewals NOT enabled in config.ini, make columns wider */ ?>
@@ -83,9 +90,9 @@
               <?= $cover ?>
             </div>
 
-            <div class="small-10 columns">
+            <div class="small-7 columns">
             <? else: ?>
-            <div class="small-12 columns">
+            <div class="small-9 columns">
             <? endif; ?>
           <? endif; ?>
 
