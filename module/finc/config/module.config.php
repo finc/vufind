@@ -14,11 +14,6 @@ $config = [
     ],
     'vufind' => [
         'plugin_managers' => [
-            'auth' => [
-                'invokables' => [
-                    'shibboleth' => 'finc\Auth\Shibboleth',
-                ],
-            ],
             'ils_driver' => [
                 'factories' => [
                     'fincils' => 'finc\ILS\Driver\Factory::getFincILS',
