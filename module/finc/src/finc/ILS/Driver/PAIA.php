@@ -408,7 +408,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA implements
                     'checkout'    => '',
                     // fee.feetype 	0..1 	string 	textual description of the type of service that caused the fee
                     'fine'    => (isset($fee['feetype']) ? $fee['feetype'] : null),
-                    'balance' => '',
+                    'balance' => $feeConverter($fee['amount']),
                     // fee.date 	0..1 	date 	date when the fee was claimed
                     'createdate'  => (isset($fee['date'])
                         ? $this->convertDate($fee['date']) : null),
