@@ -52,7 +52,8 @@
 
 	<? if (count($this->tabs) > 0): ?>
 	  <a name="tabnav"></a>
-	  <ul class="recordTabs tabs"><? /* DO NOT use standard data-tab option here as it triggers Foundation's normal tab behaviour while Vufind only uses tab appearance! FIXME CK */ ?>
+	  <div class="record-tabs">
+		  <ul class="recordTabs tabs"><? /* DO NOT use standard data-tab option here as it triggers Foundation's normal tab behaviour while Vufind only uses tab appearance! FIXME CK */ ?>
 		<? foreach ($this->tabs as $tab => $obj): ?>
 		<? // add current tab to breadcrumbs if applicable:
 		  $desc = $obj->getDescription();
@@ -78,7 +79,7 @@
 		<?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : '' ?>
 	  </div>
 	</div>
-
+</div>
     <?=$this->driver->supportsCoinsOpenURL()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenURL()).'"></span>':''?>
   </div>
 

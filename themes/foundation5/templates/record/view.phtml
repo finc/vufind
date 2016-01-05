@@ -61,7 +61,7 @@ $this->layout()->title = $this->driver->getShortTitle();
     <? if (count($this->tabs) > 0): ?>
       <a name="tabnav"></a>
       <div class="record-tabs">
-        <ul class="tabs"><? /* DO NOT use standard data-tab option here as it triggers Foundation's normal tab behaviour while Vufind only uses tab appearance! FIXME CK */ ?>
+        <ul class="recordTabs tabs"><? /* DO NOT use standard data-tab option here as it triggers Foundation's normal tab behaviour while Vufind only uses tab appearance! FIXME CK */ ?>
           <? foreach ($this->tabs as $tab => $obj): ?>
             <? // add current tab to breadcrumbs if applicable:
             $desc = $obj->getDescription();
