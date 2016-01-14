@@ -34,7 +34,7 @@
 	<? else: ?>
 	  <li class="disabled"><a href="#">&laquo; <?=$this->transEsc('Prev')?></a></li>
 	<? endif; ?>
-    #<?=$this->localizedNumber($this->scrollData['currentPosition']) . ' ' . $this->transEsc('of') . ' ' . $this->localizedNumber($this->scrollData['resultTotal']) . ' ' . $this->transEsc('results') ?>
+    #<?=$this->localizedNumber($this->scrollData['currentPosition']) . ' ' . $this->transEsc('of') . ' ' . $this->localizedNumber($this->scrollData['resultTotal']) . ' ' . $this->transEsc('results')?>
 	<? if ($this->scrollData['nextRecord']): ?>
 	  <li>
 		<a href="<?=$this->recordLink()->getUrl($this->scrollData['nextRecord'])?>" title="<?=$this->transEsc('Next Search Result')?>"><?=$this->transEsc('Next')?> &raquo;</a>
@@ -48,7 +48,7 @@
 <?=$this->record($this->driver)->getToolbar()?>
 
 <div class="row">
-  <div class="<?=$tree ? 'medium-12 columns' : $this->layoutClass('mainbody') ?>">
+  <div class="<?=$tree ? 'medium-12 columns' : $this->layoutClass('mainbody')?>">
 	<div class="record">
 	  <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" class="hiddenId" id="record_id" />
 	  <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
@@ -59,14 +59,16 @@
 	<? if (count($this->tabs) > 0): ?>
 	  <a name="tabnav"></a>
 	  <div class="record-tabs">
-		  <ul class="recordTabs tabs">
-			  <? /*<!-- DO NOT use standard data-tab option (<ul class= ... data-tab>) here as it triggers Foundation's normal tab behaviour while Vufind only uses tab appearance! FIXME CK */ ?>
+		<ul class="recordTabs tabs"><? /*<!-- DO NOT use standard data-tab option here as it triggers Foundation's normal tab behaviour while Vufind only uses tab appearance! FIXME CK */ ?>
 		<? foreach ($this->tabs as $tab => $obj): ?>
 		<? // add current tab to breadcrumbs if applicable:
 		  $desc = $obj->getDescription();
           $tab_classes = array();
           if (0 === strcasecmp($this->activeTab, $tab)) {
-            $tab_classes[] = 'active';
+            if (!$this->ajaxTabs || !$obj->supportsAjax()) {
+              $tab_classes[] = 'active';
+            }
+            $tab_classes[] = 'initiallyActive';
 			$this->layout()->breadcrumbs .= ' <li class="active">' . $this->transEsc($desc) . '</li>';
 			$activeTabObj = $obj;
 		  }
@@ -74,20 +76,22 @@
           if (!$obj->supportsAjax()) { $tab_classes[] = 'noajax'; }
 		?>
         <li<?=count($tab_classes) > 0 ? ' class="tab-title ' . implode(' ', $tab_classes) . '"' : ''?>>
-          <a id="<?=strtolower($tab) ?>" href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>"><?=$this->transEsc($desc)?></a>
+          <a class="<?=strtolower($tab)?>" href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>"><?=$this->transEsc($desc)?></a>
 		</li>
 		<? endforeach; ?>
 	  </ul>
-	<? endif; ?>
 
-
-    <div class="collectionDetails<?=$tree ? 'Tree' : ''?> tabs-content" id="record-tabs">
+      <div class="tabs-content collectionDetails<?=$tree ? 'Tree' : ''?>" id="record-tabs">
+		<? if (!$this->ajaxTabs || !isset($activeTabObj) || !$activeTabObj->supportsAjax()): ?>
 	    <div class="content active" id="<?=$this->activeTab ?>-tab">
-	        <?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : '' ?>
+	      <?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : ''?>
 	    </div>
-    </div>
+        <? endif; ?>
+      </div>
 	</div>
-	  <?=$this->driver->supportsCoinsOpenURL()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenURL()).'"></span>':''?>
+    <? endif; ?>
+
+    <?=$this->driver->supportsCoinsOpenURL() ? '<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenURL()) . '"></span>' : ''?>
   </div>
 
   <? if (isset($activeTabObj) && is_callable(array($activeTabObj, 'getSideRecommendations'))): ?>
@@ -98,4 +102,5 @@
 	</div>
   <? endif; ?>
 </div>
+<?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, '$(document).ready(recordDocReady);', 'SET');?>
 <!-- collection - VIEW.phtml end -->

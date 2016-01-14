@@ -17,8 +17,10 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <? /* Display thumbnail if appropriate: */ ?>
       <? if($cover): ?>
         <?=$cover?>
+      <? /* BOF - finc-specific StyleBasedIcons */ ?>
       <? elseif ($this->record($this->driver)->showStyleBasedIcons()): ?>
         <?=$this->record($this->driver)->getFormatIcon()?>
+      <? /* EOF - finc-specific StyleBasedIcons */ ?>
       <? endif; ?>
 
       <? /* Display qrcode if appropriate: */ ?>
@@ -40,7 +42,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
   <? else: ?>
   <div class="medium-12 columns">
   <? endif; ?>
-    <? /* This following line is a finc-specific change */ ?>
+
     <h3 property="name"><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h3>
 
     <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $this->escapeHtml($summary[0]) : false; ?>
@@ -54,7 +56,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
       <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists hide alert-box info" id="savedLists" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
+      <div class="savedLists hide alert-box info" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
         <strong><?=$this->transEsc("Saved in")?>:</strong>
       </div>
     <? endif; ?>
@@ -261,7 +263,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           <th><?=$this->transEsc('Tags')?>: </th>
           <td>
             <span class="right hide-for-print">
-              <a id="tagRecord" class="modal-link" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" title="<?=$this->transEsc('Add Tag')?>"><i class="fa fa-plus"></i><?=$this->transEsc('Add Tag')?></a>
+              <a class="tagRecord modal-link right" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" title="<?=$this->transEsc('Add Tag')?>"><i class="fa fa-plus"></i><?=$this->transEsc('Add Tag')?></a>
             </span>
             <?=$this->context($this)->renderInContext('record/taglist', array('tagList'=>$tagList, 'loggedin'=>$loggedin)) ?>
           </td>

@@ -50,8 +50,8 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
 <div class="row">
   <div class="<?=$tree ? 'medium-12 columns' : $this->layoutClass('mainbody')?>">
     <div class="record">
-      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" class="hiddenId" id="record_id"/>
-      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource"/>
+      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" class="hiddenId" id="record_id" />
+      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
       <?=$this->flashmessages()?>
       <?=$this->record($this->driver)->getCollectionMetadata()?>
     </div>
@@ -72,22 +72,18 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
             $this->layout()->breadcrumbs .= ' <li class="active">' . $this->transEsc($desc) . '</li>';
             $activeTabObj = $obj;
           }
-          if (!$obj->isVisible()) {
-            $tab_classes[] = 'hide';
-          }
-          if (!$obj->supportsAjax()) {
-            $tab_classes[] = 'noajax';
-          }
+          if (!$obj->isVisible()) { $tab_classes[] = 'hide'; }
+          if (!$obj->supportsAjax()) { $tab_classes[] = 'noajax'; }
           ?>
-          <li<?=count($tab_classes) > 0 ? ' class="' . implode(' ', $tab_classes) . '"' : ''?>>
+          <li<?=count($tab_classes) > 0 ? ' class="tab-title ' . implode(' ', $tab_classes) . '"' : ''?>>
             <a class="<?=strtolower($tab)?>" href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>#tabnav"><?=$this->transEsc($desc)?></a>
           </li>
         <? endforeach; ?>
       </ul>
 
-      <div class="tabs-content collectionDetails<?=$tree ? 'Tree' : ''?>">
+      <div class="tabs-content collectionDetails<?=$tree ? 'Tree' : ''?>" id="record-tabs">
         <? if (!$this->ajaxTabs || !isset($activeTabObj) || !$activeTabObj->supportsAjax()): ?>
-          <div class="content active <?=$this->activeTab?>-tab">
+	    <div class="content active" id="<?=$this->activeTab ?>-tab">
             <?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : ''?>
           </div>
         <? endif; ?>
@@ -107,3 +103,4 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
   <? endif; ?>
 </div>
 <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, '$(document).ready(recordDocReady);', 'SET');?>
+<!-- collection - VIEW.phtml end -->
