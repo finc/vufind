@@ -79,7 +79,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
 
         // Extract the additional details from the record driver:
         $publishers = $driver->tryMethod('getPublishers');
-        $pubDates = $driver->tryMethod('getPublicationDates');
+        $pubDates = $driver->tryMethod('getPublishDateSort');
         $pubPlaces = $driver->tryMethod('getPlacesOfPublication');
         $edition = $driver->tryMethod('getEdition');
 
@@ -230,7 +230,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
             $apa['jtitle'] = $this->driver->tryMethod('getJTitle');
             $apa['volume'] = $this->driver->tryMethod('getVolume');
             $apa['issue'] = $this->driver->tryMethod('getIssues');
-            $apa['year'] = $this->driver->tryMethod('getPublicationDates');
+            $apa['year'] = $this->driver->tryMethod('getPublishDateSort');
             $apa['journal'] = $this->details['journal'];
             $apa['pageRange'] = $this->driver->tryMethod('getPages');
             if ($doi = $this->driver->tryMethod('getDOI')) {
@@ -271,7 +271,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
             $mla['pageRange'] = $this->getPageRange();
             $mla['volume'] = $this->driver->tryMethod('getVolume');
             $mla['issue'] = $this->driver->tryMethod('getIssues');
-            $mla['year'] = $this->driver->tryMethod('getPublicationDates');
+            $mla['year'] = $this->driver->tryMethod('getPublishDateSort');
             $mla['journal'] =  $this->capitalizeTitle($this->details['journal']);
             $mla['pageRange'] = $this->driver->tryMethod('getPages');
             return $partial('Citation/mlaai-article.phtml', $mla);

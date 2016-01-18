@@ -233,17 +233,6 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * Get the publication dates of the record.  See also getDateSpan().
-     *
-     * @return array
-     */
-    public function getPublicationDates()
-    {
-        return isset($this->fields['publishDateSort']) ?
-            $this->fields['publishDateSort'] : '';
-    }
-
-    /**
      * Returns an array with the necessary information to create a detailed
      * "Published in" line in RecordDriver core.phtml
      *
@@ -254,7 +243,7 @@ class SolrAI extends SolrDefault implements
         return [
             'jtitle' => $this->getJTitle(),
             'volume' => $this->getVolume(),
-            'date'   => $this->getPublicationDates(),
+            'date'   => $this->getPublishDateSort(),
             'issue'  => $this->getIssues(),
             'issns'  => $this->getISSNs(),
             'pages'  => $this->getPages()

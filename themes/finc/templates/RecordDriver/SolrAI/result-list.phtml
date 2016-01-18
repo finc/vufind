@@ -5,19 +5,16 @@
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
     </div>
-    <? $cover = $this->record($this->driver)->getCover('result-list', 'small', $this->recordLink()->getUrl($this->driver)); ?>
-    <? if ($cover): ?>
-    <div class="small-3 medium-2 columns left">
-      <?=$cover ?>
-    </div>
+    <? if ($cover = $this->record($this->driver)->getCover('result-list', 'medium', $this->recordLink()->getUrl($this->driver))): ?>
+    <div class="small-3 medium-2 columns left"><?=$cover?></div>
+    <? /* BOF - finc-specific StyleBasedIcons */ ?>
     <div class="small-6 medium-7 columns middle">
     <? elseif ($this->record($this->driver)->showStyleBasedIcons()): ?>
-    <div class="small-3 medium-2 columns left">
-      <?=$this->record($this->driver)->getRecordIcon()?>
-    </div>
-    <div class="small-6 medium-7 columns middle">
+      <div class="small-3 medium-2 columns left"><?=$this->record($this->driver)->getRecordIcon()?></div>
+      <div class="small-6 medium-7 columns middle">
     <? else : ?>
-    <div class="small-9 columns middle">
+      <div class="small-9 columns middle">
+    <? /* EOF - finc-specific StyleBasedIcons */ ?>
     <? endif ?>
       <div>
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title">
@@ -26,7 +23,7 @@
       </div>
       <div>
         <? if ($this->driver->isCollection()): ?>
-          <?=implode('<br>', array_map(array($this, 'escapeHtml'), $this->driver->getSummary())); ?>
+          <?=implode('<br>', array_map(array($this, 'escapeHtml'), $this->driver->getSummary()));?>
         <? else: ?>
           <? $summAuthors = $this->driver->getCombinedAuthors(); if (!empty($summAuthors)): ?>
           <? foreach($summAuthors as $summAuthor) : ?>
@@ -41,12 +38,12 @@
           <? endif; ?>
 
           <? $journalTitle = $this->driver->getContainerTitle();
-          $summDate = $this->driver->getPublicationDates(); $placesOfPublication = $this->driver->getPlacesOfPublication(); ?>
+          $summDate = $this->driver->getPublishDateSort(); $placesOfPublication = $this->driver->getPlacesOfPublication(); ?>
           <? if (!empty($journalTitle)): ?>
             <?=!empty($summAuthor) ? '<br />' : ''?>
             <?=$this->transEsc('Published in')?>
             <? $containerID = $this->driver->getContainerRecordID(); ?>
-            <? /* TODO: handle highlighting more elegantly here: */?>
+            <? /* TODO: handle highlighting more elegantly here: */ ?>
             <a href="<?=($containerID ? $this->recordLink()->getUrl("VuFind|$containerID") : $this->record($this->driver)->getLink('journaltitle', str_replace(array('{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'), '', $journalTitle)))?>"><?=$this->highlight($journalTitle)?></a>
             <?=!empty($summDate) ? ' (' . $this->escapeHtml($summDate) . ')' : ''?>
           <? elseif (!empty($summDate)): ?>
@@ -69,10 +66,10 @@
       <? if (!$this->driver->isCollection()): ?>
         <? if ($snippet = $this->driver->getHighlightedSnippet()): ?>
           <? if (!empty($snippet['caption'])): ?>
-            <strong><?=$this->transEsc($snippet['caption']) ?>:</strong> ';
+            <strong><?=$this->transEsc($snippet['caption'])?>:</strong> ';
           <? endif; ?>
           <? if (!empty($snippet['snippet'])): ?>
-            <span class="quotestart">&#8220;</span>...<?=$this->highlight($snippet['snippet']) ?>...<span class="quoteend">&#8221;</span><br/>
+            <span class="quotestart">&#8220;</span>...<?=$this->highlight($snippet['snippet'])?>...<span class="quoteend">&#8221;</span><br/>
           <? endif; ?>
         <? endif; ?>
       <? endif; ?>
@@ -136,7 +133,11 @@
         <? if (!is_array($urls)) $urls = array();
         if (!$this->driver->isCollection()):
           foreach ($urls as $current): ?>
-            <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fulltext" target="new"><i class="fa fa-external-link"></i><?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></a><br/>
+            <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fulltext" target="new">
+              <i class="fa fa-external-link"></i>
+              <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?>
+            </a>
+            <br/>
           <? endforeach; ?>
         <? endif; ?>
       <? endif; ?>
@@ -173,7 +174,7 @@
 
       <? if ($this->userlist()->getMode() !== 'disabled'): ?>
         <? /* Add to favorites */ ?>
-        <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="save-record modal-link" id="<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('Add to favorites')?>"><i class="fa fa-fw fa-star"></i><?=$this->transEsc('Add to favorites')?></a><br/>
+        <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="save-record modal-link" id="<?=$this->driver->getUniqueId()?>" title="<?=$this->transEsc('Add to favorites')?>"><i class="fa fa-fw fa-star"></i><?=$this->transEsc('Add to favorites')?></a><br/>
 
         <? /* Saved lists */ ?>
         <div class="savedLists hide alert-box info" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
@@ -195,7 +196,7 @@
         <? endforeach; ?>
       <? endif; ?>
 
-      <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
+          <?=$this->driver->supportsCoinsOpenUrl() ? '<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()) . '"></span>' : ''?>
     </div>
   </div>
 </div>
