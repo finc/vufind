@@ -41,6 +41,25 @@ namespace finc\RecordDriver;
 trait SolrMarcFincTrait
 {
     /**
+     * Do we have an attached ILS connection and (finc specific) do we want ILS support
+     * for the records source_id?
+     *
+     * @return bool
+     */
+    protected function hasILS()
+    {
+        // put all ILS supported source_id in here
+        $ilsSourceIds = ['0'];
+
+        if (in_array($this->getSourceID(), $ilsSourceIds)) {
+            return parent::hasILS();
+        }
+
+        // ILS connection for this source_id not supported
+        return false;
+    }
+
+    /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
      *
