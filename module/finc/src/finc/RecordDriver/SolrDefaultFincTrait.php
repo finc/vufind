@@ -424,6 +424,17 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get the recordtype of the current Record
+     *
+     * @return string
+     */
+    public function getRecordType()
+    {
+        return isset($this->fields['recordtype']) ?
+            $this->fields['recordtype'] : '';
+    }
+
+    /**
      * Get percentage of relevance of a title. First implementaion for TUBAF.
      *
      * @return float        Percentage of Score / Maximum Score rounded by 5.
