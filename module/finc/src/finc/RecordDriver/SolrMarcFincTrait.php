@@ -42,7 +42,7 @@ trait SolrMarcFincTrait
 {
     /**
      * Do we have an attached ILS connection and (finc specific) do we want ILS support
-     * for the records source_id?
+     * for the records source_id and access_facet-value?
      *
      * @return bool
      */
@@ -51,7 +51,12 @@ trait SolrMarcFincTrait
         // put all ILS supported source_id in here
         $ilsSourceIds = ['0'];
 
-        if (in_array($this->getSourceID(), $ilsSourceIds)) {
+        // put all ILS supported access_facet values in here
+        $accessFacetValues = ['Local Holdings'];
+
+        if (in_array($this->getSourceID(), $ilsSourceIds)
+            && in_array($this->getAccessFacet(), $accessFacetValues)
+        ) {
             return parent::hasILS();
         }
 
