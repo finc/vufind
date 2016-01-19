@@ -57,7 +57,7 @@
 	</div>
 
 	<? if (count($this->tabs) > 0): ?>
-	  <a name="tabnav"></a>
+	  <a name="tabnavi"></a><? /* Renamed, no typo, to render jump to tab ineffective */?>
 	  <div class="record-tabs">
 		<ul class="recordTabs tabs"><? /*<!-- DO NOT use standard data-tab option here as it triggers Foundation's normal tab behaviour while Vufind only uses tab appearance! FIXME CK */ ?>
 		<? foreach ($this->tabs as $tab => $obj): ?>
