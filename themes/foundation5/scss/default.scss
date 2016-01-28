@@ -232,10 +232,18 @@ ul {
       }
     }
   }
+
+  span {padding: .5rem 0 0 1rem;} // used in catalog-result
+  .small.author {
+    display: inline;
+    padding: 0;
+  }// used in catalog-result
 }
 
 // Up- down-icons in facets
 .sidebar {
+  // keep accordion or it will affect catalog-result class too
+  .accordion {
   a.title {
     &:after {
       content: '\25BC';
@@ -251,6 +259,33 @@ ul {
     }
   }
 }
+}
+
+// JS TREE FACET !      2 B CHECKED - fixme CK
+// jstree-ocl:before & open-closed etc symbols same as in hierarchyTree
+// facet list styling
+.jstree-facet li span.main {
+  display: block;
+  padding-left: 1px; // Fix Firefox cutting the checkboxes
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.jstree-facet .jstree-container-ul {
+  padding: 0;
+  & > li.active,
+  & > li.active a.jstree-anchor {
+    background-color: $side-nav-link-bg-hover;
+    color: $side-nav-link-color-active;
+  }
+}
+li.jstree-facet,
+li.jstree-node {
+  list-style: none;
+}
+li.jstree-facet .badge {cursor: text;}  // check and replace badge with label! - fixme CK
+li.jstree-facet ul {padding-left: 1rem;}
+// JS TREE FACET END
 
 // Browse collections button stacks
 .browse .button {
@@ -351,7 +386,7 @@ ul.date-range-slider {
     margin-left: 0;
   }
 
-  #searchForm {
+  .searchForm {
     margin-left: 81px; // verify - this should be solved more elegantly - fixme CK
 
       li.has-form {
@@ -1065,7 +1100,7 @@ button,
 }
 .tabs-content table {width: 100%}
 
-header #searchForm .tabs {
+header .searchForm .tabs {
   border: 0;
 
   &:before {
@@ -1102,108 +1137,50 @@ header #searchForm .tabs {
 
 // Hierarchy tab
 #hierarchyTreeHolder {
-  /*border-right: 1px solid #eee; */
   overflow-x: hidden;
+  }
+// Create sufficient space for dropdown icon and folder icon
+.hierarchy-tree {padding-left:.5rem}
 
-  ul {
-    list-style: none;
-    margin-left: 0;
-
-    li {
       .jstree-icon {
-        padding-right: .25rem;
+  color: #333;
       }
-
-      ul {
-        margin-left: .5rem;
-      }
-    }
-  }
-}
-
-// Check jsTree from here - fixme
-// Hierarchical facets - jsTree - included here because the hierarchy tree tab content is below
-// Should be done more elegantly
-// jsTree arrows
-.facet .jstree-ocl:before {
-  float: left;
-  width: 10px;
-  padding: 0;
-  margin-left: -10px;
-  font-family: "FontAwesome", sans-serif;
-  font-weight: normal;
-  font-style: normal;
-  text-decoration:inherit;
+// jsTree arrows in hierarchy tree and facet!
+.jstree-ocl:before {
   cursor: pointer;
-  /*speak: none;*/
-}
-.facet .jstree-default {
-  & .jstree-open > .jstree-ocl:before {content: "\f0d7";}
-  & .jstree-closed > .jstree-ocl:before {content: "\f0da";}
-  & .jstree-leaf > .jstree-ocl:before {content: " ";}
-}
-// facet list styling
-.jstree-facet li span.main {
-  display: block;
-  padding-left: 1px; // Fix Firefox cutting the checkboxes
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.jstree-facet .jstree-container-ul {
-  padding: 0;
-  & > li.active,
-  & > li.active a.jstree-anchor {
-    background-color: $side-nav-link-bg-hover;
-    color: $side-nav-link-color-active;
-  }
-}
-li.jstree-facet,
-li.jstree-node {
-  list-style: none;
-}
-li.jstree-facet .badge {cursor: text;}  // check and replace badge with label! - fixme CK
-li.jstree-facet ul {padding-left: 1rem;}
-
-// jsTree arrows in hierarchy tree !
-.hierarchy-tree {
-  .jstree-ocl:before {
-    /*float: left;*/ // otherwise blank line in tree above active link // // check - fixme CK
-    width: 10px;
-    padding: 0;
-    margin-left: -10px;
+  float: left;
     font-family: "FontAwesome", sans-serif;
     font-style: normal;
     font-weight: normal;
-    cursor: pointer;
+  margin-left: -2.5rem;
+  padding: 0;
     text-decoration: inherit;
+  width: .75rem;
     /*speak: none; */
   }
+.jstree-open > .jstree-ocl:before,
+.jstree-closed > .jstree-ocl:before,
+.jstree-leaf > .jstree-ocl:before {margin-top: -.142857em;} // Position of the arrow at same height as other icons
+
   .jstree-open > .jstree-ocl:before {content: "\f0d7";}
   .jstree-closed > .jstree-ocl:before {content: "\f0da";}
   .jstree-leaf > .jstree-ocl:before {content: " ";}
-  .jstree-icon {
-    width: 16px;
-    color: #000;
-  }
+
   .jstree-anchor {
-    padding: 2px 5px;
-    white-space: nowrap;
+  padding: .25rem .25rem .25rem 0; // creates coloured space around linked item
   }
-  .jstree-container-ul,
   .jstree-children {
-    padding-left: 16px;
+  margin-left: .5rem; // redefines space to the left overruling fa-ul
   }
   .jstree-initial-node {display: none;}
   .jstree-clicked {
     color: $topbar-link-color-active;
     background-color: $topbar-link-bg-active;
-    .jstree-icon {
-      color: #fff;
+  &:hover,
+  &:focus {
+    color: darken($topbar-link-color-active,10);
     }
   }
-}
-// Check jsTree to here - fixme - END
 
 // Hierarchy tab - END
 

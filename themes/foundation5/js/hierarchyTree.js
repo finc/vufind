@@ -216,10 +216,10 @@ $(document).ready(function()
       },
       'types' : {
         'record': {
-          'icon':'fa fa-file-o'
+          'icon':'fa-li fa fa-file-o'
         },
         'collection': {
-          'icon':'fa fa-folder'
+          'icon':'fa-li fa fa-folder'
         }
       }
     });
