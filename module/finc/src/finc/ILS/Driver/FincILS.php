@@ -42,8 +42,6 @@ use VuFind\Exception\ILS as ILSException,
 class FincILS extends PAIA implements LoggerAwareInterface
 {
 
-    private $_username;
-    private $_password;
     private $_root_username;
     private $_root_password;
 
@@ -225,11 +223,36 @@ class FincILS extends PAIA implements LoggerAwareInterface
             if ($username == '') {
                 throw new ILSException('Invalid Login, Please try again.');
             }
-            $this->_username = $username;
-            $this->_password = $password;
+
+            $enrichUserDetails = function ($details, $username, $password) {
+                $details['cat_username']
+                    = ($this->session->patron === 'root' ? $username : $this->session->patron);
+                $details['cat_password'] = $password;
+                return $details;
+            };
+
+            // if we already have a session with access_token and patron id, try to get
+            // patron info with session data
+            if (isset($this->session->expires) && microtime() < $this->session->expires) {
+                try {
+                    return $enrichUserDetails(
+                        $this->paiaGetUserDetails(($this->session->patron === 'root' ? $username : $this->session->patron)),
+                        $username,
+                        $password
+                    );
+                } catch (ILSException $e) {
+                    $this->debug('Session expired, login again', 'info');
+                }
+            }
 
             try {
-                return $this->paiaRootLogin($username, $password);
+                if($this->paiaLogin($this->_root_username, $this->_root_password)) {
+                    return $enrichUserDetails(
+                        $this->paiaGetUserDetails(($this->session->patron === 'root' ? $username : $this->session->patron)),
+                        $username,
+                        $password
+                    );
+                }
             } catch (ILSException $e) {
                 throw new ILSException($e->getMessage());
             }
@@ -239,57 +262,83 @@ class FincILS extends PAIA implements LoggerAwareInterface
     }
 
     /**
-     * Private authentication function - use PAIA root credentials for authentication
+     * Customized PAIA support method for PAIA core method 'items' returning only
+     * filtered items.
+     * Available filters:
+     *      - key=>value : PAIA document.key must contain value
+     *      - exclude => [key=>value] : PAIA document.key must not contain value
+     *      - regex => [key=>value] : PAIA document.key must preg_match(value)
      *
-     * @param string $username Username
-     * @param string $password Password
+     * @param array $patron Array with patron information
+     * @param array $filter Array of properties identifying the wanted items
      *
-     * @return mixed Associative array of patron info on successful login,
-     * null on unsuccessful login, PEAR_Error on error.
-     * @throws ILSException
+     * @return array|mixed Array of documents containing the given filter properties
      */
-    protected function paiaRootLogin($username, $password)
+    protected function paiaGetItems($patron, $filter = [])
     {
-        $post_data = [
-            "username" => $this->_root_username,
-            "password" => $this->_root_password,
-            "grant_type" => "password",
-            "scope" => "read_patron read_fees read_items write_items change_password"
-        ];
-        $responseJson = $this->paiaPostRequest('auth/login', $post_data);
+        $itemsResponse = $this->paiaGetAsArray(
+            'core/'.$patron['cat_username'].'/items'
+        );
 
-        try {
-            $responseArray = $this->paiaParseJsonAsArray($responseJson);
-        } catch (ILSException $e) {
-            if ($e->getMessage() === 'access_denied') {
-                return null;
-            }
-            throw new ILSException(
-                $e->getCode() . ':' . $e->getMessage()
-            );
-        }
-
-        if (array_key_exists('access_token', $responseArray)) {
-            $_SESSION['paiaToken'] = $responseArray['access_token'];
-            if (array_key_exists('patron', $responseArray)) {
-                if ($responseArray['patron'] === 'root') {
-                    $patron = $this->paiaGetUserDetails($username);
-                    $patron['cat_username'] = $username;
-                    $patron['cat_password'] = $password;
-                } else {
-                    $patron = $this->paiaGetUserDetails($responseArray['patron']);
-                    $patron['cat_username'] = $responseArray['patron'];
-                    $patron['cat_password'] = $password;
+        if (isset($itemsResponse['doc'])) {
+            if (count($filter)) {
+                $filteredItems = [];
+                foreach ($itemsResponse['doc'] as $doc) {
+                    $filterCounter = 0;
+                    foreach ($filter as $filterKey => $filterValue) {
+                        switch ($filterKey) {
+                            case 'exclude' :
+                                // check exclude filters
+                                $excludeCounter = 0;
+                                foreach ($filterValue as $excludeKey => $excludeValue) {
+                                    if (!(isset($doc[$excludeKey])
+                                        && in_array($doc[$excludeKey], (array) $excludeValue))
+                                    ) {
+                                        $excludeCounter++;
+                                    }
+                                }
+                                if ($excludeCounter == count($filterValue)) {
+                                    $filterCounter++;
+                                }
+                                break;
+                            case 'regex' :
+                                // check regex filters
+                                $regexCounter = 0;
+                                foreach ($filterValue as $regexKey => $regexValue) {
+                                    if (!(isset($doc[$regexKey])
+                                        && preg_match($regexValue, $doc[$regexKey]))
+                                    ) {
+                                        $regexCounter++;
+                                    }
+                                }
+                                if ($regexCounter == count($filterValue)) {
+                                    $filterCounter++;
+                                }
+                                break;
+                            default:
+                                if (isset($doc[$filterKey])
+                                    && in_array($doc[$filterKey], (array) $filterValue)
+                                ) {
+                                    $filterCounter++;
+                                }
+                                break;
+                        }
+                    }
+                    // check if all filters applied
+                    if ($filterCounter == count($filter)) {
+                        $filteredItems[] = $doc;
+                    }
                 }
-                return $patron;
+                return $filteredItems;
             } else {
-                throw new ILSException(
-                    'Login credentials accepted, but got no patron ID?!?'
-                );
+                return $itemsResponse;
             }
         } else {
-            throw new ILSException('Unknown error! Access denied.');
+            $this->debug(
+                "No documents found in PAIA response. Returning empty array."
+            );
         }
+        return [];
     }
 
     /**

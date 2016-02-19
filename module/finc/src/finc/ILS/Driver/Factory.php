@@ -58,6 +58,23 @@ class Factory
     }
 
     /**
+     * Factory for FincLibero driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return FincLibero
+     */
+    public static function getFincLibero(ServiceManager $sm)
+    {
+        return new FincLibero(
+            $sm->getServiceLocator()->get('VuFind\DateConverter'),
+            $sm->getServiceLocator()->get('VuFind\RecordLoader'),
+            $sm->getServiceLocator()->get('VuFind\Search'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        );
+    }
+
+    /**
      * Factory for PAIA driver.
      *
      * @param ServiceManager $sm Service manager.
