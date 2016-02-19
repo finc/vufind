@@ -32,6 +32,19 @@
   margin: .5rem .5rem .5rem 0;
 }
 
+// LIST VIEW
+// Source-id branding (WISO etc)
+.branding {display: none}
+.branding.SID48{
+  background: url("../images/wiso-transparent-70x20.png") 0 0 no-repeat;
+  display: inline-block;
+  height:1.5rem;
+  margin-left:.2rem;
+  vertical-align: bottom;
+  width: 5rem; // 70px
+}
+
+// RECORD VIEW
 // Internformat
 .pace-car th {min-width: 10%}
 

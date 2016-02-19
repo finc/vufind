@@ -144,6 +144,11 @@
 
       <?=str_replace('class="', 'class="label info ', $this->record($this->driver)->getFormatList())?>
 
+        <?/* WISO Label */?>
+          <? $sourceID = $this->driver->getSourceID(); ?>
+          <span class="branding label SID<?=($sourceID)?>"  alt="<?=$this->transEsc("SID$sourceID")?>" title="<?=$this->transEsc("SID$sourceID")?>"></span>
+        <?/* WISO Label - END */?>
+
       <? if (!$openUrlActive && empty($urls) && $this->driver->supportsAjaxStatus()): ?>
         <span class="status ajax-availability hide">
           <span class="label secondary"><?=$this->transEsc('Loading')?>&nbsp;...</span>
