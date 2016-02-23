@@ -1,0 +1,168 @@
+<!-- recordTab - HOLDINGSILS.phtml -->
+<?
+    // Set up convenience variables:
+    $account = $this->auth()->getManager();
+    $user = $account->isLoggedIn();
+    $holdings = $this->driver->getRealTimeHoldings();
+    $openUrl = $this->openUrl($this->driver, 'holdings');
+    $openUrlActive = $openUrl->isActive();
+    // Account for replace_other_urls setting
+    $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+    $offlineMode = $this->ils()->getOfflineMode();
+    // Set page title.
+    $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
+?>
+
+<?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
+
+<? if ($offlineMode == "ils-offline"): ?>
+  <div data-alert class="alert-box warning" tabindex="0" aria-live="assertive" role="dialogalert">
+    <h2><?=$this->transEsc('ils_offline_title')?></h2>
+    <p><strong><?=$this->transEsc('ils_offline_status')?></strong></p>
+    <p><?=$this->transEsc('ils_offline_holdings_message')?></p>
+    <? $supportEmail = $this->escapeHtmlAttr($this->systemEmail()); ?>
+    <p><a href="mailto:<?=$supportEmail?>"><?=$supportEmail?></a></p>
+  </div>
+<? endif; ?>
+<? if (($this->ils()->getHoldsMode() == 'driver' && !empty($holdings)) || $this->ils()->getTitleHoldsMode() == 'driver'): ?>
+  <? if ($account->loginEnabled() && $offlineMode != 'ils-offline'): ?>
+    <? if (!$user): ?>
+      <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="dialogalert">
+        <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'Holdings')?>?login=true&amp;catalogLogin=true"><?=$this->transEsc("Login")?></a> <?=$this->transEsc("hold_login")?>
+      </div>
+    <? elseif (!$user->cat_username): ?>
+      <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="dialogalert">
+        <?=$this->translate("hold_profile_html", array('%%url%%' => $this->recordLink()->getTabUrl($this->driver, 'Holdings') . '?catalogLogin=true'))?>
+      </div>
+    <? endif; ?>
+  <? endif; ?>
+<? endif; ?>
+<? $holdingTitleHold = $this->driver->tryMethod('getRealTimeTitleHold'); if (!empty($holdingTitleHold)): ?>
+    <a class="placehold modal-link button small" title="<?=$this->transEsc('request_place_text')?>" href="<?=$this->recordLink()->getRequestUrl($holdingTitleHold)?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc('title_hold_place')?></a>
+<? endif; ?>
+<? if (!empty($urls) || $openUrlActive): ?>
+  <h3><?=$this->transEsc("Internet")?></h3>
+  <? if (!empty($urls)): ?>
+    <? foreach ($urls as $current): ?>
+      <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
+    <? endforeach; ?>
+  <? endif; ?>
+  <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
+<? endif; ?>
+<? foreach ($holdings as $holding): ?>
+  <h3>
+    <? $locationText = $this->transEsc('location_' . $holding['location'], array(), $holding['location']); ?>
+    <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
+      <a href="<?=$holding['locationhref']?>" target="_blank"><?=$locationText?></a>
+    <? else: ?>
+      <?=$locationText?>
+    <? endif; ?>
+  </h3>
+<table class="table" summary="<?=$this->transEsc('Holdings details from')?> <?=$this->transEsc($holding['location'])?>">
+  <tr>
+    <th><?=$this->transEsc("Availability")?></th>
+    <th><?=$this->transEsc("Details")?></th>
+  </tr>
+  <? foreach ($holding['items'] as $row): ?>
+    <? $check = (isset($row['check']) && $row['check']); ?>
+    <? $checkStorageRetrievalRequest = (isset($row['checkStorageRetrievalRequest']) && $row['checkStorageRetrievalRequest']); ?>
+    <? $checkILLRequest = (isset($row['checkILLRequest']) && $row['checkILLRequest']); ?>
+    <? if (isset($row['barcode']) && $row['barcode'] != ""): ?>
+    <tr vocab="http://schema.org/" typeof="Offer">
+      <td>
+        <? if ($row['availability']): ?>
+        <? /* Begin Available Items (Holds) */ ?>
+        <span class="label success"><?=$this->transEsc("Available")?><link property="availability" href="http://schema.org/InStock" /></span>
+        <? else: ?>
+        <? /* Begin Unavailable Items (Recalls) */ ?>
+        <span class="label alert"><?=$this->transEsc($row['status'])?><link property="availability" href="http://schema.org/OutOfStock" /></span>
+        <? endif; ?>
+      </td>
+      <td>
+        <? if ($row['reserve'] == "Y"): ?>
+          <link property="availability" href="http://schema.org/InStoreOnly" />
+          <?=$this->transEsc("On Reserve - Ask at Circulation Desk")?><br />
+        <? endif; ?>
+        <? if (isset($row['use_unknown_message']) && $row['use_unknown_message']): ?>
+          <span class="label secondary"><?=$this->transEsc("status_unknown_message")?></span>
+        <? else: ?>
+          <? if (isset($row['callnumber'])): ?>
+            <span class="callnumber"><?=$this->transEsc("Call Number")?>: <?=$row['callnumber']?></span>
+          <? endif; ?>
+          <? if (isset($row['storage']) && $row['storage'] != 'Unknown'): ?>
+            <span class="storage"><?=$this->transEsc("Location")?>: <?=$row['storage']?></span>
+          <? endif; ?>
+          <? if ($row['availability']): ?>
+            <? /* Begin Available Items (Holds) */ ?>
+            <? if (isset($row['notes'])): ?>
+              <span class="notes"><?=$this->transEsc("Notes")?>:</span>
+              <ul class="notes">
+                <? foreach ($row['notes'] as $note): ?>
+                  <li><?=$note?></li>
+                <? endforeach; ?>
+              </ul>
+            <? endif; ?>
+            <? if (isset($row['link']) && $row['link']): ?>
+                <a class="<?=$check ? 'checkRequest ' : ''?>inlineblock modal-link placehold hide-for-print" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
+            <? endif; ?>
+            <? if (isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
+                <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?>modal-link placeStorageRetrievalRequest" href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
+            <? endif; ?>
+            <? if (isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
+                <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock modal-link placeILLRequest" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
+            <? endif; ?>
+          <? else: ?>
+            <? /* Begin Unavailable Items (Recalls) */ ?>
+              <span class="label alert"><?=$this->transEsc($row['status'])?><link property="availability" href="http://schema.org/OutOfStock" /></span>
+            <? if (isset($row['returnDate']) && $row['returnDate']): ?>&ndash; <span class="small"><?=$this->escapeHtml($row['returnDate'])?></span><? endif; ?>
+            <? if (isset($row['duedate']) && $row['duedate']): ?>
+              &ndash; <span class="small"><?=$this->transEsc("Due")?>: <?=$this->escapeHtml($row['duedate'])?></span>
+            <? endif; ?>
+            <? if (isset($row['requests_placed']) && $row['requests_placed'] > 0): ?>
+              <span><?=$this->transEsc("Requests")?>: <?=$this->escapeHtml($row['requests_placed'])?></span>
+            <? endif; ?>
+            <? if (isset($row['link']) && $row['link']): ?>
+                <a class="<?=$check ? 'checkRequest' : ''?> modal-link inlineblock placehold hide-for-print" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
+            <? endif; ?>
+          <? endif; ?>
+        <? endif; ?>
+        <? /* Embed item structured data: library, barcode, call number */ ?>
+        <? if ($row['location']): ?>
+          <meta property="seller" content="<?=$this->escapeHtmlAttr($row['location'])?>" />
+        <? endif; ?>
+        <? if ($row['barcode']): ?>
+          <meta property="serialNumber" content="<?=$this->escapeHtmlAttr($row['barcode'])?>" />
+        <? endif; ?>
+        <? if ($row['callnumber']): ?>
+          <meta property="sku" content="<?=$this->escapeHtmlAttr($row['callnumber'])?>" />
+        <? endif; ?>
+        <? /* Declare that the item is to be borrowed, not for sale */ ?>
+          <link property="businessFunction" href="http://purl.org/goodrelations/v1#LeaseOut" />
+          <link property="itemOffered" href="#record" />
+      </td>
+    </tr>
+    <? endif; ?>
+  <? endforeach; ?>
+  <? if (!empty($holding['purchase_history'])): ?>
+    <tr>
+      <th><?=$this->transEsc("Most Recent Received Issues")?>:</th>
+      <td>
+        <? foreach ($holding['purchase_history'] as $current): ?>
+          <?=$this->escapeHtml($current['issue'])?><br/>
+        <? endforeach; ?>
+      </td>
+    </tr>
+  <? endif; ?>
+</table>
+<? endforeach; ?>
+
+<? $history = $this->driver->getRealTimeHistory(); ?>
+<? if (is_array($history) && !empty($history)): ?>
+<h3><?=$this->transEsc("Most Recent Received Issues")?></h3>
+<table class="table">
+  <? foreach ($history as $row): ?>
+    <tr><td><?=$this->escapeHtml($row['issue'])?></td></tr>
+  <? endforeach; ?>
+</table>
+<? endif; ?>
+<!-- recordTab - HOLDINGSILS.phtml end -->

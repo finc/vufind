@@ -45,10 +45,33 @@
 }
 
 // RECORD VIEW
+// TABS
+// Table width
+.tabs-content table {
+  width:100%;
+}
+// Holdings
+// Insert line break before Vormerken buttons
+#holdings-tab {
+  line-height: 1.75rem;
+  td {
+    vertical-align: top;
+  }
+  td span:after {
+    content: "\a ";
+    white-space: pre;
+  }
+  // remove excessive bottom margins above order buttons
+  ul {margin-bottom: 0}
+  .button {
+    margin-top: .5rem;
+  }
+}
 // Internformat
 .pace-car th {min-width: 10%}
 
-// Footer
+
+// FOOTER
 .powered-by {
   img {
     height: 1.75em;
