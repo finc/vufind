@@ -304,9 +304,9 @@ class FincILS extends PAIA implements LoggerAwareInterface
                             case 'regex' :
                                 // check regex filters
                                 $regexCounter = 0;
-                                foreach ($filterValue as $regexKey => $regexValue) {
-                                    if (!(isset($doc[$regexKey])
-                                        && preg_match($regexValue, $doc[$regexKey]))
+                                foreach ($filterValue as $regexField => $regexPattern) {
+                                    if (isset($doc[$regexField])
+                                        && preg_match($regexPattern, $doc[$regexField]) === 1
                                     ) {
                                         $regexCounter++;
                                     }
@@ -339,6 +339,69 @@ class FincILS extends PAIA implements LoggerAwareInterface
             );
         }
         return [];
+    }
+
+    /**
+     * PAIA helper function to allow customization of mapping from PAIA response to
+     * VuFind ILS-method return values.
+     *
+     * @param array  $items   Array of PAIA items to be mapped
+     * @param string $mapping String identifying a custom mapping-method
+     *
+     * @return array
+     */
+    protected function mapPaiaItems($items, $mapping)
+    {
+        return $this->postprocessPaiaItems(
+            parent::mapPaiaItems($items, $mapping)
+        );
+    }
+
+    /**
+     * Helper function to postprocess the PAIA items for display in catalog (e.g. retrieve
+     * fincid etc.).
+     *
+     * @param array $items Array of PAIA items to be postprocessed
+     *
+     * @return mixed
+     */
+    protected function postprocessPaiaItems($items)
+    {
+        // regex pattern for item_id (e.g. UBL:barcode:0008911555)
+        $idPattern = '/^([]A-Za-z0-9_\-]*):(%s):(.*)$/';
+
+        // item_id identifier - Solr field mapping
+        $identifier = [
+            'barcode' => 'barcode' .
+                (isset($this->mainConfig->CustomIndex->indexExtension)
+                    ? '_'.$this->mainConfig->CustomIndex->indexExtension : ''),
+            'fincid'  => 'id',
+            'ppn'     => 'record_id'
+        ];
+
+        // try item_id with defined regex pattern and identifiers and use Solr to
+        // retrieve fincid on match
+        $ilsIdentifier = function ($itemId) use ($identifier, $idPattern) {
+            foreach ($identifier as $key => $value) {
+                $matches = [];
+                if (preg_match(sprintf($idPattern, $key), $itemId, $matches)) {
+                    return $this->_getFincId($matches[3], $value);
+                }
+            }
+        };
+
+        // iterate trough given items
+        foreach ($items as &$item) {
+            if (isset($item['id']) && empty($item['id']) && !empty($item['item_id'])) {
+                $ilsId = $ilsIdentifier($item['item_id']);
+                if ($ilsId != null) {
+                    $item['id'] = $ilsId;
+                    $item['source'] = 'Solr';
+                }
+            }
+        }
+
+        return $items;
     }
 
     /**
@@ -435,12 +498,18 @@ class FincILS extends PAIA implements LoggerAwareInterface
     /**
      * Get the identifier for the record which will be used for ILS interaction
      *
-     * @param string $id Document to look up.
+     * @param string $id            Document to look up.
+     * @param string $ilsIdentifier Identifier to override config settings.
      *
      * @return string $ilsRecordId
      */
-    private function _getILSRecordId($id)
+    private function _getILSRecordId($id, $ilsIdentifier = null)
     {
+        // override ilsIdentifier set in ILS driver config
+        if ($ilsIdentifier != null) {
+            $this->ilsIdentifier = $ilsIdentifier;
+        }
+
         //get the ILS-specific recordId
         if ($this->ilsIdentifier != "default") {
 
@@ -488,17 +557,18 @@ class FincILS extends PAIA implements LoggerAwareInterface
     /**
      * Get the identifiers for multiple records
      *
-     * @param array $ids Documents to look up.
+     * @param array  $ids           Documents to look up.
+     * @param string $ilsIdentifier Identifier to override config settings.
      *
      * @return array $ilsRecordIds
      */
-    private function _getILSRecordIds($ids)
+    private function _getILSRecordIds($ids, $ilsIdentifier = null)
     {
         $ilsRecordIds = [];
 
         if (is_array($ids)) {
             foreach ($ids as $id) {
-                $ilsRecordIds[] = $this->_getILSRecordId($id);
+                $ilsRecordIds[] = $this->_getILSRecordId($id, $ilsIdentifier);
             }
 
             return $ilsRecordIds;
@@ -510,12 +580,18 @@ class FincILS extends PAIA implements LoggerAwareInterface
     /**
      * Get the finc id of the record with the given ilsIdentifier value
      *
-     * @param string $ilsId Document to look up.
+     * @param string $ilsId         Document to look up.
+     * @param string $ilsIdentifier Identifier to override config settings.
      *
      * @return string $fincId if ilsIdentifier is configured, otherwise $ilsId
      */
-    private function _getFincId($ilsId)
+    private function _getFincId($ilsId, $ilsIdentifier = null)
     {
+        // override ilsIdentifier set in ILS driver config
+        if ($ilsIdentifier != null) {
+            $this->ilsIdentifier = $ilsIdentifier;
+        }
+
         if ($this->ilsIdentifier != "default") {
             // different ilsIdentifier is configured, retrieve fincid
             try {
