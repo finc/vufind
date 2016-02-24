@@ -81,7 +81,7 @@ $this->layout()->title = $this->driver->getShortTitle();
 
       <div class="tabs-content" id="record-tabs">
           <? if (!$this->ajaxTabs || !isset($activeTabObj) || !$activeTabObj->supportsAjax()): ?>
-            <div class="content active" id="<?=$this->activeTab?>-tab">
+            <div class="content active <?=$this->activeTab?>-tab">
             <?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : ''?>
             </div>
           <? endif; ?>
