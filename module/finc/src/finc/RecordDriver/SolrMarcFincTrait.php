@@ -168,6 +168,7 @@ trait SolrMarcFincTrait
      *
      * @return array   Return fields.
      * @access public
+     * @deprecated (https://intern.finc.info/issues/6324)
      * @link   https://intern.finc.info/issues/2639
      */
     public function getLocalCallnumber()
@@ -198,6 +199,7 @@ trait SolrMarcFincTrait
      *
      * @return array
      * @access protected
+     * @deprecated (https://intern.finc.info/issues/6324)
      */
     protected function getLocalCallnumbersByLibrary()
     {

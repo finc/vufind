@@ -52,4 +52,33 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
 {
     use \VuFind\Log\LoggerAwareTrait;
     use SolrDefaultFincTrait;
+
+    /**
+     * Index extension used for dynamic fields
+     *
+     * @var string
+     */
+    protected $indexExtension = '';
+
+    /**
+     * Constructor
+     *
+     * @param \Zend\Config\Config $mainConfig     VuFind main configuration (omit for
+     * built-in defaults)
+     * @param \Zend\Config\Config $recordConfig   Record-specific configuration file
+     * (omit to use $mainConfig as $recordConfig)
+     * @param \Zend\Config\Config $searchSettings Search-specific configuration file
+     */
+    public function __construct($mainConfig = null, $recordConfig = null,
+                                $searchSettings = null
+    )
+    {
+        parent::__construct($mainConfig, $recordConfig, $searchSettings);
+
+        if (isset($this->mainConfig->CustomIndex->indexExtension)) {
+            $this->indexExtension = $this->mainConfig->CustomIndex->indexExtension;
+        } else {
+            $this->debug('Index extension for custom index not set!');
+        }
+    }
 }

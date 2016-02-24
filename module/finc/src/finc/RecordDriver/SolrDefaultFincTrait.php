@@ -51,6 +51,18 @@ trait SolrDefaultFincTrait
 {
 
     /**
+     * Get all call numbers associated with the record (empty string if none).
+     *
+     * @return array
+     */
+    public function getCallNumbers()
+    {
+        return isset($this->fields['callnumber_' . $this->indexExtension])
+            ? $this->fields['callnumber_' . $this->indexExtension]
+            : parent::getCallNumbers();
+    }
+
+    /**
      * Return the custom index field local_heading if indexExtension is set.
      * If indexExtension is set local_heading_{indexExtension} is returned,
      * if local_heading_{indexExtesion} is empty,
