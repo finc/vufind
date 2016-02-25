@@ -233,7 +233,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
 
             // if we already have a session with access_token and patron id, try to get
             // patron info with session data
-            if (isset($this->session->expires) && microtime() < $this->session->expires) {
+            if (isset($this->session->expires) && $this->session->expires > time()) {
                 try {
                     return $enrichUserDetails(
                         $this->paiaGetUserDetails(($this->session->patron === 'root' ? $username : $this->session->patron)),

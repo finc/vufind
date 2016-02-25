@@ -608,9 +608,7 @@ class PAIA extends DAIA implements
 
         // if we already have a session with access_token and patron id, try to get
         // patron info with session data
-        if (isset($this->session->expires)
-            && microtime() < $this->session->expires
-        ) {
+        if (isset($this->session->expires) && $this->session->expires > time()) {
             try {
                 return $enrichUserDetails(
                     $this->paiaGetUserDetails($this->session->patron),
@@ -1295,8 +1293,8 @@ class PAIA extends DAIA implements
                 = isset($responseArray['scope'])
                     ? explode(' ', $responseArray['scope']) : null;
             $this->session->expires
-                = isset($responseArray['expires'])
-                    ? (microtime() + ($responseArray['expires']*1000)) : null;
+                = isset($responseArray['expires_in'])
+                    ? (time() + ($responseArray['expires_in'])) : null;
 
             return true;
         }
