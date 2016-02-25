@@ -962,6 +962,9 @@ class PAIA extends DAIA implements
             // about (0..1) textual description of the document
             $result['title'] = (isset($doc['about']) ? $doc['about'] : null);
 
+            // label (0..1) call number, shelf mark or similar item label
+            $result['callnumber'] = (isset($doc['label']) ? $doc['label'] : null); // PAIA custom field
+
             if (in_array($doc['status'], [1, 2])) {
                 // status == 1 => starttime: when the document was reserved
                 // status == 2 => starttime: when the document was ordered
@@ -978,6 +981,7 @@ class PAIA extends DAIA implements
                 $result['available'] = true;
             }
 
+            // Optional VuFind fields
             /*
             $result['reqnum'] = null;
             $result['volume'] =  null;
@@ -987,9 +991,6 @@ class PAIA extends DAIA implements
             $result['oclc'] = null;
             $result['upc'] = null;
             */
-
-            //'message'        => $loans_response['doc'][$i]['label'],
-            //'callnumber'     => $loans_response['doc'][$i]['label'],
 
             $results[] = $result;
 
@@ -1033,9 +1034,6 @@ class PAIA extends DAIA implements
             // about (0..1) textual description of the document
             $result['title'] = (isset($doc['about']) ? $doc['about'] : null);
 
-            // label (0..1) call number, shelf mark or similar item label
-            $result['barcode'] = (isset($doc['label']) ? $doc['label'] : null);
-
             // queue (0..1) number of waiting requests for the document or item
             $result['request'] = (isset($doc['queue']) ? $doc['queue'] : null);
 
@@ -1067,7 +1065,12 @@ class PAIA extends DAIA implements
 
             // storageid (0..1) location URI
 
+            // label (0..1) call number, shelf mark or similar item label
+            $result['callnumber'] = (isset($doc['label']) ? $doc['label'] : null); // PAIA custom field
+
+            // Optional VuFind fields
             /*
+            $result['barcode'] = null;
             $result['dueStatus'] = null;
             $result['renewLimit'] = "1";
             $result['volume'] = null;
