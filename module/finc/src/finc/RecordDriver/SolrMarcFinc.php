@@ -77,6 +77,7 @@ class SolrMarcFinc extends SolrMarc
     {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
+        // get the isil set in InstitutionInfo in config.ini
         if (isset($mainConfig->InstitutionInfo->isil)
             && count($mainConfig->InstitutionInfo->isil) > 0
         ) {
@@ -85,26 +86,5 @@ class SolrMarcFinc extends SolrMarc
             $this->debug('InstitutionInfo setting: isil is missing.');
         }
 
-        if (isset($this->mainConfig->CustomSite->namespace)) {
-            // map for marc fields
-            $map = [
-                'che' => '971',
-                'hgb' => '979',
-                'hfbk' => '978',
-                'hfm' => '977',
-                'hmt' => '970',
-                'htw' => '973',
-                'htwk' => '974',
-                'tuf' => '972',
-                'ubl' => '969',
-                'zit' => '976',
-                'zwi' => '975',
-            ];
-            $this->localMarcFieldOfLibrary
-                = isset($map[$this->mainConfig->CustomSite->namespace]) ?
-                $map[$this->mainConfig->CustomSite->namespace] : null;
-        } else {
-            $this->debug('Namespace setting for localMarcField is missing.');
-        }
     }
 }

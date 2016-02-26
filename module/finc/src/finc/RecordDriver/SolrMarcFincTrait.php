@@ -239,7 +239,7 @@ trait SolrMarcFincTrait
     protected function getLocalGivenCallnumber()
     {
         $retval = [];
-        $arrSignatur = $this->getFieldArray($this->localMarcFieldOfLibrary, ['i']);
+        $arrSignatur = $this->getFieldArray($this->getLocalMarcFieldOfLibrary(), ['i']);
 
         foreach ($arrSignatur as $signatur) {
             foreach ($this->isil as $code) {
@@ -427,8 +427,8 @@ trait SolrMarcFincTrait
      */
     protected function getLocalAccessNumber()
     {
-        if (null != $this->localMarcFieldOfLibrary) {
-            return $this->getFieldArray($this->localMarcFieldOfLibrary, ['o']);
+        if (null != $this->getLocalMarcFieldOfLibrary()) {
+            return $this->getFieldArray($this->getLocalMarcFieldOfLibrary(), ['o']);
         }
         return [];
     }
@@ -485,8 +485,8 @@ trait SolrMarcFincTrait
      */
     public function getLocalFormat()
     {
-        if (null != $this->localMarcFieldOfLibrary) {
-            if (count($localformat = $this->getFieldArray($this->localMarcFieldOfLibrary, ['c'])) > 0) {
+        if (null != $this->getLocalMarcFieldOfLibrary()) {
+            if (count($localformat = $this->getFieldArray($this->getLocalMarcFieldOfLibrary(), ['c'])) > 0) {
                 foreach ($localformat as &$line) {
                     if ($line != "") {
                         $line = trim('local_format_' . strtolower($line));
@@ -500,6 +500,39 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Returns lazily the library specific Marc field configured by CustomIndex
+     * settings in config.ini
+     *
+     * @return mixed
+     * @link https://intern.finc.info/issues/7063
+     */
+    protected function getLocalMarcFieldOfLibrary()
+    {
+        // return the library specific Marc field if its already set
+        if ($this->localMarcFieldOfLibrary != null) {
+            return $this->localMarcFieldOfLibrary;
+        }
+
+        // get the library specific Marc field configured by CustomIndex settings in
+        // config.ini
+        if (isset($this->mainConfig->CustomIndex->localMarcFieldOfLibraryNamespace)) {
+            $namespace = $this->mainConfig->CustomIndex->localMarcFieldOfLibraryNamespace;
+            if (isset($this->mainConfig->CustomIndex->localMarcFieldOfLibraryMapping)) {
+                foreach ($this->mainConfig->CustomIndex->localMarcFieldOfLibraryMapping as $mappingValue) {
+                    list ($ns, $fn) = explode(':', $mappingValue);
+                    if (trim($ns) == trim($namespace)) {
+                        $this->localMarcFieldOfLibrary = $fn;
+                        break;
+                    }
+                }
+            }
+        } else {
+            $this->debug('Namespace setting for localMarcField is missing.');
+        }
+        return $this->localMarcFieldOfLibrary;
+    }
+
+    /**
      * Return a local notice via an consortial defined field with subfield $k.
      * Marc field depends on library e.g. 970 for HMT or 972 for TUBAF.
      *
@@ -509,8 +542,8 @@ trait SolrMarcFincTrait
      */
     protected function getLocalNotice()
     {
-        if (null != $this->localMarcFieldOfLibrary) {
-            return $this->getFieldArray($this->localMarcFieldOfLibrary, ['k']);
+        if (null != $this->getLocalMarcFieldOfLibrary()) {
+            return $this->getFieldArray($this->getLocalMarcFieldOfLibrary(), ['k']);
         }
         return [];
     }
@@ -669,8 +702,8 @@ trait SolrMarcFincTrait
      */
     protected function getPurchaseInformation()
     {
-        if (null != $this->localMarcFieldOfLibrary) {
-            if ($this->getFirstFieldValue($this->localMarcFieldOfLibrary, ['m']) == 'e') {
+        if (null != $this->getLocalMarcFieldOfLibrary()) {
+            if ($this->getFirstFieldValue($this->getLocalMarcFieldOfLibrary(), ['m']) == 'e') {
                 return true;
             }
         }
@@ -702,9 +735,9 @@ trait SolrMarcFincTrait
     protected function getUDKs()
     {
         $array = [];
-        if (null != $this->localMarcFieldOfLibrary) {
+        if (null != $this->getLocalMarcFieldOfLibrary()) {
 
-            $udk = $this->getMarcRecord()->getFields($this->localMarcFieldOfLibrary);
+            $udk = $this->getMarcRecord()->getFields($this->getLocalMarcFieldOfLibrary());
             // if not return void value
             if (!$udk) {
                 return $array;
