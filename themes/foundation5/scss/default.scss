@@ -116,7 +116,7 @@ ul {
     @media only screen and (min-width: 20em) {
      /* font-size: 80%;*/ padding: .25em; // Details tab
     }
-    @media only screen and (min-width: 48rem) {
+    @media only screen and (min-width: $small-breakpoint  + em-calc(1)) {
       /*@include fs-smaller;*/
       @include pad-l-r;
     }
@@ -379,9 +379,7 @@ ul.date-range-slider {
 // Sticky header, top-bar, search box in top-bar, breadcrumbs
 // Do NOT set top-bar height to auto in default or toggles wont work on small devices
 .top-bar {
-  @media only screen and (min-width: 45rem) {
-    height: auto
-  }
+  @media only screen and (min-width: $small-breakpoint  + em-calc(1)) { height: auto; }
   .name {
     margin-left: 0;
   }
@@ -471,7 +469,7 @@ ul.date-range-slider {
   vertical-align: top;
   width: 100%;
 
-  @media only screen and (max-width: 767px) {
+  @media only screen and (max-width: $small-breakpoint) {
     width: 100%
   }
 }
@@ -566,7 +564,7 @@ ul.date-range-slider {
     .button {
       margin-bottom: 0;
       // small buttons for mobile
-      @media only screen and (max-width: 767px) {
+      @media only screen and (max-width: $small-breakpoint) {
         max-width: 50%;
         float: left;
       }
@@ -575,7 +573,7 @@ ul.date-range-slider {
   }
 
   // Inline on larger devices
-  @media only screen and (min-width: 48rem) {
+  @media only screen and (min-width: $small-breakpoint  + em-calc(1)) {
     ul li {
       display: inline; // CHECK - FIXME CK
     }
@@ -592,8 +590,8 @@ ul.date-range-slider {
  input[type="checkbox"] + label{
    color: $secondary-color;
  }
- // Add sufficient space for selecting on devices up to 768px
-  @media only screen and (max-width: 767px) {
+ // Add sufficient space for selecting on devices up to 640px
+  @media only screen and (max-width: $small-breakpoint) {
     float: left;
     margin-top: 1rem;
   }
@@ -648,7 +646,7 @@ ul.date-range-slider {
     }
 
     // Inline on larger displays, stacked on small
-    @media only screen and (min-width: 48rem) {
+    @media only screen and (min-width: $small-breakpoint  + em-calc(1)) {
       ul {
         display: inline;
 
@@ -689,7 +687,7 @@ ul.date-range-slider {
       }
     }
     // 786px and above as inline list
-    @media only screen and (min-width: 48rem) {
+    @media only screen and (min-width: $small-breakpoint  + em-calc(1)) {
       li {
         border-bottom: none;
         border-right: 1px solid $iron;
@@ -745,7 +743,7 @@ ul.date-range-slider {
 // Searchbox - END
 
   .grid {
-    @media only screen and (max-width: 767px) {
+    @media only screen and (max-width: $small-breakpoint) {
       min-height: 250px; // e.g. search/list-grid.phtml
     }
   }
@@ -779,7 +777,7 @@ ul.date-range-slider {
 
 // Add a border around all subfield groups + padding on small devices
   div[id^="search0_"] {
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: $small-breakpoint) {
       border: 1px solid $secondary-color;
       margin-bottom: 1rem;
       padding: .5rem .5rem 0 .5rem;
@@ -798,9 +796,9 @@ ul.date-range-slider {
   .close a {
     color: #f08a24 !important;
   }
-  // removal link that appears after 'add group' has been clicked, placement for medium (768px) up
+  // removal link that appears after 'add group' has been clicked, placement for medium (641px) up
   // a.group-close {
-//    @media screen and (min-width: 48rem) {
+//    @media screen and (min-width: $small-breakpoint  + em-calc(1)) {
 //      margin-right: -1rem;
 //      margin-top: -1.5rem;
 //    }
@@ -819,7 +817,7 @@ ul.date-range-slider {
 
   // add space between 'add searchfield' and 'matches ...' on small screens
   .match {
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: $small-breakpoint) {
       margin-top: 1rem;
     }
   }
@@ -1074,13 +1072,13 @@ button,
 // where does the following go best - or leave standard values? - fixme ck
 #content {
   h2 {
-    font-size: 1.6875rem !important;
+    font-size: 1.6875rem ;
   }
   h3 {
-  font-size: 1.375rem !important;
+  font-size: 1.375rem ;
   }
   h4 {
-    font-size: 1.125rem !important;
+    font-size: 1.125rem ;
   }
 }
 // Tabs
@@ -1379,7 +1377,7 @@ $offcanvas-padding: 2em;
 .offcanvas-overlay,
 .offcanvas-toggle {display: none;}
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: $small-breakpoint) {
   body.offcanvas {
     overflow-x: hidden; /* Prevent scroll on narrow devices */
     .sidebar {
@@ -1479,7 +1477,7 @@ $offcanvas-padding: 2em;
 }
 // display inline on small devices vudl - navigation
 .visible-small-inline {
-  @media (max-width: 767px) {
+  @media (max-width: $small-breakpoint) {
     display: inline !important;
   }
 }
