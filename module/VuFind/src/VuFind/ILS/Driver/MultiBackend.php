@@ -24,7 +24,7 @@
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/building_an_ils_driver Wiki
+ * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace VuFind\ILS\Driver;
 
@@ -42,7 +42,7 @@ use VuFind\Exception\ILS as ILSException,
  * @package  ILSdrivers
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/building_an_ils_driver Wiki
+ * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 class MultiBackend extends AbstractBase
     implements ServiceLocatorAwareInterface, \Zend\Log\LoggerAwareInterface
@@ -1026,7 +1026,8 @@ class MultiBackend extends AbstractBase
      * Place ILL Request
      *
      * Attempts to place an ILL request on a particular item and returns
-     * an array with result details or a PEAR error on failure of support classes
+     * an array with result details (or throws an exception on failure of support
+     * classes)
      *
      * @param array $details An array of item and patron data
      *
@@ -1428,7 +1429,7 @@ class MultiBackend extends AbstractBase
     protected function addIdPrefixes($data, $source,
         $modifyFields = ['id', 'cat_username']
     ) {
-        if (!isset($data) || empty($data) || !is_array($data)) {
+        if (empty($source) || empty($data) || !is_array($data)) {
             return $data;
         }
 
