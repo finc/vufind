@@ -31,11 +31,11 @@ use Zend\ServiceManager\ServiceManager;
 /**
  * Factory for Foundation view helpers.
  *
- * @category VuFind2
+ * @category VuFind
  * @package  View_Helpers
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
+ * @link     https://vufind.org/wiki/development Wiki
  *
  * @codeCoverageIgnore
  */
@@ -67,8 +67,17 @@ class Factory
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
         $left = !isset($config->Site->sidebarOnLeft)
             ? false : $config->Site->sidebarOnLeft;
+        $mirror = !isset($config->Site->mirrorSidebarInRTL)
+            ? true : $config->Site->mirrorSidebarInRTL;
         $offcanvas = !isset($config->Site->offcanvas)
             ? false : $config->Site->offcanvas;
+        // The right-to-left setting is injected into the layout by the Bootstrapper;
+        // pull it back out here to avoid duplicate effort, then use it to apply
+        // the mirror setting appropriately.
+        $layout = $sm->getServiceLocator()->get('viewmanager')->getViewModel();
+        if ($layout->rtl && !$mirror) {
+            $left = !$left;
+        }
         return new LayoutClass($left, $offcanvas);
     }
 }
