@@ -5,7 +5,7 @@ ChangeLog
 .\#*
 TAGS
 *~
-vendor
+# vendor
 composer.lock
 .bash_history
 .idea

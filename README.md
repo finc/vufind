@@ -5,7 +5,7 @@ VuFind
 Introduction
 ------------
 VuFind is an open source discovery environment for searching a collection of
-records.  To learn more, visit http://vufind.org.
+records.  To learn more, visit https://vufind.org.
 
 Installation
 ------------
