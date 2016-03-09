@@ -129,6 +129,110 @@ class AjaxController extends \VuFind\Controller\AjaxController
     }
 
     /**
+     * Get Item Statuses
+     *
+     * This is responsible for printing the holdings information for a
+     * collection of records in JSON format.
+     *
+     * @return \Zend\Http\Response
+     * @author Chris Delis <cedelis@uillinois.edu>
+     * @author Tuan Nguyen <tuan@yorku.ca>
+     */
+    protected function getItemStatusesAjax()
+    {
+        $this->disableSessionWrites();  // avoid session write timing bug
+        $catalog = $this->getILS();
+        $ids = $this->params()->fromPost('id', $this->params()->fromQuery('id'));
+
+        // Call getStatuses only if the ILS is not in offline mode
+        if ($catalog->getOfflineMode() === false) {
+            $results = $catalog->getStatuses($ids);
+            if (!is_array($results)) {
+                // If getStatuses returned garbage, let's turn it into an empty array
+                // to avoid triggering a notice in the foreach loop below.
+                $results = [];
+            }
+        } else {
+            $results = [];
+        }
+
+        // In order to detect IDs missing from the status response, create an
+        // array with a key for every requested ID.  We will clear keys as we
+        // encounter IDs in the response -- anything left will be problems that
+        // need special handling.
+        $missingIds = array_flip($ids);
+
+        // Get access to PHP template renderer for partials:
+        $renderer = $this->getViewRenderer();
+
+        // Load messages for response:
+        $messages = [
+            'available' => $renderer->render('ajax/status-available.phtml'),
+            'unavailable' => $renderer->render('ajax/status-unavailable.phtml'),
+            'unknown' => $renderer->render('ajax/status-unknown.phtml')
+        ];
+
+        // Load callnumber and location settings:
+        $config = $this->getConfig();
+        $callnumberSetting = isset($config->Item_Status->multiple_call_nos)
+            ? $config->Item_Status->multiple_call_nos : 'msg';
+        $locationSetting = isset($config->Item_Status->multiple_locations)
+            ? $config->Item_Status->multiple_locations : 'msg';
+        $showFullStatus = isset($config->Item_Status->show_full_status)
+            ? $config->Item_Status->show_full_status : false;
+
+        // Loop through all the status information that came back
+        $statuses = [];
+        foreach ($results as $recordNumber => $record) {
+            // Filter out suppressed locations:
+            $record = $this->filterSuppressedLocations($record);
+
+            // Skip empty records:
+            if (count($record)) {
+                if ($locationSetting == "group") {
+                    $current = $this->getItemStatusGroup(
+                        $record, $messages, $callnumberSetting
+                    );
+                } else {
+                    $current = $this->getItemStatus(
+                        $record, $messages, $locationSetting, $callnumberSetting
+                    );
+                }
+                // If a full status display has been requested, append the HTML:
+                if ($showFullStatus) {
+                    $current['full_status'] = $renderer->render(
+                        'ajax/status-full.phtml', ['statusItems' => $record]
+                    );
+                }
+                $current['record_number'] = array_search($current['id'], $ids);
+                $statuses[] = $current;
+
+                // The current ID is not missing -- remove it from the missing list.
+                unset($missingIds[$current['id']]);
+            }
+        }
+
+        // If any IDs were missing, send back appropriate dummy data
+        foreach ($missingIds as $missingId => $recordNumber) {
+            $statuses[] = [
+                'id'                   => $missingId,
+                'availability'         => 'false',
+                'availability_message' => $messages['unavailable'],
+                'location'             => $this->translate('Unknown'),
+                'locationList'         => false,
+                'reserve'              => 'false',
+                'reserve_message'      => $this->translate('Not On Reserve'),
+                'callnumber'           => '',
+                'missing_data'         => true,
+                'record_number'        => $recordNumber
+            ];
+        }
+
+        // Done
+        return $this->output($statuses, self::STATUS_OK);
+    }
+    
+    /**
      * Get additional information for display in my research area.
      *
      * This method currently only returns the items/entries count of the ILS methods
@@ -160,5 +264,26 @@ class AjaxController extends \VuFind\Controller\AjaxController
 
         // Done
         return $this->output($additionalAccountInfos, self::STATUS_OK);
+    }
+    
+    /**
+     * Get Ils Status
+     *
+     * This will check the ILS for being online and will return the ils-offline 
+     * template upon failure.
+     *
+     * @return \Zend\Http\Response
+     * @author André Lahmann <lahmann@ub.uni-leipzig.de>
+     */
+    protected function getIlsStatusAjax()
+    {
+        $this->disableSessionWrites();  // avoid session write timing bug
+        if ($this->getILS()->getOfflineMode() == 'ils-offline') {
+            return $this->output(
+                $this->getViewRenderer()->render('Helpers/ils-offline.phtml'),
+                self::STATUS_OK
+            );
+        }
+        return $this->output('', self::STATUS_OK);
     }
 }

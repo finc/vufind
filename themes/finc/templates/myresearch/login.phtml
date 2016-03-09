@@ -1,0 +1,26 @@
+<?
+  // Set up page title:
+  $this->headTitle($this->translate('Login'));
+
+  // Set up breadcrumbs:
+  $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') . '">' . $this->transEsc('Your Account') . '</a></li> <li class="active">' . $this->transEsc('Login') . '</li>';
+
+  // Convenience variables:
+  $account = $this->auth()->getManager();
+  $hideLogin = !(is_object($account) && $account->loginEnabled());
+  $offlineMode = $this->ils()->getOfflineMode();
+?>
+
+<? if ($offlineMode == "ils-offline"): ?>
+  <?=$this->render('Helpers/ils-offline.phtml')?>
+<? else: ?>
+  <h2><?=$this->transEsc('Login')?></h2>
+  <?=$this->flashmessages()?>
+    
+  <? if ($hideLogin): ?>
+    <div data-alert class="alert-box alert" tabindex="0" aria-live="assertive" role="alertdialog"><?=$this->transEsc('login_disabled')?></div>
+  <? else: ?>
+    <?=$this->auth()->getLogin()?>
+  <? endif; ?>
+    
+<? endif; ?>

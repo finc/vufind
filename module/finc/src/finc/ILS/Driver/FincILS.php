@@ -76,6 +76,20 @@ class FincILS extends PAIA implements LoggerAwareInterface
     protected $isil;
 
     /**
+     * Connection timeout in seconds used for _testILSConnection()
+     *
+     * @var int
+     */
+    protected $ilsTestTimeout = 1;
+
+    /**
+     * Flag to save online status.
+     *
+     * @var boolean
+     */
+    protected $isOnline = false;
+
+    /**
      * Record loader
      *
      * @var \VuFind\Record\Loader
@@ -162,7 +176,36 @@ class FincILS extends PAIA implements LoggerAwareInterface
             $this->isil = $this->mainConfig['InstitutionInfo']['isil']->toArray();
         }
 
-        $this->_testILSConnections();
+        // get General Settings
+        // get ilsTestTimeout setting if set otherwise use default of 1 second
+        $this->ilsTestTimeout = isset($this->config['General'])
+            && isset($this->config['General']['ilsTestTimeout'])
+            ? $this->config['General']['ilsTestTimeout'] : 1;
+
+    }
+
+    /**
+     * This optional method (introduced in VuFind 1.4) gets the online status of the
+     * ILS – “ils-offline” for systems where the main ILS is offline, “ils-none” for
+     * systems which do not use an ILS, false for systems that are fully online. If
+     * not implemented, the value defaults to false
+     *
+     * @return bool
+     */
+    public function getOfflineMode()
+    {
+        try {
+            if ($this->isOnline) {
+                // prior test succeeded
+                return false;
+            }
+            // test again
+            $this->_testILSConnections();
+            return false;
+        } catch (\Exception $e) {
+            $this->debug($e->getMessage());
+            return "ils-offline";
+        }
     }
 
     /**
@@ -861,15 +904,19 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 $this->baseUrl,
                 $daiaMatches
             );
-            $this->httpService->get($daiaMatches[1]);
+            $this->httpService->get($daiaMatches[1], [], $this->ilsTestTimeout );
             // test PAIA service
             preg_match(
                 "/^(http[s:\/0-9\.]*(:[0-9]*)?\/[a-z]*)/",
                 $this->paiaURL,
                 $paiaMatches
             );
-            $this->httpService->get($paiaMatches[1]);
+            $this->httpService->get($paiaMatches[1], [], $this->ilsTestTimeout );
+
+            // test succeeded, save state
+            $this->isOnline = true;
         } catch (\Exception $e) {
+            $this->isOnline = false;
             throw new ILSException($e->getMessage());
         }
     }

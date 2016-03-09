@@ -8,11 +8,15 @@
     // Account for replace_other_urls setting
     $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
     $offlineMode = $this->ils()->getOfflineMode();
-    try {
+    $holdings = [];
+    // if we already know that the ils is offline we do not need to query the
+    // realtimeholdings
+    if (!$offlineMode) {
+      try {
         $holdings = $this->driver->getRealTimeHoldings();
-    } catch (\VuFind\Exception\ILS $e) {
-        $holdings = [];
+      } catch (\VuFind\Exception\ILS $e) {
         $offlineMode = 'ils-offline';
+      }
     }
     // Set page title.
     $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
@@ -20,15 +24,7 @@
 
 <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
 
-<? if ($offlineMode == "ils-offline"): ?>
-  <div data-alert class="alert-box warning" tabindex="0" aria-live="assertive" role="alertdialog">
-    <h2><?=$this->transEsc('ils_offline_title')?></h2>
-    <p><strong><?=$this->transEsc('ils_offline_status')?></strong></p>
-    <p><?=$this->transEsc('ils_offline_holdings_message')?></p>
-    <? $supportEmail = $this->escapeHtmlAttr($this->systemEmail()); ?>
-    <p><a href="mailto:<?=$supportEmail?>"><?=$supportEmail?></a></p>
-  </div>
-<? endif; ?>
+<?=($offlineMode == "ils-offline") ? $this->render('Helpers/ils-offline.phtml') : ''?>
 <? if (($this->ils()->getHoldsMode() == 'driver' && !empty($holdings)) || $this->ils()->getTitleHoldsMode() == 'driver'): ?>
   <? if ($account->loginEnabled() && $offlineMode != 'ils-offline'): ?>
     <? if (!$user): ?>
