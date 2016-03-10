@@ -4,7 +4,7 @@
   <form class="sort text-right" action="<?=$this->currentPath()?>" method="get" name="sort">
     <?=$this->results->getUrlQuery()->asHiddenFields(array('sort' => '/.*/'));?>
     <label class="inline" for="sort_options_1"><?=$this->transEsc('Sort')?></label>
-    <select id="sort_options_1" name="sort" class="jumpMenu auto">
+    <select id="sort_options_1" name="sort" class="jumpMenu auto-width">
       <? foreach ($list as $sortType => $sortData): ?>
         <option value="<?=$this->escapeHtmlAttr($sortType)?>"<?=$sortData['selected']?' selected="selected"':''?>><?=$this->transEsc($sortData['desc'])?></option>
       <? endforeach; ?>

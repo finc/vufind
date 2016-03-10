@@ -5,7 +5,7 @@ $this->headScript()->appendFile("record.js");
 $this->headScript()->appendFile("check_save_statuses.js");
 // Activate Syndetics Plus if necessary:
 if ($this->syndeticsPlus()->isActive()) {
-  echo $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
+  $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
 }
 
 // Add RDF header link if applicable:
@@ -17,7 +17,7 @@ if ($this->export()->recordSupportsFormat($this->driver, 'RDF')) {
 $tree = (strtolower($this->activeTab) == 'hierarchytree');
 
 // Set up breadcrumbs:
-$lastSearch = $this->getLastSearchLink($this->transEsc('Search'));
+$lastSearch = $this->searchMemory()->getLastSearchLink($this->transEsc('Search'));
 if (!empty($lastSearch)) {
   $this->layout()->breadcrumbs = '<li>' . $lastSearch . '</li> ';
 }
@@ -51,7 +51,7 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
   <div class="<?=$tree ? 'medium-12 columns' : $this->layoutClass('mainbody')?>">
     <div class="record">
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" class="hiddenId" id="record_id" />
-      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
+      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
       <?=$this->flashmessages()?>
       <?=$this->record($this->driver)->getCollectionMetadata()?>
     </div>
@@ -65,7 +65,7 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
           $desc = $obj->getDescription();
           $tab_classes = array();
           if (0 === strcasecmp($this->activeTab, $tab)) {
-            if (!$this->ajaxTabs || !$obj->supportsAjax()) {
+            if (!$this->loadInitialTabWithAjax || !$obj->supportsAjax()) {
               $tab_classes[] = 'active';
             }
             $tab_classes[] = 'initiallyActive';
@@ -80,9 +80,9 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
           </li>
         <? endforeach; ?>
       </ul>
-
+      <?/* next line: we need the ID here - CK */?>
       <div class="tabs-content collectionDetails<?=$tree ? 'Tree' : ''?>" id="record-tabs">
-        <? if (!$this->ajaxTabs || !isset($activeTabObj) || !$activeTabObj->supportsAjax()): ?>
+        <? if (!$this->loadInitialTabWithAjax || !isset($activeTabObj) || !$activeTabObj->supportsAjax()): ?>
 	    <div class="content active" id="<?=$this->activeTab ?>-tab">
             <?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : ''?>
           </div>
