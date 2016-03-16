@@ -8,7 +8,7 @@ $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink
 ?>
 <h2><?=$this->transEsc('Book Bag') ?></h2>
 <?=$this->flashmessages()?>
-<form action="<?=$this->url('cart-home')?>" method="post"  name="cartForm" data-lightbox-onsubmit="cartFormHandler">
+<form action="<?=$this->url('cart-processor')?>" method="post"  name="cartForm" data-lightbox-onsubmit="cartFormHandler">
   <input type="hidden" id="dropdown_value"/>
   <? if (!$this->cart()->isEmpty()): ?>
     <div class="cart-controls clearfix hide-for-print">

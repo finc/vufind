@@ -45,11 +45,7 @@
     </div>
   </div>
 <? endif ?>
-<div class="row">
-  <div class="medium-9 columns medium-offset-3">
-    <?=$this->recaptcha()->html($this->useRecaptcha) ?>
-  </div>
-</div>
+<?=$this->recaptcha()->html($this->useRecaptcha) ?>
 <div class="row">
   <div class="medium-9 columns medium-offset-3">
     <input type="submit" class="button small" role="button" name="submit" value="<?=$this->transEsc('Send')?>"/>
