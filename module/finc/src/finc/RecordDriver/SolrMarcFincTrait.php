@@ -41,6 +41,16 @@ namespace finc\RecordDriver;
 trait SolrMarcFincTrait
 {
     /**
+     * Returns true if the record supports real-time AJAX status lookups.
+     *
+     * @return bool
+     */
+    public function supportsAjaxStatus()
+    {
+        return $this->hasILS();
+    }
+
+    /**
      * Do we have an attached ILS connection and (finc specific) do we want ILS support
      * for the records source_id and access_facet-value?
      *
