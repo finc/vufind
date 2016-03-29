@@ -175,9 +175,17 @@ ul {
 
       &.facetOR,
       &.facetAND {
+        padding-right: 1rem;
+
         .label {
-          margin-top: .4em;
-          padding-left: .5em;
+          background-color: inherit;
+          color: darken($secondary-color,10%);
+          //margin-top: 0;
+          //  padding-left: .5em;
+          i {
+            color: $primary-color;
+            &:hover,&:focus {background-color:white;}
+          }
         }
       }
 
@@ -191,11 +199,11 @@ ul {
     }
     // create border around normal nav items
     li:not(.accordion-navigation) {
-      border-left: 1px solid $accordion-navigation-active-bg-color;
-      border-right: 1px solid $accordion-navigation-active-bg-color;
+      //border-left: 1px solid $accordion-navigation-active-bg-color;
+      //border-right: 1px solid $accordion-navigation-active-bg-color;
 
       &:first-of-type {
-        border-top: 1px solid $accordion-navigation-active-bg-color;
+        //border-top: 1px solid $accordion-navigation-active-bg-color;
       }
     }
     // Facets exclude-symbol in label immediately followed by link
@@ -208,9 +216,11 @@ ul {
   }
 
   h4 {
-    margin-top: 0;
-    padding:  1rem 1rem 0 1rem;
-
+    background-color: $secondary-color;
+    border:1px solid $secondary-color;
+    font-weight: 600;
+    margin-top: -.55rem;
+    padding:  .75rem 1rem;
   }
 
   .list-unstyled {
@@ -666,8 +676,8 @@ ul.date-range-slider {
 // Advanced Search terms
   p.adv_search_terms {
     background-color: #f1f1f1;
-    border: 1px solid $iron;
-    margin-bottom: .25rem;
+    border-bottom: 1px solid $iron;
+    border-top: 1px solid $iron;
     padding: .35rem .5rem;
     width: 100%;
   }
@@ -705,6 +715,18 @@ ul.date-range-slider {
   .top-bar-section .adv_search_links {
     float: left;
     margin-bottom: 1rem;
+
+    li {
+      background-color: $topbar-bg-color;
+    }
+
+    li:not(.has-form) a:not(.button) {
+      background-color: $primary-color;
+
+      &:hover, &:focus {
+        background-color: lighten($primary-color,5%);
+      }
+    }
 
     > a {
       font-size: .80rem;
@@ -845,11 +867,15 @@ ul.date-range-slider {
 // Rows - END
 
 // Limit, sort and select-boxes
+// Position of Limit etc
+.search-controls .columns.text-right {margin-bottom: 1rem; margin-top: -.55rem;}
+.limit {float: left}
 .sort,
 .limit {
   // Display form labels and select fields as inline blocks; Apply to label and select boxes
   label {
     display: inline-block;
+    font-size: 1rem;
    &.inline {margin-bottom: 1px}
   }
   select {
@@ -909,6 +935,22 @@ img.recordcover {
 // Pagination - END
 
 // LIST VIEW  - END
+
+// SIDEBAR filters - "remove filters"
+.sidebar .filters {
+  // first title reposition and borders
+  .title:first-of-type { border-left:1px solid $primary-color; border-right:1px solid $primary-color; border-top:1px solid $primary-color; padding-left: 1rem }
+  // Sidebar filters highlight chosen filter
+  ul.side-nav li .active {
+    background-color: $primary-color;
+    padding-left: 1rem;
+    span {padding-right:.27rem;padding-top:0;}
+  }
+  // Borders around remove-filters-button
+  .side-nav li:not(.accordion-navigation) {border-left-color: $primary-color; border-right-color: $primary-color;}
+}
+
+
 
 // Select all checkboxes in bookbag, search results, account bulk actions ...
 .checkbox.select-all {
