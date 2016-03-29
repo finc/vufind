@@ -24,13 +24,14 @@
 
 // 4. Customize further - this for BASIC SETTINGS ONLY - all colour customization will be done in in site-specific themes
 //     ATTENTION: any change made here will affect ALL subsequent branches !!!
-.title-area .name h1 {
-  min-width: 13rem;
-}
 
-.navbar-brand {
-  margin: .5rem .5rem .5rem 0;
-}
+// Header width for fixed headers while scrolling
+.contain-to-grid .breadcrumbs { max-width: $row-width; }
+header.fixed { left:auto;max-width: $row-width; }
+
+.title-area .name h1 { min-width: 13rem; }
+
+.navbar-brand { margin: .5rem .5rem .5rem 0; }
 
 // LIST VIEW
 // Source-id branding (WISO etc)
