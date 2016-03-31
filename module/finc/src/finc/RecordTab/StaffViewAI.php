@@ -1,10 +1,10 @@
 <?php
 /**
- * Record Tab Factory Class
+ * Staff view tab for AI records
  *
  * PHP version 5
  *
- * Copyright (C) Villanova University 2014.
+ * Copyright (C) Villanova University 2010.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -19,40 +19,42 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * @category VuFind
- * @package  RecordDrivers
+ * @category VuFind2
+ * @package  RecordTabs
  * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development:plugins:hierarchy_components Wiki
+ * @link     http://vufind.org/wiki/vufind2:record_tabs Wiki
  */
 namespace finc\RecordTab;
-use Zend\ServiceManager\ServiceManager;
 
 /**
- * Record Tab Factory Class
+ * Staff view tab for AI records
  *
- * @category VuFind
- * @package  RecordDrivers
+ * @category VuFind2
+ * @package  RecordTabs
  * @author   Demian Katz <demian.katz@villanova.edu>
- * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development:plugins:hierarchy_components Wiki
- *
- * @codeCoverageIgnore
+ * @link     http://vufind.org/wiki/vufind2:record_tabs Wiki
  */
-class Factory extends \VuFind\RecordTab\Factory
+class StaffViewAI extends \VuFind\RecordTab\AbstractBase
 {
     /**
-     * Factory for Additional Items tab plugin.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return Additional Items
+     * Constructor
      */
-    public static function getAdditional(ServiceManager $sm)
+    public function __construct()
     {
-        return new Additional(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
-        );
+        $this->accessPermission = 'access.StaffViewTab';
+    }
+
+    /**
+     * Get the on-screen description for this tab.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return 'Staff View';
     }
 }

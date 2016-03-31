@@ -1,0 +1,25 @@
+<!-- recordtab - staffviewarray -->
+<?
+    // Set page title.
+    $this->headTitle($this->translate('Staff View') . ': ' . $this->driver->getBreadcrumb());
+?>
+<table class="citation table table-striped">
+  <? foreach ($this->driver->getRawData() as $data): ?>
+    <tr>
+      <th><?=$this->escapeHtml($data['key'])?></th>
+      <td>
+        <? if (!is_array($data['value'])) { $data['value'] = array($data['value']); } ?>
+        <? foreach ($data['value'] as $values): ?>
+          <? if (is_array($values)): ?>
+            <? foreach ($values as $value): ?>
+              <?=$this->escapeHtml($value)?><br />
+            <? endforeach; ?>
+          <? else: ?>
+            <?=$this->escapeHtml($values)?><br />
+          <? endif; ?>
+        <? endforeach; ?>
+      </td>
+    </tr>
+  <? endforeach; ?>
+</table>
+<!-- recordtab - staffviewarray - END -->

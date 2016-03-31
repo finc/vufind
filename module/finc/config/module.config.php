@@ -34,6 +34,7 @@ $config = [
             'recordtab' => [
                 'invokables' => [
                     'additional' => 'finc\RecordTab\Additional',
+                    'staffviewai' => 'finc\RecordTab\StaffViewAI',
                 ],
             ],
         ],
@@ -60,6 +61,19 @@ $config = [
                     'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
                     'Similar' => 'SimilarItemsCarousel',
                     'Details' => 'StaffViewMARC',
+                    'Additional' => 'Additional',
+                ],
+                'defaultTab' => null,
+            ],
+            'finc\RecordDriver\SolrAI' => [
+                'tabs' => [
+                    'Holdings' => 'HoldingsILS', 'Description' => 'Description',
+                    'TOC' => 'TOC', 'UserComments' => 'UserComments',
+                    'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
+                    'Preview' => 'preview',
+                    'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
+                    'Similar' => 'SimilarItemsCarousel',
+                    'Details' => 'StaffViewAI',
                     'Additional' => 'Additional',
                 ],
                 'defaultTab' => null,
