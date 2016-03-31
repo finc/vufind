@@ -28,7 +28,7 @@
   <? if ($account->loginEnabled() && $offlineMode != 'ils-offline'): ?>
     <? if (!$user): ?>
       <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="dialogalert">
-        <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'Holdings')?>?login=true&amp;catalogLogin=true"><?=$this->transEsc("Login")?></a> <?=$this->transEsc("hold_login")?>
+        <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'Holdings')?>?login=true&amp;catalogLogin=true" data-lightbox><?=$this->transEsc("Login")?></a> <?=$this->transEsc("hold_login")?>
       </div>
     <? elseif (!$user->cat_username): ?>
       <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="dialogalert">
@@ -38,7 +38,7 @@
   <? endif; ?>
 <? endif; ?>
 <? $holdingTitleHold = $this->driver->tryMethod('getRealTimeTitleHold'); if (!empty($holdingTitleHold)): ?>
-    <a class="placehold modal-link button small" title="<?=$this->transEsc('request_place_text')?>" href="<?=$this->recordLink()->getRequestUrl($holdingTitleHold)?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc('title_hold_place')?></a>
+    <a class="placehold" data-lightbox title="<?=$this->transEsc('request_place_text')?>" href="<?=$this->recordLink()->getRequestUrl($holdingTitleHold)?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc('title_hold_place')?></a>
 <? endif; ?>
 <? if (!empty($urls) || $openUrlActive): ?>
   <h3><?=$this->transEsc("Internet")?></h3>
@@ -59,16 +59,27 @@
     <? endif; ?>
   </h3>
 <table class="table" summary="<?=$this->transEsc('Holdings details from')?> <?=$this->transEsc($holding['location'])?>">
+  <? /* WE USE NO callNos here, next are th for availability and details - 04.16. CK */ ?>
   <tr>
     <th><?=$this->transEsc("Availability")?></th>
     <th><?=$this->transEsc("Details")?></th>
   </tr>
+  <? /* WE USE NO callNos here - 04.16. CK */ ?>
+  <? /* WE USE NO textFields, see rev #6237 - 04.16. CK */ ?>
   <? foreach ($holding['items'] as $row): ?>
-    <? $check = (isset($row['check']) && $row['check']); ?>
-    <? $checkStorageRetrievalRequest = (isset($row['checkStorageRetrievalRequest']) && $row['checkStorageRetrievalRequest']); ?>
-    <? $checkILLRequest = (isset($row['checkILLRequest']) && $row['checkILLRequest']); ?>
+    <?
+    // AJAX Check record?
+    $check = isset($row['check']) && $row['check'];
+    $checkStorageRetrievalRequest = isset($row['checkStorageRetrievalRequest']) && $row['checkStorageRetrievalRequest'];
+    $checkILLRequest = isset($row['checkILLRequest']) && $row['checkILLRequest'];
+    // AJAX block record?
+    $block = !$check && isset($row['addLink']) && $row['addLink'] === 'block';
+    $blockStorageRetrievalRequest = !$checkStorageRetrievalRequest && isset($row['addStorageRetrievalRequestLink']) && $row['addStorageRetrievalRequestLink'];
+    $blockILLRequest = !$checkILLRequest && isset($row['addILLRequestLink']) && $row['addILLRequestLink'];
+    ?>
     <? if (isset($row['barcode']) && $row['barcode'] != ""): ?>
     <tr vocab="http://schema.org/" typeof="Offer">
+      <? /* WE USE NO Copy NOR on Reserve here but below, see rev #6237 - 04.16. CK */ ?>
       <td>
         <? if ($row['availability']): ?>
         <? /* Begin Available Items (Holds) */ ?>
@@ -86,6 +97,7 @@
         <? if (isset($row['use_unknown_message']) && $row['use_unknown_message']): ?>
           <span class="label secondary"><?=$this->transEsc("status_unknown_message")?></span>
         <? else: ?>
+          <? /* WE USE callnumber here, rev #6237 - 04.16. CK */ ?>
           <? if (isset($row['callnumber'])): ?>
             <span class="callnumber"><?=$this->transEsc("Call Number")?>: <?=$row['callnumber']?></span>
           <? endif; ?>
@@ -94,6 +106,7 @@
           <? endif; ?>
           <? if ($row['availability']): ?>
             <? /* Begin Available Items (Holds) */ ?>
+            <? /* WE USE notes here, rev #6237 - 04.16. CK */ ?>
             <? if (isset($row['notes'])): ?>
               <span class="notes"><?=$this->transEsc("Notes")?>:</span>
               <ul class="notes">
@@ -102,14 +115,14 @@
                 <? endforeach; ?>
               </ul>
             <? endif; ?>
-            <? if (isset($row['link']) && $row['link']): ?>
-                <a class="<?=$check ? 'checkRequest ' : ''?>inlineblock modal-link placehold hide-for-print" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
+            <? if (!$block && isset($row['link']) && $row['link']): ?>
+                <a class="<?=$check ? 'checkRequest ' : ''?>inlineblock placehold hide-for-print" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
             <? endif; ?>
-            <? if (isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
-                <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?>modal-link placeStorageRetrievalRequest" href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
+            <? if (!$blockStorageRetrievalRequest && isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
+                <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> placeStorageRetrievalRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
             <? endif; ?>
-            <? if (isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
-                <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock modal-link placeILLRequest" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
+              <? if (!$blockILLRequest && isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
+                <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>placeILLRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
             <? endif; ?>
           <? else: ?>
             <? /* Begin Unavailable Items (Recalls) */ ?>
@@ -121,9 +134,19 @@
             <? if (isset($row['requests_placed']) && $row['requests_placed'] > 0): ?>
               <span><?=$this->transEsc("Requests")?>: <?=$this->escapeHtml($row['requests_placed'])?></span>
             <? endif; ?>
-            <? if (isset($row['link']) && $row['link']): ?>
-                <a class="<?=$check ? 'checkRequest' : ''?> modal-link inlineblock placehold hide-for-print" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
+            <? if (!$block && isset($row['link']) && $row['link']): ?>
+                <a class="<?=$check ? 'checkRequest' : ''?> inlineblock placehold hide-for-print" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
             <? endif; ?>
+            <? endif; ?>
+            <? if (isset($row['item_notes'])): ?>
+              <div class="item-notes">
+                <strong><?=$this->transEsc("Item Notes")?>:</strong>
+                <ul>
+                  <? foreach ($row['item_notes'] as $item_note): ?>
+                    <li><?=$this->escapeHtml($item_note) ?></li>
+                  <? endforeach; ?>
+                </ul>
+              </div>
           <? endif; ?>
         <? endif; ?>
         <? /* Embed item structured data: library, barcode, call number */ ?>
