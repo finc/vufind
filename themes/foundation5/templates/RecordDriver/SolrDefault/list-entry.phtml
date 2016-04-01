@@ -2,7 +2,7 @@
 <?
   // Set up some convenience variables:
   $id = $this->driver->getUniqueId();
-  $source = $this->driver->getResourceSource();
+  $source = $this->driver->getSourceIdentifier();
   if (isset($this->list) && is_object($this->list)) {
     $list_id = $this->list->id;
     $user_id = $this->list->user_id;
@@ -30,9 +30,10 @@
   <? endif ?>
 
     <div class="resultItemLine1">
-      <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
+      <? $missing = $this->driver instanceof \VuFind\RecordDriver\Missing; ?>
+      <? if (!$missing): ?><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><? endif; ?>
         <?=$this->record($this->driver)->getTitleHtml()?>
-      </a>
+        <? if (!$missing): ?></a><? endif; ?>
     </div>
 
     <div class="resultItemLine2">
@@ -56,7 +57,7 @@
         <? $summInCollection = $this->driver->getContainingCollections(); if (false && !empty($summInCollection)): ?>
           <? foreach ($summInCollection as $collId => $collText): ?>
             <div>
-              <b><?=$this->transEsc("in_collection_label")?></b>
+              <strong><?=$this->transEsc("in_collection_label")?></strong>
               <a class="collectionLinkText" href="<?=$this->url('collection', array('id' => $collId))?>?recordID=<?=urlencode($this->driver->getUniqueID())?>">
                 <?=$this->escapeHtml($collText)?>
               </a>
@@ -102,7 +103,7 @@
     <? if (count($this->lists) > 0): ?>
         <strong><?=$this->transEsc('Saved in')?>:</strong>
         <? $i=0;foreach($this->lists as $current): ?>
-            <a href="<?=$this->url('userList', array('id' => $current->id))?>"><?=$current->title?></a><? if($i++ < count($this->lists)-1): ?>,<? endif; ?>
+          <a href="<?=$this->url('userList', array('id' => $current->id))?>"><?=$this->escapeHtml($current->title)?></a><? if($i++ < count($this->lists)-1): ?>,<? endif; ?>
         <? endforeach; ?>
         <br/>
     <? endif; ?>

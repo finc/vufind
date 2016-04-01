@@ -1,12 +1,26 @@
+/*global console*/
 /**
- * vufind.typeahead.js 0.8
+ * vufind.typeahead.js 0.10
  * ~ @crhallberg
  */
 (function ( $ ) {
+  var xhr = false;
 
   $.fn.autocomplete = function(settings) {
 
     var options = $.extend( {}, $.fn.autocomplete.options, settings );
+
+    function align(input, element) {
+      var position = input.offset();
+      element.css({
+        position: 'absolute',
+        top: position.top + input.outerHeight(),
+        left: position.left,
+        minWidth: input.width(),
+        maxWidth: Math.max(input.width(), input.closest('form').width()),
+        zIndex: 50
+      });
+    }
 
     function show() {
       $.fn.autocomplete.element.removeClass(options.hidingClass);
@@ -33,7 +47,7 @@
         if (options.highlight) {
           // escape term for regex
           // https://github.com/sindresorhus/escape-string-regexp/blob/master/index.js
-          var escapedTerm = input.val().replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+          var escapedTerm = input.val().replace(/[|\\{}()\[\]\^$+*?.]/g, '\\$&');
           var regex = new RegExp('('+escapedTerm+')', 'ig');
           content = content.replace(regex, '<b>$1</b>');
         }
@@ -43,12 +57,7 @@
         item.attr('data-index', i+0)
             .attr('data-value', data[i].val)
             .addClass('item')
-            .html(content)
-            .mouseover(function() {
-              $.fn.autocomplete.element.find('.item.selected').removeClass('selected');
-              $(this).addClass('selected');
-              input.data('selected', this.dataset.index);
-            });
+            .html(content);
         if (typeof data[i].description !== 'undefined') {
           item.append($('<small/>').text(data[i].description));
         }
@@ -57,12 +66,16 @@
       $.fn.autocomplete.element.html(shell);
       $.fn.autocomplete.element.find('.item').mousedown(function() {
         populate($(this).attr('data-value'), input, {mouse: true});
+        setTimeout(function() {
+          input.focus();
+          hide();
+        }, 10);
       });
       align(input, $.fn.autocomplete.element);
     }
 
     function search(input, element) {
-      if (xhr) xhr.abort();
+      if (xhr) { xhr.abort(); }
       if (input.val().length >= options.minLength) {
         element.html('<i class="item loading">'+options.loadingString+'</i>');
         show();
@@ -93,28 +106,13 @@
       }
     }
 
-    function align(input, element) {
-      var offset = input[0].getBoundingClientRect();
-      element.css({
-        position: 'absolute',
-        top: offset.top + offset.height + document.body.scrollTop,
-        left: offset.left,
-        minWidth: offset.width,
-        maxWidth: input.closest('form').width(),
-        zIndex: 50
-      });
-    }
-
     function setup(input, element) {
       if (typeof element === 'undefined') {
         element = $('<div/>')
           .addClass('autocomplete-results hidden')
           .html('<i class="item loading">'+options.loadingString+'</i>');
         align(input, element);
-        $('body').append(element);
-        $(window).resize(function() {
-          align(input, element);
-        });
+        $(document.body).append(element);
       }
 
       input.data('selected', -1);
@@ -142,7 +140,7 @@
       input.keyup(function(event) {
         // Ignore navigation keys
         // - Ignore control functions
-        if (event.ctrlKey) {
+        if (event.ctrlKey || event.which === 17) {
           return;
         }
         // - Function keys (F1 - F15)
@@ -166,20 +164,22 @@
           case 45:   // insert
           case 144:  // num lock
           case 145:  // scroll lock
-          case 19: { // pause/break
+          case 19:   // pause/break
             return;
-          }
-          default: {
+          default:
             search(input, element);
-          }
         }
       });
       input.keydown(function(event) {
+        // - Ignore control functions
+        if (event.ctrlKey || event.which === 17) {
+          return;
+        }
         var element = $.fn.autocomplete.element;
         var position = $(this).data('selected');
         switch (event.which) {
           // arrow keys through items
-          case 38: {
+          case 38:
             event.preventDefault();
             element.find('.item.selected').removeClass('selected');
             if (position > 0) {
@@ -190,8 +190,7 @@
               $(this).data('selected', -1);
             }
             break;
-          }
-          case 40: {
+          case 40:
             event.preventDefault();
             if ($.fn.autocomplete.element.hasClass(options.hidingClass)) {
               search(input, element);
@@ -202,10 +201,9 @@
               $(this).data('selected', position);
             }
             break;
-          }
           // enter to nav or populate
           case 9:
-          case 13: {
+          case 13:
             var selected = element.find('.item.selected');
             if (selected.length > 0) {
               event.preventDefault();
@@ -218,13 +216,11 @@
               }
             }
             break;
-          }
           // hide on escape
-          case 27: {
+          case 27:
             hide();
             $(this).data('selected', -1);
             break;
-          }
         }
       });
 
@@ -236,6 +232,8 @@
       ) {
         return input;
       }
+
+      window.addEventListener("resize", hide, false);
 
       return element;
     }
@@ -251,7 +249,7 @@
         } else if (settings === "hide") {
           hide();
         } else if (settings === "clear cache" && options.cache) {
-          var cid = parseInt(input.data('cache-id'));
+          var cid = parseInt(input.data('cache-id'), 10);
           $.fn.autocomplete.cache[cid] = {};
         }
         return input;
@@ -268,7 +266,6 @@
     });
   };
 
-  var xhr = false;
   var timer = false;
   if (typeof $.fn.autocomplete.cache === 'undefined') {
     $.fn.autocomplete.cache = {};
@@ -283,13 +280,13 @@
       minLength: 3
     };
     $.fn.autocomplete.ajax = function(ops) {
-      if (timer) clearTimeout(timer);
-      if (xhr) xhr.abort();
+      if (timer) { clearTimeout(timer); }
+      if (xhr) { xhr.abort(); }
       timer = setTimeout(
         function() { xhr = $.ajax(ops); },
         $.fn.autocomplete.options.ajaxDelay
       );
-    }
+    };
   }
 
 }( jQuery ));

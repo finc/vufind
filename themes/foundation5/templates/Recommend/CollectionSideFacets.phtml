@@ -22,7 +22,7 @@
   <div class="panel">
     <h4><?=$this->transEsc('Keyword Filter')?></h4>
     <form role="form" method="get" name="keywordFilterForm" id="keywordFilterForm">
-      <input id="keywordFilter_lookfor" type="text" name="lookfor" value="<?=$this->escapeHtmlAttr($keywordFilter)?>" class="auto"/>
+      <input id="keywordFilter_lookfor" type="text" name="lookfor" value="<?=$this->escapeHtmlAttr($keywordFilter)?>" class="auto-width"/>
       <? foreach ($this->recommend->getResults()->getParams()->getFilterList(true) as $field => $filters): ?>
         <? foreach ($filters as $filter): ?>
           <input type="hidden" name="filter[]" value="<?=$this->escapeHtmlAttr($filter['field'])?>:&quot;<?=$this->escapeHtmlAttr($filter['value'])?>&quot;" />

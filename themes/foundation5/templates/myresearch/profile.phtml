@@ -38,7 +38,7 @@
         ?>
         <td>
           <form id="profile_form" method="post">
-            <select id="home_library" name="home_library" class="auto">
+            <select id="home_library" name="home_library" class="auto-width">
               <? foreach ($this->pickup as $lib): ?>
                 <option value="<?=$this->escapeHtmlAttr($lib['locationID'])?>"<?=($selected == $lib['locationID'])?' selected="selected"':''?>><?=$this->escapeHtml($lib['locationDisplay'])?></option>
               <? endforeach; ?>

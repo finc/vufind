@@ -63,8 +63,11 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       <tr>
         <th><?=$this->transEsc('Published in')?>:</th>
         <td>
-          <? $containerID = $this->driver->getContainerRecordID(); ?>
-          <a href="<?=($containerID ? $this->recordLink()->getUrl("VuFind|$containerID") : $this->record($this->driver)->getLink('journaltitle', $journalTitle))?>"><?=$this->escapeHtml($journalTitle)?></a>
+          <?
+          $containerSource = $this->driver->getSourceIdentifier();
+          $containerID = $this->driver->getContainerRecordID();
+          ?>
+          <a href="<?=($containerID ? $this->recordLink()->getUrl("$containerSource|$containerID") : $this->record($this->driver)->getLink('journaltitle', $journalTitle))?>"><?=$this->escapeHtml($journalTitle)?></a>
           <? $ref = $this->driver->getContainerReference(); if (!empty($ref)) { echo $this->escapeHtml($ref); } ?>
         </td>
       </tr>
@@ -190,13 +193,13 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <th><?=$this->transEsc('Subjects')?>: </th>
         <td>
           <? foreach ($subjects as $field): ?>
-          <div class="subjectLine" property="keywords">
+          <div class="subject-line" property="keywords">
             <? $subject = ''; ?>
             <? if(count($field) == 1) $field = explode('--', $field[0]); ?>
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
               <? $subject = trim($subject . ' ' . $subfield); ?>
-              <a class="backlink" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>" rel="nofollow"><?=trim($this->escapeHtml($subfield))?></a>
+              <a title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>" rel="nofollow"><?=trim($this->escapeHtml($subfield))?></a>
             <? endforeach; ?>
           </div>
           <? endforeach; ?>
@@ -259,7 +262,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           <th><?=$this->transEsc('Tags')?>: </th>
           <td>
             <span class="right hide-for-print">
-              <a class="tagRecord modal-link right" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" title="<?=$this->transEsc('Add Tag')?>"><i class="fa fa-plus"></i><?=$this->transEsc('Add Tag')?></a>
+              <a class="tagRecord right" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" title="<?=$this->transEsc('Add Tag')?>"><i class="fa fa-plus"></i><?=$this->transEsc('Add Tag')?></a>
             </span>
             <?=$this->context($this)->renderInContext('record/taglist', array('tagList'=>$tagList, 'loggedin'=>$loggedin)) ?>
           </td>

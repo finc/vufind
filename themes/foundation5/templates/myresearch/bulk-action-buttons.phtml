@@ -25,7 +25,7 @@
     </li>
   <? endif; ?>
   <li>
-    <input class="button secondary tiny" type="submit" name="print" role="button" value="<?=$this->transEsc('Print')?>" title="<?=$this->transEsc('print_selected')?>"/>
+    <input class="button secondary tiny" type="submit" name="print" role="button" value="<?=$this->transEsc('Print')?>" title="<?=$this->transEsc('print_selected')?>" data-lightbox-ignore />
   </li>
   <? if ($this->cart()->isActive()): ?>
     <li>

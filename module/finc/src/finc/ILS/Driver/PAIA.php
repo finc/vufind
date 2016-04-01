@@ -27,7 +27,7 @@
  * @author   Till Kinstler <kinstler@gbv.de>
  * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/building_an_ils_driver Wiki
+ * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 
 namespace finc\ILS\Driver;
@@ -49,7 +49,7 @@ use VuFind\Exception\ILS as ILSException,
  * @author   Till Kinstler <kinstler@gbv.de>
  * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/building_an_ils_driver Wiki
+ * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 class PAIA extends DAIA implements
     HttpServiceAwareInterface, LoggerAwareInterface

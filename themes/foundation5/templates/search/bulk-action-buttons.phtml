@@ -11,13 +11,13 @@
     </div>
     <div class="button-group">
       <? if (isset($this->showBulkOptions) && $this->showBulkOptions): ?>
-        <input id="ribbon-email" class="button secondary small modal-link" role="button" type="submit" name="email" title="<?=$this->transEsc('bookbag_email_selected')?>" value="<?=$this->transEsc('Email')?>"/>
+        <input id="ribbon-email" class="button secondary small" role="button" type="submit" name="email" title="<?=$this->transEsc('bookbag_email_selected')?>" value="<?=$this->transEsc('Email')?>"/>
         <? $exportOptions = $this->export()->getBulkOptions(); if (count($exportOptions) > 0): ?>
-          <input id="ribbon-export" class="button secondary small modal-link" role="button" type="submit" name="export" title="<?=$this->transEsc('bookbag_export_selected')?>" value="<?=$this->transEsc('Export')?>"/>
+          <input id="ribbon-export" class="button secondary small" role="button" type="submit" name="export" title="<?=$this->transEsc('bookbag_export_selected')?>" value="<?=$this->transEsc('Export')?>"/>
         <? endif; ?>
-        <input id="ribbon-print" class="button secondary small modal-link" role="button" type="submit" name="print" title="<?=$this->transEsc('bookbag_print_selected')?>" value="<?=$this->transEsc('Print')?>"/>
+        <input id="ribbon-print" class="button secondary small" role="button" type="submit" name="print" title="<?=$this->transEsc('bookbag_print_selected')?>" value="<?=$this->transEsc('Print')?>"/>
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-          <input id="ribbon-save" class="button secondary small modal-link" role="button" type="submit" name="saveCart" title="<?=$this->transEsc('bookbag_save_selected')?>" value="<?=$this->transEsc('Save')?>"/>
+          <input id="ribbon-save" class="button secondary small" role="button" type="submit" name="saveCart" title="<?=$this->transEsc('bookbag_save_selected')?>" value="<?=$this->transEsc('Save')?>"/>
         <? endif; ?>
       <? endif; ?>
       <? if (isset($this->showCartControls) && $this->showCartControls): ?>

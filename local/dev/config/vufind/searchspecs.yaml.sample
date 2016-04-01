@@ -584,7 +584,12 @@ AllFields:
 # These are advanced searches that never use Dismax:
 id:
   QueryFields:
-    - id:
+    id:
+      - [onephrase, ~]
+
+ParentID:
+  QueryFields:
+    hierarchy_parent_id:
       - [onephrase, ~]
 
 # Fields for exact matches originating from alphabetic browse

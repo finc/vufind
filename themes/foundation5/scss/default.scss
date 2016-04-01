@@ -125,11 +125,8 @@ ul {
 
 // TABLES - END
 
-// MODALS
-#modal .close-reveal-modal {
-  right: -2.5rem;
-  color: $white;
-}
+// MODALS (reveal)
+
 
 // MODALS - END
 
@@ -190,8 +187,8 @@ ul {
       }
 
       .active {
-        background-color: $primary-color;
-        color: $white !important;
+//        background-color: $primary-color;
+//        color: $white !important;
         z-index: 2;
 
         &:hover {background-color: $primary-color;}
@@ -792,7 +789,6 @@ ul.date-range-slider {
 
 // Advanced Search: criterion remove button and other settings
 #advSearchForm {
-
   .small-padding-panel {
     margin-bottom: 1rem;
   }
@@ -818,14 +814,6 @@ ul.date-range-slider {
   .close a {
     color: #f08a24 !important;
   }
-  // removal link that appears after 'add group' has been clicked, placement for medium (641px) up
-  // a.group-close {
-//    @media screen and (min-width: $small-breakpoint  + em-calc(1)) {
-//      margin-right: -1rem;
-//      margin-top: -1.5rem;
-//    }
-//  }
-
 
   // top-align the fields at the bottom of advanced search page
   #limit {
@@ -1359,11 +1347,12 @@ footer {
 // Input fields as in maintenance - home.phtml + auto-width for select fields
 input,
 select {
-  &.auto {
+  &.auto-width {
     width: auto;
-    // advanced search facet limiters
+    // Advanced search matches select box and advanced search facet limiters
+    &[id^=search_],
     &[id^=limit_] {
-      max-width: 19rem;
+      max-width: 100%;
     }
   }
   &.left {

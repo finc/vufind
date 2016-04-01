@@ -16,7 +16,7 @@ $this->layout()->searchbox = $this->context($this)->renderInContext(
         'searchIndex' => $this->params->getSearchHandler(),
         'searchType' => $this->params->getSearchType(),
         'searchId' => $this->results->getSearchId(),
-        'searchClassId' => $this->params->getsearchClassId(),
+        'searchClassId' => $this->params->getSearchClassId(),
         'checkboxFilters' => $this->params->getCheckboxFacets(),
         'filterList' => $this->params->getFilters(),
         'hasDefaultsApplied' => $this->params->hasDefaultsApplied(),
@@ -100,7 +100,7 @@ $this->headScript()->appendFile("check_save_statuses.js");
         <? endif; ?>
       <? endforeach; ?>
     <? else: ?>
-      <form method="post" name="bulkActionForm" action="<?= $this->url('cart-home') ?>">
+      <form method="post" name="bulkActionForm" action="<?= $this->url('cart-searchresultsbulk') ?>" data-lightbox data-lightbox-onsubmit="bulkFormHandler">
         <?= $this->context($this)->renderInContext('search/bulk-action-buttons.phtml', array('idPrefix' => '')) ?>
         <?= $this->render('search/list-' . $this->params->getView() . '.phtml') ?>
         <?= $this->context($this)->renderInContext('search/bulk-action-buttons.phtml', array('idPrefix' => 'bottom_')) ?>
@@ -112,7 +112,7 @@ $this->headScript()->appendFile("check_save_statuses.js");
         <div class="text-center">
           <a href="<?= $this->results->getUrlQuery()->setViewParam('rss') ?>"><i class="fa fa-bell"></i> <?= $this->transEsc('Get RSS Feed') ?></a>
           &ndash;
-          <a href="<?= $this->url('search-email') ?>" class="mailSearch modal-link" id="mailSearch<?= $this->escapeHtmlAttr($this->results->getSearchId()) ?>" title="<?= $this->transEsc('Email this Search') ?>"><i class="fa fa-envelope"></i> <?= $this->transEsc('Email this Search') ?></a>
+          <a href="<?= $this->url('search-email') ?>" class="mailSearch" data-lightbox id="mailSearch<?= $this->escapeHtmlAttr($this->results->getSearchId()) ?>" title="<?= $this->transEsc('Email this Search') ?>"><i class="fa fa-envelope"></i> <?= $this->transEsc('Email this Search') ?></a>
         <? if ($this->accountCapabilities()->getSavedSearchSetting() === 'enabled'): ?>
           &mdash;
             <? if (is_numeric($this->results->getSearchId())): ?>

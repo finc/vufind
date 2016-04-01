@@ -30,7 +30,7 @@ $this->layout()->breadcrumbs = false;
     </div>
   <? endif; ?>
   <div class="panel clearfix">
-    <?= $this->render("search/searchbox.phtml") ?>
+    <?=$this->context($this)->renderInContext("search/searchbox.phtml", ['ignoreHiddenFilterMemory' => true])?>
   </div>
 </div>
 

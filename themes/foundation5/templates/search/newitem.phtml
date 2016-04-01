@@ -26,7 +26,7 @@
         <div class="row">
           <label class="medium-3 columns" for="newitem_department"><?=$this->transEsc('Department')?>:</label>
           <div class="medium-9 columns">
-            <select id="newitem_department" name="department" size="10" class="auto">
+            <select id="newitem_department" name="department" size="10" class="auto-width">
             <? foreach ($this->fundList as $fundId => $fund): ?>
               <option value="<?=$this->escapeHtmlAttr($fundId)?>"><?=$this->transEsc($fund)?></option>
             <? endforeach; ?>
