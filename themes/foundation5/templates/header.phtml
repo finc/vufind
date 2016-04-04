@@ -31,11 +31,11 @@
         <? endif; ?>
         <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
           <li class="logoutOptions<? if (!$account->isLoggedIn()): ?> hide<? endif ?>">
-            <a href="<?=$this->url('myresearch-home', array(), array('query' => array('redirect' => 0)))?>" data-lightbox title="<?=$this->transEsc("Your Account")?>"><i
+            <a href="<?=$this->url('myresearch-home', array(), array('query' => array('redirect' => 0)))?>" title="<?=$this->transEsc("Your Account")?>"><i
                   class="fa fa-home"></i> <?=$this->transEsc("Your Account")?></a>
           </li>
           <li class="logoutLink logoutOptions<? if (!$account->isLoggedIn()): ?> hide<? endif ?>">
-            <a href="<?=$this->url('myresearch-logout')?>" data-lightbox title="<?=$this->transEsc("Log Out")?>"><i class="fa fa-sign-out"></i> <?=$this->transEsc("Log Out")?></a>
+            <a href="<?=$this->url('myresearch-logout')?>" title="<?=$this->transEsc("Log Out")?>"><i class="fa fa-sign-out"></i> <?=$this->transEsc("Log Out")?></a>
           </li>
           <li id="loginOptions" class="<? if ($account->isLoggedIn()): ?> hide<? endif ?>">
             <? if ($sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')))): ?>
