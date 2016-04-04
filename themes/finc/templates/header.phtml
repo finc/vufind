@@ -39,7 +39,7 @@
           </li>
           <li id="loginOptions" class="<? if ($account->isLoggedIn()): ?> hide<? endif ?>">
             <? if ($sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')))): ?>
-              <a href="<?=$this->url('myresearch-userlogin')?>" data-lightbox title="<?=$this->transEsc("Institutional Login")?>"><i class="fa fa-sign-in"></i> <?=$this->transEsc("Institutional Login")?></a>
+              <a href="<?=$this->escapeHtmlAttr($sessionInitiator)?>" data-lightbox title="<?=$this->transEsc("Institutional Login")?>"><i class="fa fa-sign-in"></i> <?=$this->transEsc("Institutional Login")?></a>
             <? else: ?>
               <a href="<?=$this->url('myresearch-userlogin')?>" data-lightbox title="<?=$this->transEsc("Login")?>"><i class="fa fa-sign-in"></i> <?=$this->transEsc("Login")?></a>
             <? endif; ?>
