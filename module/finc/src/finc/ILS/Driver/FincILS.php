@@ -103,10 +103,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * @param \Zend\Config\Config    $mainConfig VuFind main configuration (omit for
      * built-in defaults)
      */
-    public function __construct(\VuFind\Date\Converter $converter,
+    public function __construct(\VuFind\Date\Converter $converter, \Zend\Session\SessionManager $sessionManager,
         \VuFind\Record\Loader $loader, SearchService $ss, $mainConfig = null
     ) {
-        $this->dateConverter = $converter;
+        parent::__construct($converter, $sessionManager);
         $this->recordLoader = $loader;
         $this->searchService = $ss;
         $this->mainConfig = $mainConfig;
@@ -224,19 +224,21 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 throw new ILSException('Invalid Login, Please try again.');
             }
 
+            $session = $this->getSession();
+
             $enrichUserDetails = function ($details, $username, $password) {
                 $details['cat_username']
-                    = ($this->session->patron === 'root' ? $username : $this->session->patron);
+                    = ($session->patron === 'root' ? $username : $session->patron);
                 $details['cat_password'] = $password;
                 return $details;
             };
 
             // if we already have a session with access_token and patron id, try to get
             // patron info with session data
-            if (isset($this->session->expires) && $this->session->expires > time()) {
+            if (isset($session->expires) && $session->expires > time()) {
                 try {
                     return $enrichUserDetails(
-                        $this->paiaGetUserDetails(($this->session->patron === 'root' ? $username : $this->session->patron)),
+                        $this->paiaGetUserDetails(($session->patron === 'root' ? $username : $session->patron)),
                         $username,
                         $password
                     );
@@ -248,7 +250,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
             try {
                 if($this->paiaLogin($this->_root_username, $this->_root_password)) {
                     return $enrichUserDetails(
-                        $this->paiaGetUserDetails(($this->session->patron === 'root' ? $username : $this->session->patron)),
+                        $this->paiaGetUserDetails(($session->patron === 'root' ? $username : $session->patron)),
                         $username,
                         $password
                     );

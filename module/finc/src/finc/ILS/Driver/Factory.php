@@ -52,6 +52,7 @@ class Factory
     {
         return new FincILS(
             $sm->getServiceLocator()->get('VuFind\DateConverter'),
+            $sm->getServiceLocator()->get('VuFind\SessionManager'),
             $sm->getServiceLocator()->get('VuFind\RecordLoader'),
             $sm->getServiceLocator()->get('VuFind\Search'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
@@ -69,6 +70,7 @@ class Factory
     {
         return new FincLibero(
             $sm->getServiceLocator()->get('VuFind\DateConverter'),
+            $sm->getServiceLocator()->get('VuFind\SessionManager'),
             $sm->getServiceLocator()->get('VuFind\RecordLoader'),
             $sm->getServiceLocator()->get('VuFind\Search'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
@@ -85,7 +87,8 @@ class Factory
     public static function getPAIA(ServiceManager $sm)
     {
         return new PAIA(
-            $sm->getServiceLocator()->get('VuFind\DateConverter')
+            $sm->getServiceLocator()->get('VuFind\DateConverter'),
+            $sm->getServiceLocator()->get('VuFind\SessionManager')
         );
     }
 
