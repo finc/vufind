@@ -109,7 +109,7 @@
       <li>
         <a href="<?= $this->url('userList', array('id' => $list['id'])) ?>" class="<?= $this->active == 'list' . $list['id'] ? ' active' : '' ?>">
           <?= $this->escapeHtml($list['title']) ?>
-          <span class="label"><?= $list->cnt ?></span>
+          <span class="pull-right label"><?= $list->cnt ?></span>
         </a>
       </li>
     <? endforeach; ?>

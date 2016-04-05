@@ -108,7 +108,7 @@ function phoneNumberFormHandler(numID, regionCode) {
 
 function bulkFormHandler(event, data) {
   if ($('.checkbox-select-item:checked,checkbox-select-all:checked').length == 0) {
-    VuFind.lightbox.alert(VuFind.translate('bulk_noitems_advice'), 'danger');
+    VuFind.lightbox.alert(VuFind.translate('bulk_noitems_advice'), 'alert');
     return false;
   }
   var keys = [];

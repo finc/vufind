@@ -48,13 +48,13 @@ VuFind.lightbox = (function() {
     if ('undefined' == typeof type) {
       type = 'info';
     }
-    _html('<div class="alert '+type+'">'+message+'</div><button class="button small" data-dismiss="modal">' + VuFind.translate('close') + '</button>');
+    _html('<div class="alert-box '+type+'">'+message+'</div><button class="button small" data-dismiss="modal">' + VuFind.translate('close') + '</button>');
     _modal.foundation('reveal','open');
   };
   var flashMessage = function(message, type) {
-    _modalBody.find('.alert,.fa.fa-spinner').remove();
+    _modalBody.find('.alert-box,.fa.fa-spinner').remove();
     _modalBody.find('h2:first-child')
-      .after('<div class="alert '+type+'">'+message+'</div>');
+      .after('<div class="alert-box '+type+'">'+message+'</div>');
   };
 
   /**
@@ -70,7 +70,7 @@ VuFind.lightbox = (function() {
     }
     // Isolate successes
     var htmlDiv = $('<div>'+html+'</div>');
-    var alerts = htmlDiv.find('.alert.success');
+    var alerts = htmlDiv.find('.alert-box.success');
     if (alerts.length > 0) {
       showAlert(alerts[0].innerHTML, 'success');
       return;
@@ -129,7 +129,7 @@ VuFind.lightbox = (function() {
         }
         if ( // Close the lightbox after deliberate login
           obj.method                           // is a form
-          && !html.match(/alert alert-danger/)                        // skip failed logins
+          && !html.match(/alert-box alert/)                        // skip failed logins
           && ((obj.url.match(/MyResearch/) && !obj.url.match(/Bulk/)) // that matches login/create account
             || obj.url.match(/catalogLogin/))                         // or catalog login for holds
         ) {
@@ -147,7 +147,7 @@ VuFind.lightbox = (function() {
         _update(html);
       })
       .fail(function() {
-        showAlert(VuFind.translate('error_occurred'), 'danger');
+        showAlert(VuFind.translate('error_occurred'), 'alert');
       });
     return _xhr;
   };
