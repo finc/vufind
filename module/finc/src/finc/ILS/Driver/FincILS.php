@@ -226,7 +226,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
 
             $session = $this->getSession();
 
-            $enrichUserDetails = function ($details, $username, $password) {
+            $enrichUserDetails = function ($details, $username, $password) use ($session) {
                 $details['cat_username']
                     = ($session->patron === 'root' ? $username : $session->patron);
                 $details['cat_password'] = $password;
