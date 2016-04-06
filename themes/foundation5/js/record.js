@@ -227,7 +227,7 @@ function applyRecordTabHash() {
 $(window).on('hashchange', applyRecordTabHash);
 
 function recordDocReady() {
-  $('.record-tabs .nav-tabs a').click(function (e) {
+  $('.record-tabs .tabs a').click(function (e) {
     if ($(this.parentNode).hasClass('active')) {
       return true;
     }
