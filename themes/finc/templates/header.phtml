@@ -3,7 +3,7 @@
 <nav class="top-bar" data-topbar data-options="sticky_on:all">
   <ul class="title-area">
     <li class="name">
-      <h1><a role="logo" class="navbar-brand" href="<?=$this->url('home')?>"><span class="hide-for-medium-up"><?=$this->transEsc("LibraryName")?></span><img src="<?=$this->imageLink('headerlogo.png')?>" class="hide-for-small" alt="Logo <?=$this->transEsc("LibraryName")?>" title="<?=$this->transEsc("LibraryName")?>"></a></h1>
+      <h1><a class="navbar-brand" href="<?=$this->url('home')?>"><span class="hide-for-medium-up"><?=$this->transEsc("LibraryName")?></span><img src="<?=$this->imageLink('headerlogo.png')?>" class="hide-for-small" alt="Logo <?=$this->transEsc("LibraryName")?>" title="<?=$this->transEsc("LibraryName")?>"></a></h1>
     </li>
     <? /*Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone */ ?>
     <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
@@ -16,10 +16,10 @@
     <? endif; ?>
     <? if (!isset($this->layout()->renderingError)): ?>
       <? /* Right-hand  Nav Section */ ?>
-      <ul role="navigation" class="right">
+      <ul class="right">
         <? if ($this->feedback()->tabEnabled()): ?>
           <li>
-            <a id="feedbackLink" data-lightbox href="<?=$this->url('feedback-home')?>"><i class="fa fa-envelope"></i> <?=$this->transEsc("Feedback")?></a>
+            <a class="feedbackLink" data-lightbox href="<?=$this->url('feedback-home')?>"><i class="fa fa-envelope"></i> <?=$this->transEsc("Feedback")?></a>
           </li>
         <? endif; ?>
         <? $cart = $this->cart();
