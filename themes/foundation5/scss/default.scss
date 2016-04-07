@@ -1516,6 +1516,17 @@ $offcanvas-padding: 2em;
   }
 }
 
+// Labels inside a tags or other places where label is not allowed etc.
+// FNDTN exports label and .label as well
+.icon-bar > * .label { color: #fff; }
+.icon-bar > * i + .label, .icon-bar > * img + .label { font-size: 1rem; margin-top: .0625rem;  }
+.icon-bar .label { background: transparent; color: #02133D; display: inline; font-size: 1rem; line-height: 1.5;}
+.sidebar .icon-bar span.label {padding: .75rem 0 0 .5rem;}
+
+// Width classes (Staff view)
+.t15-percent {width:15%}
+.t5-percent {width:5%}
+
 // Redi link-resolver traffic lights
 .traffic-light {
   display: inline;

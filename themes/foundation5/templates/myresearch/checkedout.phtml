@@ -23,8 +23,8 @@
             <input type="checkbox" name="selectAll" class="checkbox-select-all"/>
             <?=$this->transEsc('select_page')?> |
           </label>
-          <input type="submit" class="button secondary small" name="renewSelected" role="button" value="<?=$this->transEsc("renew_selected")?>" />
-          <input type="submit" class="button secondary small" name="renewAll" role="button" value="<?=$this->transEsc('renew_all')?>" />
+          <input type="submit" class="button secondary small" name="renewSelected" value="<?=$this->transEsc("renew_selected")?>" />
+          <input type="submit" class="button secondary small" name="renewAll" value="<?=$this->transEsc('renew_all')?>" />
         </div>
         </div>
       <? endif; ?>
@@ -154,24 +154,24 @@
               <? if (isset($renewDetails['success']) && $renewDetails['success']): ?>
                 <? $showStatus = false; ?>
                 <strong><?=$this->transEsc('Due Date')?>: <?=$this->escapeHtml($renewDetails['new_date'])?> <? if (isset($renewDetails['new_time'])): ?><?=$this->escapeHtml($renewDetails['new_time'])?><? endif; ?></strong>
-                <div data-alert class="alert-box success" tabindex="0" aria-live="assertive" role="dialogalert"><?=$this->transEsc('renew_success')?></div>
+                <div data-alert class="alert-box success" tabindex="0" aria-live="assertive" role="alertdialog"><?=$this->transEsc('renew_success')?></div>
               <? else: ?>
                 <strong><?=$this->transEsc('Due Date')?>: <?=$this->escapeHtml($ilsDetails['duedate'])?><? if (isset($ilsDetails['dueTime'])): ?> <?=$this->escapeHtml($ilsDetails['dueTime'])?><? endif; ?></strong>
-                <div data-alert class="alert-box warning" tabindex="0" aria-live="assertive" role="dialogalert"><?=$this->transEsc('renew_fail')?><? if (isset($renewDetails['sysMessage'])): ?>: <?=$this->escapeHtml($renewDetails['sysMessage'])?><? endif; ?></div>
+                <div data-alert class="alert-box warning" tabindex="0" aria-live="assertive" role="alertdialog"><?=$this->transEsc('renew_fail')?><? if (isset($renewDetails['sysMessage'])): ?>: <?=$this->escapeHtml($renewDetails['sysMessage'])?><? endif; ?></div>
               <? endif; ?>
             <? else: ?>
               <strong><?=$this->transEsc('Due Date')?>: <?=$this->escapeHtml($ilsDetails['duedate'])?><? if (isset($ilsDetails['dueTime'])): ?> <?=$this->escapeHtml($ilsDetails['dueTime'])?><? endif; ?></strong>
               <? if ($showStatus): ?>
                 <? if (isset($ilsDetails['dueStatus']) && $ilsDetails['dueStatus'] == "overdue"): ?>
-                  <div data-alert class="alert-box alert" tabindex="0" aria-live="assertive" role="dialogalert"><?=$this->transEsc("renew_item_overdue")?></div>
+                  <div data-alert class="alert-box alert" tabindex="0" aria-live="assertive" role="alertdialog"><?=$this->transEsc("renew_item_overdue")?></div>
                 <? elseif (isset($ilsDetails['dueStatus']) && $ilsDetails['dueStatus'] == "due"): ?>
-                  <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="dialogalert"><?=$this->transEsc("renew_item_due")?></div>
+                  <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="alertdialog"><?=$this->transEsc("renew_item_due")?></div>
                 <? endif; ?>
               <? endif; ?>
             <? endif; ?>
 
             <? if ($showStatus && isset($ilsDetails['message']) && !empty($ilsDetails['message'])): ?>
-              <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="dialogalert"><?=$this->transEsc($ilsDetails['message'])?></div>
+              <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="alertdialog"><?=$this->transEsc($ilsDetails['message'])?></div>
             <? endif; ?>
             <? if (isset($ilsDetails['renewable']) && $ilsDetails['renewable'] && isset($ilsDetails['renew_link'])): ?>
               <a href="<?=$this->escapeHtmlAttr($ilsDetails['renew_link'])?>"><?=$this->transEsc('renew_item')?></a>

@@ -1,6 +1,6 @@
 <!-- HEADER.PHTML begin -->
 <? $account = $this->auth()->getManager(); ?>
-<nav class="top-bar" role="navigation" data-topbar data-options="sticky_on:all">
+<nav class="top-bar" data-topbar data-options="sticky_on:all">
   <ul class="title-area">
     <li class="name">
       <h1><a class="navbar-brand" href="<?=$this->url('home')?>">VuFind</a></h1>
@@ -16,10 +16,10 @@
     <? endif; ?>
     <? if (!isset($this->layout()->renderingError)): ?>
       <? /* Right-hand  Nav Section */ ?>
-      <ul role="navigation" class="right">
+      <ul class="right">
         <? if ($this->feedback()->tabEnabled()): ?>
           <li>
-            <a id="feedbackLink" data-lightbox href="<?=$this->url('feedback-home')?>"><i class="fa fa-envelope"></i> <?=$this->transEsc("Feedback")?></a>
+            <a class="feedbackLink" data-lightbox href="<?=$this->url('feedback-home')?>"><i class="fa fa-envelope"></i> <?=$this->transEsc("Feedback")?></a>
           </li>
         <? endif; ?>
         <? $cart = $this->cart();

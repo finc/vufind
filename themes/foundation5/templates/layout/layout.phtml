@@ -122,7 +122,7 @@ JS;
       }
     ?>
     <div class="row collapse">
-        <header role="banner" class="sticky contain-to-grid hide-for-print">
+        <header class="sticky contain-to-grid hide-for-print">
           <a class="sr-only" href="#searchslots"><?=$this->transEsc('Skip to search') ?></a>
           <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
             <?=$this->render('header.phtml')?>
@@ -163,7 +163,7 @@ JS;
       </div>
     </div>
     <div class="row">
-      <footer role="contentinfo" class="panel hide-for-print">
+      <footer class="panel hide-for-print">
         <div class="container">
           <?=$this->render('footer.phtml')?>
           <?=$this->layout()->poweredBy ?>

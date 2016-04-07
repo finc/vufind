@@ -96,7 +96,7 @@ $rangeFacets = $this->recommend->getAllRangeFacets(); ?>
                 <? if ($rangeFacets[$title]['type'] == 'date'): ?>
                   <div class="slider-container"><input type="text" class="hide" id="<?= $this->escapeHtmlAttr($title) ?><?= $this->escapeHtml($rangeFacets[$title]['type']) ?>Slider"/></div>
                 <? endif; ?>
-                <input class="button tiny" type="submit" role="button" value="<?= $this->transEsc('Set') ?>"/>
+                <input class="button tiny" type="submit" value="<?= $this->transEsc('Set') ?>"/>
               </form>
               <? /* NO closing UL and LI here! - is closed below */ ?>
               <? /* ADAPT RANGE SLIDER JS HERE AND REMOVE BootstrapSlider JS and CSS when FNDTN6 is out - FIXME CK */ ?>

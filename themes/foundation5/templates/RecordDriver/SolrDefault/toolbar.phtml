@@ -57,9 +57,9 @@ $cartId = $this->driver->getSourceIdentifier() . '|' . $id;
           <form method="post" name="addForm" action="<?= $this->url('cart-processor') ?>">
             <input type="hidden" name="ids[]" value="<?= $this->escapeHtmlAttr($cartId) ?>"/>
             <? if ($cart->contains($cartId)): ?>
-              <input class="button secondary small" type="submit" name="delete" role="button" value="<?= $this->transEsc('Remove from Book Bag') ?>"/>
+              <input class="button secondary small" type="submit" name="delete" value="<?= $this->transEsc('Remove from Book Bag') ?>"/>
             <? else: ?>
-              <input class="button secondary small" type="submit" name="add" role="button" value="<?= $this->transEsc('Add to Book Bag') ?>"/>
+              <input class="button secondary small" type="submit" name="add" value="<?= $this->transEsc('Add to Book Bag') ?>"/>
             <? endif; ?>
           </form>
         </noscript>
