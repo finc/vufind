@@ -30,7 +30,7 @@ function embedOpenUrlLinks(element) {
 
   // If the target is already visible, a previous click has populated it;
   // don't waste time doing redundant work.
-  if (target.hasClass('hidden')) {
+  if (target.hasClass('hide')) {
     loadResolverLinks(target.removeClass('hide'), openUrl, element.data('search-class-id'));
   }
 }
