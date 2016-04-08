@@ -166,11 +166,20 @@ Author:
     - author2_orig^200
     - author_corp_orig^200
     - author_corp2_orig^200
+    - author_fuller^50
+    - author2_fuller
+    - author_additional
+    - author_variant
+    - author2_variant
   QueryFields:
     - author:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
+    - author_fuller:
+          - [onephrase, 200]
+          - [and, 100]
+          - [or, 50]
     - author2:
       - [onephrase, 100]
       - [and, 50]
@@ -211,6 +220,22 @@ Author:
       - [onephrase, 450]
       - [and, 300]
       - [or, 200]
+    - author2_fuller:
+      - [onephrase, 100]
+      - [and, 50]
+      - [or, ~]
+    - author_additional:
+      - [onephrase, 100]
+      - [and, 50]
+      - [or, ~]
+    - author_variant:
+      - [onephrase, 100]
+      - [and, 50]
+      - [or, ~]
+    - author2_variant:
+      - [onephrase, 100]
+      - [and, 50]
+      - [or, ~]
 
 ISN:
 #  DismaxFields:
@@ -306,6 +331,7 @@ JournalTitle:
     - title_full_unstemmed^450
     - title_full^400
     - title^300
+    - container_title^250
     - title_alt^200
     - title_new^100
     - title_old
@@ -322,6 +348,9 @@ JournalTitle:
     - title:
       - [onephrase, 300]
       - [and, 250]
+    - container_title:
+      - [onephrase, 275]
+      - [and, 225]
     - title_alt:
       - [and, 200]
     - title_new:
@@ -443,6 +472,7 @@ AllFields:
     - series2^30
     - series_orig^50
     - author^500
+    - author_fuller^150
     - author_corp^300
     - author2^400
     - author_corp2^100
@@ -499,6 +529,9 @@ AllFields:
     author:
       - [onephrase, 500]
       - [and, 250]
+    author_fuller:
+      - [onephrase, 150]
+      - [and, 125]
     author_ref:
       - [onephrase, 250]
       - [and, 250]
@@ -522,6 +555,8 @@ AllFields:
       - [and, 400]
     author2:
       - [and, 50]
+    author_additional:
+      - [and, 50]
     author_corp2:
       - [and, 50]
     contents:
@@ -540,10 +575,14 @@ AllFields:
       - [and, 25]
     allfields_unstemmed:
       - [or, 10]
+#    fulltext_unstemmed:
+#      - [or, 10]
     allfields:
       - [or, ~]
     fulltext:
       - [or, ~]
+#    description:
+#      - [or, ~]
     rvk_label:
       - [onephrase, 500]
       - [and, 250]
