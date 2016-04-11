@@ -246,8 +246,6 @@ trait SolrDefaultFincTrait
     /**
      * Combined fields of author data.
      *
-     * @todo    Check whether static call of getCorporateAuthor is necessary
-     *
      * @return array
      * @link https://intern.finc.info/issues/1866
      */
@@ -255,26 +253,39 @@ trait SolrDefaultFincTrait
     {
         $retval = [];
 
-        if ($this->getPrimaryAuthor() != '') {
-            $original = '';
-            if ($this->getPrimaryAuthorOrig() != '') {
-                $original = $this->getPrimaryAuthorOrig();
+        $buildCombined = function ($authors, $authors_orig) use(&$retval) {
+            foreach ($authors as $key => $value) {
+                $retval[] = $value . (
+                        isset($author_orig[$key])
+                        && $author_orig[$key] != $this->getDefaultOrigName()
+                            ? '(' . $author_orig[$key] . ')' : ''
+                );
             }
-            $retval[] = ($original == '') ? $this->getPrimaryAuthor()
-                : $this->getPrimaryAuthor() . ' (' . $original .  ')';
-        } elseif ( self::getCorporateAuthor() != '' ) {
-            $retval[] = self::getCorporateAuthor();
-        } elseif (count($this->getSecondaryAuthors()) > 0) {
-            foreach ($this->getSecondaryAuthors() as $val) {
-                $retval[] = $val;
-            }
-        } elseif (count($this->getCorporateSecondaryAuthors()) > 0) {
-            foreach ($this->getCorporateSecondaryAuthors() as $val) {
-                $retval[] = $val;
-            }
+        };
+
+        if ($this->getPrimaryAuthors()) {
+            $buildCombined(
+                $this->getPrimaryAuthors(), $this->getPrimaryAuthorOrig()
+            );
+        } elseif ($this->getCorporateAuthors()) {
+            $retval = $this->getCorporateAuthors();
+        } elseif ($this->getSecondaryAuthors()) {
+            $retval = $this->getSecondaryAuthors();
+        } elseif ($this->getCorporateSecondaryAuthors()) {
+            $retval = $this->getCorporateSecondaryAuthors();
         }
 
         return $retval;
+    }
+
+    /**
+     * Get the default value if no original name is available
+     *
+     * @return string
+     */
+    protected function getDefaultOrigName() {
+        //TODO: make this configurable - aka get value from config!
+        return 'noOrigName';
     }
 
     /**
@@ -286,7 +297,7 @@ trait SolrDefaultFincTrait
     public function getPrimaryAuthor()
     {
         return isset($this->fields['author']) ?
-            $this->_filterAuthorDates($this->fields['author']) : '';
+            $this->_filterAuthorDates(parent::getPrimaryAuthor()) : '';
     }
 
     /**
@@ -294,10 +305,10 @@ trait SolrDefaultFincTrait
      *
      * @return string
      */
-    public function getPrimaryAuthorOrig()
+    public function getPrimaryAuthorsOrig()
     {
         return isset($this->fields['author_orig']) ?
-            $this->_filterAuthorDates($this->fields['author_orig']) : '';
+            $this->_filterAuthorDates($this->fields['author_orig']) : [];
     }
 
     /**
@@ -306,11 +317,11 @@ trait SolrDefaultFincTrait
      * @return string
      * @access public
      */
-    public function getCorporateAuthor()
+    /*public function getCorporateAuthor()
     {
         return isset($this->fields['author_corp']) ?
             $this->fields['author_corp'] : '';
-    }
+    }*/
 
     /**
      * Get the secondary corporate authors (if any) for the record.
