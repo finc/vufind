@@ -1064,6 +1064,63 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Get all subject headings associated with this record.  Each heading is
+     * returned as an array of chunks, increasing from least specific to most
+     * specific.
+     *
+     * @return array
+     */
+    public function getAllSubjectHeadings()
+    {
+        // These are the fields that may contain subject headings:
+        $fields = [
+            '600', '610', '630', '650', '651', '655'
+        ];
+
+        $words = isset($this->recordConfig->SubjectHeadings->remove) ?
+            (array)$this->recordConfig->SubjectHeadings->remove : [];
+
+        // This is all the collected data:
+        $retval = [];
+
+        // Try each MARC field one at a time:
+        foreach ($fields as $field) {
+            // Do we have any results for the current field?  If not, try the next.
+            $results = $this->getMarcRecord()->getFields($field);
+            if (!$results) {
+                continue;
+            }
+
+            // If we got here, we found results -- let's loop through them.
+            foreach ($results as $result) {
+                // Start an array for holding the chunks of the current heading:
+                $current = [];
+
+                $sourceOfTerm = $result->getSubField('2');
+
+                if ($sourceOfTerm) {
+                    if (false === in_array($sourceOfTerm->getData(), $words)) {
+                        $data = $result->getSubField('a');
+                        if ($data) {
+                            $current[] = $data->getData();
+                        }
+                    }
+                }
+
+                // Get all the chunks and collect them together:
+                if (!empty($current)) {
+                    $retval[] = $current;
+                }
+            }
+        }
+
+        // Remove duplicates and then send back everything we collected:
+        return array_map(
+            'unserialize', array_unique(array_map('serialize', $retval))
+        );
+    }
+
+    /**
      * Return all barcode of finc marc 983 $a at full marc record.
      *
      * @todo Method seems erroneous. Bugfixin needed.
