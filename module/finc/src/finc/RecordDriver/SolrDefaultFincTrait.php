@@ -124,7 +124,7 @@ trait SolrDefaultFincTrait
      * @return null
      * @access protected
      */
-    protected function getDissertationNote()
+    public function getDissertationNote()
     {
         return null;
     }

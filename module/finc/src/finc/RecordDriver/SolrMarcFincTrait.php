@@ -1132,9 +1132,37 @@ trait SolrMarcFincTrait
      * @return array
      * @access protected
      */
-    protected function getDissertationNote()
+    public function getDissertationNote()
     {
-        return $this->getFieldArray('502', ['a']);
+        $tmpArray = [];
+        $field = $this->getMarcRecord()->getFields('502');
+
+        foreach ($field as $subfield) {
+
+            $subfieldA = $subfield->getSubField('a');
+            if ($subfieldA) {
+                $tmpArray[] = $subfieldA->getData();
+            }
+
+            $subfieldB = $subfield->getSubField('b');
+            if ($subfieldB) {
+                $tmpArray[] = $subfieldB->getData();
+            }
+
+            $subfieldC = $subfield->getSubField('c');
+            if ($subfieldC) {
+                $tmpArray[] = $subfieldC->getData();
+            }
+
+            $subfieldD = $subfield->getSubField('d');
+            if ($subfieldD) {
+                $tmpArray[] = $subfieldD->getData();
+            }
+        }
+        $retVal = implode(', ', $tmpArray);
+
+        return $retVal;
+
     }
 
     /**
