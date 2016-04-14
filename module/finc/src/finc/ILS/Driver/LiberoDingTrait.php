@@ -230,6 +230,109 @@ trait LiberoDingTrait
     }
 
     /**
+     * This method queries the LiberoDing-ILS for a patron's current profile
+     * information.
+     *
+     * @param array   $patron Patron array returned by patronLogin method.
+     * @param boolean $mapped Flag whether the response should be mapped or not
+     *                        (default true)
+     *
+     * @return array An associative array
+     * @see For content variables see method _profileDataMapper
+     */
+    protected function getLiberoDingProfile($patron, $mapped = true)
+    {
+        $params                 = $this->_getLiberoDingRequestParams();
+        $params['memberCode']   = $patron['cat_username'];
+        $params['password']     = $patron['cat_password'];
+
+        try {
+            $result = $this->httpService->get(
+                $this->getWebScraperUrl() .'getMyProfile.jsp',
+                $params,
+                null,
+                $this->_getLiberoDingRequestHeaders()
+            );
+        } catch (\Exception $e) {
+            throw new ILSException($e->getMessage());
+        }
+
+        if (!$result->isSuccess()) {
+            // log error for debugging
+            $this->debug(
+                'HTTP status ' . $result->getStatusCode() .
+                ' received'
+            );
+            return false;
+        }
+
+        if ($mapped) {
+            // define of disabled fields
+            $mappeddata = array();
+            $map = self::_profileDataMapper();
+            $data = $this->_getLiberoDingResult($result, 'getMyProfile');
+
+            foreach ($data as $key => $value) {
+                if ($key == 'disabledInputs') {
+                    // map it
+                    foreach ($data['disabledInputs'] as $fields) {
+                        if (isset($map[$fields])){
+                            $mappeddata['disabled'][$map[$fields]] = true;
+                        }
+                    }
+                } else {
+                    if (isset($map[$key])){
+                        $mappeddata[($map[$key])] = $value;
+                    }
+                }
+            }
+            return $mappeddata;
+        }
+
+        return $this->_getLiberoDingResult($result, 'getMyProfile');
+    }
+
+
+    /**
+     * Get a mapping table to exchange general terms
+     * of Libero and VuFind.
+     *
+     * @param boolean   $reverse  If true swap key and value pairs.
+     *
+     * @return array    Return array of mappings.
+     * @access private
+     */
+    private static function _profileDataMapper( $reverse = false )
+    {
+        $array = array(
+            "GNAM" => 'firstname',
+            "SUR" => 'lastname',
+            "FOA" => 'title',
+            "HPHONE" => "phone",
+            "BPHONE" => 'phone2',
+            "EMAIL" => 'email',
+            "group" => 'group',
+            "ADDR1" => 'address1',
+            "ADDR2" => 'additional',
+            "ADDR3" => 'city',
+            "ADDR4" => 'zip',
+            "ADDR5" => 'country',
+            "RADR1" => 'street2',
+            "RADR2" => 'additional2',
+            "RADR3" => 'city2',
+            "RADR4" => 'zip2',
+            "RADR5" => 'country2',
+            "ALTA1" => 'street3',
+            "ALTA2" => 'additional3',
+            "ALTA3" => 'city3',
+            "ALTA4" => 'zip3',
+            "ALTA5" => 'country3'
+        );
+
+        return ($reverse === true) ? array_flip($array) : $array;
+    }
+
+    /**
      * Private Helper function to return LiberoDing request parameters
      *
      * @return array

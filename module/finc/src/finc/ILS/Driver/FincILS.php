@@ -293,13 +293,15 @@ class FincILS extends PAIA implements LoggerAwareInterface
                                 // check exclude filters
                                 $excludeCounter = 0;
                                 foreach ($filterValue as $excludeKey => $excludeValue) {
-                                    if (!(isset($doc[$excludeKey])
-                                        && in_array($doc[$excludeKey], (array) $excludeValue))
+                                    if ((isset($doc[$excludeKey]) && in_array($doc[$excludeKey], (array) $excludeValue))
+                                        || ($excludeValue == null && !isset($doc[$excludeKey]))
                                     ) {
                                         $excludeCounter++;
                                     }
                                 }
-                                if ($excludeCounter == count($filterValue)) {
+                                // exclude is a negative filter, so the item might be
+                                // selected if exclude does NOT match
+                                if ($excludeCounter != count($filterValue)) {
                                     $filterCounter++;
                                 }
                                 break;
@@ -313,13 +315,17 @@ class FincILS extends PAIA implements LoggerAwareInterface
                                         $regexCounter++;
                                     }
                                 }
+                                // regex is a positive filter, so the item might be
+                                // selected if regex does match
                                 if ($regexCounter == count($filterValue)) {
                                     $filterCounter++;
                                 }
                                 break;
                             default:
-                                if (isset($doc[$filterKey])
-                                    && in_array($doc[$filterKey], (array) $filterValue)
+                                // any other filter is a positive filter, so the item
+                                // might be selected if the key-value pair does match
+                                if ((isset($doc[$filterKey]) && in_array($doc[$filterKey], (array) $filterValue))
+                                    || ($filterValue == null && !isset($doc[$filterKey]))
                                 ) {
                                     $filterCounter++;
                                 }

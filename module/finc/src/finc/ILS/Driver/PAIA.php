@@ -1068,6 +1068,8 @@ class PAIA extends DAIA
             $reminder = (isset($doc['reminder']) ? $doc['reminder'] : null);
 
             // starttime (0..1) date and time when the status began
+            $result['startTime'] = (isset($doc['starttime'])
+                ? $this->convertDatetime($doc['starttime']) : '');
 
             // endtime (0..1) date and time when the status will expire
             $result['dueTime'] = (isset($doc['endtime'])
