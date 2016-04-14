@@ -75,6 +75,17 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Returns whether the current record is a RDA record (contains string 'rda' in
+     * 040$e)
+     *
+     * @return bool
+     */
+    public function isRDA()
+    {
+        return $this->getFirstFieldValue('040', ['e']) == 'rda';
+    }
+
+    /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
      *
@@ -368,6 +379,155 @@ trait SolrMarcFincTrait
     protected function getISSNsParallelTitles()
     {
         return $this->getFieldArray('029', ['a']);
+    }
+
+    /**
+     * Get the content-designated representation, in a different script, (field 880)
+     * of the given field. fieldIterator is used if no Linkage in subfield 6 is
+     * found.
+     *
+     * @param $field
+     * @param int|bool $fieldIterator
+     * @return array|bool
+     */
+    protected function getLinkedField($field, $fieldIterator = false)
+    {
+        // we need to know which field we are dealing with
+        $tagNo = $field->getTag();
+
+        // if we found a subfield 6 in given field we can compute the content of
+        // subfield 6 in the corresponding field 880
+        if ($sub6 = $field->getSubfield(6)) {
+            $sub6Id = $tagNo . substr($sub6->getData(), 3);
+
+            // now cycle through all available fields 880 and return the field with
+            // the exact match on computed $sub6Id
+            if ($linkedFields = $this->getMarcRecord()->getFields('880')) {
+                foreach ($linkedFields as $current) {
+                    if ($sub6Id == $current->getSubfield(6)->getData()) {
+                        return $current;
+                    }
+                }
+            }
+        }
+
+        // alternative approach, cycle through all available fields 880 and return
+        // the field with a field and iterator match.
+        if ($fieldIterator !== false) {
+            if ($linkedFields = $this->getMarcRecord()->getFields('880')) {
+                $i = 0;
+                foreach ($linkedFields as $current) {
+                    if ($tagNo == substr($current->getSubfield(6)->getData(), 0, 3)
+                    ) {
+                        if ($fieldIterator == $i) {
+                            return $current;
+                        }
+                        $i++;
+                    }
+                }
+            }
+        }
+
+        // not enough information to return linked field
+        return false;
+    }
+
+    /**
+     * Get an array of publication detail lines with original notations combining
+     * information from MARC field 260 and linked content in 880.
+     *
+     * @return array
+     */
+    public function getPublicationDetails()
+    {
+        $retval = [];
+
+        if ($fields = $this->getMarcRecord()->getFields('260')) {
+            foreach ($fields as $i => $current) {
+                $place = $current->getSubfield('a')->getData();
+                $name = $current->getSubfield('b')->getData();
+                $date = $current->getSubfield('c')->getData();
+
+
+                // Build objects to represent each set of data; these will
+                // transform seamlessly into strings in the view layer.
+                $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
+                    $place, $name, $date
+                );
+
+                // Build the publication details with additional graphical notations
+                // for the current set of publication details
+                if ($linkedField = $this->getLinkedField($current, $i)) {
+                    $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
+                        $linkedField->getSubfield('a')->getData(),
+                        $linkedField->getSubfield('b')->getData(),
+                        $linkedField->getSubfield('c')->getData()
+                    );
+                }
+            }
+        }
+
+        return $retval;
+    }
+
+    /**
+     * Support method for getSeries() -- given a field specification, look for
+     * series information in the MARC record.
+     *
+     * @param array $fieldInfo Associative array of field => subfield information
+     * (used to find series name)
+     *
+     * @return array
+     */
+    protected function getSeriesFromMARC($fieldInfo)
+    {
+        $matches = [];
+
+        $buildSeries = function ($field, $subfields) use (&$matches) {
+            // Can we find a name using the specified subfield list?
+            $name = $this->getSubfieldArray($field, $subfields);
+            if (isset($name[0])) {
+                $currentArray = ['name' => $name[0]];
+
+                // Can we find a number in subfield v?  (Note that number is
+                // always in subfield v regardless of whether we are dealing
+                // with 440, 490, 800 or 830 -- hence the hard-coded array
+                // rather than another parameter in $fieldInfo).
+                $number
+                    = $this->getSubfieldArray($field, ['v']);
+                if (isset($number[0])) {
+                    $currentArray['number'] = $number[0];
+                }
+
+                // Save the current match:
+                $matches[] = $currentArray;
+            }
+        };
+
+        // Loop through the field specification....
+        foreach ($fieldInfo as $field => $subfields) {
+            // Did we find any matching fields?
+            $series = $this->getMarcRecord()->getFields($field);
+            if (is_array($series)) {
+                // use the fieldIterator as fallback for linked data in field 880 that
+                // is not linked via $6
+                $fieldIterator = 0;
+                foreach ($series as $currentField) {
+                    // Can we find a name using the specified subfield list?
+                    if (isset($this->getSubfieldArray($currentField, $subfields)[0])) {
+                        $buildSeries($currentField, $subfields);
+
+                        // attempt to find linked data in 880 field
+                        if ($linkedData = $this->getLinkedField($currentField, $fieldIterator)) {
+                            $buildSeries($linkedData, $subfields);
+                        }
+                    }
+                    $fieldIterator ++;
+                }
+            }
+        }
+
+        return $matches;
     }
 
     /**

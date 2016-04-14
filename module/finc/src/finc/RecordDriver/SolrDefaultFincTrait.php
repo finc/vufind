@@ -166,6 +166,28 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get the hierarchy_parent_id(s) associated with this item (empty if none).
+     *
+     * @return array
+     */
+    public function getHierarchyParentID()
+    {
+        return isset($this->fields['hierarchy_parent_id'])
+            ? $this->fields['hierarchy_parent_id'] : [];
+    }
+
+    /**
+     * Get the parent title(s) associated with this item (empty if none).
+     *
+     * @return array
+     */
+    public function getHierarchyParentTitle()
+    {
+        return isset($this->fields['hierarchy_parent_title'])
+            ? $this->fields['hierarchy_parent_title'] : [];
+    }
+
+    /**
      * Gets ansigel date of the record
      *
      * @return string
@@ -246,8 +268,6 @@ trait SolrDefaultFincTrait
     /**
      * Combined fields of author data.
      *
-     * @todo    Check whether static call of getCorporateAuthor is necessary
-     *
      * @return array
      * @link https://intern.finc.info/issues/1866
      */
@@ -255,23 +275,39 @@ trait SolrDefaultFincTrait
     {
         $retval = [];
 
-        if ($this->getPrimaryAuthor() != '') {
-            $original = '';
-            if ($this->getPrimaryAuthorOrig() != '') {
-                $original = $this->getPrimaryAuthorOrig();
+        $buildCombined = function ($authors, $authorsOrig) use (&$retval) {
+            if (count($authors)) {
+                foreach ($authors as $key => $value) {
+                    $retval[] = $value . (
+                            isset($authorsOrig[$key])
+                                ? '(' . $authorsOrig[$key] . ')' : ''
+                        );
+                }
             }
-            $retval[] = ($original == '') ? $this->getPrimaryAuthor()
-                : $this->getPrimaryAuthor() . ' (' . $original .  ')';
-        } elseif ( self::getCorporateAuthor() != '' ) {
-            $retval[] = self::getCorporateAuthor();
-        } elseif (count($this->getSecondaryAuthors()) > 0) {
-            foreach ($this->getSecondaryAuthors() as $val) {
-                $retval[] = $val;
-            }
-        } elseif (count($this->getCorporateSecondaryAuthors()) > 0) {
-            foreach ($this->getCorporateSecondaryAuthors() as $val) {
-                $retval[] = $val;
-            }
+        };
+
+        // use self:: referenced methods to make sure we are not using SolrMarc
+        // methods
+        if (self::getPrimaryAuthor() != '') {
+            $buildCombined(
+                (array) self::getPrimaryAuthor(),
+                (array) self::getPrimaryAuthorOrig()
+            );
+        } elseif (self::getCorporateAuthor() != '') {
+            $buildCombined(
+                (array) self::getCorporateAuthor(),
+                (array) self::getCorporateAuthorOrig()
+            );
+        } elseif (count(self::getSecondaryAuthors())) {
+            $buildCombined(
+                self::getSecondaryAuthors(),
+                self::getSecondaryAuthorsOrig()
+            );
+        } elseif (count(self::getCorporateSecondaryAuthors())) {
+            $buildCombined(
+                self::getCorporateSecondaryAuthors(),
+                self::getCorporateSecondaryAuthorsOrig()
+            );
         }
 
         return $retval;
@@ -301,6 +337,18 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get an array of all secondary authors original name (complementing
+     * getPrimaryAuthorOrig()).
+     *
+     * @return array
+     */
+    public function getSecondaryAuthorsOrig()
+    {
+        return isset($this->fields['author2_orig']) ?
+            $this->fields['author2_orig'] : [];
+    }
+
+    /**
      * Get the main corporate author (if any) for the record.
      *
      * @return string
@@ -313,6 +361,18 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get the main corporate authors original name (if any) for the record.
+     *
+     * @return string
+     * @access public
+     */
+    public function getCorporateAuthorOrig()
+    {
+        return isset($this->fields['author_corp_orig']) ?
+            $this->fields['author_corp_orig'] : '';
+    }
+
+    /**
      * Get the secondary corporate authors (if any) for the record.
      *
      * @return array
@@ -321,6 +381,63 @@ trait SolrDefaultFincTrait
     {
         return isset($this->fields['author_corp2']) ?
             $this->fields['author_corp2'] : [];
+    }
+
+    /**
+     * Get the secondary corporate authors original name (if any) for the record.
+     *
+     * @return array
+     */
+    public function getCorporateSecondaryAuthorsOrig()
+    {
+        return isset($this->fields['author_corp2_orig']) ?
+            $this->fields['author_corp2_orig'] : [];
+    }
+
+    /**
+     * Deduplicate author information into associative array with main/main_orig/
+     * corporate/corporate_orig/corporate_secondary/corporate_secondary_orig/
+     * secondary/secondary_orig keys.
+     *
+     * @return array
+     */
+    public function getDeduplicatedAuthors()
+    {
+        // use self:: referenced methods to make sure we are not using SolrMarc
+        // methods
+        $authors = [
+            'main' => self::getPrimaryAuthor(),
+            'main_orig' => self::getPrimaryAuthorOrig(),
+            'corporate' => self::getCorporateAuthor(),
+            'corporate_orig' => self::getCorporateAuthorOrig(),
+            'corporate_secondary' => self::getCorporateSecondaryAuthors(),
+            'corporate_secondary_orig' => self::getCorporateSecondaryAuthorsOrig(),
+            'secondary' => self::getSecondaryAuthors(),
+            'secondary_orig' => self::getSecondaryAuthorsOrig()
+        ];
+
+        // Deduplication
+        // make sure the secondary authors do not contain the primary author
+        if (count($authors['main']) && count($authors['secondary'])) {
+            $authors['secondary'] = array_diff($authors['secondary'], (array) $authors['main']);
+        }
+
+        // make sure the secondary corporations do not contain the primary corporation
+        if (count($authors['corporate']) && count($authors['corporate_secondary'])) {
+            $authors['corporate_secondary'] = array_diff($authors['corporate_secondary'], (array) $authors['corporate']);
+        }
+
+        // make sure the secondary authors (original name) do not contain the primary author (original name)
+        if (count($authors['main_orig']) && count($authors['secondary_orig'])) {
+            $authors['secondary_orig'] = array_diff($authors['secondary_orig'], (array) $authors['main_orig']);
+        }
+
+        // make sure the secondary corporations (original name) do not contain the primary corporation (original name)
+        if (count($authors['corporate_orig']) && count($authors['corporate_secondary_orig'])) {
+            $authors['corporate_secondary_orig'] = array_diff($authors['corporate_secondary_orig'], (array) $authors['corporate_orig']);
+        }
+
+        return $authors;
     }
 
     /**
@@ -499,6 +616,17 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get the original title of the record.
+     *
+     * @return string
+     */
+    public function getTitleUniform()
+    {
+        return isset($this->fields['title_uniform']) ?
+            $this->fields['title_uniform'] : '';
+    }
+
+    /**
      * Get the GND of topic.
      *
      * @return array
@@ -507,6 +635,28 @@ trait SolrDefaultFincTrait
     {
         return isset($this->fields['topic_id']) ?
             $this->fields['topic_id'] : [];
+    }
+
+    /**
+     * Get an array of all series names containing the record.  Array entries may
+     * be either the name string, or an associative array with 'name' and 'number'
+     * keys.
+     *
+     * @return array
+     */
+    public function getSeries()
+    {
+        $retval = [];
+
+        // Only use the contents of the series2 field if the series field is empty
+        if (isset($this->fields['series']) && !empty($this->fields['series'])) {
+            $retval = $this->fields['series'];
+        }
+        return array_merge(
+            $retval,
+            $this->getSeriesAlternative(),
+            $this->getSeriesOrig()
+        );
     }
 
     /**
