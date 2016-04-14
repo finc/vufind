@@ -37,7 +37,7 @@ use DOMDocument, XSLTProcessor;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/ Wiki
  */
-class Processor
+class Processor extends \VuFind\XSLT\Processor
 {
     /**
      * Perform an XSLT transformation and return the results.
@@ -50,18 +50,24 @@ class Processor
      */
     public static function process($xslt, $xml, $params = [])
     {
-        $style = new DOMDocument();
-        // TODO: support local overrides
-        $style->load(APPLICATION_PATH . '/module/finc/xsl/' . $xslt);
-        $xsl = new XSLTProcessor();
-        $xsl->importStyleSheet($style);
-        $doc = new DOMDocument();
-        if ($doc->loadXML($xml)) {
-            foreach ($params as $key => $value) {
-                $xsl->setParameter('', $key, $value);
+        $customXslt = ['record-marc.xsl'];
+
+        if (in_array($xslt, $customXslt)) {
+            $style = new DOMDocument();
+            // TODO: support local overrides
+            $style->load(APPLICATION_PATH . '/module/finc/xsl/' . $xslt);
+            $xsl = new XSLTProcessor();
+            $xsl->importStyleSheet($style);
+            $doc = new DOMDocument();
+            if ($doc->loadXML($xml)) {
+                foreach ($params as $key => $value) {
+                    $xsl->setParameter('', $key, $value);
+                }
+                return $xsl->transformToXML($doc);
             }
-            return $xsl->transformToXML($doc);
+            return '';
+        } else {
+            return parent::process($xslt, $xml, $params);
         }
-        return '';
     }
 }

@@ -11,10 +11,11 @@
   <xsl:template match="marc:record">
       <table class="citation table table-striped">
         <tr class="pace-car">
-          <th width=""/>
-          <td width=""/>
-          <td width=""/>
-          <td width=""/>
+          <th class="t15-percent"/>
+          <td class="t5-percent"/>
+          <td class="t5-percent"/>
+          <td class="auto-width"/>
+
         </tr>
         <tr>
           <th>Leader</th>
