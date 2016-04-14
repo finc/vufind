@@ -444,9 +444,12 @@ trait SolrMarcFincTrait
 
         if ($fields = $this->getMarcRecord()->getFields('260')) {
             foreach ($fields as $i => $current) {
-                $place = $current->getSubfield('a')->getData();
-                $name = $current->getSubfield('b')->getData();
-                $date = $current->getSubfield('c')->getData();
+                $place = $current->getSubfield('a')
+                    ? $current->getSubfield('a')->getData() : null;
+                $name = $current->getSubfield('b')
+                    ? $current->getSubfield('b')->getData() : null;
+                $date = $current->getSubfield('c')
+                    ? $current->getSubfield('c')->getData() : null;
 
 
                 // Build objects to represent each set of data; these will
@@ -459,9 +462,12 @@ trait SolrMarcFincTrait
                 // for the current set of publication details
                 if ($linkedField = $this->getLinkedField($current, $i)) {
                     $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
-                        $linkedField->getSubfield('a')->getData(),
-                        $linkedField->getSubfield('b')->getData(),
-                        $linkedField->getSubfield('c')->getData()
+                        $linkedField->getSubfield('a')
+                            ? $linkedField->getSubfield('a')->getData() : null,
+                        $linkedField->getSubfield('b')
+                            ? $linkedField->getSubfield('b')->getData() : null,
+                        $linkedField->getSubfield('c')
+                            ? $linkedField->getSubfield('c')->getData() : null
                     );
                 }
             }
