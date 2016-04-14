@@ -1,29 +1,42 @@
-/*global bulkActionSubmit, cartCookieDomain, Cookies, Lightbox, refreshPageForLogin, VuFind */
+/*global Cookies, VuFind */
 
-var _CART_COOKIE = 'vufind_cart';
-var _CART_COOKIE_SOURCES = 'vufind_cart_src';
-var _CART_COOKIE_DELIM = "\t";
+VuFind.register('cart', function() {
+  var _COOKIE = 'vufind_cart';
+  var _COOKIE_SOURCES = 'vufind_cart_src';
+  var _COOKIE_DELIM = "\t";
+  var _COOKIE_DOMAIN = false;
 
-var currentId,currentSource;
-var lastCartSubmit = false;
+  var setDomain = function(domain) {
+    _COOKIE_DOMAIN = domain;
+  }
 
-function getCartItems() {
-  var items = Cookies.getItem(_CART_COOKIE);
+  var _uniqueArray = function(op) {
+    var ret = [];
+    for(var i=0;i<op.length;i++) {
+      if(ret.indexOf(op[i]) < 0) {
+        ret.push(op[i]);
+      }
+    }
+    return ret;
+  }
+
+  var _getItems = function() {
+    var items = Cookies.getItem(_COOKIE);
   if(items) {
-    return items.split(_CART_COOKIE_DELIM);
+      return items.split(_COOKIE_DELIM);
   }
   return [];
 }
-function getCartSources() {
-  var items = Cookies.getItem(_CART_COOKIE_SOURCES);
+  var _getSources = function() {
+    var items = Cookies.getItem(_COOKIE_SOURCES);
   if(items) {
-    return items.split(_CART_COOKIE_DELIM);
+      return items.split(_COOKIE_DELIM);
   }
   return [];
 }
-function getFullCartItems() {
-  var items = getCartItems();
-  var sources = getCartSources();
+  var getFullItems = function() {
+    var items = _getItems();
+    var sources = _getSources();
   var full = [];
   if(items.length == 0) {
     return [];
@@ -34,42 +47,33 @@ function getFullCartItems() {
   return full;
 }
 
-function updateCartCount() {
-  var items = getCartItems();
+  var updateCount = function() {
+    var items = _getItems();
   $('#cartItems strong').html(items.length);
 }
 
-function addItemToCart(id,source) {
+  var addItem = function(id,source) {
   if(!source) {
     source = VuFind.defaultSearchBackend;
   }
-  var cartItems = getCartItems();
-  var cartSources = getCartSources();
+    var cartItems = _getItems();
+    var cartSources = _getSources();
   var sIndex = cartSources.indexOf(source);
   if(sIndex < 0) {
     // Add source to source cookie
     cartItems[cartItems.length] = String.fromCharCode(65+cartSources.length) + id;
     cartSources[cartSources.length] = source;
-    Cookies.setItem(_CART_COOKIE_SOURCES, cartSources.join(_CART_COOKIE_DELIM), false, '/', cartCookieDomain);
+      Cookies.setItem(_COOKIE_SOURCES, cartSources.join(_COOKIE_DELIM), false, '/', _COOKIE_DOMAIN);
   } else {
     cartItems[cartItems.length] = String.fromCharCode(65+sIndex) + id;
   }
-  Cookies.setItem(_CART_COOKIE, $.unique(cartItems).join(_CART_COOKIE_DELIM), false, '/', cartCookieDomain);
-  updateCartCount();
+    Cookies.setItem(_COOKIE, $.unique(cartItems).join(_COOKIE_DELIM), false, '/', _COOKIE_DOMAIN);
+    updateCount();
   return true;
 }
-function uniqueArray(op) {
-  var ret = [];
-  for(var i=0;i<op.length;i++) {
-    if(ret.indexOf(op[i]) < 0) {
-      ret.push(op[i]);
-    }
-  }
-  return ret;
-}
-function removeItemFromCart(id,source) {
-  var cartItems = getCartItems();
-  var cartSources = getCartSources();
+  var removeItem = function(id,source) {
+    var cartItems = _getItems();
+    var cartSources = _getSources();
   // Find
   var cartIndex = cartItems.indexOf(String.fromCharCode(65+cartSources.indexOf(source))+id);
   if(cartIndex > -1) {
@@ -99,20 +103,20 @@ function removeItemFromCart(id,source) {
       }
     }
     if(cartItems.length > 0) {
-      Cookies.setItem(_CART_COOKIE, uniqueArray(cartItems).join(_CART_COOKIE_DELIM), false, '/', cartCookieDomain);
-      Cookies.setItem(_CART_COOKIE_SOURCES, uniqueArray(cartSources).join(_CART_COOKIE_DELIM), false, '/', cartCookieDomain);
+        Cookies.setItem(_COOKIE, _uniqueArray(cartItems).join(_COOKIE_DELIM), false, '/', _COOKIE_DOMAIN);
+        Cookies.setItem(_COOKIE_SOURCES, _uniqueArray(cartSources).join(_COOKIE_DELIM), false, '/', _COOKIE_DOMAIN);
     } else {
-      Cookies.removeItem(_CART_COOKIE, '/', cartCookieDomain);
-      Cookies.removeItem(_CART_COOKIE_SOURCES, '/', cartCookieDomain);
+        Cookies.removeItem(_COOKIE, '/', _COOKIE_DOMAIN);
+        Cookies.removeItem(_COOKIE_SOURCES, '/', _COOKIE_DOMAIN);
     }
-    updateCartCount();
+      updateCount();
     return true;
   }
   return false;
 }
 
-var cartNotificationTimeout = false;
-function registerUpdateCart($form) {
+  var _cartNotificationTimeout = false;
+  var _registerUpdate = function($form) {
   if($form) {
     $("#updateCart, #bottom_updateCart").unbind('click').click(function(){
       var elId = this.id;
@@ -124,7 +128,7 @@ function registerUpdateCart($form) {
       if (selected.length > 0) {
         var inCart = 0;
         var msg = "";
-        var orig = getFullCartItems();
+          var orig = getFullItems();
         $(selected).each(function(i) {
           for (var x in orig) {
             if (this == orig[x]) {
@@ -133,9 +137,9 @@ function registerUpdateCart($form) {
             }
           }
           var data = this.split('|');
-          addItemToCart(data[1], data[0]);
+            addItem(data[1], data[0]);
         });
-        var updated = getFullCartItems();
+          var updated = getFullItems();
         var added = updated.length - orig.length;
         msg += added + " " + VuFind.translate('itemsAddBag');
         if (inCart > 0 && orig.length > 0) {
@@ -151,12 +155,10 @@ function registerUpdateCart($form) {
         $('.bookbg-msg').html('VuFind.translate("bulk_noitems_advice")');
       }
       $('#bookbg-dd, #bottom-bookbg-dd').addClass('open f-open-dropdown');
-      // is the following correct? were is the timeout set? - fixme CK
-      if (cartNotificationTimeout !== false) {
-//      $('#updateCart, #bottom_updateCart').prop('data-options', 'is_hover:true; hover_timeout: 0');
-        clearTimeout(cartNotificationTimeout);
+      if (_cartNotificationTimeout !== false) {
+        clearTimeout(_cartNotificationTimeout);
       }
-      cartNotificationTimeout = setTimeout(function () {
+      _cartNotificationTimeout = setTimeout(function () {
         $('#updateCart, #bottom_updateCart').prop('data-options', 'is_hover:true; hover_timeout: 5000');
       });
       return false;
@@ -164,9 +166,50 @@ function registerUpdateCart($form) {
   }
 }
 
+  var init = function() {
+  // Record buttons
+  var $cartId = $('.cartId');
+  if($cartId.length > 0) {
+    $cartId.each(function() {
+      var cartId = this.value.split('|');
+        var currentId = cartId[1];
+        var currentSource = cartId[0];
+      var $parent = $(this).parent();
+        $parent.find('.cart-add.correct,.cart-remove.correct').removeClass('correct hide');
+      $parent.find('.cart-add').click(function() {
+          addItem(currentId,currentSource);
+          $parent.find('.cart-add,.cart-remove').toggleClass('hide');
+      });
+      $parent.find('.cart-remove').click(function() {
+          removeItem(currentId,currentSource);
+          $parent.find('.cart-add,.cart-remove').toggleClass('hide');
+      });
+    });
+  } else {
+    // Search results
+    var $form = $('form[name="bulkActionForm"]');
+      _registerUpdate($form);
+  }
+  //  $("#updateCart, #bottom_updateCart").popover({content:'', html:true, trigger:'manual'});
+    $("#bookbg-dd, #bottom_bookbg-dd").toggleClass('open f-open-dropdown');
+  };
+
+  // Reveal
+  return {
+    // Methods
+    addItem: addItem,
+    removeItem: removeItem,
+    getFullItems: getFullItems,
+    updateCount: updateCount,
+    setDomain: setDomain,
+    // Init
+    init: init
+  };
+});
+
 // Building an array and checking indexes prevents a race situation
 // We want to prioritize empty over printing
-function cartFormHandler(event, data) {
+var cartFormHandler = function(event, data) {
   var keys = [];
   for (var i in data) {
     keys.push(data[i].name);
@@ -179,32 +222,4 @@ function cartFormHandler(event, data) {
   }
 }
 
-document.addEventListener('VuFind.lightbox.closed', updateCartCount, false);
-
-$(document).ready(function() {
-  // Record buttons
-  var $cartId = $('.cartId');
-  if($cartId.length > 0) {
-    $cartId.each(function() {
-      var cartId = this.value.split('|');
-      currentId = cartId[1];
-      currentSource = cartId[0];
-      var $parent = $(this).parent();
-      $parent.find('.cart-add.correct,.cart-remove.correct').removeClass('correct hide');
-      $parent.find('.cart-add').click(function() {
-        addItemToCart(currentId,currentSource);
-        $parent.find('.cart-add,.cart-remove').toggleClass('hide');
-      });
-      $parent.find('.cart-remove').click(function() {
-        removeItemFromCart(currentId,currentSource);
-        $parent.find('.cart-add,.cart-remove').toggleClass('hide');
-      });
-    });
-  } else {
-    // Search results
-    var $form = $('form[name="bulkActionForm"]');
-    registerUpdateCart($form);
-  }
-  // BS $("#updateCart, #bottom_updateCart").popover({content:'', html:true, trigger:'manual'});
-  $("#bookbg-dd, #bottom_bookbg-dd").toggleClass('open f-open-dropdown');
-});
+document.addEventListener('VuFind.lightbox.closed', VuFind.cart.updateCount, false);

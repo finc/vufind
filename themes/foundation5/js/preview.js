@@ -34,7 +34,7 @@ function getHTPreviews(skeys) {
 }
 
 function applyPreviewUrl($link, url) {
-    // Update the preview button: // check for correctness - fixme CK
+    // Update the preview button:
     $link.attr('href', url).removeClass('hide');
 
     // Update associated record thumbnail, if any:
@@ -67,7 +67,7 @@ function processGBSBookInfo(booksInfo) {
             if (bookInfo) {
                 if (viewOptions['tab'].indexOf(bookInfo.preview)>= 0
                 && (bookInfo.embeddable)) {
-                    // make tab visible // check for correctness - fixme CK
+                    // make tab visible
                     $('ul.recordTabs li.hide a#preview').parent().removeClass('hide');
                 }
             }

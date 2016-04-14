@@ -31,7 +31,7 @@ $user = $this->auth()->isLoggedIn();
         <? if (isset($list)): ?>
           <? if ($list->editAllowed($account->isLoggedIn())): ?>
             <li>
-              <a href="<?= $this->url('editList', array('id' => $list->id))?>" class="button link" role="button" title="<?= $this->transEsc("edit_list") ?>"><i class="fa fa-edit"></i> <?= $this->transEsc("edit_list") ?> </a>
+              <a href="<?= $this->url('editList', array('id' => $list->id))?>" class="button link" role="button"><i class="fa fa-edit"></i> <?= $this->transEsc("edit_list") ?> </a>
             </li>
             <li>
               <a class="button link" role="button" data-dropdown="myresearch-deletelist-dd" aria-controls="myresearch-deletelist-dd" aria-expanded="false" data-options="is_hover:true;" href="<?= $this->url ('myresearch-deletelist') ?>?listID=<?= urlencode($list->id) ?>"><i class="fa fa-trash-o"></i><?=$this->transEsc("delete_list")?></a>

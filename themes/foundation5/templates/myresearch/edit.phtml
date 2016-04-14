@@ -14,7 +14,7 @@
 
   <form method="post" name="editForm" >
   <? if (empty($this->savedData)): ?>
-    <p data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="dialogalert">
+    <p data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="alertdialog">
       <? if (isset($listFilter)): ?>
         <?=$this->transEsc('The record you selected is not part of the selected list.') ?>
       <? else: ?>
@@ -69,7 +69,7 @@
   <? if (!empty($this->savedData) || count($this->lists) > 0): ?>
     <div class="row">
        <div class="medium-10 columns medium-offset-2">
-          <input class="button small" type="submit" name="submit" role="button" value="<?=$this->transEsc('Save') ?>"/>
+          <input class="button small" type="submit" name="submit" value="<?=$this->transEsc('Save') ?>"/>
         </div>
     </div>
   <? endif; ?>

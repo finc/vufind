@@ -10,7 +10,7 @@
     $offlineMode = $this->ils()->getOfflineMode();
 ?>
 <? if ($offlineMode == "ils-offline"): ?>
-  <div data-alert class="alert-box warning" tabindex="0" aria-live="assertive" role="dialogalert">
+  <div data-alert class="alert-box warning" tabindex="0" aria-live="assertive" role="alertdialog">
     <h2><?=$this->transEsc('ils_offline_title')?></h2>
     <p><strong><?=$this->transEsc('ils_offline_status')?></strong></p>
     <p><?=$this->transEsc('ils_offline_login_message')?></p>

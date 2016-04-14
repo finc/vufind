@@ -9,7 +9,7 @@
         <option value="<?=$this->escapeHtmlAttr($sortType)?>"<?=$sortData['selected']?' selected="selected"':''?>><?=$this->transEsc($sortData['desc'])?></option>
       <? endforeach; ?>
     </select>
-    <noscript><input type="submit" class="button secondary tiny" role="button" value="<?=$this->transEsc("Set")?>" /></noscript>
+    <noscript><input type="submit" class="button secondary tiny" value="<?=$this->transEsc("Set")?>" /></noscript>
   </form>
 <? endif; ?>
 <!-- search - controls - SORT.phtml - end -->

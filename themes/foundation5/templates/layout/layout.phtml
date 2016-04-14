@@ -67,9 +67,11 @@
           $this->headScript()->appendFile("vendor/cookies.js");
           $this->headScript()->appendFile("cart.js");
           $domain = $cart->getCookieDomain();
-          $this->headScript()->appendScript(
-            'var cartCookieDomain = ' . (!empty($domain) ? "'$domain'" : 'false') . ';'
-          );
+          if (!empty($domain)) {
+            $this->headScript()->appendScript(
+              'VuFind.cart.setDomain("' . $domain . '");'
+            );
+          }
           $this->jsTranslations()->addStrings(
             array(
               'addBookBag' => 'Add to Book Bag',
@@ -122,13 +124,15 @@ JS;
       }
     ?>
     <div class="row collapse">
-        <header role="banner" class="sticky contain-to-grid hide-for-print">
+        <header class="sticky contain-to-grid hide-for-print">
           <a class="sr-only" href="#searchslots"><?=$this->transEsc('Skip to search') ?></a>
           <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
             <?=$this->render('header.phtml')?>
+          <? /* REMOVE DUPLICATE SEARCHBOX
                 <nav class="nav searchbox large-12 large-centered columns hide-for-medium-up hide-for-print">
                   <?=$this->layout()->searchbox ?>
                 </nav>
+ */?>
                 <? if((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
                   && !empty($this->layout()->breadcrumbs)
                   && $this->layout()->breadcrumbs !== false
@@ -163,7 +167,7 @@ JS;
       </div>
     </div>
     <div class="row">
-      <footer role="contentinfo" class="panel hide-for-print">
+      <footer class="panel hide-for-print">
         <div class="container">
           <?=$this->render('footer.phtml')?>
           <?=$this->layout()->poweredBy ?>
@@ -171,7 +175,7 @@ JS;
       </footer>
 </div>
 <!-- MODAL IN CASE WE NEED ONE -->
-<div id="modal" class="reveal-modal medium hide-for-print" data-reveal tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+<div id="modal" class="reveal-modal medium hide-for-print" data-reveal tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-body"><?=$this->transEsc('Loading') ?>&nbsp;...</div>
   <a class="close-reveal-modal" aria-label="Close"><span class="sr-only"><?=$this->transEsc('close') ?></span> &#215;</a>
 </div>

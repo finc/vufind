@@ -19,8 +19,8 @@
   </p>
   <p><i>Do you still wish to proceed with enabling enhanced security in the database?</i></p>
   <form method="post" action="<?=$this->url('install-fixsecurity')?>">
-    <input type="submit" name="fix-user-table" value="Yes" class="button secondary small" role="button" aria-label="submit form"/>
-    <input type="submit" name="fix-user-table" value="No" class="button secondary small" role="button" aria-label="submit form"/>
+    <input type="submit" name="fix-user-table" value="Yes" class="button secondary small" aria-label="submit form"/>
+    <input type="submit" name="fix-user-table" value="No" class="button secondary small" aria-label="submit form"/>
   </form>
 <? else: ?>
   <p>No security problems found.</p>

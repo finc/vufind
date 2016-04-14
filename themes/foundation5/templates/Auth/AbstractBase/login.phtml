@@ -11,7 +11,7 @@
         <? if ($account->supportsCreation()): ?>
           <a class="button small secondary createAccountLink" role="button" href="<?=$this->url('myresearch-account') ?>?auth_method=<?=$account->getAuthMethod()?>"><?=$this->transEsc('Create New Account')?></a>
         <? endif; ?>
-        <input class="button small" role="button" aria-label="submit form" type="submit" name="processLogin" value="<?=$this->transEsc('Login')?>">
+        <input class="button small" aria-label="submit form" type="submit" name="processLogin" value="<?=$this->transEsc('Login')?>">
         <? if ($account->supportsRecovery()): ?>
           <br/>
           <a class="button small secondary" role="button" href="<?=$this->url('myresearch-recover') ?>?auth_method=<?=$account->getAuthMethod()?>" data-lightbox-ignore><?=$this->transEsc('Forgot Password')?></a>
