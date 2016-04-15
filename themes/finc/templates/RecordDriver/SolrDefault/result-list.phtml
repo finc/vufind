@@ -172,7 +172,7 @@
         <? /* Add to favorites */ ?>
        <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="save-record" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId()) ?>" title="<?=$this->transEsc('Add to favorites')?>"><i class="fa fa-fw fa-star"></i> <?=$this->transEsc('Add to favorites')?></a><br/>
         <? /* Saved lists */ ?>
-        <div class="savedLists hide alert-box info" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
+        <div class="savedLists hide alert-box info" data-alert tabindex="0" aria-live="assertive" role="alertdialog">
           <strong><?=$this->transEsc("Saved in")?>:</strong>
         </div>
       <? endif; ?>

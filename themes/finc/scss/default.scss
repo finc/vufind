@@ -68,7 +68,8 @@ header.fixed { left:auto;max-width: $row-width; }
     margin-top: .5rem;
   }
 }
-// Internformat
+// Internformat - staff view
+table.citation th {min-width: 18%}
 .pace-car th {min-width: 10%}
 
 

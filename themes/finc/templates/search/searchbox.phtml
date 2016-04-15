@@ -61,7 +61,7 @@ $advSearch = $options->getAdvancedSearchAction();
       <input type="hidden" name="type" value="<?= $this->escapeHtmlAttr($handlers[0]['value']) ?>"/>
     <? endif; ?>
     <li class="has-form">
-      <button type="submit" class="postfix" role="button"><i class="fa fa-search"></i> <?= $this->transEsc("Find") ?></button>
+      <button type="submit" class="postfix"><i class="fa fa-search"></i> <?= $this->transEsc("Find") ?></button>
     </li>
     <? if ($advSearch): ?>
       <li class="has-form">
