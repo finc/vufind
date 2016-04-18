@@ -240,7 +240,6 @@ function recordDocReady() {
     $top.find('.content.active').removeClass('active');
     $top.find('.tab-title').removeClass('active');
     $top.find('.'+tabid).parent().addClass('active');
-    $(this).tab('show');
     if ($top.find('.'+tabid+'-tab').length > 0) {
       $top.find('.'+tabid+'-tab').addClass('active');
       window.location.hash = tabid;

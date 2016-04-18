@@ -3,12 +3,17 @@
     // Set up convenience variables:
     $account = $this->auth()->getManager();
     $user = $account->isLoggedIn();
-    $holdings = $this->driver->getRealTimeHoldings();
     $openUrl = $this->openUrl($this->driver, 'holdings');
     $openUrlActive = $openUrl->isActive();
     // Account for replace_other_urls setting
     $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
     $offlineMode = $this->ils()->getOfflineMode();
+    try {
+        $holdings = $this->driver->getRealTimeHoldings();
+    } catch (\VuFind\Exception\ILS $e) {
+        $holdings = [];
+        $offlineMode = 'ils-offline';
+    }
     // Set page title.
     $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
 ?>
@@ -16,7 +21,7 @@
 <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
 
 <? if ($offlineMode == "ils-offline"): ?>
-  <div data-alert class="alert-box warning" tabindex="0" aria-live="assertive" role="alertdialog">">
+  <div data-alert class="alert-box warning" tabindex="0" aria-live="assertive" role="alertdialog">
     <h2><?=$this->transEsc('ils_offline_title')?></h2>
     <p><strong><?=$this->transEsc('ils_offline_status')?></strong></p>
     <p><?=$this->transEsc('ils_offline_holdings_message')?></p>
@@ -27,11 +32,11 @@
 <? if (($this->ils()->getHoldsMode() == 'driver' && !empty($holdings)) || $this->ils()->getTitleHoldsMode() == 'driver'): ?>
   <? if ($account->loginEnabled() && $offlineMode != 'ils-offline'): ?>
     <? if (!$user): ?>
-      <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="alertdialog">">
+      <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="alertdialog">
         <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'Holdings')?>?login=true&amp;catalogLogin=true" data-lightbox><?=$this->transEsc("Login")?></a> <?=$this->transEsc("hold_login")?>
       </div>
     <? elseif (!$user->cat_username): ?>
-      <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="alertdialog">">
+      <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="alertdialog">
         <?=$this->translate("hold_profile_html", array('%%url%%' => $this->recordLink()->getTabUrl($this->driver, 'Holdings') . '?catalogLogin=true'))?>
       </div>
     <? endif; ?>
@@ -98,21 +103,26 @@
         <? if (isset($row['use_unknown_message']) && $row['use_unknown_message']): ?>
           <span class="label secondary"><?=$this->transEsc("status_unknown_message")?></span>
         <? else: ?>
-          <? /* WE USE callnumber here, rev #6237 - 04.16. CK */ ?>
+          <? /* WE USE callnumbers here, rev #6237 - 04.16. CK */ ?>
           <? if (isset($row['callnumber'])): ?>
             <span class="callnumber"><?=$this->transEsc("Call Number")?>: <?=$row['callnumber']?></span>
           <? endif; ?>
           <? if (isset($row['storage']) && $row['storage'] != 'Unknown'): ?>
             <span class="storage"><?=$this->transEsc("Location")?>: <?=$row['storage']?></span>
           <? endif; ?>
+
           <? if ($row['availability']): ?>
             <? /* Begin Available Items (Holds) */ ?>
-            <? /* WE USE notes here, rev #6237 - 04.16. CK */ ?>
+            <? /* WE USE notes here, rev #6237 - 04.16. CK - item_notes below*/ ?>
             <? if (isset($row['notes'])): ?>
               <span class="notes"><?=$this->transEsc("Notes")?>:</span>
               <ul class="notes">
                 <? foreach ($row['notes'] as $note): ?>
                   <li><?=$note?></li>
+                <? endforeach; ?>
+
+                <? foreach ($row['item_notes'] as $item_note): ?>
+                  <li><?=$this->escapeHtml($item_note) ?></li>
                 <? endforeach; ?>
               </ul>
             <? endif; ?>
