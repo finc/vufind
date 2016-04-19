@@ -5,11 +5,7 @@ ChangeLog
 .\#*
 TAGS
 *~
-# vendor
+/vendor
 composer.lock
-.bash_history
-.idea
-.composer
-**/.sass-cache/
-node_modules
 import/solrmarc.log
+/solr

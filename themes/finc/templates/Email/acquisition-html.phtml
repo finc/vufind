@@ -4,18 +4,18 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Erwerbungsvorschlag</title>
 </head>
-<body style="font-family: Arial, Verdana, sans-serif;">
-<h2 style="padding:5px 0;">Erwerbungsvorschlag</h2>
-<table width="800" border="0">
+<body>
+<h2>Erwerbungsvorschlag</h2>
+<table>
     <tr valign="top">
-        <td width="390">
+        <td>
             Name: <strong><?=$user->lastname ?>, <?=$user->firstname ?></strong><br />
             Lesekarte-Nr.: <strong><?=$user->username ?></strong><br />
             Email: <a href="mailto:<?=$user->email ?>"><?=$user->email ?></a><br />
             <? /*if ($user->group): ?>Benutzergruppe: <?=$user->group ?><? endif;*/ ?>
         </td>
-        <td width="20">&nbsp;</td>
-        <td width="390">
+        <td>&nbsp;</td>
+        <td>
             hat folgenden Titel zur Erwerbung empfohlen:<br />
             <br />
             <strong><?=$proposal ?></strong><br />
@@ -29,7 +29,7 @@
         </td>
     </tr>
     <tr valign="top">
-        <td width="800" colspan="3">
+        <td colspan="3">
             Zeitpunkt der Bestellung: <?=$time ?>
         </td>
     </tr>

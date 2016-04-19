@@ -11,7 +11,9 @@
   <section class="top-bar-section">
     <? if ($this->layout()->searchbox !== false): ?>
       <ul class="left list-unstyled show-for-medium-up">
+        <li>
         <?=$this->layout()->searchbox?>
+        </li>
       </ul>
     <? endif; ?>
     <? if (!isset($this->layout()->renderingError)): ?>
@@ -31,7 +33,7 @@
         <? endif; ?>
         <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
           <li class="logoutOptions<? if (!$account->isLoggedIn()): ?> hide<? endif ?>">
-            <a href="<?=$this->url('myresearch-home', array(), array('query' => array('redirect' => 0)))?>" title="<?=$this->transEsc("Your Account")?>"><i
+            <a href="<?=$this->url('myresearch-home', array(), array('query' => array('redirect' => 0)))?>"><i
                   class="fa fa-home"></i> <?=$this->transEsc("Your Account")?></a>
           </li>
           <li class="logoutLink logoutOptions<? if (!$account->isLoggedIn()): ?> hide<? endif ?>">
@@ -39,9 +41,9 @@
           </li>
           <li id="loginOptions" class="<? if ($account->isLoggedIn()): ?> hide<? endif ?>">
             <? if ($account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')))): ?>
-              <a href="<?=$this->url('myresearch-userlogin')?>" title="<?=$this->transEsc("Institutional Login")?>"><i class="fa fa-sign-in"></i> <?=$this->transEsc("Institutional Login")?></a>
+              <a href="<?=$this->url('myresearch-userlogin')?>"><i class="fa fa-sign-in"></i> <?=$this->transEsc("Institutional Login")?></a>
             <? else: ?>
-              <a href="<?=$this->url('myresearch-userlogin')?>" data-lightbox title="<?=$this->transEsc("Login")?>"><i class="fa fa-sign-in"></i> <?=$this->transEsc("Login")?></a>
+              <a href="<?=$this->url('myresearch-userlogin')?>" data-lightbox><i class="fa fa-sign-in"></i> <?=$this->transEsc("Login")?></a>
             <? endif; ?>
           </li>
         <? endif; ?>

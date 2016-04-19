@@ -21,7 +21,7 @@
     <label class="medium-3 columns"><?=$this->transEsc('Title')?></label>
     <div class="medium-9 columns">
     <? if(count($this->records) > 1): ?>
-      <button type="button" class="button secondary small hide" data-dropdown="itemhide" role="button" aria-controls="itemhide" aria-expanded="false">
+      <button type="button" class="button secondary small hide" data-dropdown="itemhide" aria-controls="itemhide" aria-expanded="false">
         <?=count($this->records).' '.$this->transEsc('items') ?>
       </button>
       <ul id="itemhide" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">

@@ -288,15 +288,15 @@ trait SolrDefaultFincTrait
 
         // use self:: referenced methods to make sure we are not using SolrMarc
         // methods
-        if (self::getPrimaryAuthor() != '') {
+        if (count(self::getPrimaryAuthor())) {
             $buildCombined(
-                (array) self::getPrimaryAuthor(),
-                (array) self::getPrimaryAuthorOrig()
+                (array) self::getPrimaryAuthors(),
+                (array) self::getPrimaryAuthorsOrig()
             );
-        } elseif (self::getCorporateAuthor() != '') {
+        } elseif (count(self::getCorporateAuthor())) {
             $buildCombined(
-                (array) self::getCorporateAuthor(),
-                (array) self::getCorporateAuthorOrig()
+                (array) self::getCorporateAuthors(),
+                (array) self::getCorporateAuthorsOrig()
             );
         } elseif (count(self::getSecondaryAuthors())) {
             $buildCombined(
@@ -314,6 +314,16 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get the default value if no original name is available
+     *
+     * @return string
+     */
+    protected function getDefaultOrigName() {
+        //TODO: make this configurable - aka get value from config!
+        return 'noOrigName';
+    }
+
+    /**
      * Get the main author of the record.
      *
      * @return string
@@ -322,7 +332,7 @@ trait SolrDefaultFincTrait
     public function getPrimaryAuthor()
     {
         return isset($this->fields['author']) ?
-            $this->_filterAuthorDates($this->fields['author']) : '';
+            $this->_filterAuthorDates(parent::getPrimaryAuthor()) : '';
     }
 
     /**
@@ -330,10 +340,10 @@ trait SolrDefaultFincTrait
      *
      * @return string
      */
-    public function getPrimaryAuthorOrig()
+    public function getPrimaryAuthorsOrig()
     {
         return isset($this->fields['author_orig']) ?
-            $this->_filterAuthorDates($this->fields['author_orig']) : '';
+            $this->_filterAuthorDates($this->fields['author_orig']) : [];
     }
 
     /**
@@ -354,11 +364,11 @@ trait SolrDefaultFincTrait
      * @return string
      * @access public
      */
-    public function getCorporateAuthor()
+    /*public function getCorporateAuthor()
     {
         return isset($this->fields['author_corp']) ?
             $this->fields['author_corp'] : '';
-    }
+    }*/
 
     /**
      * Get the main corporate authors original name (if any) for the record.
@@ -366,10 +376,10 @@ trait SolrDefaultFincTrait
      * @return string
      * @access public
      */
-    public function getCorporateAuthorOrig()
+    public function getCorporateAuthorsOrig()
     {
         return isset($this->fields['author_corp_orig']) ?
-            $this->fields['author_corp_orig'] : '';
+            $this->fields['author_corp_orig'] : [];
     }
 
     /**
@@ -406,10 +416,10 @@ trait SolrDefaultFincTrait
         // use self:: referenced methods to make sure we are not using SolrMarc
         // methods
         $authors = [
-            'main' => self::getPrimaryAuthor(),
-            'main_orig' => self::getPrimaryAuthorOrig(),
-            'corporate' => self::getCorporateAuthor(),
-            'corporate_orig' => self::getCorporateAuthorOrig(),
+            'main' => self::getPrimaryAuthors(),
+            'main_orig' => self::getPrimaryAuthorsOrig(),
+            'corporate' => self::getCorporateAuthors(),
+            'corporate_orig' => self::getCorporateAuthorsOrig(),
             'corporate_secondary' => self::getCorporateSecondaryAuthors(),
             'corporate_secondary_orig' => self::getCorporateSecondaryAuthorsOrig(),
             'secondary' => self::getSecondaryAuthors(),

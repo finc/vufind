@@ -26,8 +26,7 @@ function ajaxGetView(pageObject) {
       if(tab.length > 0) {
         tab.click();
       } else {
-        // use .tabs instead of nav-tabs - CK
-        currentTab = $('.tabs li a:eq(0)')[0].id;
+        currentTab = $('.nav-tabs li a:eq(0)')[0].id;
       }
     })
     .fail(function(response, textStatus) {
@@ -106,10 +105,10 @@ function ajaxLoadPages(min, max) {
       response.data.start++;
     }
     findVisible();
-  }
+  })
   .fail(function(response, textStatus) {
     console.log(response, textStatus);
-  })); // ) BRACE WAS MISSING HERE - CK
+  });
 }
 // Pages
 function prevPage() {
