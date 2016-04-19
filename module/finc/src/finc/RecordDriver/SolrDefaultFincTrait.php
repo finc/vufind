@@ -288,12 +288,12 @@ trait SolrDefaultFincTrait
 
         // use self:: referenced methods to make sure we are not using SolrMarc
         // methods
-        if (count(self::getPrimaryAuthor())) {
+        if (count(self::getPrimaryAuthors())) {
             $buildCombined(
                 (array) self::getPrimaryAuthors(),
                 (array) self::getPrimaryAuthorsOrig()
             );
-        } elseif (count(self::getCorporateAuthor())) {
+        } elseif (count(self::getCorporateAuthors())) {
             $buildCombined(
                 (array) self::getCorporateAuthors(),
                 (array) self::getCorporateAuthorsOrig()
@@ -327,7 +327,7 @@ trait SolrDefaultFincTrait
      * Get the main author of the record.
      *
      * @return string
-     * @access protected
+     * @deprecated
      */
     public function getPrimaryAuthor()
     {
@@ -359,27 +359,14 @@ trait SolrDefaultFincTrait
     }
 
     /**
-     * Get the main corporate author (if any) for the record.
-     *
-     * @return string
-     * @access public
-     */
-    /*public function getCorporateAuthor()
-    {
-        return isset($this->fields['author_corp']) ?
-            $this->fields['author_corp'] : '';
-    }*/
-
-    /**
      * Get the main corporate authors original name (if any) for the record.
      *
-     * @return string
-     * @access public
+     * @return array
      */
     public function getCorporateAuthorsOrig()
     {
-        return isset($this->fields['author_corp_orig']) ?
-            $this->fields['author_corp_orig'] : [];
+        return isset($this->fields['author_corporate_orig']) ?
+            $this->fields['author_corporate_orig'] : [];
     }
 
     /**
@@ -389,8 +376,8 @@ trait SolrDefaultFincTrait
      */
     public function getCorporateSecondaryAuthors()
     {
-        return isset($this->fields['author_corp2']) ?
-            $this->fields['author_corp2'] : [];
+        return isset($this->fields['author_corporate2']) ?
+            $this->fields['author_corporate2'] : [];
     }
 
     /**
@@ -400,8 +387,19 @@ trait SolrDefaultFincTrait
      */
     public function getCorporateSecondaryAuthorsOrig()
     {
-        return isset($this->fields['author_corp2_orig']) ?
-            $this->fields['author_corp2_orig'] : [];
+        return isset($this->fields['author_corporate2_orig']) ?
+            $this->fields['author_corporate2_orig'] : [];
+    }
+
+    /**
+     * Get an array of all main corporate authors roles.
+     *
+     * @return array
+     */
+    public function getCorporateSecondaryAuthorsRoles()
+    {
+        return isset($this->fields['author_corporate2_role']) ?
+            $this->fields['author_corporate2_role'] : [];
     }
 
     /**
@@ -416,38 +414,114 @@ trait SolrDefaultFincTrait
         // use self:: referenced methods to make sure we are not using SolrMarc
         // methods
         $authors = [
-            'main' => self::getPrimaryAuthors(),
-            'main_orig' => self::getPrimaryAuthorsOrig(),
-            'corporate' => self::getCorporateAuthors(),
-            'corporate_orig' => self::getCorporateAuthorsOrig(),
-            'corporate_secondary' => self::getCorporateSecondaryAuthors(),
-            'corporate_secondary_orig' => self::getCorporateSecondaryAuthorsOrig(),
-            'secondary' => self::getSecondaryAuthors(),
-            'secondary_orig' => self::getSecondaryAuthorsOrig()
+            'main' => self::getAuthorRolesArray(
+                self::getPrimaryAuthors(),
+                self::getPrimaryAuthorsRoles()
+            ),
+            'main_orig' => self::getAuthorOrigArray(
+                self::getPrimaryAuthors(),
+                self::getPrimaryAuthorsOrig()
+            ),
+            'corporate' => self::getAuthorRolesArray(
+                self::getCorporateAuthors(),
+                self::getCorporateAuthorsRoles()
+            ),
+            'corporate_orig' => self::getAuthorOrigArray(
+                self::getCorporateAuthors(),
+                self::getCorporateAuthorsOrig()
+            ),
+            'corporate_secondary' => self::getAuthorRolesArray(
+                self::getCorporateSecondaryAuthors(),
+                self::getCorporateSecondaryAuthorsRoles()
+            ),
+            'corporate_secondary_orig' => self::getAuthorOrigArray(
+                self::getCorporateSecondaryAuthors(),
+                self::getCorporateSecondaryAuthorsOrig()
+            ),
+            'secondary' => self::getAuthorRolesArray(
+                self::getSecondaryAuthors(),
+                self::getSecondaryAuthorsRoles()
+            ),
+            'secondary_orig' => self::getAuthorOrigArray(
+                self::getSecondaryAuthors(),
+                self::getSecondaryAuthorsOrig()
+            )
         ];
 
-        // Deduplication
-        // make sure the secondary authors do not contain the primary author
-        if (count($authors['main']) && count($authors['secondary'])) {
-            $authors['secondary'] = array_diff($authors['secondary'], (array) $authors['main']);
-        }
+        // deduplicate
+        $dedup = function (&$array1, &$array2) {
+            if (!empty($array1) && !empty($array2)) {
+                foreach ($array1 as $author => $roles) {
+                    if (isset($array2[$author])) {
+                        $array1[$author] = array_merge(
+                            $array1[$author],
+                            $array2[$author]
+                        );
+                        unset($array2[$author]);
+                    }
+                }
+            }
+        };
 
-        // make sure the secondary corporations do not contain the primary corporation
-        if (count($authors['corporate']) && count($authors['corporate_secondary'])) {
-            $authors['corporate_secondary'] = array_diff($authors['corporate_secondary'], (array) $authors['corporate']);
-        }
+        $dedup($authors['corporate'], $authors['corporate_secondary']);
+        $dedup($authors['main'], $authors['corporate']);
+        $dedup($authors['secondary'], $authors['corporate']);
+        $dedup($authors['main'], $authors['secondary']);
 
-        // make sure the secondary authors (original name) do not contain the primary author (original name)
-        if (count($authors['main_orig']) && count($authors['secondary_orig'])) {
-            $authors['secondary_orig'] = array_diff($authors['secondary_orig'], (array) $authors['main_orig']);
-        }
+        // do the same dedup for author arrays with orig names
+        $dedup($authors['corporate_orig'], $authors['corporate_secondary_orig']);
+        $dedup($authors['main_orig'], $authors['corporate_orig']);
+        $dedup($authors['secondary_orig'], $authors['corporate_orig']);
+        $dedup($authors['main_orig'], $authors['secondary_orig']);
 
-        // make sure the secondary corporations (original name) do not contain the primary corporation (original name)
-        if (count($authors['corporate_orig']) && count($authors['corporate_secondary_orig'])) {
-            $authors['corporate_secondary_orig'] = array_diff($authors['corporate_secondary_orig'], (array) $authors['corporate_orig']);
-        }
+        $dedup_roles = function (&$array) {
+            foreach ($array as $author => $roles) {
+                if (is_array($roles)) {
+                    $array[$author] = array_unique($roles);
+                }
+            }
+        };
 
+        $dedup_roles($authors['main']);
+        $dedup_roles($authors['secondary']);
+        $dedup_roles($authors['corporate']);
+        $dedup_roles($authors['corporate_secondary']);
+
+        // we can use $dedup_roles to dedup the orig names as both arrays have the
+        // same structure
+        $dedup_roles($authors['main_orig']);
+        $dedup_roles($authors['secondary_orig']);
+        $dedup_roles($authors['corporate_orig']);
+        $dedup_roles($authors['corporate_secondary_orig']);
+        
         return $authors;
+    }
+
+    /**
+     * Helper function to restructure author arrays including original names
+     *
+     * @param array $authors   Array of authors
+     * @param array $orignames Array with original names of authors
+     *
+     * @return array
+     */
+    protected function getAuthorOrigArray($authors = [], $orignames = [])
+    {
+        $authorOrigArray = [];
+
+        if (!empty($authors)) {
+            foreach ($authors as $index => $author) {
+                if (!isset($authorOrigArray[$author])) {
+                    $authorOrigArray[$author] = [];
+                }
+                if (isset($orignames[$index]) && !empty($orignames[$index])
+                ) {
+                    $authorOrigArray[$author][] = $orignames[$index];
+                }
+            }
+        }
+
+        return $authorOrigArray;
     }
 
     /**
