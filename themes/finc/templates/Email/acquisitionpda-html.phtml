@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+    <title>Zeitschriftenbestellung</title>
+</head>
+<body style="font-family: Arial, Verdana, sans-serif;">
+<h2 style="padding:10px 0;">Benutzergesteuerte Erwerbung</h2>
+<table width="800" border="0">
+    <tr valign="top">
+        <td width="390">
+            Name: <strong><?= $lastname ?>, <?= $firstname ?></strong><br/>
+            Lesekarte-Nr.: <strong><?= $username ?></strong><br/>
+            Email: <a href="mailto:<?= $email ?>"><?= $email ?></a><br/>
+            <br/>
+            <? if ($statement): ?>
+                Begründung des Benutzers:
+                <br/><br/>
+                <span style="font-size: 12px"><?= $statement ?></span>
+                <br/><br/>
+            <? endif; ?>
+        </td>
+        <td width="20">&nbsp;</td>
+        <td width="390">
+            hat folgenden Titel bestellt:<br/>
+            <br/>
+            <strong><?= $title ?></strong><br/>
+            <? if ($author): ?>von
+                <? foreach ($author as $auth): ?>
+                    <?= $auth ?>
+                <? endforeach; ?>
+            <? endif; ?><br/>
+            <br/>
+            Link: <a href="<?=$this->serverUrl($this->recordLink()->getUrl($driver))?>" title="<?= $title ?>"><?=$this->serverUrl($this->recordLink()->getUrl($driver))?></a><br/>
+            Katalog-ID: <a href="<?= $this->serverUrl($this->recordLink()->getUrl($driver)) ?>"
+                           title="<?= $title ?>"><?= $id ?></a><br/>
+            <br/>
+            für das Fachgebiet: <?= $this->transEsc('PDA::bos_' . $field_of_study) ?><br/>
+            <br/>
+            <table>
+                <? if ($price): ?>
+                    <tr>
+                        <td width="100" style="font-size: 11px">Preis:</td>
+                        <td width="5">&nbsp;</td>
+                        <td style="font-size: 11px">
+                            <?= $this->safeMoneyFormat($price) ?>
+                        </td>
+                    </tr>
+                <? endif; ?>
+                <? if ($publisher): ?>
+                    <tr>
+                        <td style="font-size: 11px">Verlag:</td>
+                        <td width="5">&nbsp;</td>
+                        <td style="font-size: 11px">
+                            <? foreach ($publisher as $pub): ?>
+                                <?= $pub ?>
+                            <? endforeach; ?>
+                        </td>
+                    </tr>
+                <? endif; ?>
+                <? if ($format): ?>
+                    <tr>
+                        <td style="font-size: 11px">Format:</td>
+                        <td width="5">&nbsp;</td>
+                        <td style="font-size: 11px">
+                            <? foreach ($format as $for): ?>
+                                <?= $this->transEsc($for) ?>
+                            <? endforeach; ?>
+                        </td>
+                    </tr>
+                <? endif; ?>
+                <? if ($language): ?>
+                    <tr>
+                        <td style="font-size: 11px">Sprache:</td>
+                        <td width="5">&nbsp;</td>
+                        <td style="font-size: 11px">
+                            <? foreach ($language as $lang): ?>
+                                <?= $this->transEsc($lang) ?>
+                            <? endforeach; ?>
+                        </td>
+                    </tr>
+                <? endif; ?>
+                <? if ($publishDate): ?>
+                    <tr>
+                        <td style="font-size: 11px">veröffentlicht:</td>
+                        <td width="5">&nbsp;</td>
+                        <td style="font-size: 11px">
+                            <? foreach ($publishDate as $date): ?>
+                                <?= $date ?>
+                            <? endforeach; ?>
+                        </td>
+                    </tr>
+                <? endif; ?>
+                <? if ($isbn): ?>
+                    <tr>
+                        <td style="font-size: 11px">ISBN/ISN:</td>
+                        <td width="5">&nbsp;</td>
+                        <td style="font-size: 11px">
+                            <? foreach ($isbn as $isn): ?>
+                                <?= $isn ?>
+                            <? endforeach; ?>
+                        </td>
+                    </tr>
+                <? endif; ?>
+                <? if ($physical): ?>
+                    <tr>
+                        <td style="font-size: 11px">Beschreibung:</td>
+                        <td width="5">&nbsp;</td>
+                        <td style="font-size: 11px">
+                            <? foreach ($physical as $phys): ?>
+                                <?= $phys ?>
+                            <? endforeach; ?>
+                        </td>
+                    </tr>
+                <? endif; ?>
+                <? if ($footnote): ?>
+                    <tr>
+                        <td style="font-size: 11px">Fussnote:</td>
+                        <td width="5">&nbsp;</td>
+                        <td style="font-size: 11px">
+                            <? foreach ($footnote as $foot): ?>
+                                <?= $foot ?>
+                            <? endforeach; ?>
+                        </td>
+                    </tr>
+                <? endif; ?>
+                <? if ($source_id): ?>
+                    <tr>
+                        <td style="font-size: 11px">Quelle:</td>
+                        <td width="5">&nbsp;</td>
+                        <td style="font-size: 11px">
+                            <?= $this->transEsc('sid_' . $source_id) ?>
+                        </td>
+                    </tr>
+                <? endif; ?>
+            </table>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td width="800" colspan="3">
+            Zeitpunkt der Bestellung: <?= $timestamp ?>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

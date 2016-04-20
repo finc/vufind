@@ -33,6 +33,21 @@ header.fixed { left:auto;max-width: $row-width; }
 
 .navbar-brand { margin: .5rem .5rem .5rem 0; }
 
+// Avoid Button groups being placed to far left (e.g. pda tab) - works for all other button groups too
+.button-group > li:first-of-type {margin-left: 0}
+// Avoid wavy underlines and other tooltip stylings on buttons
+.button {
+  &.has-tip,
+  &.has-tip:hover,
+  &.has-tip:focus {
+  border-bottom: none;
+  color: $button-font-color;
+  cursor:$cursor-pointer-value;
+  font-weight: 300;
+  }
+  &.has-tip.white {color: #fff}
+}
+
 // LIST VIEW
 // Source-id branding (WISO etc)
 .branding {display: none}
@@ -85,4 +100,15 @@ table.citation th {min-width: 18%}
   }
 }
 
+// FORMS
+form label {font-size: 1rem;}
 
+
+// ALERT BOXES
+.alert-box {font-size: 1rem}
+
+// MODALS
+// Make sure, distance to close-button is sufficient
+.modal-body .alert-box { margin-top: 1.5rem; }
+// Secondary close button
+.reveal-modal .secondary.close-reveal-modal { @include button-style($bg:$secondary-color); border-left-color: #fff; font-weight: 300; font-size: .8125rem; line-height: 15px; position: relative; right: auto; top: auto;}

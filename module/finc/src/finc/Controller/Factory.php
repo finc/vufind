@@ -1,6 +1,6 @@
 <?php
 /**
- * Factory for Root view helpers.
+ * Factory for controllers.
  *
  * PHP version 5
  *
@@ -25,11 +25,11 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  */
-namespace finc\View\Helper\Root;
+namespace finc\Controller;
 use Zend\ServiceManager\ServiceManager;
 
 /**
- * Factory for Root view helpers.
+ * Factory for controllers.
  *
  * @category VuFind
  * @package  View_Helpers
@@ -42,38 +42,16 @@ use Zend\ServiceManager\ServiceManager;
 class Factory
 {
     /**
-     * Construct the Record helper.
+     * Construct the RecordController.
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return Record
+     * @return RecordController
      */
-    public static function getRecord(ServiceManager $sm)
+    public static function getRecordController(ServiceManager $sm)
     {
-        return new Record(
+        return new RecordController(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
-    }
-
-    /**
-     * Construct the Record helper.
-     *
-     * @return RecordLink
-     */
-    public static function getInterlibraryLoanLink()
-    {
-        return new InterlibraryLoanLink();
-    }
-
-    /**
-     * Construct the Citation helper.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return Citation
-     */
-    public static function getCitation(ServiceManager $sm)
-    {
-        return new Citation($sm->getServiceLocator()->get('VuFind\DateConverter'));
     }
 }

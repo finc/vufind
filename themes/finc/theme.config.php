@@ -4,6 +4,8 @@ return array(
     'helpers' => array(
         'factories' => array(
             'record' => 'finc\View\Helper\Root\Factory::getRecord',
+            'interlibraryloan' =>
+                'finc\View\Helper\Root\Factory::getInterlibraryLoanLink',
             'citation' => 'finc\View\Helper\Root\Factory::getCitation',
         ),
         'invokables' => array(

@@ -1,0 +1,28 @@
+<!-- recordtab - acquistionpda.phtml -->
+<?
+// Set page title.
+$this->headTitle(
+    $this->translate('PDA::Acquisition') . ': ' .
+    $this->driver->getBreadcrumb()
+);
+      // Get some variables
+      $id = $this->driver->getUniqueId();
+      $controllerClass = 'controller:' . $this->record($this->driver)->getController();
+?>
+      <div class="row collapse">
+        <div class="small-12 columns">
+          <h2><?= $this->transEsc('PDA::Acquisition') ?></h2>
+          <p><?= $this->transEsc('PDA::pda_initial_text') ?></p>
+          <p class="alert-box warning"><?= $this->transEsc('PDA::pda_restriction_text') ?></p>
+          <ul class="button-group">
+            <li>
+              <? /* Leave title in here -- it is used for the tooltip! - CK */ ?>
+              <a class="button small has-tip white" data-tooltip data-options="touch_close_text: '<?= $this->transEsc('Tap to close')?>'" aria-haspopup="true" title="<?= $this->transEsc('PDA::pda_open_new_window')?>" href="<?= $this->interlibraryloan()->getSwbLink($this->driver) ?>" target="_blank"><?= $this->transEsc('PDA::pda_tab_interlibrary_button') ?></a>
+            </li>
+            <li>
+              <a class="button small pda-button <?= $controllerClass ?>" data-lightbox href="<?= $this->url('record-pda', array('id' => $id)) ?>" rel="nofollow"><?= $this->transEsc('PDA::pda_tab_order_button') ?></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+<!-- recordtab - acquistionpda.phtml - END -->

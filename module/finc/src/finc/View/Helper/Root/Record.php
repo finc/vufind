@@ -59,7 +59,7 @@ class Record extends \VuFind\View\Helper\Root\Record
     /**
      * Render the link of the type ISN.
      *
-     * @param array $issns    Array with ISSNS
+     * @param array $issns Array with ISSNS
      *
      * @return string
      */

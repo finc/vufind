@@ -1,6 +1,6 @@
 <?php
 /**
- * Factory for Root view helpers.
+ * Permission Provider Factory Class
  *
  * PHP version 5
  *
@@ -20,60 +20,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind
- * @package  View_Helpers
+ * @package  Authorization
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development Wiki
+ * @link     https://vufind.org/wiki/development:plugins:hierarchy_components Wiki
  */
-namespace finc\View\Helper\Root;
+namespace finc\Role\PermissionProvider;
 use Zend\ServiceManager\ServiceManager;
 
 /**
- * Factory for Root view helpers.
+ * Permission Provider Factory Class
  *
  * @category VuFind
- * @package  View_Helpers
+ * @package  Authorization
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development Wiki
+ * @link     https://vufind.org/wiki/development:plugins:hierarchy_components Wiki
  *
  * @codeCoverageIgnore
  */
 class Factory
 {
     /**
-     * Construct the Record helper.
+     * Factory for Username
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return Record
+     * @return Username
      */
-    public static function getRecord(ServiceManager $sm)
+    public static function getCatUserType(ServiceManager $sm)
     {
-        return new Record(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        return new CatUserType(
+            $sm->getServiceLocator()->get('ZfcRbac\Service\AuthorizationService'),
+            $sm->getServiceLocator()->get('VuFind\ILSAuthenticator')
         );
-    }
-
-    /**
-     * Construct the Record helper.
-     *
-     * @return RecordLink
-     */
-    public static function getInterlibraryLoanLink()
-    {
-        return new InterlibraryLoanLink();
-    }
-
-    /**
-     * Construct the Citation helper.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return Citation
-     */
-    public static function getCitation(ServiceManager $sm)
-    {
-        return new Citation($sm->getServiceLocator()->get('VuFind\DateConverter'));
     }
 }

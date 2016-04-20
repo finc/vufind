@@ -1,10 +1,11 @@
 <?php
 /**
- * Additional tab
+ * Acquisition tab
  *
  * PHP version 5
  *
  * Copyright (C) Villanova University 2010.
+ * Copyright (C) Leipzig University Library 2015.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -22,22 +23,23 @@
  * @category VuFind2
  * @package  RecordTabs
  * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author   Frank Morgner <morgnerf@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_tabs Wiki
  */
 namespace finc\RecordTab;
 
 /**
- * Additional Items tab
+ * Holdings (ILS) tab
  *
  * @category VuFind2
  * @package  RecordTabs
  * @author   Demian Katz <demian.katz@villanova.edu>
- * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
+ * @author   Frank Morgner <morgnerf@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:record_tabs Wiki
  */
-class Additional extends \VuFind\RecordTab\AbstractBase
+class AcquisitionPDA extends \VuFind\RecordTab\AbstractBase
 {
     /**
      * Get the on-screen description for this tab.
@@ -46,7 +48,7 @@ class Additional extends \VuFind\RecordTab\AbstractBase
      */
     public function getDescription()
     {
-        return 'Additional Items';
+        return 'PDA::Acquisition';
     }
 
     /**
@@ -56,6 +58,6 @@ class Additional extends \VuFind\RecordTab\AbstractBase
      */
     public function isActive()
     {
-        return $this->getRecordDriver()->tryMethod('hasAdditionalItems');
+        return true;
     }
 }

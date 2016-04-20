@@ -1,26 +1,27 @@
 <!-- myresearch - acquisition.phtml -->
 <?
 // Set up page title:
-$this->headTitle($this->translate('Suggestions for acquisition'));
+$this->headTitle($this->translate('PDA::pda_form_title'));
 
 // Set up breadcrumbs:
-$this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') . '">' . $this->transEsc('Your Account') . '</a></li> <li class="active">' . $this->transEsc('Suggestions for acquisition') . '</li>';
+$this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') . '">' . $this->transEsc('Your Account') . '</a></li> <li class="active">' . $this->transEsc('PDA::pda_form_title') . '</li>';
 ?>
 
 <div class="row">
     <div class="<?=$this->layoutClass('mainbody')?>">
-        <h2><?=$this->transEsc('Your acquisition proposal') ?></h2>
+        <h2><?=$this->transEsc('PDA::pda_form_subtitle') ?></h2>
         <?=$this->flashmessages() ?>
         <form class="form-horizontal" method="post" action="" name="acquisitionForm">
-            <h6><?=$this->transEsc('Please send only one form per acquisition proposal.') ?></h6>
+            <h6><?=$this->transEsc('PDA::pda_form_suggestions_limit') ?></h6>
             <div class="form-group row">
-                <label class="col-sm-3 medium-3 columns control-label" for="acquisition_subject"><?=$this->transEsc('Subject area') ?><span class="required">*</span></label>
+                <label class="col-sm-3 medium-3 columns control-label" for="subject"><?=$this->transEsc('PDA::pda_form_branch_of_study_label') ?><span class="required">*</span></label>
                 <div class="col-sm-9 medium-9 columns">
                     <select name="subject" class="form-control auto">
-                        <option value="-1"><?=$this->transEsc('Please select a subject area') ?></option>
+                        <option value="-1"><?=$this->transEsc('PDA::pda_form_subject_text') ?></option>
                         <? if (isset($subjectlist) && is_array($subjectlist)): ?>
                             <? foreach ($subjectlist as $value): ?>
-                            <option value="<?=$value?>" <? if (isset($values['subject']) && ($values['subject'] != '-1') && ($values['subject'] == $value)): ?> selected="selected"<? endif; ?>><?=$this->transEsc($value)?></option>
+                                <option
+                                    value="<?= $value ?>" <? if (isset($values['subject']) && ($values['subject'] != '-1') && ($values['subject'] == $value)): ?> selected="selected"<? endif; ?>><?= $this->transEsc('PDA::subject_' . $value) ?></option>
                             <? endforeach; ?>
                         <? endif; ?>
                     </select>
@@ -30,7 +31,7 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 medium-3 columns control-label" for="acquistion_reasons"><?=$this->transEsc('Please give reasons for your suggestion') ?><span class="required">*</span></label>
+                <label class="col-sm-3 medium-3 columns control-label" for="acquistion_reasons"><?=$this->transEsc('PDA::pda_form_statement_label') ?><span class="required">*</span></label>
                 <div class="col-sm-9 medium-9 columns">
                     <textarea id="acquisition_reasons" type="text" cols="50" rows="5" name="reasons"><? if (isset($values['reasons']) && !empty($values['reasons'])): ?><?=$this->transEsc($values['reasons']) ?><? endif; ?></textarea>
                     <br />
@@ -40,9 +41,9 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 medium-3 columns control-label" for="acquistion_proposal"><?=$this->transEsc('Your acquisition proposal') ?><span class="required">*</span></label>
+                <label class="col-sm-3 medium-3 columns control-label" for="acquistion_proposal"><?=$this->transEsc('PDA::pda_form_proposal_label') ?><span class="required">*</span></label>
                 <div class="col-sm-9 medium-9 columns">
-                    <textarea id="acquisition_proposal" type="text" cols="50" rows="5" name="proposal"><? if (isset($values['proposal']) && !empty($values['proposal'])): ?><?=$this->transEsc($values['proposal']) ?><? endif; ?></textarea>
+                    <textarea id="acquisition_proposal" type="text" cols="50" rows="5" name="proposal"><?=(isset($values['proposal']) && !empty($values['proposal'])) ? $values['proposal'] : ''?></textarea>
                     <br />
                     <? /*if (isset($error) && in_array('proposal', $error)): ?>
                         <span class="error-form"><?=$this->transEsc('Proposal for acquisition should not be blank') ?></span>
@@ -56,7 +57,7 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
             </div>
             <div class="form-group row">
                 <div class="col-sm-9 col-sm-offset-3 medium-9 columns medium-offset-3">
-                    <?=$this->transEsc('note_mandatory_fields') ?>
+                    <?=$this->transEsc('PDA::note_mandatory_fields') ?>
                 </div>
             </div>
         </form>

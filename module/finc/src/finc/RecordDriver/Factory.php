@@ -83,6 +83,29 @@ class Factory
     }
 
     /**
+     * Factory for SolrMarcPDA record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarcPDA
+     */
+    public static function getSolrMarcFincPDA(ServiceManager $sm)
+    {
+        $driver = new SolrMarcFincPDA(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+        );
+        //$driver->attachILS(
+        //    $sm->getServiceLocator()->get('VuFind\ILSConnection'),
+        //    $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
+        //    $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+        //);
+        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
+        return $driver;
+    }
+
+    /**
      * Factory for SolrMarcRemote record driver.
      *
      * @param ServiceManager $sm Service manager.

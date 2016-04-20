@@ -1,0 +1,70 @@
+== Benutzergesteuerte Erwerbung ==
+
+Name: <?= $lastname ?>, <?= $firstname ?>
+
+Lesekarte-Nr.: <?= $username ?>
+
+Email: <?= $email ?>
+
+hat folgenden Titel bestellt:
+
+<?= $title ?>
+
+<? if ($author): ?>
+    von <? foreach ($author as $au): ?><?= $au ?> <? endforeach; ?>
+<? endif; ?>
+
+Link: <?= $this->serverUrl($this->recordLink()->getUrl($driver)) ?>
+
+für das Fachgebiet: <?= $this->transEsc('PDA::bos_' . $field_of_study) ?>
+
+------------------------------------------
+
+<? if ($statement): ?>Begründung des Benutzers:
+
+    <?= $statement ?>
+<? endif; ?>
+
+------------------------------------------
+
+<? if ($price): ?>
+    Preis: <?= $this->safeMoneyFormat($price) ?>
+
+<? endif; ?>
+<? if ($publisher): ?>
+    Verlag: <? foreach ($publisher as $pub): ?><?= $pub ?> <? endforeach; ?>
+
+<? endif; ?>
+<? if ($format): ?>
+    Format: <? foreach ($format as $form): ?><?= $this->transEsc($form) ?> <? endforeach; ?>
+
+<? endif; ?>
+<? if ($language): ?>
+    Sprache: <? foreach ($language as $lang): ?><?= $this->transEsc($lang) ?> <? endforeach; ?>
+
+<? endif; ?>
+<? if ($publishDate): ?>
+    veröffentlicht: <? foreach ($publishDate as $date): ?><?= $date ?> <? endforeach; ?>
+
+<? endif; ?>
+<? if ($isbn): ?>
+    ISBN/ISN: <? foreach ($isbn as $isn): ?><?= $isn ?> <? endforeach; ?>
+
+<? endif; ?>
+<? if ($physical): ?>
+    Beschreibung: <? foreach ($physical as $desc): ?><?= $desc ?> <? endforeach; ?>
+
+<? endif; ?>
+<? if ($footnote): ?>
+    Fussnote: <? foreach ($footnote as $ftn): ?><?= $ftn ?> <? endforeach; ?>
+
+<? endif; ?>
+<? if ($source_id): ?>
+    Quelle: <?= $this->transEsc('sid_' . $source_id) ?>
+
+<? endif; ?>
+
+
+------------------------------------------
+
+Zeitpunkt der Bestellung: <?= $timestamp ?>

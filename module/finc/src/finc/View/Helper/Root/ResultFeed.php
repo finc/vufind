@@ -44,7 +44,7 @@ class ResultFeed extends \VuFind\View\Helper\Root\ResultFeed
     /**
      * Support method to turn a record driver object into an RSS entry.
      *
-     * @param Feed                              $feed   Feed to update
+     * @param Feed $feed Feed to update
      * @param \VuFind\RecordDriver\AbstractBase $record Record to add to feed
      *
      * @return void

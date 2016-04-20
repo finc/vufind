@@ -1,6 +1,6 @@
 <?php
 /**
- * Additional tab
+ * Record Controller
  *
  * PHP version 5
  *
@@ -19,43 +19,49 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * @category VuFind2
- * @package  RecordTabs
+ * @category VuFind
+ * @package  Controller
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:record_tabs Wiki
+ * @link     https://vufind.org Main Site
  */
-namespace finc\RecordTab;
+namespace finc\Controller;
 
 /**
- * Additional Items tab
+ * Record Controller
  *
- * @category VuFind2
- * @package  RecordTabs
+ * @category VuFind
+ * @package  Controller
  * @author   Demian Katz <demian.katz@villanova.edu>
- * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:record_tabs Wiki
+ * @link     https://vufind.org Main Site
  */
-class Additional extends \VuFind\RecordTab\AbstractBase
+class RecordController extends \VuFind\Controller\RecordController
 {
+    use PdaTrait;
+
     /**
-     * Get the on-screen description for this tab.
+     * Constructor
      *
-     * @return string
+     * @param \Zend\Config\Config $config VuFind configuration
      */
-    public function getDescription()
+    public function __construct(\Zend\Config\Config $config)
     {
-        return 'Additional Items';
+        // Call standard record controller initialization:
+        parent::__construct($config);
     }
 
     /**
-     * Is this tab active?
+     * Returns the email profile configured in MailForms.ini
      *
-     * @return bool
+     * @param $profile
+     * @return array
      */
-    public function isActive()
+    protected function getEmailProfile($profile)
     {
-        return $this->getRecordDriver()->tryMethod('hasAdditionalItems');
+        $mailConfig
+            = $this->getServiceLocator()->get('VuFind\Config')->get('EmailProfiles');
+
+        return isset($mailConfig->$profile) ? $mailConfig->$profile : [];
     }
 }

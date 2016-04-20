@@ -1,0 +1,22 @@
+;####################################################################
+;##################### DO NOT DELETE THIS HEADER ####################
+;################### Leipzig University Library © 2015 ##############
+;
+; This is the default DEV-INI-file and inherits
+; all the settings from the INI-file defined in [Parent_Config] which
+; points to the default INI-file located in the folder vufind2/local
+;
+
+[Parent_Config]
+relative_path = ../../../config/vufind/EmailProfiles.ini
+
+; A comma-separated list of config sections from the parent which should be
+; completely overwritten by the equivalent sections in this configuration;
+; any sections not listed here will be merged on a section-by-section basis.
+;override_full_sections = "Acquisition"
+
+;
+;       Add DEV-specific customization after this header.
+;
+;##################### DO NOT DELETE THIS HEADER ####################
+;####################################################################

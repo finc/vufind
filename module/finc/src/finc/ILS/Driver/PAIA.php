@@ -725,7 +725,7 @@ class PAIA extends DAIA
      *      details - array of values returned by the getRenewDetails method
      *                identifying which items to renew
      *
-     * @return  array - An associative array with two keys:
+     * @return array - An associative array with two keys:
      *     blocks - An array of strings specifying why a user is blocked from
      *              renewing (false if no blocks)
      *     details - Not set when blocks exist; otherwise, an array of
@@ -921,7 +921,8 @@ class PAIA extends DAIA
             ? $user_response['email'] : '');
         $user['major']     = null;
         $user['college']   = null;
-
+        $user['type'] = (isset($user_response['type'])
+            ? $user_response['type'] : '');
         return $user;
     }
 

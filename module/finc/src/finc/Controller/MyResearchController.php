@@ -28,18 +28,18 @@
 namespace finc\Controller;
 
 use Zend\Validator\StringLength,
-    Zend\I18n\Validator\Int,
+    Zend\I18n\Validator\IsInt,
     finc\Mailer\Mailer;
 
 /**
- * Controller for the acqusition area.
+ * Controller for the user account area.
  *
- * @category VuFind2
+ * @category VuFind
  * @package  Controller
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org   Main Site
+ * @link     https://vufind.org Main Site
  */
 class MyResearchController extends \VuFind\Controller\MyResearchController
 {
@@ -59,21 +59,11 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
      */
     private function _getSubjectList()
     {
-
         if (count($this->_subjectlist) <= 0) {
-            $this->_subjectlist = explode(
-                ",",
-                (isset($this->getConfig()->Acquisition->nepcategories)
-                    ? $this->getConfig()->Acquisition->nepcategories : '')
+            $this->_subjectlist = (isset($this->getConfig()->CustomSite->subject)
+                ? $this->getConfig()->CustomSite->subject->toArray() : []
             );
-
-            foreach ($this->_subjectlist as $key => $subject) {
-                // trim subject to avoid translation errors with preceding/trailing
-                // whitespaces
-                $this->_subjectlist[$key] = trim($subject);
-            }
         }
-
         return $this->_subjectlist;
     }
 
@@ -112,7 +102,7 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
      */
     protected function processAcquisition($user)
     {
-        $validatorAlnum = new Int();
+        $validatorAlnum = new IsInt();
         $validatorString = new StringLength(['min' => 1]);
         $valueArr = [];
 
@@ -126,19 +116,19 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
 
         if ($validatorAlnum->isValid($subject)) {
             $this->flashMessenger()->addMessage(
-                'Subject area should not be blank', 'error'
+                'PDA::pda_error_subject_blank', 'error'
             );
             $error = true;
         }
         if (!$validatorString->isValid($proposal)) {
             $this->flashMessenger()->addMessage(
-                'Reasons for suggestion not be blank', 'error'
+                'PDA::pda_error_proposal_blank', 'error'
             );
             $error = true;
         }
         if (!$validatorString->isValid($reasons)) {
             $this->flashMessenger()->addMessage(
-                'Proposal for acquisition should not be blank', 'error'
+                'PDA::pda_error_statement_blank', 'error'
             );
             $error = true;
         }
@@ -176,7 +166,7 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
                             $config->Acquisition->subject_acquisition,
                             $this->translate($subject), $user->username
                         )
-                        : $this->translate('Suggestions for acquisition')
+                        : $this->translate('PDA::pda_form_title')
                 );
                 $from_unknown = (isset($config->Acquisition->from_unknown)
                     ? $config->Acquisition->from_unknown : '');
@@ -201,7 +191,7 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
                     $message_html,
                     $message_text
                 );
-                $this->flashMessenger()->addMessage('acquisition_success', 'info');
+                $this->flashMessenger()->addMessage('PDA::pda_send_success', 'info');
             } catch (MailException $e) {
                 $this->flashMessenger()->addMessage($e->getMessage(), 'error');
             }

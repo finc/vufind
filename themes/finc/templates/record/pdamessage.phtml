@@ -1,0 +1,12 @@
+<!-- record - PDAMESSAGE.phtml -->
+<?
+  // Set page title.
+  $this->headTitle($this->translate('PDA::Acquisition'));
+
+  // Set up breadcrumbs:
+  $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li>')
+    . '<li>' . $this->recordLink()->getBreadcrumb($this->driver) . '</li>'
+    . '<li class="active">' . $this->transEsc('PDA::Acquisition') . '</li>';
+?>
+<?=$this->flashmessages()?>
+<!-- record - PDAMESSAGE.phtml end -->

@@ -70,7 +70,7 @@ VuFind.register('lightbox', function() {
     if ('undefined' == typeof type) {
       type = 'info';
     }
-    _html('<div class="alert-box '+type+'">'+message+'</div><button class="button small close-reveal-modal">' + VuFind.translate('close') + '</button>');
+    _html('<div class="alert-box '+type+'">'+message+'</div><a class="close-reveal-modal"><span class="sr-only">' + VuFind.translate('close') + '</span></a>');
     _modal.foundation('reveal', 'open');
   };
   var flashMessage = function(message, type) {
