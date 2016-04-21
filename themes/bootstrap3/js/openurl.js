@@ -1,8 +1,8 @@
 /*global extractClassParams, VuFind */
 VuFind.register('openurl', function() {
-  var _loadResolverLinks = function($target, openUrl, searchClassId) {
+  var _loadResolverLinks = function($target, openUrl, searchClassId, resolvertype) {
     $target.addClass('ajax_availability');
-    var url = VuFind.path + '/AJAX/JSON?' + $.param({method:'getResolverLinks',openurl:openUrl,searchClassId:searchClassId});
+    var url = VuFind.path + '/AJAX/JSON?' + $.param({method:'getResolverLinks',openurl:openUrl,searchClassId:searchClassId,resolvertype:resolvertype});
     $.ajax({
       dataType: 'json',
       url: url
@@ -28,10 +28,13 @@ VuFind.register('openurl', function() {
     // Locate the target area for displaying the results:
     var target = controls.next('div.resolver');
 
+    // To chose the right resolver we have to get the resolvertype:
+    var resolvertype = element.children('span.resolvertype:first').attr('title');
+
     // If the target is already visible, a previous click has populated it;
     // don't waste time doing redundant work.
     if (target.hasClass('hidden')) {
-      _loadResolverLinks(target.removeClass('hidden'), openUrl, element.data('search-class-id'));
+      _loadResolverLinks(target.removeClass('hidden'), openUrl, element.data('search-class-id'), resolvertype);
     }
   };
 

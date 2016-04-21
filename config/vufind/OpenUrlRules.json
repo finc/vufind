@@ -1,17 +1,63 @@
-[
-  {
-    "__comment" : "documentation: https://vufind.org/wiki/configuration:openurls#defining_openurl_rules",
-    "exclude" : [],
-    "include" :
-    [
-      {
-        "methods": {
-          "getCleanISSN":"*"
+{
+  "__comment" : "documentation: https://vufind.org/wiki/configuration:openurls#defining_openurl_rules",
+  "Sfx": [
+    {
+      "exclude": [],
+      "include": [
+        {
+          "methods": {
+            "getCleanISSN":"*"
+          }
+        },
+        {
+          "recorddriver":"VuFind\\RecordDriver\\Pazpar2"
         }
-      },
-      {
-        "recorddriver":"VuFind\\RecordDriver\\Pazpar2"
-      }
-    ]
-  }
-]
+      ]
+    }
+  ],
+  "Threesixtylink": [
+    {
+      "exclude": [],
+      "include": [
+        {
+          "methods": {
+            "getCleanISSN":"*"
+          }
+        },
+        {
+          "recorddriver":"VuFind\\RecordDriver\\Pazpar2"
+        }
+      ]
+    }
+  ],
+  "Ezb": [
+    {
+      "exclude": [],
+      "include": [
+        {
+          "methods": {
+            "getCleanISSN":"*"
+          }
+        },
+        {
+          "recorddriver":"VuFind\\RecordDriver\\Pazpar2"
+        }
+      ]
+    }
+  ],
+  "Redi": [
+    {
+      "exclude": [],
+      "include": [
+        {
+          "methods": {
+            "getCleanISSN":"*"
+          }
+        },
+        {
+          "recorddriver":"VuFind\\RecordDriver\\Pazpar2"
+        }
+      ]
+    }
+  ],
+}

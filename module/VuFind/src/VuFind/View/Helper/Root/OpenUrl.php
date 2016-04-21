@@ -74,6 +74,20 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
     protected $area;
 
     /**
+     * Resolvers configured to be active in Resolver.ini
+     *
+     * @var mixed
+     */
+    protected $activeResolvers = false;
+
+    /**
+     * Resolvers allowed for this record (based upon OpenUrlRules.json)
+     *
+     * @var mixed
+     */
+    protected $recordResolvers = false;
+
+    /**
      * Constructor
      *
      * @param \VuFind\View\Helper\Root\Context $context      Context helper
@@ -86,6 +100,14 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
         $this->context = $context;
         $this->openUrlRules = $openUrlRules;
         $this->config = $config;
+        if (isset($this->config->General->active_resolvers)) {
+            $resolvers = explode(',',$this->config->General->active_resolvers);
+            foreach ($resolvers as $resolver) {
+                if (isset($this->config->$resolver)) {
+                    $this->activeResolvers[] = $resolver;
+                }
+            }
+        }
     }
 
     /**
@@ -123,7 +145,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
         }
 
         if ($imagebased) {
-            if (!isset($this->config->dynamic_graphic)) {
+            if (!isset($this->config->General->dynamic_graphic)) {
                 // if imagebased linking is forced by the template, but it is not
                 // configured properly, throw an exception
                 throw new \Exception(
@@ -140,7 +162,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
 
             // Concatenate image based OpenUrl base and OpenUrl
             // to a usable image reference
-            $base = $this->config->dynamic_graphic;
+            $base = $this->config->General->dynamic_graphic;
             $imageOpenUrl = $params['openUrlImageBasedOverride']
                 ? $params['openUrlImageBasedOverride'] : $params['openUrl'];
             $params['openUrlImageBasedSrc'] = $base
@@ -161,58 +183,84 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
      */
     public function renderTemplate($imagebased = null)
     {
-        if (null !== $this->config && isset($this->config->url)) {
-            // Trim off any parameters (for legacy compatibility -- default config
-            // used to include extraneous parameters):
-            list($base) = explode('?', $this->config->url);
-        } else {
-            $base = false;
+        $views = [];
+        if ($this->recordResolvers) {
+            foreach ($this->recordResolvers as $resolver) {
+                // Static counter to ensure that each OpenURL gets a unique ID.
+                static $counter = 0;
+
+                if (null !== $this->config->$resolver && isset($this->config->$resolver->url)) {
+                    // Trim off any parameters (for legacy compatibility -- default config
+                    // used to include extraneous parameters):
+                    list($base) = explode('?', $this->config->$resolver->url);
+                } else {
+                    $base = false;
+                }
+
+                $embed = (isset($this->config->General->embed) && !empty($this->config->General->embed));
+                if ($embed) {
+                    $counter++;
+                }
+
+                $openurl = $this->recordDriver->getOpenURL();
+
+                if (isset($this->config->$resolver->custom_params)) {
+                    foreach ($this->config->$resolver->custom_params as $customParam) {
+                        list($key, $value) = explode(':', $customParam);
+                        $customValue = $this->recordDriver->tryMethod($value);
+                        if ($customValue) {
+                            $openurl .= "&" . $key . "=" . $customValue;
+                        }
+                    }
+                }
+
+                $embedAutoLoad = (isset($this->config->General->embed_auto_load)
+                    ? $this->config->General->embed_auto_load : false);
+                // ini values 'true'/'false' are provided via ini reader as 1/0
+                // only check embedAutoLoad for area if the current area passed checkContext
+                if (!($embedAutoLoad === "1" || $embedAutoLoad === "0")
+                    && !empty($this->area)
+                ) {
+                    // embedAutoLoad is neither true nor false, so check if it contains an
+                    // area string defining where exactly to use autoloading
+                    $embedAutoLoad = in_array(
+                        strtolower($this->area),
+                        array_map(
+                            'trim',
+                            array_map(
+                                'strtolower',
+                                explode(',', $embedAutoLoad)
+                            )
+                        )
+                    );
+                }
+
+                // Build parameters needed to display the control:
+                $params = [
+                    'resolvertype' => $resolver,
+                    'openUrl' => $openurl,
+                    'openUrlBase' => empty($base) ? false : $base,
+                    'openUrlWindow' => empty($this->config->General->window_settings)
+                        ? false : $this->config->General->window_settings,
+                    'openUrlGraphic' => empty($this->config->General->graphic)
+                        ? false : $this->config->General->graphic,
+                    'openUrlGraphicWidth' => empty($this->config->General->graphic_width)
+                        ? false : $this->config->General->graphic_width,
+                    'openUrlGraphicHeight' => empty($this->config->General->graphic_height)
+                        ? false : $this->config->General->graphic_height,
+                    'openUrlEmbed' => $embed,
+                    'openUrlEmbedAutoLoad' => $embedAutoLoad,
+                    'openUrlId' => $counter
+                ];
+                $this->addImageBasedParams($imagebased, $params);
+
+                // Render the subtemplate:
+                $views[] = $this->context->__invoke($this->getView())->renderInContext(
+                    'Helpers/openurl.phtml', $params
+                );
+            }
         }
-
-        $embed = (isset($this->config->embed) && !empty($this->config->embed));
-
-        $embedAutoLoad = isset($this->config->embed_auto_load)
-            ? $this->config->embed_auto_load : false;
-        // ini values 'true'/'false' are provided via ini reader as 1/0
-        // only check embedAutoLoad for area if the current area passed checkContext
-        if (!($embedAutoLoad === "1" || $embedAutoLoad === "0")
-            && !empty($this->area)
-        ) {
-            // embedAutoLoad is neither true nor false, so check if it contains an
-            // area string defining where exactly to use autoloading
-            $embedAutoLoad = in_array(
-                strtolower($this->area),
-                array_map(
-                    'trim',
-                    array_map(
-                        'strtolower',
-                        explode(',', $embedAutoLoad)
-                    )
-                )
-            );
-        }
-
-        // Build parameters needed to display the control:
-        $params = [
-            'openUrl' => $this->recordDriver->getOpenUrl(),
-            'openUrlBase' => empty($base) ? false : $base,
-            'openUrlWindow' => empty($this->config->window_settings)
-                ? false : $this->config->window_settings,
-            'openUrlGraphic' => empty($this->config->graphic)
-                ? false : $this->config->graphic,
-            'openUrlGraphicWidth' => empty($this->config->graphic_width)
-                ? false : $this->config->graphic_width,
-            'openUrlGraphicHeight' => empty($this->config->graphic_height)
-                ? false : $this->config->graphic_height,
-            'openUrlEmbed' => $embed,
-            'openUrlEmbedAutoLoad' => $embedAutoLoad
-        ];
-        $this->addImageBasedParams($imagebased, $params);
-
-        // Render the subtemplate:
-        return $this->context->__invoke($this->getView())->renderInContext(
-            'Helpers/openurl.phtml', $params
-        );
+        return implode("\n",$views);
     }
 
     /**
@@ -224,9 +272,9 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
     public function getImageBasedLinkingMode()
     {
         if ($this->imageBasedLinkingIsActive()
-            && isset($this->config->image_based_linking_mode)
+            && isset($this->config->General->image_based_linking_mode)
         ) {
-            return $this->config->image_based_linking_mode;
+            return $this->config->General->image_based_linking_mode;
         }
         return $this->imageBasedLinkingIsActive() ? 'both' : false;
     }
@@ -238,7 +286,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
      */
     public function imageBasedLinkingIsActive()
     {
-        return isset($this->config->dynamic_graphic);
+        return isset($this->config->General->dynamic_graphic);
     }
 
     /**
@@ -268,15 +316,16 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
      */
     protected function checkContext()
     {
-        // Doesn't matter the target area if no OpenURL resolver is specified:
-        if (!isset($this->config->url)) {
+        // If no active resolver is configured we do not need to check the context
+        // as no resolver content gets displayed anyway
+        if (!$this->activeResolvers) {
             return false;
         }
 
         // If a setting exists, return that:
         $key = 'show_in_' . $this->area;
-        if (isset($this->config->$key)) {
-            return $this->config->$key;
+        if (isset($this->config->General->$key)) {
+            return $this->config->General->$key;
         }
 
         // If we got this far, use the defaults -- true for results, false for
@@ -291,14 +340,20 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
      */
     protected function checkIfRulesApply()
     {
-        foreach ($this->openUrlRules as $rules) {
-            if (!$this->checkExcludedRecordsRules($rules)
-                && $this->checkSupportedRecordsRules($rules)
-            ) {
-                return true;
+        if ($this->activeResolvers) {
+            foreach ($this->activeResolvers as $resolver) {
+                if (isset($this->openUrlRules[$resolver])) {
+                    foreach ($this->openUrlRules[$resolver] as $rules) {
+                        if (!$this->checkExcludedRecordsRules($rules)
+                            && $this->checkSupportedRecordsRules($rules)
+                        ) {
+                            $this->recordResolvers[] = $resolver;
+                        }
+                    }
+                }
             }
         }
-        return false;
+        return $this->recordResolvers ? true : false;
     }
 
     /**

@@ -50,9 +50,9 @@ class Factory
      */
     public static function getThreesixtylink(ServiceManager $sm)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver');
         return new Threesixtylink(
-            $config->OpenURL->url,
+            $config->Threesixtylink->url,
             $sm->getServiceLocator()->get('VuFind\Http')->createClient()
         );
     }
@@ -66,9 +66,9 @@ class Factory
      */
     public static function getEzb(ServiceManager $sm)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver');
         return new Ezb(
-            $config->OpenURL->url,
+            $config->Ezb->url,
             $sm->getServiceLocator()->get('VuFind\Http')->createClient()
         );
     }
@@ -82,9 +82,9 @@ class Factory
      */
     public static function getSfx(ServiceManager $sm)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver');
         return new Sfx(
-            $config->OpenURL->url,
+            $config->Sfx->url,
             $sm->getServiceLocator()->get('VuFind\Http')->createClient()
         );
     }
@@ -98,9 +98,9 @@ class Factory
      */
     public static function getRedi(ServiceManager $sm)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver');
         return new Redi(
-            $config->OpenURL->url,
+            $config->Redi->url,
             $sm->getServiceLocator()->get('VuFind\Http')->createClient()
         );
     }

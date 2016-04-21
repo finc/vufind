@@ -315,7 +315,7 @@ class Factory
      */
     public static function getOpenUrl(ServiceManager $sm)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver');
         $openUrlRules = json_decode(
             file_get_contents(
                 \VuFind\Config\Locator::getConfigPath('OpenUrlRules.json')
@@ -325,7 +325,7 @@ class Factory
         return new OpenUrl(
             $sm->get('context'),
             $openUrlRules,
-            isset($config->OpenURL) ? $config->OpenURL : null
+            isset($config->General) ? $config : null
         );
     }
 

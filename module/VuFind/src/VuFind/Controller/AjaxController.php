@@ -1098,70 +1098,76 @@ class AjaxController extends AbstractBase
      * and output the HTML content in JSON object.
      *
      * @return \Zend\Http\Response
+     * @author Gregor Gawol <gawol@ub.uni-leipzig.de>
      * @author Graham Seaman <Graham.Seaman@rhul.ac.uk>
      */
     protected function getResolverLinksAjax()
     {
         $this->disableSessionWrites();  // avoid session write timing bug
         $openUrl = $this->params()->fromQuery('openurl', '');
+        $requestedResolver = $this->params()->fromQuery('resolvertype', '');
         $searchClassId = $this->params()->fromQuery('searchClassId', '');
 
-        $config = $this->getConfig();
-        $resolverType = isset($config->OpenURL->resolver)
-            ? $config->OpenURL->resolver : 'other';
-        $pluginManager = $this->getServiceLocator()
-            ->get('VuFind\ResolverDriverPluginManager');
-        if (!$pluginManager->has($resolverType)) {
-            return $this->output(
-                $this->translate("Could not load driver for $resolverType"),
-                self::STATUS_ERROR,
-                500
-            );
-        }
-        $resolver = new \VuFind\Resolver\Connection(
-            $pluginManager->get($resolverType)
-        );
-        if (isset($config->OpenURL->resolver_cache)) {
-            $resolver->enableCache($config->OpenURL->resolver_cache);
-        }
-        $result = $resolver->fetchLinks($openUrl);
+        $config = $this->getConfig('Resolver');
+        $resolvers = explode(',', $config->General->active_resolvers);
 
-        // Sort the returned links into categories based on service type:
-        $electronic = $print = $services = [];
-        foreach ($result as $link) {
-            switch (isset($link['service_type']) ? $link['service_type'] : '') {
-            case 'getHolding':
-                $print[] = $link;
-                break;
-            case 'getWebService':
-                $services[] = $link;
-                break;
-            case 'getDOI':
-                // Special case -- modify DOI text for special display:
-                $link['title'] = $this->translate('Get full text');
-                $link['coverage'] = '';
-            case 'getFullTxt':
-            default:
-                $electronic[] = $link;
-                break;
+        if (in_array($requestedResolver, $resolvers) && isset($config->$requestedResolver)) {
+            $resolverType = isset($config->$requestedResolver->resolver)
+                ? $config->$requestedResolver->resolver : 'other';
+            $pluginManager = $this->getServiceLocator()
+                ->get('VuFind\ResolverDriverPluginManager');
+            if (!$pluginManager->has($resolverType)) {
+                return $this->output(
+                    $this->translate("Could not load driver for $resolverType"),
+                    self::STATUS_ERROR,
+                    500
+                );
             }
-        }
+            $resolver = new \VuFind\Resolver\Connection(
+                $pluginManager->get($resolverType)
+            );
+            if (isset($config->$requestedResolver->resolver_cache)) {
+                $resolver->enableCache($config->$requestedResolver->resolver_cache);
+            }
+            $result = $resolver->fetchLinks($openUrl);
 
-        // Get the OpenURL base:
-        if (isset($config->OpenURL) && isset($config->OpenURL->url)) {
-            // Trim off any parameters (for legacy compatibility -- default config
-            // used to include extraneous parameters):
-            list($base) = explode('?', $config->OpenURL->url);
-        } else {
-            $base = false;
-        }
+            // Sort the returned links into categories based on service type:
+            $electronic = $print = $services = [];
+            foreach ($result as $link) {
+                switch (isset($link['service_type']) ? $link['service_type'] : '') {
+                    case 'getHolding':
+                        $print[] = $link;
+                        break;
+                    case 'getWebService':
+                        $services[] = $link;
+                        break;
+                    case 'getDOI':
+                        // Special case -- modify DOI text for special display:
+                        $link['title'] = $this->translate('Get full text');
+                        $link['coverage'] = '';
+                    case 'getFullTxt':
+                    default:
+                        $electronic[] = $link;
+                        break;
+                }
+            }
 
-        // Render the links using the view:
-        $view = [
-            'openUrlBase' => $base, 'openUrl' => $openUrl, 'print' => $print,
-            'electronic' => $electronic, 'services' => $services,
-            'searchClassId' => $searchClassId
-        ];
+            // Get the OpenURL base:
+            if (isset($config->$requestedResolver) && isset($config->$requestedResolver->url)) {
+                // Trim off any parameters (for legacy compatibility -- default config
+                // used to include extraneous parameters):
+                list($base) = explode('?', $config->$requestedResolver->url);
+            } else {
+                $base = false;
+            }
+
+            // Render the links using the view:
+            $view = [
+                'openUrlBase' => $base, 'openUrl' => $openUrl, 'print' => $print,
+                'electronic' => $electronic, 'services' => $services,
+                'searchClassId' => $searchClassId
+            ];
+        }
         $html = $this->getViewRenderer()->render('ajax/resolverLinks.phtml', $view);
 
         // output HTML encoded in JSON object
