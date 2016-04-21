@@ -61,6 +61,14 @@ class FincILS extends PAIA implements LoggerAwareInterface
     protected $ilsIdentifier;
 
     /**
+     * Array containing known dynamic fields that need to be extended by
+     * indexExtension if used for search
+     *
+     * @var array
+     */
+    protected $dynamicFields = ['barcode'];
+
+    /**
      * ISIL used for identifying the correct ILS-identifier if array is returned
      *
      * @var string
@@ -160,13 +168,14 @@ class FincILS extends PAIA implements LoggerAwareInterface
     /**
      * PAIA support method - try to find fincid for last segment of PAIA id
      *
-     * @param string $id itemId
+     * @param string $id     itemId
+     * @param string $idType id type to override ILS settings
      *
      * @return string $id
      */
-    protected function getAlternativeItemId($id)
+    protected function getAlternativeItemId($id, $idType = null)
     {
-        return $this->_getFincId(end(explode(":", $id)));
+        return $this->_getFincId(end(explode(":", $id)), $idType);
     }
 
     /**
@@ -513,17 +522,17 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     private function _getILSRecordId($id, $ilsIdentifier = null)
     {
-        // override ilsIdentifier set in ILS driver config
-        if ($ilsIdentifier != null) {
-            $this->ilsIdentifier = $ilsIdentifier;
+        // override ilsIdentifier with the ilsIdentifier set in ILS driver config
+        if ($ilsIdentifier == null) {
+            $ilsIdentifier = $this->ilsIdentifier;
         }
 
         //get the ILS-specific recordId
-        if ($this->ilsIdentifier != "default") {
+        if ($ilsIdentifier != "default") {
 
             try {
                 $ilsRecordId = $this->_getRecord($id)
-                    ->getILSIdentifier($this->ilsIdentifier);
+                    ->getILSIdentifier($ilsIdentifier);
             } catch (\Exception $e) {
                 $this->debug($e);
                 $this->_idMapper[$id] = $id;
@@ -574,6 +583,11 @@ class FincILS extends PAIA implements LoggerAwareInterface
     {
         $ilsRecordIds = [];
 
+        // override ilsIdentifier with the ilsIdentifier set in ILS driver config
+        if ($ilsIdentifier == null) {
+            $ilsIdentifier = $this->ilsIdentifier;
+        }
+
         if (is_array($ids)) {
             foreach ($ids as $id) {
                 $ilsRecordIds[] = $this->_getILSRecordId($id, $ilsIdentifier);
@@ -595,15 +609,24 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     private function _getFincId($ilsId, $ilsIdentifier = null)
     {
-        // override ilsIdentifier set in ILS driver config
-        if ($ilsIdentifier != null) {
-            $this->ilsIdentifier = $ilsIdentifier;
+        // override ilsIdentifier with the ilsIdentifier set in ILS driver config
+        if ($ilsIdentifier == null) {
+            $ilsIdentifier = $this->ilsIdentifier;
         }
 
-        if ($this->ilsIdentifier != "default") {
+        if ($ilsIdentifier != "default") {
             // different ilsIdentifier is configured, retrieve fincid
+            
+            // if the given ilsIdentifier is known as a dynamic field it is suffixed
+            // with the isil
+            if (in_array($ilsIdentifier, $this->dynamicFields)) {
+                if (isset($this->mainConfig->CustomIndex->indexExtension)) {
+                    $ilsIdentifier .= "_"
+                        . trim($this->mainConfig->CustomIndex->indexExtension);
+                }
+            }
             try {
-                $query = $this->ilsIdentifier . ':' . $ilsId;
+                $query = $ilsIdentifier . ':' . $ilsId;
                 $result = $this->searchService->search('VuFind', new Query($query));
                 if (count($result) === 0) {
                     throw new \Exception(
