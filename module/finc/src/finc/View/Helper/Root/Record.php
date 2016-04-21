@@ -106,6 +106,29 @@ class Record extends \VuFind\View\Helper\Root\Record
     }
 
     /**
+     * Render the link of the specified type.
+     *
+     * @param string $type    Link type
+     * @param string $lookfor String to search for at link
+     *
+     * @return string
+     */
+    public function getLink($type, $lookfor)
+    {
+        $link = $this->renderTemplate(
+            'link-' . $type . '.phtml',
+            [
+                'lookfor' => ($type == 'author'
+                    ? $this->removeAuthorDates($lookfor) : $lookfor
+                )
+            ]
+        );
+        $link .= $this->getView()->plugin('searchTabs')
+            ->getCurrentHiddenFilterParams($this->driver->getSourceIdentifier());
+        return $link;
+    }
+
+    /**
      * Remove author dates from author string (used for using author names as search
      * term).
      *
