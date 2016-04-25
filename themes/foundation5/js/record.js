@@ -230,25 +230,38 @@ function recordDocReady() {
   $('.record-tabs .tabs a').click(function (e) {
     var $li = $(this).parent();
     // If it's an active tab, click again to follow to a shareable link.
-    // if we're flagged to skip AJAX for this tab, just return true and let the browser handle it.
-    if($li.hasClass('active') || $li.hasClass('noajax')) {
+    if ($li.hasClass('active')) {
       return true;
     }
     var tabid = this.className;
     var $top = $(this).closest('.record-tabs');
+    // if we're flagged to skip AJAX for this tab, we need special behavior:
+    if ($li.hasClass('noajax')) {
+      // if this was the initially active tab, we have moved away from it and
+      // now need to return -- just switch it back on.
+      if ($li.hasClass('initiallyActive')) {
+        $(this).tab('show');
     // nxt 3 lines work for FNDTN ! -- FNDTN "content" equals BS's "tab-pane", one more below
     $top.find('.content.active').removeClass('active');
     $top.find('.tab-title').removeClass('active');
     $top.find('.'+tabid).parent().addClass('active');
-    if ($top.find('.'+tabid+'-tab').length > 0) {
-      $top.find('.'+tabid+'-tab').addClass('active');
-      window.location.hash = tabid;
-      return false;
-    } else {
+    window.location.hash = 'tabnav';
+    return false;
+  }
+  // otherwise, we need to let the browser follow the link:
+  return true;
+}
+$top.find('.tab-pane.active').removeClass('active');
+$(this).tab('show');
+if ($top.find('.'+tabid+'-tab').length > 0) {
+    $top.find('.'+tabid+'-tab').addClass('active');
+    window.location.hash = tabid;
+    return false;
+  } else {
       // FNDTN "content" equals BS's tab-pane; "tabs-content" equals "tab-content"
-      var newTab = $('<div class="content active '+tabid+'-tab"><i class="fa fa-spinner fa-spin"></i> '+VuFind.translate('loading')+'&nbsp;...</div>');
-      $top.find('.tabs-content').append(newTab);
-      return ajaxLoadTab(newTab, tabid, !$(this).parent().hasClass('initiallyActive'));
+ var newTab = $('<div class="content active '+tabid+'-tab"><i class="fa fa-spinner fa-spin"></i> '+VuFind.translate('loading')+'&nbsp;...</div>');
+   $top.find('.tabs-content').append(newTab);
+   return ajaxLoadTab(newTab, tabid, !$(this).parent().hasClass('initiallyActive'));
     }
   });
 

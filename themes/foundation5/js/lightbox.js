@@ -70,13 +70,14 @@ VuFind.register('lightbox', function() {
     if ('undefined' == typeof type) {
       type = 'info';
     }
-    _html('<div class="alert-box '+type+'">'+message+'</div><a class="close-reveal-modal"><span class="sr-only">' + VuFind.translate('close') + '</span></a>');
+    _html('<div class="flash-message alert-box '+type+'">'+message+'</div>' +
+      '<a class="close-reveal-modal"><span class="sr-only">' + VuFind.translate('close') + '</span></a>');
     _modal.foundation('reveal', 'open');
   };
   var flashMessage = function(message, type) {
-    _modalBody.find('.alert-box,.fa.fa-spinner').remove();
+    _modalBody.find('.flash-message,.fa.fa-spinner').remove();
     _modalBody.find('h2:first-of-type')
-      .after('<div class="alert-box '+type+'">'+message+'</div>');
+      .after('<div class="flash-message alert-box '+type+'">'+message+'</div>');
   };
 
   /**
@@ -149,6 +150,15 @@ VuFind.register('lightbox', function() {
           _refreshPage();
           return;
         }
+        // Place Hold error isolation
+        if (obj.url.match(/\/Record/) && (obj.url.match(/Hold\?/) || obj.url.match(/Request\?/))) {
+          var testDiv = $('<div/>').html(html);
+          var error = testDiv.find('.flash-message.alert');
+          if (error.length && testDiv.find('.record').length) {
+            showAlert(error[0].innerHTML, 'alert');
+            return false;
+          }
+        }
         if ( // Close the lightbox after deliberate login
           obj.method                                                                // is a form
           && ((obj.url.match(/MyResearch/) && !obj.url.match(/Bulk/))               // that matches login/create account
@@ -167,6 +177,7 @@ VuFind.register('lightbox', function() {
           } else {
             VuFind.lightbox.refreshOnClose = true;
           }
+          _currentUrl = _originalUrl; // Now that we're logged in, where were we?
         }
         _update(html);
       })
@@ -273,8 +284,8 @@ VuFind.register('lightbox', function() {
     _lightboxTitle = submit.data('lightboxTitle') || $(form).data('lightboxTitle') || '';
     // Get Lightbox content
     ajax({
-      url: form.action || _currentUrl,
-      method: form.method || 'GET',
+      url: $(form).attr('action') || _currentUrl,
+      method: $(form).attr('method') || 'GET',
       data: data
     });
 

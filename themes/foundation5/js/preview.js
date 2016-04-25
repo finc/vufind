@@ -68,7 +68,7 @@ function processGBSBookInfo(booksInfo) {
                 if (viewOptions['tab'].indexOf(bookInfo.preview)>= 0
                 && (bookInfo.embeddable)) {
                     // make tab visible
-                    $('ul.recordTabs li.hide a#preview').parent().removeClass('hide');
+                    $('ul.recordTabs li.hide a.preview').parent().removeClass('hide');
                 }
             }
         }
