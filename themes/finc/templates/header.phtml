@@ -48,7 +48,7 @@
         <? endif; ?>
 
         <? if (isset($this->layout()->themeOptions) && count($this->layout()->themeOptions) > 1): ?>
-          <li class="has-dropdown">
+          <li class="theme has-dropdown">
             <form method="post" name="themeForm" id="themeForm">
               <input type="hidden" name="ui"/>
             </form>
@@ -63,7 +63,7 @@
         <? endif; ?>
 
         <? if (isset($this->layout()->allLangs) && count($this->layout()->allLangs) > 1): ?>
-          <li class="has-dropdown">
+          <li class="language has-dropdown">
             <form method="post" name="langForm" id="langForm">
               <input type="hidden" name="mylang"/>
             </form>
