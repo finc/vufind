@@ -538,21 +538,6 @@ ul.date-range-slider {
   select {
     margin-bottom: .5em;
   }
-
-  // Keep filter checkbox
-  .checkbox {
-    margin-bottom: 0;
-    margin-left: 1.4em;
-    margin-top: -.8em;
-    input[type="checkbox"] {
-      margin-top: 4px;
-    }
-    label {
-      color: $white;
-      padding-left: 0;
-    }
-  }
-  // Keep filter checkbox - END
 }
 
 // Searchbox BG and sizes, test for search box AND adv search terms display
@@ -609,28 +594,34 @@ ul.date-range-slider {
 
 // Keep Filters checkbox
 #keepfilters {
-  clear: left;
-  display: inline-block;
-  float: left;
-
   &:before {
     content: " ";
     display: block;
     clear: both;
   }
   &.checkbox {
+    clear: left;
+    display: inline-block;
+    float: left;
+    margin-bottom: 0;
+    margin-left: 1.4em;
     margin-top: 0;
   }
   input[type="checkbox"] {
-    margin-top: 0 !important;
-
+    height: auto;
+    margin-top: 0;
+    padding: 0;
+    top: 0 ;
     + label {
       color: $secondary-color;
-      margin-top: 1em;
+      padding-left: 0;
+      vertical-align: top;
     }
   }
 
 }
+// Keep filter checkbox - END
+
 
 // Shard selector checkboxes for developer machines + Keep Filters  - END
 
