@@ -42,8 +42,8 @@ use VuFind\Exception\ILS as ILSException,
 class FincILS extends PAIA implements LoggerAwareInterface
 {
 
-    private $_root_username;
-    private $_root_password;
+    protected $root_username;
+    protected $root_password;
 
     /**
      * Array that stores the mapping of VuFind record_id to the ILS-specific
@@ -149,8 +149,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
         if (isset($this->config['PAIA']['root_username'])
             && isset($this->config['PAIA']['root_username'])
         ) {
-            $this->_root_username = $this->config['PAIA']['root_username'];
-            $this->_root_password = $this->config['PAIA']['root_password'];
+            $this->root_username = $this->config['PAIA']['root_username'];
+            $this->root_password = $this->config['PAIA']['root_password'];
         }
 
         // get ISIL from config if ILS-specific recordId is barcode for
@@ -228,28 +228,21 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     public function patronLogin($username, $password)
     {
-        if (!empty($this->_root_username) && !empty($this->_root_password)) {
+        if (!empty($this->root_username) && !empty($this->root_password)) {
             if ($username == '') {
                 throw new ILSException('Invalid Login, Please try again.');
             }
 
             $session = $this->getSession();
 
-            $enrichUserDetails = function ($details, $username, $password) use ($session) {
-                $details['cat_username']
-                    = ($session->patron === 'root' ? $username : $session->patron);
-                $details['cat_password'] = $password;
-                return $details;
-            };
-
             // if we already have a session with access_token and patron id, try to get
             // patron info with session data
             if (isset($session->expires) && $session->expires > time()) {
                 try {
-                    return $enrichUserDetails(
+                    return $this->enrichUserDetails(
                         $this->paiaGetUserDetails(($session->patron === 'root' ? $username : $session->patron)),
-                        $username,
-                        $password
+                        $password,
+                        $username
                     );
                 } catch (ILSException $e) {
                     $this->debug('Session expired, login again', 'info');
@@ -257,11 +250,11 @@ class FincILS extends PAIA implements LoggerAwareInterface
             }
 
             try {
-                if($this->paiaLogin($this->_root_username, $this->_root_password)) {
-                    return $enrichUserDetails(
+                if($this->paiaLogin($this->root_username, $this->root_password)) {
+                    return $this->enrichUserDetails(
                         $this->paiaGetUserDetails(($session->patron === 'root' ? $username : $session->patron)),
-                        $username,
-                        $password
+                        $password,
+                        $username
                     );
                 }
             } catch (ILSException $e) {
@@ -272,6 +265,25 @@ class FincILS extends PAIA implements LoggerAwareInterface
         }
     }
 
+    /**
+     * PAIA helper function to map session data to return value of patronLogin()
+     *
+     * @param $details  Patron details returned by patronLogin
+     * @param $password Patron cataloge password
+     * @return mixed
+     */
+    protected function enrichUserDetails($details, $password, $username = null)
+    {
+        $details = parent::enrichUserDetails($details, $password);
+
+        // overwrite cat_username if we logged in as root
+        $session = $this->getSession();
+        $details['cat_username'] = $session->patron === 'root' && !empty($username)
+            ? $username : $session->patron;
+        
+        return $details;
+    }
+    
     /**
      * Customized PAIA support method for PAIA core method 'items' returning only
      * filtered items.
