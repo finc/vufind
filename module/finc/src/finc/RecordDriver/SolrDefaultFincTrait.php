@@ -331,19 +331,38 @@ trait SolrDefaultFincTrait
      */
     public function getPrimaryAuthor()
     {
-        return isset($this->fields['author']) ?
-            $this->_filterAuthorDates(parent::getPrimaryAuthor()) : '';
+        return $this->_filterAuthorDates(parent::getPrimaryAuthor());
     }
 
     /**
-     * Get the original author of the record.
+     * Get the main authors of the record.
      *
-     * @return string
+     * @return array
+     */
+    public function getPrimaryAuthors()
+    {
+        return $this->_filterAuthorDates(parent::getPrimaryAuthors());
+    }
+
+    /**
+     * Get the original authors of the record.
+     *
+     * @return array
      */
     public function getPrimaryAuthorsOrig()
     {
         return isset($this->fields['author_orig']) ?
             $this->_filterAuthorDates($this->fields['author_orig']) : [];
+    }
+
+    /**
+     * Get an array of all secondary authors
+     *
+     * @return array
+     */
+    public function getSecondaryAuthors()
+    {
+        return $this->_filterAuthorDates(parent::getSecondaryAuthors());
     }
 
     /**
@@ -355,7 +374,17 @@ trait SolrDefaultFincTrait
     public function getSecondaryAuthorsOrig()
     {
         return isset($this->fields['author2_orig']) ?
-            $this->fields['author2_orig'] : [];
+            $this->_filterAuthorDates($this->fields['author2_orig']) : [];
+    }
+
+    /**
+     * Get the secondary corporate authors (if any) for the record.
+     *
+     * @return array
+     */
+    public function getCorporateAuthors()
+    {
+        return $this->_filterAuthorDates(parent::getCorporateAuthors());
     }
 
     /**
@@ -366,7 +395,7 @@ trait SolrDefaultFincTrait
     public function getCorporateAuthorsOrig()
     {
         return isset($this->fields['author_corporate_orig']) ?
-            $this->fields['author_corporate_orig'] : [];
+            $this->_filterAuthorDates($this->fields['author_corporate_orig']) : [];
     }
 
     /**
@@ -377,7 +406,7 @@ trait SolrDefaultFincTrait
     public function getCorporateSecondaryAuthors()
     {
         return isset($this->fields['author_corporate2']) ?
-            $this->fields['author_corporate2'] : [];
+            $this->_filterAuthorDates($this->fields['author_corporate2']) : [];
     }
 
     /**
@@ -388,7 +417,7 @@ trait SolrDefaultFincTrait
     public function getCorporateSecondaryAuthorsOrig()
     {
         return isset($this->fields['author_corporate2_orig']) ?
-            $this->fields['author_corporate2_orig'] : [];
+            $this->_filterAuthorDates($this->fields['author_corporate2_orig']) : [];
     }
 
     /**
@@ -838,12 +867,24 @@ trait SolrDefaultFincTrait
      */
     private function _filterAuthorDates( $authordata )
     {
-        if (preg_match('/^(\s|.*)(\d{4})\s?-?\s?(\d{4})?$/Uu',$authordata, $match)) {
-            return (isset($match[3]))
-                ? $match[1] .' *'. $match[2] . '-†'. $match[3]
-                : $match[1] .' *'. $match[2] . '-';
+        $filter = function ($author) {
+            if (preg_match('/^(\s|.*)(\d{4})\s?-?\s?(\d{4})?$/Uu',$author, $match)) {
+                return (isset($match[3]))
+                    ? $match[1] .' *'. $match[2] . '-†'. $match[3]
+                    : $match[1] .' *'. $match[2] . '-';
+            }
+            return $author;
+        };
+
+        if (is_array($authordata)) {
+            $retval = [];
+            foreach ($authordata as $author) {
+                $retval[] = $filter($author);
+            }
+            return $retval;
+        } else {
+            return $filter($authordata);
         }
-        return $authordata;
     }
 
     /**
