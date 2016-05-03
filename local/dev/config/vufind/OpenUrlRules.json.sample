@@ -1,0 +1,51 @@
+{
+  "Redi": [
+    {
+      "exclude": [
+        {
+          "methods": {
+            "getSourceID": "49",
+            "getFormats": "ElectronicBookPart"
+          },
+          "recorddriver": "finc\\RecordDriver\\SolrAI"
+        },
+        {
+          "methods": {
+            "getSourceID": "48"
+          },
+          "recorddriver": "finc\\RecordDriver\\SolrAI"
+        },
+        {
+          "methods": {
+            "getSourceID": "28"
+          },
+          "recorddriver": "finc\\RecordDriver\\SolrAI"
+        }
+      ],
+      "include": [
+        {
+          "methods": {
+            "getSourceID": "49"
+          },
+          "recorddriver": "finc\\RecordDriver\\SolrAI"
+        }
+      ]
+    }
+  ],
+  "Ezb": [
+    {
+      "exclude": [
+        {
+          "recorddriver": "finc\\RecordDriver\\SolrAI"
+        }
+      ],
+      "include": [
+        {
+          "methods": {
+            "getSourceID": "0"
+          }
+        }
+      ]
+    }
+  ]
+}

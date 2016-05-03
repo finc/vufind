@@ -1,6 +1,6 @@
 <?php
 /**
- * Factory for Root view helpers.
+ * Resolver Driver Factory Class
  *
  * PHP version 5
  *
@@ -20,83 +20,56 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind
- * @package  View_Helpers
+ * @package  Resolver_Drivers
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development Wiki
+ * @link     https://vufind.org/wiki/development:plugins:hierarchy_components Wiki
  */
-namespace finc\View\Helper\Root;
+namespace finc\Resolver\Driver;
 use Zend\ServiceManager\ServiceManager;
 
 /**
- * Factory for Root view helpers.
+ * Resolver Driver Factory Class
  *
  * @category VuFind
- * @package  View_Helpers
+ * @package  Resolver_Drivers
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development Wiki
+ * @link     https://vufind.org/wiki/development:plugins:hierarchy_components Wiki
  *
  * @codeCoverageIgnore
  */
 class Factory
 {
     /**
-     * Construct the Record helper.
+     * Factory for Ezb record driver.
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return Record
+     * @return Ezb
      */
-    public static function getRecord(ServiceManager $sm)
-    {
-        return new Record(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
-        );
-    }
-
-    /**
-     * Construct the Record helper.
-     *
-     * @return RecordLink
-     */
-    public static function getInterlibraryLoanLink()
-    {
-        return new InterlibraryLoanLink();
-    }
-
-    /**
-     * Construct the Citation helper.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return Citation
-     */
-    public static function getCitation(ServiceManager $sm)
-    {
-        return new Citation($sm->getServiceLocator()->get('VuFind\DateConverter'));
-    }
-
-    /**
-     * Construct the OpenUrl helper.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return OpenUrl
-     */
-    public static function getOpenUrl(ServiceManager $sm)
+    public static function getEzb(ServiceManager $sm)
     {
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver');
-        $openUrlRules = json_decode(
-            file_get_contents(
-                \VuFind\Config\Locator::getConfigPath('OpenUrlRules.json')
-            ),
-            true
+        return new Ezb(
+            $config->Ezb,
+            $sm->getServiceLocator()->get('VuFind\Http')->createClient()
         );
-        return new OpenUrl(
-            $sm->get('context'),
-            $openUrlRules,
-            isset($config->General) ? $config : null
+    }
+
+    /**
+     * Factory for Redi record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return Redi
+     */
+    public static function getRedi(ServiceManager $sm)
+    {
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver');
+        return new \VuFind\Resolver\Driver\Redi(
+            $config->Redi->url,
+            $sm->getServiceLocator()->get('VuFind\Http')->createClient()
         );
     }
 }

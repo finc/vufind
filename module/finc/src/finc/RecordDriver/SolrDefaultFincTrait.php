@@ -898,4 +898,16 @@ trait SolrDefaultFincTrait
     {
         return ['APA', 'ISBD', 'MLA'];
     }
+
+    /**
+     * Return content of Solr field zdb if set
+     *
+     * @return mixed
+     */
+    public function getZdbId()
+    {
+        return isset($this->fields['zdb']) ?
+            $this->fields['zdb'] : null;
+    }
+
 }

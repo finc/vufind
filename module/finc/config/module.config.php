@@ -12,6 +12,7 @@ $config = [
             'record' => 'finc\Controller\Factory::getRecordController'
         ],
         'invokables' => [
+            'ajax' => 'finc\Controller\AjaxController',
             'my-research' => 'finc\Controller\MyResearchController'
         ],
     ],
@@ -40,6 +41,12 @@ $config = [
                     'additional' => 'finc\RecordTab\Additional',
                     'staffviewai' => 'finc\RecordTab\StaffViewAI',
                     'acquisitionpda' => 'finc\RecordTab\AcquisitionPDA',
+                ],
+            ],
+            'resolver_driver' => [
+                'factories' => [
+                    'ezb' => 'finc\Resolver\Driver\Factory::getEzb',
+                    'redi' => 'finc\Resolver\Driver\Factory::getRedi'
                 ],
             ],
         ],
