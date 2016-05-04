@@ -9,7 +9,8 @@ $config = [
     ],
     'controllers' => [
         'factories' => [
-            'record' => 'finc\Controller\Factory::getRecordController'
+            'record' => 'finc\Controller\Factory::getRecordController',
+            'dds' => 'finc\Controller\Factory::getDocumentDeliveryServiceController',
         ],
         'invokables' => [
             'ajax' => 'finc\Controller\AjaxController',
@@ -131,7 +132,7 @@ $recordRoutes = [
 
 // Define static routes -- Controller/Action strings
 $staticRoutes = [
-    'MyResearch/Acquisition'
+    'MyResearch/Acquisition', 'dds/Home', 'dds/Email'
 ];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator($nonTabRecordActions);

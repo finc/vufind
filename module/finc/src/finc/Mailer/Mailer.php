@@ -103,8 +103,8 @@ class Mailer extends \VuFind\Mailer\Mailer
             $mimeBody = new MimeMessage();
             $mimeBody->addPart($alternativePart);
 
-            //$reply_to = $reply_name . '<' . $reply . '>';
-            $reply_to = $reply;
+            $reply_to = (!empty($reply_name))
+                ? $reply_name.'<'.$reply.'>' : $reply;
 
             $message = $this->getNewTextHtmlMessage()
                 ->addFrom($from)

@@ -1,0 +1,381 @@
+<div class="row">
+    <div class="<?=$this->layoutClass('mainbody')?>">
+        <h2><?= $this->transEsc('DDS::dds_form_headline') ?></h2>
+        <?=$this->flashmessages() ?>
+        <form class="form-horizontal" method="post"
+              action="<?= $this->url('dds-email') ?>" name="docdelisForm">
+            <? if ($this->department): ?>
+                <input type="hidden" name="subito[hdepartment]"
+                       value="<?= $this->department ?>"/>
+            <? endif; ?>
+            <fieldset>
+                <legend><?= $this->transEsc("DDS::dds_form_delivery_data") ?>:
+                </legend>
+                <!-- name -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="sname"><?= $this->transEsc("Name") ?>:*</label>
+                    <? if ($this->error->username): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->username; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="sname" name="subito[username]" class="form-control" <?=(!empty($this->username) ? 'value="' . $this->username . '"' : '')?>/>
+                    </div>
+                </div>
+                <!-- phone -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="sphone"><?= $this->transEsc("DDS::form_field_phone") ?>
+                        :</label>
+                    <? if ($this->error->phone): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->phone; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="sphone" name="subito[phone]" class="form-control" <?=(!empty($this->phone) ? 'value="' . $this->phone . '"' : '')?>/>
+                    </div>
+                </div>
+                <!-- email -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="semail"><?= $this->transEsc("DDS::form_field_email") ?>
+                        :*</label>
+                    <? if ($this->error->email): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->email; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="semail" name="subito[email]" class="form-control" <?=(!empty($this->email) ? 'value="' . $this->email. '"' : '')?>/>
+                    </div>
+                </div>
+                <!-- user id -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="suserid"><?= $this->transEsc("DDS::form_field_library_id") ?>
+                        :*</label>
+                    <? if ($this->error->userid): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->userid; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="suserid" name="subito[userid]" class="form-control" <?=(!empty($this->userid) ? 'value="' . $this->userid . '"' : '')?>/>
+                    </div>
+                </div>
+                <!-- division -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="sdivision"><?= $this->transEsc("DDS::form_field_division") ?>
+                        :*</label>
+                    <? if ($this->error->division): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->division; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <select id="sdivision" name="subito[division]" size="1" class="form-control"/>
+                            <option value=""></option>
+                        <? foreach ($this->divisions as $cat => $division): ?>
+                            <option
+                                value="<?= $cat ?>" <?= ($this->division == $cat) ? 'selected="selected"' : '' ?>><?= $division ?></option>
+                        <? endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <!-- department -->
+                <div class="form-group input-sdepartment">
+                    <label class="col-sm-3 control-label"
+                           for="sdepartment"><?= $this->transEsc("DDS::form_field_department") ?>
+                        :*</label>
+                    <? if ($this->error->department): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->department; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <select id="sdepartment" name="subito[department]" size="1" class="form-control"/>
+                        <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+                <!-- department medicine -->
+                <div class="form-group input-department">
+                    <label class="col-sm-3 control-label"
+                           for="smdepartment"><?= $this->transEsc("DDS::form_field_department") ?>
+                        :*</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="smdepartment"
+                               name="subito[inputdepartment]"
+                               class="form-control" <?= (!empty($this->inputdepartment) ? 'value="' . $this->inputdepartment . '"' : '') ?>/>
+                    </div>
+                </div>
+            </fieldset>
+
+
+            <fieldset>
+                <legend><?= $this->transEsc("DDS::dds_form_details_ordered_title") ?>
+                    :
+                </legend>
+
+                <!-- author -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="sauthor"><?= $this->transEsc("DDS::form_field_author") ?>
+                        :*</label>
+                    <? if ($this->error->author): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->author; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="sauthor" name="subito[author]"
+                               class="form-control" <?= (!empty($this->author) ? 'value="' . $this->author . '"' : '') ?>/>
+                    </div>
+                </div>
+                <!-- title of issue -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="sarticle"><?= $this->transEsc("DDS::form_field_title") ?>
+                        :</label>
+                    <? if ($this->error->article): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->article; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="sarticle" name="subito[article]"
+                               class="form-control" <?= (!empty($this->article) ? 'value="' . $this->article . '"' : '') ?>/>
+                    </div>
+                </div>
+                <!-- title of journal -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="sjournal"><?= $this->transEsc("DDS::form_field_journal") ?>
+                        :*</label>
+                    <? if ($this->error->journal): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->journal; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="sjournal" name="subito[journal]"
+                               class="form-control" <?= (!empty($this->journal) ? 'value="' . $this->journal . '"' : '') ?>/>
+                    </div>
+                </div>
+                <!-- issn -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="sjournal"><?= $this->transEsc("ISSN") ?>:</label>
+                    <? if ($this->error->issn): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->issn; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="sissn" name="subito[issn]" class="form-control" <?=(!empty($this->issn) ? 'value="' . $this->issn . '"' : '')?>/>
+                    </div>
+                </div>
+                <!-- publish date -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="spublishdate"><?= $this->transEsc("DDS::form_field_publishing_date") ?>
+                        :*</label>
+                    <? if ($this->error->publishdate): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->publishdate; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="spublishdate"
+                               name="subito[publishdate]"
+                               class="form-control" <?= (!empty($this->publishdate) ? 'value="' . $this->publishdate . '"' : '') ?>/>
+                    </div>
+                </div>
+                <!-- journal number -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="snumber"><?= $this->transEsc("DDS::form_field_volume") ?>
+                        :*</label>
+                    <? if ($this->error->number): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->number; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="snumber" name="subito[number]" class="form-control" <?=(!empty($this->number) ? 'value="' . $this->number . '"' : '')?>/>
+                    </div>
+                </div>
+                <!-- pages -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="spages"><?= $this->transEsc("DDS::form_field_pages") ?>
+                        :*</label>
+                    <? if ($this->error->pages): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->pages; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <input type="text" id="spages" name="subito[pages]"
+                               class="form-control" <?= (!empty($this->pages) ? 'value="' . $this->pages . '"' : '') ?>/>
+                    </div>
+
+                </div>
+                <!-- remarks -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"
+                           for="sremarks"><?= $this->transEsc("DDS::form_fields_remarks") ?>
+                        :</label>
+                    <? if ($this->error->remarks): ?>
+                        <span class="col-sm-9 error-field">
+                            <?= $this->error->remarks; ?>
+                        </span>
+                    <? endif; ?>
+                    <div class="col-sm-9">
+                        <textarea id="sremarks" name="subito[remarks]" class="form-control"><?=(!empty($this->remarks) ? $this->remarks : '')?></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <input role="button" type="submit" class="btn btn-primary"
+                               value="<?= $this->transEsc("DDS::form_button_submit") ?>"/>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    <div class="subito-pg">
+        <?= $this->transEsc("DDS::dds_text_questions") ?>
+            <a href="mailto:info@ub.uni-leipzig.de?subject=<?=$this->transEsc("Dokumentenlieferdienst")?>">info@ub.uni-leipzig.de</a>
+    </div>
+
+    <div class="input-department subito-pg">
+        <div><?=$this->transEsc("Bei eventuellen Rückfragen wenden Sie sich bitte an die Abteilung Fernleihe der Medizin")?>:</div>
+        <div><?=$this->transEsc("Phone")?>: +49 (0)341 - 97 14014</div>
+        <div><?=$this->transEsc("Email")?>: <a href="mailto:zbmed.fernleihe@medizin.uni-leipzig.de?subject=<?=$this->transEsc("Dokumentenlieferdienst")?>">zbmed.fernleihe@medizin.uni-leipzig.de</a></div>
+    </div>
+    <div class="subito-pg">
+        <p class="required">
+            * <?= $this->transEsc("DDS::dds_text_mandatory_fields") ?></p>
+    </div>
+</div>
+</div>
+<?
+$this->inlineScript()->captureStart();
+echo <<<JS
+  $(document).ready(function(){
+        // if department already selected and post request failed then
+        // rebuild select menu
+        if ( $('input:hidden[name="subito\\[hdepartment\\]"]').val() != 'undefined') {
+            department.addDepartmentSelect(
+                    $('input[name="subito\\[hdepartment\\]"]').val(),
+                    $('select[name="subito\\[division\\]"]').val()
+            );
+        }
+        $('select[name="subito\\[division\\]"]').change(function() {
+            department.init($(this).val());
+        });
+        $('.form-group input').focus(function() {
+            $(this).parent().prev('.error-field').hide(200);
+        });
+        $('.forme-group select').focus(function() {
+            $(this).parent().prev('.error-field').hide(200);
+        });
+        /*if ( $('#loginOptions a.login').length ) {
+            var loginUrl = {
+              followup: true,
+              followupModule: 'Subito',
+              followupAction: 'Subito'
+            };
+            $('#loginOptions a.login').attr('href', function ( index, value ) {
+                return value + '?' + $.param( loginUrl );
+            });
+            // console.log($('#loginOptions a.login').attr('href'));
+        }*/
+    });
+/**
+* Show & hide of subito form elements regarding select menu status.
+* Add options for department select menu
+*
+* @author Frank Morgner<morgnerf@ub.uni-leipzig.de>
+* @see https://katalog.ub.uni-leipzig.de/Subito/Subito
+**/
+
+var department = {
+    init: function ( divisionid ) {
+        addOptions = false;
+        var elements = [];
+        if ( divisionid == '15') {
+            elements = {
+                "department":"show",
+                "costcentre":"show",
+                "sdepartment":"hide"
+            }
+        } else if (divisionid == '') {
+            elements = {
+                "department":"hide",
+                "costcentre":"hide",
+                "sdepartment":"hide"
+            }
+        } else {
+            elements = {
+                "department":"hide",
+                "costcentre":"hide",
+                "sdepartment":"show"
+            }
+            var addOptions = true;
+        }
+        department.showHideElements(elements);
+        if (addOptions == true) {
+            department.addDepartmentOptions( divisionid );
+        }
+    },
+    addDepartmentOptions: function ( divisionid ) {
+        $('select[name="subito\\[department\\]"]').empty();
+        var departments = $this->departments;
+        department.addOptionElement('','');
+        $.each(departments[divisionid], function (index, value) {
+            department.addOptionElement(value,index);
+        });
+    },
+    addDepartmentSelect: function (departmentid, divisionid) {
+        department.init ( divisionid );
+        department.addSelectElement ( departmentid );
+    },
+    addOptionElement: function ( text, value ) {
+        jQuery('<option/>', {
+                text: department.htmlEntitiesDecode(text),
+                value: value
+        }).appendTo('select[name="subito\\[department\\]"]');
+    },
+    addSelectElement: function ( departmentid )  {
+        $('select[name="subito\\[department\\]"] option').filter(function () {
+            //console.log($(this).val() + ' == ' + departmentid);
+            return $(this).val() == departmentid;
+        }).prop('selected', true);
+    },
+    htmlEntitiesDecode: function ( value ) {
+        if (value) {
+            return jQuery('<div/>').html(value).text();
+        }
+        return value;
+    },
+    showHideElements: function ( elements ) {
+        $.each(elements, function (index, value) {
+            if (value == 'show') {
+                $('.input-' + index).show(200);
+            }
+            if (value == 'hide') {
+                $('.input-' + index).hide(200);
+            }
+        });
+    }
+}
+JS;
+$this->inlineScript()->captureEnd();
+
+echo $this->inlineScript();
+?>

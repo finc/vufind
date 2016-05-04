@@ -103,6 +103,15 @@ table.citation th {min-width: 18%}
 // FORMS
 form label {font-size: 1rem;}
 
+// BOF - for Document Delivery Service (DDS) only
+// Error field
+.error-field {
+  color: #ff3939;
+  font-weight: 500;
+  line-height: 200%;
+  font-size: 0.875rem;
+}
+// EOF - DDS
 
 // ALERT BOXES
 .alert-box {font-size: 1rem}

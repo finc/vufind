@@ -1,10 +1,10 @@
 <?php
 /**
- * Factory for controllers.
+ * Service Factory
  *
- * PHP version 5
+ * PHP version 5.3
  *
- * Copyright (C) Villanova University 2014.
+ * Copyright (C) Leipzig University Library 2016.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -20,8 +20,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind
- * @package  View_Helpers
+ * @package  Controller
+ *
  * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author   Frank Morgner <morgnerf@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  */
@@ -29,11 +31,12 @@ namespace finc\Controller;
 use Zend\ServiceManager\ServiceManager;
 
 /**
- * Factory for controllers.
+ * Factory for various top-level VuFind services.
  *
  * @category VuFind
- * @package  View_Helpers
+ * @package  Controller
  * @author   Demian Katz <demian.katz@villanova.edu>
+ * @author   Frank Morgner <morgnerf@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  *
@@ -54,4 +57,25 @@ class Factory
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }
+    
+    /**
+     * Construct the DocumentDeliveryServiceController.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return DocumentDeliveryServiceController
+     */
+    public static function getDocumentDeliveryServiceController(ServiceManager $sm)
+    {
+        $container = new \Zend\Session\Container(
+            'DDS', $sm->getServiceLocator()->get('VuFind\SessionManager')
+        );
+        return new DocumentDeliveryServiceController(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('DDS'),
+            $container
+        );
+    }
+    
+    
 }

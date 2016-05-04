@@ -1,0 +1,33 @@
+Sie haben folgenden Artikel über das Online-Formular der Bibliothek bestellt:
+
+AUFTRAGGEBER:
+--------------
+Name: <?=$this->username?>
+Telefon: <?=$this->phone?>
+E-Mail: <?=$this->email?>
+Lesekartennummer: <?=$this->userid?>
+Einrichtung: <?=$this->department?>
+<?=$this->division=='15' ? 'Kostenstelle: ' . $this->costcentre : ''?>
+
+
+ANGABEN ZUM GEWÜNSCHTEN ARTIKEL:
+-------------------------------------
+Autor: <?=$this->author?>
+Aufsatztitel: <?=$this->article?>
+Zeitschriftentitel: <?=$this->journal?>
+ISSN: <?=$this->issn?>
+Erscheinungsjahr: <?=$this->puslishdate?>
+Band/Heft: <?=$this->number?>
+Seiten: <?=$this->pages?>
+
+Bemerkungen: <?=$this->remarks?>
+
+-------------------------------------------------------------------
+ANSPRECHPARTNER FÜR RÜCKFRAGEN:
+
+Universitätsbibliothek Leipzig
+<?=$this->branch?>
+Tel.: <?=$this->branchPhone?>
+E-Mail: <?=$this->branchEmail?>
+
+Datum: <?=$this->time?>
