@@ -42,6 +42,35 @@ use Zend\ServiceManager\ServiceManager;
 class Factory
 {
     /**
+     * Construct the cache manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \finc\Cache\Manager
+     */
+    public static function getCacheManager(ServiceManager $sm)
+    {
+        return new \finc\Cache\Manager(
+            $sm->get('VuFind\Config')->get('config'),
+            $sm->get('VuFind\Config')->get('searches')
+        );
+    }
+
+    /**
+     * Construct the branches reader.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \finc\Config\BranchesReader
+     */
+    public static function getBranchesReader(ServiceManager $sm)
+    {
+        return new \finc\Config\BranchesReader(
+            $sm->get('VuFind\CacheManager')
+        );
+    }
+    
+    /**
      * Construct the ILS connection.
      *
      * @param ServiceManager $sm Service manager.

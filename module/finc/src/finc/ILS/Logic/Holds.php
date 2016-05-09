@@ -44,6 +44,68 @@ use VuFind\ILS\Connection as ILSConnection;
  */
 class Holds extends \VuFind\ILS\Logic\Holds
 {
+    /**
+     * Support method to rearrange the holdings array for displaying convenience.
+     *
+     * @param array $holdings An associative array of location => item array
+     *
+     * @return array          An associative array keyed by location with each
+     * entry being an array with 'notes', 'summary' and 'items' keys.  The 'notes'
+     * and 'summary' arrays are note/summary information collected from within the
+     * items.
+     */
+    protected function formatHoldings($holdings)
+    {
+        $retVal = [];
+
+        // Handle purchase history alongside other textual fields
+        $textFieldNames = $this->catalog->getHoldingsTextFieldNames();
+        $textFieldNames[] = 'purchase_history';
+
+        foreach ($holdings as $groupKey => $items) {
+            $retVal[$groupKey] = [
+                'items' => $items,
+                'location' => isset($items[0]['location'])
+                    ? $items[0]['location'] : '',
+                'department' => isset($items[0]['department'])
+                    ? $items[0]['department'] : '',
+                'locationhref' => isset($items[0]['locationhref'])
+                    ? $items[0]['locationhref'] : ''
+            ];
+            // Copy all text fields from the item to the holdings level
+            foreach ($items as $item) {
+                foreach ($textFieldNames as $fieldName) {
+                    if (in_array($fieldName, ['notes', 'holdings_notes'])) {
+                        if (empty($item[$fieldName])) {
+                            // begin aliasing
+                            if ($fieldName == 'notes'
+                                && !empty($item['holdings_notes'])
+                            ) {
+                                // using notes as alias for holdings_notes
+                                $item[$fieldName] = $item['holdings_notes'];
+                            } elseif ($fieldName == 'holdings_notes'
+                                && !empty($item['notes'])
+                            ) {
+                                // using holdings_notes as alias for notes
+                                $item[$fieldName] = $item['notes'];
+                            }
+                        }
+                    }
+
+                    if (!empty($item[$fieldName])) {
+                        $targetRef = & $retVal[$groupKey]['textfields'][$fieldName];
+                        foreach ((array)$item[$fieldName] as $field) {
+                            if (empty($targetRef) || !in_array($field, $targetRef)) {
+                                $targetRef[] = $field;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $retVal;
+    }
 
     /**
      * Public method for getting item holdings from the catalog and selecting which

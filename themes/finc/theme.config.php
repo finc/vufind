@@ -11,6 +11,7 @@ return array(
                 'finc\View\Helper\Root\Factory::getInterlibraryLoanLink',
             'citation' => 'finc\View\Helper\Root\Factory::getCitation',
             'openurl' => 'finc\View\Helper\Root\Factory::getOpenUrl',
+            'branchinfo' => 'finc\View\Helper\Root\Factory::getBranchInfo',
         ),
         'invokables' => array(
             'resultfeed' => 'finc\View\Helper\Root\ResultFeed'

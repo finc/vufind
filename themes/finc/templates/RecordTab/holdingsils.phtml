@@ -63,6 +63,7 @@
       <?=$locationText?>
     <? endif; ?>
   </h3>
+  <?=$this->branchInfo($this->driver)->getBranchInfo($holding['department']); ?>
 <table class="table">
   <caption class="sr-only"><?=$this->transEsc('Holdings details from')?> <?=$this->transEsc($holding['location'])?></caption>
   <? /* WE USE NO callNos here, next are th for availability and details - 04.16. CK */ ?>

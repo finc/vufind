@@ -1,0 +1,461 @@
+# That file represents a basic structure of addresses and openings of the Leipzig
+# University Library. Due to the yaml format please notice that all changes have to
+# be made by line-indentation without tabs and charset utf-8. Please configure and
+# use your editor in advance.
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw01:
+    branch: "Bibliotheca Albertina"
+    branchno: zw01
+    streetaddress: Beethovenstraße 6
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 30577
+    email: info@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=198"
+    note: "Aktuelle Hinweise zu den Öffnungszeiten, z. B. an Sonn- und Feiertagen, finden Sie auf der Website."
+    parts:
+        http://data.ub.uni-leipzig.de/resource/UBL/department/zw01/part/01:
+            branchpart: "Freihand / Lesesaal / Offenes Magazin"
+            tel: [+49(0) 341 97 30587, +49(0) 341 97 30528]
+            email: [freihand@ub.uni-leipzig.de, lesesaal@ub.uni-leipzig.de]
+#            openinghours:
+#                    - {open: 08:00:00, close: 24:00:00, days: Monday-Saturday}
+        http://data.ub.uni-leipzig.de/resource/UBL/department/zw01/part/02:
+            branchpart: "Bibliothekarischer Service"
+#            openinghours:
+#                    - {open: 08:00:00, close: 20:00:00, days: Monday-Friday}
+#                    - {open: 08:00:00, close: 19:00:00, days: Saturday}
+        http://data.ub.uni-leipzig.de/resource/UBL/department/zw01/part/03:
+            branchpart: Forschungslesesaal
+            tel: [+49(0) 341 97 30526, +49(0) 341 97 30584]
+            email: sondersammlungen@ub.uni-leipzig.de
+#            openinghours:
+#                    - {open: 09:00:00, close: 20:00:00, days: Monday-Friday}
+#                    - {open: 10:00:00, close: 19:00:00, days: Saturday}
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw02:
+    branch: "Campus-Bibliothek, 24 h geöffnet"
+    branchno: zw02
+    streetaddress: "Universitätsstraße 3 (im Hörsaalgebäude)"
+    postalcode: "04109"
+    city: Leipzig
+    tel: [+49(0) 341 97 30811, +49(0) 341 97 30813]
+    fax: +49(0) 341 97 39239
+    email: zbcb@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=196"
+    parts: 
+        http://data.ub.uni-leipzig.de/resource/UBL/department/zw02/part/01:
+            branchpart: "Bibliothekarischer Service"
+#            openinghours:
+#                    - {open: 08:00:00, close: 19:00:00, days: Monday-Friday}
+#                    - {open: 08:00:00, close: 13:00:00, days: Saturday}
+        http://data.ub.uni-leipzig.de/resource/UBL/department/zw02/part/02:
+            branchpart: "Hauptzugang im Hörsaalgebäude"
+#            openinghours:
+#                    - {open: 07:00:00, close: 22:00:00, days: Monday-Friday}
+#                    - {open: 07:00:00, close: 14:00:00, days: Saturday}
+    note: "Der Hauptzugang im Hörsaalgebäude ist von montags bis freitags 7:00 - 22:00 Uhr und samstags 7:00 - 14:00 Uhr geöffnet. Außerhalb dieser Zeiten benutzen Sie bitte den Nachtzugang am Augustusplatz. Über den Nachtzugang kann die Bibliothek nur mit gültiger Lesekarte betreten werden."
+zw08paed:
+    branch: "Nebenstandort Kunstpädagogik Institut für Kunstpädagogik der Universität Leipzig"
+    branchno: zw08paed
+    streetaddress: "Ritterstr. 8-10 (Geschwister-Scholl-Haus)"
+    postalcode: "04109"
+    city: Leipzig
+    tel: +49(0) 341 97 37250
+#    fax: +49(0) 341 97 30759
+    email: kunstpae@uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/standorte/kunst/"
+zw09:
+    branch: "Museum für Musikinstrumente der Universität Leipzig"
+    branchno: zw11-01
+    streetaddress: "Johannisplatz 5–11"
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 30750
+    fax: +49(0) 341 97 30759
+    email: musik.museum@uni-leipzig.de
+    url: "http://mfm.uni-leipzig.de/dt/dasmuseum/bibliothek.php"
+#    openinghours:
+#            - {open: 14:00:00, close: 17:00:00, days: Thursday}
+#            - {open: 09:00:00, close: 16:00:00, days: Friday}
+zw11:    
+    branch: "Bibliothek Musik"
+    branchno: zw11
+    streetaddress: "Neumarkt 9-19, Städtisches Kaufhaus"
+    postalcode: "04109"
+    city: Leipzig
+    tel: +49(0) 341 97 30478
+    email: zbmus@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=489"
+#    openinghours:
+#            - {open: 09:00:00, close: 12:00:00, days: Monday-Thursday}
+#            - {open: 13:00:00, close: 15:30:00, days: Monday}
+#            - {open: 13:00:00, close: 18:00:00, days: Tuesday-Thursday}
+#            - {open: 09:00:00, close: 14:00:00, days: Friday}
+#    note: "Sie erreichen die Bibliothek über Aufgang D, 3. Etage. Bitte beachten Sie, dass der Zugang über die Universitätsstraße erfolgt. Achten Sie auch auf die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+    note: "Sie erreichen die Bibliothek über Aufgang D, 3. Etage. Bitte beachten Sie, dass der Zugang über die Universitätsstraße erfolgt."
+zw12:    
+    branch: "Bibliothek Psychologie"
+    branchno: zw12
+    streetaddress: "Seeburgstraße 14/20"
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 30625
+    email: zbcb@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=499"
+#    openinghours:
+#            - {open: 09:00:00, close: 18:00:00, days: Monday-Wednesday}
+#            - {open: 09:00:00, close: 16:00:00, days: Thursday-Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw13:
+    branch: "Karl-Sudhoff-Institut"
+    branchno: zw13
+    streetaddress: "Käthe-Kollwitz-Straße 82"
+    postalcode: "04109"
+    city: Leipzig
+    tel: +49(0) 341 97 25607
+    fax: +49(0) 341 97 25624
+    email: zbmed.sudhoff@medizin.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=604"
+#    openinghours:
+#            - {open: 13:00:00, close: 17:00:00, days: Monday}
+#            - {open: 13:00:00, close: 17:00:00, days: Thursday}
+#            - {open: 09:00:00, close: 13:00:00, days: Tuesday-Wednesday}
+#            - {open: 09:00:00, close: 13:00:00, days: Friday}
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw31:
+    branch: "Bibliothek Rechtswissenschaft"
+    branchno: zw31
+    streetaddress: Burgstraße 27
+    postalcode: "04109"
+    city: Leipzig
+    tel: +49(0) 341 97 30655
+    fax: +49(0) 341 97 30669
+    email: zbrewi@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=504"
+    parts: 
+        01:
+#            openinghours:
+#                - {open: 08:00:00, close: 22:00:00, days: Monday-Friday}
+#                - {open: 10:00:00, close: 22:00:00, days: Saturday}
+        02:
+            branchpart: Zeitschriftenlesesaal
+#            openinghours:
+#                - {open: 09:00:00, close: 19:00:00, days: Monday-Friday}
+#                - {open: 12:00:00, close: 17:00:00, days: Saturday}
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw41:
+    branch: "Bibliothek Orientwissenschaften / Ethnologie, Indologie, Japanologie, Orientalistik, Religionswissenschaft, Sinologie, Zentralasienwissenschaften"
+    branchno: zw41
+    streetaddress: Schillerstraße 6
+    postalcode: "04109"
+    city: Leipzig
+    tel: [+49(0) 341 97 37117 (Auskunft), +49(0) 341 97 37139 (Benutzung)]
+    fax: +49(0) 341 97 30698
+    email: zborient@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=494"
+#    openinghours:
+#            - {open: 09:00:00, close: 20:00:00, days: Monday-Friday}
+#    note: "Standort: Graduiertenkolleg 1553: http://www.ub.uni-leipzig.de/ubl/standorte/orientwissenschaften/graduiertenkolleg-orientwissenschaften.html. Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+#    note: "Standort: Graduiertenkolleg 1553: http://www.ub.uni-leipzig.de/ubl/standorte/orientwissenschaften/graduiertenkolleg-orientwissenschaften.html."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw41alt:
+    branch: "Bibliothek Orientwissenschaften / Altorientalistik"
+    branchno: zw41alt
+    streetaddress: "Goethestraße 2 (Krochhochhaus)"
+    postalcode: "04109"
+    city: Leipzig
+    tel: +49(0) 341 97 37023
+    email: zborient@ub.uni-leipzig.de
+    url: "http://www.uni-leipzig.de/altorient/bibliothek.html"
+#    openinghours:
+#            - {open: 10:00:00, close: 16:00:00, days: Monday-Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit. In der vorlesungsfreien Zeit ist die Benutzung auch nach Vereinbarung möglich."
+    note: "Die aktuellen Öffnungszeiten sind auf der Website zu finden."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw41ori:
+    branch: "Bibliothek Orientwissenschaften / Ägyptologie"
+    branchno: zw41ori
+    streetaddress: "Goethestraße 2 (Krochhochhaus)"
+    postalcode: "04109"
+    city: Leipzig
+    tel: +49(0) 341 97 37018
+    email: bibliothek.aegyptologie@uni-leipzig.de
+    url: "http://www.gko.uni-leipzig.de/aegyptologisches-institut/bibliothek/informationen.html"
+    note: "Die Öffnungszeiten finden Sie auf der Website des Instituts."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw46:
+    branch: "Bibliothek Erziehungswissenschaft"
+    branchno: zw46
+    streetaddress: "Karl-Heine-Straße 22b"
+    postalcode: "04229"
+    city: Leipzig
+    tel: +49(0) 341 97 30674
+    fax: +49(0) 341 97 39236
+    email: zberz@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=471"
+    parts:
+        http://data.ub.uni-leipzig.de/resource/UBL/department/zw46/part/01:
+            branchpart: Ausleihe
+#            openinghours:
+#                - {open: 10:00:00, close: 16:00:00, days: Monday}
+#                - {open: 10:00:00, close: 17:00:00, days: Tuesday-Thursday}
+#                - {open: 10:00:00, close: 16:00:00, days: Friday}
+        http://data.ub.uni-leipzig.de/resource/UBL/department/zw46/part/02:
+            branchpart: Freihandbereich-Lesesaal
+#            openinghours:
+#                - {open: 09:00:00, close: 18:00:00, days: Monday-Thursday}
+#                - {open: 09:00:00, close: 16:00:00, days: Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw66:
+    branch: "Bibliothek Geowissenschaften"
+    branchno: zw66
+    streetaddress: Talstraße 35
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 30629
+    email: zbgeowi@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=437"
+#    openinghours:
+#            - {open: 09:00:00, close: 12:00:00, days: Monday-Friday}
+#            - {open: 13:00:00, close: 16:00:00, days: Monday-Thursday}
+zw71:    
+    branch: "Bibliothek Physik"
+    branchno: zw71
+    streetaddress: "Linnéstraße 5"
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 32414
+    fax: +49(0) 341 97 39242
+    email: zbphys@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=463"
+#    openinghours:
+#            - {open: 09:00:00, close: 12:00:00, days: Monday-Friday}
+#            - {open: 13:00:00, close: 18:00:00, days: Monday-Wednesday}
+#            - {open: 13:00:00, close: 16:00:00, days: Thursday-Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw76:
+    branch: "Bibliothek Chemie/Physik"
+    branchno: zw76
+    streetaddress: Johannisallee 29
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 30630
+    fax: +49(0) 341 97 39253
+    email: zbchem@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=463"
+#    openinghours:
+#            - {open: 08:00:00, close: 12:00:00, days: Monday-Friday}
+#            - {open: 13:00:00, close: 16:30:00, days: Monday}
+#            - {open: 13:00:00, close: 16:30:00, days: Friday}
+#            - {open: 13:00:00, close: 18:00:00, days: Tuesday-Thursday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw81:
+    branch: "Bibliothek Biowissenschaften"
+    branchno: zw81
+    streetaddress: Talstraße 35
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 36783
+    fax: +49(0) 341 97 39245
+    email: zbbio@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=415"
+#    openinghours:
+#            - {open: 09:00:00, close: 12:00:00, days: Monday-Friday}
+#            - {open: 13:00:00, close: 18:00:00, days: Monday-Thursday}
+#            - {open: 13:00:00, close: 16:00:00, days: Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw81idiv:
+    branch: "Bibliothek des German Centre for Integrative Biodiversity Research (iDiv) - Nebenstelle der Bibliothek Biowissenschaften"
+    branchno: zw81idiv
+    streetaddress: Deutscher Platz 5e
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 33102
+    email: rebecca.thier-lange@idiv.de
+    note: "Öffnungszeiten: Dienstag: 10:00 - 12:00 Uhr"
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw86:
+    branch: "Bibliothek Veterinärmedizin"
+    branchno: zw86
+    streetaddress: "An den Tierkliniken 5"
+    postalcode: "04103"
+    city: Leipzig
+    tel: [+49(0) 341 97 30623, +49(0) 341 97 38017 (Ausleihe)]
+    fax: +49(0) 341 97 39246
+    email: zbvetmed@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=514"
+#    openinghours:
+#            - {open: 09:00:00, close: 20:00:00, days: Monday-Thursday}
+#            - {open: 09:00:00, close: 18:00:00, days: Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw91:
+    branch: "Zentralbibliothek Medizin"
+    branchno: zw91
+    streetaddress: "Johannisallee 34"
+    postalcode: "04103"
+    city: Leipzig
+    tel: [+49(0) 341 97 14012 (Ausleihe), +49(0) 341 97 14014 (Fernleihe)]
+    url: "https://www.ub.uni-leipzig.de/index.php?id=519"
+#    openinghours:
+#            - {open: 08:00:00, close: 19:00:00, days: Monday-Thursday}
+#            - {open: 09:00:00, close: 18:00:00, days: Friday}
+#            - {open: 11:00:00, close: 16:00:00, days: Saturday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw96:
+    branch: "Bibliothek Sportwissenschaft"
+    branchno: zw96
+    streetaddress: Jahnallee 59
+    postalcode: "04109"
+    city: Leipzig
+    tel: [+49(0) 341 97 30635, +49(0) 341 97 30663 (Ausleihe)]
+    fax: +49(0) 341 97 31628
+    email: zbspowi@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=509"
+#    openinghours:
+#            - {open: 10:00:00, close: 18:00:00, days: Monday-Thursday}
+#            - {open: 10:00:00, close: 16:00:00, days: Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw01theat:
+    branch: "Nebenstandort Theaterwissenschaft"
+    branchno: zw01theat
+    streetaddress: Ritterstraße 16
+    postalcode: "04109"
+    city: Leipzig
+    tel: +49(0) 341 97 30400
+    fax: +49(0) 341 97 30409
+    email: theaterw@uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/standorte/bibliotheca-albertina/nebenstandort-theaterwissenschaft/"
+    note: "Die Öffnungszeiten erfragen Sie bitte per automatischer Antwort hier: nebenstelle-tw@uni-leipzig.de."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw02kmw:
+    branch: "Nebenstandort Kommunikations- und Medienwissenschaft"
+    branchno: zw02kmw
+    streetaddress: Burgstraße 21, Raum 3.22
+    postalcode: "04109"
+    city: Leipzig
+    tel: +49(0) 341 97 35784
+    email: bgenner@rz.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/standorte/campus-bibliothek/nebenstandort-kmw/"
+#    openinghours:
+#            - {open: 09:00:00, close: 16:30:00, days: Monday}
+#            - {open: 09:00:00, close: 18:00:00, days: Tuesday}
+#            - {open: 09:00:00, close: 16:30:00, days: Wednesday-Thursday}
+#            - {open: 09:00:00, close: 15:00:00, days: Friday}
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw05:
+    branch: "Bibliothek Klassische Archäologie und Ur- und Frühgeschichte"
+    branchno: zw05
+    streetaddress: Ritterstraße 14
+    postalcode: "04109"
+    city: Leipzig
+    tel: +49(0) 341 97 30707
+    email: zbarch@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=449"
+    parts:
+        http://data.ub.uni-leipzig.de/resource/UBL/department/zw05/part/01:
+            branchpart: "Klassische Archäologie (2. Etage)"
+#            openinghours:
+#                - {open: 09:00:00, close: 19:00:00, days: Monday}
+#                - {open: 09:00:00, close: 20:00:00, days: Tuesday}
+#                - {open: 09:00:00, close: 17:00:00, days: Wednesday}
+#                - {open: 09:00:00, close: 20:00:00, days: Thursday}
+#                - {open: 09:00:00, close: 17:00:00, days: Friday}
+        
+        http://data.ub.uni-leipzig.de/resource/UBL/department/zw05/part/02:
+            branchpart: "Ur- und Frühgeschichte (3. Etage)"
+#            openinghours:
+#                - {open: 09:00:00, close: 19:00:00, days: Monday-Friday}
+    note: "Aktuelle Öffnungszeiten in der vorlesungsfreien Zeit sind dem Aushang in der Zweigbibliothek zu entnehmen."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw06:
+    branch: "Bibliothek Deutsches Literaturinstitut Leipzig"
+    branchno: zw06
+    streetaddress: Wächterstraße 34
+    postalcode: "04107"
+    city: Leipzig
+    tel: +49(0) 341 97 30312
+    email: neumannb@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=410"
+#    openinghours:
+#            - {open: 13:00:00, close: 16:00:00, days: Monday}
+#            - {open: 10:00:00, close: 12:00:00, days: Tuesday}
+#            - {open: 13:00:00, close: 16:00:00, days: Tuesday}
+#            - {open: 13:00:00, close: 18:00:00, days: Wednesday}
+#            - {open: 13:00:00, close: 16:00:00, days: Thursday}
+#            - {open: 10:00:00, close: 13:00:00, days: Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw07:
+    branch: "Bibliothek Geographie"
+    branchno: zw07
+    streetaddress: Johannisallee 19
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 38586
+    fax: +49(0) 341 97 39241
+    email: zbgeogr@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=484"
+#    openinghours:
+#            - {open: 09:00:00, close: 12:00:00, days: Monday-Friday}
+#            - {open: 13:00:00, close: 18:00:00, days: Monday}
+#            - {open: 13:00:00, close: 18:00:00, days: Wednesday-Thursday}
+#            - {open: 13:00:00, close: 16:00:00, days: Tuesday}
+#            - {open: 13:00:00, close: 15:00:00, days: Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw08:
+    branch: "Bibliothek Kunst"
+    branchno: zw08
+    streetaddress: Dittrichring 18-20
+    postalcode: "04109"
+    city: Leipzig
+    tel: [+49(0) 341 97 35545, +49(0) 341 97 35547]
+    fax: +49(0) 341 97 39244
+    email: zbkunst@ub.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=456"
+#    openinghours:
+#            - {open: 09:30:00, close: 18:00:00, days: Monday-Wednesday}
+#            - {open: 09:30:00, close: 20:00:00, days: Thursday}
+#            - {open: 09:00:00, close: 14:00:00, days: Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw11instr:
+    branch: "Bibliothek Musik / Nebenstelle Museum für Musikinstrumente"
+    branchno: zw11instr
+    streetaddress: "Johannisplatz 5-11"
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 30750
+    fax: +49(0) 341 97 30759
+    email: musik.museum@uni-leipzig.de
+    url: "http://mfm.uni-leipzig.de/"
+#    openinghours:
+#          - {open: 14:00:00, close: 17:00:00, days: Thursday}
+#          - {open: 09:00:00, close: 16:00:00, days: Friday}
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw76thph:
+    branch: "Bibliothek Chemie/Physik / Nebenstelle Theoretische Physik"
+    branch-no: zw71thph
+    street-address: "Vor dem Hospitaltore 1"
+    postal-code: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 32430
+    email: gabriele.menge@itp.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=463"
+#    openinghours:
+#            - {open: 09:00:00, close: 12:00:00, days: Tuesday-Thursday}
+zw91018:    
+    branch: "Bibliothek Medizin / Kopfkliniken"
+    branch-no: zw91018
+    street-address: "Johannisallee 34"
+    postal-code: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 14170
+    fax: +49(0) 341 97 17163
+    email: zbmed2@medizin.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=519"
+#    openinghours:
+#            - {open: 08:00:00, close: 19:00:00, days: Monday-Thursday}
+#            - {open: 08:00:00, close: 18:00:00, days: Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+http://data.ub.uni-leipzig.de/resource/UBL/department/zw91016:
+    branch: "Zentralbibliothek Medizin 2"
+    branchno: zw91016
+    streetaddress: "Johannisallee 34"
+    postalcode: "04103"
+    city: Leipzig
+    tel: +49(0) 341 97 14170
+    fax: +49(0) 341 97 17163
+    email: zbmed2@medizin.uni-leipzig.de
+    url: "https://www.ub.uni-leipzig.de/index.php?id=519"
+#    openinghours:
+#            - {open: 08:00:00, close: 19:00:00, days: Monday-Thursday}
+#            - {open: 08:00:00, close: 18:00:00, days: Friday}
+#    note: "Bitte beachten Sie die veränderten Öffnungszeiten während der vorlesungsfreien Zeit (siehe Website)."
+

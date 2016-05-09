@@ -4,8 +4,11 @@ namespace finc\Module\Configuration;
 $config = [
     'service_manager' => [
         'factories' => [
-            'VuFind\Mailer' => 'finc\Mailer\Factory'
-        ]
+            'VuFind\Mailer' => 'finc\Mailer\Factory',
+            'VuFind\CacheManager' => 'finc\Service\Factory::getCacheManager',
+            'VuFind\BranchesReader' => 'finc\Service\Factory::getBranchesReader',
+            'VuFind\ILSHoldLogic' => 'finc\Service\Factory::getILSHoldLogic',
+        ],
     ],
     'controllers' => [
         'factories' => [

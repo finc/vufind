@@ -78,6 +78,20 @@ class Factory
     }
 
     /**
+     * Construct the Branches.yaml helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return BranchInfo
+     */
+    public static function getBranchInfo(ServiceManager $sm)
+    {
+        return new BranchInfo(
+            $sm->getServiceLocator()
+        );
+    }
+
+    /**
      * Construct the OpenUrl helper.
      *
      * @param ServiceManager $sm Service manager.
