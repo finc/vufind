@@ -17,6 +17,18 @@ $config = [
             'my-research' => 'finc\Controller\MyResearchController'
         ],
     ],
+    'controller_plugins' => [
+        'factories' => [
+            'emailhold' => 'finc\Controller\Plugin\Factory::getEmailHold',
+        ]
+    ],
+    'service_manager' => [
+        'factories' => [
+            'VuFind\Mailer' => 'finc\Mailer\Factory',
+            'VuFind\ILSConnection' => 'finc\Service\Factory::getILSConnection',
+            'VuFind\ILSHoldLogic' => 'finc\Service\Factory::getILSHoldLogic',
+        ]
+    ],
     'vufind' => [
         'plugin_managers' => [
             'ils_driver' => [
@@ -119,7 +131,7 @@ $config = [
 ];
 
 $nonTabRecordActions = [
-    'PDA'
+    'PDA', 'EmailHold'
 ];
 
 

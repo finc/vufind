@@ -82,6 +82,7 @@
     $block = !$check && isset($row['addLink']) && $row['addLink'] === 'block';
     $blockStorageRetrievalRequest = !$checkStorageRetrievalRequest && isset($row['addStorageRetrievalRequestLink']) && $row['addStorageRetrievalRequestLink'];
     $blockILLRequest = !$checkILLRequest && isset($row['addILLRequestLink']) && $row['addILLRequestLink'];
+    $checkEmailHold = (isset($row['checkEmailHold']) && $row['checkEmailHold']);    
     ?>
     <? if (isset($row['barcode']) && $row['barcode'] != ""): ?>
     <tr vocab="http://schema.org/" typeof="Offer">
@@ -132,8 +133,11 @@
             <? if (!$blockStorageRetrievalRequest && isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
                 <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> placeStorageRetrievalRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
             <? endif; ?>
-              <? if (!$blockILLRequest && isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
-                <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>placeILLRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
+            <? if (!$blockILLRequest && isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
+                <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>placeILLRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>" title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
+            <? endif; ?>
+            <? if (isset($row['emailHoldLink']) && $row['emailHoldLink']): ?>
+              <a class="<?=$checkEmailHold ? 'checkEmailHold ' : ''?>modal-link placeEmailHold " data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['emailHoldLink'])?>" title="<?=$this->transEsc($checkEmailHold ? "EmailHold::email_hold_check_text" : "EmailHold::email_hold_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkEmailHold ? "EmailHold::email_hold_check_text" : "EmailHold::email_hold_place_text")?></a>
             <? endif; ?>
           <? else: ?>
             <? /* Begin Unavailable Items (Recalls) */ ?>

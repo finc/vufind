@@ -1069,16 +1069,15 @@ trait SolrMarcFincTrait
      * @todo Method seems erroneous. Bugfixin needed.
      *
      * @return     array        List of barcodes.
-     * @access     protected
      * @deprecated
      */
-    protected function getBarcode()
+    public function getBarcode()
     {
 
         $barcodes = [];
 
         //$driver = ConnectionManager::connectToCatalog();
-        $libraryCodes = $this->searchesConfig->LibrarayGroup;
+        $libraryCodes = $this->mainConfig->CustomIndex->LibraryGroup;
 
         // get barcodes from marc
         $barcodes = $this->getFieldArray('983', ['a']);

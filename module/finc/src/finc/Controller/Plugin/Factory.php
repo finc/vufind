@@ -1,11 +1,10 @@
 <?php
 /**
- * Record Controller
+ * Factory for controller plugins.
  *
  * PHP version 5
  *
- * Copyright (C) Villanova University 2010.
- * Copyright (C) Leipzig University Library 2016.
+ * Copyright (C) Villanova University 2014.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -21,51 +20,41 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind
- * @package  Controller
+ * @package  View_Helpers
  * @author   Demian Katz <demian.katz@villanova.edu>
- * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de> 
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org Main Site
+ * @link     https://vufind.org/wiki/development Wiki
  */
-namespace finc\Controller;
+namespace finc\Controller\Plugin;
+use Zend\ServiceManager\ServiceManager;
 
 /**
- * Record Controller
+ * Factory for controller plugins.
  *
  * @category VuFind
- * @package  Controller
+ * @package  View_Helpers
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org Main Site
+ * @link     https://vufind.org/wiki/development Wiki
+ *
+ * @codeCoverageIgnore
  */
-class RecordController extends \VuFind\Controller\RecordController
+class Factory
 {
-    use PdaTrait;
-    use EmailHoldTrait;
-
     /**
-     * Constructor
+     * Construct the EmailHold plugin.
      *
-     * @param \Zend\Config\Config $config VuFind configuration
-     */
-    public function __construct(\Zend\Config\Config $config)
-    {
-        // Call standard record controller initialization:
-        parent::__construct($config);
-    }
-
-    /**
-     * Returns the email profile configured in MailForms.ini
+     * @param ServiceManager $sm Service manager.
      *
-     * @param $profile
-     * @return array
+     * @return EmailHold
      */
-    protected function getEmailProfile($profile)
+    public static function getEmailHold(ServiceManager $sm)
     {
-        $mailConfig
-            = $this->getServiceLocator()->get('VuFind\Config')->get('EmailProfiles');
-
-        return isset($mailConfig->$profile) ? $mailConfig->$profile : [];
+        return new EmailHold(
+            $sm->getServiceLocator()->get('VuFind\HMAC'),
+            $sm->getServiceLocator()->get('VuFind\SessionManager')
+        );
     }
 }

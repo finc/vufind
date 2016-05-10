@@ -90,6 +90,8 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                 $result_item['callnumber'] = $this->getItemCallnumber($item);
                 // get location
                 $result_item['location'] = $this->getItemLocation($item);
+                // get location id
+                $result_item['locationid'] = $this->getItemLocationId($item);
                 // get location link
                 $result_item['locationhref'] = $this->getItemLocationLink($item);
                 // get location
@@ -102,6 +104,152 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         }
 
         return $result;
+    }
+
+    /**
+     * Returns an array with status information for provided item.
+     *
+     * @param array $item Array with DAIA item data
+     *
+     * @return array
+     */
+    protected function getItemStatus($item)
+    {
+        $availability = false;
+        $status = ''; // status cannot be null as this will crash the translator
+        $duedate = null;
+        $availableLink = '';
+        $queue = '';
+        $is_holdable = false;
+        $item_notes = [];
+        $item_limitation_types = [];
+        $services = [];
+
+        if (isset($item['available'])) {
+            // check if item is loanable or presentation
+            foreach ($item['available'] as $available) {
+                if (isset($available['service'])
+                    && in_array($available['service'], ['loan', 'presentation'])
+                ) {
+                    $services['available'][] = $available['service'];
+                }
+                // attribute service can be set once or not
+                if (isset($available['service'])
+                    && in_array(
+                        $available['service'],
+                        ['loan', 'presentation', 'openaccess']
+                    )
+                ) {
+                    // set item available if service is loan, presentation or
+                    // openaccess
+                    $availability = true;
+                    if ($available['service'] == 'loan') {
+                        if (isset($available['service']['href'])) {
+                            // save the link to the ils if we have a href for loan
+                            // service
+                            $availableLink = $available['service']['href'];
+                        }
+                        $is_holdable = true;
+                    }
+                }
+
+                // use limitation element for status string
+                if (isset($available['limitation'])) {
+                    $item_notes = array_merge(
+                        $item_notes,
+                        $this->getItemLimitationContent($available['limitation'])
+                    );
+                    $item_limitation_types = array_merge(
+                        $item_limitation_types,
+                        $this->getItemLimitationTypes($available['limitation'])
+                    );
+                }
+
+                // log messages for debugging
+                if (isset($available['message'])) {
+                    $this->logMessages($available['message'], 'item->available');
+                }
+            }
+        }
+
+        if (isset($item['unavailable'])) {
+            foreach ($item['unavailable'] as $unavailable) {
+                if (isset($unavailable['service'])
+                    && in_array($unavailable['service'], ['loan', 'presentation'])
+                ) {
+                    $services['unavailable'][] = $unavailable['service'];
+                }
+                // attribute service can be set once or not
+                if (isset($unavailable['service'])
+                    && in_array(
+                        $unavailable['service'],
+                        ['loan', 'presentation', 'openaccess']
+                    )
+                ) {
+                    if ($unavailable['service'] == 'loan'
+                        && isset($unavailable['service']['href'])
+                    ) {
+                        //save the link to the ils if we have a href for loan service
+                    }
+
+                    // use limitation element for status string
+                    if (isset($unavailable['limitation'])) {
+                        $item_notes = array_merge(
+                            $item_notes,
+                            $this->getItemLimitationContent($unavailable['limitation'])
+                        );
+                        $item_limitation_types = array_merge(
+                            $item_limitation_types,
+                            $this->getItemLimitationTypes($unavailable['limitation'])
+                        );
+                    }
+                }
+                // attribute expected is mandatory for unavailable element
+                if (isset($unavailable['expected'])) {
+                    try {
+                        $duedate = $this->dateConverter
+                            ->convertToDisplayDate(
+                                'Y-m-d', $unavailable['expected']
+                            );
+                    } catch (\Exception $e) {
+                        $this->debug('Date conversion failed: ' . $e->getMessage());
+                        $duedate = null;
+                    }
+                }
+
+                // attribute queue can be set
+                if (isset($unavailable['queue'])) {
+                    $queue = $unavailable['queue'];
+                }
+
+                // log messages for debugging
+                if (isset($unavailable['message'])) {
+                    $this->logMessages($unavailable['message'], 'item->unavailable');
+                }
+            }
+        }
+
+        /*'availability' => '0',
+        'status' => '',  // string - needs to be computed from availability info
+        'duedate' => '', // if checked_out else null
+        'returnDate' => '', // false if not recently returned(?)
+        'requests_placed' => '', // total number of placed holds
+        'is_holdable' => false, // place holding possible?*/
+
+        if (!empty($availableLink)) {
+            $return['ilslink'] = $availableLink;
+        }
+
+        $return['is_holdable']     = $is_holdable;
+        $return['item_notes']      = $item_notes;
+        $return['status']          = $status;
+        $return['availability']    = $availability;
+        $return['duedate']         = $duedate;
+        $return['requests_placed'] = $queue;
+        $return['limitation_types'] = $item_limitation_types;
+        $return['services']        = $this->getAvailableItemServices($services);
+
+        return $return;
     }
 
     /**
@@ -130,18 +278,90 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
      *
      * @return string
      */
+    protected function getItemLocation($item)
+    {
+        return isset($item['department']) && isset($item['department']['content'])
+            && !empty($item['department']['content'])
+                ? $item['department']['content']
+                : 'Unknown';
+    }
+
+    /**
+     * Returns the value for "location" id in VuFind getStatus/getHolding array
+     *
+     * @param array $item Array with DAIA item data
+     *
+     * @return string
+     */
+    protected function getItemLocationId($item)
+    {
+        return isset($item['department']) && isset($item['department']['id'])
+            ? $item['department']['id'] : '';
+    }
+
+    /**
+     * Returns the value for "location" in VuFind getStatus/getHolding array
+     *
+     * @param array $item Array with DAIA item data
+     *
+     * @return string
+     */
     protected function getItemStorage($item)
     {
-        $storage = '';
-
-        if (isset($item['storage'])
-            && isset($item['storage']['content'])
-        ) {
-            $storage .= (empty($storage)
+        return isset($item['storage']) && isset($item['storage']['content'])
+            && !empty($item['storage']['content'])
                 ? $item['storage']['content']
-                : ' - ' . $item['storage']['content']);
-        }
+                : 'Unknown';
+    }
 
-        return (empty($storage) ? 'Unknown' : $storage);
+    /**
+     * Returns the value for "location" id in VuFind getStatus/getHolding array
+     *
+     * @param array $item Array with DAIA item data
+     *
+     * @return string
+     */
+    protected function getItemStorageId($item)
+    {
+        return isset($item['storage']) && isset($item['storage']['id']) 
+            ? $item['storage']['id'] : '';
+    }
+
+    /**
+     * Returns the evaluated values of the provided limitations element
+     *
+     * @param array $limitations Array with DAIA limitation data
+     *
+     * @return array
+     */
+    protected function getItemLimitationContent($limitations)
+    {
+        $itemLimitationContent = [];
+        foreach ($limitations as $limitation) {
+            // return the first limitation with content set
+            if (isset($limitation['content'])) {
+                $itemLimitationContent[] = $limitation['content'];
+            }
+        }
+        return $itemLimitationContent;
+    }
+
+    /**
+     * Returns the evaluated values of the provided limitations element
+     *
+     * @param array $limitations Array with DAIA limitation data
+     *
+     * @return array
+     */
+    protected function getItemLimitationTypes($limitations)
+    {
+        $itemLimitationTypes = [];
+        foreach ($limitations as $limitation) {
+            // return the first limitation with content set
+            if (isset($limitation['id'])) {
+                $itemLimitationTypes[] = $limitation['id'];
+            }
+        }
+        return $itemLimitationTypes;
     }
 }

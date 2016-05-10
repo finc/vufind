@@ -166,6 +166,125 @@ class FincILS extends PAIA implements LoggerAwareInterface
     }
 
     /**
+     * Check if email hold is valid
+     *
+     * This is responsible for determining if an item is requestable
+     *
+     * @param string $id     The Bib ID
+     * @param array  $data   An Array of item data
+     * @param patron $patron An array of patron data
+     *
+     * @return bool True if request is valid, false if not
+     */
+    public function checkEmailHoldIsValid($id, $data, $patron)
+    {
+        // without item_id we cannot check if the item is available for email holding
+        if (!isset($data['item_id'])) {
+            return false;
+        }
+
+        // get status information
+        $status = $this->getStatus($id);
+        foreach ($status as $item) {
+            // search for status information for given item_id
+            if (isset($item['item_id']) && $item['item_id'] == $data['item_id']) {
+                return $this->checkEmailHoldValidationCriteria($item);
+            }
+        }
+
+        // if we have come so far no criteria matched and email holds are not allowed
+        return false;
+    }
+
+    /**
+     * Helper for checking the given item for the configured Email Hold validation
+     * criteria
+     *
+     * @param $item
+     * @return bool
+     */
+    protected function checkEmailHoldValidationCriteria($item)
+    {
+        $criteria = $this->getEmailHoldValidationCriteria();
+        foreach($criteria as $key => $value) {
+            if (isset($item[$key])
+                && ((is_array($item[$key]) && in_array($value, $item[$key]))
+                    || ($value == $item[$key]))
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether hold should be placed via Email for the current item based on
+     * settings in FincILS.ini.
+     *
+     * @param $item
+     * @return array
+     */
+    protected function getEmailHoldValidationCriteria()
+    {
+        $criteria = [];
+        if (isset($this->config['EmailHold']['emailHoldValidationCriteria'])) {
+            foreach ($this->config['EmailHold']['emailHoldValidationCriteria'] as $value) {
+                $criteria[
+                explode('::', $value)[0]
+                ] = explode('::', $value)[1];
+            }
+        }
+        return $criteria;
+    }
+
+    /**
+     * Get Pick Up Locations
+     *
+     * This is responsible for gettting a list of valid library locations for
+     * holds / recall retrieval
+     *
+     * @param array $patron      Patron information returned by the patronLogin
+     *                           method.
+     * @param array $holdDetails Optional array, only passed in when getting a list
+     * in the context of placing a hold; contains most of the same values passed to
+     * placeHold, minus the patron data.  May be used to limit the pickup options
+     * or may be ignored.  The driver must not add new options to the return array
+     * based on this data or other areas of VuFind may behave incorrectly.
+     *
+     * @return array        An array of associative arrays with locationID and
+     * locationDisplay keys
+     */
+    public function getPickupLocations($patron, $details)
+    {
+        if (isset($details['id']) && isset($details['item_id'])) {
+            // getHolding information for given item_id
+            $info = $this->getHolding($details['id']);
+            // now extract pickupLocations for each returned item
+            foreach ($info as $item) {
+                if (isset($item['item_id'])
+                    && $item['item_id'] == $details['item_id']
+                ) {
+                    return isset($item['location'])
+                        ? [[
+                            'locationID' =>
+                                ($item['locationid']!=''
+                                    ? $item['locationid']
+                                    : $item['location']
+                                ),
+                            'locationDisplay' => $item['location']
+                        ]]
+                        : [];
+                }
+            }
+        }
+        return [];
+    }
+    
+    /*********************************************
+     * Custom DAIA methods
+     *********************************************/
+
+    /**
      * PAIA support method - try to find fincid for last segment of PAIA id
      *
      * @param string $id     itemId
@@ -212,6 +331,44 @@ class FincILS extends PAIA implements LoggerAwareInterface
             parent::getStatuses($this->_getILSRecordIds($ids)), $ids
         );
     }
+    
+    /**
+     * Override and add to DAIA item status Email Hold availability
+     *
+     * @param array $item
+     * @return array
+     *
+     * Todo: use $return['addEmailHoldLink'] = 'check'; for patron based service
+     * availability
+     */
+    protected function getItemStatus($item)
+    {
+        $return = parent::getItemStatus($item);
+        $return['addEmailHoldLink'] = $this->checkEmailHoldValidationCriteria($return);
+        if ($return['addEmailHoldLink'] == true) {
+            $return['addLink'] = false;
+        }
+        return $return;
+    }
+    
+    /**
+     * Returns the value for "barcode" in VuFind getStatus/getHolding array
+     *
+     * @param array $item Array with DAIA item data
+     *
+     * @return string
+     */
+    protected function getItemBarcode($item)
+    {
+        if (isset($item['id']) && preg_match("/^".$this->daiaIdPrefix."([A-Za-z0-9]+):([A-Za-z0-9]+)$/", $item['id'], $matches)) {
+            return array_pop($matches);
+        }
+        return parent::getItemBarcode($item);
+    }
+
+    /*********************************************
+     * Custom PAIA methods
+     *********************************************/
 
     /**
      * Patron Login
@@ -264,7 +421,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
             return parent::patronLogin($username, $password);
         }
     }
-
+    
     /**
      * PAIA helper function to map session data to return value of patronLogin()
      *
@@ -433,6 +590,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
         return $items;
     }
 
+    /*********************************************
+     * Finc-ILS specific methods 
+     *********************************************/
+    
     /**
      * Get the Record-Object from the RecordDriver.
      *

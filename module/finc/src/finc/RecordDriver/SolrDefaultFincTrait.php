@@ -75,13 +75,13 @@ trait SolrDefaultFincTrait
 
         $array = [];
 
-        if (isset($this->mainConfig->Site->indexExtension)) {
-            $array = isset($this->fields['local_heading_' . ($this->mainConfig->Site->indexExtension)]) ?
-                $this->fields['local_heading_' . ($this->mainConfig->Site->indexExtension)] : [];
+        if (isset($this->mainConfig->CustomIndex->indexExtension)) {
+            $array = isset($this->fields['local_heading_' . ($this->mainConfig->CustomIndex->indexExtension)]) ?
+                $this->fields['local_heading_' . ($this->mainConfig->CustomIndex->indexExtension)] : [];
             // Use local_heading_facet field if local_heading field delivers no results at first
             if (count($array) == 0) {
-                $array = isset($this->fields['local_heading_facet_' . ($this->mainConfig->Site->indexExtension)]) ?
-                    $this->fields['local_heading_facet_' . ($this->mainConfig->Site->indexExtension)] : [];
+                $array = isset($this->fields['local_heading_facet_' . ($this->mainConfig->CustomIndex->indexExtension)]) ?
+                    $this->fields['local_heading_facet_' . ($this->mainConfig->CustomIndex->indexExtension)] : [];
             }
         }
         return $array;
@@ -151,16 +151,16 @@ trait SolrDefaultFincTrait
     public function getFormats()
     {
         // check if general 'format' index field should be used
-        $isGeneralFormat = (isset($this->mainConfig->Site->generalFormats)
-            && true == $this->mainConfig->Site->generalFormats)
+        $isGeneralFormat = (isset($this->mainConfig->CustomIndex->generalFormats)
+            && true == $this->mainConfig->CustomIndex->generalFormats)
             ? true : false;
         // check if there's an extension defined for the library depended format
         // index field
-        $isExtension = (isset($this->mainConfig->Site->indexExtension))
+        $isExtension = (isset($this->mainConfig->CustomIndex->indexExtension))
             ? true : false;
 
         $format = (false === $isGeneralFormat && true === $isExtension)
-            ?  'format_' . $this->mainConfig->Site->indexExtension : 'format' ;
+            ?  'format_' . $this->mainConfig->CustomIndex->indexExtension : 'format' ;
 
         return isset($this->fields[$format]) ? $this->fields[$format] : [];
     }
@@ -205,6 +205,19 @@ trait SolrDefaultFincTrait
         return isset($this->fields[$date]) ? $this->fields[$date] : '';
     }
 
+    /**
+     * Get the barcode from the institution relevant barcode_{isil} field
+     *
+     * @return array
+     */
+    public function getBarcode()
+    {
+        if (isset($this->mainConfig->CustomIndex->indexExtension)) {
+            return isset($this->fields['barcode_' . ($this->mainConfig->CustomIndex->indexExtension)])
+                ? $this->fields['barcode_' . ($this->mainConfig->CustomIndex->indexExtension)] : [];
+        }
+        return [];
+    }
 
     /**
      * Get the formats for displaying the icons. Renders the format information to
