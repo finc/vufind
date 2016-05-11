@@ -433,6 +433,67 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Return an array of all values extracted from the linked field (MARC 880)
+     * corresponding with the specified field/subfield combination.  If multiple
+     * subfields are specified and $concat is true, they will be concatenated
+     * together in the order listed -- each entry in the array will correspond with a
+     * single MARC field.  If $concat is false, the return array will contain
+     * separate entries for separate subfields.
+     *
+     * @param string $field     The MARC field number used for identifying the linked
+     *                          MARC field to read
+     * @param array  $subfields The MARC subfield codes to read
+     * @param bool   $concat    Should we concatenate subfields?
+     * @param string $separator Separator string (used only when $concat === true)
+     *
+     * @return array
+     */
+    protected function getLinkedFieldArray($field, $subfields = null, $concat = true,
+                                           $separator = ' '
+    ) {
+        // Default to subfield a if nothing is specified.
+        if (!is_array($subfields)) {
+            $subfields = ['a'];
+        }
+
+        // Initialize return array
+        $matches = [];
+
+        // Try to look up the specified field, return empty array if it doesn't
+        // exist.
+        $fields = $this->getMarcRecord()->getFields($field);
+        if (!is_array($fields)) {
+            return $matches;
+        }
+
+        $i = 0;
+        // Extract all the linked fields.
+        foreach ($fields as $currentField) {
+            // Pass the iterator $i as a fallback if subfield $6 of MARC880 does not
+            // contain the Linkage
+            if ($linkedField = $this->getLinkedField($currentField, $i)) {
+                // Extract all the requested subfields, if applicable.
+                $next = $this
+                    ->getSubfieldArray($linkedField, $subfields, $concat, $separator);
+                $matches = array_merge($matches, $next);
+            }
+            $i ++;
+        }
+
+        return $matches;
+    }
+
+    /**
+     * Get the original edition of the record.
+     *
+     * @return string
+     */
+    public function getEditionOrig()
+    {
+        return array_pop($this->getLinkedFieldArray('250', ['a']));
+    }
+
+    /**
      * Get an array of publication detail lines with original notations combining
      * information from MARC field 260 and linked content in 880.
      *
@@ -474,6 +535,31 @@ trait SolrMarcFincTrait
         }
 
         return $retval;
+    }
+
+    /**
+     * Get an array of title detail lines with original notations combining
+     * information from MARC field 245 and linked content in 880.
+     *
+     * @return array
+     */
+    public function getTitleDetails()
+    {
+        return array_merge(
+            $this->getFieldArray('245', ['a','b', 'c']),
+            $this->getLinkedFieldArray('245', ['a', 'b', 'c'])
+        );
+    }
+
+    /**
+     * Get the original statement of responsibility that goes with the title (i.e.
+     * "by John Smith").
+     *
+     * @return string
+     */
+    public function getTitleStatementOrig()
+    {
+        return array_pop($this->getLinkedFieldArray('245', ['c']));
     }
 
     /**

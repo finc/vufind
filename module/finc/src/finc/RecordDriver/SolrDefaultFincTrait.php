@@ -108,6 +108,17 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get the original edition of the record.
+     *
+     * @return string
+     */
+    public function getEditionOrig()
+    {
+        // Not indexed in Solr yet.
+        return null;
+    }
+    
+    /**
      * Get an array of all footnotes in the record.
      *
      * @return array
@@ -750,6 +761,32 @@ trait SolrDefaultFincTrait
     {
         return isset($this->fields['title_uniform']) ?
             $this->fields['title_uniform'] : '';
+    }
+
+    /**
+     * Get an array of title detail lines with original notations combining
+     * information from MARC field 245 and linked content in 880.
+     *
+     * @return array
+     */
+    public function getTitleDetails()
+    {
+        return [
+            implode(' ', [$this->getTitle(), $this->getSubtitle(), $this->getTitleStatement()]),
+            implode(' ', [$this->getTitleOrig(), $this->getTitleStatementOrig()])
+        ];
+    }
+
+    /**
+     * Get the original statement of responsibility that goes with the title (i.e.
+     * "by John Smith").
+     *
+     * @return string
+     */
+    public function getTitleStatementOrig()
+    {
+        // not supported right now
+        return null;
     }
 
     /**
