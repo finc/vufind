@@ -1039,6 +1039,28 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Get additional titles.
+     *
+     * @return array
+     */
+    public function getAdditionalTitles()
+    {
+        // result array to return
+        $retval = [];
+
+        $results = $this->getMarcRecord()->getFields('249');
+        if (!$results) {
+            return $retval;
+        }
+
+        foreach ($results as $line) {
+            $retval[] = $line->getSubfield('a')->getData() .
+                ($line->getSubfield('v')->getData() ? ' / ' . $line->getSubfield('v')->getData() : '');
+        }
+        return $retval;
+    }
+
+    /**
      * Get addional entries for personal names.
      *
      * @return array
