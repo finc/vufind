@@ -2,7 +2,7 @@
 <div>
   <? if (!empty($this->electronic)): ?>
     <div class="openurls">
-      <strong><?=$this->transEsc('Electronic')?></strong>
+      <? /*<strong><?=$this->transEsc('Electronic')?></strong>*/ ?>
       <ul class="no-bullet">
         <? foreach ($this->electronic as $link): ?>
           <li>
@@ -16,7 +16,7 @@
       </ul>
     </div>
   <? endif; ?>
-  <? if (!empty($this->print)): ?>
+  <? /**<? if (!empty($this->print)): ?>
     <div class="openurls">
       <strong><?=$this->transEsc('Holdings')?></strong>
       <ul class="no-bullet">
@@ -45,6 +45,6 @@
         <? endforeach; ?>
       </ul>
     <? endif; ?>
-  </div>
+  </div> */ ?>
 </div>
 <!-- ajax - resolverlinks.phtml - END -->
