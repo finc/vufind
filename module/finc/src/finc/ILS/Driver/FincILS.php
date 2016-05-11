@@ -254,7 +254,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * @return array        An array of associative arrays with locationID and
      * locationDisplay keys
      */
-    public function getPickupLocations($patron, $details)
+    public function getPickupLocations($patron = null, $holdDetails = null)
     {
         if (isset($details['id']) && isset($details['item_id'])) {
             // getHolding information for given item_id
