@@ -248,21 +248,21 @@ ul {
 .sidebar {
   // keep accordion or it will affect catalog-result class too
   .accordion {
-  a.title {
-    &:after {
-      content: '\25BC';
-      float: right;
-      color: $steel;
-    }
-  }
-  & .active {
     a.title {
       &:after {
-        content: '\25B2';
+        content: '\25BC';
+        float: right;
+        color: $steel;
+      }
+    }
+    & .active {
+      a.title {
+        &:after {
+          content: '\25B2';
+        }
       }
     }
   }
-}
 }
 
 // JS TREE FACET !      2 B CHECKED - fixme CK
@@ -1164,45 +1164,45 @@ header .searchForm .tabs {
 // Create sufficient space for dropdown icon and folder icon
 .hierarchy-tree {padding-left:.5rem}
 
-      .jstree-icon {
+.jstree-icon{
   color: #333;
-      }
+}
 // jsTree arrows in hierarchy tree and facet!
 .jstree-ocl:before {
   cursor: pointer;
   float: left;
-    font-family: "FontAwesome", sans-serif;
-    font-style: normal;
-    font-weight: normal;
+  font-family: "FontAwesome", sans-serif;
+  font-style: normal;
+  font-weight: normal;
   margin-left: -2.5rem;
   padding: 0;
-    text-decoration: inherit;
+  text-decoration: inherit;
   width: .75rem;
-    /*speak: none; */
-  }
+  /*speak: none; */
+}
 .jstree-open > .jstree-ocl:before,
 .jstree-closed > .jstree-ocl:before,
 .jstree-leaf > .jstree-ocl:before {margin-top: -.142857em;} // Position of the arrow at same height as other icons
 
-  .jstree-open > .jstree-ocl:before {content: "\f0d7";}
-  .jstree-closed > .jstree-ocl:before {content: "\f0da";}
-  .jstree-leaf > .jstree-ocl:before {content: " ";}
+.jstree-open > .jstree-ocl:before {content: "\f0d7";}
+.jstree-closed > .jstree-ocl:before {content: "\f0da";}
+.jstree-leaf > .jstree-ocl:before {content: " ";}
 
-  .jstree-anchor {
+.jstree-anchor {
   padding: .25rem .25rem .25rem 0; // creates coloured space around linked item
-  }
-  .jstree-children {
+}
+.jstree-children {
   margin-left: .5rem; // redefines space to the left overruling fa-ul
-  }
-  .jstree-initial-node {display: none;}
-  .jstree-clicked {
-    color: $topbar-link-color-active;
-    background-color: $topbar-link-bg-active;
+}
+.jstree-initial-node {display: none;}
+.jstree-clicked {
+  color: $topbar-link-color-active;
+  background-color: $topbar-link-bg-active;
   &:hover,
   &:focus {
     color: darken($topbar-link-color-active,10);
-    }
   }
+}
 
 // Hierarchy tab - END
 
