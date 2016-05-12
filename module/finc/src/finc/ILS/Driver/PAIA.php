@@ -520,6 +520,7 @@ class PAIA extends DAIA
                 'zip'       => null,
                 'phone'     => null,
                 'group'     => null,
+                'expires'   => $patron['expires']
             ];
         }
         return [];
@@ -933,6 +934,8 @@ class PAIA extends DAIA
         $user['college']   = null;
         $user['type'] = (isset($user_response['type'])
             ? $user_response['type'] : '');
+        $user['expires'] = (isset($user_response['expires'])
+            ? $this->convertDatetime($user_response['expires']) : '');
         return $user;
     }
 
