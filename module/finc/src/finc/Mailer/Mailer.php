@@ -78,7 +78,7 @@ class Mailer extends \VuFind\Mailer\Mailer
         if (!$validator->isValid($from)) {
             throw new MailException('Invalid Sender Email Address');
         }
-        if (!$validator->isValid($reply)) {
+        if (!empty($reply) && !$validator->isValid($reply)) {
             throw new MailException('Invalid Reply Email Address');
         }
 
@@ -106,9 +106,13 @@ class Mailer extends \VuFind\Mailer\Mailer
             $message = $this->getNewTextHtmlMessage()
                 ->addFrom($from)
                 ->addTo($to)
-                ->addReplyTo($reply, !empty($reply_name) ? $reply_name : null)
                 ->setBody($mimeBody)
                 ->setSubject($subject);
+
+            if (!empty($reply)) {
+                $message->addReplyTo($reply, !empty($reply_name) ? $reply_name : null);
+            }
+
             $message->getHeaders()
                 ->get('content-type')
                 ->setType('multipart/alternative');
