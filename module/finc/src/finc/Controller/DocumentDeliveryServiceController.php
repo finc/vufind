@@ -474,7 +474,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
         $post = [];
         if ($this->getRequest()->isPost()) {
             $getPost = $this->getRequest()->getPost()->toArray();
-            $post = $getPost['subito'];
+            $post = isset($getPost['subito']) ? $getPost['subito'] : [];
         }
 
         // populate the view with data given by User catalog account
