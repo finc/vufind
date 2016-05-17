@@ -50,33 +50,41 @@ class Factory
      */
     public static function getFincILS(ServiceManager $sm)
     {
-        return new FincILS(
+        $fl = new FincILS(
             $sm->getServiceLocator()->get('VuFind\DateConverter'),
             $sm->getServiceLocator()->get('VuFind\SessionManager'),
             $sm->getServiceLocator()->get('VuFind\RecordLoader'),
             $sm->getServiceLocator()->get('VuFind\Search'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
+
+        $fl->setCacheStorage(
+            $sm->getServiceLocator()->get('VuFind\CacheManager')->getCache('object')
+        );
+
+        return $fl;
     }
 
     /**
-     * Factory for FincLibero driver.
+     * Factory for DAIA driver.
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return FincLibero
+     * @return DAIA
      */
-    public static function getFincLibero(ServiceManager $sm)
+    public static function getDAIA(ServiceManager $sm)
     {
-        return new FincLibero(
-            $sm->getServiceLocator()->get('VuFind\DateConverter'),
-            $sm->getServiceLocator()->get('VuFind\SessionManager'),
-            $sm->getServiceLocator()->get('VuFind\RecordLoader'),
-            $sm->getServiceLocator()->get('VuFind\Search'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        $daia = new DAIA(
+            $sm->getServiceLocator()->get('VuFind\DateConverter')
         );
-    }
 
+        $daia->setCacheStorage(
+            $sm->getServiceLocator()->get('VuFind\CacheManager')->getCache('object')
+        );
+
+        return $daia;
+    }    
+    
     /**
      * Factory for PAIA driver.
      *
@@ -86,10 +94,16 @@ class Factory
      */
     public static function getPAIA(ServiceManager $sm)
     {
-        return new PAIA(
+        $paia = new PAIA(
             $sm->getServiceLocator()->get('VuFind\DateConverter'),
             $sm->getServiceLocator()->get('VuFind\SessionManager')
         );
+
+        $paia->setCacheStorage(
+            $sm->getServiceLocator()->get('VuFind\CacheManager')->getCache('object')
+        );
+
+        return $paia;
     }
 
 }

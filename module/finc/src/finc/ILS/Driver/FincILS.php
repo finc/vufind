@@ -347,6 +347,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
         $return['addEmailHoldLink'] = $this->checkEmailHoldValidationCriteria($return);
         if ($return['addEmailHoldLink'] == true) {
             $return['addLink'] = false;
+            $return['addStorageRetrievalRequestLink'] = false;
         }
         return $return;
     }

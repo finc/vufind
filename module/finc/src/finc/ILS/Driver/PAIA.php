@@ -127,7 +127,6 @@ class PAIA extends DAIA
             throw new ILSException('PAIA/baseUrl configuration needs to be set.');
         }
         $this->paiaURL = $this->config['PAIA']['baseUrl'];
-
     }
 
     // public functions implemented to satisfy Driver Interface
@@ -181,9 +180,9 @@ class PAIA extends DAIA
     DD - setConfig
     !! - supportsMethod
 
-    CC - getMyStorageRetrievalRequests
-    CC - checkStorageRetrievalRequestIsValid
-    CC - placeStorageRetrievalRequest
+    +- - getMyStorageRetrievalRequests
+    +- - checkStorageRetrievalRequestIsValid
+    +- - placeStorageRetrievalRequest
     CC - cancelStorageRetrievalRequests
     CC - getCancelStorageRetrievalRequestDetails
 
@@ -394,29 +393,26 @@ class PAIA extends DAIA
      * keys: id, availability (boolean), status, location, reserve, callnumber,
      * duedate, number, barcode.
      */
-    public function getHolding($id, array $patron = null)
+    /*public function getHolding($id, array $patron = null)
     {
         // only patron-specific behaviour in VuFind2.4 is for "addLink" which is not
         // supported by PAIA, so return DAIA::getHolding
-        return parent::getHolding($id, $patron);
-    }
+        $holdings = parent::getHolding($id, $patron);
+        $returnHoldings = [];
+        // add PAIA specific things
+        foreach ($holdings as $holding) {
+            $holding['addLink'] = false;
+            $holding['addStorageRetrievalRequestLink'] = false;
 
-    /**
-     * Get Hold Link
-     *
-     * The goal for this method is to return a URL to a "place hold" web page on
-     * the ILS OPAC. This is used for ILSs that do not support an API or method
-     * to place Holds.
-     *
-     * @param string $id      The id of the bib record
-     * @param array  $details Item details from getHoldings return array
-     *
-     * @return string         URL to ILS's OPAC's place hold screen.
-     */
-    public function getHoldLink($id, $details)
-    {
-        return $this->getILSHoldLink($id, $details);
+            if ($this->getHoldLink($id, $holding) !== null) {
+                $holding['addStorageRetrievalRequestLink'] = true;
+                $holding['addLink'] = true;
     }
+            $returnHoldings[] = $holding;
+        }
+
+        return $returnHoldings;
+    }*/
 
     /**
      * Get Patron Fines
@@ -447,7 +443,7 @@ class PAIA extends DAIA
         $results = [];
         if (isset($fees['fee'])) {
             foreach ($fees['fee'] as $fee) {
-                $results[] = [
+                $result = [
                     // fee.amount 	1..1 	money 	amount of a single fee
                     'amount'      => $feeConverter($fee['amount']),
                     'checkout'    => '',
@@ -462,15 +458,46 @@ class PAIA extends DAIA
                     // fee.edition 	0..1 	URI 	edition that caused the fee
                     'id' => (isset($fee['edition'])
                         ? $this->getAlternativeItemId($fee['edition']) : ''),
+                ];
+                // custom PAIA fields can get added in getAdditionalFeeData
+                $results[] = $result + $this->getAdditionalFeeData($fee, $patron);
+            }
+        }
+        return $results;
+    }
+
+    /**
+     * Gets additional array fields for the item.
+     * Override this method in your custom PAIA driver if necessary.
+     *
+     * @param array $fee The fee array from PAIA
+     *
+     * @return array Additional fee data for the item
+     */
+    protected function getAdditionalFeeData($fee, $patron = null)
+    {
+        $additionalData = [];
+        // Add the item title using the about field,
+        // but only if this fee is caused by some item
+        if (isset($fee['item'])) {
+            $additionalData['title'] = $fee['about'];
+        }
+
                     // custom PAIA fields
                     // fee.about 	0..1 	string 	textual information about the fee
                     // fee.item 	0..1 	URI 	item that caused the fee
                     // fee.feeid 	0..1 	URI 	URI of the type of service that
                     // caused the fee
-                ];
-            }
-        }
-        return $results;
+        $additionalData['feeid']      = (isset($fee['feeid'])
+            ? $fee['feeid'] : null);
+        $additionalData['about']      = (isset($fee['about'])
+            ? $fee['about'] : null);
+        $additionalData['item']       = (isset($fee['item'])
+            ? $fee['item'] : null);
+        $additionalData['title']      = (isset($fee['title'])
+            ? $fee['title'] : null);
+
+        return $additionalData;
     }
 
     /**
@@ -487,10 +514,8 @@ class PAIA extends DAIA
         // filters for getMyHolds are:
         // status = 1 - reserved (the document is not accessible for the patron yet,
         //              but it will be)
-        //          2 - ordered (the document is being made accessible for the
-        //              patron)
         //          4 - provided (the document is ready to be used by the patron)
-        $filter = ['status' => [1, 2, 4]];
+        $filter = ['status' => [1, 4]];
         // get items-docs for given filters
         $items = $this->paiaGetItems($patron, $filter);
 
@@ -509,18 +534,21 @@ class PAIA extends DAIA
     public function getMyProfile($patron)
     {
         //todo: read VCard if avaiable in patron info
+        //todo: make fields more configurable
         if (is_array($patron)) {
             return [
-                'firstname' => $patron['firstname'],
-                'lastname'  => $patron['lastname'],
-                'address1'  => null,
-                'address2'  => null,
-                'city'      => null,
-                'country'   => null,
-                'zip'       => null,
-                'phone'     => null,
-                'group'     => null,
-                'expires'   => $patron['expires']
+                'firstname'  => $patron['firstname'],
+                'lastname'   => $patron['lastname'],
+                'address1'   => null,
+                'address2'   => null,
+                'city'       => null,
+                'country'    => null,
+                'zip'        => null,
+                'phone'      => null,
+                'group'      => null,
+                // PAIA specific custom values
+                'expires'    => $this->convertDate($patron['expires']),
+                'statuscode' => $patron['status'],
             ];
         }
         return [];
@@ -545,6 +573,27 @@ class PAIA extends DAIA
         $items = $this->paiaGetItems($patron, $filter);
 
         return $this->mapPaiaItems($items, 'myTransactionsMapping');
+    }
+
+    /**
+     * Get Patron StorageRetrievalRequests
+     *
+     * This is responsible for retrieving all storage retrieval requests
+     * by a specific patron.
+     *
+     * @param array $patron The patron array from patronLogin
+     *
+     * @return array Array of the patron's storage retrieval requests on success,
+     */
+    public function getMyStorageRetrievalRequests($patron)
+    {
+        // filters for getMyStorageRetrievalRequests are:
+        // status = 2 - ordered (the document is ordered by the patron)
+        $filter = ['status' => [2]];
+        // get items-docs for given filters
+        $items = $this->paiaGetItems($patron, $filter);
+
+        return $this->mapPaiaItems($items, 'myStorageRetrievalRequestsMapping');
     }
 
     /**
@@ -636,10 +685,9 @@ class PAIA extends DAIA
                     $password
                 );
             } catch (ILSException $e) {
-                $this->debug('Session expired, login again', 'info');
+                $this->debug('Session expired, login again', ['info' => 'info']);
             }
         }
-
         try {
             if ($this->paiaLogin($username, $password)) {
                 return $this->enrichUserDetails(
@@ -729,6 +777,23 @@ class PAIA extends DAIA
     }
 
     /**
+     * Place a Storage Retrieval Request
+     *
+     * Attempts to place a request on a particular item and returns
+     * an array with result details.
+     *
+     * @param array $details An array of item and patron data
+     *
+     * @return mixed An array of data on the request including
+     * whether or not it was successful and a system message (if available)
+     */
+    public function placeStorageRetrievalRequest($details)
+    {
+        // Making a storage retrieval request is the same in PAIA as placing a Hold
+        return $this->placeHold($details);
+    }
+
+    /**
      * This method renews a list of items for a specific patron.
      *
      * @param array $details - An associative array with two keys:
@@ -736,7 +801,7 @@ class PAIA extends DAIA
      *      details - array of values returned by the getRenewDetails method
      *                identifying which items to renew
      *
-     * @return array - An associative array with two keys:
+     * @return  array - An associative array with two keys:
      *     blocks - An array of strings specifying why a user is blocked from
      *              renewing (false if no blocks)
      *     details - Not set when blocks exist; otherwise, an array of
@@ -810,20 +875,6 @@ class PAIA extends DAIA
     /*
      * PAIA functions
      */
-
-    /**
-     * Support method to generate ILS specific HoldLink for public exposure through
-     * getHoldLink
-     *
-     * @param string $id      Bibliographic Record ID
-     * @param array  $details Item details array from getHolding
-     *
-     * @return string
-     */
-    protected function getILSHoldLink($id, $details)
-    {
-        return parent::getHoldLink($id, $details);
-    }
 
     /**
      * PAIA support method to return strings for PAIA service status values
@@ -906,7 +957,7 @@ class PAIA extends DAIA
      */
     protected function paiaParseUserDetails($patron, $user_response)
     {
-        $username = $user_response['name'];
+        $username = trim($user_response['name']);
         if (count(explode(',', $username)) == 2) {
             $nameArr = explode(',', $username);
             $firstname = $nameArr[1];
@@ -917,8 +968,9 @@ class PAIA extends DAIA
             $lastname = '';
             array_shift($nameArr);
             foreach ($nameArr as $value) {
-                $lastname .= $value;
+                $lastname .= ' '.$value;
             }
+            $lastname = trim($lastname);
         }
 
         // TODO: implement parsing of user details according to types set
@@ -932,10 +984,12 @@ class PAIA extends DAIA
             ? $user_response['email'] : '');
         $user['major']     = null;
         $user['college']   = null;
-        $user['type'] = (isset($user_response['type'])
-            ? $user_response['type'] : '');
-        $user['expires'] = (isset($user_response['expires'])
-            ? $this->convertDatetime($user_response['expires']) : '');
+        // add other information from PAIA - we don't want anything to get lost while parsing
+        foreach ($user_response as $key => $value) {
+            if (!isset($user[$key])) {
+                $user[$key] = $value;
+            }
+        }
         return $user;
     }
 
@@ -977,7 +1031,7 @@ class PAIA extends DAIA
             $result['item_id'] = (isset($doc['item']) ? $doc['item'] : '');
 
             $result['cancel_details']
-                = (isset($result['cancancel']) && $result['cancancel'])
+                = (isset($doc['cancancel']) && $doc['cancancel'])
                 ? $result['item_id'] : '';
 
             // edition (0..1) URI of a the document (no particular copy)
@@ -1003,11 +1057,12 @@ class PAIA extends DAIA
             // label (0..1) call number, shelf mark or similar item label
             $result['callnumber'] = (isset($doc['label']) ? $doc['label'] : null); // PAIA custom field
 
-            if (in_array($doc['status'], [1, 2])) {
+            if ($doc['status'] == 1 ) {
                 // status == 1 => starttime: when the document was reserved
-                // status == 2 => starttime: when the document was ordered
                 $result['create'] = (isset($doc['starttime'])
                     ? $this->convertDatetime($doc['starttime']) : '');
+                $result['duedate'] = (isset($doc['endtime'])
+                    ? $this->convertDatetime($doc['endtime']) : '');
             }
 
             if ($doc['status'] == '4') {
@@ -1018,6 +1073,71 @@ class PAIA extends DAIA
                 // patron)
                 $result['available'] = true;
             }
+
+            // Optional VuFind fields
+            /*
+            $result['reqnum'] = null;
+            $result['volume'] =  null;
+            $result['publication_year'] = null;
+            $result['isbn'] = null;
+            $result['issn'] = null;
+            $result['oclc'] = null;
+            $result['upc'] = null;
+            */
+
+            $results[] = $result;
+
+        }
+        return $results;
+    }
+
+    /**
+     * This PAIA helper function allows custom overrides for mapping of PAIA response
+     * to getMyStorageRetrievalRequests data structure.
+     *
+     * @param array $items Array of PAIA items to be mapped.
+     *
+     * @return array
+     */
+    protected function myStorageRetrievalRequestsMapping($items)
+    {
+        $results = [];
+
+        foreach ($items as $doc) {
+            $result = [];
+
+            // item (0..1) URI of a particular copy
+            $result['item_id'] = (isset($doc['item']) ? $doc['item'] : '');
+
+            $result['cancel_details']
+                = (isset($doc['cancancel']) && $doc['cancancel'])
+                ? $result['item_id'] : '';
+
+            // edition (0..1) URI of a the document (no particular copy)
+            // hook for retrieving alternative ItemId in case PAIA does not
+            // the needed id
+            $result['id'] = (isset($doc['edition'])
+                ? $this->getAlternativeItemId($doc['edition']) : '');
+
+            $result['type'] = $this->paiaStatusString($doc['status']);
+
+            $result['location'] = (isset($doc['location'])
+                ? $doc['location'] : null);
+
+            // queue (0..1) number of waiting requests for the document or item
+            $result['position'] =  (isset($doc['queue']) ? $doc['queue'] : null);
+
+            // only true if status == 4
+            $result['available'] = false;
+
+            // about (0..1) textual description of the document
+            $result['title'] = (isset($doc['about']) ? $doc['about'] : null);
+
+            // label (0..1) call number, shelf mark or similar item label
+            $result['callnumber'] = (isset($doc['label']) ? $doc['label'] : null); // PAIA custom field
+
+            $result['create'] = (isset($doc['starttime'])
+                ? $this->convertDatetime($doc['starttime']) : '');
 
             // Optional VuFind fields
             /*
@@ -1058,7 +1178,7 @@ class PAIA extends DAIA
             $result['item_id'] = (isset($doc['item']) ? $doc['item'] : '');
 
             $result['renew_details']
-                = (isset($result['canrenew']) && $result['canrenew'])
+                = (isset($doc['canrenew']) && $doc['canrenew'])
                 ? $result['item_id'] : '';
 
             // edition (0..1)  URI of a the document (no particular copy)
@@ -1079,8 +1199,9 @@ class PAIA extends DAIA
             $result['renew'] = (isset($doc['renewals']) ? $doc['renewals'] : null);
 
             // reminder (0..1) number of times the patron has been reminded
-            $reminder = (isset($doc['reminder']) ? $doc['reminder'] : null);
+            $result['reminder'] = (isset($doc['reminder']) ? $doc['reminder'] : null);
 
+            // custom PAIA field
             // starttime (0..1) date and time when the status began
             $result['startTime'] = (isset($doc['starttime'])
                 ? $this->convertDatetime($doc['starttime']) : '');
@@ -1368,5 +1489,162 @@ class PAIA extends DAIA
         }
         return $this->paiaParseUserDetails($patron, $responseArray);
     }
+
+    /**
+     * Check if storage retrieval request available
+     *
+     * This is responsible for determining if an item is requestable
+     *
+     * @param string $id     The Bib ID
+     * @param array  $data   An Array of item data
+     * @param patron $patron An array of patron data
+     *
+     * @return bool True if request is valid, false if not
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function checkStorageRetrievalRequestIsValid($id, $data, $patron)
+    {
+        return $this->checkRequestIsValid($id, $data, $patron);
+    }
+
+    /**
+     * Check if hold or recall available
+     *
+     * This is responsible for determining if an item is requestable
+     *
+     * @param string $id     The Bib ID
+     * @param array  $data   An Array of item data
+     * @param patron $patron An array of patron data
+     *
+     * @return bool True if request is valid, false if not
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function checkRequestIsValid($id, $data, $patron)
+    {
+        // TODO: make this more configurable
+        if ($patron['status'] == 0 && $patron['expires'] > date('Y-m-d')) {
+            return true;
+        }
+        return false;
+    }
+
+    /********************* TODO **********************************/
+    /* These methods are not working properly yet (or are using just dummy values) */
+
+    /**
+     * Get Default Request Group
+     *
+     * Returns the default request group
+     *
+     * @param array $patron      Patron information returned by the patronLogin
+     * method.
+     * @param array $holdDetails Optional array, only passed in when getting a list
+     * in the context of placing a hold; contains most of the same values passed to
+     * placeHold, minus the patron data.  May be used to limit the request group
+     * options or may be ignored.
+     *
+     * @return false|string      The default request group for the patron.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getDefaultRequestGroup($patron = false, $holdDetails = null)
+    {
+        $requestGroups = $this->getRequestGroups(0, 0);
+        return $requestGroups[0]['id'];
+    }
+
+    /**
+     * Get request groups
+     *
+     * @param integer $bibId  BIB ID
+     * @param array   $patron Patron information returned by the patronLogin
+     * method.
+     *
+     * @return array  False if request groups not in use or an array of
+     * associative arrays with id and name keys
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getRequestGroups($bibId = null, $patron = null)
+    {
+        return [
+            [
+                'id' => 1,
+                'name' => 'Main Library'
+            ],
+            [
+                'id' => 2,
+                'name' => 'Branch Library'
+            ]
+        ];
+    }
+
+    /**
+     * Cancel Storage Retrieval Request
+     *
+     * Attempts to Cancel a Storage Retrieval Request on a particular item. The
+     * data in $cancelDetails['details'] is determined by
+     * getCancelStorageRetrievalRequestDetails().
+     *
+     * @param array $cancelDetails An array of item and patron data
+     *
+     * @return array               An array of data on each request including
+     * whether or not it was successful and a system message (if available)
+     */
+    public function cancelStorageRetrievalRequests($cancelDetails)
+    {
+        // Rewrite the items in the session, removing those the user wants to
+        // cancel.
+        $newRequests = new ArrayObject();
+        $retVal = ['count' => 0, 'items' => []];
+        $session = $this->getSession();
+        foreach ($session->storageRetrievalRequests as $current) {
+            if (!in_array($current['reqnum'], $cancelDetails['details'])) {
+                $newRequests->append($current);
+            } else {
+                if (!$this->isFailing(__METHOD__, 50)) {
+                    $retVal['count']++;
+                    $retVal['items'][$current['item_id']] = [
+                        'success' => true,
+                        'status' => 'storage_retrieval_request_cancel_success'
+                    ];
+                } else {
+                    $newRequests->append($current);
+                    $retVal['items'][$current['item_id']] = [
+                        'success' => false,
+                        'status' => 'storage_retrieval_request_cancel_fail',
+                        'sysMessage' =>
+                            'Demonstrating failure; keep trying and ' .
+                            'it will work eventually.'
+                    ];
+                }
+            }
+        }
+
+        $session->storageRetrievalRequests = $newRequests;
+        return $retVal;
+    }
+
+    /**
+     * Get Cancel Storage Retrieval Request Details
+     *
+     * In order to cancel a hold, Voyager requires the patron details an item ID
+     * and a recall ID. This function returns the item id and recall id as a string
+     * separated by a pipe, which is then submitted as form data in Hold.php. This
+     * value is then extracted by the CancelHolds function.
+     *
+     * @param array $details An array of item data
+     *
+     * @return string Data for use in a form field
+     */
+    public function getCancelStorageRetrievalRequestDetails($details)
+    {
+        return $details['reqnum'];
+    }
+
+
+
 
 }
