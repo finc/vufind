@@ -1,13 +1,17 @@
 <!-- helpers - branchinfo.phtml -->
 <tr class="holding-info">
   <td colspan="4">
+    <ul class="accordion" data-accordion>
+      <li class="accordion-navigation">
+        <a href="#<?=$info['branchno']?>" class="accordion-toggler"><?=$this->transEsc('Address-Contact-Hours')?></a>
+        <div id="<?=$info['branchno']?>" class="content">
     <div class="row collapse">
-      <h4><?=$info['branch']?></h4>
-      <div class="branch-address small-12 medium-4 columns">
+            <div class="branch-address small-12 medium-6 columns">
+              <strong><?=$info['branch']?></strong><br/>
         <?=$info['streetaddress']?><br/>
         <?=$info['postalcode']?> <?=$info['city']?>
       </div>
-      <div class="branch-contact small-12 medium-4 columns">
+            <div class="branch-contact small-12 medium-6 columns">
         <? if (isset($info['tel'])): ?>
           <? if (is_array($info['tel'])): ?>
             <? foreach ($info['tel'] as $tel): ?>
@@ -41,7 +45,7 @@
           </a>
         <? endif; ?>
       </div>
-      <div class="branch-hours small-12 medium-4 columns">
+            <div class="branch-hours small-12 columns">
         <? if (
           isset($info['openinghours'])
           && is_array($info['openinghours'])
@@ -72,6 +76,10 @@
         </div>
       <? endif; ?>
     </div>
+        </div>
+      </li>
+    </ul>
+
   </td>
 </tr>
 <!-- helpers - branchinfo.phtml - END -->

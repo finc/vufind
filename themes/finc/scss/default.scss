@@ -82,6 +82,24 @@ header.fixed { left:auto;max-width: $row-width; }
   .button {
     margin-top: .5rem;
   }
+  ul.accordion {
+    margin-left: 0;
+    margin-bottom: 1rem;
+    li a.accordion-toggler::after {
+      font-family: "FontAwesome", sans-serif;
+      float: right;
+    }
+    li:not(active) a.accordion-toggler::after {
+      content: "\f078";
+    }
+    li.active a.accordion-toggler::after {
+      color: darken($secondary-color,10%);
+      content: "\f077";
+    }
+   .accordion-navigation > a {
+     padding: .25rem 1rem;
+    }
+  }
 }
 // Internformat - staff view
 table.citation th {min-width: 18%}
