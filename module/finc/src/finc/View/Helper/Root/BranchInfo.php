@@ -83,9 +83,11 @@ class BranchInfo  extends AbstractHelper
     public function getBranchInfo($branchID)
     {
         $yamlData = $this->loadBranches();
-        if (isset($yamlData)) {
-            $data = $yamlData[$branchID];
-            return $this->getView()->render('Helpers/branchinfo.phtml', ['info' => $data]);
+        if (isset($yamlData) && isset($yamlData[$branchID])) {
+            return $this->getView()
+                ->render('Helpers/branchinfo.phtml',
+                         ['info' => $yamlData[$branchID]]
+                );
         }
         return null;
     }

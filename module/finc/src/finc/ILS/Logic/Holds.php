@@ -67,8 +67,8 @@ class Holds extends \VuFind\ILS\Logic\Holds
                 'items' => $items,
                 'location' => isset($items[0]['location'])
                     ? $items[0]['location'] : '',
-                'department' => isset($items[0]['department'])
-                    ? $items[0]['department'] : '',
+                'locationid' => isset($items[0]['locationid'])
+                    ? $items[0]['locationid'] : '',
                 'locationhref' => isset($items[0]['locationhref'])
                     ? $items[0]['locationhref'] : ''
             ];
