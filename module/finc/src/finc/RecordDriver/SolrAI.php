@@ -251,6 +251,16 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
+     * Gets an array of sources (mega_collection) from record
+     *
+     * @return array of sources
+     */
+    public function getMegaCollection()
+    {
+        return $this->getAIRecord('finc.mega_collection');
+    }
+
+    /**
      * Gets an array of series from record
      *
      * @return array of series
