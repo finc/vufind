@@ -7,6 +7,7 @@ $config = [
             'VuFind\Mailer' => 'finc\Mailer\Factory',
             'VuFind\CacheManager' => 'finc\Service\Factory::getCacheManager',
             'VuFind\BranchesReader' => 'finc\Service\Factory::getBranchesReader',
+            'VuFind\ILSConnection' => 'finc\Service\Factory::getILSConnection',
             'VuFind\ILSHoldLogic' => 'finc\Service\Factory::getILSHoldLogic',
         ],
     ],
@@ -23,13 +24,6 @@ $config = [
     'controller_plugins' => [
         'factories' => [
             'emailhold' => 'finc\Controller\Plugin\Factory::getEmailHold',
-        ]
-    ],
-    'service_manager' => [
-        'factories' => [
-            'VuFind\Mailer' => 'finc\Mailer\Factory',
-            'VuFind\ILSConnection' => 'finc\Service\Factory::getILSConnection',
-            'VuFind\ILSHoldLogic' => 'finc\Service\Factory::getILSHoldLogic',
         ]
     ],
     'vufind' => [
