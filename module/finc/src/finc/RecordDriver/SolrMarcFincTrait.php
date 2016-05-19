@@ -1101,20 +1101,28 @@ trait SolrMarcFincTrait
     {
         $array = [];
         $fields = ['770','775','776'];
+        $subfields = ['a', 'l', 't', 'd', 'e', 'f', 'h', 'o', '7'];
         $i = 0;
 
         foreach ($fields as $field) {
-
             $related = $this->getMarcRecord()->getFields($field);
             // if no entry break it
             if ($related) {
                 foreach ($related as $key => $line) {
-                    // check if subfields i or t exist. if yes do a record.
-                    if ($line->getSubfield('i') || $line->getSubfield('t')) {
+                    // -----
+                    // https://intern.finc.info/issues/6896#note-7
+                    $text = [];
+                    foreach ($subfields as $subfield) {
+                        if ($line->getSubfield($subfield)) {
+                            $text[] = $line->getSubfield($subfield)->getData();
+                        }
+                    }
+                    $array[$i]['text'] = (count($text) > 0
+                      ? implode(', ', $text) : '');
+                    // -----
+                    if ($line->getSubfield('i')) {
                         $array[$i]['identifier'] = ($line->getSubfield('i'))
                             ? $line->getSubfield('i')->getData() : '';
-                        $array[$i]['text'] = ($line->getSubfield('t'))
-                            ? $line->getSubfield('t')->getData() : '';
                         // get ppns of bsz
                         $linkFields = $line->getSubfields('w');
                         if (is_array($linkFields) && count($linkFields) > 0) {
@@ -1122,16 +1130,16 @@ trait SolrMarcFincTrait
                                 $text = $current->getData();
                                 // Extract parenthetical prefixes:
                                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
-                                    $array[$i]['record_id'] = $matches[2].$matches[3];
+                                    $array[$i]['record_id']
+                                        = $matches[2] . $matches[3];
                                 }
-                            } // end foreach
-                        } // end if
+                            }
+                        }
                         $i++;
-                    } // end if
-                } // end foreach
+                    }
+                }
             }
         }
-
         return $this->addFincIDToRecord($array);
     }
 
