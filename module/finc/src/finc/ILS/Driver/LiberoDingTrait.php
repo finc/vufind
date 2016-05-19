@@ -230,6 +230,86 @@ trait LiberoDingTrait
     }
 
     /**
+     * Change values of users profile.
+     *
+     * @param array $inval Associative array of key => value. Keys are:
+     *     - memberCode   : User ID returned by patronLogin
+     *     - street       : street and number
+     *     - additional   : optional address value
+     *     - city         : city/village
+     *     - zipCode      : location zip code
+     *     - emailAddress : email address
+     *     - reason       : reason of change
+     * @return boolean true OK, false FAIL
+     * @access public
+     */
+    public function setMyProfile($inval, $patron)
+    {
+        $map = self::_profileDataMapper(true);
+
+        $params                 = $this->_getLiberoDingRequestParams();
+        $params['memberCode']   = $patron['cat_username'];
+        $params['password']     = $patron['cat_password'];
+
+        $data = [];
+        if (is_array($inval) && (count($inval) > 0)) {
+            foreach ($inval as $k => $v) {
+                if (isset($map[$k])) {
+                    $data[$map[$k]] = $v;
+                } else {
+                    $data[$k] = $v;
+                }
+            }
+        }
+
+        $params = array_merge($params, $data);
+
+        try {
+            $result = $this->httpService->get(
+              $this->getWebScraperUrl() .'setMyProfile.jsp',
+              $params,
+              null,
+              $this->_getLiberoDingRequestHeaders()
+            );
+        } catch (\Exception $e) {
+            throw new ILSException($e->getMessage());
+        }
+
+        if (!$result->isSuccess()) {
+            // log error for debugging
+            $this->debug(
+              'HTTP status ' . $result->getStatusCode() .
+              ' received'
+            );
+            return false;
+        }
+
+        return $this->_getLiberoDingResultBool($result);
+    }
+
+    /**
+     * Returns Array with profile fields that are never allowed to be edited
+     *
+     * @return array
+     */
+    public function getIgnoredProfileFields()
+    {
+        return isset($this->config['LiberoDing']['ignoredProfileFields']) ?
+          $this->config['LiberoDing']['ignoredProfileFields'] : [];
+    }
+
+    /**
+     * Returns Array with user groups not allowed to edit profile data
+     *
+     * @return array
+     */
+    public function getRestrictedUserGroups()
+    {
+        return isset($this->config['LiberoDing']['restrictedUserGroups']) ?
+            $this->config['LiberoDing']['restrictedUserGroups'] : [];
+    }
+
+    /**
      * This method queries the LiberoDing-ILS for a patron's current profile
      * information.
      *
@@ -376,5 +456,24 @@ trait LiberoDingTrait
         }
 
         return isset($details[$resultKey]) ? $details[$resultKey] : [];
+    }
+
+    /**
+     * Check the given result for key errorcode and return the requested resultKey
+     * value
+     *
+     * @param $result array
+     * @return array
+     */
+    private function _getLiberoDingResultBool($result)
+    {
+        // get result as array
+        $details = json_decode($result->getBody(), true);
+
+        if (!is_array($details) || !isset($details["errorcode"]) || $details["errorcode"] != 0) {
+            return false;
+        }
+
+        return true;
     }
 }
