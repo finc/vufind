@@ -14,14 +14,13 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
         <form class="form-horizontal" method="post" action="" name="acquisitionForm">
             <h6><?=$this->transEsc('PDA::pda_form_suggestions_limit') ?></h6>
             <div class="form-group row">
-                <label class="col-sm-3 medium-3 columns control-label" for="subject"><?=$this->transEsc('PDA::pda_form_branch_of_study_label') ?><span class="required">*</span></label>
+                <label class="col-sm-3 medium-3 columns control-label" for="subject"><?=$this->transEsc('PDA::pda_form_field_of_study_label') ?><span class="required">*</span></label>
                 <div class="col-sm-9 medium-9 columns">
                     <select name="subject" class="form-control auto">
-                        <option value="-1"><?=$this->transEsc('PDA::pda_form_subject_text') ?></option>
+                        <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text') ?></option>
                         <? if (isset($subjectlist) && is_array($subjectlist)): ?>
                             <? foreach ($subjectlist as $value): ?>
-                                <option
-                                    value="<?= $value ?>" <? if (isset($values['subject']) && ($values['subject'] != '-1') && ($values['subject'] == $value)): ?> selected="selected"<? endif; ?>><?= $this->transEsc('PDA::subject_' . $value) ?></option>
+                                <option value="<?=$this->transEsc("PDA::fos_" . $value)?>" <? if (isset($values['subject']) && ($values['subject'] != '-1') && ($values['subject'] == $value)): ?> selected="selected"<? endif; ?>><?= $this->transEsc('PDA::fos_' . $value) ?></option>
                             <? endforeach; ?>
                         <? endif; ?>
                     </select>

@@ -60,8 +60,8 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
     private function _getSubjectList()
     {
         if (count($this->_subjectlist) <= 0) {
-            $this->_subjectlist = (isset($this->getConfig()->CustomSite->subject)
-                ? $this->getConfig()->CustomSite->subject->toArray() : []
+            $this->_subjectlist = (isset($this->getConfig()->CustomSite->field_of_study)
+                ? $this->getConfig()->CustomSite->field_of_study->toArray() : []
             );
         }
         return $this->_subjectlist;
