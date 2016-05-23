@@ -272,6 +272,19 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? $additionals = $this->driver->getAdditionals(); if (!empty($additionals) && is_array($additionals)): ?>
+        <? foreach($additionals as $additional) :?>
+          <tr>
+            <th><?=$this->escapeHtml($additional['identifier'])?>: </th>
+            <td>
+              <? if(isset($additional['id'])): ?><a href="<?=$this->recordLink()->getUrl($additional['id'])?>"><? endif; ?>
+              <?=$this->escapeHtml($additional['text'])?>
+              <? if(isset($additional['id'])): ?></a><? endif; ?>
+            </td>
+          </tr>
+        <? endforeach; ?>
+      <? endif; ?>
+
       <? if ($this->usertags()->getMode() !== 'disabled'): ?>
         <? $tagList = $this->driver->getTags(null, null, 'count', $user_id); ?>
         <tr>
