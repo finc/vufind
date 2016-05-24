@@ -298,7 +298,7 @@ $(document).ready(function() {
 
   // Advanced facets
   $('.facetOR').click(function() {
-    $(this).closest('.collapse').html('<li class="title">'+VuFind.translate('loading')+'&nbsp;...</li>');
+    $(this).closest('.content.active').html('<ul class="side-nav"><li class="title"><span>'+VuFind.translate('loading')+'&nbsp;...</span></li></ul>');
     window.location.assign($(this).attr('href'));
   });
 });
