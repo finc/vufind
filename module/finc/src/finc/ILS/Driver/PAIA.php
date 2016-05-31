@@ -58,6 +58,13 @@ class PAIA extends DAIA
     protected $paiaURL;
 
     /**
+     * Flag to switch on/off caching for PAIA items
+     *
+     * @var bool
+     */
+    protected $paiaCacheEnabled = false;
+
+    /**
      * Session containing PAIA login information
      *
      * @var Zend\Session\Container
@@ -127,6 +134,13 @@ class PAIA extends DAIA
             throw new ILSException('PAIA/baseUrl configuration needs to be set.');
         }
         $this->paiaURL = $this->config['PAIA']['baseUrl'];
+
+        // do we have caching enabled for PAIA
+        if (isset($this->config['PAIA']['paiaCache'])) {
+            $this->paiaCacheEnabled = $this->config['PAIA']['paiaCache'];
+        } else {
+            $this->debug('Caching not enabled, disabling it by default.');
+        }
     }
 
     // public functions implemented to satisfy Driver Interface
@@ -902,9 +916,17 @@ class PAIA extends DAIA
      */
     protected function paiaGetItems($patron, $filter = [])
     {
-        $itemsResponse = $this->paiaGetAsArray(
-            'core/'.$patron['cat_username'].'/items'
-        );
+        // check for existing data in cache
+        if ($this->paiaCacheEnabled) {
+            $itemsResponse = $this->getCachedData($patron['cat_username'] . '_items');
+        }
+
+        if (!isset($itemsResponse) || $itemsResponse == null) {
+            $itemsResponse = $this->paiaGetAsArray(
+                'core/'.$patron['cat_username'].'/items'
+            );
+            $this->putCachedData($patron['cat_username'] . '_items', $itemsResponse);
+        }
 
         if (isset($itemsResponse['doc'])) {
             if (count($filter)) {

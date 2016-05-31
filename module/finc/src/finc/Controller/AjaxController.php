@@ -127,4 +127,38 @@ class AjaxController extends \VuFind\Controller\AjaxController
         // output HTML encoded in JSON object
         return $this->output($html, self::STATUS_OK);
     }
+
+    /**
+     * Get additional information for display in my research area.
+     *
+     * This method currently only returns the items/entries count of the ILS methods
+     * given as post values.
+     *
+     * @return \Zend\Http\Response
+     */
+    protected function getAdditionalAccountInfoAjax()
+    {
+        $this->disableSessionWrites();  // avoid session write timing bug
+
+        // Stop now if the user does not have valid catalog credentials available:
+        if (!is_array($patron = $this->catalogLogin())) {
+            return $patron;
+        }
+
+        $catalog = $this->getILS();
+
+        // initialize the return array
+        $additionalAccountInfos = [];
+
+        // collect data for views to be counted
+        $viewsToCount = $this->params()->fromPost('views', $this->params()->fromQuery('views'));
+
+        $additionalAccountInfos['countViewItems'] = $catalog->countItems(
+            $viewsToCount,
+            $patron
+        );
+
+        // Done
+        return $this->output($additionalAccountInfos, self::STATUS_OK);
+    }
 }

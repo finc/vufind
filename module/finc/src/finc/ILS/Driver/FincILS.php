@@ -152,7 +152,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
             $this->root_username = $this->config['PAIA']['root_username'];
             $this->root_password = $this->config['PAIA']['root_password'];
         }
-
+        
         // get ISIL from config if ILS-specific recordId is barcode for
         // interaction with ILS
         if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
@@ -457,9 +457,17 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     protected function paiaGetItems($patron, $filter = [])
     {
-        $itemsResponse = $this->paiaGetAsArray(
-            'core/'.$patron['cat_username'].'/items'
-        );
+        // check for existing data in cache
+        if ($this->paiaCacheEnabled) {
+            $itemsResponse = $this->getCachedData($patron['cat_username'] . '_items');
+        }
+
+        if (!isset($itemsResponse) || $itemsResponse == null) {
+            $itemsResponse = $this->paiaGetAsArray(
+                'core/'.$patron['cat_username'].'/items'
+            );
+            $this->putCachedData($patron['cat_username'] . '_items', $itemsResponse);
+        }
 
         if (isset($itemsResponse['doc'])) {
             if (count($filter)) {
@@ -594,6 +602,27 @@ class FincILS extends PAIA implements LoggerAwareInterface
     /*********************************************
      * Finc-ILS specific methods 
      *********************************************/
+
+    /**
+     * finc-specific function to count items/entries in return values of given
+     * functions in order to be shown as numbers in MyReSearch-Menu
+     *
+     * @param $functions Array of function names that will get called and the
+     *                   count of their return values being returned
+     * @param $patron    Patron details returned by patronLogin
+     * @return array     Array in the format [function => count]
+     */
+    public function countItems($functions, $patron) {
+        $retval = [];
+        if (is_array($functions)) {
+            foreach ($functions as $function) {
+                if (method_exists($this, $function)) {
+                    $retval[$function] = count($this->$function($patron));
+                }
+            }
+        }
+        return $retval;
+    }
     
     /**
      * Get the Record-Object from the RecordDriver.
