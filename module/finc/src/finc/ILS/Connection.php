@@ -75,16 +75,12 @@ class Connection extends \VuFind\ILS\Connection implements TranslatorAwareInterf
             'placeEmailHold', [$params ?: []]
         );*/
         if (isset($functionConfig['HMACKeys'])) {
-            //$response = ['function' => 'placeEmailHold'];
-            if (isset($functionConfig['emailTo'])) {
-                $response['emailTo'] = $functionConfig['emailTo'];
-            }
-            if (isset($functionConfig['emailFrom'])) {
-                $response['emailFrom'] = $functionConfig['emailFrom'];
-            }
             $response['HMACKeys'] = explode(':', $functionConfig['HMACKeys']);
             if (isset($functionConfig['extraFields'])) {
                 $response['extraFields'] = $functionConfig['extraFields'];
+            }
+            if (isset($functionConfig['emailProfileSelector'])) {
+                $response['emailProfileSelector'] = $functionConfig['emailProfileSelector'];
             }
             if (isset($functionConfig['helpText'])) {
                 $response['helpText'] = $this->getHelpText(

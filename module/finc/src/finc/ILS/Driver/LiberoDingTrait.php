@@ -111,11 +111,11 @@ trait LiberoDingTrait
         $http_header['User-Agent']
             = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)';
 
-        $params = array(
+        $params = [
             'dbName' => $this->getDbName(),
             'connectionTimeout' => $this->getConnectTimeout(),
             'soTimeout' => $this->getResponseTimeout()
-        );
+        ];
 
         try {
             $result = $this->httpService->post(
@@ -348,7 +348,7 @@ trait LiberoDingTrait
 
         if ($mapped) {
             // define of disabled fields
-            $mappeddata = array();
+            $mappeddata = [];
             $map = self::_profileDataMapper();
             $data = $this->_getLiberoDingResult($result, 'getMyProfile');
 
@@ -384,7 +384,7 @@ trait LiberoDingTrait
      */
     private static function _profileDataMapper( $reverse = false )
     {
-        $array = array(
+        $array = [
             "GNAM" => 'firstname',
             "SUR" => 'lastname',
             "FOA" => 'title',
@@ -407,7 +407,7 @@ trait LiberoDingTrait
             "ALTA3" => 'city3',
             "ALTA4" => 'zip3',
             "ALTA5" => 'country3'
-        );
+        ];
 
         return ($reverse === true) ? array_flip($array) : $array;
     }

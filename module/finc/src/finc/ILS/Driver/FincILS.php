@@ -465,7 +465,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
             return parent::patronLogin($username, $password);
         }
     }
-    
+
     /**
      * PAIA helper function to map session data to return value of patronLogin()
      *

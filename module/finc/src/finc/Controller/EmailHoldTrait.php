@@ -106,7 +106,9 @@ trait EmailHoldTrait
             if (isset($item['item_id'])
                 && $item['item_id'] == $gatheredDetails['item_id']
             ) {
-                $item_notes = $item['item_notes'];
+                // make the full status information for the current item available in
+                // the view 
+                $itemStatus = $item;
             }
         }
 
@@ -116,7 +118,7 @@ trait EmailHoldTrait
             // if successful, we will redirect and can stop here.
 
             // Add Patron Data to Submitted Data
-            $details = $gatheredDetails + ['patron' => $patron, 'item_notes' => $item_notes];
+            $details = $gatheredDetails + ['patron' => $patron, 'itemStatus' => $itemStatus];
 
             // Add needed Record Data to Submitted Data
             $details['record'] = [
@@ -126,7 +128,22 @@ trait EmailHoldTrait
 
             // Attempt to send the email and show an appropriate flash message:
             try {
-                $emailProfile = $this->getEmailProfile('EmailHoldJournal');
+                // select the appropriate emailProfile based on the
+                // emailProfileSelector setting in the ILS drivers EmailHold section
+                // and default to emailProfile EmailHold if setting or profile is not
+                // set
+                $emailProfile
+                    = (
+                        isset($checkRequests['emailProfileSelector'])
+                        && !empty($checkRequests['emailProfileSelector'])
+                    ) &&
+                    (
+                        isset($gatheredDetails[$checkRequests['emailProfileSelector']])
+                        && $this->getEmailProfile($gatheredDetails[$checkRequests['emailProfileSelector']]) != []
+                    )
+                    ? $this->getEmailProfile($gatheredDetails[$checkRequests['emailProfileSelector']])
+                    : $this->getEmailProfile('EmailHold');
+                
                 $renderer = $this->getViewRenderer();
 
                 // Custom template for emails (html-only)
@@ -183,6 +200,7 @@ trait EmailHoldTrait
 
         $view = $this->createViewModel(
             [
+                'itemStatus' => $itemStatus,
                 'gatheredDetails' => $gatheredDetails,
                 'pickup' => $pickup,
                 'defaultPickup' => $defaultPickup,

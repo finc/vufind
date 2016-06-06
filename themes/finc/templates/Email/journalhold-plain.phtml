@@ -20,12 +20,13 @@ Signatur: <?=$this->callnumber?>
 
 Barcode: <?=$this->barcode?>
 
+
 Weitere Informationen:
 
 Standort: <?=$this->pickUpLocation?>
 
-Anmerkungen zum Titel:
-<? if (isset($this->item_notes)): foreach ($this->item_notes as $note): ?>
+Anmerkungen zum Exemplar:
+<? if (isset($this->itemStatus['item_notes'])): foreach ($this->itemStatus['item_notes'] as $note): ?>
     * <?=$note?>
 
 <? endforeach; endif; ?>

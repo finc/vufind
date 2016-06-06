@@ -90,7 +90,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
     public function getStatus($id)
     {
         // check ids for existing availability data in cache and skip these ids
-        if ($this->daiaCacheEnabled && $item = $this->getCachedData($id)) {
+        if ($this->daiaCacheEnabled && $item = $this->getCachedData($this->generateURI($id))) {
             if ($item != null) {
                 return $item;
             }
@@ -106,7 +106,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                 // parse the extracted DAIA document and return the status info
                 $data = $this->parseDaiaDoc($id, $doc);
                 // cache the status information
-                $this->putCachedData($id, $data);
+                $this->putCachedData($this->generateURI($id), $data);
                 return $data;
             }
         } catch (ILSException $e) {
@@ -140,7 +140,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
 
         // check cache for given ids and skip these ids if availability data is found
         foreach ($ids as $key=>$id) {
-            if ($this->daiaCacheEnabled && $item = $this->getCachedData($id)) {
+            if ($this->daiaCacheEnabled && $item = $this->getCachedData($this->generateURI($id))) {
                 if ($item != null) {
                     $status[] = $item;
                     unset($ids[$key]);
@@ -166,7 +166,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                             // means we got status information for that record
                             $data = $this->parseDaiaDoc($id, $doc);
                             // cache the status information
-                            $this->putCachedData($id, $data);
+                            $this->putCachedData($this->generateURI($id), $data);
                             $status[] = $data;
                         }
                         unset($doc);
@@ -184,7 +184,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                             // info
                             $data = $this->parseDaiaDoc($id, $doc);
                             // cache the status information
-                            $this->putCachedData($id, $data);
+                            $this->putCachedData($this->generateURI($id), $data);
                             $status[] = $data;
                         }
                     }
@@ -225,6 +225,8 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
             foreach ($daiaArray['item'] as $item) {
                 $result_item = [];
                 $result_item['id'] = $id;
+                // custom DAIA field
+                $result_item['doc_id'] = $doc_id;
                 $result_item['item_id'] = $item['id'];
                 // custom DAIA field used in getHoldLink()
                 $result_item['ilslink']
@@ -393,7 +395,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         // In this DAIA driver implementation addLink and is_holdable are assumed
         // Boolean as patron based availability requires either a patron-id or -type.
         // This should be handled in a custom DAIA driver
-        $return['addLink'] = $return['is_holdable'] = $this->checkIsHoldable($item);
+        $return['addLink'] = $return['is_holdable'] = $this->checkIsRecallable($item);
         $return['holdtype']        = $this->getHoldType($item);
 
         // Check if we the item is available for storage retrieval request if it is
@@ -434,23 +436,22 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
     }
 
     /**
-     * Helper function to determine if item is holdable.
+     * Helper function to determine if item is recallable.
      * DAIA does not genuinly allow distinguishing between holdable and recallable
      * items. This could be achieved by usage of limitations but this would not be
      * shared functionality between different DAIA implementations (thus should be
-     * implemented in custom drivers). Therefore is_holdable returns whether an item
-     * is recallable based on unavailable services and the existence of a valid
-     * duedate.
+     * implemented in custom drivers). Therefore this returns whether an item
+     * is recallable based on unavailable services and the existence of an href.
      *
      * @param $item
      * @return bool
      */
-    protected function checkIsHoldable($item)
+    protected function checkIsRecallable($item)
     {
         // This basic implementation checks the item for being unavailable for loan
-        // and presentation but with a duedate.
+        // and presentation but with an existing href (as a flag for further action).
         $services = ['available'=>[], 'unavailable'=>[]];
-        $duedate = '';
+        $href = false;
         if (isset($item['available'])) {
             // check if item is loanable or presentation
             foreach ($item['available'] as $available) {
@@ -468,34 +469,18 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                     && in_array($unavailable['service'], ['loan', 'presentation'])
                 ) {
                     $services['unavailable'][] = $unavailable['service'];
-                }
-                // attribute expected is mandatory for unavailable element
-                if (isset($unavailable['expected'])) {
-                    try {
-                        $duedate = $this->dateConverter
-                            ->convertToDisplayDate(
-                                'Y-m-d', $unavailable['expected']
-                            );
-                    } catch (\Exception $e) {
-                        $this->debug('Date conversion failed: ' . $e->getMessage());
-                        $duedate = null;
-                    }
+                    // attribute href is used to determine whether item is recallable
+                    // or not
+                    $href = isset($unavailable['href']) ? true : $href;
                 }
             }
         }
 
-        foreach ($services['available'] as $service) {
-            if (!in_array($service, $services['unavailable'])) {
-                // we have at least one available service so assume the item cannot
-                // be placed on hold
-                return false;
-            }
-        }
-
-        // If we have come so far we know that all services are unavailable. Having a
-        // duedate indicates that the item will be available at some point in the
-        // future qualifying it as being able to place a hold on it.
-        return !empty($duedate);
+        // Check if we have at least one service unavailable and a href field is set
+        // (either as flag or as actual value for the next action).
+        return ($href && count(
+                array_diff($services['unavailable'], $services['available'])
+        ));
     }
 
     /**
@@ -506,7 +491,10 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
      */
     protected function checkIsStorageRetrievalRequest($item)
     {
+        // This basic implementation checks the item for being available for loan
+        // and presentation but with an existing href (as a flag for further action).
         $services = ['available'=>[], 'unavailable'=>[]];
+        $href = false;
         if (isset($item['available'])) {
             // check if item is loanable or presentation
             foreach ($item['available'] as $available) {
@@ -514,6 +502,9 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                     && in_array($available['service'], ['loan', 'presentation'])
                 ) {
                     $services['available'][] = $available['service'];
+                    // attribute href is used to determine whether item is
+                    // requestable or not
+                    $href = isset($available['href']) ? true : $href;
                 }
             }
         }
@@ -528,7 +519,11 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
             }
         }
 
-        return in_array('loan', array_diff($services['available'], $services['unavailable']));
+        // Check if we have at least one service unavailable and a href field is set
+        // (either as flag or as actual value for the next action).
+        return ($href && count(
+                array_diff($services['available'], $services['unavailable'])
+        ));
     }
 
     /**
@@ -539,12 +534,12 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
      * implemented in custom drivers). Therefore getHoldType always returns recall.
      *
      * @param $item
-     * @return string 'recall'
+     * @return string 'recall'|null
      */
     protected function getHoldType($item)
     {
         // return holdtype (hold, recall or block if patron is not allowed) for item
-        return $this->checkIsHoldable($item) ? 'recall' : null;
+        return $this->checkIsRecallable($item) ? 'recall' : null;
     }
     
     /**
@@ -673,5 +668,23 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         // Override the base class formatting with DAIA-specific URI
         // to ensure proper caching in a MultiBackend environment.
         return 'DAIA-' . md5($this->generateURI(($key)));
+    }
+
+    /**
+     * Helper function for storing cached data.
+     * Data is cached for up to $this->cacheLifetime seconds so that it would be
+     * faster to process e.g. requests where multiple calls to the backend are made.
+     *
+     * @param string $key   Cache entry key
+     *
+     * @return void
+     */
+    protected function removeCachedData($key)
+    {
+        // Don't write to cache if we don't have a cache!
+        if (null === $this->cache) {
+            return;
+        }
+        $this->cache->removeItem($this->formatCacheKey($key));
     }
 }

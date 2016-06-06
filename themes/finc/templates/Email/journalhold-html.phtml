@@ -31,10 +31,10 @@
         <td colspan="2">
             <strong>Titel:</strong> <?=$this->record['title']?><br>
             <strong>Standort:</strong> <?=$this->pickUpLocation?><br>
-            <? if (isset($this->item_notes)): ?>
-            <strong>Anmerkungen zum Titel:</strong>
+            <? if (isset($this->itemStatus['item_notes'])): ?>
+            <strong>Anmerkungen zum Exemplar:</strong>
             <ul>
-                <? foreach ($this->item_notes as $note): ?><li><?=$note?></li><? endforeach; ?>
+                <? foreach ($this->itemStatus['item_notes'] as $note): ?><li><?=$note?></li><? endforeach; ?>
             </ul>
             <? endif; ?>
         </td>

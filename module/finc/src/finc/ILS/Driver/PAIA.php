@@ -729,7 +729,28 @@ class PAIA extends DAIA
         $details['cat_password'] = $password;
         return $details;
     }
-    
+
+    /**
+     * Returns an array with PAIA confirmations based on the given holdDetails which
+     * will be used for a request.
+     * Currently two condition types are supported:
+     *  - http://purl.org/ontology/paia#StorageCondition to select a document
+     *    location -- mapped to pickUpLocation
+     *  - http://purl.org/ontology/paia#FeeCondition to confirm or select a document
+     *    service causing a fee -- not mapped yet
+     *
+     * @param $details
+     * @return array
+     */
+    protected function getConfirmations($holdDetails) {
+        $confirmations = [];
+        if (isset($holdDetails['pickUpLocation'])) {
+            $confirmations['http://purl.org/ontology/paia#StorageCondition']
+                = [$holdDetails['pickUpLocation']];
+        }
+        return $confirmations;
+    }
+
     /**
      * Place Hold
      *
@@ -746,11 +767,14 @@ class PAIA extends DAIA
     public function placeHold($holdDetails)
     {
         $item = $holdDetails['item_id'];
-
-        $items = [];
-        $items[] = ['item' => stripslashes($item)];
         $patron = $holdDetails['patron'];
-        $post_data = ["doc" => $items];
+
+        $doc = [];
+        $doc['item'] = stripslashes($item);
+        if ($confirm = $this->getConfirmations($holdDetails)) {
+            $doc["confirm"] = $confirm;
+        }
+        $post_data['doc'][] = $doc;
 
         try {
             $array_response = $this->paiaPostAsArray(
@@ -784,6 +808,12 @@ class PAIA extends DAIA
                         'success' => true,
                         'sysMessage' => 'Successfully requested'
                     ];
+                    // if caching is enabled for DAIA remove the cached data for the
+                    // current item otherwise the changed status will not be shown
+                    // before the cache expires
+                    if ($this->daiaCacheEnabled) {
+                        $this->removeCachedData($holdDetails['doc_id']);
+                    }
                 }
             }
         }
@@ -1673,8 +1703,5 @@ class PAIA extends DAIA
     {
         return $details['reqnum'];
     }
-
-
-
 
 }

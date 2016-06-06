@@ -28,6 +28,7 @@
  * @link     https://vufind.org Main Site
  */
 namespace finc\Controller;
+use VuFind\Exception\Mail as MailException;
 
 /**
  * Record Controller
@@ -66,6 +67,10 @@ class RecordController extends \VuFind\Controller\RecordController
         $mailConfig
             = $this->getServiceLocator()->get('VuFind\Config')->get('EmailProfiles');
 
-        return isset($mailConfig->$profile) ? $mailConfig->$profile : [];
+        if (isset($mailConfig->$profile)) {
+            return $mailConfig->$profile;
+        } else {
+            throw new MailException('Missing email profile: ' + $profile);
+        }
     }
 }
