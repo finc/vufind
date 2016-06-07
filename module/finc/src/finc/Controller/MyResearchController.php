@@ -27,9 +27,11 @@
  */
 namespace finc\Controller;
 
-use Zend\Validator\StringLength,
+use finc\Mailer\Mailer,
+    VuFind\Exception\Mail as MailException,
     Zend\I18n\Validator\IsInt,
-    finc\Mailer\Mailer;
+    Zend\Mail\Address,
+    Zend\Validator\StringLength;
 
 /**
  * Controller for the user account area.
@@ -168,25 +170,26 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
                         )
                         : $this->translate('PDA::pda_form_title')
                 );
+                
                 $from_unknown = (isset($config->Acquisition->from_unknown)
                     ? $config->Acquisition->from_unknown : '');
-                $from = (isset($user->email)
-                    ? $user->email : $from_unknown);
-                $to = (isset($config->Acquisition->to)
-                    ? $config->Acquisition->to : '');
+                $from = $reply = (isset($user->email))
+                    ? new Address($user->email, $user->firstname . ' ' . $user->lastname) 
+                    : new Address($from_unknown);
+
+                $to = (isset($config->Acquisition->to))
+                    ? new Address($config->Acquisition->to)
+                    : '';
+
                 $mailer = new Mailer(
                     $this->getServiceLocator()
                         ->get('VuFind\Mailer')->getTransport()
                 );
-
-                $reply_to = $from;
-                $reply_to_name = $user->firstname . ' ' . $user->lastname;
-
+                
                 $mailer->sendTextHtml(
                     $to,
                     $from,
-                    $reply_to,
-                    $reply_to_name,
+                    $reply,
                     $subject,
                     $message_html,
                     $message_text

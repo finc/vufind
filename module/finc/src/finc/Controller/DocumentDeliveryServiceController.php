@@ -30,9 +30,10 @@ namespace finc\Controller;
 
 //use ZfcRbac\Service\AuthorizationServiceAwareInterface as AuthorizationServiceAwareInterface;
 //use ZfcRbac\Service\AuthorizationServiceAwareTrait as AuthorizationServiceAwareTrait;
-use finc\Exception\DDS as DDSException;
-use finc\Mailer\Mailer as Mailer;
-use Zend\Validator as Validator;
+use finc\Exception\DDS as DDSException,
+    finc\Mailer\Mailer as Mailer,
+    Zend\Mail\Address as Address,
+    Zend\Validator as Validator;
 
 /**
  * Controller for Document Delivery Service
@@ -55,7 +56,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
      * @var $config
      * @access protected
      */
-    protected $config = array();
+    protected $config = [];
 
     /**
      * Departments
@@ -63,7 +64,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
      * @var $department
      * @access protected
      */
-    protected $department = array();
+    protected $department = [];
 
     /**
      * Divisions
@@ -71,7 +72,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
      * @var $division
      * @access protected
      */
-    protected $division = array();
+    protected $division = [];
 
     /**
      * HTTP client
@@ -107,7 +108,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
      * @var $content
      * @access protected
      */
-    protected $content = array();
+    protected $content = [];
 
     /**
      * Build department taxonomy for options of select box.
@@ -225,8 +226,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
             $mailer->sendTextHtml(
                 $email['to'],
                 $email['from'],
-                $email['reply'],
-                $email['replyname'],
+                new Address($email['reply'], $email['replyname']),
                 $email['subject'],
                 '', //$bodyHtml,
                 $email['body']

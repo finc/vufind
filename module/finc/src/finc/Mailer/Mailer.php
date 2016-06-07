@@ -27,6 +27,8 @@
  */
 namespace finc\Mailer;
 use VuFind\Exception\Mail as MailException,
+    Zend\Mail\Address,
+    Zend\Mail\AddressList,
     Zend\Mail\Message,
     Zend\Mime\Message as MimeMessage,
     Zend\Mime\Part as MimePart,
@@ -59,26 +61,49 @@ class Mailer extends \VuFind\Mailer\Mailer
     /**
      * Send an email message.
      *
-     * @param string $to      Recipient email address
-     * @param string $from    Sender email address
-     * @param string $reply   reply email address
-     * @param string $subject Subject line for message
-     * @param string $body    Message body
+     * @param string|Address|AddressList $to         Recipient email address (or
+     * delimited list)
+     * @param string|Address             $from       Sender name and email address
+     * @param string|Address             $reply      Reply name and email address
+     * @param string                     $subject    Subject line for message
+     * @param string                     $body_html  HTML message body
+     * @param string                     $body_text  Plain text message body
      *
      * @throws MailException
      * @return void
      */
-    public function sendTextHtml($to, $from, $reply, $reply_name, $subject, $body_html, $body_text)
-    {
-        // Validate sender and recipient
+    public function sendTextHtml($to, $from, $reply, $subject, $body_html, 
+         $body_text
+    ) {
+        if ($to instanceof AddressList) {
+            $recipients = $to;
+        } else if ($to instanceof Address) {
+            $recipients = new AddressList();
+            $recipients->add($to);
+        } else {
+            $recipients = $this->stringToAddressList($to);
+        }
+
+        // Validate email addresses:
         $validator = new \Zend\Validator\EmailAddress();
-        if (!$validator->isValid($to)) {
+        if (count($recipients) == 0) {
             throw new MailException('Invalid Recipient Email Address');
         }
-        if (!$validator->isValid($from)) {
+        foreach ($recipients as $current) {
+            if (!$validator->isValid($current->getEmail())) {
+                throw new MailException('Invalid Recipient Email Address');
+            }
+        }
+        
+        $fromEmail = ($from instanceof Address)
+            ? $from->getEmail() : $from;
+        if (!$validator->isValid($fromEmail)) {
             throw new MailException('Invalid Sender Email Address');
         }
-        if (!empty($reply) && !$validator->isValid($reply)) {
+
+        $replyEmail = ($reply instanceof Address)
+            ? $reply->getEmail() : $reply;
+        if (!empty($reply) && !$validator->isValid($replyEmail)) {
             throw new MailException('Invalid Reply Email Address');
         }
 
@@ -105,12 +130,12 @@ class Mailer extends \VuFind\Mailer\Mailer
 
             $message = $this->getNewTextHtmlMessage()
                 ->addFrom($from)
-                ->addTo($to)
+                ->addTo($recipients)
                 ->setBody($mimeBody)
                 ->setSubject($subject);
 
             if (!empty($reply)) {
-                $message->addReplyTo($reply, !empty($reply_name) ? $reply_name : null);
+                $message->addReplyTo($reply);
             }
 
             $message->getHeaders()
