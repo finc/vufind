@@ -31,6 +31,7 @@
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace finc\ILS\Driver;
+use VuFind\Exception\ILS as ILSException;
 
 /**
  * ILS Driver for VuFind to query availability information via DAIA.
