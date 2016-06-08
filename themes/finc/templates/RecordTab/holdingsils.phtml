@@ -62,13 +62,27 @@
   <?=$this->branchInfo($this->driver)->getBranchInfo($holding['locationid']); ?>
 <table class="table">
   <caption class="sr-only"><?=$this->transEsc('Holdings details from')?> <?=$this->transEsc($holding['location'])?></caption>
-  <? /* WE USE NO callNos here, next are th for availability and details - 04.16. CK */ ?>
+  <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
   <tr>
-    <th><?=$this->transEsc("Availability")?></th>
-    <th><?=$this->transEsc("Details")?></th>
+    <th><?=$this->transEsc("Call Number")?>: </th>
+    <td>
+      <? foreach ($callNos as $callNo): ?>
+        <?=$this->escapeHtml($callNo)?><br />
+      <? endforeach; ?>
+    </td>
   </tr>
-  <? /* WE USE NO callNos here - 04.16. CK */ ?>
-  <? /* WE USE NO textFields, see rev #6237 - 04.16. CK */ ?>
+  <? endif; ?>
+  <? if (isset($holding['textfields'])): foreach ($holding['textfields'] as $textFieldName => $textFields): ?>
+      <tr>
+        <? // Translation for summary is a special case for backwards-compatibility ?>
+        <th><?=$textFieldName == 'summary' ? $this->transEsc("Volume Holdings") : $this->transEsc(ucfirst($textFieldName))?>:</th>
+        <td>
+          <? foreach ($textFields as $current): ?>
+            <?=$this->escapeHtml($current)?><br/>
+          <? endforeach; ?>
+        </td>
+      </tr>
+  <? endforeach; endif; ?>
   <? foreach ($holding['items'] as $row): ?>
     <?
     // AJAX Check record?
@@ -83,16 +97,7 @@
     ?>
     <? if (isset($row['barcode']) && $row['barcode'] != ""): ?>
     <tr vocab="http://schema.org/" typeof="Offer">
-      <? /* WE USE NO Copy NOR on Reserve here but below, see rev #6237 - 04.16. CK */ ?>
-      <td>
-        <? if ($row['availability']): ?>
-        <? /* Begin Available Items (Holds) */ ?>
-        <span class="label success"><?=$this->transEsc("Available")?><link property="availability" href="http://schema.org/InStock" /></span>
-        <? else: ?>
-        <? /* Begin Unavailable Items (Recalls) */ ?>
-        <span class="label alert"><?=empty($row['status'])?$this->transEsc("Unavailable"):$this->transEsc($row['status'])?><link property="availability" href="http://schema.org/OutOfStock" /></span>
-        <? endif; ?>
-      </td>
+        <th><?=$this->transEsc("Copy")?> <?=$this->escapeHtml($row['number'])?></th>
       <td>
         <? if ($row['reserve'] == "Y"): ?>
           <link property="availability" href="http://schema.org/InStoreOnly" />
@@ -101,29 +106,9 @@
         <? if (isset($row['use_unknown_message']) && $row['use_unknown_message']): ?>
           <span class="label secondary"><?=$this->transEsc("status_unknown_message")?></span>
         <? else: ?>
-          <? /* WE USE callnumbers here, rev #6237 - 04.16. CK */ ?>
-          <? if (isset($row['callnumber'])): ?>
-            <span class="callnumber"><?=$this->transEsc("Call Number")?>: <?=$row['callnumber']?></span>
-          <? endif; ?>
-          <? if (isset($row['storage']) && $row['storage'] != 'Unknown'): ?>
-            <span class="storage"><?=$this->transEsc("Location")?>: <?=$row['storage']?></span>
-          <? endif; ?>
-
           <? if ($row['availability']): ?>
             <? /* Begin Available Items (Holds) */ ?>
-            <? /* WE USE notes here, rev #6237 - 04.16. CK - item_notes below*/ ?>
-            <? if (isset($row['notes'])): ?>
-              <span class="notes"><?=$this->transEsc("Notes")?>:</span>
-              <ul class="notes">
-                <? foreach ($row['notes'] as $note): ?>
-                  <li><?=$note?></li>
-                <? endforeach; ?>
-
-                <? foreach ($row['item_notes'] as $item_note): ?>
-                  <li><?=$this->escapeHtml($item_note) ?></li>
-                <? endforeach; ?>
-              </ul>
-            <? endif; ?>
+               <span class="label success"><?=$this->transEsc("Available")?><link property="availability" href="http://schema.org/InStock" /></span>
             <? if (!$block && isset($row['link']) && $row['link']): ?>
                 <a class="<?=$check ? 'checkRequest ' : ''?>inlineblock placehold hide-for-print" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
             <? endif; ?>
@@ -138,7 +123,7 @@
             <? endif; ?>
           <? else: ?>
             <? /* Begin Unavailable Items (Recalls) */ ?>
-              <span class="label alert"><?=empty($row['status'])?$this->transEsc("Unavailable"):$this->transEsc($row['status'])?><link property="availability" href="http://schema.org/OutOfStock" /></span>
+            <span class="label alert"><?=empty($row['status'])?$this->transEsc("Unavailable"):$this->transEsc($row['status'])?><link property="availability" href="http://schema.org/OutOfStock" /></span>
             <? if (isset($row['returnDate']) && $row['returnDate']): ?>&ndash; <span class="small"><?=$this->escapeHtml($row['returnDate'])?></span><? endif; ?>
             <? if (isset($row['duedate']) && $row['duedate']): ?>
               &ndash; <span class="small"><?=$this->transEsc("Due")?>: <?=$this->escapeHtml($row['duedate'])?></span>
@@ -150,7 +135,7 @@
                 <a class="<?=$check ? 'checkRequest' : ''?> inlineblock placehold hide-for-print" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
             <? endif; ?>
             <? endif; ?>
-            <? if (isset($row['item_notes'])): ?>
+            <? if (isset($row['item_notes']) && !empty($row['item_notes'])): ?>
               <div class="item-notes">
                 <strong><?=$this->transEsc("Item Notes")?>:</strong>
                 <ul>
