@@ -148,28 +148,6 @@ trait SolrMarcFincTrait
                                 $desc = $address;
                             }
 
-                            // this only applies to field 856 (rf. #6554)
-                            // first check if $address is not a valid URL, then check
-                            // do we have the indicator 7 and the subfield $2 exist
-                            // which indicates the access method?
-                            if ($field == '856'
-                                && !filter_var($address, FILTER_VALIDATE_URL)
-                                && $url->getIndicator('1') == '7'
-                                && $url->getSubfield('2')
-                            ) {
-                                // handle the value of $address according to content
-                                // of subfield $2
-                                if (isset($this->mainConfig->Additional_Resolver
-                                        ->{$url->getSubfield('2')->getData()})
-                                ) {
-                                    // reformat $address according to config setting
-                                    $address = sprintf(
-                                        $this->mainConfig->Additional_Resolver
-                                            ->{$url->getSubfield('2')->getData()},
-                                        $address);
-                                }
-                            }
-
                             // If url doesn't exist as key so far write to return variable.
                             if (!in_array(['url' => $address, 'desc' => $desc], $retVal)) {
                                 $retVal[] = ['url' => $address, 'desc' => $desc];

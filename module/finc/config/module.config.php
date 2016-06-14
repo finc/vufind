@@ -9,7 +9,8 @@ $config = [
             'VuFind\BranchesReader' => 'finc\Service\Factory::getBranchesReader',
             'VuFind\ILSConnection' => 'finc\Service\Factory::getILSConnection',
             'VuFind\ILSHoldLogic' => 'finc\Service\Factory::getILSHoldLogic',
-        ],
+            'finc\Rewrite' => 'finc\Rewrite\Factory'
+        ]
     ],
     'controllers' => [
         'factories' => [
@@ -43,13 +44,13 @@ $config = [
                     'solrmarcfincpda' => 'finc\RecordDriver\Factory::getSolrMarcFincPDA',
                     'solrmarcremote' => 'finc\RecordDriver\Factory::getSolrMarcRemote',
                     'solrmarcremotefinc' => 'finc\RecordDriver\Factory::getSolrMarcRemoteFinc',
-                    'solrai' => 'finc\RecordDriver\Factory::getSolrAI',
+                    'solrai' => 'finc\RecordDriver\Factory::getSolrAI'
                 ],
             ],
             'recordtab' => [
                 'invokables' => [
                     'staffviewai' => 'finc\RecordTab\StaffViewAI',
-                    'acquisitionpda' => 'finc\RecordTab\AcquisitionPDA',
+                    'acquisitionpda' => 'finc\RecordTab\AcquisitionPDA'
                 ],
             ],
             'resolver_driver' => [
@@ -136,7 +137,8 @@ $recordRoutes = [
 
 // Define static routes -- Controller/Action strings
 $staticRoutes = [
-    'MyResearch/Acquisition', 'dds/Home', 'dds/Email'
+    'MyResearch/Acquisition', 'dds/Home', 'dds/Email', 
+    'Record/EblLink'
 ];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator($nonTabRecordActions);

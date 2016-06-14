@@ -42,6 +42,7 @@ use VuFind\Exception\Mail as MailException;
  */
 class RecordController extends \VuFind\Controller\RecordController
 {
+    use EblTrait;
     use PdaTrait;
     use EmailHoldTrait;
 
@@ -73,4 +74,15 @@ class RecordController extends \VuFind\Controller\RecordController
             throw new MailException('Missing email profile: ' + $profile);
         }
     }
+
+    /**
+     * Returns rewrite object
+     *
+     * @return object
+     */
+    protected function getRewrite()
+    {
+        return $this->getServiceLocator()->get('finc\Rewrite');
+    }
+
 }

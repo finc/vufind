@@ -62,3 +62,25 @@ replace_other_urls = true
 [Content]
 coversize[result-list] = false
 showStyleBasedIcons = true
+
+[Ebl]
+pattern = "leip.eblib.com"
+secret_key = "yejsecvafChawgya"
+
+[LinksRewrite]
+; Personalized rewriting of Open Urls.
+; Start to declare a own group which can have following keys.
+; identifier[pattern] is necessary to switch on rewrite und sort out the right links.
+;    regular expression are allowed
+; identifier[search] is the string to replaced
+; identifier[replace] is the replacing phrase
+; identifier[method] calls an alternative method with the link as parameter.
+;    The method has to be written in the IndexDriver.php
+schweitzer[pattern] = leip.eblib.com
+schweitzer[method] = resolveEblLink
+; naxos[pattern] = www.ln.naxosmusiclibrary.com
+; naxos[search] = www.ln.naxosmusiclibrary.com
+; naxos[replace] = ubl-leipzig.naxosmusiclibrary.com
+; nbn[pattern] =  "^urn:nbn:"
+; nbn[search] =  urn:nbn:
+; nbn[replace] = nbn-resolving.de/urn:nbn:

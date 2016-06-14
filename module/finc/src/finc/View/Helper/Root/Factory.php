@@ -51,7 +51,10 @@ class Factory
     public static function getRecord(ServiceManager $sm)
     {
         return new Record(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $sm->get('url'),
+            $sm->getServiceLocator()->get('VuFind\AuthManager'),
+            $sm->getServiceLocator()->get('finc\Rewrite')
         );
     }
 
