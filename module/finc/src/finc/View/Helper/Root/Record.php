@@ -26,7 +26,7 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace finc\View\Helper\Root;
-use Zend\View\Helper\Url, finc\Rewrite;
+use finc\Rewrite;
 
 /**
  * Record driver view helper
@@ -56,7 +56,7 @@ class Record extends \VuFind\View\Helper\Root\Record
     /**
      * URL helper
      *
-     * @var Url
+     * @var \Zend\View\Helper\Url
      */
     protected $url;
 
@@ -74,7 +74,7 @@ class Record extends \VuFind\View\Helper\Root\Record
      * @param \Zend\View\Helper\Url $helper URL helper
      */
     public function __construct($config = null,
-                                Url $helper,
+                                \Zend\View\Helper\Url $helper,
                                 \VuFind\Auth\Manager $manager,
                                 $rewrite)
     {
