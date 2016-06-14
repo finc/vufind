@@ -267,6 +267,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 
       <? $additionals = $this->driver->getAdditionals(); if (!empty($additionals) && is_array($additionals)): ?>
         <? foreach($additionals as $additional) :?>
+          <? if (isset($additional['identifier'])): ?>
           <tr>
             <th><?=$this->escapeHtml($additional['identifier'])?>: </th>
             <td>
@@ -275,6 +276,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
               <? if(isset($additional['id'])): ?></a><? endif; ?>
             </td>
           </tr>
+          <? endif; ?>
         <? endforeach; ?>
       <? endif; ?>
       
