@@ -30,6 +30,7 @@
  */
 namespace finc\Controller;
 use VuFind\Exception\Mail as MailException,
+    Zend\Mail\Address,
     Zend\Validator\StringLength,
     Zend\Validator\Identical,
     finc\Mailer\Mailer;
@@ -221,11 +222,9 @@ trait PdaTrait
             ) : $this->translate('PDA::Acquisition');
 
         // Set reply address and name if available
-        $replyTo = isset($params['email']) ? $params['email'] : '';
-        $replyToName
-            = (isset($params['firstname']) && isset($params['lastname'])) && !empty($replyTo)
-            ? $params['firstname'] . ' ' . $params['lastname']
-            : '';
+        $reply = (isset($params['email'], $params['firstname'], $params['lastname']))
+            ? new Address($params['email'], $params['firstname'] . ' ' . $params['lastname'])
+            : null;
 
         // Get mailer
         $mailer = new Mailer(
@@ -235,10 +234,9 @@ trait PdaTrait
 
         // Send the email
         $mailer->sendTextHtml(
-            $emailProfile->to,
-            $emailProfile->from,
-            $replyTo,
-            $replyToName,
+            new Address($emailProfile->to),
+            new Address($emailProfile->from),
+            $reply,
             $subject,
             $bodyHtml,
             $bodyPlain

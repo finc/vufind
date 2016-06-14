@@ -19,7 +19,7 @@
   <div class="small-1 columns left">
   <? endif ?>
     <label class="left"><?=$this->record($this->driver)->getCheckbox() ?></label>
-    <input type="hidden" value="<?=$id ?>" class="hiddenId"/>
+    <input type="hidden" value="<?=$this->escapeHtmlAttr($id) ?>" class="hiddenId"/>
   <? if ($cover): ?>
     <?=$cover ?>
   </div>

@@ -28,7 +28,8 @@
  * @link     https://vufind.org Main Site
  */
 namespace finc\Controller;
-use finc\Mailer\Mailer as Mailer;
+use finc\Mailer\Mailer as Mailer,
+    Zend\Mail\Address as Address;
 
 /**
  * Email Hold trait (for subclasses of AbstractRecord)
@@ -159,8 +160,12 @@ trait EmailHoldTrait
                     $details['patron']['firstname'] .
                     " | Signatur: " . $details['callnumber'];
 
-                $from = (isset($details['patron']['email'])) ? $details['patron']['email'] : $emailProfile->from ;
-                $to = $emailProfile->to;
+                $from = $reply = (isset($details['patron']['email'])) 
+                    ? new Address(
+                        $details['patron']['email'],
+                        $details['patron']['firstname'] . ' ' . $details['patron']['lastname']
+                    ) : new Address($emailProfile->from) ;
+                $to = new Address($emailProfile->to);
                 // Get mailer
                 $mailer = new Mailer(
                     $this->getServiceLocator()
@@ -170,8 +175,7 @@ trait EmailHoldTrait
                 $mailer->sendTextHtml(
                     $to,
                     $from,
-                    $from,
-                    '',
+                    $reply,
                     $subject,
                     $bodyHtml,
                     $bodyPlain

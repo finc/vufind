@@ -163,7 +163,7 @@ VuFind.register('lightbox', function() {
           obj.method                                                                // is a form
           && ((obj.url.match(/MyResearch/) && !obj.url.match(/Bulk/))               // that matches login/create account
           || obj.url.match(/catalogLogin/))                                         // or catalog login for holds
-          && $('<div/>').html(html).find('.flash-message.warning').length == 0        // skip failed logins
+          && $('<div/>').html(html).find('.flash-message.warning').length == 0      // skip failed logins
         ) {
           var eventResult = _emit('VuFind.lightbox.login', {
             originalUrl: _originalUrl,
@@ -210,7 +210,7 @@ VuFind.register('lightbox', function() {
    * data-lightbox-title = Lightbox title (overrides any title the page provides)
    */
   var _constrainLink = function(event) {
-    if (typeof $(this).data('lightboxIgnore') != 'undefined') {
+    if (typeof $(this).data('lightboxIgnore') != 'undefined' || this.attributes.href.value.charAt(0) === '#') {
       return true;
     }
     if (this.href.length > 1) {
