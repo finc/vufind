@@ -82,4 +82,11 @@
 
   </td>
 </tr>
+<?
+$accordionReflow = <<<JS
+$(document).foundation('accordion', 'reflow');
+JS;
+$this->headScript()->appendScript($accordionReflow);
+?>
+<?=$this->headScript()?>
 <!-- helpers - branchinfo.phtml - END -->
