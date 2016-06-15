@@ -561,7 +561,8 @@ class PAIA extends DAIA
                 'phone'      => null,
                 'group'      => null,
                 // PAIA specific custom values
-                'expires'    => $this->convertDate($patron['expires']),
+                'expires'    => isset($patron['expires'])
+                    ? $this->convertDate($patron['expires']) : null,
                 'statuscode' => $patron['status'],
             ];
         }
