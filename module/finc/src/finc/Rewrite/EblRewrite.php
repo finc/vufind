@@ -28,12 +28,10 @@
  */
 namespace finc\Rewrite;
 
-use ZfcRbac\Service\AuthorizationServiceAwareTrait/*,*/
-    /*ZfcRbac\Service\AuthorizationServiceAwareInterface*/
-    ;
+use ZfcRbac\Service\AuthorizationServiceAwareTrait;
 
 /**
- * Ebl/ Schweitzer Rewrite service for VuFind.
+ * Ebl / Schweitzer Rewrite service for VuFind.
  *
  * @category VuFind2
  * @package  Rewrite
@@ -42,7 +40,7 @@ use ZfcRbac\Service\AuthorizationServiceAwareTrait/*,*/
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://www.vufind.org  Main Page
  */
-class EblRewrite /*implements AuthorizationServiceAwareInterface*/
+class EblRewrite
 {
     use AuthorizationServiceAwareTrait;
 
@@ -90,18 +88,19 @@ class EblRewrite /*implements AuthorizationServiceAwareInterface*/
      *
      * @return string $link Link as url.
      * @access public
-     * @throws Exception No user object exists
+     * @throws \Exception No user object exists
+     * @throws \Exception Authorization service missing
      */
     public function resolveLink($link, $user)
     {
         $this->accessPermission = 'access.EblLink';
 
         if (!isset($user->username) && strlen($user->username) > 0) {
-            throw new Exception('No user object exists');
+            throw new \Exception('No user object exists');
         }
         $auth = $this->getAuthorizationService();
         if (!$auth) {
-            throw new Exception('Authorization service missing');
+            throw new \Exception('Authorization service missing');
         }
 
         // Logged in user with no permission get resolver link for view of already
@@ -159,7 +158,7 @@ class EblRewrite /*implements AuthorizationServiceAwareInterface*/
      *
      * @return string
      * @access private
-     * @throws Exception    There is no secret key defined in configuration
+     * @throws \Exception There is no secret key defined in configuration
      */
     private function getSecretKey()
     {
@@ -168,7 +167,7 @@ class EblRewrite /*implements AuthorizationServiceAwareInterface*/
         ) {
             return $this->config->Ebl->secret_key;
         }
-        throw new Exception('There is no secret key defined in configuration.');
+        throw new \Exception('There is no secret key defined in configuration.');
     }
 
     /**
@@ -181,6 +180,4 @@ class EblRewrite /*implements AuthorizationServiceAwareInterface*/
     {
         return ($this->time == null) ? time() : $this->time;
     }
-
-
 }
