@@ -174,7 +174,10 @@ class DAIA extends AbstractBase implements
         if (isset($this->config['DAIA']['daiaCacheLifetime'])) {
             $this->cacheLifetime = $this->config['DAIA']['daiaCacheLifetime'];
         } else {
-            $this->debug('Cache lifetime not set, using VuFind\ILS\Driver\AbstractBase default value.');
+            $this->debug(
+                'Cache lifetime not set, using VuFind\ILS\Driver\AbstractBase ' .
+                'default value.'
+            );
         }
     }
 
@@ -226,7 +229,9 @@ class DAIA extends AbstractBase implements
     public function getStatus($id)
     {
         // check ids for existing availability data in cache and skip these ids
-        if ($this->daiaCacheEnabled && $item = $this->getCachedData($this->generateURI($id))) {
+        if ($this->daiaCacheEnabled
+            && $item = $this->getCachedData($this->generateURI($id))
+        ) {
             if ($item != null) {
                 return $item;
             }
@@ -276,7 +281,9 @@ class DAIA extends AbstractBase implements
 
         // check cache for given ids and skip these ids if availability data is found
         foreach ($ids as $key=>$id) {
-            if ($this->daiaCacheEnabled && $item = $this->getCachedData($this->generateURI($id))) {
+            if ($this->daiaCacheEnabled
+                && $item = $this->getCachedData($this->generateURI($id))
+            ) {
                 if ($item != null) {
                     $status[] = $item;
                     unset($ids[$key]);
@@ -735,12 +742,16 @@ class DAIA extends AbstractBase implements
                 $result_item['callnumber'] = $this->getItemCallnumber($item);
                 // get location
                 $result_item['location'] = $this->getItemDepartment($item);
-                // get location id
+                // custom DAIA field
                 $result_item['locationid'] = $this->getItemDepartmentId($item);
                 // get location link
-                $result_item['locationhref'] = $this->getItemLocationLink($item);
-                // get location
+                $result_item['location_href'] = $this->getItemDepartmentLink($item);
+                // custom DAIA field
                 $result_item['storage'] = $this->getItemStorage($item);
+                // custom DAIA field
+                $result_item['storageid'] = $this->getItemStorageId($item);
+                // custom DAIA field
+                $result_item['storage_href'] = $this->getItemStorageLink($item);
                 // status and availability will be calculated in own function
                 $result_item = $this->getItemStatus($item) + $result_item;
                 // add result_item to the result array
@@ -908,7 +919,8 @@ class DAIA extends AbstractBase implements
     /**
      * Helper function to allow custom data in status array.
      *
-     * @param $item
+     * @param array $item Array with DAIA item data
+     *
      * @return array
      */
     protected function getCustomData($item)
@@ -919,7 +931,8 @@ class DAIA extends AbstractBase implements
     /**
      * Helper function to return an appropriate status string for current item.
      *
-     * @param $item
+     * @param array $item Array with DAIA item data
+     *
      * @return string
      */
     protected function getStatusString($item)
@@ -936,7 +949,8 @@ class DAIA extends AbstractBase implements
      * implemented in custom drivers). Therefore this returns whether an item
      * is recallable based on unavailable services and the existence of an href.
      *
-     * @param $item
+     * @param array $item Array with DAIA item data
+     *
      * @return bool
      */
     protected function checkIsRecallable($item)
@@ -972,14 +986,15 @@ class DAIA extends AbstractBase implements
         // Check if we have at least one service unavailable and a href field is set
         // (either as flag or as actual value for the next action).
         return ($href && count(
-                array_diff($services['unavailable'], $services['available'])
+            array_diff($services['unavailable'], $services['available'])
         ));
     }
 
     /**
      * Helper function to determine if the item is available as storage retrieval.
      *
-     * @param $item
+     * @param array $item Array with DAIA item data
+     *
      * @return bool
      */
     protected function checkIsStorageRetrievalRequest($item)
@@ -1015,7 +1030,7 @@ class DAIA extends AbstractBase implements
         // Check if we have at least one service unavailable and a href field is set
         // (either as flag or as actual value for the next action).
         return ($href && count(
-                array_diff($services['available'], $services['unavailable'])
+            array_diff($services['available'], $services['unavailable'])
         ));
     }
 
@@ -1026,7 +1041,8 @@ class DAIA extends AbstractBase implements
      * shared functionality between different DAIA implementations (thus should be
      * implemented in custom drivers). Therefore getHoldType always returns recall.
      *
-     * @param $item
+     * @param array $item Array with DAIA item data
+     *
      * @return string 'recall'|null
      */
     protected function getHoldType($item)
@@ -1055,7 +1071,8 @@ class DAIA extends AbstractBase implements
     }
 
     /**
-     * Returns the value for "location" in VuFind getStatus/getHolding array
+     * Returns the value of item.department.content (e.g. to be used in VuFind
+     * getStatus/getHolding array as location)
      *
      * @param array $item Array with DAIA item data
      *
@@ -1070,7 +1087,8 @@ class DAIA extends AbstractBase implements
     }
 
     /**
-     * Returns the value for "location" id in VuFind getStatus/getHolding array
+     * Returns the value of item.department.id (e.g. to be used in VuFind
+     * getStatus/getHolding array as location)
      *
      * @param array $item Array with DAIA item data
      *
@@ -1083,7 +1101,22 @@ class DAIA extends AbstractBase implements
     }
 
     /**
-     * Returns the value for "location" in VuFind getStatus/getHolding array
+     * Returns the value of item.department.href (e.g. to be used in VuFind
+     * getStatus/getHolding array for linking the location)
+     *
+     * @param array $item Array with DAIA item data
+     *
+     * @return string
+     */
+    protected function getItemDepartmentLink($item)
+    {
+        return isset($item['department']['href'])
+            ? $item['department']['href'] : false;
+    }
+
+    /**
+     * Returns the value of item.storage.content (e.g. to be used in VuFind
+     * getStatus/getHolding array as location)
      *
      * @param array $item Array with DAIA item data
      *
@@ -1098,7 +1131,8 @@ class DAIA extends AbstractBase implements
     }
 
     /**
-     * Returns the value for "location" id in VuFind getStatus/getHolding array
+     * Returns the value of item.storage.id (e.g. to be used in VuFind
+     * getStatus/getHolding array as location)
      *
      * @param array $item Array with DAIA item data
      *
@@ -1108,6 +1142,20 @@ class DAIA extends AbstractBase implements
     {
         return isset($item['storage']) && isset($item['storage']['id'])
             ? $item['storage']['id'] : '';
+    }
+
+    /**
+     * Returns the value of item.storage.href (e.g. to be used in VuFind
+     * getStatus/getHolding array for linking the location)
+     *
+     * @param array $item Array with DAIA item data
+     *
+     * @return string
+     */
+    protected function getItemStorageLink($item)
+    {
+        return isset($item['storage']) && isset($item['storage']['href'])
+            ? $item['storage']['href'] : '';
     }
 
     /**
@@ -1200,19 +1248,6 @@ class DAIA extends AbstractBase implements
     }
 
     /**
-     * Returns the value for "location" href in VuFind getStatus/getHolding array
-     *
-     * @param array $item Array with DAIA item data
-     *
-     * @return string
-     */
-    protected function getItemLocationLink($item)
-    {
-        return isset($item['storage']['href'])
-            ? $item['storage']['href'] : false;
-    }
-
-    /**
      * Returns the available services of the given set of available and unavailable
      * services
      *
@@ -1260,7 +1295,7 @@ class DAIA extends AbstractBase implements
      * Data is cached for up to $this->cacheLifetime seconds so that it would be
      * faster to process e.g. requests where multiple calls to the backend are made.
      *
-     * @param string $key   Cache entry key
+     * @param string $key Cache entry key
      *
      * @return void
      */
