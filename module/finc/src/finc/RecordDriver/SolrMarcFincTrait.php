@@ -1168,11 +1168,17 @@ trait SolrMarcFincTrait
     {
         // These are the fields that may contain subject headings:
         $fields = [
-            '600', '610', '630', '650', '651', '655'
+            '600', '610', '611', '630', '648', '650', '651', '653', '655', '656'
         ];
 
-        $words = isset($this->recordConfig->SubjectHeadings->remove) ?
-            (array)$this->recordConfig->SubjectHeadings->remove : [];
+        // skip fields containing these terms in $2
+        $skipTerms = isset($this->mainConfig->SubjectHeadings->remove) ?
+            $this->mainConfig->SubjectHeadings->remove->toArray() : [];
+
+        $skipThisField = function ($field) use ($skipTerms) {
+            $subField = $field->getSubField('2');
+            return !($subField && in_array($subField->getData(), $skipTerms));
+        };
 
         // This is all the collected data:
         $retval = [];
@@ -1190,18 +1196,27 @@ trait SolrMarcFincTrait
                 // Start an array for holding the chunks of the current heading:
                 $current = [];
 
-                $sourceOfTerm = $result->getSubField('2');
+                // check if this field should be skipped
+                if ($skipThisField($result)) {
 
-                if ($sourceOfTerm) {
-                    if (false === in_array($sourceOfTerm->getData(), $words)) {
-                        $data = $result->getSubField('a');
-                        if ($data) {
-                            $current[] = $data->getData();
+                    // Get all the chunks and collect them together:
+                    $subfields = $result->getSubfields();
+                    if ($subfields) {
+                        foreach ($subfields as $subfield) {
+                            // Numeric subfields are for control purposes and should not
+                            // be displayed:
+                            if (!is_numeric($subfield->getCode())) {
+                                $current[] = $subfield->getData();
+                            }
+                        }
+                        // If we found at least one chunk, add a heading to our result:
+                        if (!empty($current)) {
+                            $retval[] = $current;
                         }
                     }
                 }
 
-                // Get all the chunks and collect them together:
+                // If we found at least one chunk, add a heading to our result:
                 if (!empty($current)) {
                     $retval[] = $current;
                 }
