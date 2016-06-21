@@ -255,13 +255,18 @@ class AjaxController extends \VuFind\Controller\AjaxController
         $additionalAccountInfos = [];
 
         // collect data for views to be counted
-        $viewsToCount = $this->params()->fromPost('views', $this->params()->fromQuery('views'));
+        $viewsToCount = $this->params()
+            ->fromPost('views', $this->params()->fromQuery('views'));
 
         $additionalAccountInfos['countViewItems'] = $catalog->countItems(
             $viewsToCount,
             $patron
         );
 
+        $additionalAccountInfos['countFines'] = $catalog->getFinesTotal(
+            $patron
+        );
+        
         // Done
         return $this->output($additionalAccountInfos, self::STATUS_OK);
     }

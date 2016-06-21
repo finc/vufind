@@ -666,6 +666,22 @@ class FincILS extends PAIA implements LoggerAwareInterface
         }
         return $retval;
     }
+
+    /**
+     * finc-specific function to total the fines (e.g. for use in MyResearch menu)
+     *
+     * @param array $patron Patron details returned by patronLogin
+     * 
+     * @return float
+     */
+    public function getFinesTotal($patron) {
+        $fines = $this->getMyFines($patron);
+        $total = 0;
+        foreach ($fines as $fee) {
+            $total += (int) $fee['amount'];
+        }
+        return $total / 100;
+    }
     
     /**
      * Get the Record-Object from the RecordDriver.
