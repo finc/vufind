@@ -88,6 +88,33 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Custom method to return permissions set for this record in mainConfig
+     * 
+     * @return int|null|string
+     */
+    public function getRecordPermission()
+    {
+        // do we have a RecordPermissions section in config.ini?
+        if (isset($this->mainConfig->RecordPermissions)) {
+            
+            // let's loop through all set RecordPermissions and evaluate them for the
+            // current record
+            foreach ($this->mainConfig->RecordPermissions->toArray() as $permission => $settings) {
+                foreach((array) $settings as $value) {
+                    list($methodName, $methodReturn) = explode(':', $value);
+                    if (in_array($methodReturn, (array) $this->tryMethod($methodName))) {
+                        // as the current permission matches the current record,
+                        // return it
+                        return $permission;
+                    } 
+                }
+            }
+        }
+        // either no permissions were set or none matched, so return null
+        return null;
+    }
+
+    /**
      * Controller to decide when local format field of a library should be
      * retrieved from marc. Pass through method for PrimoCentral
      *

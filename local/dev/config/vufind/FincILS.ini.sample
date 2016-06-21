@@ -20,3 +20,19 @@ relative_path = ../../../config/vufind/FincILS.ini
 ;
 ;##################### DO NOT DELETE THIS HEADER ####################
 ;####################################################################
+
+[DAIA]
+baseUrl            = http://139.18.19.238:9080/daialibero/daia/
+daiaIdPrefix       = "UBL:ppn:"
+ilsIdentifier      = "record_id"
+multiQuery         = true
+daiaResponseFormat = json
+
+[Records]
+services[] = 'loan'
+services[] = 'presentation'
+services[] = 'custom'
+
+[PAIA]
+; base URL of the PAIA server
+baseUrl        = http://139.18.19.238:9080/paialibero/paia/DE-15/

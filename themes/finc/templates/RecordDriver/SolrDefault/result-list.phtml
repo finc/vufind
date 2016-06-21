@@ -98,12 +98,12 @@
       <? if ($this->driver->supportsAjaxStatus()): ?>
         <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
         <span class="callnumber ajax-availability hide">
-      <?=$this->transEsc('Loading')?>&nbsp;...<br/>
-    </span>
+          <?=$this->transEsc('Loading')?>&nbsp;...<br/>
+        </span>
         <strong><?=$this->transEsc('Located')?>:</strong>
         <span class="location ajax-availability hide">
-      <?=$this->transEsc('Loading')?>&nbsp;...
-    </span>
+          <?=$this->transEsc('Loading')?>&nbsp;...
+        </span>
         <div class="locationDetails"></div>
       <? else: ?>
         <? $summCallNo = $this->driver->getCallNumber(); if (!empty($summCallNo)): ?>
@@ -140,7 +140,8 @@
 
     <?=str_replace('class="', 'class="label info ', $this->record($this->driver)->getFormatList())?>
 
-    <? if (!$openUrlActive && empty($urls) && $this->driver->supportsAjaxStatus()): ?>
+    <? /*if (!$openUrlActive && empty($urls) && $this->driver->supportsAjaxStatus()):*/ ?>
+    <? if ($this->driver->supportsAjaxStatus()): ?>
       <span class="status ajax-availability hide">
         <span class="label secondary"><?=$this->transEsc('Loading')?>&nbsp;...</span>
       </span>

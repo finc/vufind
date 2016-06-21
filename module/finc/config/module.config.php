@@ -118,6 +118,8 @@ $config = [
         'vufind_permission_provider_manager' => [
             'factories' => [
                 'catUserType' => 'finc\Role\PermissionProvider\Factory::getCatUserType',
+                'ipRangeFoFor' => 'finc\Role\PermissionProvider\Factory::getIpRangeFoFor',
+                'ipRegExFoFor' => 'finc\Role\PermissionProvider\Factory::getIpRegExFoFor',
             ],
         ],
     ],

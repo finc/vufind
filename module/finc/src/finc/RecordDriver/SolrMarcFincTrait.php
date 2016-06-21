@@ -56,7 +56,7 @@ trait SolrMarcFincTrait
      *
      * @return bool
      */
-    protected function hasILS()
+    /*protected function hasILS()
     {
         // put all ILS supported source_id in here
         $ilsSourceIds = ['0'];
@@ -72,7 +72,7 @@ trait SolrMarcFincTrait
 
         // ILS connection for this source_id not supported
         return false;
-    }
+    }*/
 
     /**
      * Returns whether the current record is a RDA record (contains string 'rda' in

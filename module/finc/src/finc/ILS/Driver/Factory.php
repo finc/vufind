@@ -50,12 +50,21 @@ class Factory
      */
     public static function getFincILS(ServiceManager $sm)
     {
+        $factory = new \ProxyManager\Factory\LazyLoadingValueHolderFactory($sm->getServiceLocator()->get('VuFind\ProxyConfig'));
+
+        $callback = function (& $wrapped, $proxy) use ($sm) {
+            $wrapped = $sm->getServiceLocator()->get('ZfcRbac\Service\AuthorizationService');
+
+            $proxy->setProxyInitializer(null);
+        };
+        
         $fl = new FincILS(
             $sm->getServiceLocator()->get('VuFind\DateConverter'),
             $sm->getServiceLocator()->get('VuFind\SessionManager'),
             $sm->getServiceLocator()->get('VuFind\RecordLoader'),
             $sm->getServiceLocator()->get('VuFind\Search'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $factory->createProxy('ZfcRbac\Service\AuthorizationService', $callback)
         );
 
         $fl->setCacheStorage(

@@ -37,10 +37,11 @@ url = "http://localhost"
 
 [Authentication]
 hash_passwords = "1"
-
 encrypt_ils_password = "1"
-
 ils_encryption_key = "3e2ac9b644dd4e0b64b179a0309ead13bb59202a"
+
+[Catalog]
+driver = "FincILS"
 
 [Http]
 ; Pfad zu SSL-Zertifikaten in der docker-VM (global für CentOS konfiguriert)

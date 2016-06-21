@@ -55,4 +55,32 @@ class Factory
             $sm->getServiceLocator()->get('VuFind\ILSAuthenticator')
         );
     }
+
+    /**
+     * Factory for IpRangeFoFor
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return IpRangeFoFor
+     */
+    public static function getIpRangeFoFor(ServiceManager $sm)
+    {
+        return new IpRangeFoFor(
+            $sm->getServiceLocator()->get('Request'),
+            $sm->getServiceLocator()->get('VuFind\IpAddressUtils')
+        );
+    }
+
+    /**
+     * Factory for IpRegExFoFor
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return IpRegExFoFor
+     */
+    public static function getIpRegExFoFor(ServiceManager $sm)
+    {
+        return new IpRegExFoFor(
+            $sm->getServiceLocator()->get('Request'));
+    }
 }

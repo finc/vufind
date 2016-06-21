@@ -20,3 +20,7 @@ relative_path = ../../../config/vufind/permissions.ini
 ;
 ;##################### DO NOT DELETE THIS HEADER ####################
 ;####################################################################
+
+[default.OffCampusSourceIds]
+IpRegExFoFor = "/(139\.18.*)/"
+permission = OffCampusSourceIds

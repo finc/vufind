@@ -64,6 +64,16 @@ class SolrAI extends SolrDefault implements
     protected $mainConfig;
 
     /**
+     * Returns true if the record supports real-time AJAX status lookups.
+     *
+     * @return bool
+     */
+    public function supportsAjaxStatus()
+    {
+        return true;
+    }
+
+    /**
      * Gets the description of the record
      *
      * @return string description

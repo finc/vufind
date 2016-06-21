@@ -28,6 +28,8 @@
 namespace finc\ILS\Driver;
 use VuFind\Exception\ILS as ILSException,
     VuFindSearch\Query\Query, VuFindSearch\Service as SearchService,
+    ZfcRbac\Service\AuthorizationServiceAwareInterface,
+    ZfcRbac\Service\AuthorizationServiceAwareTrait,
     Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
@@ -36,6 +38,7 @@ use VuFind\Exception\ILS as ILSException,
  * @category VuFind
  * @package  ILS_Drivers
  * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
+ * @author   Gregor Gawol <gawol@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
@@ -118,6 +121,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
     protected $mainConfig;
 
     /**
+     * Authorization object
+     *
+     * @var null|\ZfcRbac\Service\AuthorizationService
+     */
+    protected $auth;
+
+    /**
      * Constructor
      *
      * @param \VuFind\Date\Converter $converter  Date converter
@@ -126,12 +136,14 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * built-in defaults)
      */
     public function __construct(\VuFind\Date\Converter $converter, \Zend\Session\SessionManager $sessionManager,
-        \VuFind\Record\Loader $loader, SearchService $ss, $mainConfig = null
+        \VuFind\Record\Loader $loader, SearchService $ss, $mainConfig = null,
+        $auth = null
     ) {
         parent::__construct($converter, $sessionManager);
         $this->recordLoader = $loader;
         $this->searchService = $ss;
         $this->mainConfig = $mainConfig;
+        $this->auth = $auth;
     }
 
     /**
@@ -353,9 +365,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     public function getStatus($id)
     {
-        return $this->_replaceILSId(
-            parent::getStatus($this->_getILSRecordId($id)), $id
-        );
+        if ($this->_hasILSData($id)) {
+            return $this->_replaceILSId(
+                parent::getStatus($this->_getILSRecordId($id)), $id
+            );
+        } else {
+            return $this->_getStaticStatus($id);
+        }
     }
 
     /**
@@ -370,9 +386,20 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     public function getStatuses($ids)
     {
-        return $this->_replaceILSIds(
-            parent::getStatuses($this->_getILSRecordIds($ids)), $ids
-        );
+        $retval = [];
+
+        foreach ($ids as $num => $id) {
+            if (!$this->_hasILSData($id)) {
+                $retval[] = $this->_getStaticStatus($id);
+                unset($ids[$num]);
+            }
+        }
+
+        return array_merge(
+            $retval,
+            $this->_replaceILSIds(
+                parent::getStatuses($this->_getILSRecordIds($ids)), $ids
+            ));
     }
     
     /**
@@ -684,6 +711,61 @@ class FincILS extends PAIA implements LoggerAwareInterface
     }
     
     /**
+     * Helper function to create static ils response
+     *
+     * @param string $id Record id to return static status data
+     *
+     * @return array
+     */
+    private function _getStaticStatus($id)
+    {
+        if (!$this->auth) {
+            $this->debug('Authorization service missing for checking availability ' .
+                'of record ' . $id
+            );
+            return '';
+        }
+
+        $permission = $this->_getRecord($id)->tryMethod('getRecordPermission');
+
+        $isGranted = $permission != null
+            ? $this->auth->isGranted($permission) : true;
+
+        return [[
+            'id'           => $id,
+            'availability' => $isGranted,
+            'status'       => $isGranted ? 'available' : $permission,
+            'reserve'      => 'false',
+            'location'     => '',
+            'callnumber'   => '',
+            'services'     => !$isGranted ? [$permission] : []
+        ]];
+    }
+
+    /**
+     * Helper function to check whether the record with the given id qualifies for
+     * querying the ILS
+     *
+     * @param string $id The record id to retrieve the holdings for
+     *
+     * @return bool
+     */
+    private function _hasILSData($id)
+    {
+        $retVal = [];
+        foreach ($this->config['General']['queryIls'] as $value) {
+            list($methodName, $methodReturn) = explode(':', $value);
+            // if we have one mismatch we can already stop as this record does
+            // not qualify for querying the ILS
+            if (!in_array($methodReturn, (array) $this->_getRecord($id)->tryMethod($methodName))) {
+                return false;
+            }
+        }
+        // if we got this far the record qualifies for querying the ILS
+        return true;
+    }
+
+    /**
      * Get the Record-Object from the RecordDriver.
      *
      * @param string $id ID of record to retrieve
@@ -766,7 +848,6 @@ class FincILS extends PAIA implements LoggerAwareInterface
             if ($status['item_id'] == $this->_idMapper[$id]
                 || $status['id'] == $this->_idMapper[$id]
             ) {
-
                 return true;
             }
         }
