@@ -306,6 +306,17 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get an array of all mega_collections in the record.
+     *
+     * @return array
+     * @access public
+     */
+    public function getMegaCollection()
+    {
+        return isset($this->fields['mega_collection']) ? $this->fields['mega_collection'] : [];
+    }
+
+    /**
      * Get the GND of an author.
      *
      * @return array
