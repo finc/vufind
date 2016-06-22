@@ -3,7 +3,8 @@ return array(
     'extends' => 'foundation5',
     'js' => array(
         'openurl.js',
-        'check_item_statuses.js'
+        'check_item_statuses.js',
+        'record.js'
     ),
     'helpers' => array(
         'factories' => array(
