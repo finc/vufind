@@ -42,6 +42,21 @@ use Zend\ServiceManager\ServiceManager;
 class Factory
 {
     /**
+     * Construct the Permission helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return Permission
+     */
+    public static function getPermission(ServiceManager $sm)
+    {
+        return new Permission(
+            $sm->getServiceLocator()->get('VuFind\AuthManager'),
+            $sm->getServiceLocator()->get('ZfcRbac\Service\AuthorizationService')
+        );
+    }
+    
+    /**
      * Construct the Record helper.
      *
      * @param ServiceManager $sm Service manager.
