@@ -279,7 +279,7 @@ function recordDocReady() {
 
 // Load book covers in lightbox function
 function recordCoverLightbox(event) {
-  $('#modal .modal-body').html('<div class="text-center"><img src="'+event.target.src+'&size=large" title="'+VuFind.translate('book cover')+'" alt="'+VuFind.translate('book cover')+'" /></div>');
+  $('#modal .modal-body').html('<div class="text-center"><img src="'+event.target.parentNode.href+'" title="'+VuFind.translate('book cover')+'" alt="'+VuFind.translate('book cover')+'" /></div>');
   VuFind.modal('open');
   return false;
 }

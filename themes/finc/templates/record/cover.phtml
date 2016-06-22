@@ -1,7 +1,7 @@
 <? /* Display thumbnail if appropriate: */ ?>
 <? /* Loading covers in lightbox requires .recordcover; .nocover 2 prevent nocover images from loading in lightbox: */ ?>
 <? if ($cover): ?>
-  <? if ($this->link): ?><a href="#"><? endif; ?>
+  <? if ($this->link): ?><a href="<?=$this->escapeHtmlAttr($this->link)?>"><? endif; ?>
   <img alt="<?=$this->transEsc('Cover Image')?>" class="recordcover" src="<?=$this->escapeHtmlAttr($cover); ?>"/>
   <? if ($this->link): ?></a><? endif; ?>
 <? else: ?>
