@@ -317,7 +317,7 @@ trait SolrDefaultFincTrait
     }
 
     /**
-     * Get an array of all mega_collections in the record.
+     * Get the content of field multipart_set.
      *
      * @return string
      * @access public
