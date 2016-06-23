@@ -317,6 +317,17 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get an array of all mega_collections in the record.
+     *
+     * @return string
+     * @access public
+     */
+    public function getMultiPart()
+    {
+        return isset($this->fields['multipart_set']) ? $this->fields['multipart_set'] : '';
+    }
+
+    /**
      * Get the GND of an author.
      *
      * @return array
