@@ -240,12 +240,13 @@ function recordDocReady() {
       // if this was the initially active tab, we have moved away from it and
       // now need to return -- just switch it back on.
       if ($li.hasClass('initiallyActive')) {
-        // FNDTN "foundation('tab', 'reflow')" equals BS's "tab('show');"
-        $(this).foundation('tab', 'reflow');
         // nxt 3 lines work for FNDTN ! -- FNDTN "content" equals BS's "tab-pane", one more below
         $top.find('.content.active').removeClass('active');
         $top.find('.tab-title').removeClass('active');
         $top.find('.'+tabid).parent().addClass('active');
+        $top.find('.'+tabid+'-tab').addClass('active');
+        // FNDTN "foundation('tab', 'reflow')" equals BS's "tab('show');"
+        $(this).foundation('tab', 'reflow');
         window.location.hash = 'tabnav';
         return false;
       }
