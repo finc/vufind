@@ -208,4 +208,87 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
         );
     }
 
+    /**
+     * Reset password action - Allows the reset password form to appear.
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function resetPasswordAction()
+    {
+        // Force login if necessary:
+        $mailConfig = $this->getServiceLocator()
+            ->get('VuFind\Config')->get('EmailProfiles');
+
+        if (isset($mailConfig->ResetPassword)) {
+            $emailProfile = $mailConfig->ResetPassword;
+        } else {
+            throw new MailException('Missing email profile: ResetPassword');
+        }
+
+        $view = $this->createViewModel();
+        
+        // Set up reCaptcha
+        $view->useRecaptcha = $this->recaptcha()->active('email');
+
+        // Process form submission:
+        if ($this->formWasSubmitted('submit', $view->useRecaptcha)) {
+
+            $renderer = $this->getViewRenderer();
+
+            $params['firstname'] = $view->firstname = $this->params()->fromPost('firstname');
+            $params['lastname']  = $view->lastname  = $this->params()->fromPost('lastname');
+            $params['username']  = $view->username  = $this->params()->fromPost('username');
+            $params['email']     = $view->email     = $this->params()->fromPost('email');
+            $params['timestamp'] = date('d.m.Y H:i');
+
+            // Custom template for emails (html-only)
+            $bodyHtml = $renderer->render(
+                'Email/resetpassword-html.phtml', $params
+            );
+            // Custom template for emails (text-only)
+            $bodyPlain = $renderer->render(
+                'Email/resetpassword-plain.phtml', $params
+            );
+
+            // Build the subject
+            $subject = (isset($emailProfile->subject))
+                ? sprintf(
+                    $emailProfile->subject,
+                    $params['firstname'],
+                    $params['lastname']
+                ) : $this->translate('Reset Password');
+
+            // Set reply address and name if available
+            $reply = (isset($params['email'], $params['firstname'], $params['lastname']))
+                ? new Address($params['email'], $params['firstname'] . ' ' . $params['lastname'])
+                : null;
+            
+            try {
+                // Get mailer
+                $mailer = new Mailer(
+                    $this->getServiceLocator()
+                        ->get('VuFind\Mailer')->getTransport()
+                );
+
+                // Send the email
+                $mailer->sendTextHtml(
+                    new Address($emailProfile->to),
+                    new Address($emailProfile->from),
+                    $reply,
+                    $subject,
+                    $bodyHtml,
+                    $bodyPlain
+                );
+                $this->flashMessenger()->addMessage('email_success', 'success');
+                return $this->forwardTo('MyResearch', 'Home');
+            } catch (MailException $e) {
+                $this->flashMessenger()->addMessage($e->getMessage(), 'error');
+            }
+        }
+
+        // Display the template:
+        $view->setTemplate('Auth/AbstractBase/resetpassword');
+        return $view;
+    }
+    
 }

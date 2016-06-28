@@ -139,7 +139,7 @@ $recordRoutes = [
 
 // Define static routes -- Controller/Action strings
 $staticRoutes = [
-    'MyResearch/Acquisition', 'dds/Home', 'dds/Email', 
+    'MyResearch/Acquisition', 'MyResearch/ResetPassword', 'dds/Home', 'dds/Email',
     'Record/EblLink'
 ];
 
