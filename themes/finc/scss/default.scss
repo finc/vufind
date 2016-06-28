@@ -20,7 +20,7 @@
 // 2.4  DO NOT re-define the breadcrumbs bg here - this will be done in site-specific themes
  
 // 3. import entire FOUNDATION-FOLDER default.scss to have the variables and mixins defined above applied to it
-@import "../../foundation5/scss/default";
+@import '../../foundation5/scss/default';
 
 // 4. Customize further - this for BASIC SETTINGS ONLY - all colour customization will be done in in site-specific themes
 //     ATTENTION: any change made here will affect ALL subsequent branches !!!
@@ -52,7 +52,7 @@ header.fixed { left:auto;max-width: $row-width; }
 // Source-id branding (WISO etc)
 .branding {display: none}
 .branding.SID48{
-  background: url("../images/wiso-transparent-70x20.png") 0 0 no-repeat;
+  background: url('../images/wiso-transparent-70x20.png') 0 0 no-repeat;
   display: inline-block;
   height:1.5rem;
   margin-left:.2rem;
@@ -74,33 +74,43 @@ header.fixed { left:auto;max-width: $row-width; }
     vertical-align: top;
   }
   td span:after {
-    content: "\a ";
+    content: '\a ';
     white-space: pre;
   }
   // remove excessive bottom margins above order buttons
-  ul {margin-bottom: 0}
+  ul { margin-bottom: 0 }
   .button {
     margin-top: .5rem;
   }
+}
+
+.holdings-tab,
+#hierarchyRecord {
+  // Accordions identical in #hierarchyRecord
   ul.accordion {
-    margin-left: 0;
     margin-bottom: 1rem;
+    margin-left: 0;
+
     li a.accordion-toggler::after {
-      font-family: "FontAwesome", sans-serif;
       float: right;
+      font-family: 'FontAwesome', sans-serif;
     }
+
     li:not(active) a.accordion-toggler::after {
-      content: "\f078";
+      content: '\f078';
     }
+
     li.active a.accordion-toggler::after {
       color: darken($secondary-color,10%);
-      content: "\f077";
+      content: '\f077';
     }
+
    .accordion-navigation > a {
      padding: .25rem 1rem;
     }
   }
 }
+
 // Internformat - staff view
 table.citation th {min-width: 18%}
 .pace-car th {min-width: 10%}
