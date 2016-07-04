@@ -97,12 +97,12 @@ header.fixed { left:auto;max-width: $row-width; }
     }
 
     li:not(active) a.accordion-toggler::after {
-      content: '\f078';
+      content: '\f107';
     }
 
     li.active a.accordion-toggler::after {
-      color: darken($secondary-color,10%);
-      content: '\f077';
+      color: darken($secondary-color, 10%);
+      content: '\f106';
     }
 
    .accordion-navigation > a {
