@@ -5,6 +5,9 @@
  * EZB is a free service -- the API endpoint is available at
  * http://services.dnb.de/fize-service/gvr/full.xml
  *
+ * API documentation is available at
+ * http://www.zeitschriftendatenbank.de/services/schnittstellen/journals-online-print/
+ *
  * PHP version 5
  *
  * Copyright (C) Markus Fischer, info@flyingfischer.ch
@@ -27,11 +30,14 @@
  * @category VuFind
  * @package  Resolver_Drivers
  * @author   Markus Fischer <info@flyingfischer.ch>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:link_resolver_drivers Wiki
  */
 namespace VuFind\Resolver\Driver;
-use DOMDocument, DOMXpath;
+use DOMDocument, DOMXpath,
+    \VuFind\Resolver\Driver\DriverInterface as DriverInterface,
+    \VuFind\I18n\Translator\TranslatorAwareInterface as TranslatorAwareInterface;
 
 /**
  * EZB Link Resolver Driver
@@ -39,17 +45,27 @@ use DOMDocument, DOMXpath;
  * @category VuFind
  * @package  Resolver_Drivers
  * @author   Markus Fischer <info@flyingfischer.ch>
+ * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:link_resolver_drivers Wiki
  */
-class Ezb implements DriverInterface
+class Ezb implements DriverInterface, TranslatorAwareInterface
 {
+    use \VuFind\I18n\Translator\TranslatorAwareTrait;
+
     /**
      * Base URL for link resolver
      *
      * @var string
      */
     protected $baseUrl;
+
+    /**
+     * Resolver configuration
+     *
+     * @var \Zend\Config\Resolver
+     */
+    protected $config;
 
     /**
      * HTTP client
@@ -61,13 +77,14 @@ class Ezb implements DriverInterface
     /**
      * Constructor
      *
-     * @param string            $baseUrl    Base URL for link resolver
+     * @param string            $config    ezb configuration
      * @param \Zend\Http\Client $httpClient HTTP client
      */
-    public function __construct($baseUrl, \Zend\Http\Client $httpClient)
+    public function __construct($config, \Zend\Http\Client $httpClient)
     {
-        $this->baseUrl = $baseUrl;
+        $this->baseUrl = $config->url;
         $this->httpClient = $httpClient;
+        $this->config = $config;
     }
 
     /**
@@ -100,9 +117,16 @@ class Ezb implements DriverInterface
             $openURL = $this->downgradeOpenUrl($parsed);
         }
 
-        // make the request IP-based to allow automatic
-        // indication on institution level
-        $openURL .= '&pid=client_ip%3D' . $_SERVER['REMOTE_ADDR'];
+
+        if (isset($this->config->bibid)) {
+            $openURL .= '&pid=' .
+                'bibid%3D' . $this->config->bibid;
+        } else {
+            // use IP-based request as fallback
+            $openURL .= '&pid=client_ip%3D' . $_SERVER['REMOTE_ADDR'];
+        }
+        $openURL .= isset($parsed['zdbid']) ?
+            '%26zdbid%3D' . $parsed['zdbid'] : '';
 
         // Make the call to the EZB and load results
         $url = $this->baseUrl . '?' . $openURL;
@@ -190,7 +214,7 @@ class Ezb implements DriverInterface
 
         return implode('&', $downgraded);
     }
-    
+
     /**
      * Extract electronic results from the EZB response and inject them into the
      * $records array.
@@ -208,25 +232,81 @@ class Ezb implements DriverInterface
             "/OpenURLResponseXML/Full/ElectronicData/ResultList/Result[@state=" .
             $state . "]"
         );
+
+        /*
+         * possible state values:
+         * -1 ISSN nicht eindeutig
+         *  0 Standort-unabhängig frei zugänglich
+         *  1 Standort-unabhängig teilweise zugänglich (Unschärfe bedingt durch
+         *    unspezifische Anfrage oder Moving-Wall)
+         *  2 Lizenziert
+         *  3 Für gegebene Bibliothek teilweise lizenziert (Unschärfe bedingt durch
+         *    unspezifische Anfrage oder Moving-Wall)
+         *  4 nicht lizenziert
+         *  5 Zeitschrift gefunden
+         *    Angaben über Erscheinungsjahr, Datum ... liegen außerhalb des
+         *    hinterlegten bibliothekarischen Zeitraums
+         * 10 Unbekannt (ISSN unbekannt, Bibliothek unbekannt)
+         */
+        $state_access_mapping = [
+            '-1' => 'error',
+            '0'  => 'open',
+            '1'  => 'limited',
+            '2'  => 'open',
+            '3'  => 'limited',
+            '4'  => 'denied',
+            '5'  => 'denied',
+            '10' => 'unknown'
+        ];
+
         $i = 0;
         foreach ($results as $result) {
             $record = [];
             $titleXP = "/OpenURLResponseXML/Full/ElectronicData/ResultList/" .
-                "Result[@state={$state}]/Title";
-            $record['title'] = strip_tags(
-                $xpath->query($titleXP, $result)->item($i)->nodeValue
-            );
-            $record['coverage'] = $coverage;
+                "Result[@state={$state}][".($i+1)."]/Title";
+            $title = $xpath->query($titleXP, $result)->item(0);
+            if (isset($title)) {
+                $record['title'] = strip_tags($title->nodeValue);
+            }
+
+            $additionalXP = "/OpenURLResponseXML/Full/ElectronicData/ResultList/" .
+                "Result[@state={$state}][".($i+1)."]/Additionals/Additional";
+            $additionalType = ['nali', 'intervall', 'moving_wall'];
+            $additionals = [];
+            foreach ($additionalType as $type) {
+                $additional = $xpath
+                    ->query($additionalXP . "[@type='".$type."']", $result)->item(0);
+                if (isset($additional->nodeValue)) {
+                    $additionals[$type] = strip_tags($additional->nodeValue);
+                }
+            }
+            $record['coverage']
+                = !empty($additionals) ? implode(";", $additionals) : $coverage;
+
+            $record['access'] = $state_access_mapping[$state];
+
             $urlXP = "/OpenURLResponseXML/Full/ElectronicData/ResultList/" .
-                "Result[@state={$state}]/AccessURL";
-            $record['href'] = $xpath->query($urlXP, $result)->item($i)->nodeValue;
+                "Result[@state={$state}][".($i+1)."]/AccessURL";
+            $url = $xpath->query($urlXP, $result)->item(0);
+            if (isset($url->nodeValue)) {
+                $record['href'] = $url->nodeValue;
+            }
+
+            $readmeXP = "/OpenURLResponseXML/Full/ElectronicData/ResultList/" .
+                "Result[@state={$state}][".($i+1)."]/ReadmeURL[@lang='" .
+                $this->getTranslatorLocale()."']";
+            $readme = $xpath->query($readmeXP, $result)->item(0);
+            if (isset($readme->nodeValue)) {
+                $record['coverageHref'] = $readme->nodeValue;
+            }
+
             // Service type needs to be hard-coded for calling code to properly
             // categorize links. The commented code below picks a more appropriate
             // value but won't work for now -- retained for future reference.
             //$service_typeXP = "/OpenURLResponseXML/Full/ElectronicData/ResultList/"
-            //    . "Result[@state={$state}]/AccessLevel";
+            //    . "Result[@state={$state}][".($i+1)."]/AccessLevel";
             //$record['service_type']
-            //    = $xpath->query($service_typeXP, $result)->item($i)->nodeValue;
+            //    = $xpath->query($service_typeXP, $result)->item(0)->nodeValue;
             $record['service_type'] = 'getFullTxt';
             array_push($records, $record);
             $i++;
@@ -249,12 +329,51 @@ class Ezb implements DriverInterface
         $results = $xpath->query(
             "/OpenURLResponseXML/Full/PrintData/ResultList/Result[@state={$state}]"
         );
+
+        /*
+         * possible state values:
+         * -1 ISSN nicht eindeutig
+         *  2 Vorhanden
+         *  3 Teilweise vorhanden (Unschärfe bedingt durch unspezifische Anfrage bei
+         *    nicht vollständig vorhandener Zeitschrift)
+         *  4 Nicht vorhanden
+         * 10 Unbekannt (ZDB-ID unbekannt, ISSN unbekannt, Bibliothek unbekannt)
+         */
+        $state_access_mapping = [
+            '-1' => 'error',
+            '2'  => 'open',
+            '3'  => 'limited',
+            '4'  => 'denied',
+            '10' => 'unknown'
+        ];
+
         $i = 0;
         foreach ($results as $result) {
             $record = [];
             $record['title'] = $coverage;
+
+            $resultXP = "/OpenURLResponseXML/Full/PrintData/ResultList/" .
+                "Result[@state={$state}][".($i+1)."]";
+            $resultElements = [
+                'Title', 'Location', 'Signature', 'Period', 'Holding_comment'
+            ];
+            $elements = [];
+            foreach ($resultElements as $element) {
+                $elem = $xpath->query($resultXP . "/".$element, $result)->item(0);
+                if (isset($elem->nodeValue)) {
+                    $elements[$element] = strip_tags($elem->nodeValue);
+                }
+            }
+            $record['coverage']
+                = !empty($elements) ? implode(";", $elements) : $coverage;
+
+            $record['access'] = $state_access_mapping[$state];
+
             $urlXP = "/OpenURLResponseXML/Full/PrintData/References/Reference/URL";
-            $record['href'] = $xpath->query($urlXP, $result)->item($i)->nodeValue;
+            $url = $xpath->query($urlXP, $result)->item($i);
+            if (isset($url->nodeValue)) {
+                $record['href'] = $url->nodeValue;
+            }
             // Service type needs to be hard-coded for calling code to properly
             // categorize links. The commented code below picks a more appropriate
             // value but won't work for now -- retained for future reference.

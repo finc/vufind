@@ -68,7 +68,7 @@ class Factory
     {
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
         return new Ezb(
-            $config->OpenURL->url,
+            $config->OpenURL,
             $sm->getServiceLocator()->get('VuFind\Http')->createClient()
         );
     }

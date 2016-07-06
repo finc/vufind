@@ -171,8 +171,20 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
 
         $embed = (isset($this->config->embed) && !empty($this->config->embed));
 
-        $embedAutoLoad = isset($this->config->embed_auto_load)
-            ? $this->config->embed_auto_load : false;
+        $openurl = $this->recordDriver->getOpenURL();
+
+        if (isset($this->config->custom_params)) {
+            foreach ($this->config->custom_params as $customParam) {
+                list($key, $value) = explode(':', $customParam);
+                $customValue = $this->recordDriver->tryMethod($value);
+                if ($customValue) {
+                    $openurl .= "&" . $key . "=" . $customValue;
+                }
+            }
+        }
+
+        $embedAutoLoad = (isset($this->config->embed_auto_load)
+            ? $this->config->embed_auto_load : false);
         // ini values 'true'/'false' are provided via ini reader as 1/0
         // only check embedAutoLoad for area if the current area passed checkContext
         if (!($embedAutoLoad === "1" || $embedAutoLoad === "0")
@@ -194,7 +206,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
 
         // Build parameters needed to display the control:
         $params = [
-            'openUrl' => $this->recordDriver->getOpenUrl(),
+            'openUrl' => $openurl,
             'openUrlBase' => empty($base) ? false : $base,
             'openUrlWindow' => empty($this->config->window_settings)
                 ? false : $this->config->window_settings,
