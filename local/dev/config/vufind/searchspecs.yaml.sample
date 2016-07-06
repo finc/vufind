@@ -159,17 +159,16 @@ Author:
     - author2^300
     - author_id^100
     - author_ref^150
-    - author_corp^200
-    - author_corp2^200
+    - author_corporate^200
+    - author_corporate2^200
     - author_corp_ref^150
     - author_orig^200
     - author2_orig^200
-    - author_corp_orig^200
-    - author_corp2_orig^200
+    - author_corporate_orig^200
+    - author_corporate2_orig^200
     - author_fuller^50
     - author2_fuller
     - author_additional
-    - author_corporate
     - author_variant
     - author2_variant
   QueryFields:
@@ -178,9 +177,9 @@ Author:
       - [and, 200]
       - [or, 100]
     - author_fuller:
-          - [onephrase, 200]
-          - [and, 100]
-          - [or, 50]
+      - [onephrase, 200]
+      - [and, 100]
+      - [or, 50]
     - author2:
       - [onephrase, 100]
       - [and, 50]
@@ -189,11 +188,11 @@ Author:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_corp:
+    - author_corporate:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_corp2:
+    - author_corporate2:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
@@ -209,11 +208,11 @@ Author:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_corp_orig:
+    - author_corporate_orig:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_corp2_orig:
+    - author_corporate2_orig:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
@@ -226,10 +225,6 @@ Author:
       - [and, 50]
       - [or, ~]
     - author_additional:
-      - [onephrase, 100]
-      - [and, 50]
-      - [or, ~]
-    - author_corporate:
       - [onephrase, 100]
       - [and, 50]
       - [or, ~]
@@ -478,15 +473,15 @@ AllFields:
     - series_orig^50
     - author^500
     - author_fuller^150
-    - author_corp^300
+    - author_corporate^300
     - author2^400
-    - author_corp2^100
+    - author_corporate2^100
     - author_ref^500
     - author_corp_ref^500
     - author_orig^300
     - author2_orig^300
-    - author_corp_orig^300
-    - author_corp2_orig^100
+    - author_corporate_orig^300
+    - author_corporate2_orig^100
     - topic_ref^10
     - contents^10
     - topic_unstemmed^15
@@ -550,19 +545,19 @@ AllFields:
       - [and, 250]
     author2_orig:
       - [and, 50]
-    author_corp_orig:
+    author_corporate_orig:
       - [onephrase, 500]
       - [and, 400]
-    author_corp2_orig:
+    author_corporate2_orig:
       - [and, 50]
-    author_corp:
+    author_corporate:
       - [onephrase, 500]
       - [and, 400]
     author2:
       - [and, 50]
     author_additional:
       - [and, 50]
-    author_corp2:
+    author_corporate2:
       - [and, 50]
     contents:
       - [and, 10]
