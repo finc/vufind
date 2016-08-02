@@ -7,7 +7,13 @@
         <? foreach ($this->electronic as $link): ?>
           <li>
             <? if (!empty($link['href'])): ?>
-              <div <?=!empty($link['access'])?' class="traffic-light access-'.$link['access'].'"':''?>> <span class="first"></span> <span class="second"></span> <span class="last"></span> </div><a href="<?=$this->escapeHtmlAttr($link['href'])?>" title="<?=isset($link['service_type'])?$this->escapeHtmlAttr($link['service_type']):''?>"<?=!empty($link['access'])?' class="access-'.$link['access'].'"':''?>><?=isset($link['title'])?$this->escapeHtml($link['title']):''?></a> <br /><small><?=isset($link['coverage'])?$this->escapeHtml($link['coverage']):''?><?=isset($link['coverageHref'])?' <a href="'.$link['coverageHref'].'" target="_blank">'.$this->translate('Readme').'</a>':''?></small>
+              <div <? if(!empty($link['access'])): ?> data-tooltip aria-haspopup="true" data-options="disable_for_touch:true;touch_close_text:'<?= $this->transEsc('Tap to close')?>'" title="<?=$this->transEsc('resolver_link_access_'.$link['access'])?>" class="has-tip traffic-light access-<?=$link['access']?>"<? endif;?>>
+                <span class="first"></span>
+                <span class="second"></span>
+                <span class="last"></span>
+              </div>
+              <a href="<?=$this->escapeHtmlAttr($link['href'])?>" title="<?=isset($link['service_type'])?$this->escapeHtmlAttr($link['service_type']):''?>"<?=!empty($link['access'])?' class="access-'.$link['access'].'"':''?>><?=isset($link['title'])?$this->escapeHtml($link['title']):''?></a> <br />
+              <small><?=isset($link['coverage'])?$this->escapeHtml($link['coverage']):''?><?=isset($link['coverageHref'])?' <a href="'.$link['coverageHref'].'" target="_blank">'.$this->translate('Readme').'</a>':''?></small>
             <? else: ?>
               <?=isset($link['title'])?$this->escapeHtml($link['title']):''?> <?=isset($link['coverage'])?$this->escapeHtml($link['coverage']):''?>
             <? endif; ?>
@@ -46,5 +52,6 @@
       </ul>
     <? endif; ?>
   </div> */ ?>
+  <script type="text/javascript">$(document).foundation('tooltip', 'reflow');</script>
 </div>
 <!-- ajax - resolverlinks.phtml - END -->
