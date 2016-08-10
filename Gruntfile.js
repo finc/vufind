@@ -74,6 +74,15 @@ module.exports = function(grunt) {
         }
       }
     },
+    watch: {
+      options: {
+        atBegin: true
+      },
+      css: {
+        files: '**/*.scss',
+        tasks: ['sass_recursive:sass:dev']
+      }
+    },
     // Convert LESS to SASS, mostly for development team use
     lessToSass: {
       convert: {
