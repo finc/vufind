@@ -737,7 +737,7 @@ geographic:
     - geographic:
       - [and, 50]
     - geographic_facet:
-      - [and ~]
+      - [and, ~]
 
 genre:
   QueryFields:
