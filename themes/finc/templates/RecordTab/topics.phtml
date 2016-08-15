@@ -1,0 +1,63 @@
+<!-- recordtab - topics.phtml -->
+<?
+// Set page title.
+$this->headTitle($this->translate('Topics') . ': ' . $this->driver->getBreadcrumb());
+
+?>
+<table class="table table-striped" summary="<?=$this->transEsc('Topics')?>">
+<? if ($rvk = $this->driver->tryMethod('getRvkWithMetadata')): ?>
+  <? $contentDisplayed = true; ?>
+  <tr>
+    <th><?=$this->transEsc('RVK')?>:</th>
+    <td>
+      <? $i = 0; foreach ($rvk as $item): ?>
+        <?=($i>0?"<br />":"") //no linebreak after last item ?>
+		<?=$item['rvk']?>
+		<? if (isset($item['level']) || isset($item['name'])): ?>
+		  <?
+			$tooltip_content = "<ul class='no-bullet'>" . (isset($item['name']) ? "<li><strong>" . $item['name'] . "</strong></li>" : "");
+			if (isset($item['level']) && count($item['level'])) {
+				foreach ($item['level'] as $level) {
+					$tooltip_content .= "<li>" . $level . "</li>";
+				}
+			}
+			$tooltip_content .= "</ul>";
+		  ?>
+		<? endif; ?>
+	  	<span <?=(isset($tooltip_content) ? 'data-tooltip aria-haspopup="true" data-options="disable_for_touch:true;touch_close_text:' . $this->transEsc('Tap to close') . '" class="has-tip" title="' . $tooltip_content . '"' : "")?>>
+          <a href="<?=$this->record($this->driver)->getLink('rvk', $item['rvk'])?>"> <i class="fa fa-search"></i> <?=$this->transEsc('Find Similar Items');?></a>
+        </span>
+	  	<? $i++; ?>
+	  <? endforeach; ?>
+	</td>
+  </tr>
+<? endif; ?>
+
+<? $topics = $this->driver->getTopics(); if (!empty($topics) && is_array($topics)): ?>
+  <? $contentDisplayed = true; ?>
+  <tr>
+    <th><?=$this->transEsc('Subjects')?>: </th>
+    <td>
+    <? foreach ($topics as $field): ?>
+      <div class="subject-line" property="keywords">
+        <? $subject = ''; ?>
+        <? if(count($field) == 1 && !isset($field['subject'])) $field = explode('--', $field[0]); ?>
+        <? if(isset($field['subject'])): // extended topics ?>
+          <? $field = $field['subject']; ?>
+        <? endif; ?>
+        <? $i = 0; foreach ($field as $subfield): ?>
+          <?=($i++ == 0) ? '' : ' &gt; '?>
+          <? $subject = trim($subject . ' ' . $subfield); ?>
+          <a title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>" rel="nofollow"><?=trim($this->escapeHtml($subfield))?></a>
+        <? endforeach; ?>
+      </div>
+    <? endforeach; ?>
+    </td>
+  </tr>
+<? endif; ?>
+
+<? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
+  <tr><td><?=$this->transEsc('Topics unavailable')?></td></tr>
+<? endif; ?>
+</table>
+<!-- recordtab - topics.phtml - END -->

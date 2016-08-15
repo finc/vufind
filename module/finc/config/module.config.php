@@ -50,7 +50,8 @@ $config = [
             'recordtab' => [
                 'invokables' => [
                     'staffviewai' => 'finc\RecordTab\StaffViewAI',
-                    'acquisitionpda' => 'finc\RecordTab\AcquisitionPDA'
+                    'acquisitionpda' => 'finc\RecordTab\AcquisitionPDA',
+                    'topics' => 'finc\RecordTab\Topics',
                 ],
             ],
             'resolver_driver' => [

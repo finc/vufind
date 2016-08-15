@@ -143,17 +143,10 @@ class Record extends \VuFind\View\Helper\Root\Record
      */
     public function getLink($type, $lookfor)
     {
-        $link = $this->renderTemplate(
-            'link-' . $type . '.phtml',
-            [
-                'lookfor' => ($type == 'author'
-                    ? $this->removeAuthorDates($lookfor) : $lookfor
-                )
-            ]
+        $lookfor = ($type == 'author'
+            ? $this->removeAuthorDates($lookfor) : $lookfor
         );
-        $link .= $this->getView()->plugin('searchTabs')
-            ->getCurrentHiddenFilterParams($this->driver->getSourceIdentifier());
-        return $link;
+        return parent::getLink($type, $lookfor);
     }
 
     /**

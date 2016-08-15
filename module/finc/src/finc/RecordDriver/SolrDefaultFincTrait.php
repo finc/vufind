@@ -944,6 +944,18 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get specific marc information about topics. Unflexible solution
+     * for UBL only implemented.
+     *
+     * @return array
+     * @access protected
+     */
+    public function getTopics()
+    {
+        return array_merge($this->getAllSubjectHeadings());
+    }
+    
+    /**
      * Check if Additional Items exists. Realized for instance of UBL only.
      *
      * @return boolean      True if additional items exists.
@@ -956,6 +968,18 @@ trait SolrDefaultFincTrait
         return (is_array($array) && count($array) > 0) ? true : false;
     }
 
+    /**
+     * Check if Topics exists. Realized for instance of UBL only.
+     *
+     * @return boolean      True if topics exist.
+     * @access public
+     */
+    public function hasTopics()
+    {
+        $array = $this->getTopics();
+        return (is_array($array) && count($array) > 0) ? true : false;
+    }
+    
     /**
      * Filter author data for author year of birth and death
      * to give a better mark up.

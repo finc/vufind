@@ -1135,17 +1135,18 @@ trait SolrMarcFincTrait
         $retval = [];
 
         $fields = $this->getMarcRecord()->getFields('689');
-        if (!$fields) {
-            return null;
-        }
         foreach ($fields as $field) {
             $subjectrow = $field->getIndicator('1');
             if ($subjectrow != $firstindicator) {
                 $key = (isset($key) ? $key +1 : 0);
                 $firstindicator = $subjectrow;
             }
-            if ($subfield = $field->getSubfield('a')) {
-                $retval[$key]['subject'][] = $subfield->getData();
+            // #5668 #5046 BSZ MARC may contain uppercase subfields but solrmarc set to lowercase them which introduces single char topics
+            if ($subfields = $field->getSubfields('a')){
+                foreach ($subfields as $subfield) {
+                    if (strlen($subfield->getData()) > 1)
+                        $retval[$key]['subject'][] = $subfield->getData();
+                }
             }
             if ($subfield = $field->getSubfield('t')) {
                 $retval[$key]['subject'][] = $subfield->getData();
@@ -1227,6 +1228,18 @@ trait SolrMarcFincTrait
         return array_map(
             'unserialize', array_unique(array_map('serialize', $retval))
         );
+    }
+
+    /**
+     * Get specific marc information about topics. Unflexible solution
+     * for UBL only implemented.
+     *
+     * @return array
+     * @access protected
+     */
+    public function getTopics()
+    {
+        return array_merge($this->getAllSubjectHeadings(), $this->getAllSubjectHeadingsExtended());
     }
 
     /**
@@ -1340,5 +1353,40 @@ trait SolrMarcFincTrait
     protected function getRelatedItems()
     {
         return $this->getFirstFieldValue('776', ['z']);
+    }
+
+    /**
+     * Get RVK classification number with metadata from Marc records.
+     *
+     * @return array
+     * @link https://intern.finc.info/fincproject/issues/599
+     */
+    public function getRvkWithMetadata()
+    {
+        $array = [];
+
+        $rvk = $this->getMarcRecord()->getFields('936');
+        // if not return void value
+        if (!$rvk) {
+            return $array;
+        } // end if
+        foreach ($rvk as $key => $line) {
+            // if subfield with rvk exists
+            if ($line->getSubfield('a')) {
+                // get rvk
+                $array[$key]['rvk'] = $line->getSubfield('a')->getData();
+                // get rvk nomination
+                if ($line->getSubfield('b')) {
+                    $array[$key]['name'] = $line->getSubfield('b')->getData();
+                }
+                if ($record = $line->getSubfields('k')) {
+                    // iteration over rvk notation
+                    foreach ($record as $field) {
+                        $array[$key]['level'][] = $field->getData();
+                    }
+                } // end if subfield k
+            } // end if subfield a
+        } // end foreach
+        return $array;
     }
 }
