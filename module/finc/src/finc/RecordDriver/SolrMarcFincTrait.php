@@ -516,6 +516,17 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Hardcoded overwrite to force use of SolrDefault getSeries method in order
+     * to prevent fullrecord loading in result-list due to Coins generation.
+     *
+     * @return array
+     */
+    public function getSeries()
+    {
+        return SolrDefault::getSeries();
+    }
+
+    /**
      * Get an array of title detail lines with original notations combining
      * information from MARC field 245 and linked content in 880.
      *

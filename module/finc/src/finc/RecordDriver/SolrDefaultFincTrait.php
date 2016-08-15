@@ -909,6 +909,18 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Get a precompiled string of publication details stored in the Solr field
+     * imprint.
+     *
+     * @return string
+     */
+    public function getImprint()
+    {
+        return isset($this->fields['imprint']) ?
+            $this->fields['imprint'] : '';
+    }
+
+    /**
      * Get the item's place of publication.
      *
      * @return array
