@@ -1098,7 +1098,6 @@ trait SolrMarcFincTrait
             // if no entry break it
             if ($related) {
                 foreach ($related as $key => $line) {
-                    // -----
                     // https://intern.finc.info/issues/6896#note-7
                     $text = [];
                     foreach ($subfields as $subfield) {
@@ -1106,24 +1105,28 @@ trait SolrMarcFincTrait
                             $text[] = $line->getSubfield($subfield)->getData();
                         }
                     }
-                    $array[$i]['text'] = (count($text) > 0
-                      ? implode(', ', $text) : '');
-                    // -----
-                    if ($line->getSubfield('i')) {
-                        $array[$i]['identifier'] = ($line->getSubfield('i'))
-                            ? $line->getSubfield('i')->getData() : '';
-                        // get ppns of bsz
-                        $linkFields = $line->getSubfields('w');
-                        if (is_array($linkFields) && count($linkFields) > 0) {
-                            foreach ($linkFields as $current) {
-                                $text = $current->getData();
-                                // Extract parenthetical prefixes:
-                                if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
-                                    $array[$i]['record_id']
-                                        = $matches[2] . $matches[3];
+                    // we can have text without links but no links without text, so
+                    // only proceed if we actually have a value for the text
+                    if (count($text) > 0) {
+                        $array[$i]['text'] = implode(', ', $text);
+                        // now lets look for identifiers
+                        if ($line->getSubfield('i')) {
+                            $array[$i]['identifier'] = ($line->getSubfield('i'))
+                                ? $line->getSubfield('i')->getData() : '';
+                            // get ppns of bsz
+                            $linkFields = $line->getSubfields('w');
+                            if (is_array($linkFields) && count($linkFields) > 0) {
+                                foreach ($linkFields as $current) {
+                                    $text = $current->getData();
+                                    // Extract parenthetical prefixes:
+                                    if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
+                                        $array[$i]['record_id']
+                                            = $matches[2] . $matches[3];
+                                    }
                                 }
                             }
                         }
+                        // at least we found some text so increment
                         $i++;
                     }
                 }
