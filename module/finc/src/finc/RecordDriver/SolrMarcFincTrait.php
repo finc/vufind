@@ -1133,6 +1133,122 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Marc specific implementation for retrieving hierarchy parent id(s).
+     *
+     * @return array
+     * @link https://intern.finc.info/issues/8369
+     */
+    public function getHierarchyParentID()
+    {
+        $parentID = [];
+        $fieldList = [
+            ['773'],
+            ['800', '810', '811'],
+            ['830']
+        ];
+
+        $idRetrieval = function ($value) {
+            // use preg_match to get rid of the isil
+            preg_match("/^(\([A-z]*-[A-z0-9]*\))?\s*([A-z0-9]*)\s*$/", $value, $matches);
+            if (!empty($matches[2])) {
+                $query = 'record_id:' . $matches[2];
+                $result = $this->searchService->search('VuFind', new \VuFindSearch\Query\Query($query));
+                if (count($result) === 0) {
+                    $this->debug('Could not retrieve id for record with '
+                        . $solrField . ":" . $solrValue
+                    );
+                    return $solrValue;
+                }
+                return current($result->getRecords())->getUniqueId();
+            }
+            $this->debug('Pregmatch pattern in getHierarchyParentID failed for ' .
+                $value
+            );
+            return $value;
+        };
+
+        // loop through all field lists in their particular order (as in
+        // getHierchyParentTitle) and build the $parentID array
+        foreach ($fieldList as $fieldNumbers) {
+            foreach ($fieldNumbers as $fieldNumber) {
+                $fields = $this->getMarcRecord()->getFields($fieldNumber);
+                foreach($fields as $field) {
+                    $parentID[] = $idRetrieval(
+                        $field->getSubfield('w')->getData()
+                    );
+                }
+            }
+        }
+
+        // as a fallback return the parent ids stored in Solr
+        if (count($parentID) == 0) {
+            return parent::getHierarchyParentID();
+        }
+
+        return $parentID;
+    }
+
+    /**
+     * Marc specific implementation for compiling hierarchy parent titles.
+     *
+     * @return array
+     * @link https://intern.finc.info/issues/8369
+     */
+    public function getHierarchyParentTitle()
+    {
+        $parentTitle = [];
+
+        // check first if 773 is available and LDR 7 != (a || s)
+        $fields = $this->getMarcRecord()->getFields('773');
+        if ($fields && !in_array($this->getMarcRecord()->getLeader()[7], ['a', 's'])) {
+            foreach($fields as $field) {
+                $parentTitle[] =
+                    $this->getMarcRecord()->getField('245')->getSubfield('a')->getData() .
+                    ($field->getSubfield('g') ? '; ' . $field->getSubfield('g')->getData() : '')
+                ; // {245a}{; 773g}
+            }
+        } else {
+            // build the titles differently if LDR 7 == (a || s)
+            foreach($fields as $field) {
+                $parentTitle[] =
+                    $field->getSubfield('a')->getData() .
+                    ($field->getSubfield('t') ? ': ' . $field->getSubfield('t')->getData() : '') .
+                    ($field->getSubfield('g') ? ', ' . $field->getSubfield('g')->getData() : '')
+                ; // {773a}{: 773t}{, g}
+            }
+        }
+
+        // now proceed with 8xx fields
+        $fieldList = ['800', '810', '811'];
+        foreach ($fieldList as $fieldNumber) {
+            $fields = $this->getMarcRecord()->getFields($fieldNumber);
+            foreach($fields as $field) {
+                $parentTitle[] =
+                    $field->getSubfield('a')->getData() .
+                    ($field->getSubfield('t') ? ': ' . $field->getSubfield('t')->getData() : '') .
+                    ($field->getSubfield('v')->getData() != '' ? ' ; ' . $field->getSubfield('v')->getData() : '')
+                ; // {800a: }{800t}{ ; 800v}
+            }
+        }
+
+        // handle field 830 differently
+        $fields = $this->getMarcRecord()->getFields('830');
+        foreach($fields as $field) {
+            $parentTitle[] =
+                $field->getSubfield('a')->getData() .
+                ($field->getSubfield('v') ? ' ; ' . $field->getSubfield('v')->getData() : '')
+            ; // {830a}{ ; 830v}
+        }
+
+        // as a fallback return the parent titles stored in Solr
+        if (count($parentTitle) == 0) {
+            return parent::getHierarchyParentTitle();
+        }
+
+        return $parentTitle;
+    }
+
+    /**
      * Special method to extracting the data of the marc21 field 689 of the
      * the bsz heading subjects chains.
      *
