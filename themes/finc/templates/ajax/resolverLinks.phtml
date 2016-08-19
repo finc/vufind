@@ -1,6 +1,8 @@
 <!-- ajax - resolverlinks.phtml -->
 <div>
+  <? $noResolverContent = true; ?>
   <? if (!empty($this->electronic)): ?>
+    <? $noResolverContent = false; ?>
     <div class="openurls">
       <? /*<strong><?=$this->transEsc('Electronic')?></strong>*/ ?>
       <ul class="no-bullet">
@@ -23,6 +25,7 @@
     </div>
   <? endif; ?>
   <? /**<? if (!empty($this->print)): ?>
+    <? $noResolverContent = false; ?>
     <div class="openurls">
       <strong><?=$this->transEsc('Holdings')?></strong>
       <ul class="no-bullet">
@@ -52,6 +55,10 @@
       </ul>
     <? endif; ?>
   </div> */ ?>
-  <script type="text/javascript">$(document).foundation('tooltip', 'reflow');</script>
+  <? if ($noResolverContent): // no content to show, so tell the user ?>
+    <span><?=$this->resolver . ': ' . $this->translate('no_resolver_links')?></span>
+  <? else: // content to show, so do javascript to properly render tooltips?>
+    <script type="text/javascript">$(document).foundation('tooltip', 'reflow');</script>
+  <? endif; ?>
 </div>
 <!-- ajax - resolverlinks.phtml - END -->

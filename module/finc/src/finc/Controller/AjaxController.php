@@ -119,7 +119,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
             $view = [
                 'openUrlBase' => $base, 'openUrl' => $openUrl, 'print' => $print,
                 'electronic' => $electronic, 'services' => $services,
-                'searchClassId' => $searchClassId
+                'searchClassId' => $searchClassId, 'resolver' => $requestedResolver
             ];
         }
         $html = $this->getViewRenderer()->render('ajax/resolverLinks.phtml', $view);

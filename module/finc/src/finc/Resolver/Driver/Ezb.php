@@ -80,7 +80,7 @@ class Ezb implements DriverInterface, TranslatorAwareInterface
      * @param string            $config    ezb configuration
      * @param \Zend\Http\Client $httpClient HTTP client
      */
-    public function __construct($config, \Zend\Http\Client $httpClient, $translator)
+    public function __construct($config, \Zend\Http\Client $httpClient)
     {
         $this->baseUrl = $config->url;
         $this->httpClient = $httpClient;
