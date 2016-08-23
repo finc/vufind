@@ -160,8 +160,9 @@ trait EmailHoldTrait
                     $details['patron']['firstname'] .
                     " | Signatur: " . $details['callnumber'];
 
-                $from = $reply = (isset($details['patron']['email'])) 
-                    ? new Address(
+                $from = $reply = (isset($details['patron']['email'])
+                    && !empty($details['patron']['email'])
+                    ) ? new Address(
                         $details['patron']['email'],
                         $details['patron']['firstname'] . ' ' . $details['patron']['lastname']
                     ) : new Address($emailProfile->from) ;
