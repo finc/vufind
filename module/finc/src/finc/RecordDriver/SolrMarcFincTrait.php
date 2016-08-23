@@ -481,33 +481,45 @@ trait SolrMarcFincTrait
     {
         $retval = [];
 
-        if ($fields = $this->getMarcRecord()->getFields('260')) {
-            foreach ($fields as $i => $current) {
-                $place = $current->getSubfield('a')
-                    ? $current->getSubfield('a')->getData() : null;
-                $name = $current->getSubfield('b')
-                    ? $current->getSubfield('b')->getData() : null;
-                $date = $current->getSubfield('c')
-                    ? $current->getSubfield('c')->getData() : null;
+        $marcFields = ['260', '264'];
 
+        // loop through all defined marcFields
+        foreach ($marcFields as $marcField) {
+            // now select all fields for the current marcField
+            if ($fields = $this->getMarcRecord()->getFields($marcField)) {
+                // loop through all fields of the current marcField
+                foreach ($fields as $i => $current) {
+                    // Marc 264abc should only be displayed if Ind.2==1
+                    // Display any other Marc field if defined above
+                    if ($marcField != '264'
+                        || ($marcField == '264' && $current->getIndicator(2) == 1)
+                    ) {
+                        $place = $current->getSubfield('a')
+                            ? $current->getSubfield('a')->getData() : null;
+                        $name = $current->getSubfield('b')
+                            ? $current->getSubfield('b')->getData() : null;
+                        $date = $current->getSubfield('c')
+                            ? $current->getSubfield('c')->getData() : null;
 
-                // Build objects to represent each set of data; these will
-                // transform seamlessly into strings in the view layer.
-                $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
-                    $place, $name, $date
-                );
+                        // Build objects to represent each set of data; these will
+                        // transform seamlessly into strings in the view layer.
+                        $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
+                            $place, $name, $date
+                        );
 
-                // Build the publication details with additional graphical notations
-                // for the current set of publication details
-                if ($linkedField = $this->getLinkedField($current, $i)) {
-                    $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
-                        $linkedField->getSubfield('a')
-                            ? $linkedField->getSubfield('a')->getData() : null,
-                        $linkedField->getSubfield('b')
-                            ? $linkedField->getSubfield('b')->getData() : null,
-                        $linkedField->getSubfield('c')
-                            ? $linkedField->getSubfield('c')->getData() : null
-                    );
+                        // Build the publication details with additional graphical notations
+                        // for the current set of publication details
+                        if ($linkedField = $this->getLinkedField($current, $i)) {
+                            $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
+                                $linkedField->getSubfield('a')
+                                    ? $linkedField->getSubfield('a')->getData() : null,
+                                $linkedField->getSubfield('b')
+                                    ? $linkedField->getSubfield('b')->getData() : null,
+                                $linkedField->getSubfield('c')
+                                    ? $linkedField->getSubfield('c')->getData() : null
+                            );
+                        }
+                    }
                 }
             }
         }
