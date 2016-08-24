@@ -161,6 +161,27 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Method to return the order information stored in fullrecord
+     * LocalMarcFieldOfLibrary $m
+     *
+     * @return null|string
+     */
+    public function getLocalOrderInformation()
+    {
+        // loop through all existing LocalMarcFieldOfLibrary
+        if ($fields = $this->getMarcRecord()->getFields($this->getLocalMarcFieldOfLibrary())) {
+            foreach($fields as $field) {
+                // return the first occurance of $m
+                if ($field->getSubfield('m')) {
+                    return $field->getSubfield('m')->getData();
+                }
+            }
+        }
+        // no LocalMarcFieldOfLibrary or $m found
+        return null;
+    }
+
+    /**
      * Return the local callnumber.
      *
      * @todo Optimization by removing of prefixed isils
