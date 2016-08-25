@@ -1241,11 +1241,12 @@ trait SolrMarcFincTrait
         $fields = $this->getMarcRecord()->getFields('773');
         if ($fields && !in_array($this->getMarcRecord()->getLeader()[7], ['a', 's'])) {
             foreach($fields as $field) {
-                $field245 = $this->getMarcRecord()->getField('245');
-                $parentTitle[] =
-                    ($field245->getSubfield('a') ? $field245->getSubfield('a')->getData() : '') .
-                    ($field->getSubfield('g') ? '; ' . $field->getSubfield('g')->getData() : '')
-                ; // {245a}{; 773g}
+                if ($field245 = $this->getMarcRecord()->getField('245')) {
+                    $parentTitle[] =
+                        ($field245->getSubfield('a') ? $field245->getSubfield('a')->getData() : '') .
+                        ($field->getSubfield('g') ? '; ' . $field->getSubfield('g')->getData() : '')
+                    ; // {245a}{; 773g}
+                }
             }
         } else {
             // build the titles differently if LDR 7 == (a || s)
