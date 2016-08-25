@@ -1076,8 +1076,9 @@ trait SolrMarcFincTrait
         }
 
         foreach ($results as $line) {
-            $retval[] = $line->getSubfield('a')->getData() .
-                ($line->getSubfield('v')->getData() ? ' / ' . $line->getSubfield('v')->getData() : '');
+            $retval[] =
+                ($line->getSubfield('a') ? $line->getSubfield('a')->getData() : '') .
+                ($line->getSubfield('v') ? ' / ' . $line->getSubfield('v')->getData() : '');
         }
         return $retval;
     }
@@ -1240,8 +1241,9 @@ trait SolrMarcFincTrait
         $fields = $this->getMarcRecord()->getFields('773');
         if ($fields && !in_array($this->getMarcRecord()->getLeader()[7], ['a', 's'])) {
             foreach($fields as $field) {
+                $field245 = $this->getMarcRecord()->getField('245');
                 $parentTitle[] =
-                    $this->getMarcRecord()->getField('245')->getSubfield('a')->getData() .
+                    ($field245->getSubfield('a') ? $field245->getSubfield('a')->getData() : '') .
                     ($field->getSubfield('g') ? '; ' . $field->getSubfield('g')->getData() : '')
                 ; // {245a}{; 773g}
             }
@@ -1249,7 +1251,7 @@ trait SolrMarcFincTrait
             // build the titles differently if LDR 7 == (a || s)
             foreach($fields as $field) {
                 $parentTitle[] =
-                    $field->getSubfield('a')->getData() .
+                    ($field->getSubfield('a') ?        $field->getSubfield('a')->getData() : '') .
                     ($field->getSubfield('t') ? ': ' . $field->getSubfield('t')->getData() : '') .
                     ($field->getSubfield('g') ? ', ' . $field->getSubfield('g')->getData() : '')
                 ; // {773a}{: 773t}{, g}
@@ -1262,9 +1264,9 @@ trait SolrMarcFincTrait
             $fields = $this->getMarcRecord()->getFields($fieldNumber);
             foreach($fields as $field) {
                 $parentTitle[] =
-                    $field->getSubfield('a')->getData() .
+                    ($field->getSubfield('a') ?        $field->getSubfield('a')->getData() : '') .
                     ($field->getSubfield('t') ? ': ' . $field->getSubfield('t')->getData() : '') .
-                    ($field->getSubfield('v')->getData() != '' ? ' ; ' . $field->getSubfield('v')->getData() : '')
+                    ($field->getSubfield('v') ? ' ; ' . $field->getSubfield('v')->getData() : '')
                 ; // {800a: }{800t}{ ; 800v}
             }
         }
@@ -1273,7 +1275,7 @@ trait SolrMarcFincTrait
         $fields = $this->getMarcRecord()->getFields('830');
         foreach($fields as $field) {
             $parentTitle[] =
-                $field->getSubfield('a')->getData() .
+                ($field->getSubfield('a') ?         $field->getSubfield('a')->getData() : '') .
                 ($field->getSubfield('v') ? ' ; ' . $field->getSubfield('v')->getData() : '')
             ; // {830a}{ ; 830v}
         }
