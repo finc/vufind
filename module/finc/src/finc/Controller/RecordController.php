@@ -28,7 +28,8 @@
  * @link     https://vufind.org Main Site
  */
 namespace finc\Controller;
-use VuFind\Exception\Mail as MailException;
+use VuFind\Exception\Mail as MailException,
+    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
  * Record Controller
@@ -40,8 +41,10 @@ use VuFind\Exception\Mail as MailException;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Site
  */
-class RecordController extends \VuFind\Controller\RecordController
+class RecordController extends \VuFind\Controller\RecordController implements
+    LoggerAwareInterface
 {
+    use \VuFind\Log\LoggerAwareTrait;
     use EblTrait;
     use PdaTrait;
     use EmailHoldTrait;
@@ -71,7 +74,8 @@ class RecordController extends \VuFind\Controller\RecordController
         if (isset($mailConfig->$profile)) {
             return $mailConfig->$profile;
         } else {
-            throw new MailException('Missing email profile: ' + $profile);
+            $this->debug('Missing email profile: ' + $profile);
+            return [];
         }
     }
 
