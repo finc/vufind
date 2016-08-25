@@ -1209,9 +1209,11 @@ trait SolrMarcFincTrait
             foreach ($fieldNumbers as $fieldNumber) {
                 $fields = $this->getMarcRecord()->getFields($fieldNumber);
                 foreach($fields as $field) {
-                    $parentID[] = $idRetrieval(
-                        $field->getSubfield('w')->getData()
-                    );
+                    if ($field->getSubfield('w')) {
+                        $parentID[] = $idRetrieval(
+                            $field->getSubfield('w')->getData()
+                        );
+                    }
                 }
             }
         }
