@@ -172,106 +172,107 @@ Author:
     - author_variant
     - author2_variant
   QueryFields:
-    - author:
+    author:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_fuller:
+    author_fuller:
       - [onephrase, 200]
       - [and, 100]
       - [or, 50]
-    - author2:
+    author2:
       - [onephrase, 100]
       - [and, 50]
       - [or, ~]
-    - author_ref:
+    author_ref:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_corporate:
+    author_corporate:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_corporate2:
+    author_corporate2:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_corp_ref:
+    author_corp_ref:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_orig:
+    author_orig:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author2_orig:
+    author2_orig:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_corporate_orig:
+    author_corporate_orig:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_corporate2_orig:
+    author_corporate2_orig:
       - [onephrase, 350]
       - [and, 200]
       - [or, 100]
-    - author_id:
+    author_id:
       - [onephrase, 450]
       - [and, 300]
       - [or, 200]
-    - author2_fuller:
+    author2_fuller:
       - [onephrase, 100]
       - [and, 50]
       - [or, ~]
-    - author_additional:
+    author_additional:
       - [onephrase, 100]
       - [and, 50]
       - [or, ~]
-    - author_variant:
+    author_variant:
       - [onephrase, 100]
       - [and, 50]
       - [or, ~]
-    - author2_variant:
+    author2_variant:
       - [onephrase, 100]
       - [and, 50]
       - [or, ~]
 
 ISN:
-#  DismaxFields:
-#    - isbn
-#    - issn
-#    - ismn
+  DismaxFields:
+    - isbn
+    - issn
+    - ismn
   QueryFields:
-    - issn:
+    issn:
       - [and, 100]
       - [or, ~]
-    - isbn:
+    isbn:
       - [and, 100]
       - [or, ~]
-    - ismn:
+    ismn:
       - [and, 100]
       - [or, ~]
 
 Signatur:
-  DismaxParams:
-    - [mm, 0]
-  DismaxFields:
-    - callnumber_ISIL
+#  DismaxParams:
+#    - [mm, 0]
+#  DismaxFields:
+#    - callnumber_ISIL
   QueryFields:
-    - callnumber_ISIL:
+    callnumber_ISIL:
+      - [onephrase, 1000]
+      - [and, 100]
       - [or, ~]
-  #    - [and, 100]
-  #    - [or, ~]
 
 Barcode:
-  DismaxParams:
-    - [mm, 0]
-  DismaxFields:
-    - barcode_ISIL
+#  DismaxParams:
+#    - [mm, 0]
+#  DismaxFields:
+#    - barcode_ISIL
   QueryFields:
-    - barcode_ISIL:
-      #- [and, 100]
+    barcode_ISIL:
+      - [onephrase, 1000]
+      - [and, 100]
       - [or, ~]
 
 Subject:
@@ -284,19 +285,19 @@ Subject:
     #- genre^50
     #- era
   QueryFields:
-    - topic_unstemmed:
+    topic_unstemmed:
       - [onephrase, 350]
       - [and, 150]
       - [or, ~]
-    - topic:
+    topic:
       - [onephrase, 300]
       - [and, 100]
       - [or, ~]
-    - topic_ref:
+    topic_ref:
       - [onephrase, 100]
       - [and, 50]
       - [or, ~]
-    - topic_id:
+    topic_id:
       - [onephrase, 100]
       - [and, 50]
       - [or, ~]
@@ -338,29 +339,29 @@ JournalTitle:
     - series^100
     - series2
   QueryFields:
-    - title_short:
+    title_short:
       - [onephrase, 500]
-    - title_full_unstemmed:
+    title_full_unstemmed:
       - [onephrase, 450]
       - [and, 400]
-    - title_full:
+    title_full:
       - [onephrase, 400]
-    - title:
+    title:
       - [onephrase, 300]
       - [and, 250]
-    - container_title:
+    container_title:
       - [onephrase, 275]
       - [and, 225]
-    - title_alt:
+    title_alt:
       - [and, 200]
-    - title_new:
+    title_new:
       - [and, 100]
-    - title_old:
+    title_old:
       - [and, ~]  
-    - series:
+    series:
       - [onephrase, 100]
       - [and, 50]
-    - series2:
+    series2:
       - [onephrase, 50]
       - [and , ~]
   FilterQuery: "format:Journal"
@@ -391,32 +392,32 @@ Title:
     - series2
     - series_orig^100
   QueryFields:
-    - title_short:
+    title_short:
       - [onephrase, 500]
-    - title_full_unstemmed:
+    title_full_unstemmed:
       - [onephrase, 150]
       - [and, 100]
-    - title_full:
+    title_full:
       - [onephrase, 100]
-    - title:
+    title:
       - [onephrase, 300]
       - [and, 250]
-    - title_alt:
+    title_alt:
       - [and, 200]
-    - title_new:
+    title_new:
       - [and, 100]
-    - title_old:
+    title_old:
       - [and, ~]
-    - title_orig:
+    title_orig:
       - [onephrase, 500]
       - [and, 200]
-    - series:
+    series:
       - [onephrase, 100]
       - [and, 50]
-    - series2:
+    series2:
       - [onephrase, 50]
       - [and , ~]
-    - series_orig:
+    series_orig:
       - [onephrase, 100]
       - [and, 50]
 #  ExactSettings:
@@ -433,15 +434,15 @@ Series:
     - series2
     - series_orig^100
   QueryFields:
-    - series:
+    series:
       - [onephrase, 500]
       - [and, 200]
       - [or, 100]
-    - series2:
+    series2:
       - [onephrase, 50]
       - [and, 50]
       - [or, ~]
-    - series_orig:
+    series_orig:
       - [onephrase, 500]
       - [and, 200]
       - [or, 100]
@@ -450,7 +451,7 @@ Series2:
   DismaxFields:
     - series2
   QueryFields:
-    - series2:
+    series2:
       - [onephrase, 200]
       - [and, 50]
 
@@ -458,8 +459,8 @@ AllFields:
   DismaxParams:
     - [mm, 3]
     - [bf , ord(publishDateSort)^10]
-    - [bf , "if(exists(query({!v='source_id:0'})),10,1)^1000"]
-#    - [bf, "if(exists(query({!v='access_facet:Local*'})),10,1)^1000"]
+#    - [bf , "if(exists(query({!v='source_id:0'})),10,1)^1000"]
+    - [bf, "if(exists(query({!v='access_facet:Local*'})),10,1)^1000"]
   DismaxFields:
     - title_short^1000
     - title_full_unstemmed^1000
@@ -634,32 +635,32 @@ ParentID:
 # Fields for exact matches originating from alphabetic browse
 ids:
   QueryFields:
-    - id:
+    id:
       - [or, ~]
 
 TopicBrowse:
   QueryFields:
-    - topic_browse:
+    topic_browse:
       - [onephrase, ~]
 
 AuthorBrowse:
   QueryFields:
-    - author_browse:
+    author_browse:
       - [onephrase, ~]
 
 TitleBrowse:
   QueryFields:
-    - title_full:
+    title_full:
       - [onephrase, ~]
 
 DeweyBrowse:
   QueryFields:
-    - dewey-raw:
+    dewey-raw:
       - [onephrase, ~]
 
 LccBrowse:
   QueryFields:
-    - callnumber-a:
+    callnumber-a:
       - [onephrase, ~]
 
 
@@ -700,7 +701,7 @@ publisher:
   DismaxFields:
     - publisher^100
   QueryFields:
-    - publisher:
+    publisher:
       - [and, 100]
       - [or, ~]
 
@@ -708,47 +709,47 @@ year:
   DismaxFields:
     - publishDate^100
   QueryFields:
-    - publishDate:
+    publishDate:
       - [and, 100]
       - [or, ~]
 
 language:
   QueryFields:
-    - language:
+    language:
       - [and, ~]
 
 toc:
   DismaxFields:
     - contents^100
   QueryFields:
-    - contents:
+    contents:
       - [and, 100]
       - [or, ~]
 
 topic:
   QueryFields:
-    - topic:
+    topic:
       - [and, 50]
-    - topic_facet:
+    topic_facet:
       - [and, ~]
 
 geographic:
   QueryFields:
-    - geographic:
+    geographic:
       - [and, 50]
-    - geographic_facet:
+    geographic_facet:
       - [and, ~]
 
 genre:
   QueryFields:
-    - genre:
+    genre:
       - [and, 50]
-    - genre_facet:
+    genre_facet:
       - [and, ~]
 
 era:
   QueryFields:
-    - era:
+    era:
       - [and, ~]
 
 oclc_num:
@@ -758,26 +759,26 @@ oclc_num:
       # trim leading zeroes:
       - [preg_replace, "/^0*/", ""]
   QueryFields:
-    - oclc_num:
+    oclc_num:
       - [oclc_num, ~]
       
 rvk:
   DismaxFields:
     - rvk_facet^100
   QueryFields:
-    - rvk_facet:
+    rvk_facet:
       - [and, 50]
       - [or, 50]
       
 rvk_path:
   QueryFields:
-    - rvk_path:
+    rvk_path:
       - [onephrase, ~]
 
 multipart:
   DismaxFields:
     - multipart_link^100
   QueryFields:
-    - multipart_link:
+    multipart_link:
       - [and, 50]
       - [or, 50]  
