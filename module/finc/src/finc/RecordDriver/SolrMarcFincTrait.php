@@ -1129,27 +1129,36 @@ trait SolrMarcFincTrait
 
         foreach ($fields as $field) {
             $related = $this->getMarcRecord()->getFields($field);
-            // if no entry break it
+            // if no entry stop
             if ($related) {
+                // loop through all found fields
                 foreach ($related as $key => $line) {
-                    // https://intern.finc.info/issues/6896#note-7
-                    $text = [];
-                    foreach ($subfields as $subfield) {
-                        if ($line->getSubfield($subfield)) {
-                            $text[] = $line->getSubfield($subfield)->getData();
+                    // first lets look for identifiers - identifiers are vital as
+                    // those are used to identify the text in the frontend (e.g. as
+                    // table headers)
+                    // so, proceed only if we have an identifier
+                    if ($line->getSubfield('i')) {
+                        // lets collect the text
+                        // https://intern.finc.info/issues/6896#note-7
+                        $text = [];
+                        foreach ($subfields as $subfield) {
+                            if ($line->getSubfield($subfield)) {
+                                $text[] = $line->getSubfield($subfield)->getData();
+                            }
                         }
-                    }
-                    // we can have text without links but no links without text, so
-                    // only proceed if we actually have a value for the text
-                    if (count($text) > 0) {
-                        $array[$i]['text'] = implode(', ', $text);
-                        // now lets look for identifiers
-                        if ($line->getSubfield('i')) {
-                            $array[$i]['identifier'] = ($line->getSubfield('i'))
-                                ? $line->getSubfield('i')->getData() : '';
-                            // get ppns of bsz
-                            $linkFields = $line->getSubfields('w');
-                            if (is_array($linkFields) && count($linkFields) > 0) {
+
+                        // we can have text without links but no links without text, so
+                        // only proceed if we actually have a value for the text
+                        if (count($text) > 0) {
+                            $array[$i] = [
+                                'text'       => implode(', ', $text),
+                                'identifier' => ($line->getSubfield('i'))
+                                    ? $line->getSubfield('i')->getData() : ''
+                            ];
+
+                            // finally we can try to use given PPNs (from the BSZ) to
+                            // link the record
+                            if ($linkFields = $line->getSubfields('w')) {
                                 foreach ($linkFields as $current) {
                                     $text = $current->getData();
                                     // Extract parenthetical prefixes:
@@ -1159,9 +1168,10 @@ trait SolrMarcFincTrait
                                     }
                                 }
                             }
+
+                            // at least we found some identifier and text so increment
+                            $i++;
                         }
-                        // at least we found some text so increment
-                        $i++;
                     }
                 }
             }
