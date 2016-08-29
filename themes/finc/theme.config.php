@@ -2,6 +2,7 @@
 return array(
     'extends' => 'foundation5',
     'js' => array(
+        'foundation.min.js',
         'openurl.js',
         'check_item_statuses.js',
         'record.js'
