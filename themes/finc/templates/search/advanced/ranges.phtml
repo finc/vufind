@@ -56,17 +56,17 @@ $(document).ready(function() {
   {$init}
 });
 
-$('#${escField}from, #${escField}to').change(function () {
+$('#{$escField}from, #{$escField}to').change(function () {
   var from = Number($('#{$escField}from').val());
   var to   = Number($('#{$escField}to').val());
   if (from <= 0) {
-      from = {$min};
+    from = {$min};
   }
   if (to <= 0) {
-      to = {$max};
+    to = {$max};
   }
   $('#{$escField}dateSlider').slider('setValue', [from, to], true);
-})
+});
 JS;
       ?>
       <?= $this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
