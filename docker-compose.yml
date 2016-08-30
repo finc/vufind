@@ -1,0 +1,50 @@
+version: '2'
+services:
+  lamp:
+    image: docker.io/ubleipzig/vufind2:php54
+    ports:
+      - 80:80
+      - 443:443
+      - 3306:3306
+      # Uncomment the following line if you want to access the Solr server
+      #- 8080:8080
+    volumes:
+      - ./:/usr/local/vufind2:z
+      - db-data:/var/lib/mysql:z
+    networks:
+      - default
+    environment:
+      # Uncomment the following lines to configure Shibboleth
+      #- SHIB_SP_ENTITY_ID=https://hmt-eww.finc.info/shibboleth
+      #- SHIB_IDP_ENTITY_ID=https://shib02.hmt-leipzig.de/idp/shibboleth
+      #- SHIB_HOSTNAME=https://141.39.229.5:443
+      - VUFIND_SOLR=remote
+      - VUFIND_HTTPD_CONF=local/dev/httpd-vufind.conf
+      - SMTP_HOST=smtp
+      - SMTP_NAME=vufind3
+      - SMTP_PORT=25
+    depends_on:
+      - smtp
+  smtp:
+    image: docker.io/useltmann/mailcollect:latest
+    ports:
+      - 143:143
+      - 25:25
+    volumes:
+      - mail-data:/home/dev/Maildir:z
+      # Map a folder to Maildir if you do not want to access the smtp container via
+      # email client (don't forget to comment out above volumes definition).
+      #- "~/dockershare/Maildir:/home/dev/Maildir:z"
+
+volumes:
+  db-data: {}
+  mail-data: {}
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.2.0.0/16
+          gateway: 10.2.0.1
