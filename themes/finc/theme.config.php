@@ -5,7 +5,8 @@ return array(
         'foundation.min.js',
         'openurl.js',
         'check_item_statuses.js',
-        'record.js'
+        'record.js',
+        'finc.js'
     ),
     'helpers' => array(
         'factories' => array(

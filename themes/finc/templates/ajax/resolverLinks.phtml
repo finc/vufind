@@ -57,8 +57,6 @@
   </div> */ ?>
   <? if ($noResolverContent): // no content to show, so tell the user ?>
     <span><?=$this->resolver . ': ' . $this->translate('no_resolver_links')?></span>
-  <? else: // content to show, so do javascript to properly render tooltips?>
-    <script type="text/javascript">$(document).foundation('tooltip', 'reflow');</script>
   <? endif; ?>
 </div>
 <!-- ajax - resolverlinks.phtml - END -->
