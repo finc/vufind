@@ -22,6 +22,8 @@
     $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
 ?>
 
+<?$holdingsEmpty=true;?>
+
 <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
 
 <?=($offlineMode == "ils-offline") ? $this->render('Helpers/ils-offline.phtml') : ''?>
@@ -51,6 +53,7 @@
   <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
 <? endif; ?>
 <? foreach ($holdings as $holding): ?>
+  <?$holdingsEmpty=false;?>
   <h3>
     <? $locationText = $this->transEsc('location_' . $holding['location'], array(), $holding['location']); ?>
     <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
@@ -175,6 +178,10 @@
   <? endif; ?>
 </table>
 <? endforeach; ?>
+
+<? if ($holdingsEmpty && $this->driver->tryMethod('getLocalOrderInformation') == 'e'): ?>
+    <h3><?=$this->transEsc("This item has already been ordered and will be available shortly")?></h3>
+<? endif; ?>
 
 <? $history = $this->driver->getRealTimeHistory(); ?>
 <? if (is_array($history) && !empty($history)): ?>
