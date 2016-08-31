@@ -85,7 +85,7 @@ trait PdaTrait
 
         // Start collecting params for PDA
         $params = [
-            'username'  => trim($user->username),
+            'username'  => trim($user->cat_username),
             'email'     => trim($user->email),
             'firstname' => trim($user->firstname),
             'lastname'  => trim($user->lastname)
