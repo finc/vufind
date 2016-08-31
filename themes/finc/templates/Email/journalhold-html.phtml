@@ -8,33 +8,36 @@
 <table width="820" border="0">
     <tr valign="top">
         <td width="275">
-            <strong>Signatur:</strong> <br>
+            <strong>Signatur:</strong><br />
             <?=$this->callnumber?>
         </td>
         <td width="275">
-            <strong>Heft / Jahrgang / Band:</strong><br>
-            <?=$this->volume?><br>
-            <!--<strong>Barcode:</strong><br>-->
-            <!--<?=$this->barcode?><br><br>-->
+            <strong>Heft / Jahrgang / Band:</strong><br />
+            <?=$this->year?> / <?=$this->issue?> / <?=$this->volume?>
         </td>
         <td width="50">
             &nbsp;
         </td>
         <td width="220" rowspan="2" align="center" valign="top">
-            <strong><?=$this->callnumber?></strong><br>
-            Jahrgang/ Band/ Heft:<br>
-            <strong><?=$this->volume?></strong><br>
-            <strong><?=$this->record['title']?></strong><br><br>
+            <strong><?=$this->callnumber?></strong><br />
+            Jahrgang / Band / Heft:<br />
+            <strong><?=$this->year?> / <?=$this->issue?> / <?=$this->volume?></strong><br />
+            <strong><?=$this->record['title']?></strong><br /><br />
         </td>
+    </tr>
+    <tr>
+        <td colspan="4">&nbsp;</td>
     </tr>
     <tr valign="top">
         <td colspan="2">
-            <strong>Titel:</strong> <?=$this->record['title']?><br>
-            <strong>Standort:</strong> <?=$this->pickUpLocation?><br>
+            <strong>Titel:</strong> <?=$this->record['title']?><br />
+            <strong>Standort:</strong> <?=$this->pickUpLocation?><br />
             <? if (isset($this->itemStatus['item_notes'])): ?>
             <strong>Anmerkungen zum Exemplar:</strong>
             <ul>
-                <? foreach ($this->itemStatus['item_notes'] as $note): ?><li><?=$note?></li><? endforeach; ?>
+                <? foreach ($this->itemStatus['item_notes'] as $note): ?>
+                <li><?=$note?></li>
+                <? endforeach; ?>
             </ul>
             <? endif; ?>
         </td>
@@ -44,17 +47,21 @@
     <tr valign="bottom">
         <td colspan="2">
             <?if (!empty($this->comment)): ?>
-            <br><br><strong>Kommentar des Benutzers:</strong><br>
-            <?=$this->comment?>
+            <p>
+                <strong>Kommentar des Benutzers:</strong><br />
+                <?=$this->comment?>
+            </p>
             <? endif; ?>
-            <strong>wurde bestellt von: </strong><br><br>
-            <!--<strong>Email:</strong> <?=$this->patron['email']?><br><br><br>-->
-            <strong>Name:</strong> <?=$this->patron['lastname']?>, <?=$this->patron['firstname']?><br>
-            <strong>Benutzerkarte:</strong> <?=$this->patron['cat_username']?><br>
+            <p>
+                <strong>wurde bestellt von:</strong><br />
+                <?/*<strong>Email:</strong> <?=$this->patron['email']?><br />*/?>
+                <strong>Name:</strong> <?=$this->patron['lastname']?>, <?=$this->patron['firstname']?><br />
+                <strong>Benutzerkarte:</strong> <?=$this->patron['cat_username']?><br />
+            </p>
         </td>
         <td>&nbsp;</td>
         <td align="center" valign="top" style="font-size: 16px">
-            <strong><?=$this->patron['lastname']?>, <?=$this->patron['firstname']?></strong><br>
+            <strong><?=$this->patron['lastname']?>, <?=$this->patron['firstname']?></strong><br />
             <strong><?=$this->patron['cat_username']?></strong>
         </td>
     </tr>
