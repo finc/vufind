@@ -62,6 +62,11 @@ trait PdaTrait
      */
     public function pdaAction()
     {
+        // Stop now if the user does not have valid catalog credentials available:
+        if (!is_array($patron = $this->catalogLogin())) {
+            return $patron;
+        }
+
         // Check with the set accessPermission if the user is authorized to use PDA
         $accessPermission = 'access.PDAForm';
 
@@ -90,6 +95,12 @@ trait PdaTrait
             'firstname' => trim($user->firstname),
             'lastname'  => trim($user->lastname)
         ];
+
+        $catalog = $this->getILS();
+        $profile = $catalog->getMyProfile($patron);
+        if (isset($profile['group'])) {
+            $params['group'] = $profile['group'];
+        }
 
         // Create view
         $view = $this->createPDAEmailViewModel();

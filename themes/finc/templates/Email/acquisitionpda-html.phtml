@@ -12,6 +12,7 @@
             Name: <strong><?= $lastname ?>, <?= $firstname ?></strong><br/>
             Lesekarte-Nr.: <strong><?= $username ?></strong><br/>
             Email: <a href="mailto:<?= $email ?>"><?= $email ?></a><br/>
+            <?=isset($group) ? "Benutzergruppe: ". $group . "<br/>" : ""?>
             <br/>
             <? if ($statement): ?>
                 Begründung des Benutzers:
