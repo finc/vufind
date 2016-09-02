@@ -6,6 +6,7 @@ return array(
     // import foundation into default.scss and leave next line out
     'vendor/font-awesome.css',
     'default.css',
+    'print.css:print',
     ),
   'js' => array(
     'vendor/base64.js:lt IE 10', // btoa polyfill
