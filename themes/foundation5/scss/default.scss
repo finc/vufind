@@ -174,12 +174,22 @@ ul {
       &.facetAND {
         .label {
           background-color: inherit;
-          color: darken($secondary-color,10%);
+          color: darken($secondary-color, 10%);
           margin-right: .85rem;
           i {
             color: $primary-color;
-            &:hover,&:focus {background-color:white;}
+            &:hover, &:focus {
+              background-color: white;
+            }
           }
+        }
+      },
+        &.hits {
+          .label {
+            background-color: inherit;
+            color: darken($secondary-color,10%);
+            margin-right: .85rem;
+            margin-top: .25rem;
         }
       }
 

@@ -1,0 +1,32 @@
+<?
+$data = $this->recommend->getResult();
+if (is_array($data)): ?>
+  <ul id="side-panel-ebsco" class="accordion" data-accordion="">
+    <li class="accordion-navigation active">
+      <a class="title" href="#side-collapse-ebsco" aria-expanded="true">
+        <?= $this->transEsc('Ebsco::title_hits_databases') ?>
+      </a>
+      <div id="side-collapse-ebsco" class="content active">
+        <ul class="side-nav" role="navigation">
+        <? foreach ($data['results'] as $result): ?>
+          <li class="hits">
+            <span class="label pull-right">
+                <?= $this->escapeHtml($result['hits']) ?>
+            </span>
+            <a href="<?= $this->escapeHtmlAttr($result['url']) ?>" target="_blank">
+                <?= $this->escapeHtml($this->truncate($this->transEsc('Ebsco::'.$result['database']), 90)) ?>
+            </a>
+          </li>
+        <? endforeach; ?>
+
+          <li class="hits">
+            <a href="<?= $this->escapeHtmlAttr($data['hits_total_url']) ?>" title="" target="_blank">
+                <?= $this->transEsc('more') ?>...
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+<div class="clearfix"></div>
+<? endif; ?>

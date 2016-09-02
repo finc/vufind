@@ -36,6 +36,11 @@ $config = [
                     'paia' => 'finc\ILS\Driver\Factory::getPAIA',
                 ],
             ],
+            'recommend' => [
+                'factories' => [
+                    'ebscoresults' => 'finc\Recommend\Factory::getEbscoResults'
+                ]
+            ],
             'recorddriver' => [
                 'factories' => [
                     'solrdefault' => 'finc\RecordDriver\Factory::getSolrDefault',
