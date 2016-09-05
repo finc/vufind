@@ -30,7 +30,8 @@ use VuFind\Exception\ILS as ILSException,
     VuFindSearch\Query\Query, VuFindSearch\Service as SearchService,
     ZfcRbac\Service\AuthorizationServiceAwareInterface,
     ZfcRbac\Service\AuthorizationServiceAwareTrait,
-    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
+    Zend\Log\LoggerAwareInterface as LoggerAwareInterface,
+    DateTime, DateInterval, DateTimeZone;
 
 /**
  * Finc specific ILS Driver for VuFind, using PAIA and DAIA services.
@@ -708,6 +709,46 @@ class FincILS extends PAIA implements LoggerAwareInterface
             $total += (int) $fee['amount'];
         }
         return $total / 100;
+    }
+
+    /**
+     * FincILS specific helper function to add time period
+     *
+     * @param string   $date    Date in DateTime format to used as base.
+     * @param null|int $years   Years to be added to DateTime.
+     * @param null|int $months  Months to be added to DateTime.
+     * @param null|int $days    Days to be added to DateTime.
+     * @param null|int $hours   Hours to be added to DateTime.
+     * @param null|int $minutes Minutes to be added to DateTime.
+     * @param null|int $seconds Seconds to be added to DateTime.
+     *
+     * @return string
+     */
+    protected function addTime($date, $years = null, $months = null, $days = null,
+                               $hours = null, $minutes = null, $seconds = null)
+    {
+        try {
+            // Get time zone
+            $timezone = isset($this->mainConfig->Site->timezone)
+                ? $this->mainConfig->Site->timezone : 'America/New_York';
+
+            // create DateTime object
+            $dateObj = new DateTime($date, new DateTimeZone($timezone));
+
+            $intervalSpec = 'P' .
+                ($years   != null ? $years . 'Y'         : '') .
+                ($months  != null ? $months . 'M'        : '') .
+                ($days    != null ? $days . 'D'          : '') .
+                ($hours   != null ? $hours . 'H'         : '') .
+                ($minutes != null ? 'T' . $minutes . 'M' : '') .
+                ($seconds != null ? $seconds . 'S'       : '');
+            $dateInterval = new DateInterval($intervalSpec);
+
+            return $dateObj->add($dateInterval)->format('Y-m-d\TH:i:s');
+        } catch (\Exception $e) {
+            $this->debug('Date adition failed: ' . $e->getMessage());
+            return '';
+        }
     }
     
     /**
