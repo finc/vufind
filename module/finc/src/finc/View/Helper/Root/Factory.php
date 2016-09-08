@@ -69,7 +69,8 @@ class Factory
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             $sm->get('url'),
             $sm->getServiceLocator()->get('VuFind\AuthManager'),
-            $sm->getServiceLocator()->get('finc\Rewrite')
+            $sm->getServiceLocator()->get('finc\Rewrite'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver')
         );
     }
 

@@ -68,6 +68,13 @@ class Record extends \VuFind\View\Helper\Root\Record
     protected $rewrite;
 
     /**
+     * Resolver configuration
+     *
+     * @var \Zend\Config\Config
+     */
+    protected $resolverConfig;
+
+    /**
      * Constructor
      *
      * @param \Zend\Config\Config $config VuFind configuration
@@ -76,12 +83,14 @@ class Record extends \VuFind\View\Helper\Root\Record
     public function __construct($config = null,
                                 \Zend\View\Helper\Url $helper,
                                 \VuFind\Auth\Manager $manager,
-                                $rewrite)
+                                $rewrite,
+                                $resolverConfig)
     {
         parent::__construct($config);
         $this->url = $helper;
         $this->manager = $manager;
         $this->rewrite = $rewrite;
+        $this->resolverConfig = $resolverConfig;
     }
 
     /**
@@ -281,6 +290,18 @@ class Record extends \VuFind\View\Helper\Root\Record
         return $url;
     }
 
-
-
+    /**
+     * Customized method for multi resolver support
+     *
+     * Get all the links associated with this record depending on the OpenURL setting
+     * replace_other_urls.  Returns an array of associative arrays each containing
+     * 'desc' and 'url' keys.
+     *
+     * @return bool
+     */
+    protected function hasOpenUrlReplaceSetting()
+    {
+        return isset($this->resolverConfig->General->replace_other_urls)
+        && $this->resolverConfig->General->replace_other_urls;
+    }
 }
