@@ -567,10 +567,134 @@ trait SolrMarcFincTrait
      */
     public function getTitleDetails()
     {
+        $title = '';
+
+        if ($field = $this->getMarcRecord()->getField('245')) {
+            if ($field->getSubfield('a')) {
+                // 245$a
+                $title = $field->getSubfield('a')->getData();
+                // 245$b
+                if ($field->getSubfield('b')) {
+                    // add colon if $h isset and ends with colon
+                    // (see https://intern.finc.info/issues/7972)
+                    if ($field->getSubfield('h')) {
+                        if(preg_match(
+                            '/(\s:\s*)*$/',
+                            $field->getSubfield('h')->getData())
+                        ) {
+                            $title .= ' : ';
+                        }
+                    }
+                    $title .= ' ' . $field->getSubfield('b')->getData();
+                }
+                // 245$n
+                if ($field->getSubfield('n')) {
+                    $title .= ' ' . $field->getSubfield('n')->getData();
+                }
+                // 245$p
+                if ($field->getSubfield('p')) {
+                    $title .= ' ' . $field->getSubfield('p')->getData();
+                }
+                // 245$c
+                if ($field->getSubfield('c')) {
+                    $title .= ' ' . $field->getSubfield('c')->getData();
+                }
+            }
+        }
+        if ($field = $this->getMarcRecord()->getField('249')) {
+            // 249$a and 249$v are repeatable
+            if ($subfields = $field->getSubfields('a')) {
+                $vs = $field->getSubfields('v');
+                foreach ($subfields as $i=>$a) {
+                    $title .= '. ' . $a->getData();
+                    if (isset($vs[$i])) {
+                        $title .= ' / ' . $vs[$i]->getData();
+                    }
+                }
+            }
+            // 249$b is non repeatable and applies to all $a$v combinations
+            if ($field->getSubfield('b')) {
+                $title .= ' : ' . $field->getSubfield('b')->getData();
+            }
+            // 249$c is non repeatable and applies to all $a$v combinations
+            if ($field->getSubfield('c')) {
+                $title .= ' / ' . $field->getSubfield('c')->getData();
+            }
+        }
+
         return array_merge(
-            $this->getFieldArray('245', ['a','b', 'c']),
+            [$title],
             $this->getLinkedFieldArray('245', ['a', 'b', 'c'])
         );
+    }
+
+    /**
+     * Get an array of title detail lines with original notations combining
+     * information from MARC field 245 and linked content in 880.
+     *
+     * @return array
+     */
+    public function getWorkPartTitleDetails()
+    {
+        $workPartTitles = [];
+        $titleRegexPattern = '/(\s[\/\.:]\s*)*$/';
+
+        $truncateTrail = function ($string) use ($titleRegexPattern) {
+            return preg_replace(
+                $titleRegexPattern, '', trim($string)
+            );
+        };
+
+        if ($fields = $this->getMarcRecord()->getFields('505')) {
+            foreach ($fields as $field) {
+                if ($subfields = $field->getSubfields('t')) {
+                    $rs = $field->getSubfields('r');
+                    foreach ($subfields as $i=>$subfield) {
+                        // each occurance of $t gets $a pretached if it exists
+                        if (isset($rs[$i])) {
+                            $workPartTitles[] =
+                                $truncateTrail($subfield->getData()) . ' /' .
+                                $truncateTrail($rs[$i]);
+                        } else {
+                            $workPartTitles[] =
+                                $truncateTrail($subfield->getData());
+                        }
+                    }
+                }
+            }
+        }
+
+        return $workPartTitles;
+    }
+
+    /**
+     * Get an array of title detail lines with original notations combining
+     * information from MARC field 245 and linked content in 880.
+     *
+     * @return array
+     */
+    public function getWorkTitleDetails()
+    {
+        $workTitles = [];
+        $titleRegexPattern = '/(\s[\/\.:]\s*)*$/';
+
+        $truncateTrail = function ($string) use ($titleRegexPattern) {
+            return preg_replace(
+                $titleRegexPattern, '', trim($string)
+            );
+        };
+
+        if ($fields = $this->getMarcRecord()->getFields('700')) {
+            foreach ($fields as $field) {
+                if ($field->getSubfield('t') && $field->getSubfield('a')) {
+                    $workTitles[] =
+                        $truncateTrail($field->getSubfield('a')->getData()) . ': ' .
+                        $truncateTrail($field->getSubfield('t')->getData());
+                }
+            }
+        }
+
+        return $workTitles;
     }
 
     /**
@@ -1058,29 +1182,6 @@ trait SolrMarcFincTrait
         }
         //error_log(print_r($array, true));
         return $array;
-    }
-
-    /**
-     * Get additional titles.
-     *
-     * @return array
-     */
-    public function getAdditionalTitles()
-    {
-        // result array to return
-        $retval = [];
-
-        $results = $this->getMarcRecord()->getFields('249');
-        if (!$results) {
-            return $retval;
-        }
-
-        foreach ($results as $line) {
-            $retval[] =
-                ($line->getSubfield('a') ? $line->getSubfield('a')->getData() : '') .
-                ($line->getSubfield('v') ? ' / ' . $line->getSubfield('v')->getData() : '');
-        }
-        return $retval;
     }
 
     /**

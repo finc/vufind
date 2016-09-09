@@ -171,14 +171,38 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <td property="bookEdition"><?=$this->escapeHtml($edition)?></td>
       </tr>
       <? endif; ?>
-      <? /* THis is the only SolrMarc core specific change - rest identical with solrDefault core */  ?>
+
+      <? /* These are the only SolrMarc core specific changes - rest identical with solrDefault core */  ?>
+      <? $workPartTitleDetails = $this->driver->tryMethod('getWorkPartTitleDetails'); if (!empty($workPartTitleDetails)): ?>
+        <tr>
+          <th><?=$this->transEsc('Work Part Title')?>: </th>
+          <td property="work part title">
+            <? $i = 0; foreach ($workPartTitleDetails as $title): ?>
+              <?=($i > 0 ? '<br />':'')?><?=$this->escapeHtml($title)?><? $i++ ;?>
+            <? endforeach; ?>
+          </td>
+        </tr>
+      <? endif; ?>
+
+      <? $workTitleDetails = $this->driver->tryMethod('getWorkTitleDetails'); if (!empty($workTitleDetails)): ?>
+        <tr>
+          <th><?=$this->transEsc('Work Title')?>: </th>
+          <td property="work title">
+            <? $i = 0; foreach ($workTitleDetails as $title): ?>
+              <?=($i > 0 ? '<br />':'')?><?=$this->escapeHtml($title)?><? $i++ ;?>
+            <? endforeach; ?>
+          </td>
+        </tr>
+      <? endif; ?>
+
       <? $dissertationNote = $this->driver->getDissertationNote(); if (!empty($dissertationNote)): ?>
         <tr>
           <th><?=$this->transEsc('Dissertation Note')?>: </th>
           <td><?=$dissertationNote?></td>
         </tr>
       <? endif; ?>
-      <? /* THis is the only SolrMarc core specific change - END */  ?>
+      <? /* These are the only SolrMarc core specific changes - END */  ?>
+
       <?/* Display series section if at least one series exists. */?>
       <? $series = $this->driver->getSeries(); if (!empty($series)): ?>
       <tr>
