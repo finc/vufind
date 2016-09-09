@@ -28,9 +28,8 @@
  */
 namespace finc\Controller;
 
-//use ZfcRbac\Service\AuthorizationServiceAwareInterface as AuthorizationServiceAwareInterface;
-//use ZfcRbac\Service\AuthorizationServiceAwareTrait as AuthorizationServiceAwareTrait;
-use finc\Exception\DDS as DDSException,
+use VuFind\Exception\Mail as MailException,
+    finc\Exception\DDS as DDSException,
     finc\Mailer\Mailer as Mailer,
     Zend\Mail\Address as Address,
     Zend\Validator as Validator;
@@ -213,9 +212,13 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
         $email['from'] = $this->getConfigVar('DDS','from');
         $email['subject'] = $this->setSubjectEmail($departmentdetails);
         $email['to'] = $this->setRecipientEmail($departmentdetails);
-        $email['body'] = $body['order'];
-        $email['reply'] = $content['email'];
-        $email['replyname'] = $content['name'];
+        $email['text'] = $body['text'];
+        $email['html'] = $body['html'];
+        $email['reply'] = (isset($content['name']) && !empty($content['name']))
+            ? new Address(
+                $content['email'],
+                $content['name']
+            ) : new Address($content['email']) ;
 
         try {
             // Send Email
@@ -226,10 +229,10 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
             $mailer->sendTextHtml(
                 $email['to'],
                 $email['from'],
-                new Address($email['reply'], $email['replyname']),
+                $email['reply'],
                 $email['subject'],
-                '', //$bodyHtml,
-                $email['body']
+                $email['html'],
+                $email['text']
             );
 
             $this->sendOrderToApi($content);
@@ -339,8 +342,11 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
         $renderer = $this->getViewRenderer();
 
         // Custom template for emails
-        $body['order'] = $renderer->render(
+        $body['text'] = $renderer->render(
             'Email/dds-text.phtml', $details
+        );
+        $body['html'] = $renderer->render(
+            'Email/dds-html.phtml', $details
         );
         /*$body['customer'] = $renderer->render(
             'Email/dds-confirmation-text.phtml', $details

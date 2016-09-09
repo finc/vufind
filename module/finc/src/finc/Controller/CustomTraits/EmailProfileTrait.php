@@ -1,11 +1,11 @@
 <?php
 /**
- * Record Controller
+ * EmailProfile Trait
  *
  * PHP version 5
  *
  * Copyright (C) Villanova University 2010.
- * Copyright (C) Leipzig University Library 2016.
+ * Copyright (C) Leipzig University Library 2015.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -22,51 +22,45 @@
  *
  * @category VuFind
  * @package  Controller
- * @author   Demian Katz <demian.katz@villanova.edu>
  * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org Main Site
+ * @link     http://vufind.org   Main Site
  */
-namespace finc\Controller;
-use Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
+namespace finc\Controller\CustomTraits;
 
 /**
- * Record Controller
+ * EmailProfile Trait
  *
  * @category VuFind
  * @package  Controller
- * @author   Demian Katz <demian.katz@villanova.edu>
  * @author   André Lahmann <lahmann@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org Main Site
+ * @link     http://vufind.org   Main Site
  */
-class RecordController extends \VuFind\Controller\RecordController implements
-    LoggerAwareInterface
+trait EmailProfileTrait
 {
-    use \VuFind\Log\LoggerAwareTrait;
-    use CustomTraits\EblTrait;
-    use CustomTraits\EmailHoldTrait;
-    use CustomTraits\PdaTrait;
-    use CustomTraits\EmailProfileTrait;
+    /*
+     * Important:
+     * Usage of this Trait requires that the including class implements the
+     * Zend\Log\LoggerAwareInterface and uses VuFind\Log\LoggerAwareTrait
+     */
 
     /**
-     * Constructor
+     * Returns the email profile configured in MailForms.ini
      *
-     * @param \Zend\Config\Config $config VuFind configuration
+     * @param $profile
+     * @return array
      */
-    public function __construct(\Zend\Config\Config $config)
+    protected function getEmailProfile($profile)
     {
-        // Call standard record controller initialization:
-        parent::__construct($config);
-    }
+        $mailConfig
+            = $this->getServiceLocator()->get('VuFind\Config')->get('EmailProfiles');
 
-    /**
-     * Returns rewrite object
-     *
-     * @return object
-     */
-    protected function getRewrite()
-    {
-        return $this->getServiceLocator()->get('finc\Rewrite');
+        if (isset($mailConfig->$profile)) {
+            return $mailConfig->$profile;
+        } else {
+            $this->debug('Missing email profile: ' + $profile);
+            return [];
+        }
     }
 }

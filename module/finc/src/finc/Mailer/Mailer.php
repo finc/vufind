@@ -110,15 +110,24 @@ class Mailer extends \VuFind\Mailer\Mailer
         // Convert all exceptions thrown by mailer into MailException objects:
         try {
             // Send message
-            $htmlPart = new MimePart($body_html);
-            $htmlPart->type = 'text/html';
-            $htmlPart->charset = 'UTF-8';
+
+            // html body is optional
+            if (!empty($body_html)) {
+                $htmlPart = new MimePart($body_html);
+                $htmlPart->type = 'text/html';
+                $htmlPart->charset = 'UTF-8';
+            }
+
             $textPart = new MimePart($body_text);
             $textPart->type = 'text/plain';
             $textPart->charset = 'UTF-8';
             $body = new MimeMessage();
             $body->addPart($textPart);
-            $body->addPart($htmlPart);
+
+            // html body is optional
+            if (isset($htmlPart)) {
+                $body->addPart($htmlPart);
+            }
 
             $alternativePart = new MimePart($body->generateMessage());
             $alternativePart->type = 'multipart/alternative';

@@ -1,0 +1,146 @@
+<?=$this->doctype('HTML5')?>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title><?=$this->translate("Dokumentenlieferdienst")?></title>
+</head>
+<body style="font-family: Arial, Verdana, sans-serif;">
+<p><strong>AUFTRAGGEBER:</strong></p>
+<table width="820" border="0">
+    <tr valign="top">
+        <td width="25%"><strong>Name:</strong></td>
+        <td width="75%"><?=$this->username?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Telefon:</strong></td>
+        <td width="75%"><?=$this->phone?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>E-Mail:</strong></td>
+        <td width="75%"><?=$this->email?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Lesekartennummer:</strong></td>
+        <td width="75%"><?=$this->userid?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Einrichtung:</strong></td>
+        <td width="75%"><?=$this->department?></td>
+    </tr>
+    <? if (($this->group)): ?>
+    <tr valign="top">
+        <td width="25%"><strong>Status:</strong></td>
+        <td width="75%"><?=$this->group?></td>
+    </tr>
+    <? endif; ?>
+</table>
+<hr />
+<p><strong>ANGABEN ZUM GEWÜNSCHTEN ARTIKEL:<strong></p>
+<table width="820" border="0">
+    <tr valign="top">
+        <td width="25%"><strong>Autor:</strong></td>
+        <td width="75%"><?=$this->author?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Aufsatztitel:</strong></td>
+        <td width="75%"><?=$this->article?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Zeitschriftentitel:</strong></td>
+        <td width="75%"><?=$this->journal?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>ISSN:</strong></td>
+        <td width="75%"><?=$this->issn?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Erscheinungsjahr:</strong></td>
+        <td width="75%"><?=$this->publishdate?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Band/Heft:</strong></td>
+        <td width="75%"><?=$this->number?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Seiten:</strong></td>
+        <td width="75%"><?=$this->pages?></td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Bemerkungen:</strong></td>
+        <td width="75%"><?=$this->remarks?></td>
+    </tr>
+</table>
+
+<p>Literaturbestellung / Dokumentenlieferdienst der UBL<br />
+    Datum: <?=$this->time?></p>
+
+<hr />
+
+<p><strong>BEARBEITUNGSVERMERKE DER BIBLIOTHEK:</strong></p>
+<? if ($this->division == '15'): ?>
+<table width="820" border="0">
+    <tr valign="top">
+        <td width="25%"><strong>Signatur:</strong></td>
+        <td width="75%">&nbsp;</td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Erledigt am:</strong></td>
+        <td width="75%">&nbsp;</td>
+    </tr>
+    <tr valign="top">
+        <td width="25%"><strong>Lieferung an:</strong></td>
+        <td width="75%">zbmed.fernleihe@medizin.uni-leipzig.de oder Ordner X:\ubl-kopien\Medizin</td>
+    </tr>
+</table>
+<? else: ?>
+<table width="820" border="0">
+    <tr valign="top">
+        <td colspan="3">A) WEITERLEITUNG INNERHALB DER UBL:</td>
+    </tr>
+    <tr valign="top">
+        <td width="5%">&nbsp;</td>
+        <td width="20%"><strong>Standort:</strong></td>
+        <td width="75%">&nbsp;</td>
+    </tr>
+    <tr valign="top">
+        <td width="5%">&nbsp;</td>
+        <td width="20%"><strong>Signatur:</strong></td>
+        <td width="75%">&nbsp;</td>
+    </tr>
+    <tr valign="top">
+        <td colspan="3">B) SUBITO-BESTELLUNG:</td>
+    </tr>
+    <tr valign="top">
+        <td width="5%">&nbsp;</td>
+        <td width="20%"><strong>Bestellnummer:</strong></td>
+        <td width="75%">&nbsp;</td>
+    </tr>
+    <tr valign="top">
+        <td width="5%">&nbsp;</td>
+        <td width="20%"><strong>Bestelldatum:</strong></td>
+        <td width="75%">&nbsp;</td>
+    </tr>
+    <tr valign="top">
+        <td width="5%">&nbsp;</td>
+        <td width="20%"><strong>Lieferbibliothek:</strong></td>
+        <td width="75%">&nbsp;</td>
+    </tr>
+    <tr valign="top">
+        <td width="5%">&nbsp;</td>
+        <td width="20%"><strong>Eingang des Artikels:</strong></td>
+        <td width="75%">&nbsp;</td>
+    </tr>
+    <tr valign="top">
+        <td width="5%">&nbsp;</td>
+        <td width="20%"><strong>Eingang der Rechnung:</strong></td>
+        <td width="75%">&nbsp;</td>
+    </tr>
+</table>
+<? endif; ?>
+<? if (!empty($this->subito_url)): ?>
+<p>
+    Bestelllink für Subito: <a href="<?=$this->subito_url?>"><?=$this->subito_url?></a>
+</p>
+<? endif; ?>
+</body>
+</html>

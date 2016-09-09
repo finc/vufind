@@ -1,36 +1,36 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-    "http://www.w3.org/TR/html4/loose.dtd">
+<?=$this->doctype('HTML5')?>
+<html>
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
     <title>Erwerbungsvorschlag</title>
 </head>
-<body>
+<body style="font-family: Arial, Verdana, sans-serif;">
 <h2>Erwerbungsvorschlag</h2>
 <table>
     <tr valign="top">
         <td>
-            Name: <strong><?=$user->lastname ?>, <?=$user->firstname ?></strong><br />
-            Lesekarte-Nr.: <strong><?=$user->cat_username ?></strong><br />
-            Email: <a href="mailto:<?=$user->email ?>"><?=$user->email ?></a><br />
-            <? /*if ($user->group): ?>Benutzergruppe: <?=$user->group ?><? endif;*/ ?>
+            Name: <strong><?=$lastname ?>, <?=$firstname ?></strong><br />
+            Lesekarte-Nr.: <strong><?=$username ?></strong><br />
+            E-mail: <a href="mailto:<?=$email ?>"><?=$email ?></a><br />
+            <?=(isset($group) && !empty($group)) ? "Benutzergruppe: ". $group . "<br />" : ""?>
         </td>
         <td>&nbsp;</td>
         <td>
             hat folgenden Titel zur Erwerbung empfohlen:<br />
             <br />
-            <strong><?=$proposal ?></strong><br />
+            <strong><?=$proposal?></strong><br />
             <br />
             Begründung für Empfehlung:
             <br /><br />
-            <strong><?=$reasons ?></strong>
+            <strong><?=$statement?></strong>
             <br /><br /><br />
-            für das Fachgebiet: <strong><?=$subject ?></strong><br />
+            für das Fachgebiet: <strong><?=$field_of_study?></strong><br />
             <br />
         </td>
     </tr>
     <tr valign="top">
         <td colspan="3">
-            Zeitpunkt der Bestellung: <?=$time ?>
+            Zeitpunkt der Bestellung: <?=$timestamp ?>
         </td>
     </tr>
 </table>

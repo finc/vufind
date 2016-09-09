@@ -28,12 +28,12 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org   Main Site
  */
-namespace finc\Controller;
+namespace finc\Controller\CustomTraits;
 use VuFind\Exception\Mail as MailException,
+    finc\Mailer\Mailer,
     Zend\Mail\Address,
     Zend\Validator\StringLength,
-    Zend\Validator\Identical,
-    finc\Mailer\Mailer;
+    Zend\Validator\Identical;
 
 /**
  * PDA Trait
@@ -62,11 +62,6 @@ trait PdaTrait
      */
     public function pdaAction()
     {
-        // Stop now if the user does not have valid catalog credentials available:
-        if (!is_array($patron = $this->catalogLogin())) {
-            return $patron;
-        }
-
         // Check with the set accessPermission if the user is authorized to use PDA
         $accessPermission = 'access.PDAForm';
 
@@ -88,24 +83,27 @@ trait PdaTrait
 
         // User is authorized to use PDA
 
+        // Do we have valid catalog credentials - if we do, use the catalog user data
+        // for the form instead
+        if (is_array($patron = $this->catalogLogin())) {
+            $catalog = $this->getILS();
+            $profile = $catalog->getMyProfile($patron);
+        }
+
         // Start collecting params for PDA
-        $catalog = $this->getILS();
-        $profile = $catalog->getMyProfile($patron);
 
         // prefer profile data from ILS over user data from db
         $params = [
             'username'  => trim($user->cat_username),
             'email'     => isset($profile['email'])
-                ? $profile['email'] : trim($user->email),
+                ? trim($profile['email']) : trim($user->email),
             'firstname' => isset($profile['firstname'])
-                ? $profile['firstname'] : trim($user->firstname),
+                ? trim($profile['firstname']) : trim($user->firstname),
             'lastname'  => isset($profile['lastname'])
-                ? $profile['lastname'] : trim($user->lastname)
+                ? trim($profile['lastname']) : trim($user->lastname),
+            'group' => isset($profile['group'])
+                ? trim($profile['group']) : ''
         ];
-
-        if (isset($profile['group'])) {
-            $params['group'] = $profile['group'];
-        }
 
         // Create view
         $view = $this->createPDAEmailViewModel();
@@ -136,21 +134,18 @@ trait PdaTrait
                     ->addMessage('PDA::pda_error_field_of_study_blank', 'error');
                 $isValid = false;
             }
-            if (!$isValid) {
-                $view->setTemplate('record/pdaform');
-                return $view;
-            }
+            if ($isValid) {
+                // All params are valid, set timestamp for current params set
+                $params['timestamp'] = date('d.m.Y H:i');
 
-            // All params are valid, set timestamp for current params set
-            $params['timestamp'] = date('d.m.Y H:i');
-
-            // Attempt to send the email and show an appropriate flash message:
-            try {
-                $this->sendPdaEmail($params);
-                $this->flashMessenger()->addMessage('PDA::pda_send_success', 'success');
-                return $this->redirectToRecord();
-            } catch (MailException $e) {
-                $this->flashMessenger()->addMessage($e->getMessage(), 'error');
+                // Attempt to send the email and show an appropriate flash message:
+                try {
+                    $this->sendPdaEmail($params);
+                    $this->flashMessenger()->addMessage('PDA::pda_send_success', 'success');
+                    return $this->redirectToRecord();
+                } catch (MailException $e) {
+                    $this->flashMessenger()->addMessage($e->getMessage(), 'error');
+                }
             }
         }
 

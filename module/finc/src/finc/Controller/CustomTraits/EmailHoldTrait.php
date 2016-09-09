@@ -27,8 +27,9 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Site
  */
-namespace finc\Controller;
-use finc\Mailer\Mailer as Mailer,
+namespace finc\Controller\CustomTraits;
+use VuFind\Exception\Mail as MailException,
+    finc\Mailer\Mailer as Mailer,
     Zend\Mail\Address as Address;
 
 /**

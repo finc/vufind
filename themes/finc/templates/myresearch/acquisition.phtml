@@ -16,37 +16,26 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
             <div class="form-group row">
                 <label class="col-sm-3 medium-3 columns control-label" for="subject"><?=$this->transEsc('PDA::pda_form_field_of_study_label') ?><span class="required">*</span></label>
                 <div class="col-sm-9 medium-9 columns">
-                    <select name="subject" class="form-control auto">
+                    <select name="field_of_study" class="form-control auto">
                         <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text') ?></option>
-                        <? if (isset($subjectlist) && is_array($subjectlist)): ?>
-                            <? foreach ($subjectlist as $value): ?>
-                                <option value="<?=$this->transEsc("PDA::fos_" . $value)?>" <? if (isset($values['subject']) && ($values['subject'] != '-1') && ($values['subject'] == $value)): ?> selected="selected"<? endif; ?>><?= $this->transEsc('PDA::fos_' . $value) ?></option>
+                        <? if (isset($fieldOfStudyList) && is_array($fieldOfStudyList)): ?>
+                            <? foreach ($fieldOfStudyList as $fieldOfStudy): ?>
+                                <option value="<?=$this->transEsc("PDA::fos_" . $fieldOfStudy)?>" <? if (isset($acquisitionFieldOfStudy) && ($acquisitionFieldOfStudy != '-1') && ($acquisitionFieldOfStudy == $fieldOfStudy)): ?> selected="selected"<? endif; ?>><?= $this->transEsc('PDA::fos_' . $fieldOfStudy) ?></option>
                             <? endforeach; ?>
                         <? endif; ?>
                     </select>
-                    <? /*if (isset($error) && in_array('subjectlist', $error)): ?>
-                        <span class="error-form"><?=$this->transEsc('Subject area should not be blank') ?></span>
-                    <? endif;*/ ?>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-3 medium-3 columns control-label" for="acquistion_reasons"><?=$this->transEsc('PDA::pda_form_statement_label') ?><span class="required">*</span></label>
                 <div class="col-sm-9 medium-9 columns">
-                    <textarea id="acquisition_reasons" type="text" cols="50" rows="5" name="reasons"><? if (isset($values['reasons']) && !empty($values['reasons'])): ?><?=$this->transEsc($values['reasons']) ?><? endif; ?></textarea>
-                    <br />
-                    <? /*if (isset($error) && in_array('reasons', $error)): ?>
-                        <span class="error-form"><?=$this->transEsc('Reasons for suggestion not be blank') ?></span>
-                    <? endif;*/ ?>
+                    <textarea id="acquisition_reasons" type="text" cols="50" rows="5" name="reasons"><?=(isset($acquisitionStatement) && !empty($acquisitionStatement)) ? $acquisitionStatement : ''?></textarea>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-3 medium-3 columns control-label" for="acquistion_proposal"><?=$this->transEsc('PDA::pda_form_proposal_label') ?><span class="required">*</span></label>
                 <div class="col-sm-9 medium-9 columns">
-                    <textarea id="acquisition_proposal" type="text" cols="50" rows="5" name="proposal"><?=(isset($values['proposal']) && !empty($values['proposal'])) ? $values['proposal'] : ''?></textarea>
-                    <br />
-                    <? /*if (isset($error) && in_array('proposal', $error)): ?>
-                        <span class="error-form"><?=$this->transEsc('Proposal for acquisition should not be blank') ?></span>
-                    <? endif;*/ ?>
+                    <textarea id="acquisition_proposal" type="text" cols="50" rows="5" name="proposal"><?=(isset($acquisitionProposal) && !empty($acquisitionProposal)) ? $acquisitionProposal : ''?></textarea>
                 </div>
             </div>
             <div class="form-group row">

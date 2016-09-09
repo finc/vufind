@@ -1,11 +1,13 @@
 
 == Erwerbungsvorschlag ==
 
-Der Benutzer: <?=$user->lastname ?>, <?=$user->firstname ?>
+Der Benutzer: <?=$lastname ?>, <?=$firstname ?>
 
-Benutzerkarte: <?=$user->cat_username ?>
+Benutzerkarte: <?=$username ?>
 
-E-Mail-Adresse: <?=$user->email ?>
+E-Mail-Adresse: <?=$email ?>
+
+<?=(isset($group) && !empty($group)) ? "Benutzergruppe: ". $group : ""?>
 
 
 hat folgenden Titel zur Erwerbung empfohlen:
@@ -15,9 +17,9 @@ hat folgenden Titel zur Erwerbung empfohlen:
 
 Begründung für Empfehlung:
 
-<?=$reasons ?>
+<?=$statement ?>
 
 
-für den Fachbereich: <?=$subject ?>
+für den Fachbereich: <?=$field_of_study ?>
 
-<? if ($time): ?>Zeitpunkt: <?=$time ?><? endif; ?>
+<?=isset($timestamp) ? "Zeitpunkt: " . $timestamp : "" ?>
