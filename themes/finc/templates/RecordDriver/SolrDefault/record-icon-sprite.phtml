@@ -1,0 +1,11 @@
+<?
+$formats = [];
+foreach ($this->driver->getFormats() as $format) {
+    $formats[] = $this->record($this->driver)->getRecordIconClass(
+        $format, 'record-icon-sprite-class'
+    );
+}
+$formats = array_unique($formats);
+asort($formats);
+?>
+<span class="sprite-media-icon <?= array_pop($formats) ?>"></span>

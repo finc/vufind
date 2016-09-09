@@ -110,24 +110,29 @@ class Record extends \VuFind\View\Helper\Root\Record
     /**
      * Render a (list of) record icons.
      *
+     * @param string $tpl Define alternative template for record icon. Default:
+     *                      record-icon.phtml
+     *
      * @return string
      */
-    public function getRecordIcon()
+    public function getRecordIcon($tpl = 'record-icon')
     {
-        return $this->renderTemplate('record-icon.phtml');
+        return $this->renderTemplate($tpl . '.phtml');
     }
 
     /**
      * Get the CSS class used to properly render an icon for given value
      *
      * @param string $value Value to convert into CSS class
+     * @param string $classfile Define alternative file for icon class without
+     *                              suffix. Default: record-icon-class.phtml
      *
      * @return string
      */
-    public function getRecordIconClass($value)
+    public function getRecordIconClass($value, $classfile = 'record-icon-class')
     {
         return $this->renderTemplate(
-            'record-icon-class.phtml', ['value' => $value]
+            $classfile . '.phtml', ['value' => $value]
         );
     }
 

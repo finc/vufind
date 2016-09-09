@@ -1,0 +1,175 @@
+<?
+$normalizedValue = preg_replace('/[^a-z0-9]/', '', strtolower($this->value));
+// Convert normalizedValue to styles
+switch ($normalizedValue) {
+
+    //block book
+    case 'book':
+    case 'articles':
+        echo 'book';
+        break;
+    //block general audio
+    case 'audio':
+    case 'musicrecording':
+    case 'record':
+    case 'soundrecordingmedium':
+    case 'soundrecording':
+        echo 'audio';
+        break;
+    //block tape audio
+    case 'audiotape':
+    case 'cassette':
+    case 'soundcassette':
+        echo 'audiotape';
+        break;
+    //block braille
+    case 'braille':
+        echo 'braille';
+        break;
+    //block digital audio
+    case 'cd':
+    case 'dvdaudio':
+    case 'sounddisc':
+        echo 'cd';
+        break;
+    //block digital video
+    case 'dvd':
+    case 'blueraydisc':
+    case 'dvdvideo':
+    case 'videodisc':
+        echo 'dvd';
+        break;
+    //block ebook
+    case 'ebook':
+        echo 'ebook';
+        break;
+    //block digital non-book
+    case 'electronicnewspaper':
+    case 'newspaperarticle':
+    case 'newspaper':
+    case 'textresource':
+        echo 'newspaper';
+        break;
+    //block manuscripts
+    case 'manuscript':
+    case 'nachlass':
+        echo 'manuscript';
+        break;
+    //block articles
+    case 'article':
+    case 'articlearticle':
+    case 'electronic':
+    case 'electronicarticle':
+    case 'electronicresourcedatacarrier':
+    case 'electronicresourceremoteaccess':
+        echo 'electronic';
+        break;
+    //block globe
+    case 'globe':
+        echo 'globe';
+        break;
+    //block kit
+    case 'kit':
+        echo 'kit';
+        break;
+    //block journal
+    case 'journal':
+    case 'journalnewspaper':
+    case 'serial':
+        echo 'journal';
+        break;
+    //block ejournal
+    case 'electronicjournal':
+    case 'electronicserial':
+        echo 'electronicjournal';
+        break;
+    //block map
+    case 'map':
+    case 'atlas':
+        echo 'map';
+        break;
+    //block microfilm
+    case 'microfilm':
+    case 'microfiche':
+    case 'microform':
+        echo 'microfilm';
+        break;
+    //block musical score
+    case 'musicalscore':
+    case 'notatedmusic':
+    case 'electronicmusicalscore':
+        echo 'musicalscore';
+        break;
+    //block images
+    case 'photo':
+    case 'artprint':
+    case 'collage':
+    case 'drawing':
+    case 'flashcard':
+    case 'painting':
+    case 'photonegative':
+    case 'placard':
+    case 'print':
+    case 'sensorimage':
+    case 'transparency':
+        echo 'image';
+        break;
+    //block physical object
+    case 'physicalobject':
+        echo 'physicalobject';
+        break;
+    //block othe rimages
+    case 'sensorimage':
+    case 'chart':
+        echo 'chart';
+        break;
+    //block sets
+    case 'sets':
+        echo 'sets';
+        break;
+    //block slide
+    case 'slide':
+        echo 'slide';
+        break;
+    //block software
+    case 'software':
+    case 'cdrom':
+    case 'chipcartridge':
+    case 'disccartridge':
+    case 'dvdrom':
+    case 'floppydisk':
+    case 'tapecartridge':
+    case 'tapecassette':
+    case 'tapereel':
+        echo 'software';
+        break;
+    //block thesis
+    case 'thesis':
+    case 'electronicthesis':
+        echo 'thesis';
+        break;
+
+    //block unknown
+    case 'unknown':
+        echo 'unknown';
+        break;
+    //block analog video
+    case 'vhs':
+    case 'video':
+    case 'videotape':
+    case 'videocartridge':
+    case 'videocassette':
+        echo 'video';
+        break;
+    //block film
+    case 'audiovisualmedia':
+    case 'filmstrip':
+    case 'motionpicture':
+    case 'videoreel':
+        echo 'film';
+        break;
+    //default
+    default:
+        echo 'unknown';
+        break;
+}
