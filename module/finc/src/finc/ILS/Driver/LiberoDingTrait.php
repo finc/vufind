@@ -391,7 +391,7 @@ trait LiberoDingTrait
             "HPHONE" => "phone",
             "BPHONE" => 'phone2',
             "EMAIL" => 'email',
-            "group" => 'group',
+            "GROUP" => 'group',
             "ADDR1" => 'address1',
             "ADDR2" => 'additional',
             "ADDR3" => 'city',
