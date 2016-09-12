@@ -27,7 +27,7 @@ module.exports = function (grunt) {
                 atBegin: true
             },
             css: {
-                files: '**/*.scss',
+                files: 'themes/*/scss/**/*.scss',
                 tasks: ['foundation:sass:dev']
             }
         }
