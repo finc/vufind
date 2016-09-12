@@ -203,8 +203,10 @@ trait SolrMarcFincTrait
                 foreach ($this->isil as $isil) {
                     if (isset($itemdata[$isil])) {
                         foreach ($itemdata[$isil] as $val) {
-                            $array[$i]['barcode'] = $val['bc'];
-                            $array[$i]['callnumber'] = $val['cn'];
+                            $array[$i]['barcode'] = isset($val['bc'])
+                                ? $val['bc'] : '';
+                            $array[$i]['callnumber'] = isset($val['cn'])
+                                ? $val['cn'] : '';
                             $i++;
                         }
                     } // end if
