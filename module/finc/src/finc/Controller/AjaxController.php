@@ -283,9 +283,16 @@ class AjaxController extends \VuFind\Controller\AjaxController
     protected function getIlsStatusAjax()
     {
         $this->disableSessionWrites();  // avoid session write timing bug
+        $offlineModeMsg = $this->params()->fromPost(
+            'offlineModeMsg',
+            $this->params()->fromQuery('offlineModeMsg')
+        );
         if ($this->getILS()->getOfflineMode() == 'ils-offline') {
             return $this->output(
-                $this->getViewRenderer()->render('Helpers/ils-offline.phtml'),
+                $this->getViewRenderer()->render(
+                    'Helpers/ils-offline.phtml',
+                    ['offlineModeMsg' => $offlineModeMsg]
+                ),
                 self::STATUS_OK
             );
         }

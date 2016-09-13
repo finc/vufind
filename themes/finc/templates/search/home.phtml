@@ -26,6 +26,7 @@ $this->layout()->breadcrumbs = false;
         $.ajax({
             dataType: 'json',
             method: 'GET',
+            data: {'offlineModeMsg':'ils_offline_home_message'},
             url: VuFind.path + '/AJAX/JSON?method=getIlsStatus',
             success: function(response) {
                 $('.searchHomeContent').append(response.data);
