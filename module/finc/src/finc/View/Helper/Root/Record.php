@@ -211,6 +211,26 @@ class Record extends \VuFind\View\Helper\Root\Record
     }
 
     /**
+     * Map list of multiple dates to a view of date range as string e.g.
+     * startdate - enddate Sorting of array should be managed by backend.
+     *
+     * @param array dates
+     *
+     * @return strings
+     */
+    public function mapDateListToRangeView($dates)
+    {
+        if (is_array($dates)) {
+            if (count($dates) == 1) {
+                return $dates[0];
+            } else {
+                return array_shift($dates) . '-' . array_pop($dates);
+            }
+        }
+        return $dates;
+    }
+
+    /**
      * Remove author dates from author string (used for using author names as search
      * term).
      *

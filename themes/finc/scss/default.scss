@@ -111,6 +111,12 @@ header.fixed { left:auto;max-width: $row-width; }
   }
 }
 
+.access-rights {
+  font-size: 0.75rem;
+  margin-bottom: 1rem;
+
+}
+
 // Internformat - staff view
 table.citation th {min-width: 18%}
 .pace-car th {min-width: 10%}

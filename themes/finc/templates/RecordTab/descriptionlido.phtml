@@ -1,0 +1,32 @@
+<!-- recordtab - descriptionlido.phtml -->
+<?
+// Set page title.
+$this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
+
+// Grab clean ISBN for convenience:
+$isbn = $this->driver->getCleanISBN();
+?>
+<table class="table table-striped">
+  <caption class="sr-only"><?= $this->transEsc('Description') ?></caption>
+  <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
+  <tr>
+    <th><?= $this->transEsc('Time of origin') ?>:</th>
+    <td>
+        <?= $this->record($this->driver)->mapDateListToRangeView($dateSpan); ?>
+    </td>
+  </tr>
+  <? endif; ?>
+
+  <? $notes = $this->driver->getAccessNote(); if (!empty($notes)): ?>
+  <tr>
+    <th><?= $this->transEsc('Access') ?>:</th>
+    <td>
+      <? foreach ($notes as $field): ?>
+        <? if (!empty($field['uri'])): ?><a href="<?= $this->escapeHtmlAttr($field['uri']) ?>"><?= $this->escapeHtml($field['term']) ?><? endif; ?><? if (!empty($field['uri'])): ?></a><? endif; ?>
+        <br/>
+      <? endforeach; ?>
+    </td>
+  </tr>
+  <? endif; ?>
+</table>
+<!-- recordtab - descriptionlido.phtml - END -->

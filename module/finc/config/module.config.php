@@ -52,7 +52,9 @@ $config = [
                     'solrmarcremote' => 'finc\RecordDriver\Factory::getSolrMarcRemote',
                     'solrmarcremotefinc' => 'finc\RecordDriver\Factory::getSolrMarcRemoteFinc',
                     'solrai' => 'finc\RecordDriver\Factory::getSolrAI',
-                    'solris' => 'finc\RecordDriver\Factory::getSolrIS'
+                    'solris' => 'finc\RecordDriver\Factory::getSolrIS',
+                    'solrlido' => 'finc\RecordDriver\Factory::getSolrLido',
+                    'solrlidondl' => 'finc\RecordDriver\Factory::getSolrLidoNdl'
                 ],
             ],
             'recordtab' => [
@@ -63,6 +65,7 @@ $config = [
                     'staffviewai' => 'finc\RecordTab\StaffViewAI',
                     'acquisitionpda' => 'finc\RecordTab\AcquisitionPDA',
                     'topics' => 'finc\RecordTab\Topics',
+                    'descriptionlido' => 'finc\RecordTab\DescriptionLido'
                 ],
             ],
             'resolver_driver' => [
@@ -120,6 +123,16 @@ $config = [
                     'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
                     'Similar' => null,
                     'Details' => 'StaffViewAI',
+                ],
+                'defaultTab' => null,
+            ],
+            'finc\RecordDriver\SolrLido' => [
+                'tabs' => [
+                    'Holdings' => 'HoldingsILS', 'Description' => 'DescriptionLido',
+                    'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
+                    'Preview' => 'preview', 'Map' => 'Map',
+                    'Similar' => 'SimilarItemsCarousel',
+                    'Details' => 'StaffViewArray',
                 ],
                 'defaultTab' => null,
             ],

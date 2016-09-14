@@ -207,4 +207,38 @@ class Factory
         $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
         return $driver;
     }
+
+    /**
+     * Factory for SolrLido record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrLido
+     */
+    public static function getSolrLidoNdl(ServiceManager $sm)
+    {
+        return new SolrLidoNdl(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches'),
+            $sm->getServiceLocator()->get('VuFind\DateConverter')
+        );
+    }
+
+    /**
+     * Factory for SolrLidoFinc record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrLidoFinc
+     */
+    public static function getSolrLido(ServiceManager $sm)
+    {
+        return new SolrLido(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches'),
+            $sm->getServiceLocator()->get('VuFind\DateConverter')
+        );
+    }
 }
