@@ -537,7 +537,9 @@ class FincILS extends PAIA implements LoggerAwareInterface
             $itemsResponse = $this->paiaGetAsArray(
                 'core/'.$patron['cat_username'].'/items'
             );
-            $this->putCachedData($patron['cat_username'] . '_items', $itemsResponse);
+            if ($this->paiaCacheEnabled) {
+                $this->putCachedData($patron['cat_username'] . '_items', $itemsResponse);
+            }
         }
 
         if (isset($itemsResponse['doc'])) {
