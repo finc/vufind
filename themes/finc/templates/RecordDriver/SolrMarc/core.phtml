@@ -323,6 +323,19 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           </td>
         </tr>
       <? endif; ?>
+
+      <? $subjects = $this->driver->getLocalSubject(); if (!empty($subjects)): ?>
+      <tr>
+        <th><?=$this->transEsc('Subjects')?>: </th>
+        <td>
+          <? $i = 0; foreach ($subjects as $field): ?>
+              <?=($i++ == 0) ? '' : ', '?>
+              <a title="<?=$this->escapeHtmlAttr($field)?>" href="<?=$this->record($this->driver)->getLink('subject', $field)?>" rel="nofollow"><?=trim($this->escapeHtml($field))?></a>
+          <? endforeach; ?>
+        </td>
+      </tr>
+      <? endif; ?>
+      
     </table>
     <?/* End Main Details */?>
   </div>

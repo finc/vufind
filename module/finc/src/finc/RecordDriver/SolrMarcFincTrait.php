@@ -842,6 +842,31 @@ trait SolrMarcFincTrait
         }
         return [];
     }
+    
+     /**
+     * Return a local access number for call number.
+     * Marc field depends on library e.g. 986 for GfzK.
+     * Seems to be very extraordinary special case.
+     *
+     * @return array
+     * @access protected
+     * @link   https://intern.finc.info/issues/7924
+     */
+    public function getLocalSubject()
+    {
+        $retval = [];
+
+        $fields = $this->getMarcRecord()->getFields($this->getLocalMarcFieldOfLibrary());
+        if (!$fields) {
+            return null;
+        }
+        foreach ($fields as $key => $field) {
+            if ($q = $field->getSubfield('q')) {
+                $retval[$key] = $q->getData();
+            }
+        }
+        return $retval;
+    }
 
     /**
      * Get all local class subjects. First realization for HGB.
