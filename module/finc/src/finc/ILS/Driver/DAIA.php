@@ -47,6 +47,13 @@ use VuFind\Exception\ILS as ILSException;
 class DAIA extends \VuFind\ILS\Driver\DAIA
 {
     /**
+     * Timeout in seconds to be used for DAIA http requests
+     *
+     * @var string
+     */
+    protected $daiaTimeout = null;
+
+    /**
      * Flag to switch on/off caching for DAIA items
      *
      * @var bool
@@ -65,6 +72,10 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
     public function init()
     {
         parent::init();
+        // use DAIA specific timeout setting for http requests if configured
+        if ((isset($this->config['DAIA']['timeout']))) {
+            $this->daiaTimeout = $this->config['DAIA']['timeout'];
+        }
         if (isset($this->config['DAIA']['daiaCache'])) {
             $this->daiaCacheEnabled = $this->config['DAIA']['daiaCache'];
         } else {
@@ -195,6 +206,79 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
             }
         }
         return $status;
+    }
+
+    /**
+     * Perform an HTTP request.
+     *
+     * @param string $id id for query in daia
+     *
+     * @return xml or json object
+     * @throws ILSException
+     */
+    protected function doHTTPRequest($id)
+    {
+        $http_headers = [
+            'Content-type: ' . $this->contentTypesRequest[$this->daiaResponseFormat],
+            'Accept: ' . $this->contentTypesRequest[$this->daiaResponseFormat],
+        ];
+
+        $params = [
+            'id' => $id,
+            'format' => $this->daiaResponseFormat,
+        ];
+
+        try {
+            $result = $this->httpService->get(
+                $this->baseUrl,
+                $params, $this->daiaTimeout, $http_headers
+            );
+        } catch (\Exception $e) {
+            throw new ILSException(
+                'HTTP request exited with Exception ' . $e->getMessage() .
+                ' for record: ' . $id
+            );
+        }
+
+        if (!$result->isSuccess()) {
+            throw new ILSException(
+                'HTTP status ' . $result->getStatusCode() .
+                ' received, retrieving availability information for record: ' . $id
+            );
+
+        }
+
+        // check if result matches daiaResponseFormat
+        if ($this->contentTypesResponse != null) {
+            if ($this->contentTypesResponse[$this->daiaResponseFormat]) {
+                $contentTypesResponse = array_map(
+                    'trim',
+                    explode(
+                        ',',
+                        $this->contentTypesResponse[$this->daiaResponseFormat]
+                    )
+                );
+                list($responseMediaType) = array_pad(
+                    explode(
+                        ';',
+                        $result->getHeaders()->get('ContentType')->getFieldValue(),
+                        2
+                    ),
+                    2,
+                    null
+                ); // workaround to avoid notices if encoding is not set in header
+                if (!in_array(trim($responseMediaType), $contentTypesResponse)) {
+                    throw new ILSException(
+                        'DAIA-ResponseFormat not supported. Received: ' .
+                        $responseMediaType . ' - ' .
+                        'Expected: ' .
+                        $this->contentTypesResponse[$this->daiaResponseFormat]
+                    );
+                }
+            }
+        }
+
+        return ($result->getBody());
     }
 
     /**
