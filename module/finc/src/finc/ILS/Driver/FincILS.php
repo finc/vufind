@@ -677,6 +677,62 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *********************************************/
 
     /**
+     * Sorts given array items in the given sortOrder using the given array
+     * fieldName. If the array contains elements without the given fieldName those
+     * elements will get appended unsorted to the sorted array elements.
+     * Sorting is done by asort() if sortOrder==SORT_ASC and arsort() if
+     * sortOrder==SORT_DESC.
+     *
+     * @param array  $items     Array containing the items to be sorted
+     * @param string $fieldName Fieldname whose content will be used for sorting
+     * @param mixed  $sortOrder The order used to sort the item array. Either
+     *                          SORT_ASC to sort ascendingly or SORT_DESC to sort
+     *                          descendingly (defaults to SORT_ASC).
+     * @return array
+     */
+    protected function itemFieldSort ($items, $fieldName, $sortOrder = SORT_ASC)
+    {
+        // array with items to be sorted
+        $sortArray = [];
+        // array with items that do not contain the sort key
+        $noSortArray = [];
+        // returned array with all items
+        $returnArray = [];
+
+        if (count($items) && !empty($fieldName)) {
+            for ($i=0; $i<count($items); $i++) {
+                if (isset($items[$i][$fieldName])) {
+                    $sortArray[$i]=$items[$i][$fieldName];
+                } else {
+                    array_push($noSortArray, $items[$i]);
+                }
+            }
+
+            // sort according to given sortOrder
+            switch ($sortOrder) {
+                case SORT_DESC:
+                    arsort($sortArray);
+                    break;
+                case SORT_ASC:
+                default:
+                    asort($sortArray);
+                    break;
+            }
+
+            // recombine all items
+            $sortArray = $sortArray + $noSortArray;
+
+            // build the return array with sorted items
+            foreach ($sortArray as $key => $item) {
+                $returnArray[] = $items[$key];
+            }
+            return $returnArray;
+        }
+
+        return $items;
+    }
+
+    /**
      * finc-specific function to count items/entries in return values of given
      * functions in order to be shown as numbers in MyReSearch-Menu
      *
