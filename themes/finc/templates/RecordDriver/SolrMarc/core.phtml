@@ -143,26 +143,31 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
-      <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
-      <tr>
-        <th><?=$this->transEsc('Published')?>: </th>
-        <td>
-          <? foreach ($publications as $field): ?>
-            <span property="publisher" typeof="Organization">
+      <?
+      $publications = $this->driver->getPublicationDetails();
+      $pubDateSort = $this->driver->getPublishDateSort();
+      if (!empty($publications)): ?>
+        <tr>
+          <th><?=$this->transEsc('Published')?>: </th>
+          <td>
+            <? foreach ($publications as $field): ?>
+              <span property="publisher" typeof="Organization">
             <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
               <span property="location"><?=$this->escapeHtml($pubPlace)?></span>
             <? endif; ?>
-            <? $pubName = $field->getName(); if (!empty($pubName)): ?>
-              <span property="name"><?=$this->escapeHtml($pubName)?></span>
-            <? endif; ?>
+                <? $pubName = $field->getName(); if (!empty($pubName)): ?>
+                  <span property="name"><?=$this->escapeHtml($pubName)?></span>
+                <? endif; ?>
             </span>
-            <? $pubDate = $field->getDate(); if (!empty($pubDate)): ?>
-              <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
-            <? endif; ?>
-            <br/>
-          <? endforeach; ?>
-        </td>
-      </tr>
+              <? $pubDate = $field->getDate(); if (!empty($pubDateSort)): ?>
+                <span property="publicationDate"><?=$this->escapeHtml($pubDateSort)?></span>
+              <? elseif (!empty($pubDate)): ?>
+                <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
+              <? endif; ?>
+              <br/>
+            <? endforeach; ?>
+          </td>
+        </tr>
       <? endif; ?>
 
       <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
