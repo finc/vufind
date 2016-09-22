@@ -1070,6 +1070,62 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Returns the contens of MARC 787 as an array using 787$i as associative key and
+     * having the array value with the key 'text' containing the contents of
+     * 787 $a{t} and the key 'link' containing a PPN to the mentioned record in
+     * 787 $a{t}.
+     *
+     * @return array|null
+     * @link https://intern.finc.info/issues/8510
+     */
+    public function getOtherRelationshipEntry()
+    {
+        $retval = [];
+        $defaultHeading = 'Note';
+
+        $fields = $this->getMarcRecord()->getFields('787');
+        if (!$fields) {
+            return null;
+        }
+        foreach ($fields as $field) {
+            // don't do anything unless we have something in $a
+            if ($a = $field->getSubfield('a')) {
+                // do we have a main entry heading?
+                if ($i = $field->getSubfield('i')) {
+                    // build the text to be displayed from subfields $a and/or $t
+                    $text = ($t = $field->getSubfield('t'))
+                        ? $a->getData() . ': ' . $t->getData()
+                        : $a->getData();
+
+                    // does a linked record exist
+                    $link = ($w = $field->getSubfield('w')) ? $w->getData() : '';
+
+                    // we expect the links to be ppns prefixed with an ISIL so strip
+                    // the ISIL
+                    $ppn = preg_replace(
+                        "/^\(([A-z])+\-([A-z0-9])+\)\s?/", "", $link
+                    );
+
+                    // let's use the main entry heading as associative key and push
+                    // the gathered content into the retval array
+                    $retval[$i->getData()][] = [
+                        'text' => $text,
+                        'link' => (!empty($ppn) ? $ppn : $link)
+                    ];
+                } else {
+                    // no main entry heading found, so push subfield a's content into
+                    // retval using the defaultHeading
+                    $retval[$defaultHeading][] = [
+                        'text' => $a->getData(),
+                        'link' => ''
+                    ];
+                }
+            }
+        }
+        return $retval;
+    }
+
+    /**
      * Get an array of style/genre of a piece taken from the local data
      * of the Petrucci music library subfield 590a
      *
