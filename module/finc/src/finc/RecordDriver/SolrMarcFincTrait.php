@@ -1006,7 +1006,7 @@ trait SolrMarcFincTrait
 
      /**
      * Return a local signature via an consortial defined field with subfield $f.
-     * Marc field depends on library e.g. 986 for GFZK 
+     * Marc field depends on library e.g. 986 for GFZK
      *
      * @return array
      * @link   https://intern.finc.info/fincproject/issues/8146
@@ -1027,7 +1027,7 @@ trait SolrMarcFincTrait
         }
         return $retval;
     }
-    
+
     /**
      * Get an array of musical heading based on a swb field
      * at the marc field.
@@ -1503,6 +1503,16 @@ trait SolrMarcFincTrait
     {
         $parentTitle = [];
 
+        // https://intern.finc.info/issues/8725
+        $vgSelect = function ($field) {
+            if ($field->getSubfield('v')) {
+                return $field->getSubfield('v')->getData();
+            } elseif ($field->getSubfield('g')) {
+                return $field->getSubfield('g')->getData();
+            }
+            return false;
+        };
+
         // start with 490 (https://intern.finc.info/issues/8704)
         $fields = $this->getMarcRecord()->getFields('490');
         foreach($fields as $field) {
@@ -1543,7 +1553,7 @@ trait SolrMarcFincTrait
                 $parentTitle[] =
                     ($field->getSubfield('a') ?        $field->getSubfield('a')->getData() : '') .
                     ($field->getSubfield('t') ? ': ' . $field->getSubfield('t')->getData() : '') .
-                    ($field->getSubfield('v') ? ' ; ' . $field->getSubfield('v')->getData() : '')
+                    ($vgSelect($field)        ? ' ; ' . $vgSelect($field)                  : '')
                 ; // {800a: }{800t}{ ; 800v}
             }
         }
@@ -1553,7 +1563,7 @@ trait SolrMarcFincTrait
         foreach($fields as $field) {
             $parentTitle[] =
                 ($field->getSubfield('a') ?         $field->getSubfield('a')->getData() : '') .
-                ($field->getSubfield('v') ? ' ; ' . $field->getSubfield('v')->getData() : '')
+                ($vgSelect($field)        ? ' ; ' . $vgSelect($field)                   : '')
             ; // {830a}{ ; 830v}
         }
 
