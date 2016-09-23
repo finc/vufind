@@ -1575,9 +1575,27 @@ trait SolrMarcFincTrait
             }
         }
 
+        if (empty($retval)) {
+            $retval = parent::getAllSubjectHeadings();
+        }
+
         // Remove duplicates and then send back everything we collected:
         return array_map(
             'unserialize', array_unique(array_map('serialize', $retval))
+        );
+    }
+
+    /**
+     * Check if Topics exists. Realized for instance of UBL only.
+     *
+     * @return boolean      True if topics exist.
+     * @access public
+     */
+    public function hasTopics()
+    {
+        $rvk = $this->getRvkWithMetadata();
+        return (parent::hasTopics()
+            || (is_array($rvk) && count($rvk) > 0)
         );
     }
 
