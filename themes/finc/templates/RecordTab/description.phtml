@@ -245,6 +245,20 @@
       </td>
     </tr>
   <? endif; ?>
+  
+  <? $callnumbers = $this->driver->getLocalSignature(); if (!empty($callnumbers)): ?>
+    <? $contentDisplayed = true; ?>
+    <tr>
+        <th><?=$this->transEsc('Call Number')?>: </th>
+        <td>
+          <? foreach ($callnumbers as $field): ?>
+            <? foreach ($field as $subfield): ?>
+              <?=trim($this->escapeHtml($subfield))?>
+            <? endforeach; ?>
+          <? endforeach; ?>
+        </td>
+    </tr>
+  <? endif; ?>
 
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
