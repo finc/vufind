@@ -122,7 +122,7 @@ trait SolrMarcFincTrait
                         if (true === in_array($isil, $this->isil)) {
                             $isISIL = true;
                         }
-                    } else {
+                    } else if (!$this->_isEBLRecord()) {
                         $isISIL = true;
                     }
 
@@ -158,6 +158,27 @@ trait SolrMarcFincTrait
             }
         }
         return $retVal;
+    }
+
+    /**
+     * Checks if the record is an EBL record (as defined in config.ini section
+     * [Ebl]->product_sigel)
+     *
+     * @return bool
+     * @link https://intern.finc.info/issues/8055
+     */
+    private function _isEBLRecord()
+    {
+        $value = $this->getFirstFieldValue('912', ['a']);
+
+        if (isset($this->mainConfig->Ebl->product_sigel)) {
+            if (preg_match(
+                '/'.addslashes($this->mainConfig->Ebl->product_sigel).'/', $value
+            )) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
