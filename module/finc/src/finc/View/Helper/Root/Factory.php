@@ -132,4 +132,19 @@ class Factory
             isset($config->General) ? $config : null
         );
     }
+
+    /**
+     * Construct the SideFacet helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SideFacet
+     */
+    public static function getSideFacet(ServiceManager $sm)
+    {
+        return new SideFacet(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('facets')
+        );
+    }
+
 }
