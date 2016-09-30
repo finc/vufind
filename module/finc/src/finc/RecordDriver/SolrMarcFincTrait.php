@@ -983,6 +983,30 @@ trait SolrMarcFincTrait
         return [];
     }
 
+     /**
+     * Return a local signature via an consortial defined field with subfield $f.
+     * Marc field depends on library e.g. 986 for GFZK 
+     *
+     * @return array
+     * @link   https://intern.finc.info/fincproject/issues/8146
+     */
+    public function getLocalSignature()
+    {
+        $retval = [];
+
+        $fields = $this->getMarcRecord()
+            ->getFields($this->getLocalMarcFieldOfLibrary());
+        if (!$fields) {
+            return null;
+        }
+        foreach ($fields as $key => $field) {
+            if ($q = $field->getSubfield('f')) {
+                $retval[$key][] = $q->getData();
+            }
+        }
+        return $retval;
+    }
+    
     /**
      * Get an array of musical heading based on a swb field
      * at the marc field.
