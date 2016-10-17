@@ -1362,6 +1362,7 @@ trait SolrMarcFincTrait
     {
         $parentID = [];
         $fieldList = [
+            ['490'],
             ['773'],
             ['800', '810', '811'],
             ['830']
@@ -1397,6 +1398,9 @@ trait SolrMarcFincTrait
                         $parentID[] = $idRetrieval(
                             $field->getSubfield('w')->getData()
                         );
+                    } elseif ($fieldNumber == '490') {
+                        // https://intern.finc.info/issues/8704
+                        $parentID[] = null;
                     }
                 }
             }
@@ -1420,7 +1424,17 @@ trait SolrMarcFincTrait
     {
         $parentTitle = [];
 
-        // check first if 773 is available and LDR 7 != (a || s)
+        // start with 490 (https://intern.finc.info/issues/8704)
+        $fields = $this->getMarcRecord()->getFields('490');
+        foreach($fields as $field) {
+            if ($field->getIndicator(1) == 0
+                && $subfield = $field->getSubfield('a')
+            ) {
+                $parentTitle[] = $subfield->getData(); // {490a}
+            }
+        }
+
+        // now check if 773 is available and LDR 7 != (a || s)
         $fields = $this->getMarcRecord()->getFields('773');
         if ($fields && !in_array($this->getMarcRecord()->getLeader()[7], ['a', 's'])) {
             foreach($fields as $field) {
