@@ -1409,6 +1409,29 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Returns notes and additional information stored in Marc 546a
+     *
+     * @return array|null
+     * @link https://intern.finc.info/issues/8509
+     */
+    public function getAdditionalNotes()
+    {
+        $retval = [];
+
+        $fields = $this->getMarcRecord()->getFields('546');
+
+        if (!$fields) {
+            return null;
+        }
+        foreach ($fields as $field) {
+            if ($subfield = $field->getSubfield('a')) {
+                $retval[] = $subfield->getData();
+            }
+        }
+        return $retval;
+    }
+
+    /**
      * Marc specific implementation for retrieving hierarchy parent id(s).
      *
      * @return array
