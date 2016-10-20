@@ -81,6 +81,8 @@ class SideFacet extends \Zend\View\Helper\AbstractHelper
                         unset($sideFacets[$label]['list'][$key]);
                     }
                 }
+                $sideFacets[$label]['list'] =
+                    array_values($sideFacets[$label]['list']);
             }
         }
         return $sideFacets;
