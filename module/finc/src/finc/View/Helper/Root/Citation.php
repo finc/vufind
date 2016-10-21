@@ -79,7 +79,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
 
         // Extract the additional details from the record driver:
         $publishers = $driver->tryMethod('getPublishers');
-        $pubDates = $driver->tryMethod('getPublishDateSort');
+        $pubDates = $driver->tryMethod('getPublicationDates');
         $pubPlaces = $driver->tryMethod('getPlacesOfPublication');
         $edition = $driver->tryMethod('getEdition');
 
