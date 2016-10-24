@@ -439,22 +439,20 @@ class Citation extends \VuFind\View\Helper\Root\Citation
      */
     protected function getISBDSeries()
     {
-        $rawSeries = $this->driver->tryMethod('getSeries');
-        if (isset($rawSeries) && !empty($rawSeries)
+        $series = $this->driver->tryMethod('getSeries');
+        if (isset($series) && !empty($series)
         ) {
-            foreach ($rawSeries as $serie) {
-                if (isset($serie['name']) && isset($serie['number'])) {
-                    $seriesStr
-                        = trim($this->stripPunctuation($serie['name']) .' ; ' . $serie['number']);
-                } else {
-                    $seriesStr
-                        = trim($this->stripPunctuation($serie['name']) . $serie['number']);
-                }
-                if (empty($seriesStr)) {
-                    return false;
-                }
-                return '(' . $seriesStr . ')';
+            if (isset($series[0]) && isset($series[1])) {
+                $seriesStr
+                  = trim($this->stripPunctuation($series[0]) .' ; ' . $series[1]);
+            } else {
+                $seriesStr
+                  = trim($this->stripPunctuation($series[0]) . $series[1]);
             }
+            if (empty($seriesStr)) {
+                return false;
+            }
+            return '(' . $seriesStr . ')';
         }
         return false;
     }
