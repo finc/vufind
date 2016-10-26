@@ -350,7 +350,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     protected function getAlternativeItemId($id, $idType = null)
     {
-        return $this->_getFincId(end(explode(":", $id)), $idType);
+        $array = explode(":", $id);
+        return $this->_getFincId(end($array), $idType);
     }
 
     /**
