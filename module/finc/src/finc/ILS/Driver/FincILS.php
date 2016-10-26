@@ -444,6 +444,39 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *********************************************/
 
     /**
+     * Gets additional array fields for the item.
+     * Override this method in your custom PAIA driver if necessary.
+     *
+     * @param array $fee The fee array from PAIA
+     *
+     * @return array Additional fee data for the item
+     */
+    protected function getAdditionalFeeData($fee, $patron = null)
+    {
+        $additionalData = [];
+        // The title is always displayed to the user in fines view if no record can
+        // be found for current fee. So always populate the title with content of
+        // about field.
+        if (isset($fee['about'])) {
+            $additionalData['title'] = $fee['about'];
+        }
+
+        // custom PAIA fields
+        // fee.about 	0..1 	string 	textual information about the fee
+        // fee.item 	0..1 	URI 	item that caused the fee
+        // fee.feeid 	0..1 	URI 	URI of the type of service that
+        // caused the fee
+        $additionalData['feeid']      = (isset($fee['feeid'])
+            ? $fee['feeid'] : null);
+        $additionalData['about']      = (isset($fee['about'])
+            ? $fee['about'] : null);
+        $additionalData['item']       = (isset($fee['item'])
+            ? $fee['item'] : null);
+
+        return $additionalData;
+    }
+
+    /**
      * Patron Login
      *
      * This is responsible for authenticating a patron against the catalog.
