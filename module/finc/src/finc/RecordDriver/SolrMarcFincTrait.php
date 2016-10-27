@@ -27,6 +27,7 @@
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 namespace finc\RecordDriver;
+use VuFindSearch\Query\Query as Query;
 
 /**
  * finc specific model for MARC records with a fullrecord in Solr.
@@ -1452,7 +1453,7 @@ trait SolrMarcFincTrait
             preg_match("/^(\([A-z]*-[A-z0-9]*\))?\s*([A-z0-9]*)\s*$/", $value, $matches);
             if (!empty($matches[2])) {
                 $query = 'record_id:' . $matches[2];
-                $result = $this->searchService->search('VuFind', new \VuFindSearch\Query\Query($query));
+                $result = $this->searchService->search('Solr', new Query($query));
                 if (count($result) === 0) {
                     $this->debug('Could not retrieve id for record with '
                         . $solrField . ":" . $solrValue

@@ -1102,8 +1102,9 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 }
             }
             try {
+                // todo: compatible implementation for any SearchBackend (currently Solr only)
                 $query = $ilsIdentifier . ':' . $ilsId;
-                $result = $this->searchService->search('VuFind', new Query($query));
+                $result = $this->searchService->search('Solr', new Query($query));
                 if (count($result) === 0) {
                     throw new \Exception(
                         'Problem retrieving finc id for record with '
