@@ -43,7 +43,8 @@ if($loggedin = $this->auth()->isLoggedIn()) {
   <div class="medium-12 columns">
   <? endif; ?>
 
-    <h3 property="name"><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h3>
+    <? /* For alle finc-records we want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
+    <h3 property="name"><?=$this->escapeHtml(preg_replace('/(\s[\/\.:]\s*)*$/', '', $this->truncate($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection(), 100)))?></h3>
 
     <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $this->escapeHtml($summary[0]) : false; ?>
     <? if ($summary): ?>
