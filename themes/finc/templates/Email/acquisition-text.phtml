@@ -20,6 +20,6 @@ Begründung für Empfehlung:
 <?=$statement ?>
 
 
-für den Fachbereich: <?=$field_of_study ?>
+für den Fachbereich: <?=$this->transEsc("PDA::fos_" . $field_of_study)?>
 
 <?=isset($timestamp) ? "Zeitpunkt: " . $timestamp : "" ?>

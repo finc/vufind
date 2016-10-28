@@ -20,7 +20,7 @@ $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') .
                         <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text') ?></option>
                         <? if (isset($fieldOfStudyList) && is_array($fieldOfStudyList)): ?>
                             <? foreach ($fieldOfStudyList as $fieldOfStudy): ?>
-                                <option value="<?=$this->transEsc("PDA::fos_" . $fieldOfStudy)?>" <? if (isset($acquisitionFieldOfStudy) && ($acquisitionFieldOfStudy != '-1') && ($acquisitionFieldOfStudy == $fieldOfStudy)): ?> selected="selected"<? endif; ?>><?= $this->transEsc('PDA::fos_' . $fieldOfStudy) ?></option>
+                                <option value="<?=$fieldOfStudy?>" <? if (isset($acquisitionFieldOfStudy) && ($acquisitionFieldOfStudy != '-1') && ($acquisitionFieldOfStudy == $fieldOfStudy)): ?> selected="selected"<? endif; ?>><?= $this->transEsc('PDA::fos_' . $fieldOfStudy) ?></option>
                             <? endforeach; ?>
                         <? endif; ?>
                     </select>
