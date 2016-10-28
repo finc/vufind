@@ -23,7 +23,7 @@
   <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
-      <th><?=$this->transEsc('Published')?>: </th>
+      <th><?=$this->transEsc('Dates of publication')?>: </th>
       <td>
         <? foreach ($dateSpan as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
@@ -259,6 +259,21 @@
           <? endforeach; ?>
         </td>
     </tr>
+  <? endif; ?>
+
+  <? $additionals = $this->driver->getAdditionals(); if (!empty($additionals) && is_array($additionals)): ?>
+    <? foreach($additionals as $additional) :?>
+      <? if (isset($additional['identifier'])): ?>
+      <tr>
+        <th><?=$this->escapeHtml($additional['identifier'])?>: </th>
+        <td>
+          <? if(isset($additional['id'])): ?><a href="<?=$this->recordLink()->getUrl($additional['id'])?>"><? endif; ?>
+          <?=$this->escapeHtml($additional['text'])?>
+          <? if(isset($additional['id'])): ?></a><? endif; ?>
+        </td>
+      </tr>
+      <? endif; ?>
+    <? endforeach; ?>
   <? endif; ?>
 
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>

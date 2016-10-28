@@ -102,33 +102,92 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       </tr>
       <? endif; ?>
 
-      <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
-      <? if (isset($authors['main']) && !empty($authors['main'])): ?>
-      <tr>
-          <th><?=$this->transEsc(count($authors['main']) > 1 ? 'Main Authors' : 'Main Author')?>: </th>
+      <? /* finc specific rows - Start */ ?>
+      <? $authors = $this->driver->getDeduplicatedAuthors(); if ((isset($authors['main']) && count($authors['main'])) || (isset($authors['secondary']) && count($authors['secondary'])) || (isset($authors['corporate']) && count($authors['corporate'])) || (isset($authors['corporate_secondary']) && count($authors['corporate_secondary']))): ?>
+        <tr>
+          <th><?=$this->transEsc('Authors/Corporations')?>: </th>
           <td>
-            <? $i = 0; foreach ($authors['main'] as $author => $roles): ?><?=($i++ == 0)?'':', '?><span property="author"><a href="<?=$this->record($this->driver)->getLink('author', $author)?>"><?=$this->escapeHtml($author)?></a><? if (count($roles) > 0): ?> (<? $j = 0; foreach ($roles as $role): ?><?=($j++ == 0)?'':', '?><?=$this->transEsc("CreatorRoles::" . $role)?><? endforeach; ?>)<? endif; ?></span><? endforeach; ?>
+            <? if (isset($authors['main']) && count($authors['main'])): ?>
+              <? $i = 0; foreach ($authors['main'] as $author => $roles): ?><?=($i++ == 0)?'':'; '?><span property="author"><a href="<?=$this->record($this->driver)->getLink('author', $author)?>"><?=$this->escapeHtml($author)?><?=count($authors['main_orig'][$author])?" / ".array_pop($authors['main_orig'][$author]):''?></a><? if (count($roles) > 0): ?> (<? $j = 0; foreach ($roles as $role): ?><?=($j++ == 0)?'':', '?><?=$this->transEsc("CreatorRoles::" . $role)?><? endforeach; ?>)<? endif; ?></span><? endforeach; ?>
+            <? endif; ?>
+            <? if (isset($authors['secondary']) && count($authors['secondary'])): ?>
+              <?=count($authors['main'])?'; ':''?>
+              <? $i = 0; foreach ($authors['secondary'] as $author => $roles): ?><?=($i++ == 0)?'':'; '?><span property="contributor"><a href="<?=$this->record($this->driver)->getLink('author', $author)?>"><?=$this->escapeHtml($author)?><?=count($authors['secondary_orig'][$author])?" / ".array_pop($authors['secondary_orig'][$author]):''?></a><? if (count($roles) > 0): ?> (<? $j = 0; foreach ($roles as $role): ?><?=($j++ == 0)?'':', '?><?=$this->transEsc("CreatorRoles::" . $role)?><? endforeach; ?>)<? endif; ?></span><? endforeach; ?>
+            <? endif; ?>
+            <? if (isset($authors['corporate']) && count($authors['corporate'])): ?>
+              <?=count($authors['main'])||count($authors['secondary'])?'; ':''?>
+              <? $i = 0; foreach ($authors['corporate'] as $author => $roles): ?><?=($i++ == 0)?'':'; '?><span property="creator"><a href="<?=$this->record($this->driver)->getLink('author', $author)?>"><?=$this->escapeHtml($author)?><?=count($authors['corporate_orig'][$author])?" / ".array_pop($authors['corporate_orig'][$author]):''?></a><? if (count($roles) > 0): ?> (<? $j = 0; foreach ($roles as $role): ?><?=($j++ == 0)?'':', '?><?=$this->transEsc("CreatorRoles::" . $role)?><? endforeach; ?>)<? endif; ?></span><? endforeach; ?>
+            <? endif; ?>
+            <? if (isset($authors['corporate_secondary']) && count($authors['corporate_secondary'])): ?>
+              <?=count($authors['main'])||count($authors['secondary'])||count($authors['corporate'])?'; ':''?>
+              <? $i = 0; foreach ($authors['corporate_secondary'] as $author => $roles): ?><?=($i++ == 0)?'':'; '?><span property="contributor"><a href="<?=$this->record($this->driver)->getLink('author', $author)?>"><?=$this->escapeHtml($author)?><?=count($authors['corporate_secondary_orig'][$author])?" / ".array_pop($authors['corporate_secondary_orig'][$author]):''?></a><? if (count($roles) > 0): ?> (<? $j = 0; foreach ($roles as $role): ?><?=($j++ == 0)?'':', '?><?=$this->transEsc("CreatorRoles::" . $role)?><? endforeach; ?>)<? endif; ?></span><? endforeach; ?>
+            <? endif; ?>
           </td>
-      </tr>
+        </tr>
       <? endif; ?>
 
-      <? if (isset($authors['corporate']) && !empty($authors['corporate'])): ?>
-      <tr>
-          <th><?=$this->transEsc(count($authors['corporate']) > 1 ? 'Corporate Author' : 'Corporate Authors')?>: </th>
-          <td>
-            <? $i = 0; foreach ($authors['corporate'] as $corporate => $roles): ?><?=($i++ == 0)?'':', '?><span property="creator"><a href="<?=$this->record($this->driver)->getLink('author', $corporate)?>"><?=$this->escapeHtml($corporate)?></a><? if (count($roles) > 0): ?> (<? $j = 0; foreach ($roles as $role): ?><?=($j++ == 0)?'':', '?><?=$this->transEsc("CreatorRoles::" . $role)?><? endforeach; ?>)<? endif; ?></span><? endforeach; ?>
+      <? $titleDetails = $this->driver->getTitleDetails(); if (!empty($titleDetails)): ?>
+        <tr>
+          <th><?=$this->transEsc('Title')?>: </th>
+          <td property="title">
+            <? $i = 0; foreach ($titleDetails as $title): ?>
+              <?=($i > 0 ? '<br />':'')?><?=$this->escapeHtml($title)?><? $i++ ;?>
+            <? endforeach; ?>
           </td>
-      </tr>
+        </tr>
+      <? else: ?>
+        <tr>
+          <th><?=$this->transEsc('Title')?>: </th>
+          <td property="title"><?=$this->escapeHtml($this->driver->getShortTitle() . '  ' . $this->driver->getSubtitle() . '  ' . $this->driver->getTitleSection()) . ($this->driver->getTitleStatement() ? ' / ' . $this->driver->getTitleStatement() : '')?><br /><?=($this->driver->tryMethod('getTitleOrig') && $this->driver->getTitleOrig() != '' ? $this->escapeHtml($this->driver->getTitleOrig()) : '')?></td>
+        </tr>
       <? endif; ?>
 
-      <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
-      <tr>
-        <th><?=$this->transEsc('Other Authors')?>: </th>
-        <td>
-          <? $i = 0; foreach ($authors['secondary'] as $author => $roles): ?><?=($i++ == 0)?'':', '?><span property="contributor"><a href="<?=$this->record($this->driver)->getLink('author', $author)?>"><?=$this->escapeHtml($author)?></a><? if (count($roles) > 0): ?> (<? $j = 0; foreach ($roles as $role): ?><?=($j++ == 0)?'':', '?><?=$this->transEsc("CreatorRoles::" . $role)?><? endforeach; ?>)<? endif; ?></span><? endforeach; ?>
-        </td>
-      </tr>
+      <? /* finc only SolrMarc core specific changes - Start */ ?>
+      <? $workPartTitleDetails = $this->driver->tryMethod('getWorkPartTitleDetails'); if (!empty($workPartTitleDetails)): ?>
+        <tr>
+          <th><?=$this->transEsc('Work Part Title')?>: </th>
+          <td property="work part title">
+            <? $i = 0; foreach ($workPartTitleDetails as $title): ?>
+              <?=($i > 0 ? '<br />':'')?><?=$this->escapeHtml($title)?><? $i++ ;?>
+            <? endforeach; ?>
+          </td>
+        </tr>
       <? endif; ?>
+
+      <? $workTitleDetails = $this->driver->tryMethod('getWorkTitleDetails'); if (!empty($workTitleDetails)): ?>
+        <tr>
+          <th><?=$this->transEsc('Work Title')?>: </th>
+          <td property="work title">
+            <? $i = 0; foreach ($workTitleDetails as $title): ?>
+              <?=($i > 0 ? '<br />':'')?><?=$this->escapeHtml($title)?><? $i++ ;?>
+            <? endforeach; ?>
+          </td>
+        </tr>
+      <? endif; ?>
+      <? /* finc only SolrMarc core specific changes - End */ ?>
+
+      <? $titleUniform = $this->driver->getTitleUniform(); ?>
+      <? if (!empty($titleUniform)): ?>
+        <tr>
+          <th><?=$this->driver->isRDA()?$this->transEsc('rda_original_title'):$this->transEsc('non_rda_original_title')?>: </th>
+          <td><a href="<?=$this->record($this->driver)->getLink('title', $titleUniform)?>"><?=$this->escapeHtml($titleUniform)?></a></td>
+        </tr>
+      <? endif; ?>
+
+      <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
+        <tr>
+          <th><?=$this->transEsc('Edition')?>: </th>
+          <td property="bookEdition"><?=$this->escapeHtml($edition)?><? $editionOrig = $this->driver->getEditionOrig(); if (!empty($editionOrig)): ?><br /><?=$this->escapeHtml($editionOrig)?><? endif; ?></td>
+        </tr>
+      <? endif; ?>
+
+      <? $dissertationNote = $this->driver->getDissertationNote(); if (!empty($dissertationNote)): ?>
+        <tr>
+          <th><?=$this->transEsc('Dissertation Note')?>: </th>
+          <td><?=$dissertationNote?></td>
+        </tr>
+      <? endif; ?>
+      <? /* finc specific rows - END */  ?>
 
       <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
         <tr>
@@ -171,68 +230,19 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
-      <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
-      <tr>
-        <th><?=$this->transEsc('Edition')?>: </th>
-        <td property="bookEdition"><?=$this->escapeHtml($edition)?></td>
-      </tr>
-      <? endif; ?>
-
-      <? /* These are the only SolrMarc core specific changes - rest identical with solrDefault core */  ?>
-      <? $workPartTitleDetails = $this->driver->tryMethod('getWorkPartTitleDetails'); if (!empty($workPartTitleDetails)): ?>
+      <? /* finc specific row - replaces series - Start */ ?>
+      <? $hierarchyParentTitle = $this->driver->getHierarchyParentTitle(); if (!empty($hierarchyParentTitle) && empty($series)): ?>
         <tr>
-          <th><?=$this->transEsc('Work Part Title')?>: </th>
-          <td property="work part title">
-            <? $i = 0; foreach ($workPartTitleDetails as $title): ?>
-              <?=($i > 0 ? '<br />':'')?><?=$this->escapeHtml($title)?><? $i++ ;?>
+          <th><?=$this->transEsc('Set Multipart')?>: </th>
+          <td>
+            <? $hierarchyParentId = $this->driver->getHierarchyParentID(); ?>
+            <? foreach ($hierarchyParentTitle as $key=>$hTitle): ?>
+              <? if(isset($hierarchyParentId[$key])): ?><a href="<?=$this->recordLink()->getUrl($hierarchyParentId[$key])?>"><? endif; ?><?=$this->escapeHtml($hTitle)?><? if(isset($hierarchyParentId[$key])): ?></a><? endif; ?><br/>
             <? endforeach; ?>
           </td>
         </tr>
       <? endif; ?>
-
-      <? $workTitleDetails = $this->driver->tryMethod('getWorkTitleDetails'); if (!empty($workTitleDetails)): ?>
-        <tr>
-          <th><?=$this->transEsc('Work Title')?>: </th>
-          <td property="work title">
-            <? $i = 0; foreach ($workTitleDetails as $title): ?>
-              <?=($i > 0 ? '<br />':'')?><?=$this->escapeHtml($title)?><? $i++ ;?>
-            <? endforeach; ?>
-          </td>
-        </tr>
-      <? endif; ?>
-
-      <? $dissertationNote = $this->driver->getDissertationNote(); if (!empty($dissertationNote)): ?>
-        <tr>
-          <th><?=$this->transEsc('Dissertation Note')?>: </th>
-          <td><?=$dissertationNote?></td>
-        </tr>
-      <? endif; ?>
-      <? /* These are the only SolrMarc core specific changes - END */  ?>
-
-      <?/* Display series section if at least one series exists. */?>
-      <? $series = $this->driver->getSeries(); if (!empty($series)): ?>
-      <tr>
-        <th><?=$this->transEsc('Series')?>: </th>
-        <td>
-          <? foreach ($series as $field): ?>
-            <?/* Depending on the record driver, $field may either be an array with
-               "name" and "number" keys or a flat string containing only the series
-               name.  We should account for both cases to maximize compatibility. */?>
-            <? if (is_array($field)): ?>
-              <? if (!empty($field['name'])): ?>
-                <a href="<?=$this->record($this->driver)->getLink('series', $field['name'])?>"><?=$this->escapeHtml($field['name'])?></a>
-                <? if (!empty($field['number'])): ?>
-                  <?=$this->escapeHtml($field['number'])?>
-                <? endif; ?>
-                <br/>
-              <? endif; ?>
-            <? else: ?>
-              <a href="<?=$this->record($this->driver)->getLink('series', $field)?>"><?=$this->escapeHtml($field)?></a><br/>
-            <? endif; ?>
-          <? endforeach; ?>
-        </td>
-      </tr>
-      <? endif; ?>
+      <? /* finc specific row - replaces series - End */ ?>
 
       <? $subjects = $this->driver->getAllSubjectHeadings(); if (!empty($subjects)): ?>
       <tr>
@@ -302,21 +312,6 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
-      <? $additionals = $this->driver->getAdditionals(); if (!empty($additionals) && is_array($additionals)): ?>
-        <? foreach($additionals as $additional) :?>
-          <? if (isset($additional['identifier'])): ?>
-          <tr>
-            <th><?=$this->escapeHtml($additional['identifier'])?>: </th>
-            <td>
-              <? if(isset($additional['id'])): ?><a href="<?=$this->recordLink()->getUrl($additional['id'])?>"><? endif; ?>
-              <?=$this->escapeHtml($additional['text'])?>
-              <? if(isset($additional['id'])): ?></a><? endif; ?>
-            </td>
-          </tr>
-          <? endif; ?>
-        <? endforeach; ?>
-      <? endif; ?>
-
       <? if ($this->usertags()->getMode() !== 'disabled'): ?>
         <? $tagList = $this->driver->getTags(null, null, 'count', $user_id); ?>
         <tr>
@@ -330,6 +325,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc specific rows - Start */ ?>
       <? $subjects = $this->driver->getLocalSubject(); if (!empty($subjects)): ?>
       <tr>
         <th><?=$this->transEsc('Subjects')?>: </th>
@@ -341,7 +337,46 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </td>
       </tr>
       <? endif; ?>
-      
+
+      <? $megaCollection = (array) $this->driver->tryMethod('getMegaCollection'); if (!empty($megaCollection)): ?>
+        <tr>
+          <th><?=$this->transEsc('Source')?>: </th>
+          <td>
+            <? foreach ($megaCollection as $field): ?>
+              <?=$this->escapeHtml($field)?><br/>
+            <? endforeach; ?>
+          </td>
+        </tr>
+      <? endif; ?>
+
+      <? $otherRelationshipEntry = (array) $this->driver->tryMethod('getOtherRelationshipEntry'); if (!empty($otherRelationshipEntry)): ?>
+        <? foreach ($otherRelationshipEntry as $key => $values): ?>
+          <tr>
+            <th><?=$this->transEsc($key)?>: </th>
+            <td>
+              <? foreach ($values as $value): ?>
+                <? if (!empty($value['link']) && $recordLink = $this->RecordLink()->getRecordLink($value['link'], 'record_id')): ?>
+                  <a href="<?=$recordLink?>"><?=$this->escapeHtml($value['text'])?></a><br/>
+                <? else: ?>
+                  <?=$this->escapeHtml($value['text'])?><br/>
+                <? endif; ?>
+              <? endforeach; ?>
+            </td>
+          </tr>
+        <? endforeach; ?>
+      <? endif; ?>
+
+      <? $additionalNotes = (array) $this->driver->tryMethod('getAdditionalNotes'); if (!empty($additionalNotes)): ?>
+        <tr>
+          <th><?=$this->transEsc('Notes')?>: </th>
+          <td>
+            <? foreach ($additionalNotes as $note): ?>
+              <?=$this->escapeHtml($note)?><br/>
+            <? endforeach; ?>
+          </td>
+        </tr>
+      <? endif; ?>
+      <? /* finc specific rows - End */ ?>
     </table>
     <?/* End Main Details */?>
   </div>
