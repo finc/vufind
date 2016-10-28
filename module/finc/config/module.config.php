@@ -48,6 +48,9 @@ $config = [
                 ],
             ],
             'recordtab' => [
+                'factories' => [
+                    'hierarchytree' => 'finc\RecordTab\Factory::getHierarchyTree',
+                ],
                 'invokables' => [
                     'staffviewai' => 'finc\RecordTab\StaffViewAI',
                     'acquisitionpda' => 'finc\RecordTab\AcquisitionPDA',

@@ -31,7 +31,8 @@
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 namespace finc\RecordDriver;
-use VuFindSearch\ParamBag;
+use VuFindSearch\ParamBag,
+    VuFindSearch\Query\Query as Query;
 
 /**
  * finc specific model for Solr records based on the stock
@@ -49,6 +50,27 @@ use VuFindSearch\ParamBag;
  */
 trait SolrDefaultFincTrait
 {
+
+    /**
+     * Customized isCollection() to add a check if the record is a single element
+     * collection.
+     *
+     * @return bool
+     */
+    public function isCollection()
+    {
+        // first check as always if we have a collection
+        $isCollection = parent::isCollection();
+
+        if ($isCollection) {
+            // if we have a collection only return true if
+            // isSingleElementHierarchyRecord is false
+            return !$this->isSingleElementHierarchyRecord();
+        }
+
+        // if we've come so far this record is no collection
+        return false;
+    }
 
     /**
      * Get all call numbers associated with the record (empty string if none).
@@ -1043,6 +1065,41 @@ trait SolrDefaultFincTrait
     {
         return isset($this->fields['zdb']) ?
             $this->fields['zdb'] : null;
+    }
+
+    /**
+     * Checks the record for having no hierarchy children. Returns true if record is
+     * top element of hierarchy and has no children.
+     *
+     * @return bool
+     */
+    public function isSingleElementHierarchyRecord()
+    {
+        $hierId = $this->getHierarchyTopID();
+        $currId = $this->getUniqueID();
+
+        // is the record's id indexed as its hierarchy_top_id
+        if (in_array($currId, $hierId)) {
+
+            $query = 'hierarchy_top_id:' . $currId;
+            $result = $this->searchService->search('Solr', new Query($query));
+            if (count($result) === 0) {
+                // for debugging only
+                $this->debug(
+                    'Problem retrieving total number of records with ' .
+                    'hierarchy_top_id ' . $currId
+                );
+            }
+            // number of records
+            $numFound = count($result->getRecords());
+            if ($numFound > 1) {
+                return false;
+            }
+        }
+
+        // either record is no top element of any hierarchy or we have come so far
+        // because it's the only element of its hierarchy
+        return true;
     }
 
 }
