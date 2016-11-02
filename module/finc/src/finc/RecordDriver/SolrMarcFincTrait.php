@@ -1455,10 +1455,8 @@ trait SolrMarcFincTrait
                 $query = 'record_id:' . $matches[2];
                 $result = $this->searchService->search('Solr', new Query($query));
                 if (count($result) === 0) {
-                    $this->debug('Could not retrieve id for record with '
-                        . $solrField . ":" . $solrValue
-                    );
-                    return $solrValue;
+                    $this->debug('Could not retrieve id for record with ' . $query);
+                    return $value;
                 }
                 return current($result->getRecords())->getUniqueId();
             }
