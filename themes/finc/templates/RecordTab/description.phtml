@@ -245,8 +245,9 @@
       </td>
     </tr>
   <? endif; ?>
-  
-  <? $callnumbers = $this->driver->getLocalSignature(); if (!empty($callnumbers)): ?>
+
+  <? /* getLocalSignature works only for Marc-Records, so try this method */ ?>
+  <? $callnumbers = $this->driver->tryMethod('getLocalSignature'); if (!empty($callnumbers)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
         <th><?=$this->transEsc('Call Number')?>: </th>
