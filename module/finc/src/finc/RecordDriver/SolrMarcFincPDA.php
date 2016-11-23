@@ -29,8 +29,7 @@
  */
 namespace finc\RecordDriver;
 
-use VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
-    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
+use VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface;
 
 /**
  * Model for PDA MARC records in Solr.
@@ -43,10 +42,9 @@ use VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 class SolrMarcFincPDA extends SolrMarcFinc implements
-    HttpServiceAwareInterface, LoggerAwareInterface
+    HttpServiceAwareInterface
 {
     use \VuFindHttp\HttpServiceAwareTrait;
-    use \VuFind\Log\LoggerAwareTrait;
 
     /**
      * Get the price in Euro for the record.
