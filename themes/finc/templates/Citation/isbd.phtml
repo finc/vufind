@@ -1,6 +1,7 @@
 <? if (!empty($this->authors)): ?><?=$this->escapeHtml($this->authors)?>:<br /><? endif; ?>
-<i><?=$this->escapeHtml($this->title)?></i><? if ($this->periodAfterTitle): ?>. <? endif ?>
-<? if (!empty($this->edition)): ?>&mdash; <?=$this->escapeHtml($this->edition)?> <? endif; ?>
-<? if (!empty($this->publisher)): ?><?=$this->escapeHtml($this->publisher)?><br /><? endif; ?>
-<? if (!empty($this->series)): ?><?=$this->escapeHtml($this->series)?><br /><? endif; ?>
-<? if(!empty($this->isbn)): ?>ISBN <?=$this->escapeHtml($this->isbn)?><? endif; ?>
+<span style="font-style:italic;"><?=$this->escapeHtml($this->title)?></span>
+<? if (!empty($this->edition)):   ?>. &mdash; <?=$this->escapeHtml($this->edition)?> <? endif; ?>
+<? if (!empty($this->publisher)): ?>. &mdash; <?=$this->escapeHtml($this->publisher)?><? endif; ?>
+<? if (!empty($this->physical)):  ?>. &mdash; <?=$this->escapeHtml($this->physical)?><? endif; ?>
+<? if (!empty($this->series)):    ?>. &mdash; <?=$this->escapeHtml($this->series)?><? endif; ?>
+<? if (!empty($this->isbn)): ?>. &mdash; ISBN <?=$this->escapeHtml($this->isbn)?><? endif; ?>

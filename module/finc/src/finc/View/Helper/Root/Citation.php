@@ -293,13 +293,13 @@ class Citation extends \VuFind\View\Helper\Root\Citation
             'authors' => $this->getISBDAuthor(),
             'isArticle' => !empty($this->details['journal']) ? true : false
         ];
-        $isbd['periodAfterTitle'] = !$this->isPunctuated($isbd['title']);
 
         // Behave differently for books vs. journals:
         $partial = $this->getView()->plugin('partial');
         if (empty($this->details['journal'])) {
-            $isbd['publisher'] = $this->getISBDPublisher();
             $isbd['edition'] = $this->getEdition();
+            $isbd['publisher'] = $this->getISBDPublisher();
+            $isbd['physical'] = $this->getISBDPhysicalDescription();
             $isbd['series'] = $this->getISBDSeries();
             $isbd['notes'] = $this->getISBDNotes();
             $isbd['isbn'] = implode(', ', $this->driver->tryMethod('getISBNs'));
@@ -352,10 +352,9 @@ class Citation extends \VuFind\View\Helper\Root\Citation
             if (count($titleStatement) > 0) {
                 $statement = $this->stripPunctuation(implode(' ', $titleStatement));
                 $title .=  ' / ' . $statement;
-                // $title .= (!empty($subtitle)) ? ' / ' . $statement : $statement;
             }
         }
-        return $title . '.';
+        return $title;
     }
 
     /**
@@ -406,7 +405,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
         if (isset($this->details['pubPlace'])
             && !empty($this->details['pubPlace'])
         ) {
-            $publisher = ' — ' . $this->stripPunctuation($this->details['pubPlace']);
+            $publisher = $this->stripPunctuation($this->details['pubPlace']);
         }
         if (isset($this->details['pubName'])
             && !empty($this->details['pubName'])
@@ -417,19 +416,28 @@ class Citation extends \VuFind\View\Helper\Root\Citation
                 = (false !== $this->getYear()) ? $publisher .', ' : $publisher;
         }
         if (false !== $this->getYear()) {
-            $publisher = $publisher . $this->getYear() . '.';
-        }
-        $physical = $this->driver->tryMethod('getPhysicalDescriptions');
-        if (isset($physical)
-            && !empty($physical)
-        ) {
-            $publisher = $publisher . ' — '
-                . $this->stripPunctuation(implode(' ', $physical)) . '.';
+            $publisher = $publisher . $this->getYear();
         }
         if (empty($publisher)) {
             return false;
         }
         return $publisher;
+    }
+
+    /**
+     * Get the physical description string for an ISBD citation.
+     *
+     * @return string
+     */
+    protected function getISBDPhysicalDescription()
+    {
+        $physical = $this->driver->tryMethod('getPhysicalDescriptions');
+        if (isset($physical)
+            && !empty($physical)
+        ) {
+            return $this->stripPunctuation(implode(' ', $physical));
+        }
+        return false;
     }
 
     /**
@@ -440,19 +448,26 @@ class Citation extends \VuFind\View\Helper\Root\Citation
     protected function getISBDSeries()
     {
         $series = $this->driver->tryMethod('getSeries');
-        if (isset($series) && !empty($series)
-        ) {
-            if (isset($series[0]) && isset($series[1])) {
-                $seriesStr
-                  = trim($this->stripPunctuation($series[0]) .' ; ' . $series[1]);
-            } else {
-                $seriesStr
-                  = trim($this->stripPunctuation($series[0]) . $series[1]);
+        if (!empty($series)) {
+            $seriesArray = [];
+            foreach ($series as $serie) {
+                if (is_array($serie)) {
+                    $seriesStr = (
+                        isset($serie['name']) && !empty($serie['name'])
+                            ? trim($this->stripPunctuation($serie['name'])) : ''
+                        ) . (isset($serie['name']) && !empty($serie['name'])
+                        && isset($serie['number']) && !empty($serie['number'])
+                            ? ' ; ' . $serie['number'] : ''
+                        );
+                } elseif (!empty($serie)) {
+                    $seriesStr = $serie;
+                }
+                if (!empty($seriesStr)) {
+                    $seriesArray[] = $seriesStr;
+                }
             }
-            if (empty($seriesStr)) {
-                return false;
-            }
-            return '(' . $seriesStr . ')';
+            return count($seriesArray)
+                ? '(' . implode(') (', $seriesArray) . ')' : false;
         }
         return false;
     }
@@ -481,6 +496,12 @@ class Citation extends \VuFind\View\Helper\Root\Citation
         return false;
     }
 
+    /**
+     * Returns true if the current record is an article (checks $details['journal’]),
+     * false otherwise.
+     *
+     * @return boolean
+     */
     public function isArticle() {
         return !empty($this->details['journal']) ? true : false;
     }

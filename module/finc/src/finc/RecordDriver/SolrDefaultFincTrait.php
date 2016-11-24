@@ -226,6 +226,73 @@ trait SolrDefaultFincTrait
     }
 
     /**
+     * Support method for getOpenUrl() -- pick the OpenURL format.
+     *
+     * @return string
+     */
+    protected function getOpenUrlFormat()
+    {
+        $explode_formats = function ($formats) {
+            $exploded_formats = [];
+            foreach ($formats as $format) {
+                $exploded_formats = array_merge(
+                    $exploded_formats,
+                    array_map("trim", explode(",", $format))
+                );
+            }
+            return count($exploded_formats) ? $exploded_formats : $formats;
+        };
+
+        // If we have multiple formats, Book, Journal and Article are most
+        // important...
+        $formats = $this->getFormats();
+
+        $formats = $explode_formats($formats);
+
+        if (in_array('Book', $formats)) {
+            return 'Book';
+        } else if (in_array('Article', $formats)) {
+            return 'Article';
+        } else if (in_array('Journal', $formats)) {
+            return 'Journal';
+        } else if (isset($formats[0])) {
+            return $formats[0];
+        } else if (strlen($this->getCleanISSN()) > 0) {
+            return 'Journal';
+        } else if (strlen($this->getCleanISBN()) > 0) {
+            return 'Book';
+        }
+        return 'UnknownFormat';
+    }
+
+    /**
+     * Get OpenURL parameters for a book.
+     *
+     * @return array
+     */
+    protected function getBookOpenUrlParams()
+    {
+        $params = $this->getDefaultOpenUrlParams();
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
+        $params['rft.genre'] = 'book';
+        $params['rft.btitle'] = $params['rft.title'];
+        $series = self::getSeries();
+        if (count($series) > 0) {
+            // Handle both possible return formats of getSeries:
+            $params['rft.series'] = is_array($series[0]) ?
+                $series[0]['name'] : $series[0];
+        }
+        $params['rft.au'] = $this->getPrimaryAuthor();
+        $publishers = $this->getPublishers();
+        if (count($publishers) > 0) {
+            $params['rft.pub'] = $publishers[0];
+        }
+        $params['rft.edition'] = $this->getEdition();
+        $params['rft.isbn'] = (string)$this->getCleanISBN();
+        return $params;
+    }
+
+    /**
      * Get the hierarchy_parent_id(s) associated with this item (empty if none).
      *
      * @return array
