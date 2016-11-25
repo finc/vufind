@@ -53,9 +53,6 @@ class Factory extends \Vufind\Recommend\Factory
      */
     public static function getEbscoResults(ServiceManager $sm)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        return new EbscoResults(
-            $config->InstitutionInfo->isil
-        );
+        return new EbscoResults();
     }
 }

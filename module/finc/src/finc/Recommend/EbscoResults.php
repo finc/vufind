@@ -91,19 +91,10 @@ class EbscoResults implements \VuFind\Recommend\RecommendInterface,
     /**
      * Constructor
      *
-     * @param array $isils Institution info
-     *
      * @access public
-     * @throws \Exception   Service is only available for one generic defined isil.
      */
-    public function __construct($isils = [])
+    public function __construct()
     {
-        if (count($isils) != 1) {
-            throw new Exception(
-                'Service is only available for one generic defined isil.'
-                . ' Please use full configuration option at searches.ini');
-        }
-        $this->namespace = $isils[0];
     }
 
     /**
@@ -113,15 +104,21 @@ class EbscoResults implements \VuFind\Recommend\RecommendInterface,
      *
      * @return void
      * @access public
+     * @throws Exception    Isil as namespace for service has not been set yet or
+     *                      is false.
      */
     public function setConfig($settings)
     {
         // Parse out parameters:
         $params = explode(':', $settings);
-        $this->baseUrl = (isset($params[0]) && !empty($params[0]))
-            ? $params[0] : 'www.bibliothek.tu-chemnitz.de/finc/%s/ebsco3.cgi';
-        $this->namespace = (isset($params[1]) && !empty($params[1]))
-            ? $params[1] : $this->namespace;
+        if (!isset($params[0]) || (0 < preg_match('/\s/g', $params[0]))) {
+            throw new Exception(
+                'Isil as namespace for service has not been set yet or is false.'
+            );
+        }
+        $this->namespace = $params[0];
+        $this->baseUrl = (isset($params[1]) && !empty($params[1]))
+            ? $params[1] : 'www.bibliothek.tu-chemnitz.de/finc/%s/ebsco3.cgi';
     }
 
     /**
@@ -229,6 +226,10 @@ class EbscoResults implements \VuFind\Recommend\RecommendInterface,
      */
     protected function sortByHits($results, $sortOrder = SORT_DESC)
     {
+        if (!is_array($results) && count($results['results']) == 0) {
+            return $results['results'] = [];
+        }
+
         $databases = $results['results'];
         foreach ($databases as $key => $row) {
             $hits[$key] = $row['hits'];
