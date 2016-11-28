@@ -111,7 +111,7 @@ class EbscoResults implements \VuFind\Recommend\RecommendInterface,
     {
         // Parse out parameters:
         $params = explode(':', $settings);
-        if (!isset($params[0]) || (0 < preg_match('/\s/g', $params[0]))) {
+        if (!isset($params[0]) || (0 < preg_match('/\s/', $params[0]))) {
             throw new Exception(
                 'Isil as namespace for service has not been set yet or is false.'
             );
@@ -219,24 +219,23 @@ class EbscoResults implements \VuFind\Recommend\RecommendInterface,
      * Sort databases by hits
      *
      * @param array  $results   Unprocessed array of curl requrest.
-     * @param string $sortOrder Order of sort. Default: "SORT_DESC"
+     * @param string $sortOrder Order of sort. Default: SORT_DESC
      *
      * @return array $results
      * @access protected
      */
     protected function sortByHits($results, $sortOrder = SORT_DESC)
     {
-        if (!is_array($results) && count($results['results']) == 0) {
-            return $results['results'] = [];
+        if (isset($results['results']) && count($results['results']) > 0) {
+            $databases = $results['results'];
+            foreach ($databases as $key => $row) {
+                $hits[$key] = $row['hits'];
+            }
+            array_multisort($hits, $sortOrder, $databases);
+            $results['results'] = $databases;
+        } else {
+            $results['results'] = [];
         }
-
-        $databases = $results['results'];
-        foreach ($databases as $key => $row) {
-            $hits[$key] = $row['hits'];
-        }
-        array_multisort($hits, $sortOrder, $databases);
-        $results['results'] = $databases;
-
         return $results;
     }
 
