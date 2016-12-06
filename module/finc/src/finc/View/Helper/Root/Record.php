@@ -134,6 +134,52 @@ class Record extends \VuFind\View\Helper\Root\Record
     }
 
     /**
+     * Get external access links to other ILS defined by config setting.
+     *
+     * @access public
+     * @return array    Associative array.
+     */
+    public function getExternalAccessLinks()
+    {
+        $i = -1; // iterator of extUrls
+
+        // if configuration empty return unprocessed
+        if (!isset($this->config->ExternalAccess)
+            || count($this->config->ExternalAccess) == 0
+        ) {
+            return [];
+        }
+        // if institutions empty return unprocessed
+        $institutions = $this->driver->tryMethod('getInstitutions');
+        if (!isset($institutions) || count($institutions) == 0) {
+            return [];
+        }
+
+        foreach ($this->config->ExternalAccess as $recordType => $accessUrl) {
+            switch ($recordType) {
+                case "id":
+                    $replaceId = $this->driver->getUniqueID();
+                    break;
+                case "ppn":
+                    $replaceId = $this->driver->tryMethod('getRID');
+                    break;
+                default:
+                    $replaceId = null;
+            }
+            foreach ($accessUrl as $institution => $urlPattern) {
+                if (
+                    true === in_array($institution, $institutions) &&
+                    !empty($replaceId)
+                ) {
+                    $extUrls[++$i]['desc'] = $institution;
+                    $extUrls[$i]['url'] = sprintf($urlPattern, $replaceId);
+                }
+            }
+        }
+        return $extUrls;
+    }
+
+    /**
      * Render the link of the specified type.
      *
      * @param string $type    Link type

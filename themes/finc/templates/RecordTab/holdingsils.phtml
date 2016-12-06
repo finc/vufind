@@ -7,6 +7,8 @@
     $openUrlActive = $openUrl->isActive();
     // Account for replace_other_urls setting
     $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+$extUrls = $this->record($this->driver)->getExternalAccessLinks();
+
     $offlineMode = $this->ils()->getOfflineMode();
     $holdings = [];
     // if we already know that the ils is offline we do not need to query the
@@ -181,6 +183,16 @@
 
 <? if ($holdingsEmpty && $this->driver->tryMethod('getLocalOrderInformation') == 'e'): ?>
     <h3><?=$this->transEsc("This item has already been ordered and will be available shortly")?></h3>
+<? endif; ?>
+
+<? if (!empty($extUrls)): ?>
+  <h3><?= $this->transEsc("external_access") ?></h3>
+  <? if (!empty($extUrls)): ?>
+    <? foreach ($extUrls as $current): ?>
+      <a href="<?= $this->escapeHtmlAttr($this->proxyUrl($current['url'])) ?>"><?= $this->escapeHtml($this->transEsc($current['desc'])) ?></a>
+      <br/>
+    <? endforeach; ?>
+  <? endif; ?>
 <? endif; ?>
 
 <? $history = $this->driver->getRealTimeHistory(); ?>
