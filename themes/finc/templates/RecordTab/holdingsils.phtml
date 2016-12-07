@@ -7,7 +7,7 @@
     $openUrlActive = $openUrl->isActive();
     // Account for replace_other_urls setting
     $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
-$extUrls = $this->record($this->driver)->getExternalAccessLinks();
+    $extUrls = $this->record($this->driver)->getExternalAccessLinks();
 
     $offlineMode = $this->ils()->getOfflineMode();
     $holdings = [];
