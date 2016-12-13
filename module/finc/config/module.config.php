@@ -9,7 +9,9 @@ $config = [
             'VuFind\BranchesReader' => 'finc\Service\Factory::getBranchesReader',
             'VuFind\ILSConnection' => 'finc\Service\Factory::getILSConnection',
             'VuFind\ILSHoldLogic' => 'finc\Service\Factory::getILSHoldLogic',
-            'finc\Rewrite' => 'finc\Rewrite\Factory'
+            'finc\Rewrite' => 'finc\Rewrite\Factory',
+            'VuFind\SessionManager' => 'finc\Session\ManagerFactory',
+            'VuFind\CookieManager' => 'finc\Service\Factory::getCookieManager'
         ]
     ],
     'controllers' => [
