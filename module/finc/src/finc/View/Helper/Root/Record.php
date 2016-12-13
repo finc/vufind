@@ -142,6 +142,7 @@ class Record extends \VuFind\View\Helper\Root\Record
     public function getExternalAccessLinks()
     {
         $i = -1; // iterator of extUrls
+        $extUrls = [];
 
         // if configuration empty return unprocessed
         if (!isset($this->config->ExternalAccess)
