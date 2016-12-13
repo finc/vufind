@@ -69,7 +69,7 @@ class Factory
             $sm->get('VuFind\CacheManager')
         );
     }
-    
+
     /**
      * Construct the ILS connection.
      *
@@ -99,6 +99,39 @@ class Factory
         return new \finc\ILS\Logic\Holds(
             $sm->get('VuFind\ILSAuthenticator'), $sm->get('VuFind\ILSConnection'),
             $sm->get('VuFind\HMAC'), $sm->get('VuFind\Config')->get('config')
+        );
+    }
+
+    /**
+     * Construct the cookie manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Cookie\CookieManager
+     */
+    public static function getCookieManager(ServiceManager $sm)
+    {
+        $config = $sm->get('VuFind\Config')->get('config');
+        $path = '/';
+        if (isset($config->Cookies->limit_by_path)
+            && $config->Cookies->limit_by_path
+        ) {
+            $path = $sm->get('Request')->getBasePath();
+            if (empty($path)) {
+                $path = '/';
+            }
+        }
+        $secure = isset($config->Cookies->only_secure)
+            ? $config->Cookies->only_secure
+            : false;
+        $domain = isset($config->Cookies->domain)
+            ? $config->Cookies->domain
+            : null;
+        $session_name = isset($config->Cookies->session_name)
+            ? $config->Cookies->session_name
+            : null;
+        return new \finc\Cookie\CookieManager(
+            $_COOKIE, $path, $domain, $secure, $session_name
         );
     }
 }
