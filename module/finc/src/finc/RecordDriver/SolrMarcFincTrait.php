@@ -1579,9 +1579,9 @@ trait SolrMarcFincTrait
      * the bsz heading subjects chains.
      *
      * @return array
-     * @access protected
+     * @access public
      */
-    protected function getAllSubjectHeadingsExtended()
+    public function getAllSubjectHeadingsExtended()
     {
         // define a false indicator
         $firstindicator = 'x';
