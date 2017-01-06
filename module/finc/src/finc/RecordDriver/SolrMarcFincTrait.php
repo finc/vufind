@@ -115,6 +115,9 @@ trait SolrMarcFincTrait
             if ($urls) {
                 foreach ($urls as $url) {
                     $isil = $url->getSubfield('9');
+                    $indicator1 = $url->getIndicator('1');
+                    $indicator2 = $url->getIndicator('2');
+
 
                     $isISIL = false;
 
@@ -145,8 +148,14 @@ trait SolrMarcFincTrait
                             $tmpArr = array_unique($tmpArr);
                             $desc = implode(', ', $tmpArr);
 
+                            // If no description take url as description
+                            // For 856[40] url denoting resource itself use "Online Access"/"Online-Zugang" #6109
                             if (empty($desc)) {
-                                $desc = $address;
+                                if ($indicator1 == 4 && $indicator2 == 0 && preg_match('!https?://.*?doi.org/!', $address)) {
+                                    $desc = "Online Access";
+                                } else {
+                                    $desc = $address;
+                                }
                             }
 
                             // If url doesn't exist as key so far write to return variable.
