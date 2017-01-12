@@ -56,7 +56,8 @@
     <? endif; ?>
   </div> */ ?>
   <? if ($noResolverContent): // no content to show, so tell the user ?>
-    <span><?=$this->resolver . ': ' . $this->translate('no_resolver_links')?></span>
+    <span id="noResolverContentMessage" style="display: none"><?=$this->resolver . ': ' . $this->translate('no_resolver_links')?></span>
+    <script>if ($('#urlsHideable').length) { $('#urlsHideable').show(); } else { $('#noResolverContentMessage').show(); }</script>
   <? endif; ?>
 </div>
 <!-- ajax - resolverlinks.phtml - END -->
