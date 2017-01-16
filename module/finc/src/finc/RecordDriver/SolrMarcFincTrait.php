@@ -522,7 +522,8 @@ trait SolrMarcFincTrait
      */
     public function getEditionOrig()
     {
-        return array_pop($this->getLinkedFieldArray('250', ['a']));
+        $array = $this->getLinkedFieldArray('250', ['a']);
+        return count($array) ? array_pop($array) : '';
     }
 
     /**
