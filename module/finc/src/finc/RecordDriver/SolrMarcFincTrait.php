@@ -358,10 +358,9 @@ trait SolrMarcFincTrait
      * field 024 indicator 8 subfield a
      *
      * @return array
-     * @access protected
      * @link   https://intern.finc.info/fincproject/issues/1442
      */
-    protected function getIndexOfGermanPrints()
+    public function getIndexOfGermanPrints()
     {
         // define a false indicator
         $lookfor_indicator = '8';
@@ -382,7 +381,6 @@ trait SolrMarcFincTrait
                 }
             }
         }
-        // echo "<pre>"; print_r($retval); echo "</pre>";
         return  $retval;
     }
 
