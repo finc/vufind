@@ -48,13 +48,22 @@
 <? if (!empty($urls) || $openUrlActive): ?>
   <h3><?=$this->transEsc("Internet")?></h3>
   <? if (!empty($urls)): ?>
-    <span id="urlsHideable" style="display: none">
     <? foreach ($urls as $current): ?>
       <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
     <? endforeach; ?>
-    </span>
   <? endif; ?>
-  <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
+  <? if ($openUrlActive): ?>
+    <? if (empty($urls)): ?>
+      <? $fallbackUrls = $this->driver->tryMethod('getURLs'); if (!empty($fallbackUrls)): ?>
+        <span id="urlsHideable" style="display: none">
+        <? foreach ($fallbackUrls as $current): ?>
+          <a href="<?= $this->escapeHtmlAttr($this->proxyUrl($current['url'])) ?>" target="_blank"><?= $this->escapeHtml($current['desc']) ?></a><br />
+        <? endforeach; ?>
+        </span>
+      <? endif; ?>
+    <? endif; ?>
+    <?=$openUrl->renderTemplate()?>
+  <? endif; ?>
 <? endif; ?>
 <? foreach ($holdings as $holding): ?>
   <?$holdingsEmpty=false;?>
