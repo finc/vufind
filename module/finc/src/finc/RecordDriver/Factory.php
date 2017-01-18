@@ -145,6 +145,24 @@ class Factory
     }
 
     /**
+     * Factory for SolrIS record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrIS
+     */
+    public static function getSolrIS(ServiceManager $sm)
+    {
+        // Despite providing recordConfig to AI RecordDriver RecordDriver IS does not
+        // need a recordConfig, thus null is provided
+        return new SolrIS(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            null
+        );
+    }
+
+    /**
      * Factory for SolrMarcRemoteFinc record driver.
      *
      * @param ServiceManager $sm Service manager.

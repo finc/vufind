@@ -206,7 +206,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       <? endif; ?>
 
       <?/* Display series section if at least one series exists. */?>
-      <? $series = $this->driver->getSeries(); if (!empty($series)): ?>
+      <? $series = $this->driver->getSeries(); if (!empty($series) && is_array($series)): ?>
       <tr>
         <th><?=$this->transEsc('Series')?>: </th>
         <td>

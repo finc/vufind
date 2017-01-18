@@ -51,7 +51,8 @@ $config = [
                     'solrmarcfincpda' => 'finc\RecordDriver\Factory::getSolrMarcFincPDA',
                     'solrmarcremote' => 'finc\RecordDriver\Factory::getSolrMarcRemote',
                     'solrmarcremotefinc' => 'finc\RecordDriver\Factory::getSolrMarcRemoteFinc',
-                    'solrai' => 'finc\RecordDriver\Factory::getSolrAI'
+                    'solrai' => 'finc\RecordDriver\Factory::getSolrAI',
+                    'solris' => 'finc\RecordDriver\Factory::getSolrIS'
                 ],
             ],
             'recordtab' => [
