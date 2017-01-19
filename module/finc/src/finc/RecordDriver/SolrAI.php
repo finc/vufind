@@ -680,27 +680,6 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * Retrieve raw data from object (primarily for use in staff view and
-     * autocomplete; avoid using whenever possible).
-     *
-     * @return mixed
-     */
-    public function getRawData()
-    {
-        $tmp = [];
-        $i = 0;
-        $record = $this->getAIRecord();
-        if (!empty($record)) {
-            foreach ($record as $key => $value) {
-                $tmp[$i]['key'] = $key;
-                $tmp[$i]['value'] = $value;
-                $i++;
-            }
-        }
-        return $tmp;
-    }
-
-    /**
      * Retrieve data from ai-blobserver
      *
      * @param string $id      Record Id of the raw recorddata to be retrieved
