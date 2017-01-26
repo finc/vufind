@@ -176,16 +176,25 @@ trait SolrMarcFincTrait
      *
      * @return bool
      * @link https://intern.finc.info/issues/8055
+     * @link https://intern.finc.info/issues/9634
      */
     private function _isEBLRecord()
     {
         $value = $this->getFirstFieldValue('912', ['a']);
 
         if (isset($this->mainConfig->Ebl->product_sigel)) {
-            if (preg_match(
-                '/'.addslashes($this->mainConfig->Ebl->product_sigel).'/', $value
-            )) {
-                return true;
+            if (is_object($this->mainConfig->Ebl->product_sigel)) {
+                // handle product_sigel array
+                return in_array(
+                    $value,
+                    $this->mainConfig->Ebl->product_sigel->toArray()
+                );
+            } else {
+                // handle single product_sigel (legacy support)
+                return preg_match(
+                    '/' . addslashes($this->mainConfig->Ebl->product_sigel) . '/',
+                    $value
+                );
             }
         }
         return false;

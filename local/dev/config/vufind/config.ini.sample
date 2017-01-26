@@ -67,7 +67,8 @@ showStyleBasedIcons = true
 [Ebl]
 pattern = "leip.eblib.com"
 secret_key = "yejsecvafChawgya"
-product_sigel = "ZDB-89-EBL"
+product_sigel[] = "ZDB-89-EBL"
+product_sigel[] = "ZDB-30-PQE"
 
 [LinksRewrite]
 ; Personalized rewriting of Open Urls.
