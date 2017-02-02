@@ -230,6 +230,13 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? $germanPrintsIndexNumber = $this->driver->getIndexOfGermanPrints(); if (!empty($germanPrintsIndexNumber)): ?>
+        <tr>
+          <th><?=$this->transEsc('German Prints Index Number')?>: </th>
+          <td property="germanPrintsIndexNumber"><?=$this->escapeHtml($germanPrintsIndexNumber[0])?></td>
+        </tr>
+      <? endif; ?>
+
       <? /* finc specific row - replaces series - Start */ ?>
       <? $hierarchyParentTitle = $this->driver->getHierarchyParentTitle(); if (!empty($hierarchyParentTitle) && empty($series)): ?>
         <tr>
