@@ -26,8 +26,7 @@
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace finc\ILS\Driver;
-use VuFind\Exception\ILS as ILSException,
-    VuFindSearch\Query\Query, VuFindSearch\Service as SearchService,
+use VuFindSearch\Query\Query, VuFindSearch\Service as SearchService,
     ZfcRbac\Service\AuthorizationServiceAwareInterface,
     ZfcRbac\Service\AuthorizationServiceAwareTrait,
     Zend\Log\LoggerAwareInterface as LoggerAwareInterface,
@@ -507,8 +506,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
                         $password,
                         $username
                     );
-                } catch (ILSException $e) {
-                    $this->debug('Session expired, login again', 'info');
+                } catch (Exception $e) {
+                    // TODO? $this->debug('Session expired, login again', 'info');
+                    // all error handling is done in paiaHandleErrors so pass on the excpetion
+                    throw $e;
                 }
             }
 
@@ -520,8 +521,9 @@ class FincILS extends PAIA implements LoggerAwareInterface
                         $username
                     );
                 }
-            } catch (ILSException $e) {
-                throw new ILSException($e->getMessage());
+            } catch (Exception $e) {
+                // all error handling is done in paiaHandleErrors so pass on the excpetion
+                throw $e;
             }
         } else {
             return parent::patronLogin($username, $password);
@@ -568,9 +570,15 @@ class FincILS extends PAIA implements LoggerAwareInterface
         }
 
         if (!isset($itemsResponse) || $itemsResponse == null) {
-            $itemsResponse = $this->paiaGetAsArray(
-                'core/'.$patron['cat_username'].'/items'
-            );
+            try {
+                $itemsResponse = $this->paiaGetAsArray(
+                    'core/'.$patron['cat_username'].'/items'
+                );
+            } catch (Exception $e) {
+                // all error handling is done in paiaHandleErrors so pass on the excpetion
+                throw $e;
+            }
+
             if ($this->paiaCacheEnabled) {
                 $this->putCachedData($patron['cat_username'] . '_items', $itemsResponse);
             }
