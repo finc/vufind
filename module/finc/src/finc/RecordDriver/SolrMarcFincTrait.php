@@ -670,20 +670,24 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Get an array of title detail lines with original notations combining
-     * information from MARC field 245 and linked content in 880.
+     * Get an array of work part title detail lines with original notations
+     * from MARC field 505. The lines are combined of information from
+     * subfield t and (if present) subfield r.
      *
      * @return array
      */
     public function getWorkPartTitleDetails()
     {
         $workPartTitles = [];
-        $titleRegexPattern = '/(\s[\/\.:]\s*)*$/';
+        //$titleRegexPattern = '/(\s[\/\.:]\s*)*$/';
 
-        $truncateTrail = function ($string) use ($titleRegexPattern) {
-            return preg_replace(
-                $titleRegexPattern, '', trim($string)
-            );
+        $truncateTrail = function ($string) /*use ($titleRegexPattern)*/ {
+            // strip off whitespaces and some special characters
+            // from the end of the input string
+            #return preg_replace(
+            #    $titleRegexPattern, '', trim($string)
+            #);
+            return rtrim($string," \t\n\r\0\x0B".'.:-/');
         };
 
         if ($fields = $this->getMarcRecord()->getFields('505')) {
@@ -694,8 +698,8 @@ trait SolrMarcFincTrait
                         // each occurance of $t gets $a pretached if it exists
                         if (isset($rs[$i])) {
                             $workPartTitles[] =
-                                $truncateTrail($subfield->getData()) . ' /' .
-                                $truncateTrail($rs[$i]);
+                                $truncateTrail($subfield->getData()) . ': ' .
+                                $truncateTrail($rs[$i]->getData());
                         } else {
                             $workPartTitles[] =
                                 $truncateTrail($subfield->getData());
@@ -709,20 +713,17 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Get an array of title detail lines with original notations combining
-     * information from MARC field 245 and linked content in 880.
+     * Get an array of work title detail lines with original notations
+     * from MARC field 700.
      *
      * @return array
      */
     public function getWorkTitleDetails()
     {
         $workTitles = [];
-        $titleRegexPattern = '/(\s[\/\.:]\s*)*$/';
 
-        $truncateTrail = function ($string) use ($titleRegexPattern) {
-            return preg_replace(
-                $titleRegexPattern, '', trim($string)
-            );
+        $truncateTrail = function ($string) {
+            return rtrim($string," \t\n\r\0\x0B".'.:-/');
         };
 
         if ($fields = $this->getMarcRecord()->getFields('700')) {
