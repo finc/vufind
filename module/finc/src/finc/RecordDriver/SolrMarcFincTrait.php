@@ -1459,6 +1459,7 @@ trait SolrMarcFincTrait
     public function getHierarchyParentID()
     {
         $parentID = [];
+        // IMPORTANT! always keep fields in same order as in getHierarchyParentTitle
         $fieldList = [
             ['490'],
             ['773'],
@@ -1496,7 +1497,11 @@ trait SolrMarcFincTrait
                         );
                     } elseif ($fieldNumber == '490') {
                         // https://intern.finc.info/issues/8704
-                        $parentID[] = null;
+                        if ($field->getIndicator(1) == 0
+                            && $subfield = $field->getSubfield('a')
+                        ) {
+                            $parentID[] = null;
+                        }
                     }
                 }
             }
