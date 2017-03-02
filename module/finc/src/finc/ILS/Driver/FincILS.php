@@ -31,7 +31,8 @@ use VuFind\Exception\ILS as ILSException,
     ZfcRbac\Service\AuthorizationServiceAwareInterface,
     ZfcRbac\Service\AuthorizationServiceAwareTrait,
     Zend\Log\LoggerAwareInterface as LoggerAwareInterface,
-    DateTime, DateInterval, DateTimeZone;
+    DateTime, DateInterval, DateTimeZone,
+    Sabre\VObject;
 
 /**
  * Finc specific ILS Driver for VuFind, using PAIA and DAIA services.
@@ -474,6 +475,79 @@ class FincILS extends PAIA implements LoggerAwareInterface
             ? $fee['item'] : null);
 
         return $additionalData;
+    }
+
+    /**
+     * Get Patron Profile
+     *
+     * This is responsible for retrieving the profile for a specific patron.
+     *
+     * @param array $patron The patron array
+     *
+     * @return array Array of the patron's profile data on success,
+     */
+    public function getMyProfile($patron)
+    {
+        //todo: make fields more configurable
+        if (is_array($patron)) {
+            if (isset($patron['address'])) {
+                try {
+                    $vcard = VObject\Reader::read($patron['address']);
+
+                    // vCard ADR is an ordered list of the following values
+                    // 0 - the post office box;
+                    // 1 - the extended address (e.g., apartment or suite number);
+                    // 2 - the street address;
+                    // 3 - the locality (e.g., city);
+                    // 4 - the region (e.g., state or province);
+                    // 5 - the postal code;
+                    // 6 - the country name;
+                    // (cf. https://tools.ietf.org/html/rfc6350#section-6.3.1)
+                    if (isset($vcard->ADR)) {
+                        foreach ($vcard->ADR as $adr) {
+                            $address[] = explode(";", $adr);
+                        }
+                    }
+                    if (isset($vcard->TEL)) {
+                        foreach ($vcard->TEL as $tel) {
+                            $phone[] = $tel;
+                        }
+                    }
+                    if (isset($vcard->EMAIL)) {
+                        foreach ($vcard->EMAIL as $email) {
+                            $emails[] = $email;
+                        }
+                    }
+                } catch (Exception $e) {
+                    throw $e;
+                }
+            }
+
+            return [
+                'firstname'  => $patron['firstname'],
+                'lastname'   => $patron['lastname'],
+                'address1'   => (!empty($address[0]) && isset($address[0][1]) && !empty($address[0][2]))
+                    ? $address[0][2] . ' ' . $address[0][1] : null,
+                'address2'   => null,
+                'city'       => (!empty($address[0]) && !empty($address[0][3]))
+                    ? $address[0][3] : null,
+                'country'    => (!empty($address[0]) && !empty($address[0][6]))
+                    ? $address[0][6] : null,
+                'zip'        => (!empty($address[0]) && !empty($address[0][5]))
+                    ? $address[0][5] : null,
+                'phone'      => (!empty($phone[0])) ? $phone[0] : null,
+                'group'      => null,
+                // PAIA specific custom values
+                'expires'    => isset($patron['expires'])
+                    ? $this->convertDate($patron['expires']) : null,
+                'statuscode' => isset($patron['status']) ? $patron['status'] : null,
+                'canWrite'   => in_array(self::SCOPE_WRITE_ITEMS, $this->getSession()->scope),
+                // fincILS and PAIA specific custom values
+                'email'      => !empty($patron['email']) ?
+                     $patron['email'] : (!empty($emails[0]) ? $emails[0] : null),
+            ];
+        }
+        return [];
     }
 
     /**

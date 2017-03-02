@@ -10,6 +10,7 @@ return array(
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Symfony\\Component\\Process\\' => array($vendorDir . '/symfony/process'),
     'Symfony\\Component\\CssSelector\\' => array($vendorDir . '/symfony/css-selector'),
+    'Sabre\\VObject\\' => array($vendorDir . '/sabre/vobject/lib'),
     'LosReCaptcha\\' => array($vendorDir . '/los/losrecaptcha/src'),
     'Behat\\Mink\\Driver\\' => array($vendorDir . '/behat/mink-selenium2-driver/src', $vendorDir . '/behat/mink-zombie-driver/src'),
     'Behat\\Mink\\' => array($vendorDir . '/behat/mink/src'),

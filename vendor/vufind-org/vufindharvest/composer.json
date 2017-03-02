@@ -1,0 +1,36 @@
+{
+    "name": "vufind-org/vufindharvest",
+    "description": "VuFind Harvest Tools",
+    "authors": [
+        {
+            "name": "Demian Katz",
+            "email": "demian.katz@villanova.edu",
+            "role": "Maintainer"
+        }
+    ],
+    "homepage": "https://vufind.org/",
+    "license": "GPL-2.0",
+    "support": {
+        "issues": "https://vufind.org/jira"
+    },
+    "require": {
+        "php": ">=5.4",
+        "zendframework/zend-console": ">=2.2",
+        "zendframework/zend-http": ">=2.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "1.11.6",
+        "phpdocumentor/phpdocumentor": "2.8.5",
+        "phploc/phploc": "2.0.6",
+        "phpmd/phpmd": "2.4.2",
+        "phpunit/phpunit": "4.8.27",
+        "phing/phing": "2.15.2",
+        "sebastian/phpcpd": "2.0.0",
+        "squizlabs/php_codesniffer": "2.6.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "VuFindHarvest\\": "src/"
+        }
+    }
+}

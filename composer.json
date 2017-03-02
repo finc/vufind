@@ -28,6 +28,7 @@
         "symfony/yaml": "2.7.6",
         "vufind-org/vufindcode": "1.0.2",
         "vufind-org/vufindhttp": "2.0.0",
+        "sabre/vobject": "^3.4",
         "zendframework/zendframework": "2.4.6",
         "zendframework/zendrest": "2.0.2",
         "zendframework/zendservice-amazon": "2.0.4",

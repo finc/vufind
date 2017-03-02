@@ -144,12 +144,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/zendframework/ZendXml.git",
-            "reference": "0fac84668cf1e09d21cef97223a526ef1b3c956a"
+            "reference": "7b64507bc35d841c9c5802d67f6f87ef8e1a58c9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://packages.zendframework.com/composer/zendframework-zendxml-1.0.2-00d807.zip",
-            "reference": "0fac84668cf1e09d21cef97223a526ef1b3c956a",
+            "url": "https://api.github.com/repos/zendframework/ZendXml/zipball/7b64507bc35d841c9c5802d67f6f87ef8e1a58c9",
+            "reference": "7b64507bc35d841c9c5802d67f6f87ef8e1a58c9",
             "shasum": "289f190ab278d7f30e2bad8c73e9a79fac40e5fb"
         },
         "require": {
@@ -194,13 +194,13 @@
         "version_normalized": "2.4.6.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/zendframework/zf2.git",
-            "reference": "828119961c68fa50bf42baa60d63c3c06a0b58e7"
+            "url": "https://github.com/zendframework/zendframework.git",
+            "reference": "e0fc119111bace89e0ab7da57ab24d49713a17d1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://packages.zendframework.com/composer/zendframework-zendframework-2.4.6-61d420.zip",
-            "reference": "828119961c68fa50bf42baa60d63c3c06a0b58e7",
+            "url": "https://api.github.com/repos/zendframework/zendframework/zipball/e0fc119111bace89e0ab7da57ab24d49713a17d1",
+            "reference": "e0fc119111bace89e0ab7da57ab24d49713a17d1",
             "shasum": "0585b917cb419511e073f9b0771a7e6dd08c315b"
         },
         "require": {
@@ -1144,61 +1144,6 @@
         ]
     },
     {
-        "name": "symfony/css-selector",
-        "version": "v2.8.3",
-        "version_normalized": "2.8.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/css-selector.git",
-            "reference": "8d83ff9777cdbd83e7f90d9c48f4729823791a5e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/css-selector/zipball/8d83ff9777cdbd83e7f90d9c48f4729823791a5e",
-            "reference": "8d83ff9777cdbd83e7f90d9c48f4729823791a5e",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.9"
-        },
-        "time": "2016-01-27 05:14:19",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.8-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\CssSelector\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jean-François Simon",
-                "email": "jeanfrancois.simon@sensiolabs.com"
-            },
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony CssSelector Component",
-        "homepage": "https://symfony.com"
-    },
-    {
         "name": "behat/mink",
         "version": "v1.7.0",
         "version_normalized": "1.7.0.0",
@@ -1322,57 +1267,6 @@
         ]
     },
     {
-        "name": "symfony/process",
-        "version": "v2.8.3",
-        "version_normalized": "2.8.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/process.git",
-            "reference": "7dedd5b60550f33dca16dd7e94ef8aca8b67bbfe"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/process/zipball/7dedd5b60550f33dca16dd7e94ef8aca8b67bbfe",
-            "reference": "7dedd5b60550f33dca16dd7e94ef8aca8b67bbfe",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.9"
-        },
-        "time": "2016-02-02 13:33:15",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.8-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\Process\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony Process Component",
-        "homepage": "https://symfony.com"
-    },
-    {
         "name": "behat/mink-zombie-driver",
         "version": "v1.3.0",
         "version_normalized": "1.3.0.0",
@@ -1443,12 +1337,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/zendframework/ZendRest.git",
-            "reference": "9d2d631af7b4b54bfa2a7f5ca5f455192e3e0916"
+            "reference": "7427d242b4546e5aef1206d2c97e402109d8843e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://packages.zendframework.com/composer/zendframework-zendrest-2.0.2-2f9805.zip",
-            "reference": "9d2d631af7b4b54bfa2a7f5ca5f455192e3e0916",
+            "url": "https://api.github.com/repos/zendframework/ZendRest/zipball/7427d242b4546e5aef1206d2c97e402109d8843e",
+            "reference": "7427d242b4546e5aef1206d2c97e402109d8843e",
             "shasum": "445d681551a5c9f2be25b241e615e754278d79ba"
         },
         "require": {
@@ -1482,12 +1376,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/zendframework/ZendService_Amazon.git",
-            "reference": "a44eec522c622970a6c6666dc308ec6daad08ed4"
+            "reference": "f69e443f3114bda3da31515e51b66d442a22e360"
         },
         "dist": {
             "type": "zip",
-            "url": "https://packages.zendframework.com/composer/zendframework-zendservice-amazon-2.0.4-db4e7c.zip",
-            "reference": "a44eec522c622970a6c6666dc308ec6daad08ed4",
+            "url": "https://api.github.com/repos/zendframework/ZendService_Amazon/zipball/f69e443f3114bda3da31515e51b66d442a22e360",
+            "reference": "f69e443f3114bda3da31515e51b66d442a22e360",
             "shasum": "6725f42e30e9fa4fa2f8476d650fc07118900569"
         },
         "require": {
@@ -1536,6 +1430,180 @@
             "simpledb",
             "sqs",
             "zf2"
+        ]
+    },
+    {
+        "name": "symfony/css-selector",
+        "version": "v2.8.17",
+        "version_normalized": "2.8.17.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/css-selector.git",
+            "reference": "f45daea42232d9ca5cf561ec64f0d4aea820877f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/css-selector/zipball/f45daea42232d9ca5cf561ec64f0d4aea820877f",
+            "reference": "f45daea42232d9ca5cf561ec64f0d4aea820877f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.9"
+        },
+        "time": "2017-01-02 20:30:24",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.8-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Component\\CssSelector\\": ""
+            },
+            "exclude-from-classmap": [
+                "/Tests/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jean-François Simon",
+                "email": "jeanfrancois.simon@sensiolabs.com"
+            },
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony CssSelector Component",
+        "homepage": "https://symfony.com"
+    },
+    {
+        "name": "symfony/process",
+        "version": "v2.8.17",
+        "version_normalized": "2.8.17.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/process.git",
+            "reference": "0110ac49348d14eced7d3278ea7485f22196932e"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/process/zipball/0110ac49348d14eced7d3278ea7485f22196932e",
+            "reference": "0110ac49348d14eced7d3278ea7485f22196932e",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.9"
+        },
+        "time": "2017-02-03 12:08:06",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.8-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Component\\Process\\": ""
+            },
+            "exclude-from-classmap": [
+                "/Tests/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony Process Component",
+        "homepage": "https://symfony.com"
+    },
+    {
+        "name": "sabre/vobject",
+        "version": "3.5.3",
+        "version_normalized": "3.5.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/fruux/sabre-vobject.git",
+            "reference": "129d80533a9ec0d9cacfb50b51180c34edb6874c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/fruux/sabre-vobject/zipball/129d80533a9ec0d9cacfb50b51180c34edb6874c",
+            "reference": "129d80533a9ec0d9cacfb50b51180c34edb6874c",
+            "shasum": ""
+        },
+        "require": {
+            "ext-mbstring": "*",
+            "php": ">=5.3.1"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "*",
+            "squizlabs/php_codesniffer": "*"
+        },
+        "time": "2016-10-07 03:20:40",
+        "bin": [
+            "bin/vobject",
+            "bin/generate_vcards"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.2.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Sabre\\VObject\\": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Evert Pot",
+                "email": "me@evertpot.com",
+                "homepage": "http://evertpot.com/",
+                "role": "Developer"
+            },
+            {
+                "name": "Dominik Tobschall",
+                "email": "dominik@fruux.com",
+                "homepage": "http://tobschall.de/",
+                "role": "Developer"
+            }
+        ],
+        "description": "The VObject library for PHP allows you to easily parse and manipulate iCalendar and vCard objects",
+        "homepage": "http://sabre.io/vobject/",
+        "keywords": [
+            "VObject",
+            "iCalendar",
+            "jCal",
+            "jCard",
+            "vCard"
         ]
     }
 ]
