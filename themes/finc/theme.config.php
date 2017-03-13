@@ -5,6 +5,7 @@ return array(
         'foundation.min.js',
         'openurl.js',
         'check_item_statuses.js',
+        'hierarchyTree.js',
         'record.js',
         'finc.js'
     ),
