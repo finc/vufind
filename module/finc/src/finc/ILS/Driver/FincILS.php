@@ -26,7 +26,8 @@
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace finc\ILS\Driver;
-use VuFindSearch\Query\Query, VuFindSearch\Service as SearchService,
+use VuFind\Exception\ILS as ILSException,
+    VuFindSearch\Query\Query, VuFindSearch\Service as SearchService,
     ZfcRbac\Service\AuthorizationServiceAwareInterface,
     ZfcRbac\Service\AuthorizationServiceAwareTrait,
     Zend\Log\LoggerAwareInterface as LoggerAwareInterface,
