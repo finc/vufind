@@ -1102,4 +1102,14 @@ trait SolrDefaultFincTrait
         return true;
     }
 
+    /**
+     * Return content of Solr field performer note if set
+     *
+     * @return mixed
+     */
+    public function getPerformerNote()
+    {
+        return isset($this->fields['performer_note']) ?
+            $this->fields['performer_note'] : null;
+    }
 }
