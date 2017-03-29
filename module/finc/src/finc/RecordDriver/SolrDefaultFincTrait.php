@@ -1123,4 +1123,15 @@ trait SolrDefaultFincTrait
         return isset($this->fields['music_heading']) ?
             $this->fields['music_heading'] : null;
     }
+
+    /**
+     * Return content of Solr field title_alt if set
+     *
+     * @return mixed
+     */
+    public function getTitleAlt()
+    {
+        return isset($this->fields['title_alt']) ?
+            $this->fields['title_alt'] : null;
+    }
 }
