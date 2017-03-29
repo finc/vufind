@@ -1103,7 +1103,7 @@ trait SolrDefaultFincTrait
     }
 
     /**
-     * Return content of Solr field performer note if set
+     * Return content of Solr field performer_note if set
      *
      * @return mixed
      */
@@ -1111,5 +1111,16 @@ trait SolrDefaultFincTrait
     {
         return isset($this->fields['performer_note']) ?
             $this->fields['performer_note'] : null;
+    }
+
+    /**
+     * Return content of Solr field music_heading if set
+     *
+     * @return mixed
+     */
+    public function getMusicHeading()
+    {
+        return isset($this->fields['music_heading']) ?
+            $this->fields['music_heading'] : null;
     }
 }
