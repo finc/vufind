@@ -227,7 +227,6 @@ trait SolrMarcFincTrait
      * @todo Optimization by removing of prefixed isils
      *
      * @return array   Return fields.
-     * @access public
      * @deprecated (https://intern.finc.info/issues/6324)
      * @link   https://intern.finc.info/issues/2639
      */
@@ -318,9 +317,8 @@ trait SolrMarcFincTrait
      *
      * @link   http://www.loc.gov/marc/bibliographic/bd770.html
      * @return array
-     * @access protected
      */
-    protected function getSupplements()
+    public function getSupplements()
     {
         //return $this->_getFieldArray('770', array('i','t')); // has been originally 'd','h','n','x' but only 'i' and 't' for ubl requested;
         $array = [];
@@ -389,9 +387,8 @@ trait SolrMarcFincTrait
      * of the Petrucci music library subfield 590b
      *
      * @return array
-     * @access protected
      */
-    protected function getInstrumentation()
+    public function getInstrumentation()
     {
         return $this->getFieldArray('590', ['b']);
     }
@@ -412,10 +409,9 @@ trait SolrMarcFincTrait
      * Get the ISSN from a the parallel title of a record.
      *
      * @return array
-     * @access protected
      * @link   https://intern.finc.info/fincproject/issues/969 description
      */
-    protected function getISSNsParallelTitles()
+    public function getISSNsParallelTitles()
     {
         return $this->getFieldArray('029', ['a']);
     }
@@ -815,7 +811,6 @@ trait SolrMarcFincTrait
      * special needs of University library of Chemnitz. MAB fields 720.
      *
      * @return array
-     * @access public
      * @link   https://intern.finc.info/fincproject/issues/338
      */
     public function getJournalHoldings()
@@ -889,7 +884,6 @@ trait SolrMarcFincTrait
      * Seems to be very extraordinary special case.
      *
      * @return array
-     * @access protected
      * @link   https://intern.finc.info/issues/7924
      */
     public function getLocalSubject()
@@ -956,7 +950,6 @@ trait SolrMarcFincTrait
      * 972 for TUBAF
      *
      * @return array
-     * @access protected
      */
     public function getLocalFormat()
     {
@@ -1149,9 +1142,8 @@ trait SolrMarcFincTrait
      * of the Petrucci music library subfield 590a
      *
      * @return array
-     * @access protected
      */
-    protected function getPieceStyle()
+    public function getPieceStyle()
     {
         return $this->getFieldArray('590', ['a']);
     }
@@ -1211,7 +1203,6 @@ trait SolrMarcFincTrait
      * @todo pass prices by euro currency
      *
      * @return string
-     * @access protected
      */
     public function getPrice()
     {
@@ -1240,9 +1231,8 @@ trait SolrMarcFincTrait
      * Get the provenience of a title.
      *
      * @return array
-     * @access protected
      */
-    protected function getProvenience()
+    public function getProvenience()
     {
         return $this->getFieldArray('561', ['a']);
     }
@@ -1365,7 +1355,6 @@ trait SolrMarcFincTrait
      * for UBL only implemented.
      *
      * @return array
-     * @access protected
      * @link   https://intern.finc.info/fincproject/issues/1315
      */
     public function getAdditionals()
@@ -1602,7 +1591,6 @@ trait SolrMarcFincTrait
      * the bsz heading subjects chains.
      *
      * @return array
-     * @access public
      */
     public function getAllSubjectHeadingsExtended()
     {
@@ -1714,7 +1702,6 @@ trait SolrMarcFincTrait
      * Check if Topics exists. Realized for instance of UBL only.
      *
      * @return boolean      True if topics exist.
-     * @access public
      */
     public function hasTopics()
     {
@@ -1729,7 +1716,6 @@ trait SolrMarcFincTrait
      * for UBL only implemented.
      *
      * @return array
-     * @access protected
      */
     public function getTopics()
     {
@@ -1803,7 +1789,6 @@ trait SolrMarcFincTrait
      * Get dissertation notes for the record.
      *
      * @return array
-     * @access protected
      */
     public function getDissertationNote()
     {
