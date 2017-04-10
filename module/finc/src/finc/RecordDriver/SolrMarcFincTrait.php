@@ -1883,4 +1883,14 @@ trait SolrMarcFincTrait
         } // end foreach
         return $array;
     }
+
+    /**
+     * Get an array of citations and references notes.
+     *
+     * @return array
+     */
+    public function getReferenceNotes()
+    {
+        return $this->getFieldArray('510');
+    }
 }
