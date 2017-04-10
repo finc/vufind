@@ -81,4 +81,19 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
             $this->debug('Index extension for custom index not set!');
         }
     }
+
+
+    /**
+     * Return value of the requestes field, null if field ist not set.
+     *
+     * @param string $field Name of the field.
+     *
+     * @return mixed
+     */
+    public function getField($field) {
+        if (isset($this->fields[$field])) {
+            return $this->fields[$field];
+        }
+        return null;
+    }
 }
