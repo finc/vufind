@@ -1893,4 +1893,14 @@ trait SolrMarcFincTrait
     {
         return $this->getFieldArray('510');
     }
+
+    /**
+     * Get the publishers number and source of the record.
+     *
+     * @return array
+     */
+    public function getPublisherNumber()
+    {
+        return $this->getFieldArray('028', ['a', 'b']);
+    }
 }
