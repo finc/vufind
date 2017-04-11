@@ -1052,9 +1052,9 @@ trait SolrMarcFincTrait
      * at the marc field.
      *
      * @return mixed        null if there's no field or array with results
-     * @access protected
+     * @access public
      */
-    protected function getMusicHeading()
+    public function getMusicHeading()
     {
         $retval = [];
 
