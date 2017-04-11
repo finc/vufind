@@ -1,7 +1,7 @@
 <? if (!empty($this->authors)): ?><?=$this->escapeHtml($this->authors)?>
 <? if (!empty($this->year)): ?><? if (!empty($this->authors)): ?> <? endif; ?>(<?=$this->escapeHtml($this->year)?>). <? endif; ?>
 <? endif; ?>
-<span style="font-style:italic;"><?=$this->escapeHtml($this->title)?></span><? if ($this->periodAfterTitle): ?>. <? endif ?>
+<i><?=$this->escapeHtml($this->title)?></i><? if ($this->periodAfterTitle): ?>. <? endif ?>
 <? if (empty($this->authors)): ?>
 <? if (!empty($this->year)): ?> (<?=$this->escapeHtml($this->year)?>). <? endif; ?>
 <? endif; ?>

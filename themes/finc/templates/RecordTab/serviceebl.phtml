@@ -6,7 +6,7 @@ $this->headTitle($this->translate('EBL') . ': ' . $this->driver->getBreadcrumb()
 $link = $this->tab->getLinkEBL();
 
 ?>
-    <h4>EBL</h4>
+  <h4>EBL</h4>
 <? foreach ($link as $href): ?>
     <a href="<?= $href['url'] ?>"><?= $href['desc'] ?></a>
 <? endforeach; ?>

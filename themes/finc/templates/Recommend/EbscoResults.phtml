@@ -1,32 +1,26 @@
 <?
 $data = $this->recommend->getResult();
 if (is_array($data['results']) && count($data['results']) > 0): ?>
-  <ul id="side-panel-ebsco" class="accordion" data-accordion="">
-    <li class="accordion-navigation active">
-      <a class="title" href="#side-collapse-ebsco" aria-expanded="true">
+  <? /* Design should follow structure of recommend - sidefacets - CK */ ?>
+  <div id="side-panel-ebsco" class="list-group facet">
+    <div class="list-group-item title" data-toggle="collapse" href="#side-collapse-ebsco">
         <?= $this->transEsc('Ebsco::title_hits_databases') ?>
-      </a>
-      <div id="side-collapse-ebsco" class="content active">
-        <ul class="side-nav" role="navigation">
+    </div>
+    <div id="side-collapse-ebsco" class="collapse in">
         <? foreach ($data['results'] as $result): ?>
-          <li class="hits">
-            <span class="label pull-right">
+      <div class="list-group-item">
+        <span class="badge">
                 <?= $this->escapeHtml($result['hits']) ?>
             </span>
             <a href="<?= $this->escapeHtmlAttr($result['url']) ?>" target="_blank">
                 <?= $this->escapeHtml($this->truncate($this->transEsc('Ebsco::'.$result['database']), 90)) ?>
             </a>
-          </li>
-        <? endforeach; ?>
-
-          <li class="hits">
-            <a href="<?= $this->escapeHtmlAttr($data['hits_total_url']) ?>" title="" target="_blank">
-                <?= $this->transEsc('more') ?>...
-            </a>
-          </li>
-        </ul>
       </div>
-    </li>
-  </ul>
-<div class="clearfix"></div>
+        <? endforeach; ?>
+        <a class="list-group-item narrow-toggle" href="<?=$this->escapeHtmlAttr($data['hits_total_url'])?>" target="_blank" rel="nofollow">
+          <?=$this->transEsc('more')?>&nbsp;...
+            </a>
+
+      </div>
+  </div>
 <? endif; ?>

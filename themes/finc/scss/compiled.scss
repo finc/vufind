@@ -1,0 +1,1263 @@
+//  Create a compiled.SCSS file for all sub-themes which imports the respective parent theme's compiled.scss
+//  in the cascade plus extends it - this way we ALWAYS have an UP-TO-DATE compiled.CSS imported
+//  which includes finc plus all subsequent customizations
+//  i.e. finc's compiled.scss imports bootstrap3/scss/compiled - the house-specific branches such as
+//  de_15 then import finc/scss/compiled
+
+// 0. Note for developers
+// Do NOT EDIT  compiled.css
+
+// 1.   Define or re-define KEY VARIABLES and MIXINS (see 1.1 ff below) OR import your own
+
+@import 'customVariables';
+
+//@import 'customMixins';
+// 1.1  Unless imported, define standard colour variables here which are used in variables below prior to finc.scss import
+// e.g. $brand-primary: #008CBA !default;   // bondi-blue
+// $brand-secondary: #e7e7e7 !default; // white-lilac
+// $brand-danger: #f04124 !default;     // cinnabar
+// $brand-info: #a0d3e8 !default;      // cornflower
+// $brand-success: #43AC6A !default;   // sea-green
+// $brand-warning: #f08a24 !default;   // carrot
+// 1.2  DO NOT define site-specific colours in finc - this will be done in site-specific themes
+
+// 2. For Media queries use:
+// Extra small screen / phone: '$screen-xs-min' (480px);
+// Small screen / tablet: '$screen-sm-min' (768px);
+// Medium screen / desktop: '$screen-md-min' (992px) and
+// Large screen / wide desktop: '$screen-lg-min' (1200px);
+// The maximum ranges are defined as the next higher element minus 1px, so:
+// '$screen-xs-max' = $screen-sm-min - 1
+// etc: you can use '$screen-xs-max', '$screen-sm-max' and '$screen-md-max'
+
+
+// 3. import entire BS or (instances) finc compiled.scss to have variables and mixins defined above applied to it
+@import 'bootstrap';
+// @import '../../finc/scss/compiled.scss'
+
+// 4. Customize further - this for BASIC SETTINGS ONLY - all colour customization will be done in in site-specific themes
+//     ATTENTION: any change made here will affect ALL subsequent branches !!!
+
+// Allow us to use sections that act as rows
+section {
+  @include make-row();
+}
+
+// PLEASE ORGANIZE YOUR CSS ACCORDING TO THIS GENERAL RULE - keep exceptions to a minimum
+// *, html, body
+// h1, h2, h3, h4, h5, h6,
+// p,
+// address, blockquote, pre,
+// ul, ol, li, dl, dt, dd,
+// table, caption, tr, th, td,
+// form, fieldset, legend, label, select, input, textarea,
+// div,
+// img,
+// a,
+// strong, em, abbr, q, cite, code, kbd, var,
+// span,
+// #id,
+// .class
+// Frequently used classes
+// Custom areas of the theme
+
+// IDs and classes come last and should (if possible) be ordered according
+// to their appearance on the page, e.g. header, breadcrumbs, main ...
+
+// Please sort selectors alphabetically, like so
+// .foo {
+//    border: 1px solid red;
+//    margin-left: 1em;
+//    padding: 0 $grid-gutter-width / 2;
+//    width: auto;
+// }
+//
+// Add top-padding to body to accommodate fixed navbar; -- padding should equal navbar-height --
+// the home page, however, has a lower navbar because there is no breadcrumbs there
+body {
+  padding-top: $navbar-height;
+}
+
+// HEADINGS
+//// All
+//// remove top margin to align with sidebars etc
+h1,
+h2,
+h3 {
+  &:first-of-type {
+    margin-top: 0;
+  }
+}
+//// h1
+//// h2
+//// h3
+//// h4
+////// H4 atop Sidebar - align to limit and sort
+.sidebar h4 {
+  margin-top: .25em;
+}
+
+//// h5
+
+// HEADINGS - END
+
+// Paragraphs
+// p {}
+
+// Address blocks
+// address {}
+
+// Lists
+// ul,
+// ol {}
+// li {}
+// dl {}
+// dt {}
+// dd {}
+
+// TABLES
+// table {}
+// caption {}
+// tr {}
+// th {}
+// td {}
+
+.table {
+  // add border to tables -- otherwise we'd have to rewrite all tables with table-bordered
+  border: 1px solid $brand-secondary;
+  // make columns adapt to content
+  table-layout: auto;
+
+  // Remove top borders (_tables.scss)
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      > th,
+      > td {
+        border-top: 0;
+      }
+    }
+  }
+}
+
+//// Tables in Tabs
+.tab-content table {
+  width: 100%;
+}
+
+// TABLES - END
+
+// FORMS
+form {
+  label {
+    font-weight: normal;
+  }
+
+  // For INLINE, left-floated 'hits per page' and 'sort by' selectors use
+  &.limit,
+  &.sort {
+    float: left;
+  }
+
+  &.limit {
+    margin-right: 1rem;
+  }
+
+  // limit the width of the select field if necessary - more select details below
+  &.sort select {
+    max-width: 17rem;
+  }
+}
+
+//// Fieldsets
+fieldset {
+  border: 1px solid $border-color;
+
+  // Advanced Search - make fieldsets fit in a row (see last-of-type and &col-sm-4 below)
+  .template-name-advanced & {
+    margin-right: $grid-gutter-width / 2;
+    margin-top: $grid-gutter-width;
+    padding-bottom: $grid-gutter-width / 2;
+
+    // Advanced Search - make fieldsets fit in a row (see margin-right above and &col-sm-4 below)
+    &:last-of-type {
+      float: right;
+      margin-right: 0;
+    }
+
+    // Advanced Search - make 3 fieldsets fit in a row ( see margin-right and last-of-type above)
+    @media (min-width: $screen-sm-min) {
+      &.col-sm-4 {
+        width: (33.3333333333% - 10.5%);
+      }
+    }
+
+    @media (min-width: $screen-md-min) {
+      &.col-sm-4 {
+        width: (33.3333333333% - 1.5%);
+      }
+    }
+  }
+}
+
+//// Legend elements
+// Limit to etc in Advanced search
+legend {
+  border: 0;
+  font-size: ($font-size-base * 1.25);
+  margin-bottom: 0;
+  // margin-top: $grid-gutter-width;
+  padding-left: $grid-gutter-width / 2;
+  padding-right: $grid-gutter-width / 2;
+  width: auto;
+}
+
+//// label {}
+
+//// input {}
+
+//// Select - for limit and sort-select widths see above
+////// remove browser styles on select boxes and add custom styles (below)
+select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-color: $select-bg-color;
+  // This is the litte down arrow
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+);
+  background-position: 100% center;
+  background-repeat: no-repeat;
+  border-color: $gainsboro;
+  border-radius: 0;
+  border-style: solid;
+  border-width: 1px;
+  height: 2.5rem;
+  min-width: 5rem;
+  padding: .25rem .75rem .25rem .5rem;
+
+  &.form-control {
+    background-color: $select-bg-color;
+  }
+}
+
+//// include down arrow in search filter select box (All fields); note: .form-control might prevent the down arrow replacement!
+//// ALSO applies to select boxes in Advanced Search, Hierarchy tree
+select {
+  .searchForm &,
+  #advSearchForm &,
+  #hierarchyTreeHolder &,
+  .template-name-myresearch & {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+);
+  }
+}
+//// Select - END
+
+//// textarea {}
+
+// FORMS - END
+
+
+// IMAGES
+
+//// img {}
+
+// IMAGES - END
+
+// LINKS
+
+// a {}
+
+// LINKS - END
+
+// TEXT DECORATION
+
+// strong
+// em
+
+// TEXT DECORATION - END
+
+// SPANS
+
+// IDs
+
+
+// CLASSES (Elements that are used in several places)
+//// DROPDOWNS
+//// remove padding as it creates space above/below menu items (e.g. language selector)
+.dropdown-menu {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+//// HOVERABLE DROPDOWNS -- make DDs hoverable as in FNDTN
+//// Show the dropdown menu on hover
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+//// ALERTS
+////// Light Text on Dark BG
+.alert a {
+  color: $state-light-text-on-dark;
+  text-decoration: underline;
+}
+
+////// Alert Text Colors
+.alert-success,
+.alert-info,
+.alert-warning,
+.alert-danger {
+  color: $state-light-text-on-dark;
+
+  &:hover {
+    color: $state-light-text-on-dark;
+  }
+}
+
+//// DATE-RANGE slider (CSS is included in bootstrap-slider.min.css - currently no SCSS version!)
+//// Use parent container to increase specifity;
+//// to avoid the !important, we would need to use even more parent containers
+.slider-track .slider-handle {
+  height: 1em;
+  margin-top: -.2em !important;
+  width: 1em;
+}
+
+//// Transparent BUTTONs (Button with border and darker text on light or white BGs)
+.btn-transparent {
+  @include button-variant($btn-transparent-color, $btn-transparent-bg, $btn-transparent-border);
+}
+
+//// Accordion / Collapse
+////// Toggler BG and arrow
+.accordion-toggler {
+  background: $toggler;
+  display: block;
+  padding: 1rem;
+  text-align: left;
+  width: 100%;
+
+  &::after {
+    content: '';
+    float: right;
+    font-family: FontAwesome, sans-serif;
+  }
+}
+
+.accordion-toggler:hover,
+.accordion-toggler:focus,
+.accordion-toggler[aria-expanded='true'] {
+  background: $toggler-active;
+}
+
+.accordion-toggler[aria-expanded='true']::after {
+  color: darken($brand-secondary, 10%);
+  content: '\f106';
+}
+
+.accordion-toggler[aria-expanded='false']::after {
+  content: '\f107';
+}
+
+//// Tooltips (the original tooltips are black BG and very narrow, see customVariables)
+.tooltip-inner {
+  padding: .75em;
+}
+
+
+
+//// Source-id branding (WISO etc)
+.branding {
+  display: none;
+
+  &.SID48 {
+    background: url('../images/wiso-transparent-70x20.png') 0 0 no-repeat;
+    display: inline-block;
+    height: 20px;
+    margin-left: .2rem;
+    margin-top: 0;
+    vertical-align: middle;
+    width: 70px;
+  }
+}
+//// Source-id branding (WISO etc) - END
+
+//// Document Delivery Service (DDS) only
+////// Error field
+.error-field {
+  color: $brand-danger;
+  // font-size: ($font-size-base * .95);
+  font-weight: 500;
+  line-height: 200%;
+}
+//// Document Delivery Service (DDS) only - END
+
+//// Sprites for Mediaicons
+.sprite-media-icon {
+  background: url('../../finc/images/sprite-mediaicons.png') 0 0 repeat;
+  float: left;
+  height: 54px;
+  width: 50px;
+}
+
+////// 1st row of sprite
+.book {
+  background-position: 0 0;
+}
+
+.thesis {
+  background-position: -50px 0;
+}
+
+.ebook {
+  background-position: -100px 0;
+}
+
+.sets {
+  background-position: -150px 0;
+}
+
+.electronic {
+  background-position: -250px 0;
+}
+
+////// 2nd row of sprite
+.journal {
+  background-position: 0 -55px;
+}
+
+.electronicjournal {
+  background-position: -50px -55px;
+}
+
+.newspaper {
+  background-position: -100px -55px;
+}
+
+.manuscript {
+  background-position: -150px -55px;
+}
+
+.braille {
+  background-position: -200px -55px;
+}
+
+.microfilm {
+  background-position: -250px -55px;
+}
+
+////// 3rd row of sprite
+.software {
+  background-position: 0 -110px;
+}
+
+.software-set {
+  background-position: -100px -110px;
+}
+
+.kit {
+  background-position: -100px -110px;
+}
+
+.image {
+  background-position: -150px -110px;
+}
+
+.slide {
+  background-position: -200px -110px;
+}
+
+.globe {
+  background-position: -250px -110px;
+}
+
+////// 4th row of sprite
+.film {
+  background-position: 0 -165px;
+}
+
+.dvd {
+  background-position: -50px -165px;
+}
+
+.video {
+  background-position: -100px -165px;
+}
+
+.video-set {
+  background-position: -100px -165px;
+}
+
+.map {
+  background-position: -200px -165px;
+}
+
+.unknown {
+  background-position: -250px -165px;
+}
+
+////// 5th row of sprite
+.audio {
+  background-position: 0 -220px;
+}
+
+.cd {
+  background-position: -50px -220px;
+}
+
+.audiotape {
+  background-position: -100px -220px;
+}
+
+.musicalscore {
+  background-position: -150px -220px;
+}
+
+.chart {
+  background-position: -200px -220px;
+}
+
+.physicalobject {
+  background-position: -250px -220px;
+}
+
+////// 6th row of sprite
+.audio-set {
+  background-position: 0 -275px;
+}
+
+//// Sprites for Mediaicons - END
+
+// Helper Classes
+//// Screen reader hidden content
+//// Override nav li postion for screen reader content (in)visibility
+.nav > li.sr-only {
+  position: absolute;
+}
+
+//// force inline display
+.inline {
+  display: inline;
+}
+
+//// floats
+.left {
+  float: left !important;
+}
+
+.right {
+  float: right !important;
+}
+
+//// Gutters / No-Gutters; Margins / No-margins
+.no-gutter {
+  padding-left: 0;
+  padding-right: 0;
+
+  > [class^='col-'] {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+////// NO gutter bottom
+.no-gutter-btm {
+  padding-bottom: 0;
+}
+
+////// NO gutter left
+.no-gutter-l {
+  padding-left: 0;
+}
+
+////// NO gutter top
+.no-gutter-t {
+  padding-top: 0;
+}
+
+////// NO gutter right
+.no-gutter-r {
+  padding-right: 0;
+}
+
+////// gutter left
+.gutter-l,
+.no-gutter-r.gutter-l {
+  padding-left: $grid-gutter-width / 2;
+}
+
+////// gutter bottom
+.gutter-btm {
+  padding-bottom: $grid-gutter-width / 2;
+}
+
+////// gutter right
+.gutter-r {
+  padding-right: $grid-gutter-width / 2;
+}
+
+////// gutter top
+.gutter-top {
+  padding-top: $grid-gutter-width / 2;
+}
+
+////// margin bottom
+.margin-btm {
+  margin-top: $grid-gutter-width / 2;
+}
+
+////// margin left
+.margin-l {
+  margin-left: $grid-gutter-width / 2;
+}
+
+////// margin left on mobile
+.margin-l-xs {
+  @media (max-width: $screen-xs-max) {
+    margin-left: $grid-gutter-width / 2;
+  }
+}
+
+////// margin right
+.margin-r {
+  margin-right: $grid-gutter-width / 2;
+}
+
+////// margin top
+.margin-t {
+  margin-top: $grid-gutter-width / 2;
+}
+
+////// NO margin bottom
+.no-margin-btm {
+  margin-top: 0;
+}
+
+////// NO margin left
+.no-margin-l {
+  margin-left: 0;
+}
+
+////// NO margin right
+.no-margin-r {
+  margin-right: 0;
+}
+
+////// NO margin top
+.no-margin-t {
+  margin-top: 0;
+}
+
+//// Width 100%
+.w-100 {
+  width: 100%;
+}
+
+//// Color helper classes for development
+.border {
+  &.red {
+    border: 1px solid $brand-danger;
+  }
+
+  &.yellow {
+    border: 1px solid $state-warning-bg;
+  }
+
+  &.orange {
+    border: 1px solid $brand-warning;
+  }
+
+  &.green {
+    border: 1px solid $brand-success;
+  }
+
+  &.blue {
+    border: 1px solid $brand-info;
+  }
+}
+
+
+// HEADER and NAVBAR FIXED having the same width as rest of the page
+// (the header can also run the full width of the viewport!)
+header,
+.navbar {
+  background-color: $header-bg-color;
+
+  // For a full-width header de-activate margin and all the media queries below;
+  // if not using a fixed navbar, also remove '.navbar' above
+  margin: 0 auto;
+
+  // set width to width of BS container
+  @media (min-width: $screen-sm-min) {
+    width: $container-sm;
+  }
+
+  @media (min-width: $screen-md-min) {
+    width: $container-md;
+  }
+
+  @media (min-width: $screen-lg-min) {
+    width: $container-lg;
+  }
+}
+
+// NAVBAR
+//// Fixed Navbar (Header) - When using a fixed header + autocomplete,
+//// increase the z-index in autocomplete-results to a value higher than the fixed navbar (1030)!
+.navbar-fixed {
+  background-color: $navbar-fixed-bg-color;
+  //  max-width: $row-width;  // Find equiv in BS - fixme CK
+}
+
+//// push navbar in from right, to allow for offcanvas scrollbar
+.offcanvas .navbar-fixed-top {
+  @media only screen and (max-width: $screen-xs-max) {
+    right: $grid-gutter-width / 2;
+  }
+}
+
+//// Keep navbar on left, when offcanvas is active, give same appearance as ever
+.offcanvas.active .navbar-fixed-top {
+  @media only screen and (max-width: $screen-xs-max) {
+    margin-top: -$navbar-height;
+    position: relative;
+  }
+}
+
+//// Navbar min-height is defined in BS (use customVariables to adjust);
+//// however, there is no definition for small devices, so we introduce it here
+.navbar {
+  background-color: $navbar-bg-color;
+  // Navbar gets a minimum-height of 50px by default,
+  // activate and change '$navbar-height' in customVariables.scss;
+  // set height, instead of min-height, or navbar may spill over breadcrumbs when
+  // body -> padding-top would need to be taller than navbar minimum-height
+  min-height: $navbar-height;
+
+  // The margin on navbar h1 PUSHes ALL NAVBAR ELEMENTS DOWN
+  h1 {
+    //  margin: ($grid-gutter-width / 2) 0 0; ENABLE For VF 3.x Fixme
+
+    span {
+      display: inline-block;
+      margin-left: 0;
+      margin-top: $grid-gutter-width / 2;
+    }
+  }
+  // Searchbox see below
+
+  // Define height for navbar on small, allow for stacked search box +
+  @media (max-width: $screen-sm-max) {
+    min-height: $navbar-height-xs;
+    padding-bottom: $grid-gutter-width / 2;
+  }
+
+  // style navbar toggler content when opened
+  .navbar-collapse.collapse.in {
+    background-color: $navbar-bg-color;
+    position: absolute;
+    right: 0;
+    top: $navbar-height-xs * 2;
+  }
+
+  // Make language dropdown visible, style it and hide active but show selectable language(s)
+  @media (max-width: $screen-sm-max) {
+    // avoid BG bleed on small
+    .navbar-nav {
+      margin-bottom: 0;
+    }
+
+    .language .dropdown-menu {
+      background-color: $navbar-bg-color;
+      border: 0;
+      display: block;
+      min-width: 4em;
+      position: relative;
+
+      li {
+
+        a {
+          color: $link-color;
+
+          &.btn {
+            @include button-size($padding-base-vertical, $padding-base-horizontal, $font-size-base, $line-height-base, $btn-border-radius-base);
+            padding-left: 0;
+            padding-right: 0;
+          }
+        }
+
+        &.active {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+//// Library name in navbar - we give it the same padding as a button, so if fits in with the header
+.navbar-brand {
+  padding: ($grid-gutter-width / 4) ($grid-gutter-width / 2) ($grid-gutter-width / 4) 0;
+}
+
+//// Menu toggler for small
+.navbar-toggle {
+  margin-right: 0;
+  margin-top: 0;
+
+  // toggler icon size
+  .fa {
+    font-size: 150%;
+  }
+}
+
+//// navbar-right - remove default negative right margin
+@media (min-width: $grid-float-breakpoint) {
+  .navbar-right {
+    margin-right: 0;
+  }
+}
+
+//// Button sizes in Nav-bars - this is to make them look the same as the 'find' button
+.nav > li > a.btn {
+  @include button-size($padding-base-vertical, $padding-base-horizontal, $font-size-base, $line-height-base, $btn-border-radius-base);
+
+  &:hover,
+  &:focus {
+    background-color: $component-active-bg; // Same hover-color must be applied to 'Advanced Search' button below
+  }
+}
+
+// NAVBAR - END
+
+// SEARCHBOX and Autocomplete
+//// this will get search box and buttons in line
+.searchForm {
+  .navbar-left,
+  .navbar-right {
+    // push searchbox down on mobile + add border for better looks
+    @media only screen and (max-width: $screen-xs-max) {
+      border: 1px solid $border-color;
+      margin-left: $grid-gutter-width / 2;
+      margin-top: $grid-gutter-width / 2;
+    }
+  }
+
+  .list-unstyled li {
+    float: left;
+
+    // Advanced Search button
+    .btn.secondary {
+      &:hover,
+      &:focus {
+        background-color: $component-active-bg; // Same hover-color must be applied to Header buttons above
+      }
+    }
+  }
+
+  // Keep filters, shards etc; apply same styles to checkboxes on HOME and all other pages,
+  // therefore use .searchForm as parent
+  .checkbox {
+    clear: both;
+    float: none;
+    padding-top: $grid-gutter-width / 4;
+
+    input {
+      margin-left: 0;
+    }
+  }
+}
+
+//// Searchbox on Homepage
+
+//// Autocomplete:
+////// When using a fixed header + autocomplete, increase the z-index in
+////// autocomplete-results to a value higher than the fixed navbar (1030)!
+.autocomplete-results {
+  z-index: 1031;
+}
+
+//// Advanced Search links in header
+.adv_search_terms {
+  background-color: $brand-secondary;
+  border: 1px solid $brand-primary;
+  margin-bottom: 0;
+  padding: .5em;
+  width: 100%;
+}
+
+.adv_search_links {
+  border-bottom: 1px solid $brand-primary;
+  border-left: 1px solid $brand-primary;
+  border-right: 1px solid $brand-primary;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+
+    border-top: 0;
+    display: inline;
+    padding-left: .5em;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+  }
+
+  // 786px and above as inline list
+  @media only screen and (min-width: $screen-sm-min) {
+    li {
+      border-bottom: 0;
+      border-right: 1px solid $brand-primary;
+      display: inline;
+
+      padding-right: .5em;
+
+      &:last-of-type {
+        border-right: 0;
+      }
+    }
+  }
+}
+// SEARCHBOX and Autocomplete - END
+
+// BREADCRUMBS - for detailed switches see customVariables
+//// When Breadcrumbs are added to header.phtml, it might be necessary to remove the breadcrumb bottom margin
+.breadcrumb {
+  font-size: $font-size-breadcrumbs;
+  padding-left: ($grid-gutter-width / 2 - 2px); // take 2 px off for borders
+
+  //// color of links in breadcrumbs
+  a,
+  > .active a {
+    color: darken($breadcrumb-active-color, 10%);
+  }
+}
+// BREADCRUMBS - END
+
+// MAIN CONTENT (SIDEBAR BELOW, ADVANCED SEARCH BELOW)
+#content {
+  //// push content a little lower to allow for height of navbar/header, same needs to be applied to .sidebar, below!
+  .row:first-of-type {
+    padding-top: $content-top-padding;
+
+    //// for all widths that use Offcanvas (767px) ($screen-xs-max)
+    @media only screen and (max-width: $screen-xs-max) {
+      padding-top: $content-top-padding * 4;
+    }
+  }
+}
+
+//// set background and add border round main content, also applies to footer
+.main .container,
+.main .container-fluid,
+footer .container {
+  background-color: $main-bg;
+  border: 1px solid $border-color;
+  padding-bottom: $grid-gutter-width / 1.5;
+}
+
+footer .container {
+  border-top: 0;
+  padding-top: $grid-gutter-width / 1.5;
+}
+
+//// Search results
+////// Bulk Action Toolbar
+.bulkActionButtons {
+  padding-bottom: ($grid-gutter-width / 2);
+  padding-top: ($grid-gutter-width / 2);
+}
+
+//// Push hits count down to align with limit and sort select boxes
+.hits-count {
+  padding-top: .5rem;
+}
+
+//// Search Results padding
+////// pulled out via .search-results, use negative gutter-width divided by 2
+////// then add padding on results, to create normal column padding appearance
+.search-results {
+  margin-left: -($grid-gutter-width / 2);
+}
+
+//// Results and bulk action buttons -- add padding, to create normal column padding appearance
+.result,
+.bulkActionButtons {
+  padding-left: ($grid-gutter-width / 2);
+}
+
+//// Results (see BS SCSS/COMPONENTS/... for details)
+.result {
+
+  // Results padding - Do not add margin-top or -bottom as it will result in uneven heights
+  padding-bottom: $grid-gutter-width / 1.5;
+  padding-top: $grid-gutter-width / 1.5;
+
+  // Alternating colors in search results
+  &:nth-of-type(2n) {
+    background-color: $brand-secondary;
+  }
+
+  .title {
+    font-size: ($font-size-base * 1.25); // overwrites VF-BS-Theme setting
+    font-weight: normal; // overwrites VF-BS-Theme setting
+  }
+}
+
+//// Saved in
+.savedLists {
+
+  &.alert {
+    color: $state-light-text-on-dark;}
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    a {
+      color: $state-light-text-on-dark;
+    }
+  }
+}
+
+//// Remaining radiusses - The labels.scss uses no variable and format extends it!
+//// Therefore it will be necessary to overwite here in compiled.scss!!, Fixme when done more elegantly in BS
+//// Also, the display settings aren't very useful (no variables either)
+.label,
+.result .format,
+.sidebar .format {
+  border-radius: $label-radius;
+  display: inline-block; // Default is inline
+  font-weight: normal; // Default is bold
+  margin-top: .75em;
+  padding: .5em; // for default see _labels.scss
+}
+////// Pagination & Searchtools (for mixin see customVariables.scss)
+.pagination,
+.searchtools {
+  @include content-centered-display-as-table;
+}
+////// Pagination & Searchtools - END
+
+//// Search results - END
+
+//// Record View (Detail view)
+////// Pager
+/////// The pager occurs in record - view but also in collection - view
+.pager {
+  margin-bottom: 0;
+}
+////// Pager - END
+////// Tabs
+/////// Add left and right borders
+.tab-content {
+  border-bottom: 1px solid $nav-tabs-border-color;
+  border-left: 1px solid $nav-tabs-border-color;
+  border-right: 1px solid $nav-tabs-border-color;
+  padding: $grid-gutter-width  / 2;
+}
+
+////// branch info, opening hours etc
+.holdings-tab {
+  .collapse.in {
+    padding-left: $grid-gutter-width / 2;
+  }
+}
+
+////// Hierarchy tree
+#hierarchyTree {
+  margin-top: 1em;
+}
+
+/////// prevent tree LIs from overspilling on small!
+.hierarchy-tree .jstree-anchor {
+  hyphens: auto;
+  white-space: normal;
+}
+
+/////// Make dropdown-icon wider
+.hierarchy-tree .jstree-closed > .jstree-ocl::before,
+.hierarchy-tree .jstree-open > .jstree-ocl::before {
+  font-size: 150%;
+  margin-top: -5px;
+  min-width: 30px;
+}
+
+////// Hierarchy tree - END
+
+////// Tabs - END
+////// Similar items carousel - remove 3d effects
+.carousel-control {
+  color: $brand-primary;
+  text-shadow: none;
+
+  &.left,
+  &.right {
+    background-image: none;
+
+    &:hover {
+      background-image: none;
+      color: lighten($brand-primary, 2%);
+    }
+  }
+}
+
+// depth required for specificity
+#similar-items-carousel .carousel-indicators li {
+  border-color: $brand-primary;
+  box-shadow: none;
+  height: $font-size-base * 1.5;
+  width: $font-size-base * 1.5;
+}
+
+.carousel-indicators .active {
+  box-shadow: none;
+}
+
+////// Similar items carousel - END
+
+//// Record View - END
+
+//// Home Page
+////// push searchbox well down
+.template-name-home .container {
+  padding-top: $grid-gutter-width / 2;
+}
+////// browsing suggestion lists on home (prevent torn-apart look when 2 columns only)
+.browsesuggest.columns + .columns:last-child {
+  float: left;
+}
+//// Home Page - END
+
+//// Advanced Search
+#advSearchForm {
+  // Push Searchform box back in
+  .group.row {
+    margin-left: 0;
+
+    // overwrite BS value here for column width to work
+    .search .middle {
+      width: auto;
+    }
+  }
+
+  // Redefine hover link colors over delete Xes
+  .help-block {
+    &:hover,
+    &:focus {
+      color: $brand-danger;
+      text-decoration: none;
+    }
+  }
+
+  // Remove dotted lines around items when hovering over
+  .close {
+    &:hover,
+    &:focus {outline: none;}
+  }
+}
+//// Advanced Search - END
+
+// MAIN CONTENT - END
+
+
+
+// SIDEBAR
+//// Add top padding to sidebar for better looks -- same as for #content, above
+.sidebar {
+  padding-top: $content-top-padding / 2;
+}
+
+//// Offcanvas is used to widths of 767px ($screen-xs-max)
+@media only screen and (max-width: $screen-xs-max) {
+  .offcanvas.active .sidebar {
+    margin-top: $grid-gutter-width / 2;
+  }
+}
+
+//// Selected/active filters on top
+.sidebar .list-group-item.active {
+  background-color: $brand-warning;
+  border-color: $border-color;
+
+  // also include icon
+  .fa {
+    color: inherit;
+  }
+}
+
+//// Collapse-Facet Titles
+.list-group-item.title {
+  background-color: $brand-secondary;
+}
+
+//// Create hover-effect
+.list-group-item:hover:not(.button),
+.list-group-item:focus:not(.button) {
+  background: $sidebar-item-hover-bg;
+}
+
+.list-group-item.active:hover:not(.button),
+.list-group-item.active:focus:not(.button) {
+  background: $sidebar-item-active-hover-bg;
+}
+
+//// OR- and AND-Facets, item counts in My Account
+.badge {
+  // remove right padding to align with accordion arrows
+  padding-right: 2px;
+
+  a {
+    color: $badge-link-color;
+
+    &:hover,
+    &:focus {
+      color: $badge-link-hover-color;
+    }
+  }
+}
+
+////// light color on dark, when active (My Account) - we need the parent for specificity
+.list-group-item.active > .badge {
+  background-color: transparent;
+  color: $btn-primary-color;
+}
+
+//// OR- and AND-Facets, item counts - END
+
+//// More-Toggle (for variable, see customVariables.scss)
+.narrow-toggle {
+  text-align: $narrow-toggle-text-alignment;
+}
+//// More-Toggle - END
+
+// SIDEBAR - END
+
+
+
+// FOOTER
+//// For border round footer, see 'footer .container' above
+
+//// Align footer lists to their headings
+footer ul {
+  padding-left: $grid-gutter-width / 2;
+}
+
+.powered-by {
+  padding: $grid-gutter-width / 2;
+
+  img {
+    height: 1.75em;
+    margin-left: $grid-gutter-width / 4;
+    margin-right: $grid-gutter-width / 4;
+  }
+
+  span {
+    font-size: small;
+  }
+}
+
+// FOOTER - END
+
+// MODALS
+// MODALS - END

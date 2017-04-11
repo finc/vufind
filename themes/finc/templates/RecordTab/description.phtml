@@ -6,6 +6,7 @@
     // Grab clean ISBN for convenience:
     $isbn = $this->driver->getCleanISBN();
 ?>
+<? /* summary is deprecated - we use caption - CK */ ?>
 <table class="table table-striped">
   <caption class="sr-only"><?=$this->transEsc('Description')?></caption>
   <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
@@ -22,6 +23,7 @@
 
   <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
     <? $contentDisplayed = true; ?>
+    <? /* we use Dates of publication - CK */ ?>
     <tr>
       <th><?=$this->transEsc('Dates of publication')?>: </th>
       <td>
@@ -171,7 +173,8 @@
       <td><?=$this->escapeHtml($doi)?></td>
     </tr>
   <? endif; ?>
-  <? /* Finc-specific eissns */ ?>
+
+  <? /* Finc-specific eissns - CK */ ?>
   <? $eissns = $this->driver->getEISSNs(); if (!empty($eissns)): ?>
       <? $contentDisplayed = true; ?>
       <tr>
@@ -246,6 +249,7 @@
     </tr>
   <? endif; ?>
 
+  <? /* finc-specific - callnumbers, additionals - CK */ ?>
   <? /* getLocalSignature works only for Marc-Records, so try this method */ ?>
   <? $callnumbers = $this->driver->tryMethod('getLocalSignature'); if (!empty($callnumbers)): ?>
     <? $contentDisplayed = true; ?>
@@ -275,6 +279,7 @@
       <? endif; ?>
     <? endforeach; ?>
   <? endif; ?>
+  <? /* finc-specific - callnumbers, additionals - END */ ?>
 
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>

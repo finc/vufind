@@ -24,8 +24,8 @@ $this->headTitle($this->translate('Topics') . ': ' . $this->driver->getBreadcrum
 			$tooltip_content .= "</ul>";
 		  ?>
 		<? endif; ?>
-	  	<span <?=(isset($tooltip_content) ? 'data-tooltip aria-haspopup="true" data-options="disable_for_touch:true;touch_close_text:' . $this->transEsc('Tap to close') . '" class="has-tip" title="' . $tooltip_content . '"' : "")?>>
-          <a href="<?=$this->record($this->driver)->getLink('rvk', $item['rvk'])?>"> <i class="fa fa-search"></i> <?=$this->transEsc('Find Similar Items');?></a>
+          <span <?=(isset($tooltip_content) ? 'data-toggle="tooltip" data-html="true" title="' . $tooltip_content . '"' : "")?>>
+          <a href="<?=$this->record($this->driver)->getLink('rvk', $item['rvk'])?>"> <i class="fa fa-search" aria-hidden="true"></i> <?=$this->transEsc('Find Similar Items');?></a>
         </span>
 	  	<? $i++; ?>
 	  <? endforeach; ?>

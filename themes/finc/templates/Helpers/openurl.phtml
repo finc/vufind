@@ -19,7 +19,9 @@
   <a href="<?=$this->escapeHtmlAttr($this->openUrlBase . '?' . $this->openUrl)?>"<?=$class?> data-search-class-id="<?=$this->escapeHtmlAttr($this->searchClassId) ?>">
   <? /* put the openUrl here in a span (COinS almost) so we can retrieve it later */ ?>
   <span title="<?=$this->escapeHtmlAttr($this->openUrl)?>" class="openUrl"></span>
+  <? /* Custom finc, in #5334 (support for multiple resolver drivers) - CK */ ?>
   <span title="<?=$this->escapeHtmlAttr($this->resolvertype)?>" class="resolvertype"></span>
+  <? /* Custom finc, in #5334 (support for multiple resolver drivers) - END */ ?>
   <? if ($this->openUrlGraphic): ?>
     <?
       $style = '';
@@ -47,5 +49,5 @@
 </span>
 
 <? if ($this->openUrlEmbed): ?>
-  <div class="resolver hide"><?=$this->transEsc('Loading')?>&nbsp;...</div>
+  <div class="resolver hidden"><?=$this->transEsc('Loading')?>&nbsp;...</div>
 <? endif; ?>

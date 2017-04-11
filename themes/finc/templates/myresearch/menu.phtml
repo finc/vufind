@@ -1,119 +1,95 @@
-<!-- myresearch - MENU.phtml -->
+<!-- myresearch - MENU -->
 <h4><?= $this->transEsc('Your Account') ?></h4>
-<ul class="side-nav">
+<div class="list-group">
   <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-    <li>
-      <a href="<?= $this->url('myresearch-favorites') ?>" class="<?= $this->active == 'favorites' ? ' active' : '' ?>">
-        <i class="fa fa-fw fa-star"></i><?= $this->transEsc('Favorites') ?>
+    <a href="<?=$this->url('myresearch-favorites')?>" class="list-group-item<?=$this->active == 'favorites' ? ' active' : ''?>">
+      <i class="fa fa-fw fa-star" aria-hidden="true"></i> <?=$this->transEsc('Favorites')?>
       </a>
-    </li>
   <? endif; ?>
   <? if ('ils-none' !== $this->ils()->getOfflineMode()): ?>
     <? if ($this->ils()->checkCapability('getMyTransactions')): ?>
-      <li>
-        <a href="<?= $this->url('myresearch-checkedout') ?>" class="<?= $this->active == 'checkedout' ? ' active' : '' ?>">
-          <i class="fa fa-fw fa-book"></i><?= $this->transEsc('Checked Out Items') ?>
+      <a href="<?=$this->url('myresearch-checkedout')?>" class="list-group-item<?=$this->active == 'checkedout' ? ' active' : ''?>">
+        <i class="fa fa-fw fa-book" aria-hidden="true"></i> <?=$this->transEsc('Checked Out Items')?>
+        <? /* nxt line finc specific - CK */ ?>
           <span id="getMyTransactions" class="itemCount pull-right no-padding"></span>
         </a>
-      </li>
     <? endif; ?>
     <? if ($this->ils()->checkCapability('getMyHolds')): ?>
-      <li>
-        <a href="<?= $this->url('myresearch-holds') ?>" class="<?= $this->active == 'holds' ? ' active' : '' ?>">
-          <i class="fa fa-fw fa-flag"></i><?= $this->transEsc('Holds and Recalls') ?>
+      <a href="<?=$this->url('myresearch-holds')?>" class="list-group-item<?=$this->active == 'holds' ? ' active' : ''?>">
+        <i class="fa fa-fw fa-flag" aria-hidden="true"></i> <?=$this->transEsc('Holds and Recalls')?>
+        <? /* nxt line finc specific - CK */ ?>
           <span id="getMyHolds" class="itemCount pull-right no-padding"></span>
         </a>
-      </li>
     <? endif; ?>
     <? if ($this->ils()->checkFunction('StorageRetrievalRequests')): ?>
-      <li>
-        <a href="<?= $this->url('myresearch-storageretrievalrequests') ?>" class="<?= $this->active == 'storageRetrievalRequests' ? ' active' : '' ?>">
-          <i class="fa fa-fw fa-archive"></i><?= $this->transEsc('Storage Retrieval Requests') ?>
+      <a href="<?=$this->url('myresearch-storageretrievalrequests')?>" class="list-group-item<?=$this->active == 'storageRetrievalRequests' ? ' active' : ''?>">
+        <i class="fa fa-fw fa-archive" aria-hidden="true"></i> <?=$this->transEsc('Storage Retrieval Requests')?>
+        <? /* nxt line finc specific - CK */ ?>
           <span id="getMyStorageRetrievalRequests" class="itemCount pull-right no-padding"></span>
         </a>
-      </li>
     <? endif; ?>
     <? if ($this->ils()->checkFunction('ILLRequests')): ?>
-      <li>
-        <a href="<?= $this->url('myresearch-illrequests') ?>" class="<?= $this->active == 'ILLRequests' ? ' active' : '' ?>">
-          <i class="fa fa-fw fa-exchange"></i><?= $this->transEsc('Interlibrary Loan Requests') ?>
+      <a href="<?=$this->url('myresearch-illrequests')?>" class="list-group-item<?=$this->active == 'ILLRequests' ? ' active' : ''?>">
+      <i class="fa fa-fw fa-exchange" aria-hidden="true"></i> <?=$this->transEsc('Interlibrary Loan Requests')?>
+        <? /* nxt line finc specific - CK */ ?>
           <span id="getMyILLRequests" class="itemCount pull-right no-padding"></span>
         </a>
-      </li>
     <? endif; ?>
     <? if ($this->ils()->checkCapability('getMyFines')): ?>
-      <li>
-        <a href="<?= $this->url('myresearch-fines') ?>" class="<?= $this->active == 'fines' ? ' active' : '' ?>">
-          <i class="fa fa-fw fa-euro"></i><?= $this->transEsc('Fines') ?>
+      <a href="<?=$this->url('myresearch-fines')?>" class="list-group-item<?=$this->active == 'fines' ? ' active' : ''?>">
+        <i class="fa fa-fw fa-euro" aria-hidden="true"></i> <?=$this->transEsc('Fines')?>
         </a>
-      </li>
     <? endif; ?>
     <? if ($this->ils()->checkCapability('getMyProfile')): ?>
-      <li>
-        <a href="<?= $this->url('myresearch-profile') ?>" class="<?= $this->active == 'profile' ? ' active' : '' ?>">
-          <i class="fa fa-fw fa-user"></i><?= $this->transEsc('Profile') ?>
+      <a href="<?=$this->url('myresearch-profile')?>" class="list-group-item<?=$this->active == 'profile' ? ' active' : ''?>">
+        <i class="fa fa-fw fa-user" aria-hidden="true"></i> <?=$this->transEsc('Profile')?>
         </a>
-      </li>
     <? endif; ?>
     <? $user = $this->auth()->isLoggedIn();
     if ($user && $user->libraryCardsEnabled()): ?>
-      <li>
-        <a href="<?= $this->url('librarycards-home') ?>" class="<?= $this->active == 'librarycards' ? ' active' : '' ?>">
-          <i class="fa fa-fw fa-barcode"></i><?= $this->transEsc('Library Cards') ?>
+      <a href="<?=$this->url('librarycards-home')?>" class="list-group-item<?=$this->active == 'librarycards' ? ' active' : ''?>">
+        <i class="fa fa-fw fa-barcode" aria-hidden="true"></i> <?=$this->transEsc('Library Cards')?>
         </a>
-      </li>
     <? endif; ?>
   <? endif; ?>
   <? if ($this->accountCapabilities()->getSavedSearchSetting() === 'enabled'): ?>
-    <li>
       <a href="<?=$this->url('search-history')?>?require_login" class="list-group-item<?=$this->active == 'history' ? ' active' : ''?>">
-        <i class="fa fa-fw fa-search"></i><?= $this->transEsc('history_saved_searches') ?>
+      <i class="fa fa-fw fa-search" aria-hidden="true"></i> <?=$this->transEsc('history_saved_searches')?>
       </a>
-    </li>
   <? endif; ?>
   <? if ($user = $this->auth()->isLoggedIn()): ?>
-    <li>
-      <a href="<?= $this->url('myresearch-logout') ?>">
-        <i class="fa fa-fw fa-sign-out"></i><?= $this->transEsc("Log Out") ?>
+    <a href="<?=$this->url('myresearch-logout')?>" class="list-group-item">
+      <i class="fa fa-fw fa-sign-out" aria-hidden="true"></i> <?=$this->transEsc("Log Out")?>
       </a>
-    </li>
   <? endif; ?>
-</ul>
+</div>
 <? if ($this->auth()->isLoggedIn() && $this->auth()->getManager()->supportsPasswordChange()): ?>
   <h4><?= $this->transEsc('Preferences') ?></h4>
-  <ul class="side-nav">
-    <li>
-      <a href="<?= $this->url('myresearch-changepassword') ?>" class="<?= $this->active == 'newpassword' ? ' active' : '' ?>">
-        <i class="fa fa-fw fa-lock"></i><?= $this->transEsc('Change Password') ?>
+  <div class="list-group">
+    <a href="<?=$this->url('myresearch-changepassword') ?>" class="list-group-item<?=$this->active == 'newpassword' ? ' active' : ''?>">
+      <i class="fa fa-fw fa-lock" aria-hidden="true"></i> <?=$this->transEsc('Change Password') ?>
       </a>
-    </li>
-  </ul>
+  </div>
 <? endif; ?>
 <? if ($this->userlist()->getMode() !== 'disabled' && $user = $this->auth()->isLoggedIn()): ?>
   <h4><?= $this->transEsc('Your Lists') ?></h4>
-  <ul class="side-nav">
-    <li>
-      <a href="<?= $this->url('myresearch-favorites') ?>" class="<?= $this->active == 'favorites' ? ' active' : '' ?>">
-        <i class="fa fa-fw fa-star"></i><?= $this->transEsc('Your Favorites') ?>
+  <div class="list-group">
+    <a href="<?=$this->url('myresearch-favorites')?>" class="list-group-item<?=$this->active == 'favorites' ? ' active' : ''?>">
+      <i class="fa fa-fw fa-star" aria-hidden="true"></i> <?=$this->transEsc('Your Favorites')?>
       </a>
-    </li>
     <? $lists = $user->getLists() ?>
     <? foreach ($lists as $list): ?>
-      <li>
-        <a href="<?= $this->url('userList', array('id' => $list['id'])) ?>" class="<?= $this->active == 'list' . $list['id'] ? ' active' : '' ?>">
+        <a href="<?=$this->url('userList', array('id' => $list['id']))?>" class="list-group-item<?=$this->active == 'list' . $list['id'] ? ' active' : ''?>">
           <?= $this->escapeHtml($list['title']) ?>
-          <span class="label pull-right no-padding"><?= $list->cnt ?></span>
+          <span class="badge"><?=$list->cnt?></span>
         </a>
-      </li>
     <? endforeach; ?>
-    <li>
-      <a href="<?= $this->url('editList', array('id' => 'NEW')) ?>" title="<?= $this->transEsc('Create a List') ?>">
-        <i class="fa fa-fw fa-plus"></i><?= $this->transEsc('Create a List') ?>
+    <a href="<?=$this->url('editList', array('id'=>'NEW'))?>" class="list-group-item" title="<?= $this->transEsc('Create a List') ?>">
+      <i class="fa fa-fw fa-plus" aria-hidden="true"></i> <?=$this->transEsc('Create a List') ?>
       </a>
-    </li>
-  </ul>
+  </div>
 <? endif ?>
-
+<? /* This script is finc specific - CK */ ?>
 <? $script = <<<JS
 $(document).ready(function () {
     countables = new Array;
@@ -138,4 +114,4 @@ $(document).ready(function () {
 JS;
 ?>
 <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
-<!-- myresearch - MENU.phtml - end -->
+<!-- myresearch - MENU - end -->

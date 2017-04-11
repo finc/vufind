@@ -1,12 +1,9 @@
 <?php
 return array(
-    'extends' => 'foundation5',
+    'extends' => 'bootstrap3',
     'js' => array(
-        'foundation.min.js',
         'openurl.js',
         'check_item_statuses.js',
-        'record.js',
-        'finc.js'
     ),
     'helpers' => array(
         'factories' => array(

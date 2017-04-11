@@ -12,7 +12,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
      $cover = $this->record($this->driver)->getCover('core', 'medium', $this->record($this->driver)->getThumbnail('large'));
      $preview = $this->record($this->driver)->getPreviews(); ?>
   <? if ($QRCode || $cover || $preview): ?>
-  <div class="medium-3 columns">
+  <div class="col-sm-3">
     <div class="text-center">
         <? /* Display thumbnail if appropriate: */ ?>
       <? if($cover): ?>
@@ -25,7 +25,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 
       <? /* Display qrcode if appropriate: */ ?>
       <? if($QRCode): ?>
-        <span class="hide-for-small">
+        <span class="hidden-xs">
           <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
         </span>
       <? endif; ?>
@@ -38,9 +38,9 @@ if($loggedin = $this->auth()->isLoggedIn()) {
     <? if ($preview): ?><?=$preview?><? endif; ?>
   </div>
 
-  <div class="medium-9 columns">
+  <div class="col-sm-9">
   <? else: ?>
-  <div class="medium-12 columns">
+  <div class="col-sm-12">
   <? endif; ?>
 
     <? /* For alle finc-records we want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
@@ -57,13 +57,13 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
       <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists hide alert-box info" data-alert tabindex="0" aria-live="assertive" role="alertdialog">
+      <div class="savedLists hide alert alert-info" data-alert tabindex="0" aria-live="assertive" role="alertdialog">
         <strong><?=$this->transEsc("Saved in")?>:</strong>
       </div>
     <? endif; ?>
 
     <?/* Display Main Details */?>
-    <table class="table">
+    <table class="table table-striped">
       <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
       <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle)): ?>
       <tr>
@@ -217,9 +217,10 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       if (!empty($publications)): ?>
         <tr>
           <th><?=$this->transEsc('Published')?>: </th>
-          <td>
+          <? /* microdate/schema org improvements - CK */?>
+          <td  itemscope itemtype="http://schema.org/publisher">
             <? foreach ($publications as $field): ?>
-              <span property="publisher" itemtype="http://schema.org/Organization">
+              <span property="publisher">
             <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
                   <span itemprop="location"><?=$this->escapeHtml($pubPlace)?></span>
             <? endif; ?>
@@ -235,15 +236,18 @@ if($loggedin = $this->auth()->isLoggedIn()) {
               <br/>
             <? endforeach; ?>
           </td>
+          <? /* microdate/schema org improvements - END */?>
         </tr>
       <? endif; ?>
 
+      <? /* SolrMarc + finc-specific - #9557 - CK */ ?>
       <? $germanPrintsIndexNumber = $this->driver->getIndexOfGermanPrints(); if (!empty($germanPrintsIndexNumber)): ?>
         <tr>
           <th><?=$this->transEsc('German Prints Index Number')?>: </th>
           <td property="germanPrintsIndexNumber"><?=$this->escapeHtml($germanPrintsIndexNumber[0])?></td>
         </tr>
       <? endif; ?>
+      <? /* SolrMarc + finc-specific - END */ ?>
 
       <? /* finc specific row - replaces series - Start */ ?>
       <? $hierarchyParentTitle = $this->driver->getHierarchyParentTitle(); if (!empty($hierarchyParentTitle) && empty($series)): ?>
@@ -332,7 +336,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <tr>
           <th><?=$this->transEsc('Tags')?>: </th>
           <td>
-            <span class="right hide-for-print">
+            <span class="right hidden-print">
               <a class="tagRecord right" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" data-lightbox><i class="fa fa-plus"></i><?=$this->transEsc('Add Tag')?></a>
             </span>
             <?=$this->context($this)->renderInContext('record/taglist', array('tagList'=>$tagList, 'loggedin'=>$loggedin)) ?>

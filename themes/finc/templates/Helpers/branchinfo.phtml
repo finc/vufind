@@ -1,17 +1,15 @@
 <!-- helpers - branchinfo.phtml -->
 <tr class="holding-info">
   <td colspan="4">
-    <ul class="accordion" data-accordion>
-      <li class="accordion-navigation">
-        <a href="#<?=$info['branchno']?>" class="accordion-toggler"><?=$this->transEsc('Address-Contact-Hours')?></a>
-        <div id="<?=$info['branchno']?>" class="content">
-    <div class="row collapse">
-            <div class="branch-address small-12 medium-6 columns">
+    <? /* Keep the accordion-toggler! It makes the link appear as an accordion header - CK */?>
+    <a href="#<?=$info['branchno']?>" class="accordion-toggler" data-toggle="collapse" aria-expanded="false"><?=$this->transEsc('Address-Contact-Hours')?></a>
+    <div id="<?=$info['branchno']?>" class="collapse" aria-expanded="false">
+      <div class="branch-address col-xs-12 col-sm-6">
               <strong><?=$info['branch']?></strong><br/>
         <?=$info['streetaddress']?><br/>
         <?=$info['postalcode']?> <?=$info['city']?>
       </div>
-            <div class="branch-contact small-12 medium-6 columns">
+      <div class="branch-contact col-xs-12 col-sm-6">
         <? if (isset($info['tel'])): ?>
           <? if (is_array($info['tel'])): ?>
             <? foreach ($info['tel'] as $tel): ?>
@@ -45,7 +43,7 @@
           </a>
         <? endif; ?>
       </div>
-            <div class="branch-hours small-12 columns">
+      <div class="branch-hours col-xs-12">
         <? if (
           isset($info['openinghours'])
           && is_array($info['openinghours'])
@@ -65,7 +63,7 @@
     </div>
     <div class="row">
       <? if (isset($info['note'])): ?>
-        <div class="branch-note alert-box info">
+        <div class="branch-note alert alert-info">
           <? if (is_array($info['note'])): ?>
             <? foreach ($info['note'] as $notes): ?>
               <?=$notes?>
@@ -76,17 +74,7 @@
         </div>
       <? endif; ?>
     </div>
-        </div>
-      </li>
-    </ul>
-
   </td>
 </tr>
-<?
-$accordionReflow = <<<JS
-$(document).foundation('accordion', 'reflow');
-JS;
-$this->headScript()->appendScript($accordionReflow);
-?>
 <?=$this->headScript()?>
 <!-- helpers - branchinfo.phtml - END -->

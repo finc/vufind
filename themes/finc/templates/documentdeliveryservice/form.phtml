@@ -10,15 +10,15 @@
         <legend><?=$this->transEsc("DDS::dds_form_delivery_data")?>:</legend>
         <!-- name -->
         <div class="row">
-          <div class="medium-3 columns">
-            <label class="" for="sname"><?=$this->transEsc("Name")?>:*</label>
+          <div class="col-sm-3">
+            <label for="sname"><?=$this->transEsc("Name")?>:*</label>
           </div>
             <? if (isset($this->error->username)): ?>
-              <div class="medium-9 columns error-field">
+            <div class="col-sm-9 error-field">
                 <?=$this->error->username;?>
               </div>
             <? endif; ?>
-          <div class="medium-9 columns">
+          <div class="col-sm-9">
             <input type="text" id="sname" name="subito[username]" class="w-100" <?=(!empty($this->username) ? 'value="' . $this->username . '"' : '')?>/>
           </div>
         </div>
@@ -228,7 +228,7 @@
         </div>
         <div class="row">
           <div class="medium-9 columns medium-offset-3">
-            <input role="button" type="submit" class="button small" value="<?=$this->transEsc("DDS::form_button_submit")?>"/>
+            <input role="button" type="submit" class="btn btn-primary" value="<?=$this->transEsc("DDS::form_button_submit")?>"/>
           </div>
         </div>
       </fieldset>

@@ -4,18 +4,18 @@
   $params->activateAllFacets(); ?>
   <? foreach ($this->ranges as $current): $escField = $this->escapeHtmlAttr($current['field']); ?>
     <? $extraInputAttribs = ($current['type'] == 'date') ? 'maxlength="4" ' : ''; ?>
-    <div class="medium-4 columns">
-    <fieldset>
+    <? /* use xs-cols to improve mobile view, finc-specific, CK */ ?>
+    <fieldset class="col-xs-11 col-sm-4">
     <legend><?= $this->transEsc($params->getFacetLabel($current['field'])) ?></legend>
     <input type="hidden" name="<?= $this->escapeHtmlAttr($current['type']) ?>range[]" value="<?= $escField ?>"/>
     <div class="row">
-      <div class="medium-6 columns">
+      <div class="col-sm-6">
         <label for="<?= $escField ?>from"><?= $this->transEsc('date_from') ?>:</label>
-        <input type="text" name="<?= $escField ?>from" id="<?= $escField ?>from" value="<?= isset($current['values'][0]) ? $this->escapeHtmlAttr($current['values'][0]):''?>" <?= $extraInputAttribs ?>/>
+          <input type="text" name="<?=$escField?>from" id="<?=$escField?>from" value="<?=isset($current['values'][0])?$this->escapeHtmlAttr($current['values'][0]):''?>" class="form-control" <?=$extraInputAttribs?>/>
       </div>
-      <div class="medium-6 columns">
+      <div class="col-sm-6">
         <label for="<?= $escField ?>to"><?= $this->transEsc('date_to') ?>:</label>
-        <input type="text" name="<?= $escField ?>to" id="<?= $escField ?>to" value="<?= isset($current['values'][1]) ? $this->escapeHtmlAttr($current['values'][1]):''?>" <?= $extraInputAttribs ?>/>
+          <input type="text" name="<?=$escField?>to" id="<?=$escField?>to" value="<?=isset($current['values'][1])?$this->escapeHtmlAttr($current['values'][1]):''?>" class="form-control" <?=$extraInputAttribs?>/>
       </div>
     </div>
     <? if ($current['type'] == 'date'): ?>
@@ -55,7 +55,7 @@ $(document).ready(function() {
 	.data('slider');
   {$init}
 });
-
+// Update slider handle position with input date
 $('#{$escField}from, #{$escField}to').change(function () {
   var from = Number($('#{$escField}from').val());
   var to   = Number($('#{$escField}to').val());
@@ -71,7 +71,6 @@ JS;
       ?>
       <?= $this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
       </fieldset>
-      </div>
     <? endif; ?>
   <? endforeach; ?>
 <? endif; ?>

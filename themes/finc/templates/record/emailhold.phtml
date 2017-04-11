@@ -19,16 +19,16 @@
     <? if (in_array("item-issue", $this->extraFields)): ?>
       <div class="row">
         <div id="emailHoldReference" class="emailHoldReference">
-          <label class="medium-3 columns"><?=$this->transEsc('EmailHold::email_hold_volume')?>:</label>
-          <div class="medium-9 columns">
+          <label class="col-sm-3"><?=$this->transEsc('EmailHold::email_hold_volume')?>:</label>
+          <div class="col-sm-9">
             <input type="text" name="gatheredDetails[volume]" value="<?=isset($this->gatheredDetails['volume']) ? $this->escapeHtmlAttr($this->gatheredDetails['volume']) : ''?>" class="auto"/><br/>
           </div>
-          <label class="medium-3 columns"><?=$this->transEsc('EmailHold::email_hold_issue')?>:</label>
-          <div class="medium-9 columns">
+          <label class="col-sm-3"><?=$this->transEsc('EmailHold::email_hold_issue')?>:</label>
+          <div class="col-sm-9">
             <input type="text" name="gatheredDetails[issue]" value="<?=isset($this->gatheredDetails['issue']) ? $this->escapeHtmlAttr($this->gatheredDetails['issue']) : ''?>" class="auto"/><br/>
           </div>
-          <label class="medium-3 columns"><?=$this->transEsc('EmailHold::email_hold_year')?>:</label>
-          <div class="medium-9 columns">
+          <label class="col-sm-3"><?=$this->transEsc('EmailHold::email_hold_year')?>:</label>
+          <div class="col-sm-9">
             <input type="text" name="gatheredDetails[year]" value="<?=isset($this->gatheredDetails['year']) ? $this->escapeHtmlAttr($this->gatheredDetails['year']) : ''?>" class="auto"/><br/>
           </div>
         </div>
@@ -37,8 +37,8 @@
 
     <? if (in_array("requiredByDate", $this->extraFields)): ?>
       <div class="row">
-        <label class="medium-3 columns"><?=$this->transEsc("EmailHold::hold_required_by")?>:</label>
-        <div class="medium-9 columns">
+        <label class="col-sm-3"><?=$this->transEsc("EmailHold::hold_required_by")?>:</label>
+        <div class="col-sm-9">
           <input id="requiredByDate" type="text" name="gatheredDetails[requiredBy]" value="<?=(isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtmlAttr($this->gatheredDetails['requiredBy']) : $this->escapeHtmlAttr($this->defaultRequiredDate)?>" size="8" class="auto"/>
           (<?=$this->dateTime()->getDisplayDateFormat()?>)
         </div>
@@ -57,8 +57,8 @@
                 $selected = $this->defaultPickup;
             }
           ?>
-          <label class="medium-3 columns"><?=$this->transEsc("EmailHold::pick_up_location")?>:</label>
-          <div class="medium-9 columns">
+          <label class="col-sm-3"><?=$this->transEsc("EmailHold::pick_up_location")?>:</label>
+          <div class="col-sm-9">
             <select name="gatheredDetails[pickUpLocation]" class="auto">
             <? if ($selected === false): ?>
               <option value="" selected="selected">
@@ -80,16 +80,16 @@
 
     <? if (in_array("comments", $this->extraFields)): ?>
       <div class="row">
-        <label class="medium-3 columns"><?=$this->transEsc("Comments")?>:</label>
-        <div class="medium-9 columns">
+        <label class="col-sm-3"><?=$this->transEsc("Comments")?>:</label>
+        <div class="col-sm-9">
           <textarea rows="3" cols="20" name="gatheredDetails[comment]" class="auto"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
         </div>
       </div>
     <? endif; ?>
 
     <div class="row">
-      <div class="medium-9 columns medium-offset-3">
-        <input class="button small" type="submit" name="placeEmailHold" role="button" value="<?=$this->transEsc('EmailHold::email_hold_submit_text')?>"/>
+      <div class="col-sm-9 offset-sm-3">
+        <input class="btn btn-primary" type="submit" name="placeEmailHold" role="button" value="<?=$this->transEsc('EmailHold::email_hold_submit_text')?>"/>
       </div>
     </div>
   </form>

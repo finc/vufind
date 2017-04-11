@@ -12,13 +12,15 @@
 ?>
 
 <? if ($offlineMode == "ils-offline"): ?>
+<div class="alert alert-warning">
   <?=$this->render('Helpers/ils-offline.phtml', ['offlineModeMsg' => 'ils_offline_login_message'])?>
 <? else: ?>
-  <h2><?=$this->transEsc('Login')?></h2>
+  <h2 class="lightbox-header"><?=$this->transEsc('Login')?></h2>
   <?=$this->flashmessages()?>
-    
+  </div>
+
   <? if ($hideLogin): ?>
-    <div data-alert class="alert-box alert" tabindex="0" aria-live="assertive" role="alertdialog"><?=$this->transEsc('login_disabled')?></div>
+  <div class="alert alert-danger"><?=$this->transEsc('login_disabled')?></div>
   <? else: ?>
     <?=$this->auth()->getLogin()?>
   <? endif; ?>

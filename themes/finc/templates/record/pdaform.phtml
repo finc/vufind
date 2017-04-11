@@ -16,14 +16,14 @@
     <?=(strlen($price = $this->driver->getPrice()) > 0) ? $this->translate('PDA::pda_price_text', [':::PRICE:::'=>$this->safeMoneyFormat($price)]) : ''?>
     <?=$this->translate('PDA::pda_delivery_text')?>
   </p>
-  <div class="row collapse">
-    <label class="medium-3 columns" for="pdaStatement"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span>:</label>
-    <div class="medium-9 columns">
+  <div class="row no-gutter">
+    <label class="col-sm-3" for="pdaStatement"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span>:</label>
+    <div class="col-sm-9">
       <textarea id="pdaStatement" class="auto" name="pdaStatement" rows="5" type="text" cols="50"><?=isset($this->pdaStatement) ? $this->pdaStatement : ''?></textarea>
     </div>
 
-    <label class="medium-3 columns" for="pdaSubject"><?=$this->transEsc('PDA::pda_form_field_of_study_label') ?><span class="required">*</span>:</label>
-    <div class="medium-9 columns">
+    <label class="col-sm-3" for="pdaSubject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span>:</label>
+    <div class="col-sm-9">
       <select name="pdaFieldOfStudy" class="form-control">
         <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text')?></option>
         <? if (isset( $this->fieldOfStudyList) && is_array( $this->fieldOfStudyList)): ?>
@@ -33,20 +33,21 @@
         <? endif; ?>
       </select>
     </div>
-    <div class="medium-9 columns medium-offset-3">
+    <div class="col-sm-9 offset-sm-3">
       <span>
         <?=$this->recaptcha()->html($this->useRecaptcha) ?>
       </span>
-      <ul class="button-group">
+      <ul class="btn-group">
         <li>
-          <input type="submit" class="button small" role="button" name="submit" value="<?=$this->transEsc('Submit')?>"/>
+          <input type="submit" class="btn btn-primary" role="button" name="submit" value="<?=$this->transEsc('Submit')?>"/>
         </li>
         <li>
-          <a class="button small has-tip" data-lightbox-ignore data-tooltip data-options="touch_close_text: '<?= $this->transEsc('Tap to close')?>'" aria-haspopup="true" title="<?= $this->transEsc('PDA::pda_open_new_window')?>" href="<?= $this->interlibraryloan()->getSwbLink($this->driver) ?>" target="_blank"><?= $this->transEsc('PDA::pda_tab_interlibrary_button') ?>
+          <a class="btn btn-primary" data-lightbox-ignore data-toggle="tooltip" title="<?=$this->transEsc('PDA::pda_open_new_window')?>" href="<?=$this->interlibraryloan()->getSwbLink($this->driver)?>"
+             target="_blank"><?=$this->transEsc('PDA::pda_tab_interlibrary_button')?>
           </a>
         </li>
         <li>
-          <button class="small secondary close-reveal-modal" href="#"><?=$this->transEsc('Reset')?></button>
+          <button class="btn btn-transparent" href="#"><?=$this->transEsc('Reset')?></button>
         </li>
       </ul>
       <p>

@@ -12,7 +12,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
      $cover = $this->record($this->driver)->getCover('core', 'medium', $this->record($this->driver)->getThumbnail('large'));
      $preview = $this->record($this->driver)->getPreviews(); ?>
   <? if ($QRCode || $cover || $preview): ?>
-  <div class="medium-3 columns">
+  <div class="col-sm-3 img-col">
     <div class="text-center">
         <? /* Display thumbnail if appropriate: */ ?>
       <? if($cover): ?>
@@ -25,7 +25,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 
       <? /* Display qrcode if appropriate: */ ?>
       <? if($QRCode): ?>
-        <span class="hide-for-small">
+        <span class="hidden-xs">
           <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
         </span>
       <? endif; ?>
@@ -38,9 +38,9 @@ if($loggedin = $this->auth()->isLoggedIn()) {
     <? if ($preview): ?><?=$preview?><? endif; ?>
   </div>
 
-  <div class="medium-9 columns">
+  <div class="col-sm-9 info-col">
   <? else: ?>
-  <div class="medium-12 columns">
+  <div class="col-sm-12">
   <? endif; ?>
 
     <? /* For alle finc-records we want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
@@ -51,19 +51,20 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       <p><?=$this->truncate($summary, 300)?></p>
 
       <? if(strlen($summary) > 300): ?>
-        <p><a href='<?=$this->recordLink()->getTabUrl($this->driver, 'Description')?>'><?=$this->transEsc('Full description')?></a></p>
+        <p><a href='<?=$this->recordLink()->getTabUrl($this->driver, 'Description')?>#tabnav'><?=$this->transEsc('Full description')?></a></p>
       <? endif; ?>
     <? endif; ?>
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
       <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists hide alert-box info" data-alert tabindex="0" aria-live="assertive" role="alertdialog">
+      <div class="savedLists hidden alert alert-info">
         <strong><?=$this->transEsc("Saved in")?>:</strong>
       </div>
     <? endif; ?>
 
     <?/* Display Main Details */?>
-    <table class="table">
+    <table class="table table-striped">
+      <? /* Table summaries are deprecated, use caption - CK */ ?>
       <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
       <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle)): ?>
       <tr>
@@ -182,9 +183,10 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
       <tr>
         <th><?=$this->transEsc('Published')?>: </th>
-        <td>
-          <? foreach ($publications as $field): ?>
-            <span property="publisher" itemtype="http://schema.org/Organization">
+        <? /* microdate/schema org improvements - CK */?>
+        <td  itemscope itemtype="http://schema.org/publisher">
+            <? foreach ($publications as $field): ?>
+            <span property="publisher">
             <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
               <span itemprop="location"><?=$this->escapeHtml($pubPlace)?></span>
             <? endif; ?>
@@ -198,6 +200,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
             <br/>
           <? endforeach; ?>
         </td>
+        <? /* microdate/schema org improvements - END */?>
       </tr>
       <? endif; ?>
 
@@ -290,6 +293,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc-specific - additionals - not in BS, CK */ ?>
       <? $additionals = $this->driver->getAdditionals(); if (!empty($additionals) && is_array($additionals)): ?>
         <? foreach($additionals as $additional) :?>
           <? if (isset($additional['identifier'])): ?>
@@ -304,21 +308,22 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           <? endif; ?>
         <? endforeach; ?>
       <? endif; ?>
-      
+      <? /* finc-specific - additionals - END */ ?>
+
       <? if ($this->usertags()->getMode() !== 'disabled'): ?>
         <? $tagList = $this->driver->getTags(null, null, 'count', $user_id); ?>
         <tr>
           <th><?=$this->transEsc('Tags')?>: </th>
           <td>
-            <span class="right hide-for-print">
-              <a class="tagRecord right" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" data-lightbox><i class="fa fa-plus"></i><?=$this->transEsc('Add Tag')?></a>
-            </span>
+            <a class="tag-record btn btn-link pull-right flip hidden-print" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" data-lightbox>
+              <i class="fa fa-plus" aria-hidden="true"></i> <?=$this->transEsc('Add Tag')?>
+            </a>
             <?=$this->context($this)->renderInContext('record/taglist', array('tagList'=>$tagList, 'loggedin'=>$loggedin)) ?>
           </td>
         </tr>
       <? endif; ?>
 
-      <? /* finc specific rows - Start */ ?>
+      <? /* finc specific rows - hierarchyParentTitle, megaCollection, otherRelationshipEntry, additionalNotes - NOT in BS - CK */ ?>
       <? $hierarchyParentTitle = $this->driver->getHierarchyParentTitle(); if (!empty($hierarchyParentTitle) && empty($series)): ?>
         <tr>
           <th><?=$this->transEsc('Set Multipart')?>: </th>
@@ -369,7 +374,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           </td>
         </tr>
       <? endif; ?>
-      <? /* finc specific rows - End */ ?>
+      <? /* finc specific rows - hierarchyParentTitle, megaCollection, otherRelationshipEntry, additionalNotes - END */ ?>
     </table>
     <?/* End Main Details */?>
   </div>

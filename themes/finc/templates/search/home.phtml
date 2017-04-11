@@ -20,6 +20,8 @@ $this->layout()->breadcrumbs = false;
 ?>
 
 <div class="searchHomeContent">
+  <? /* finc-specific? VF moved this to separate template Helpers - ils-offline.phtml
+ - verify if applicable for us fixme Ck */ ?>
   <?
   $ilsStatusScript = <<<JS
       $(document).ready(function() {
@@ -35,8 +37,9 @@ $this->layout()->breadcrumbs = false;
       });
 JS;
   ?>
+  <? /* finc-specific? - END */ ?>
   <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $ilsStatusScript, 'SET'); ?>
-  <div class="panel clearfix">
+  <div class="well well-lg clearfix">
     <?=$this->context($this)->renderInContext("search/searchbox.phtml", ['ignoreHiddenFilterMemory' => true])?>
   </div>
 </div>
@@ -57,7 +60,7 @@ $(document).ready(function() {
 JS;
         ?>
         <?= $this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
-        <div class="facet <?= $field == 'callnumber-first' ? 'small-6' : 'small-4' ?> columns">
+        <div class="facet <?= $field == 'callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
           <h2><?= $this->transEsc('home_browse') . ' ' . $this->transEsc($details['label']) ?></h2>
           <div id="facet_<?= $this->escapeHtml($field) ?>" class="jstree-facet"
                data-facet="<?= $this->escapeHtml($field) ?>"
@@ -71,10 +74,10 @@ JS;
         <noscript>
       <? endif; ?>
       <? $sortedList = $this->sortFacetList($this->results, $field, $details['list'], $basicSearch); ?>
-      <div class="<?= $field == 'callnumber-first' ? 'small-6' : 'small-4' ?> columns browsesuggest">
+      <div class="<?= $field == 'callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?> browsesuggest">
         <h2><?= $this->transEsc('home_browse') . ' ' . $this->transEsc($details['label']) ?></h2>
         <div class="row">
-          <ul class="list-unstyled <?= $field == "callnumber-first" ? 'small-6' : 'small-12' ?> columns">
+          <ul class="list-unstyled <?=$field == "callnumber-first" ? 'col-sm-6' : 'col-sm-12' ?>">
             <? /* Special case: two columns for LC call numbers... */ ?>
             <? if ($field == "callnumber-first"): ?>
             <? $i = 0;
@@ -84,8 +87,7 @@ JS;
             <? else: $i--; ?>
             <? endif; ?>
             <? if (++$i == 10): ?>
-          </ul>
-          <ul class="list-unstyled small-6 columns">
+                </ul><ul class="list-unstyled col-sm-6">
             <? endif; ?>
             <? endforeach; ?>
             <? /* Special case: collections */ ?>

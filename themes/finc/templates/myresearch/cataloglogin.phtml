@@ -15,12 +15,12 @@
   <h3><?=$this->transEsc('Library Catalog Profile')?></h3>
   <?=$this->flashmessages()?>
   <p><?=$this->transEsc('cat_establish_account')?></p>
-  <form method="post" action="<?=$this->serverUrl(true)?>">
+  <form method="post" action="<?=$this->serverUrl(true)?>" class="form-horizontal">
     <? if ($this->targets !== null): ?>
-    <div class="row">
-      <label class="medium-2 columns" for="login_target"><?=$this->transEsc('login_target')?>:</label>
-      <div class="medium-10 columns">
-        <select id="login_target" name="target" class="auto-width">
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="login_target"><?=$this->transEsc('login_target')?>:</label>
+      <div class="col-sm-10">
+        <select id="login_target" name="target" class="form-control">
         <? foreach ($this->targets as $target): ?>
           <option value="<?=$this->escapeHtmlAttr($target)?>"><?=$this->transEsc("source_$target", null, $target)?></option>
         <? endforeach; ?>
@@ -28,21 +28,21 @@
       </div>
     </div>
     <? endif; ?>
-    <div class="row">
-      <label class="medium-2 columns" for="profile_cat_username"><?=$this->transEsc('Library Catalog Username')?>:</label>
-      <div class="medium-10 columns">
-        <input id="profile_cat_username" type="text" name="cat_username" value="" class="auto-width"/>
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="profile_cat_username"><?=$this->transEsc('Library Catalog Username')?>:</label>
+      <div class="col-sm-10">
+        <input id="profile_cat_username" type="text" name="cat_username" value="" class="form-control"/>
       </div>
     </div>
-    <div class="row">
-      <label class="medium-2 columns" for="profile_cat_password"><?=$this->transEsc('Library Catalog Password')?>:</label>
-      <div class="medium-10 columns">
-        <input id="profile_cat_password" type="password" name="cat_password" value="" class="auto-width"/>
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="profile_cat_password"><?=$this->transEsc('Library Catalog Password')?>:</label>
+      <div class="col-sm-10">
+        <input id="profile_cat_password" type="password" name="cat_password" value="" class="form-control"/>
       </div>
     </div>
-    <div class="row">
-      <div class="medium-10 columns medium-offset-2">
-        <input class="button small" type="submit" name="processLogin" value="<?=$this->transEsc('Login')?>">
+    <div class="form-group">
+      <div class="col-sm-10 offset-sm-2">
+        <input class="btn btn-primary" type="submit" name="processLogin" value="<?=$this->transEsc('Login')?>">
       </div>
     </div>
   </form>

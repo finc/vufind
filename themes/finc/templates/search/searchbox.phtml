@@ -29,11 +29,13 @@ $advSearch = $options->getAdvancedSearchAction();
     $hiddenFilterParams = $this->searchtabs()->getCurrentHiddenFilterParams($this->searchClassId, $ignoreHiddenFilterMemory, '?');
 ?>
 <? if ($this->searchType == 'advanced'): ?>
-  <div class="searchForm">
+  <? /* keep no-margin or advanced search box will be pushed down too far (navbar-form) */ ?>
+  <div class="searchForm navbar-form navbar-left flip no-margin-t">
     <? $tabs = $this->context($this)->renderInContext('search/searchTabs', ['hiddenFilters' => $hiddenFilters]); ?>
-    <? if (!empty($tabs)): ?><?= $tabs ?><div class="tabs-content clearfix"><? endif; ?>
-      <p class="adv_search_terms"><?= $this->transEsc("Your search terms") ?> : "<strong><?= $this->escapeHtml($this->lookfor) ?></strong>"</p>
-      <ul class="adv_search_links">
+    <? if (!empty($tabs)): ?><?= $tabs ?><div class="tab-content clearfix"><? endif; ?>
+      <p class="adv_search_terms hidden-xs"><?= $this->transEsc("Your search terms") ?> : "<strong><?= $this->escapeHtml($this->lookfor) ?></strong>"</p>
+      <? /* We use an ul li list, CK */ ?>
+      <ul class="adv_search_links hidden-xs">
         <li><a href="<?= $this->url($advSearch) ?>?edit=<?= $this->escapeHtmlAttr($this->searchId) ?>"><?= $this->transEsc("Edit this Advanced Search") ?></a></li>
         <li><a href="<?= $this->url($advSearch) . $hiddenFilterParams?>"><?= $this->transEsc("Start a new Advanced Search") ?></a></li>
         <li><a href="<?= $this->url($searchHome) . $hiddenFilterParams?>"><?= $this->transEsc("Start a new Basic Search") ?></a></li>
@@ -41,14 +43,17 @@ $advSearch = $options->getAdvancedSearchAction();
       <? if (!empty($tabs)): ?></div><? endif; ?>
   </div>
 <? else: ?>
-<form class="searchForm inline" role="search" method="get" action="<?= $this->url($basicSearch) ?>" name="searchForm" autocomplete="off">
+  <? /* No navbar-form etc here but below, CK */ ?>
+<form class="searchForm" role="search" method="get" action="<?= $this->url($basicSearch) ?>" name="searchForm" autocomplete="off">
   <?= $this->context($this)->renderInContext('search/searchTabs', ['hiddenFilters' => $hiddenFilters]); ?>
-  <ul class="left list-unstyled">
+  <? /* We use a list and add the navbar-left etc here, CK */ ?>
+  <ul class="navbar-left left list-unstyled">
     <li class="has-form">
+      <? /* We use 'required', CK */ ?>
       <input class="searchForm_lookfor form-control search-query<? if ($this->searchbox()->autocompleteEnabled($this->searchClassId)): ?> autocomplete searcher:<?= $this->escapeHtmlAttr($this->searchClassId) ?><? endif ?>" type="text" name="lookfor" value="<?= $this->escapeHtmlAttr($this->lookfor) ?>" required="required"/>
     </li>
     <? if ($handlerCount > 1): ?>
-      <li class="has-form">
+      <li class="has-form hidden-xs">
         <select class="searchForm_type form-control" name="type" data-native-menu="false">
           <? foreach ($handlers as $handler): ?>
             <option value="<?= $this->escapeHtmlAttr($handler['value']) ?>"<?= $handler['selected'] ? ' selected="selected"' : '' ?>><?= $handler['indent'] ? '-- ' : '' ?><?= $this->transEsc($handler['label']) ?></option>
@@ -59,16 +64,17 @@ $advSearch = $options->getAdvancedSearchAction();
       <input type="hidden" name="type" value="<?= $this->escapeHtmlAttr($handlers[0]['value']) ?>"/>
     <? endif; ?>
     <li class="has-form">
-      <button type="submit" class="postfix"><i class="fa fa-search"></i> <?= $this->transEsc("Find") ?></button>
+      <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> <?= $this->transEsc("Find") ?></button>
     </li>
     <? if ($advSearch): ?>
       <li class="has-form">
-        <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="button secondary postfix" role="button" rel="nofollow"><?=$this->transEsc("Advanced")?></a>
+        <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="btn btn-transparent" role="button" rel="nofollow"><i class="fa fa-cog"></i> <span class="hidden-xs hidden-sm hidden-md"><?=$this->transEsc("Advanced")?></span></a>
       </li>
     <? endif; ?>
   </ul>
 
-  <div id="shard-selector">
+  <? /* We hide this for small - CK */ ?>
+  <div class="checkbox hidden-xs">
     <? $shards = $options->getShards(); if ($options->showShardCheckboxes() && !empty($shards)): ?>
       <?
       $selectedShards = isset($this->selectedShards)
@@ -89,11 +95,13 @@ $advSearch = $options->getAdvancedSearchAction();
   ?>
   <? if ((isset($hasDefaultsApplied) && $hasDefaultsApplied) || !empty($filterDetails)): ?>
     <? $defaultFilterState = $options->getRetainFilterSetting() ? ' checked="checked"' : ''; ?>
-    <div class="checkbox" id="keepfilters">
-      <input onChange="$('.applied-filter').click()" type="checkbox"<?= $defaultFilterState ?> class="searchFormKeepFilters"/>
-      <label><?=$this->transEsc("basic_search_keep_filters")?></label>
+    <div class="checkbox">
+      <input id="keepfilters" onChange="$('.applied-filter').click()" type="checkbox"<?= $defaultFilterState ?> class="searchFormKeepFilters"/>
+      <label for="keepfilters">
+        <?=$this->transEsc("basic_search_keep_filters")?>
+      </label>
     </div>
-    <div class="hide">
+      <div class="hidden">
       <? foreach ($filterDetails as $current): ?>
         <input class="applied-filter" id="<?= $this->escapeHtmlAttr($current['id']) ?>" type="checkbox"<?= $defaultFilterState ?> name="filter[]" value="<?= $this->escapeHtmlAttr($current['value']) ?>"/>
         <label for="<?= $this->escapeHtmlAttr($current['id']) ?>"><?= $this->escapeHtml($current['value']) ?></label>

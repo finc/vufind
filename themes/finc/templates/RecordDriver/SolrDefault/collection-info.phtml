@@ -5,7 +5,7 @@
      $cover = $this->record($this->driver)->getCover('collection-info', 'medium', $this->record($this->driver)->getThumbnail('large'));
      $preview = $this->record($this->driver)->getPreviews(); ?>
   <? if ($QRCode || $cover || $preview): ?>
-  <div class="medium-3 columns">
+  <div class="col-sm-3">
     <div class="text-center">
       <? /* Display thumbnail if appropriate: */ ?>
       <? if($cover): ?>
@@ -14,7 +14,7 @@
 
       <? /* Display qrcode if appropriate: */ ?>
       <? if($QRCode): ?>
-          <span class="hide-for-small">
+        <span class="hidden-xs">
             <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
           </span>
       <? endif; ?>
@@ -23,12 +23,13 @@
     <? if ($preview): ?><?=$preview?><? endif; ?>
   </div>
 
-  <div class="medium-9 columns">
+  <? /* Is this correct? BS has sm-6 and then sm-9 -- CK fixme */ ?>
+  <div class="col-sm-9">
   <? else: ?>
-  <div class="medium-12 columns">
+    <div class="col-sm-12">
   <? endif; ?>
 
-    <? /* For alle finc-records we want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
+      <? /* For all finc-records we want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
     <h2><?=$this->escapeHtml(preg_replace('/(\s[\/\.:]\s*)*$/', '', $this->truncate($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection(), 100)))?></h2>
 
     <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $summary[0] : false; ?>
@@ -37,16 +38,15 @@
     <? endif; ?>
 
     <? /* Display the lists that this record is saved to */ ?>
-    <div class="savedLists hide alert-box info" id="savedLists" data-alert tabindex="0" aria-live="assertive" role="alertdialog">
+      <div class="savedLists hidden alert alert-info" id="savedLists">
       <strong><?=$this->transEsc("Saved in")?>:</strong>
     </div>
 
-    <? /* finc specific accordion toggle change */ ?>
-    <ul class="accordion more-info" data-accordion>
-      <li class="accordion-navigation"><a href="#collection-info" class="accordion-toggler"><?=$this->transEsc('Description')?></a>
-        <div id="collection-info" class="content active">
+      <? /* finc-specific snippet - Begin - CK */ ?>
+      <a id="moreInfoToggle" href="#" class="accordion-toggler" data-toggle="collapse" aria-expanded="false"><?=$this->transEsc('Description')?></a>
+
     <?/* Display Main Details */?>
-          <table>
+      <table id="collectionInfo" class="table table-striped collapse in">
             <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
       <? $authors = $this->driver->getDeduplicatedAuthors(); if ((isset($authors['main']) && count($authors['main'])) || (isset($authors['secondary']) && count($authors['secondary'])) || (isset($authors['corporate']) && count($authors['corporate'])) || (isset($authors['corporate_secondary']) && count($authors['corporate_secondary']))): ?>
         <tr>
@@ -98,7 +98,8 @@
           </td>
         </tr>
       <? endif; ?>
-      <? /* finc specific snippet - EOF */ ?>
+
+        <? /* finc-specific snippet - END */ ?>
 
       <? if (count($summary) > 1): ?>
         <tr>
@@ -111,12 +112,9 @@
         </tr>
       <? endif; ?>
 
-      <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
-        <tr>
-          <th><?=$this->transEsc('Format')?>: </th>
-          <td><?=$this->record($this->driver)->getFormatList()?></td>
-        </tr>
-      <? endif; ?>
+        <? /* finc specific - formats - below, in BS here - CK */ ?>
+
+        <? /* finc-specific: langs not here but at the end of the table -CK */ ?>
 
       <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
       <tr>
@@ -221,6 +219,7 @@
         </tr>
       <? endif; ?>
 
+        <? /* finc-specific hierarchyParentTitle - not in BS- CK */ ?>
       <? $hierarchyParentTitle = $this->driver->getHierarchyParentTitle(); if (!empty($hierarchyParentTitle) && empty($series)): ?>
         <tr>
           <th><?=$this->transEsc('Set Multipart')?>: </th>
@@ -232,6 +231,7 @@
           </td>
         </tr>
       <? endif; ?>
+        <? /* finc-specific hierarchyParentTitle - END */ ?>
 
       <? $isbns = $this->driver->getISBNs(); if (!empty($isbns)): ?>
         <tr>
@@ -255,7 +255,7 @@
         </tr>
       <? endif; ?>
 
-      <? /* finc specific snippet */ ?>
+        <? /* finc specific snippet - additionalNotes - not in BS - CK */ ?>
       <? $additionalNotes = (array) $this->driver->tryMethod('getAdditionalNotes'); if (!empty($additionalNotes)): ?>
         <tr>
           <th><?=$this->transEsc('Notes')?>: </th>
@@ -266,34 +266,28 @@
           </td>
         </tr>
       <? endif; ?>
-      <? /* finc specific snippet - END */ ?>
+        <? /* finc specific snippet - additionalNotes - END */ ?>
 
+        <? /* finc specific snippet - formats - here, in BS above - CK */ ?>
       <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
         <tr>
           <th><?=$this->transEsc('Format')?>: </th>
           <td><?=$this->record($this->driver)->getFormatList()?></td>
         </tr>
       <? endif; ?>
+        <? /* finc specific snippet - formats - END */ ?>
 
+        <? /* finc-specific langs here, at the end of the table -CK */ ?>
       <? $langs = $this->driver->getLanguages(); if (!empty($langs)): ?>
         <tr>
           <th><?=$this->transEsc('Language')?>: </th>
           <td><? $i = 0; foreach ($langs as $lang): ?><?=($i++ == 0)?'':', '?><?= $this->transEsc($lang)?><? endforeach; ?></td>
         </tr>
       <? endif; ?>
+        <? /* finc-specific langs here, at the end of the table - END */ ?>
+
     </table>
     <?/* End Main Details */?>
   </div>
-      </li>
-    </ul>
 </div>
-</div>
-  <script type="text/javascript">
-    $(document).foundation({
-      accordion: {
-        // accordion active
-        expand: true
-      }
-    });
-  </script>
 <!-- recordDriver - solrDefault - COLLECTION-INFO.phtml end -->

@@ -7,56 +7,54 @@ if (!empty($addThis)) {
 
 // Set up some variables for convenience:
 $id = $this->driver->getUniqueId();
+  $controllerClass = 'controller:' . $this->record($this->driver)->getController();
 $cart = $this->cart();
 $cartId = $this->driver->getSourceIdentifier() . '|' . $id;
 ?>
-<dl class="sub-nav hide-for-print">
-  <dt class="sr-only"><?=$this->transEsc('Toolbar')?></dt>
+<ul class="nav nav-pills nav-stacked hidden-print">
+  <li class="sr-only"><?=$this->transEsc('Toolbar')?></li>
     <? if (count($this->driver->getCitationFormats()) > 0): ?>
-      <dd>
-        <a class="cite-record" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Cite')?>" rel="nofollow"><i class="fa fa-asterisk"></i> <?=$this->transEsc('Cite this')?></a>
-      </dd>
+    <li><a class="cite-record <?=$controllerClass?>" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Cite')?>" rel="nofollow"><i class="fa fa-asterisk"></i> <?=$this->transEsc('Cite this')?></a></li>
     <? endif; ?>
-    <? /*
-    <dd>
-      <a class="sms-record" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'SMS')?>" rel="nofollow"><i class="fa fa-mobile"></i> <?=$this->transEsc('Text this')?></a>
-    </dd>
-    */ ?>
-    <dd>
-      <a class="mail-record" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Email')?>" rel="nofollow"><i class="fa fa-envelope"></i> <?=$this->transEsc('Email this')?></a>
-    </dd>
+<? /* <li><a class="sms-record <?=$controllerClass?>" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'SMS')?>" rel="nofollow"><i class="fa fa-mobile"></i> <?=$this->transEsc('Text this')?></a></li> */?>
+  <li><a class="mail-record <?=$controllerClass?>" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Email')?>" rel="nofollow"><i class="fa fa-envelope"></i> <?=$this->transEsc('Email this')?></a></li>
 
     <? $exportFormats = $this->export()->getFormatsForRecord($this->driver); ?>
     <? if (count($exportFormats) > 0): ?>
-      <dd class="dropdown">
-        <a class="export-toggle" data-dropdown="exportDD" data-options="is_hover:true" href="<?= $this->recordLink()->getActionUrl($this->driver, 'Export') ?>" rel="nofollow">
-          <i class="fa fa-list-alt"></i> <?= $this->transEsc('Export Record') ?></a>
-        <ul id="exportDD" class="f-dropdown" role="menu" data-dropdown-content>
+    <li class="dropdown">
+      <a class="export-toggle dropdown-toggle" data-toggle="dropdown" href="<?=$this->recordLink()->getActionUrl($this->driver, 'Export')?>" rel="nofollow"><i class="fa fa-list-alt" aria-hidden="true"></i> <?=$this->transEsc('Export Record') ?></a>
+      <ul class="dropdown-menu" role="menu">
           <? foreach ($exportFormats as $exportFormat): ?>
             <li>
               <a <? if ($this->export()->needsRedirect($exportFormat)): ?>target="<?= $this->escapeHtmlAttr($exportFormat) ?>Main" <? endif; ?>href="<?= $this->recordLink()->getActionUrl($this->driver, 'Export') ?>?style=<?= $this->escapeHtmlAttr($exportFormat) ?>" rel="nofollow"><?= $this->transEsc('Export to') ?><?= $this->transEsc($this->export()->getLabelForFormat($exportFormat)) ?></a>
             </li>
           <? endforeach; ?>
         </ul>
-      </dd>
+    </li>
     <? endif; ?>
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-      <dd>
-        <a class="save-record" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" title="<?=$this->transEsc('Add to favorites')?>" rel="nofollow"><i class="fa fa-star"></i> <?=$this->transEsc('Add to favorites')?></a>
-      </dd>
+    <li><a class="save-record <?=$controllerClass?>" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" title="<?=$this->transEsc('Add to favorites')?>" rel="nofollow"><i class="fa fa-star"></i> <?=$this->transEsc('Add to favorites')?></a></li>
     <? endif; ?>
     <? if (!empty($addThis)): ?>
-      <dd>
-        <a class="addThis addthis_button" href="https://www.addthis.com/bookmark.php?v=250&amp;pub=<?= urlencode($addThis) ?>"><i class="fa fa-bookmark"></i> <?= $this->transEsc('Bookmark') ?></a>
-      </dd>
+    <li><a class="addThis addthis_button" href="https://www.addthis.com/bookmark.php?v=250&amp;pub=<?=urlencode($addThis)?>"><i class="fa fa-bookmark"></i> <?=$this->transEsc('Bookmark')?></a></li>
     <? endif; ?>
     <? if ($cart->isActive()): ?>
-      <dd id="bookbag-menu">
+    <li class="bookbag-menu">
         <input class="cartId" type="hidden" name="ids[]" value="<?= $this->escapeHtmlAttr($cartId) ?>" />
-        <a class="cart-add hide <? if (!$cart->contains($cartId)): ?>correct <? endif ?>" href="#"><i class="fa fa-plus"></i> <?= $this->transEsc('Add to Book Bag') ?></a>
-        <a class="cart-remove hide <? if ($cart->contains($cartId)): ?>correct <? endif ?>" href="#"><i class="fa fa-minus-circle"></i> <?= $this->transEsc('Remove from Book Bag') ?></a>
-      </dd>
+        <a class="cart-add hidden <? if (!$cart->contains($cartId)): ?>correct <? endif ?>" href="#"  title="<?=$this->transEsc('Add to Book Bag') ?>"><i class="fa fa-plus" aria-hidden="true"></i> <?= $this->transEsc('Add to Book Bag') ?></a>
+        <a class="cart-remove hidden <? if ($cart->contains($cartId)): ?>correct <? endif ?>" href="#" title="<?=$this->transEsc('Remove from Book Bag') ?>"><i class="fa fa-minus-circle" aria-hidden="true"></i> <?= $this->transEsc('Remove from Book Bag') ?></a>
+      <noscript>
+        <form method="post" name="addForm" action="<?=$this->url('cart-processor')?>">
+          <input type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($cartId)?>" />
+          <? if ($cart->contains($cartId)): ?>
+            <input class="btn btn-primary" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
+          <? else: ?>
+            <input class="btn btn-primary" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
     <? endif; ?>
-  </dl>
+        </form>
+      </noscript>
+    </li>
+  <? endif; ?>
+</ul>
 <!-- templates - recordDriver - solrDefault - TOOLBAR.phtml - End -->
