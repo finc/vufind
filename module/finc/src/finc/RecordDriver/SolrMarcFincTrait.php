@@ -1903,4 +1903,14 @@ trait SolrMarcFincTrait
     {
         return $this->getFieldArray('028', ['a', 'b']);
     }
+
+    /**
+     * Get the musical key of a piece (Marc 384).
+     *
+     * @return array
+     */
+    public function getMusicalKey()
+    {
+        return $this->getFieldArray('384');
+    }
 }
