@@ -137,7 +137,8 @@ trait SolrMarcFincTrait
                             $address = $address->getData();
 
                             $tmpArr = [];
-                            // Is there a description?  If not, just use the URL itself.
+                            // Is there a description?  If not, just use the URL
+                            // itself.
                             foreach (['y', '3', 'z', 'x'] as $current) {
                                 $desc = $url->getSubfield($current);
                                 if ($desc) {
@@ -149,17 +150,25 @@ trait SolrMarcFincTrait
                             $desc = implode(', ', $tmpArr);
 
                             // If no description take url as description
-                            // For 856[40] url denoting resource itself use "Online Access"/"Online-Zugang" #6109
+                            // For 856[40] url denoting resource itself
+                            // use "Online Access"/"Online-Zugang" #6109
                             if (empty($desc)) {
-                                if ($indicator1 == 4 && $indicator2 == 0 && preg_match('!https?://.*?doi.org/!', $address)) {
+                                if ($indicator1 == 4
+                                    && $indicator2 == 0
+                                    && preg_match('!https?://.*?doi.org/!', $address)
+                                ) {
                                     $desc = "Online Access";
                                 } else {
                                     $desc = $address;
                                 }
                             }
 
-                            // If url doesn't exist as key so far write to return variable.
-                            if (!in_array(['url' => $address, 'desc' => $desc], $retVal)) {
+                            // If url doesn't exist as key so far write
+                            // to return variable.
+                            if (!in_array(
+                                ['url' => $address, 'desc' => $desc], $retVal
+                            )
+                            ) {
                                 $retVal[] = ['url' => $address, 'desc' => $desc];
                             }
                         }
@@ -175,26 +184,30 @@ trait SolrMarcFincTrait
      * [Ebl]->product_sigel)
      *
      * @return bool
-     * @link https://intern.finc.info/issues/8055
-     * @link https://intern.finc.info/issues/9634
+     * @link   https://intern.finc.info/issues/8055
+     * @link   https://intern.finc.info/issues/9634
      */
     private function _isEBLRecord()
     {
-        $value = $this->getFirstFieldValue('912', ['a']);
-
+        $values = $this->getFieldArray('912', ['a']);
         if (isset($this->mainConfig->Ebl->product_sigel)) {
             if (is_object($this->mainConfig->Ebl->product_sigel)) {
                 // handle product_sigel array
-                return in_array(
-                    $value,
-                    $this->mainConfig->Ebl->product_sigel->toArray()
-                );
+                return (
+                    count(
+                        array_intersect(
+                            $values, $this->mainConfig->Ebl->product_sigel->toArray()
+                        )
+                    ) > 0
+                ) ? true : false;
             } else {
                 // handle single product_sigel (legacy support)
-                return preg_match(
-                    '/' . addslashes($this->mainConfig->Ebl->product_sigel) . '/',
-                    $value
-                );
+                return (
+                    0 < in_array(
+                        $this->mainConfig->Ebl->product_sigel,
+                        $values
+                    )
+                ) ? true : false;
             }
         }
         return false;
