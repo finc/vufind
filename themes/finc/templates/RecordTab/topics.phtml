@@ -4,7 +4,10 @@
 $this->headTitle($this->translate('Topics') . ': ' . $this->driver->getBreadcrumb());
 
 ?>
-<table class="table table-striped" summary="<?=$this->transEsc('Topics')?>">
+<table class="table table-striped">
+  <caption class="sr-only">
+    <?=$this->transEsc('Topics')?>
+  </caption>
 <? if ($rvk = $this->driver->tryMethod('getRvkWithMetadata')): ?>
   <? $contentDisplayed = true; ?>
   <tr>

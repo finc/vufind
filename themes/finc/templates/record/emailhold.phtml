@@ -66,7 +66,7 @@
               </option>
             <? endif; ?>
             <? foreach ($this->pickup as $lib): ?>
-              <option value="<?=$this->escapeHtmlAttr($lib['locationID'])?>"<?=($selected == $lib['locationID']) ? ' selected="selected"' : ''?>>
+              <option value="<?=$this->escapeHtmlAttr($lib['locationID'])?>" <?=($selected == $lib['locationID']) ? ' selected="selected"' : ''?>>
                 <?=$this->escapeHtml($lib['locationDisplay'])?>
               </option>
             <? endforeach; ?>

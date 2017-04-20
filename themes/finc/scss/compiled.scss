@@ -3,14 +3,10 @@
 //  which includes finc plus all subsequent customizations
 //  i.e. finc's compiled.scss imports bootstrap3/scss/compiled - the house-specific branches such as
 //  de_15 then import finc/scss/compiled
-
 // 0. Note for developers
 // Do NOT EDIT  compiled.css
-
 // 1.   Define or re-define KEY VARIABLES and MIXINS (see 1.1 ff below) OR import your own
-
 @import 'customVariables';
-
 //@import 'customMixins';
 // 1.1  Unless imported, define standard colour variables here which are used in variables below prior to finc.scss import
 // e.g. $brand-primary: #008CBA !default;   // bondi-blue
@@ -20,7 +16,6 @@
 // $brand-success: #43AC6A !default;   // sea-green
 // $brand-warning: #f08a24 !default;   // carrot
 // 1.2  DO NOT define site-specific colours in finc - this will be done in site-specific themes
-
 // 2. For Media queries use:
 // Extra small screen / phone: '$screen-xs-min' (480px);
 // Small screen / tablet: '$screen-sm-min' (768px);
@@ -29,8 +24,6 @@
 // The maximum ranges are defined as the next higher element minus 1px, so:
 // '$screen-xs-max' = $screen-sm-min - 1
 // etc: you can use '$screen-xs-max', '$screen-sm-max' and '$screen-md-max'
-
-
 // 3. import entire BS or (instances) finc compiled.scss to have variables and mixins defined above applied to it
 @import 'bootstrap';
 // @import '../../finc/scss/compiled.scss'
@@ -283,7 +276,6 @@ select {
 
 // FORMS - END
 
-
 // IMAGES
 
 //// img {}
@@ -307,7 +299,6 @@ select {
 
 // IDs
 
-
 // CLASSES (Elements that are used in several places)
 //// DROPDOWNS
 //// remove padding as it creates space above/below menu items (e.g. language selector)
@@ -315,12 +306,18 @@ select {
   padding-bottom: 0;
   padding-top: 0;
 }
+
 //// HOVERABLE DROPDOWNS -- make DDs hoverable as in FNDTN
 // Add the dropdown-on-hover class to the parent li container! OR use on all (see commented-out part below)
 // Menu will show on hover
 .dropdown-on-hover:hover .dropdown-menu {
   display: block;
 }
+
+//// OR use on ALL dropdowns like so
+//.dropdown:hover .dropdown-menu {
+//  display: block;
+//}
 
 //// ALERTS
 ////// Light Text on Dark BG
@@ -400,6 +397,7 @@ select {
 .tooltip-inner {
   padding: .75em;
 }
+
 
 
 //// Source-id branding (WISO etc)
@@ -989,6 +987,11 @@ header,
   font-size: $font-size-breadcrumbs;
   padding-left: ($grid-gutter-width / 2 - 2px); // take 2 px off for borders
 
+  // Divider:
+  > li + li::before {
+    color: inherit;
+  }
+
   //// color of links in breadcrumbs
   a,
   > .active a {
@@ -1000,11 +1003,16 @@ header,
 
 // MAIN CONTENT (SIDEBAR BELOW, ADVANCED SEARCH BELOW)
 #content {
-  //// push content a little lower to allow for height of navbar/header, same needs to be applied to .sidebar, below!
+  // push content a little lower to allow for height of navbar/header, same needs to be applied to .sidebar, below!
   .row:first-of-type {
     padding-top: $content-top-padding;
 
-    //// for all widths that use Offcanvas (767px) ($screen-xs-max)
+    // correct content padding on subsequent rows
+    .row .row {
+      padding-top: 0;
+    }
+
+    // for all widths that use Offcanvas (767px) ($screen-xs-max)
     @media only screen and (max-width: $screen-xs-max) {
       padding-top: $content-top-padding * 4;
     }
@@ -1072,7 +1080,7 @@ footer .container {
 .savedLists {
 
   &.alert {
-    color: $state-light-text-on-dark;}
+    color: $state-light-text-on-dark; }
 
   ul {
     list-style: none;
@@ -1222,15 +1230,13 @@ footer .container {
   // Remove dotted lines around items when hovering over
   .close {
     &:hover,
-    &:focus { 
-        outline: none; 
-    }
+    &:focus {outline: none;}
   }
 }
+
 //// Advanced Search - END
 
 // MAIN CONTENT - END
-
 
 // SIDEBAR
 //// Add top padding to sidebar for better looks -- same as for #content, above

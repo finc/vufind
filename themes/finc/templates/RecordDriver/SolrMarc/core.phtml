@@ -1,4 +1,4 @@
-<!-- recordDriver - solrMarc - CORE.phtml -->
+<!-- recordDriver - solrMarc - CORE -->
 <?
 if($loggedin = $this->auth()->isLoggedIn()) {
   $user_id = $loggedin->id;
@@ -57,7 +57,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
       <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists hide alert alert-info" data-alert tabindex="0" aria-live="assertive" role="alertdialog">
+      <div class="savedLists hidden alert alert-info">
         <strong><?=$this->transEsc("Saved in")?>:</strong>
       </div>
     <? endif; ?>
@@ -392,4 +392,4 @@ if($loggedin = $this->auth()->isLoggedIn()) {
     <?/* End Main Details */?>
   </div>
 </div>
-<!-- recordDriver - solrMarc - CORE.phtml end -->
+<!-- recordDriver - solrMarc - CORE - END -->

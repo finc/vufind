@@ -7,7 +7,7 @@
     <? /* Do not use form-control as it messes up the select box */ ?>
     <select id="sort_options_1" name="sort" class="jumpMenu">
       <? foreach ($list as $sortType => $sortData): ?>
-        <option value="<?=$this->escapeHtmlAttr($sortType)?>"<?=$sortData['selected']?' selected="selected"':''?>><?=$this->transEsc($sortData['desc'])?></option>
+        <option value="<?=$this->escapeHtmlAttr($sortType)?>" <?=$sortData['selected']?' selected="selected"':''?>><?=$this->transEsc($sortData['desc'])?></option>
       <? endforeach; ?>
     </select>
     <noscript><input type="submit" class="btn btn-primary" value="<?=$this->transEsc("Set")?>" /></noscript>

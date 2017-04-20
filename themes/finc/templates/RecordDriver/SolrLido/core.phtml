@@ -1,4 +1,4 @@
-<!-- recordDriver - solrLido - CORE.phtml -->
+<!-- recordDriver - solrLido - CORE -->
 <?
 if($loggedin = $this->auth()->isLoggedIn()) {
   $user_id = $loggedin->id;
@@ -12,7 +12,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
      $cover = $this->record($this->driver)->getCover('core', 'medium', $this->record($this->driver)->getThumbnail('large'));
      $preview = $this->record($this->driver)->getPreviews(); ?>
   <? if ($QRCode || $cover || $preview): ?>
-  <div class="medium-3 columns">
+  <div class="col-sm-3">
     <div class="text-center">
         <? /* Display thumbnail if appropriate: */ ?>
       <? if($cover): ?>
@@ -25,7 +25,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 
         <? /* Display qrcode if appropriate: */ ?>
         <? if($QRCode): ?>
-        <span class="hide-for-small">
+        <span class="hidden-xs">
           <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
         </span>
         <? endif; ?>
@@ -58,9 +58,9 @@ if($loggedin = $this->auth()->isLoggedIn()) {
     <? if ($preview): ?><?=$preview?><? endif; ?>
   </div>
 
-  <div class="medium-9 columns">
+  <div class="col-sm-9">
   <? else: ?>
-  <div class="medium-12 columns">
+  <div class="col-sm-12">
   <? endif; ?>
     <? /* This following line is a finc-specific change */ ?>
     <h3 property="name"><?=$this->escapeHtml($this->driver->getTitle())?></h3>
@@ -76,13 +76,13 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
       <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists hide alert-box info" data-alert tabindex="0" aria-live="assertive" role="alertdialog">
+      <div class="savedLists hidden alert alert-info">
         <strong><?=$this->transEsc("Saved in")?>:</strong>
       </div>
     <? endif; ?>
 
     <?/* Display Main Details */?>
-    <table class="table">
+    <table class="table table-striped">
       <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
       <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle)): ?>
       <tr>
@@ -402,7 +402,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <tr>
           <th><?=$this->transEsc('Tags')?>: </th>
           <td>
-            <span class="right hide-for-print">
+            <span class="right hidden-print">
               <a class="tagRecord right" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" data-lightbox><i class="fa fa-plus"></i><?=$this->transEsc('Add Tag')?></a>
             </span>
             <?=$this->context($this)->renderInContext('record/taglist', array('tagList'=>$tagList, 'loggedin'=>$loggedin)) ?>
@@ -413,4 +413,4 @@ if($loggedin = $this->auth()->isLoggedIn()) {
     <?/* End Main Details */?>
   </div>
 </div>
-<!-- recordDriver - solrLido - CORE.phtml end -->
+<!-- recordDriver - solrLido - CORE - END -->
