@@ -158,19 +158,21 @@ class Record extends \VuFind\View\Helper\Root\Record
 
         foreach ($this->config->ExternalAccess as $recordType => $accessUrl) {
             switch ($recordType) {
-                case "id":
-                    $replaceId = $this->driver->getUniqueID();
-                    break;
-                case "ppn":
-                    $replaceId = $this->driver->tryMethod('getRID');
-                    break;
-                default:
-                    $replaceId = null;
+            case "id":
+                $replaceId = $this->driver->getUniqueID();
+                break;
+            case "ppn":
+                $sourceID = $this->driver->tryMethod('getSourceID');
+                $replaceId = (isset($sourceID)
+                    && true === in_array($sourceID, ["0", "112"]))
+                    ? $this->driver->tryMethod('getRID') : null;
+                break;
+            default:
+                $replaceId = null;
             }
             foreach ($accessUrl as $institution => $urlPattern) {
-                if (
-                    true === in_array($institution, $institutions) &&
-                    !empty($replaceId)
+                if (true === in_array($institution, $institutions)
+                    && !empty($replaceId)
                 ) {
                     $extUrls[++$i]['desc'] = $institution;
                     $extUrls[$i]['url'] = sprintf($urlPattern, $replaceId);
