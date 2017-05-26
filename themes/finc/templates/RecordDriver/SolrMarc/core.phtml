@@ -85,7 +85,11 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <th><?=$this->transEsc('New Title')?>: </th>
         <td>
           <? foreach($nextTitles as $field): ?>
-            <a href="<?=$this->record($this->driver)->getLink('title', $field)?>"><?=$this->escapeHtml($field)?></a><br/>
+            <? if (!empty($field['record_id']) && $recordLink = $this->RecordLink()->getRecordLink($field['record_id'], 'record_id')): ?>
+              <?=$this->escapeHtml($field['pretext'])?> <a href="<?=$recordLink;?>"><?=$this->escapeHtml($field['text'])?></a><br/>
+            <? else: ?>
+              <?=$this->escapeHtml($field['pretext'])?> <a href="<?=$this->record($this->driver)->getLink('title', $field['text'])?>"><?=$this->escapeHtml($field['text'])?></a><br/>
+            <? endif; ?>
           <? endforeach; ?>
         </td>
       </tr>
@@ -96,7 +100,11 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <th><?=$this->transEsc('Previous Title')?>: </th>
         <td>
           <? foreach($prevTitles as $field): ?>
-            <a href="<?=$this->record($this->driver)->getLink('title', $field)?>"><?=$this->escapeHtml($field)?></a><br/>
+            <? if (!empty($field['record_id']) && $recordLink = $this->RecordLink()->getRecordLink($field['record_id'], 'record_id')): ?>
+              <?=$this->escapeHtml($field['pretext'])?> <a href="<?=$recordLink;?>"><?=$this->escapeHtml($field['text'])?></a><br/>
+            <? else: ?>
+              <?=$this->escapeHtml($field['pretext'])?> <a href="<?=$this->record($this->driver)->getLink('title', $field['text'])?>"><?=$this->escapeHtml($field['text'])?></a><br/>
+            <? endif; ?>
           <? endforeach; ?>
         </td>
       </tr>

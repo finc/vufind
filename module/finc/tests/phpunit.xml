@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<phpunit bootstrap="bootstrap.php"
+         backupGlobals="false">
+
+        <testsuite name="fincTest">
+            <directory>./unit-tests/src</directory>
+        </testsuite>
+</phpunit>

@@ -1083,6 +1083,49 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Get an array of successing titles for the record. Opposite method to
+     * getting previous title of marc field 780.
+     *
+     * @return array
+     * @access protected
+     */
+    public function getNewerTitles()
+    {
+        $array = [];
+        $previous = $this->getMarcRecord()->getFields('785');
+
+        // if no entry return void
+        if (!$previous) {
+            return $array;
+        }
+
+        foreach ($previous as $key => $line) {
+            $array[$key]['pretext'] = ($line->getSubfield('i'))
+                ? $line->getSubfield('i')->getData() : '';
+            $array[$key]['text'] = ($line->getSubfield('a'))
+                ? $line->getSubfield('a')->getData() : '';
+            if (empty($array[$key]['text'])) {
+                $array[$key]['text'] = ($line->getSubfield('t'))
+                    ? $line->getSubfield('t')->getData() : '';
+            }
+            // get ppns of bsz
+            $linkFields = $line->getSubfields('w');
+            foreach ($linkFields as $current) {
+                $text = $current->getData();
+                // Extract parenthetical prefixes:
+                if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
+                    $array[$key]['record_id'] = $matches[2].$matches[3];
+                }
+            } // end foreach
+        } // end foreach
+
+        // open to discuss if it is better use $this->addFincIDToRecord($array) or
+        // RecordLink as ViewHelper at frontend;
+        return $array;
+    }
+
+
+    /**
      * Get notice of a title representing a special case of University
      * library of Chemnitz: MAB field 999l
      *
@@ -1206,6 +1249,47 @@ trait SolrMarcFincTrait
             }
         }
         return $this->addFincIDToRecord($array);
+    }
+
+    /**
+     * Get an array of previous titles for the record.
+     *
+     * @return array
+     * @access protected
+     */
+    public function getPreviousTitles()
+    {
+        $array = [];
+        $previous = $this->getMarcRecord()->getFields('780');
+
+        // if no entry return void
+        if (!$previous) {
+            return $array;
+        }
+
+        foreach ($previous as $key => $line) {
+            $array[$key]['pretext'] = ($line->getSubfield('i'))
+                ? $line->getSubfield('i')->getData() : '';
+            $array[$key]['text'] = ($line->getSubfield('a'))
+                ? $line->getSubfield('a')->getData() : '';
+            if (empty($array[$key]['text'])) {
+                $array[$key]['text'] = ($line->getSubfield('t'))
+                    ? $line->getSubfield('t')->getData() : '';
+            }
+            // get ppns of bsz
+            $linkFields = $line->getSubfields('w');
+            foreach ($linkFields as $current) {
+                $text = $current->getData();
+                // Extract parenthetical prefixes:
+                if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
+                    $array[$key]['record_id'] = $matches[2].$matches[3];
+                }
+            } // end foreach
+        } // end foreach
+
+        // open to discuss if it is better use $this->addFincIDToRecord($array) or
+        // RecordLink as ViewHelper at frontend;
+        return $array;
     }
 
     /**

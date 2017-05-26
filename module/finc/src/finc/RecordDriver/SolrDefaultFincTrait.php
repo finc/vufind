@@ -697,11 +697,11 @@ trait SolrDefaultFincTrait
      * This method can be used to indicate a direct link than to form a general
      * look for query.
      *
-     * @param array $rids Array of record ids to test.
+     * @param array $array Array of record ids to test.
      *
      * @return int mixed  If success return at least one finc id otherwise null.
      */
-    protected function addFincIDToRecord ( $array )
+    protected function addFincIDToRecord( $array )
     {
         // record ids
         $rids = [];
