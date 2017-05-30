@@ -1,14 +1,13 @@
 <!-- recordTab - HOLDINGSILS.phtml -->
 <?
-// Set up convenience variables:
-$account = $this->auth()->getManager();
-$user = $account->isLoggedIn();
-$openUrl = $this->openUrl($this->driver, 'holdings');
-$openUrlActive = $openUrl->isActive();
-// Account for replace_other_urls setting
-$urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
-// nxt line = finc-specific - #9245 - CK
-$extUrls = $this->record($this->driver)->getExternalAccessLinks();
+    // Set up convenience variables:
+    $account = $this->auth()->getManager();
+    $user = $account->isLoggedIn();
+    $openUrl = $this->openUrl($this->driver, 'holdings');
+    $openUrlActive = $openUrl->isActive();
+    // Account for replace_other_urls setting
+    $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+$extUrls = $this->externalCatalogueLink($this->driver)->getLinks();
 
 $offlineMode = $this->ils()->getOfflineMode();
 $holdings = [];

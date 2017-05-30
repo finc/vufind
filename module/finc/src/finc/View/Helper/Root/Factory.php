@@ -163,4 +163,25 @@ class Factory
         );
     }
 
+    /**
+     * Construct the External Catalogue Link Record helper.
+     *
+     * @param ServiceManager $sm Service manager
+     *
+     * @return ExternalCatalogueLink
+     */
+    public static function getExternalCatalogueLink(ServiceManager $sm)
+    {
+        $externalAccessLinks = json_decode(
+            file_get_contents(
+                \VuFind\Config\Locator::getConfigPath('ExternalCatalogue.json')
+            ),
+            true
+        );
+        return new ExternalCatalogueLink(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $externalAccessLinks
+        );
+    }
+
 }

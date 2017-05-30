@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "External Catalogue Links",
+  "description": "Define external catalogue links for VuFind and filter for SolrDefault criteria",
+  "type": "object",
+  "properties": {
+    "id": {
+      "patternProperties": {
+        "([A-Z0-9]*)-([A-Z0-9]*)": {
+          "properties": {
+            "pattern": {
+              "description": "URL pattern for replacement with identifier",
+              "type": "string"
+            },
+            "filter": {
+              "patternProperties": {
+                "[A-Z0-9]*": {
+                  "description": "Filter rules",
+                  "type": [
+                    "string",
+                    "array"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ppn": {
+      "patternProperties": {
+        "([A-Z0-9]*)-([A-Z0-9]*)": {
+          "properties": {
+            "pattern": {
+              "description": "URL pattern for replacement with identifier",
+              "type": "string"
+            },
+            "filter": {
+              "patternProperties": {
+                "[A-Z0-9]*": {
+                  "description": "Filter rules",
+                  "type": [
+                    "string",
+                    "array"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

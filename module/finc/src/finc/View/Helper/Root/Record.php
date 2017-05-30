@@ -27,6 +27,7 @@
  */
 namespace finc\View\Helper\Root;
 use finc\Rewrite;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 /**
  * Record driver view helper
@@ -80,11 +81,13 @@ class Record extends \VuFind\View\Helper\Root\Record
      * @param \Zend\Config\Config $config VuFind configuration
      * @param \Zend\View\Helper\Url $helper URL helper
      */
-    public function __construct($config = null,
-                                \Zend\View\Helper\Url $helper,
-                                \VuFind\Auth\Manager $manager,
-                                $rewrite,
-                                $resolverConfig)
+    public function __construct(
+        $config = null,
+        \Zend\View\Helper\Url $helper,
+        \VuFind\Auth\Manager $manager,
+        $rewrite,
+        $resolverConfig
+    )
     {
         parent::__construct($config);
         $this->url = $helper;
@@ -136,8 +139,11 @@ class Record extends \VuFind\View\Helper\Root\Record
     /**
      * Get external access links to other ILS defined by config setting.
      *
-     * @access public
-     * @return array    Associative array.
+     * @access     public
+     * @return     array     Associative array.
+     * @throws     Exception Value of source ids has to be numeric.
+     * @deprecated Deprecated due to View Helper ExternalCatalogueLink->getLinks()
+     * @see        https://projekte.ub.uni-leipzig.de/issues/10543
      */
     public function getExternalAccessLinks()
     {
@@ -155,22 +161,39 @@ class Record extends \VuFind\View\Helper\Root\Record
         if (!isset($institutions) || count($institutions) == 0) {
             return [];
         }
-
         foreach ($this->config->ExternalAccess as $recordType => $accessUrl) {
+            $replaceId = null;
+            // get identifier of record id type
             switch ($recordType) {
             case "id":
                 $replaceId = $this->driver->getUniqueID();
                 break;
             case "ppn":
-                $sourceID = $this->driver->tryMethod('getSourceID');
-                $replaceId = (isset($sourceID)
-                    && true === in_array($sourceID, ["0", "112"]))
-                    ? $this->driver->tryMethod('getRID') : null;
+                $replaceId = $this->driver->tryMethod('getRID');
                 break;
             default:
                 $replaceId = null;
             }
             foreach ($accessUrl as $institution => $urlPattern) {
+                // source_id filter
+                if (is_array($urlPattern)) {
+                    foreach ($urlPattern as $source_id => $pattern) {
+                        $urlPattern = $pattern;
+                        $sids = explode(',', $source_id);
+                        if (!array_product(array_map('is_numeric', $sids))) {
+                            throw new Exception(
+                                'Value of source ids has to be numeric.'
+                            );
+                        }
+                        $sourceID = $this->driver->tryMethod('getSourceID');
+                        $replaceId = (isset($sourceID)
+                            && true === in_array($sourceID, $sids))
+                            ? $replaceId : null;
+                        break;
+                    };
+
+                }
+                // institution filter
                 if (true === in_array($institution, $institutions)
                     && !empty($replaceId)
                 ) {
@@ -216,7 +239,7 @@ class Record extends \VuFind\View\Helper\Root\Record
      * Map list of multiple dates to a view of date range as string e.g.
      * startdate - enddate Sorting of array should be managed by backend.
      *
-     * @param array dates
+     * @param array $dates Dates
      *
      * @return strings
      */
@@ -236,7 +259,7 @@ class Record extends \VuFind\View\Helper\Root\Record
      * Remove author dates from author string (used for using author names as search
      * term).
      *
-     * @param string authordata
+     * @param string $author Author data
      *
      * @return strings
      */

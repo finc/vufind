@@ -15,7 +15,9 @@ return array(
             'citation' => 'finc\View\Helper\Root\Factory::getCitation',
             'openurl' => 'finc\View\Helper\Root\Factory::getOpenUrl',
             'branchinfo' => 'finc\View\Helper\Root\Factory::getBranchInfo',
-            'sidefacet' => 'finc\View\Helper\Root\Factory::getSideFacet'
+            'sidefacet' => 'finc\View\Helper\Root\Factory::getSideFacet',
+            'externalCatalogueLink' =>
+                'finc\View\Helper\Root\Factory::getExternalCatalogueLink',
         ),
         'invokables' => array(
             'resultfeed' => 'finc\View\Helper\Root\ResultFeed'
