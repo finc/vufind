@@ -93,8 +93,8 @@ $pagination-disabled-color: $gainsboro !default;
 ////// NOTE that the hover states use the default color too!
 $btn-primary-color: $white !default;
 $btn-primary-bg: $brand-primary !default;
-// $btn-primary-color: $btn-primary-color !default; // already defined this way in BS _variables, use this variable to change it 
-// $btn-primary-bg: $brand-primary !default; // already defined this way in BS _variables, use this variable to change it 
+// $btn-primary-color: $btn-primary-color !default; // already defined this way in BS _variables, use this variable to change it
+// $btn-primary-bg: $brand-primary !default; // already defined this way in BS _variables, use this variable to change it
 $btn-transparent-color: $steel !default;
 $btn-transparent-bg: transparent !default;
 $btn-transparent-border: $border-color !default;
@@ -154,6 +154,7 @@ $grid-gutter-width: 30px;
 //// Navbar gets a minimum-height of 50px by default, activate and change here!
 //// for fixed navbars, the body requires a padding-bottom of the same height as the navbar
 $navbar-height: 80px !default;
+$navbar-height-sm: $navbar-height / 2 !default;
 //// Set navbar-height for small devices, USE px as rem will throw an error in conjunction _variables.scss
 $navbar-height-xs: $navbar-height / 3 !default;
 

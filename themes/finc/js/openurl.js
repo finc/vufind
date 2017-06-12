@@ -20,21 +20,21 @@ VuFind.register('openurl', function() {
   var embedOpenUrlLinks = function(element) {
     // Extract the OpenURL associated with the clicked element:
     var openUrl = element.children('span.openUrl:first').attr('title');
-  
-    // Hide the controls now that something has been clicked:
+
+    // hidden the controls now that something has been clicked:
     var controls = element.parents('.openUrlControls');
-    controls.removeClass('openUrlEmbed').addClass('hide');
-  
+    controls.removeClass('openUrlEmbed').addClass('hidden');
+
     // Locate the target area for displaying the results:
     var target = controls.next('div.resolver');
-  
+
     // To chose the right resolver we have to get the resolvertype:
     var resolvertype = element.children('span.resolvertype:first').attr('title');
-  
+
     // If the target is already visible, a previous click has populated it;
     // don't waste time doing redundant work.
-    if (target.hasClass('hide')) {
-      _loadResolverLinks(target.removeClass('hide'), openUrl, element.data('search-class-id'), resolvertype);
+    if (target.hasClass('hidden')) {
+      _loadResolverLinks(target.removeClass('hidden'), openUrl, element.data('search-class-id'), resolvertype);
     }
   };
 
@@ -44,7 +44,7 @@ VuFind.register('openurl', function() {
     if (typeof(container) == 'undefined') {
       container = $('body');
     }
-  
+
     // assign action to the openUrlWindow link class
     container.find('a.openUrlWindow').unbind('click').click(function() {
       var params = extractClassParams(this);
@@ -52,13 +52,13 @@ VuFind.register('openurl', function() {
       window.open($(this).attr('href'), 'openurl', settings);
       return false;
     });
-  
+
     // assign action to the openUrlEmbed link class
     container.find('.openUrlEmbed a').unbind('click').click(function() {
       embedOpenUrlLinks($(this));
       return false;
     });
-  
+
     container.find('.openUrlEmbed.openUrlEmbedAutoLoad a').trigger('click');
   };
   return {

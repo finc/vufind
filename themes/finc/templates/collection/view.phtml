@@ -1,3 +1,4 @@
+<!-- collection - VIEW.phtml -->
 <?
 // Set up standard record scripts:
 $this->headScript()->appendFile("record.js");
@@ -49,7 +50,7 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
     </ul>
   <? endif; ?>
 
-  <? /* DONT get the toolbar here but below, finc-specific, CK */ ?>
+  <? /* DON'T pull the toolbar in here but below, finc-specific, CK */ ?>
 
     <div class="<?=$tree ? 'col-sm-12' : $this->layoutClass('mainbody')?>">
       <div class="record">

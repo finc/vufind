@@ -59,7 +59,7 @@
           ?>
           <label class="col-sm-3"><?=$this->transEsc("EmailHold::pick_up_location")?>:</label>
           <div class="col-sm-9">
-            <select name="gatheredDetails[pickUpLocation]" class="auto">
+            <select name="gatheredDetails[pickUpLocation]" class="form-control">
             <? if ($selected === false): ?>
               <option value="" selected="selected">
                 <?=$this->transEsc('EmailHold::select_pickup_location')?>

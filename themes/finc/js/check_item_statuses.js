@@ -21,7 +21,7 @@ function checkItemStatuses(container) {
     return;
   }
 
-  $(".ajax-availability").removeClass('hide');
+  $(".ajax-availability").removeClass('hidden');
   $.ajax({
     dataType: 'json',
     method: 'POST',
@@ -42,21 +42,21 @@ function checkItemStatuses(container) {
       ) {
         // Full status mode is on -- display the HTML and hide extraneous junk:
         item.find('.callnumAndLocation').empty().append(result.full_status);
-        item.find('.callnumber').addClass('hide');
-        item.find('.location').addClass('hide');
-        item.find('.hideIfDetailed').addClass('hide');
-        item.find('.status').addClass('hide');
+        item.find('.callnumber').addClass('hidden');
+        item.find('.location').addClass('hidden');
+        item.find('.hiddenIfDetailed').addClass('hidden');
+        item.find('.status').addClass('hidden');
       } else if (typeof(result.missing_data) != 'undefined'
         && result.missing_data
       ) {
         // No data is available -- hide the entire status area:
-        item.find('.callnumAndLocation').addClass('hide');
-        item.find('.status').addClass('hide');
+        item.find('.callnumAndLocation').addClass('hidden');
+        item.find('.status').addClass('hidden');
       } else if (result.locationList) {
         // We have multiple locations -- build appropriate HTML and hide unwanted labels:
-        item.find('.callnumber').addClass('hide');
-        item.find('.hideIfDetailed').addClass('hide');
-        item.find('.location').addClass('hide');
+        item.find('.callnumber').addClass('hidden');
+        item.find('.hideIfDetailed').addClass('hidden');
+        item.find('.location').addClass('hidden');
         var locationListHTML = "";
         for (var x=0; x<result.locationList.length; x++) {
           locationListHTML += '<div class="groupLocation">';
@@ -80,11 +80,11 @@ function checkItemStatuses(container) {
                ?  result.locationList[x].callnumbers : '';
           locationListHTML += '</div>';
         }
-        item.find('.locationDetails').removeClass('hide');
+        item.find('.locationDetails').removeClass('hidden');
         item.find('.locationDetails').empty().append(locationListHTML);
       } else if (result.callnumber.length == 0 && result.location.length == 0) {
         // hide location and callnumber information if both are empty
-        item.find('.callnumAndLocation').addClass('hide');
+        item.find('.callnumAndLocation').addClass('hidden');
       } else {
         // Default case -- load call number and location into appropriate containers:
         item.find('.callnumber').empty().append(result.callnumber+'<br/>');

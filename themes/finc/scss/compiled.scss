@@ -75,7 +75,31 @@ section {
 // Add top-padding to body to accommodate fixed navbar; -- padding should equal navbar-height --
 // the home page, however, has a lower navbar because there is no breadcrumbs there
 body {
-  padding-top: $navbar-height;
+  // for mobile
+  padding-top: $navbar-height-xs;
+
+  // for tablet
+  @media (min-width: $screen-sm-min) {
+    padding-top: $navbar-height-sm;
+  }
+
+  //// for large
+  @media (min-width: $screen-md-min) {
+    padding-top: $navbar-height;
+  }
+}
+
+// Collapse/Hide empty containers -- DO NOT INCLUDE span (dropdown carets are empty spans) NOR DIV (slider track handles)
+h1,
+h2,
+h3,
+h4,
+label,
+.label {
+  // Empty labels collapse automatically (not available in IE8)
+  &:empty {
+    display: none;
+  }
 }
 
 // HEADINGS
@@ -88,6 +112,7 @@ h3 {
     margin-top: 0;
   }
 }
+
 //// h1
 //// h2
 //// h3
@@ -161,12 +186,12 @@ form {
   }
 
   &.limit {
-    margin-right: 1rem;
+    margin-right: $grid-gutter-width / 2;
   }
 
   // limit the width of the select field if necessary - more select details below
   &.sort select {
-    max-width: 17rem;
+    max-width: 12em;
   }
 }
 
@@ -219,7 +244,8 @@ legend {
 
 //// Select - for limit and sort-select widths see above
 ////// remove browser styles on select boxes and add custom styles (below)
-select {
+select,
+select.form-control {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   background-color: $select-bg-color;
@@ -231,9 +257,9 @@ select {
   border-radius: 0;
   border-style: solid;
   border-width: 1px;
-  height: 2.5rem;
-  min-width: 5rem;
-  padding: .25rem .75rem .25rem .5rem;
+  height: 2.5em;
+  min-width: 5em;
+  padding: .25em .75em .25em .5em;
 
   &.form-control {
     background-color: $select-bg-color;
@@ -250,6 +276,7 @@ select {
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+);
   }
 }
+
 //// Select - END
 
 //// textarea {}
@@ -289,8 +316,9 @@ select {
   padding-top: 0;
 }
 //// HOVERABLE DROPDOWNS -- make DDs hoverable as in FNDTN
-//// Show the dropdown menu on hover
-.dropdown:hover .dropdown-menu {
+// Add the dropdown-on-hover class to the parent li container! OR use on all (see commented-out part below)
+// Menu will show on hover
+.dropdown-on-hover:hover .dropdown-menu {
   display: block;
 }
 
@@ -313,6 +341,11 @@ select {
   }
 }
 
+.text-danger {
+  background-color: $brand-danger;
+  padding: $grid-gutter-width / 8;
+}
+
 //// DATE-RANGE slider (CSS is included in bootstrap-slider.min.css - currently no SCSS version!)
 //// Use parent container to increase specifity;
 //// to avoid the !important, we would need to use even more parent containers
@@ -325,6 +358,11 @@ select {
 //// Transparent BUTTONs (Button with border and darker text on light or white BGs)
 .btn-transparent {
   @include button-variant($btn-transparent-color, $btn-transparent-bg, $btn-transparent-border);
+
+  &:hover,
+  &:focus {
+    color: darken($btn-transparent-color, 30%);
+  }
 }
 
 //// Accordion / Collapse
@@ -332,7 +370,7 @@ select {
 .accordion-toggler {
   background: $toggler;
   display: block;
-  padding: 1rem;
+  padding: $grid-gutter-width / 2;
   text-align: left;
   width: 100%;
 
@@ -364,7 +402,6 @@ select {
 }
 
 
-
 //// Source-id branding (WISO etc)
 .branding {
   display: none;
@@ -373,12 +410,13 @@ select {
     background: url('../images/wiso-transparent-70x20.png') 0 0 no-repeat;
     display: inline-block;
     height: 20px;
-    margin-left: .2rem;
-    margin-top: 0;
+    margin-left: .2em;
+    margin-top: $grid-gutter-width / 8;
     vertical-align: middle;
     width: 70px;
   }
 }
+
 //// Source-id branding (WISO etc) - END
 
 //// Document Delivery Service (DDS) only
@@ -389,6 +427,7 @@ select {
   font-weight: 500;
   line-height: 200%;
 }
+
 //// Document Delivery Service (DDS) only - END
 
 //// Sprites for Mediaicons
@@ -643,12 +682,14 @@ select {
 }
 
 ////// NO margin top
-.no-margin-t {
+.no-margin-t,
+.sidebar h4.no-margin-t {
   margin-top: 0;
 }
 
 //// Width 100%
-.w-100 {
+.w-100,
+.form-control.w-100 {
   width: 100%;
 }
 
@@ -674,7 +715,6 @@ select {
     border: 1px solid $brand-info;
   }
 }
-
 
 // HEADER and NAVBAR FIXED having the same width as rest of the page
 // (the header can also run the full width of the viewport!)
@@ -741,13 +781,18 @@ header,
       display: inline-block;
       margin-left: 0;
       margin-top: $grid-gutter-width / 2;
+
+      @media (max-width: $screen-sm-max) {
+        margin-left: $grid-gutter-width / 2;
+        margin-top: $grid-gutter-width / 8;
+      }
     }
   }
   // Searchbox see below
 
   // Define height for navbar on small, allow for stacked search box +
   @media (max-width: $screen-sm-max) {
-    min-height: $navbar-height-xs;
+    min-height: $navbar-height-sm;
     padding-bottom: $grid-gutter-width / 2;
   }
 
@@ -755,8 +800,7 @@ header,
   .navbar-collapse.collapse.in {
     background-color: $navbar-bg-color;
     position: absolute;
-    right: 0;
-    top: $navbar-height-xs * 2;
+    top: $navbar-height-xs * 1.5;
   }
 
   // Make language dropdown visible, style it and hide active but show selectable language(s)
@@ -793,13 +837,34 @@ header,
   }
 }
 
+//// Make header navbar on mobile 100% wide
+#header-collapse.collapse.in {
+  @media (max-width: $screen-sm-max) {
+    width: 100%;
+
+    li > a.btn {
+      text-align: left;
+    }
+
+    #langmenu {
+      padding-left: $grid-gutter-width / 2;
+      width: 100%;
+    }
+  }
+}
+
 //// Library name in navbar - we give it the same padding as a button, so if fits in with the header
 .navbar-brand {
   padding: ($grid-gutter-width / 4) ($grid-gutter-width / 2) ($grid-gutter-width / 4) 0;
+
+  @media (max-width: $screen-xs-max) {
+    height: auto;
+  }
 }
 
 //// Menu toggler for small
 .navbar-toggle {
+  margin-bottom: 0;
   margin-right: 0;
   margin-top: 0;
 
@@ -836,7 +901,6 @@ header,
     // push searchbox down on mobile + add border for better looks
     @media only screen and (max-width: $screen-xs-max) {
       border: 1px solid $border-color;
-      margin-left: $grid-gutter-width / 2;
       margin-top: $grid-gutter-width / 2;
     }
   }
@@ -893,7 +957,6 @@ header,
   padding: 0;
 
   li {
-
     border-top: 0;
     display: inline;
     padding-left: .5em;
@@ -909,7 +972,6 @@ header,
       border-bottom: 0;
       border-right: 1px solid $brand-primary;
       display: inline;
-
       padding-right: .5em;
 
       &:last-of-type {
@@ -918,6 +980,7 @@ header,
     }
   }
 }
+
 // SEARCHBOX and Autocomplete - END
 
 // BREADCRUMBS - for detailed switches see customVariables
@@ -932,6 +995,7 @@ header,
     color: darken($breadcrumb-active-color, 10%);
   }
 }
+
 // BREADCRUMBS - END
 
 // MAIN CONTENT (SIDEBAR BELOW, ADVANCED SEARCH BELOW)
@@ -970,7 +1034,7 @@ footer .container {
 
 //// Push hits count down to align with limit and sort select boxes
 .hits-count {
-  padding-top: .5rem;
+  padding-top: .5em;
 }
 
 //// Search Results padding
@@ -1032,11 +1096,13 @@ footer .container {
   margin-top: .75em;
   padding: .5em; // for default see _labels.scss
 }
+
 ////// Pagination & Searchtools (for mixin see customVariables.scss)
 .pagination,
 .searchtools {
   @include content-centered-display-as-table;
 }
+
 ////// Pagination & Searchtools - END
 
 //// Search results - END
@@ -1047,6 +1113,7 @@ footer .container {
 .pager {
   margin-bottom: 0;
 }
+
 ////// Pager - END
 ////// Tabs
 /////// Add left and right borders
@@ -1123,10 +1190,12 @@ footer .container {
 .template-name-home .container {
   padding-top: $grid-gutter-width / 2;
 }
+
 ////// browsing suggestion lists on home (prevent torn-apart look when 2 columns only)
 .browsesuggest.columns + .columns:last-child {
   float: left;
 }
+
 //// Home Page - END
 
 //// Advanced Search
@@ -1153,13 +1222,14 @@ footer .container {
   // Remove dotted lines around items when hovering over
   .close {
     &:hover,
-    &:focus {outline: none;}
+    &:focus { 
+        outline: none; 
+    }
   }
 }
 //// Advanced Search - END
 
 // MAIN CONTENT - END
-
 
 
 // SIDEBAR
@@ -1229,11 +1299,10 @@ footer .container {
 .narrow-toggle {
   text-align: $narrow-toggle-text-alignment;
 }
+
 //// More-Toggle - END
 
 // SIDEBAR - END
-
-
 
 // FOOTER
 //// For border round footer, see 'footer .container' above
