@@ -132,13 +132,13 @@ class ExternalCatalogueLink extends \Zend\View\Helper\AbstractHelper
             foreach ($accessUrl as $institution => $v) {
                 // pre-filter replaceId
                 if (isset($v['filter'])) {
-                    $replaceId = (
+                    $isReplaceId = (
                         true === $this->filterAccessibilityUrl($v['filter'])
                     ) ? $replaceId : null;
                 }
                 // institution filter
                 if (true === in_array($institution, $institutions)
-                    && !empty($replaceId)
+                    && !empty($isReplaceId)
                 ) {
                     $extUrls[++$i]['desc'] = $institution;
                     $extUrls[$i]['url'] = sprintf($v['pattern'], $replaceId);
