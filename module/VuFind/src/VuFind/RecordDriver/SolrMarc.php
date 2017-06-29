@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
  * @package  RecordDrivers
@@ -509,7 +509,7 @@ class SolrMarc extends SolrDefault
         // Loop through all subfields, collecting results that match the whitelist;
         // note that it is important to retain the original MARC order here!
         $allSubfields = $currentField->getSubfields();
-        if (count($allSubfields) > 0) {
+        if (!empty($allSubfields)) {
             foreach ($allSubfields as $currentSubfield) {
                 if (in_array($currentSubfield->getCode(), $subfields)) {
                     // Grab the current subfield value and act on it if it is
@@ -523,7 +523,7 @@ class SolrMarc extends SolrDefault
         }
 
         // Send back the data in a different format depending on $concat mode:
-        return $concat ? [implode($separator, $matches)] : $matches;
+        return $concat && $matches ? [implode($separator, $matches)] : $matches;
     }
 
     /**

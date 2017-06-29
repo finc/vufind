@@ -34,6 +34,7 @@
             'bulk_noitems_advice' => 'bulk_noitems_advice',
             'bulk_save_success' => 'bulk_save_success',
             'close' => 'close',
+            'collection_empty' => 'collection_empty',
             'error_occurred' => 'An error has occurred',
             'go_to_list' => 'go_to_list',
             'libphonenumber_invalid' => 'libphonenumber_invalid',
@@ -44,8 +45,11 @@
             'libphonenumber_tooshort' => 'libphonenumber_tooshort',
             'libphonenumber_tooshortidd' => 'libphonenumber_tooshortidd',
             'loading' => 'Loading',
-            'sms_success' => 'sms_success',
-            'number_thousands_separator' => ['number_thousands_separator', null, ',']
+            'more' => 'more',
+            'number_thousands_separator' => [
+                'number_thousands_separator', null, ','
+            ],
+            'sms_success' => 'sms_success'
           )
         );
         // Add libphonenumber.js strings
@@ -69,6 +73,12 @@
           if (!empty($domain)) {
             $this->headScript()->appendScript(
               'VuFind.cart.setDomain("' . $domain . '");'
+            );
+          }
+          $cookiePath = $cart->getCookiePath();
+          if (!empty($cookiePath)) {
+            $this->headScript()->appendScript(
+              'VuFind.cart.setCookiePath("' . $cookiePath . '");'
             );
           }
           $this->jsTranslations()->addStrings(
@@ -124,6 +134,9 @@ JS;
     ?>
     <header class="hidden-print">
       <div class="container navbar">
+        <? if (isset($this->layout()->srmessage)): // message for benefit of screen-reader users ?>
+          <span class="sr-only"><?=$this->layout()->srmessage ?></span>
+        <? endif; ?>
         <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
         <?=$this->render('header.phtml')?>
       </div>
@@ -176,9 +189,12 @@ JS;
         </div>
       </div>
     </div>
-    <div class="offcanvas-toggle" data-toggle="offcanvas"><i class="fa"></i></div>
+    <div class="offcanvas-toggle" data-toggle="offcanvas"><i class="fa" title="<?=$this->transEsc('sidebar_expand') ?>"></i></div>
     <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
     <?=$this->googleanalytics()?>
     <?=$this->piwik()?>
+    <? if ($this->recaptcha()->active()): ?>
+      <?=$this->inlineScript(\Zend\View\Helper\HeadScript::FILE, "https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit&hl=" . $this->layout()->userLang, 'SET')?>
+    <? endif; ?>
   </body>
 </html>

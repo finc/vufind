@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
  * @package  Controller
@@ -412,6 +412,17 @@ class SearchController extends AbstractSearch
     }
 
     /**
+     * Show facet list for Solr-driven reserves.
+     *
+     * @return mixed
+     */
+    public function reservesfacetlistAction()
+    {
+        $this->searchClassId = 'SolrReserves';
+        return $this->facetListAction();
+    }
+
+    /**
      * Show search form for Solr-driven reserves.
      *
      * @return mixed
@@ -507,6 +518,10 @@ class SearchController extends AbstractSearch
             $query->set('type', 'tag');
         }
         if ($this->params()->fromQuery('type') == 'tag') {
+            // Because we're coming in from a search, we want to do a fuzzy
+            // tag search, not an exact search like we would when linking to a
+            // specific tag name.
+            $query = $this->getRequest()->getQuery()->set('fuzzy', 'true');
             return $this->forwardTo('Tag', 'Home');
         }
 
