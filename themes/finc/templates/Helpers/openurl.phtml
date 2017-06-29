@@ -1,3 +1,4 @@
+<!-- finc: helpers - openurl -->
 <?
   echo $this->inlineScript(\Zend\View\Helper\HeadScript::FILE, 'openurl.js', 'SET');
   $classes = '';
@@ -51,3 +52,4 @@
 <? if ($this->openUrlEmbed): ?>
   <div class="resolver hidden"><?=$this->transEsc('Loading')?>&nbsp;...</div>
 <? endif; ?>
+<!-- finc: helpers - openurl - END -->

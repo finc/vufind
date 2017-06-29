@@ -1,10 +1,11 @@
-<!-- recordtab - topics.phtml -->
+<!-- finc: recordtab - topics -->
 <?
 // Set page title.
 $this->headTitle($this->translate('Topics') . ': ' . $this->driver->getBreadcrumb());
 
 ?>
 <table class="table table-striped">
+  <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
   <caption class="sr-only">
     <?=$this->transEsc('Topics')?>
   </caption>
@@ -63,4 +64,4 @@ $this->headTitle($this->translate('Topics') . ': ' . $this->driver->getBreadcrum
   <tr><td><?=$this->transEsc('Topics unavailable')?></td></tr>
 <? endif; ?>
 </table>
-<!-- recordtab - topics.phtml - END -->
+<!-- finc: recordtab - topics - END -->

@@ -1,4 +1,4 @@
-<!-- search - searchbox.PHTML begin -->
+<!-- finc: search - searchbox -->
 <?
 // Set default value if necessary:
 if (!isset($this->searchClassId)) {
@@ -33,9 +33,9 @@ $advSearch = $options->getAdvancedSearchAction();
   <div class="searchForm navbar-form navbar-left flip no-margin-t">
     <? $tabs = $this->context($this)->renderInContext('search/searchTabs', ['hiddenFilters' => $hiddenFilters]); ?>
     <? if (!empty($tabs)): ?><?= $tabs ?><div class="tab-content clearfix"><? endif; ?>
-      <p class="adv_search_terms hidden-xs"><?= $this->transEsc("Your search terms") ?> : "<strong><?= $this->escapeHtml($this->lookfor) ?></strong>"</p>
+      <p class="adv_search_terms"><?= $this->transEsc("Your search terms") ?> : "<strong><?= $this->escapeHtml($this->lookfor) ?></strong>"</p>
       <? /* We use an ul li list, CK */ ?>
-      <ul class="adv_search_links hidden-xs">
+      <ul class="adv_search_links">
         <li><a href="<?= $this->url($advSearch) ?>?edit=<?= $this->escapeHtmlAttr($this->searchId) ?>"><?= $this->transEsc("Edit this Advanced Search") ?></a></li>
         <li><a href="<?= $this->url($advSearch) . $hiddenFilterParams?>"><?= $this->transEsc("Start a new Advanced Search") ?></a></li>
         <li><a href="<?= $this->url($searchHome) . $hiddenFilterParams?>"><?= $this->transEsc("Start a new Basic Search") ?></a></li>
@@ -67,7 +67,7 @@ $advSearch = $options->getAdvancedSearchAction();
       <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> <?= $this->transEsc("Find") ?></button>
     </li>
     <? if ($advSearch): ?>
-      <li class="has-form">
+      <li class="has-form hidden-xs">
         <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="btn btn-transparent" role="button" rel="nofollow"><i class="fa fa-cog"></i> <span class="hidden-xs hidden-sm hidden-md"><?=$this->transEsc("Advanced")?></span></a>
       </li>
     <? endif; ?>
@@ -134,4 +134,4 @@ $advSearch = $options->getAdvancedSearchAction();
 </form>
 <script type="text/javascript">$(".searchForm_lookfor:visible").focus()</script>
 <? endif; ?>
-<!-- search - searchbox.PHTML end -->
+<!-- finc: search - searchbox - END -->

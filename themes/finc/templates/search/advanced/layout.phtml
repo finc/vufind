@@ -1,4 +1,4 @@
-<!-- search - advanced - layout -->
+<!-- finc: search - advanced - layout -->
 <?
   // Set page title.
   $this->headTitle($this->translate('Advanced Search'));
@@ -71,7 +71,7 @@
       <? endforeach; ?>
     <? endforeach; ?>
     <div class="row">
-      <? /* use xs-cols to improve mobile view, finc-specific, CK */ ?>
+      <? /* finc: use xs-cols to improve mobile view, CK */ ?>
       <div class="col-xs-11 <?=$this->layoutClass('mainbody')?>">
         <? $lastSort = $this->searchMemory()->getLastSort($this->searchClassId); ?>
         <? if (!empty($lastSort)): ?>
@@ -105,7 +105,7 @@
                 <div class="col-sm-9">
                   <div class="row">
                     <div class="col-sm-12">
-                      <label><?=$this->transEsc("adv_search_label")?>:</label>
+                      <label class="help-block"><?=$this->transEsc("adv_search_label")?>:</label>
                     </div>
                     <div class="col-sm-12">
                       <? for($search=0 ; $search<3 || (isset($setQueries[$group]) && $search<count($setQueries[$group])) ; $search++): ?>
@@ -114,11 +114,11 @@
                         <? endif; ?>
                         <div id="search<?=$group.'_'.$search ?>" class="search">
                           <div class="row">
-                            <? /* use xs-cols to improve mobile view, finc-specific, CK */ ?>
+                            <? /* finc: use xs-cols to improve mobile view, CK */ ?>
                             <div class="col-xs-11 col-sm-7 left no-gutter-r gutter-l">
                               <input name="lookfor<?=$group ?>[]" id="search_lookfor<?=$group.'_'.$search ?>" class="form-control" type="text"<?if(isset($setQueries[$group][$search])):?> value="<?=$this->escapeHtml($setQueries[$group][$search]->getString())?>"<?endif;?>>
                             </div>
-                            <? /* use xs-cols to improve mobile view, finc-specific, CK */ ?>
+                            <? /* finc: use xs-cols to improve mobile view, CK */ ?>
                             <div class="col-xs-10 col-sm-4 middle">
                               <select class="type form-control" name="type<?=$group ?>[]">
                                 <? foreach ($this->options->getAdvancedHandlers() as $searchVal => $searchDesc): ?>
@@ -127,6 +127,7 @@
                               </select>
                             </div>
                             <div class="col-sm-1 close hidden">
+                              <? /* finc: use tooltip, CK */ ?>
                               <a class="help-block" href="#" data-toggle="tooltip" title="<?=$this->transEsc("Delete")?>">&times;</a>
                             </div>
                           </div>
@@ -165,6 +166,7 @@
         <? /* This is where the limit to controls come in - CK */ ?>
         <? if (isset($this->extraAdvancedControls)): ?>
           <?=$this->extraAdvancedControls ?>
+          <? /* finc: use gutter-top to improve spacing, CK */ ?>
           <div class="clearfix gutter-top">
             <input class="btn btn-transparent" type="button" value="<?= $this->transEsc('Clear')?>">
             <input class="btn btn-primary pull-right flip" type="submit" value="<?= $this->transEsc('Find')?>">
@@ -196,12 +198,12 @@
         <div class="sidegroup">
           <h4><?=$this->transEsc("Search Tips")?></h4>
           <div class="list-group">
-            <a class="list-group-item help-link" data-lightbox href="<?=$this->url('help-home')?>?topic=advsearch"><?=$this->transEsc("Help with Advanced Search")?></a>
-            <a class="list-group-item help-link" data-lightbox href="<?=$this->url('help-home')?>?topic=search"><?=$this->transEsc("Help with Search Operators")?></a>
+            <a class="list-group-item help-link" data-lightbox href="<?=$this->url('help-home')?>?topic=advsearch&amp;_=<?=time() ?>"><?=$this->transEsc("Help with Advanced Search")?></a>
+            <a class="list-group-item help-link" data-lightbox href="<?=$this->url('help-home')?>?topic=search&amp;_=<?=time() ?>"><?=$this->transEsc("Help with Search Operators")?></a>
           </div>
         </div>
       </div>
     </div>
   </form>
 </div>
-<!-- search - advanced - layout - END -->
+<!-- finc: search - advanced - layout - END -->

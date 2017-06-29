@@ -1,187 +1,206 @@
-<!-- recordDriver - solrAI - RESULT-LIST.phtml -->
-<div class="<?=$this->driver->supportsAjaxStatus()?'ajaxItem ':''?> col-sm-11">
-  <div class="row">
-    <div>
-      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
-      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource"/>
-    </div>
-    <? if ($cover = $this->record($this->driver)->getCover('result-list', 'medium', $this->recordLink()->getUrl($this->driver))): ?>
-    <div class="col-xs-2 col-sm-2 left"><?=$cover?></div>
-    <? /* BOF - finc-specific StyleBasedIcons */ ?>
-    <div class="col-xs-6 col-sm-6 col-lg-7 middle">
-    <? elseif ($this->record($this->driver)->showStyleBasedIcons()): ?>
-      <div class="col-xs-2 col-sm-2 col-lg-2 left"><?=$this->record($this->driver)->getRecordIcon()?></div>
-      <div class="col-xs-6 col-sm-6 col-lg-7 middle">
-    <? else : ?>
-      <div class="col-sm-9 middle">
-    <? /* EOF - finc-specific StyleBasedIcons */ ?>
-    <? endif ?>
-      <div>
-        <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title">
-          <?=$this->record($this->driver)->getTitleHtml()?>
-        </a>
-      </div>
-      <div>
-        <? if ($this->driver->isCollection()): ?>
-          <?=implode('<br>', array_map(array($this, 'escapeHtml'), $this->driver->getSummary()));?>
-        <? else: ?>
-        <? $summAuthors = $this->driver->getPrimaryAuthorsWithHighlighting(); if (!empty($summAuthors)): ?>
-          <?=$this->transEsc('by')?>
-          <? $authorCount = count($summAuthors); foreach ($summAuthors as $i => $summAuthor): ?>
-            <a href="<?=$this->record($this->driver)->getLink('author', $this->highlight($summAuthor, null, true, false))?>" class="author"><?=$this->highlight($summAuthor)?></a><?=$i + 1 < $authorCount ? ',' : ''?>
-          <? endforeach; ?>
-          <? endif; ?>
-          <?/* finc-specific from here - 04.16 - CK */?>
-          <? $journalTitle = $this->driver->getContainerTitle(); $summDate = $this->driver->getPublishDateSort(); ?>
-          <? if (!empty($journalTitle)): ?>
-            <?=!empty($summAuthor) ? '<br />' : ''?>
-            <?=$this->transEsc('Published in')?>
-            <?
-            $containerSource = $this->driver->getSourceIdentifier();
-            $containerID = $this->driver->getContainerRecordID();
+<!-- finc: recordDriver - solrAI - RESULT-LIST -->
+<? /* compare with solrDefault - result-list during upgrades! - CK */ ?>
+<?
+$coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'medium', $this->recordLink()->getUrl($this->driver));
+$cover = $coverDetails['html'];
+$thumbnail = false;
+$thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
+if ($cover):
+  ob_start(); ?>
+  <div class="media-<?=$thumbnailAlignment?> <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
+    <?=$cover?>
+  </div>
+  <? $thumbnail = ob_get_contents(); ?>
+  <? ob_end_clean(); ?>
+  <? /* Show finc style-based icons; FIXME: FRANK: BITTE PRUEFEN, ob ich das richtig gebastelt habe! */ ?>
+<? elseif ($this->record($this->driver)->showStyleBasedIcons()): ?>
+  <? ob_start(); ?>
+  <div class="media-<?=$thumbnailAlignment?> record-icon">
+    <?=$this->record($this->driver)->getRecordIcon()?>
+  </div>
+  <? $thumbnail = ob_get_contents(); ?>
+  <? ob_end_clean(); ?>
+  <? /* Show finc style-based icons - END */ ?>
+<? endif; ?>
 
-            // finc specific journalLink generation
-            $journalLink = '';
-            $issns = $this->driver->getISSNs();
-
-            // first try to link to container id (VuFind stock-behaviour)
-            if ($containerID) {
-                $journalLink = $this->recordLink()->getUrl("$containerSource|$containerID");
-            }
-
-            // second try to search issn (finc specific)
-            elseif (!empty($issns)) {
-                $journalLink = $this->record($this->driver)->getLink('isn', $issns);
-            }
-
-            // third search for journal title (VuFind stock-behaviour)
-            else {
-                $journalLink = $this->record($this->driver)->getLink('journaltitle', str_replace(array('{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'), '', $journalTitle));
-            }
-            ?>
-            <? /* TODO: handle highlighting more elegantly here: */?>
-            <a href="<?=$journalLink?>"><?=$this->highlight($journalTitle) ?></a>
-            <?/* finc-specific -END - 04.16 - CK */?>
-                <?=!empty($summDate) ? ' (' . $this->escapeHtml($summDate) . ')' : ''?>
-          <? elseif (!empty($summDate)): ?>
-            <?=!empty($summAuthor) ? '<br />' : ''?>
-              <?=$this->transEsc('Published') . ' ' . $this->escapeHtml($summDate)?>
-          <? endif; ?>
-          <? $summInCollection = $this->driver->getContainingCollections(); if (!empty($summInCollection)): ?>
-            <? foreach ($summInCollection as $collId => $collText): ?>
-              <div>
-                <strong><?=$this->transEsc("in_collection_label")?></strong>
-                <a class="collectionLinkText" href="<?=$this->url('collection', array('id' => $collId))?>?recordID=<?=urlencode($this->driver->getUniqueID())?>">
-                  <?=$this->escapeHtml($collText)?>
-                </a>
-              </div>
-            <? endforeach; ?>
-          <? endif; ?>
-        <? endif; ?>
-      </div>
-
-      <? if (!$this->driver->isCollection()): ?>
-        <? if ($snippet = $this->driver->getHighlightedSnippet()): ?>
-          <? if (!empty($snippet['caption'])): ?>
-            <strong><?=$this->transEsc($snippet['caption'])?>:</strong> ';
-          <? endif; ?>
-          <? if (!empty($snippet['snippet'])): ?>
-            <span class="quotestart">&#8220;</span>...<?=$this->highlight($snippet['snippet'])?>...<span class="quoteend">&#8221;</span><br/>
-          <? endif; ?>
-        <? endif; ?>
-      <? endif; ?>
-
-      <?
-      /* Display information on duplicate records if available */
-      if ($dedupData = $this->driver->getDedupData()): ?>
-        <div class="dedupInformation">
-          <?
-          $i = 0;
-          foreach ($dedupData as $source => $current) {
-          if (++$i == 1) {
-            ?><span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", array(), $source)?></a></span><?
-          } else {
-          if ($i == 2) {
-          ?> <span class="otherSources">(<?=$this->transEsc('Other Sources')?>: <?
-            } else {
-              ?>, <?
-            }
-            ?><a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", array(), $source)?></a><?
-            }
-            }
-            if ($i > 1) {
-            ?>)</span><?
-        } ?>
+<input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId"/>
+<input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource"/>
+<div class="media">
+  <? if ($thumbnail && $thumbnailAlignment == 'left'): ?>
+    <?=$thumbnail?>
+  <? endif ?>
+  <div class="media-body">
+    <div class="row short-view">
+      <? /* finc: use col-xs too for better mobile looks, CK*/ ?>
+      <div class="col-xs-10 col-sm-8 middle">
+        <div>
+          <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull" data-view="<?=$this->params->getOptions()->getListViewOption()?>">
+            <?=$this->record($this->driver)->getTitleHtml()?>
+          </a>
         </div>
-      <? endif; ?>
+        <div>
+          <? if ($this->driver->isCollection()): ?>
+            <?=implode('<br>', array_map(array($this, 'escapeHtml'), $this->driver->getSummary()));?>
+          <? else: ?>
+            <? $summAuthors = $this->driver->getPrimaryAuthorsWithHighlighting();
+            if (!empty($summAuthors)): ?>
+              <?=$this->transEsc('by')?>
+              <? $authorCount = count($summAuthors);
+              foreach ($summAuthors as $i => $summAuthor): ?>
+                <a href="<?=$this->record($this->driver)->getLink('author', $this->highlight($summAuthor, null, true, false))?>" class="author"><?=$this->highlight($summAuthor)?></a><?=$i + 1 < $authorCount ? ',' : ''?>
+              <? endforeach; ?>
+            <? endif; ?>
+            <? /* finc-specific from here - 04.16 - CK */ ?>
+            <? $journalTitle = $this->driver->getContainerTitle();
+            $summDate = $this->driver->getPublishDateSort(); ?>
+            <? if (!empty($journalTitle)): ?>
+              <?=!empty($summAuthor) ? '<br />' : ''?>
+              <?=$this->transEsc('Published in')?>
+              <?
+              $containerSource = $this->driver->getSourceIdentifier();
+              $containerID = $this->driver->getContainerRecordID();
 
-      <div class="callnumAndLocation ajax-availability hidden">
-        <? if ($this->driver->supportsAjaxStatus()): ?>
-          <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
-          <span class="callnumber ajax-availability hidden">
+              // finc specific journalLink generation
+              $journalLink = '';
+              $issns = $this->driver->getISSNs();
+
+              // first try to link to container id (VuFind stock-behaviour)
+              if ($containerID) {
+                $journalLink = $this->recordLink()->getUrl("$containerSource|$containerID");
+              } // second try to search issn (finc specific)
+              elseif (!empty($issns)) {
+                $journalLink = $this->record($this->driver)->getLink('isn', $issns);
+              } // third search for journal title (VuFind stock-behaviour)
+              else {
+                $journalLink = $this->record($this->driver)->getLink('journaltitle', str_replace(array('{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'), '', $journalTitle));
+              }
+              ?>
+              <? /* TODO: handle highlighting more elegantly here: */ ?>
+              <a href="<?=$journalLink?>"><?=$this->highlight($journalTitle)?></a>
+              <? /* finc-specific -END - 04.16 - CK */ ?>
+              <?=!empty($summDate) ? ' (' . $this->escapeHtml($summDate) . ')' : ''?>
+            <? elseif (!empty($summDate)): ?>
+              <?=!empty($summAuthor) ? '<br />' : ''?>
+              <?=$this->transEsc('Published') . ' ' . $this->escapeHtml($summDate)?>
+            <? endif; ?>
+            <? $summInCollection = $this->driver->getContainingCollections();
+            if (!empty($summInCollection)): ?>
+              <? foreach ($summInCollection as $collId => $collText): ?>
+                <div>
+                  <strong><?=$this->transEsc("in_collection_label")?></strong>
+                  <a class="collectionLinkText" href="<?=$this->url('collection', array('id' => $collId))?>?recordID=<?=urlencode($this->driver->getUniqueID())?>">
+                    <?=$this->escapeHtml($collText)?>
+                  </a>
+                </div>
+              <? endforeach; ?>
+            <? endif; ?>
+          <? endif; ?>
+        </div>
+
+        <? if (!$this->driver->isCollection()): ?>
+          <? if ($snippet = $this->driver->getHighlightedSnippet()): ?>
+            <? if (!empty($snippet['caption'])): ?>
+              <strong><?=$this->transEsc($snippet['caption'])?>:</strong> ';
+            <? endif; ?>
+            <? if (!empty($snippet['snippet'])): ?>
+              <span class="quotestart">&#8220;</span>...<?=$this->highlight($snippet['snippet'])?>...<span class="quoteend">&#8221;</span><br/>
+            <? endif; ?>
+          <? endif; ?>
+        <? endif; ?>
+
+        <?
+        /* Display information on duplicate records if available */
+        if ($dedupData = $this->driver->getDedupData()): ?>
+          <div class="dedupInformation">
+            <?
+            $i = 0;
+            foreach ($dedupData as $source => $current) {
+            if (++$i == 1) {
+              ?><span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", array(), $source)?></a></span><?
+            } else {
+            if ($i == 2) {
+            ?> <span class="otherSources">(<?=$this->transEsc('Other Sources')?>: <?
+              } else {
+                ?>, <?
+              }
+              ?><a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", array(), $source)?></a><?
+              }
+              }
+              if ($i > 1) {
+              ?>)</span><?
+          } ?>
+          </div>
+        <? endif; ?>
+
+        <div class="callnumAndLocation ajax-availability hidden">
+          <? if ($this->driver->supportsAjaxStatus()): ?>
+            <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
+            <span class="callnumber ajax-availability hidden">
             <?=$this->transEsc('Loading')?>&nbsp;...<br/>
           </span>
-          <strong><?=$this->transEsc('Located')?>:</strong>
-          <span class="location ajax-availability hidden">
+            <strong><?=$this->transEsc('Located')?>:</strong>
+            <span class="location ajax-availability hidden">
             <?=$this->transEsc('Loading')?>&nbsp;...
           </span>
-          <div class="locationDetails"></div>
-        <? else: ?>
-          <? $summCallNo = $this->driver->getCallNumber(); if (!empty($summCallNo)): ?>
-            <strong><?=$this->transEsc('Call Number')?>:</strong> <?=$this->escapeHtml($summCallNo)?>
+            <div class="locationDetails"></div>
+          <? else: ?>
+            <? $summCallNo = $this->driver->getCallNumber();
+            if (!empty($summCallNo)): ?>
+              <strong><?=$this->transEsc('Call Number')?>:</strong> <?=$this->escapeHtml($summCallNo)?>
+            <? endif; ?>
           <? endif; ?>
-        <? endif; ?>
-      </div>
+        </div>
 
-      <? /* We need to find out if we're supposed to display an OpenURL link ($openUrlActive),
+        <? /* We need to find out if we're supposed to display an OpenURL link ($openUrlActive),
             but even if we don't plan to display the link, we still want to get the $openUrl
             value for use in generating a COinS (Z3988) tag -- see bottom of file.
           */
-      $openUrl = $this->openUrl($this->driver, 'results');
-      $openUrlActive = $openUrl->isActive();
-      // Account for replace_other_urls setting
-      $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+        $openUrl = $this->openUrl($this->driver, 'results');
+        $openUrlActive = $openUrl->isActive();
+        // Account for replace_other_urls setting
+        $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
 
-      if ($openUrlActive || !empty($urls)): ?>
-        <? if ($openUrlActive): ?>
-          <br/>
-          <?=$openUrl->renderTemplate()?>
-        <? endif; ?>
-        <? if (!is_array($urls)) $urls = array();
-        if (!$this->driver->isCollection()):
-          foreach ($urls as $current): ?>
-            <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fulltext" target="new">
-              <i class="fa fa-external-link" aria-hidden="true"></i>
-              <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?>
-            </a>
+        if ($openUrlActive || !empty($urls)): ?>
+          <? if ($openUrlActive): ?>
             <br/>
-          <? endforeach; ?>
+            <?=$openUrl->renderTemplate()?>
+          <? endif; ?>
+          <? if (!is_array($urls)) $urls = array();
+          if (!$this->driver->isCollection()):
+            foreach ($urls as $current): ?>
+              <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fulltext" target="new">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+                <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?>
+              </a>
+              <br/>
+            <? endforeach; ?>
+          <? endif; ?>
         <? endif; ?>
-      <? endif; ?>
 
-      <?=str_replace('class="', 'class="label label-info ', $this->record($this->driver)->getFormatList())?>
+        <?=$this->record($this->driver)->getFormatList()?>
 
-        <?/* WISO Label - finc-specific - CK */?>
-          <? $sourceID = $this->driver->getSourceID(); ?>
-          <span class="branding label SID<?=($sourceID)?>" title="<?=$this->transEsc("SID$sourceID")?>"></span>
-        <?/* WISO Label - END */?>
+        <? /* WISO Label - finc-specific - CK */ ?>
+        <? $sourceID = $this->driver->getSourceID(); ?>
+        <span class="branding label SID<?=($sourceID)?>" title="<?=$this->transEsc("SID$sourceID")?>"></span>
+        <? /* WISO Label - END */ ?>
 
-      <? /*if (!$openUrlActive && empty($urls) && $this->driver->supportsAjaxStatus()):*/ ?>
-      <? if ($this->driver->supportsAjaxStatus()): ?>
-        <span class="status ajax-availability hidden">
+        <? /* nxt line finc-specific: #5737 removed '(!$openUrlActive && empty($urls) &&' - CK */ ?>
+        <? if ($this->driver->supportsAjaxStatus()): ?>
+          <span class="status ajax-availability hidden">
           <span class="label label-default"><?=$this->transEsc('Loading')?>&nbsp;...</span>
         </span>
-      <? endif; ?>
-      <?=$this->record($this->driver)->getPreviews()?>
-    </div>
-    <div class="col-xs-3 right hidden-print">
-      <? /* Display qrcode if appropriate: */ ?>
-      <? if ($QRCode = $this->record($this->driver)->getQRCode("results")): ?>
-        <?
-        // Add JS Variables for QrCode
-        $this->jsTranslations()->addStrings(array('qrcode_hide' => 'qrcode_hide', 'qrcode_show' => 'qrcode_show'));
-        ?>
-        <span class="hidden-xs">
+        <? endif; ?>
+        <?=$this->record($this->driver)->getPreviews()?>
+      </div>
+      <? /* finc: use col-xs too for better mobile looks, CK*/ ?>
+      <div class="col-xs-2 col-sm-3 right hidden-print">
+        <? /* Display qrcode if appropriate: */ ?>
+        <? if ($QRCode = $this->record($this->driver)->getQRCode("results")): ?>
+          <?
+          // Add JS Variables for QrCode
+          $this->jsTranslations()->addStrings(array('qrcode_hide' => 'qrcode_hide', 'qrcode_show' => 'qrcode_show'));
+          ?>
+          <span class="hidden-xs">
             <i class="fa fa-fw fa-qrcode" aria-hidden="true"></i> <a href="<?=$this->escapeHtmlAttr($QRCode);?>" class="qrcodeLink"><?=$this->transEsc('qrcode_show')?></a>
           <div class="qrcode hidden">
             <script type="text/template" class="qrCodeImgTag">
@@ -190,34 +209,41 @@
           </div>
           <br/>
         </span>
-      <? endif; ?>
+        <? endif; ?>
 
-      <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-        <? /* Add to favorites */ ?>
+        <? if ($this->userlist()->getMode() !== 'disabled'): ?>
+          <? /* Add to favorites */ ?>
           <? /* Keep Icon inside link - CK */ ?>
-          <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="save-record" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" title="<?=$this->transEsc('Add to favorites')?>"><i class="fa fa-fw fa-star" aria-hidden="true"></i> <?=$this->transEsc('Add to favorites')?></a><br/>
-        <? /* Saved lists */ ?>
-        <div class="savedLists alert alert-info hidden">
-          <strong><?=$this->transEsc("Saved in")?>:</strong>
-        </div>
-      <? endif; ?>
-
-      <? /* Hierarchy tree link */ ?>
-        <? /* Keep Icon inside link - CK */ ?>
-      <? $trees = $this->driver->tryMethod('getHierarchyTrees');
-      if (!empty($trees)): ?>
-        <? foreach ($trees as $hierarchyID => $hierarchyTitle): ?>
-          <div class="hierarchyTreeLink">
-            <input type="hidden" value="<?=$this->escapeHtmlAttr($hierarchyID)?>" class="hiddenHierarchyId" />
-
-              <a class="hierarchyTreeLinkText" data-lightbox href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>#tabnav" title="<?=$this->transEsc('hierarchy_tree')?>" data-lightbox-href="<?=$this->recordLink()->getTabUrl($this->driver, 'AjaxTab')?>?hierarchy=<?=urlencode($hierarchyID)?>" data-lightbox-post="tab=hierarchytree"><i class="fa fa-fw fa-sitemap" aria-hidden="true"></i> <?=$this->transEsc('hierarchy_view_context')?><? if (count($trees) > 1): ?>: <?=$this->escapeHtml($hierarchyTitle)?><? endif; ?>
-            </a>
+          <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="save-record" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" title="<?=$this->transEsc('Add to favorites')?>">
+            <i class="fa fa-fw fa-star" aria-hidden="true"></i> <span class="hidden-xs hidden-sm"><?=$this->transEsc('Add to favorites')?></span>
+          </a><br/>
+          <? /* Saved lists */ ?>
+          <div class="savedLists alert alert-info hidden">
+            <strong><?=$this->transEsc("Saved in")?>:</strong>
           </div>
-        <? endforeach; ?>
-      <? endif; ?>
+        <? endif; ?>
 
-          <?=$this->driver->supportsCoinsOpenUrl() ? '<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()) . '"></span>' : ''?>
+        <? /* Hierarchy tree link */ ?>
+        <? /* Keep Icon inside link - CK */ ?>
+        <? $trees = $this->driver->tryMethod('getHierarchyTrees');
+        if (!empty($trees)): ?>
+          <? foreach ($trees as $hierarchyID => $hierarchyTitle): ?>
+            <div class="hierarchyTreeLink">
+              <input type="hidden" value="<?=$this->escapeHtmlAttr($hierarchyID)?>" class="hiddenHierarchyId"/>
+              <a class="hierarchyTreeLinkText" data-lightbox href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>" title="<?=$this->transEsc('hierarchy_tree')?>" data-lightbox-href="<?=$this->recordLink()->getTabUrl($this->driver, 'AjaxTab')?>?hierarchy=<?=urlencode($hierarchyID)?>" data-lightbox-post="tab=hierarchytree">
+                <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
+                <span class="hidden-xs hidden-sm"><?=$this->transEsc('hierarchy_view_context')?></span><? if (count($trees) > 1): ?>: <?=$this->escapeHtml($hierarchyTitle)?><? endif; ?>
+              </a>
+            </div>
+          <? endforeach; ?>
+        <? endif; ?>
+
+        <?=$this->driver->supportsCoinsOpenUrl() ? '<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()) . '"></span>' : ''?>
+      </div>
     </div>
   </div>
+  <? if ($thumbnail && $thumbnailAlignment == 'right'): ?>
+    <?=$thumbnail?>
+  <? endif ?>
 </div>
-<!-- recordDriver - solrAI - RESULT-LIST.phtml end -->
+<!-- finc: recordDriver - solrAI - RESULT-LIST - END -->

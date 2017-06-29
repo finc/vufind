@@ -1,4 +1,4 @@
-<!-- recordDriver - solrDefault - COLLECTION-INFO.phtml -->
+<!-- finc: recordDriver - solrDefault - collection-info -->
 <? $this->headScript()->appendFile('collection_record.js'); ?>
 <div class="row">
   <? $QRCode = $this->record($this->driver)->getQRCode("core");
@@ -23,7 +23,7 @@
     <? if ($preview): ?><?=$preview?><? endif; ?>
   </div>
 
-  <? /* Is this correct? BS has sm-6 and then sm-9 -- CK fixme */ ?>
+  <? /* Use 9 columns if image is available, use 12 cols, if not -- CK */ ?>
   <div class="col-sm-9">
   <? else: ?>
     <div class="col-sm-12">
@@ -43,14 +43,25 @@
     </div>
 
       <? /* finc-specific snippet - Begin - CK */ ?>
+      <? /* Do not set to 'hidden' and make table below collapsible - CK */ ?>
       <a id="moreInfoToggle" href="#" class="accordion-toggler" data-toggle="collapse" aria-expanded="false"><?=$this->transEsc('Description')?></a>
-
     <?/* Display Main Details */?>
+    <?/* finc: we use 'collapse in' to initially hide the content, CK */?>
       <table id="collectionInfo" class="table table-striped collapse in">
+        <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
             <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
+        <? /* finc spec. authors dedupe; same in recordDriver - solrDefault - core, and other core.phtml files, CK */ ?>
       <? $authors = $this->driver->getDeduplicatedAuthors(); if ((isset($authors['main']) && count($authors['main'])) || (isset($authors['secondary']) && count($authors['secondary'])) || (isset($authors['corporate']) && count($authors['corporate'])) || (isset($authors['corporate_secondary']) && count($authors['corporate_secondary']))): ?>
+        <? /* finc spec. authors dedupe - END */ ?>
         <tr>
-          <th><?=$this->transEsc('Authors/Corporations')?>: </th>
+          <th>
+            <? /* BS version with '1. Verfasser ..., 2. Verfasser ... etc.' -- there is a larger block from 2016, dubbed 'Improved author indexing', see git hostroy of bootstrap/RecordDriver/SolrDefault/collection-info.phtml */
+                /* <?=$this->transEsc(count($authors['main']) > 1 ? 'Main Authors' : 'Main Author')?>:
+            */ ?>
+
+            <? /* finc version: 'Personen und Koerperschaften' */ ?>
+            <?=$this->transEsc('Authors/Corporations')?>:
+          </th>
           <td>
             <? if (isset($authors['main']) && count($authors['main'])): ?>
               <? $i = 0; foreach ($authors['main'] as $author => $roles): ?><?=($i++ == 0)?'':'; '?><span property="author"><a href="<?=$this->record($this->driver)->getLink('author', $author)?>"><?=$this->escapeHtml($author)?><?=count($authors['main_orig'][$author])?" / ".array_pop($authors['main_orig'][$author]):''?></a><? if (count($roles) > 0): ?> (<? $j = 0; foreach ($roles as $role): ?><?=($j++ == 0)?'':', '?><?=$this->transEsc("CreatorRoles::" . $role)?><? endforeach; ?>)<? endif; ?></span><? endforeach; ?>
@@ -70,7 +81,9 @@
           </td>
         </tr>
       <? endif; ?>
+      <? /* finc version: 'Personen und Koerperschaften' - END */ ?>
 
+      <? /* finc: NO corporate authors here but title details, CK */ ?>
       <? $titleDetails = $this->driver->getTitleDetails(); if (!empty($titleDetails)): ?>
         <tr>
           <th><?=$this->transEsc('Title')?>: </th>
@@ -86,7 +99,8 @@
           <td property="title"><?=$this->escapeHtml($this->driver->getShortTitle() . '  ' . $this->driver->getSubtitle() . '  ' . $this->driver->getTitleSection()) . ($this->driver->getTitleStatement() ? ' / ' . $this->driver->getTitleStatement() : '')?><br /><?=($this->driver->tryMethod('getTitleOrig') && $this->driver->getTitleOrig() != '' ? $this->escapeHtml($this->driver->getTitleOrig()) : '')?></td>
         </tr>
       <? endif; ?>
-
+      <? /* finc: NO corporate authors here but title details - END */ ?>
+      <? /* finc: dateSpan, CK */ ?>
       <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
         <? $contentDisplayed = true; ?>
         <tr>
@@ -98,8 +112,8 @@
           </td>
         </tr>
       <? endif; ?>
-
-        <? /* finc-specific snippet - END */ ?>
+      <? /* finc: dateSpan - END */ ?>
+    <? /* finc-specific snippet - END */ ?>
 
       <? if (count($summary) > 1): ?>
         <tr>
@@ -114,7 +128,7 @@
 
         <? /* finc specific - formats - below, in BS here - CK */ ?>
 
-        <? /* finc-specific: langs not here but at the end of the table -CK */ ?>
+        <? /* finc-specific: langs at the end of the table, not here - CK */ ?>
 
       <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
       <tr>
@@ -164,7 +178,7 @@
         <th><?=$this->transEsc('Subjects')?>: </th>
         <td>
           <? foreach ($subjects as $field): ?>
-          <div class="subjectLine">
+          <div class="subject-line">
             <? $subject = ''; ?>
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
@@ -255,7 +269,7 @@
         </tr>
       <? endif; ?>
 
-        <? /* finc specific snippet - additionalNotes - not in BS - CK */ ?>
+      <? /* finc specific snippet - additionalNotes - not in BS - CK */ ?>
       <? $additionalNotes = (array) $this->driver->tryMethod('getAdditionalNotes'); if (!empty($additionalNotes)): ?>
         <tr>
           <th><?=$this->transEsc('Notes')?>: </th>
@@ -275,19 +289,19 @@
           <td><?=$this->record($this->driver)->getFormatList()?></td>
         </tr>
       <? endif; ?>
-        <? /* finc specific snippet - formats - END */ ?>
+      <? /* finc specific snippet - formats - END */ ?>
 
-        <? /* finc-specific langs here, at the end of the table -CK */ ?>
+      <? /* finc-specific langs here, at the end of the table -CK */ ?>
       <? $langs = $this->driver->getLanguages(); if (!empty($langs)): ?>
         <tr>
           <th><?=$this->transEsc('Language')?>: </th>
           <td><? $i = 0; foreach ($langs as $lang): ?><?=($i++ == 0)?'':', '?><?= $this->transEsc($lang)?><? endforeach; ?></td>
         </tr>
       <? endif; ?>
-        <? /* finc-specific langs here, at the end of the table - END */ ?>
+      <? /* finc-specific langs here, at the end of the table - END */ ?>
 
     </table>
     <?/* End Main Details */?>
   </div>
 </div>
-<!-- recordDriver - solrDefault - COLLECTION-INFO.phtml end -->
+<!-- finc: recordDriver - solrDefault - collection-info - END -->

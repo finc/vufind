@@ -1,4 +1,4 @@
-<!-- recommend - collectionSideFacets -->
+<!-- finc: recommend - collectionSideFacets -->
 <?
     $this->overrideSideFacetCaption = 'In This Collection';
 ?>
@@ -26,8 +26,8 @@
       </h4>
     </div>
     <div class="panel-body">
-      <form class="form-inline" role="form" method="get" name="keywordFilterForm" id="keywordFilterForm">
-        <input id="keywordFilter_lookfor" type="text" name="lookfor" value="<?=$this->escapeHtmlAttr($keywordFilter)?>" class="form-control"/>
+      <form class="form-inline" method="get" name="keywordFilterForm" id="keywordFilterForm">
+        <input id="keywordFilter_lookfor" type="text" name="lookfor" value="<?=$this->escapeHtmlAttr($keywordFilter)?>" class="form-control w-100" />
         <? foreach ($this->recommend->getResults()->getParams()->getFilterList(true) as $field => $filters): ?>
           <? foreach ($filters as $filter): ?>
             <input type="hidden" name="filter[]" value="<?=$this->escapeHtmlAttr($filter['field'])?>:&quot;<?=$this->escapeHtmlAttr($filter['value'])?>&quot;" />
@@ -41,4 +41,4 @@
   <? ob_end_clean(); ?>
 <? endif; ?>
 <?=$this->render('Recommend/SideFacets.phtml')?>
-<!-- recommend - collectionSideFacets -->
+<!-- finc: recommend - collectionSideFacets - END -->

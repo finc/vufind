@@ -1,4 +1,5 @@
-<!-- recordDriver - solrLido - CORE -->
+<!-- finc: recordDriver - solrLido - CORE -->
+<? /* created in #8713, based on solrDefault, compare with SolrDefault - core during updates! */ ?>
 <?
 if($loggedin = $this->auth()->isLoggedIn()) {
   $user_id = $loggedin->id;
@@ -6,13 +7,24 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 } else {
   $user_id = false;
 }
+
+  $formatRoles = function ($roles) {
+    if (count($roles) == 0) {
+      return '';
+    }
+    $that = $this;
+    $translate = function ($str) use ($that) {
+      return $that->transEsc('CreatorRoles::' . $str);
+    };
+    return ' (' . implode(', ', array_unique(array_map($translate, $roles))) . ')';
+  };
 ?>
 <div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
   <? $QRCode = $this->record($this->driver)->getQRCode("core");
      $cover = $this->record($this->driver)->getCover('core', 'medium', $this->record($this->driver)->getThumbnail('large'));
      $preview = $this->record($this->driver)->getPreviews(); ?>
   <? if ($QRCode || $cover || $preview): ?>
-  <div class="col-sm-3">
+  <div class="col-sm-3 img-col">
     <div class="text-center">
         <? /* Display thumbnail if appropriate: */ ?>
       <? if($cover): ?>
@@ -29,7 +41,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
         </span>
         <? endif; ?>
-        <? /* Image rights: */ ?>
+        <? /* finc: SolrLido-specific: Image rights - CK */ ?>
         <? $rights = $this->driver->getImageRights($this->layout()->userLang); ?>
         <div class="access-rights">
           <div class="image-rights">
@@ -38,17 +50,18 @@ if($loggedin = $this->auth()->isLoggedIn()) {
                     :</strong> <? if (isset($rights['copyright'])) : ?><? if ($hasLink): ?><a target="_blank" href="<?= $rights['link'] ?>"><? endif; ?><?= $this->transEsc($rights['copyright']) ?><? if ($hasLink): ?></a><? endif ?><? endif ?>
           </div>
           <div class="copyright truncate-field">
-                <? if (isset($rights['description'])): ?>
-                    <? foreach ($rights['description'] as $item): ?>
-                        <p><?= $this->transEsc($item) ?></p>
-                    <? endforeach ?>
-                <? endif ?>
-                <? if (!isset($rights['copyright']) && !isset($rights['description'])): ?>
-                    <?= $this->translate('Image Rights Default') ?>
-                    <!--<p><a href="< ?= $this->url('content-page', array('page' => 'terms_conditions')) . '#image_rights' ?>"><i class="fa fa-arrow-right"></i>< ?= $this->translate('See also terms and conditions') ?></a>-->
-                <? endif; ?>
+            <? if (isset($rights['description'])): ?>
+              <? foreach ($rights['description'] as $item): ?>
+                <p><?= $this->transEsc($item) ?></p>
+                  <? endforeach ?>
+              <? endif ?>
+              <? if (!isset($rights['copyright']) && !isset($rights['description'])): ?>
+                <?= $this->translate('Image Rights Default') ?>
+                  <!--<p><a href="< ?= $this->url('content-page', array('page' => 'terms_conditions')) . '#image_rights' ?>"><i class="fa fa-arrow-right"></i>< ?= $this->translate('See also terms and conditions') ?></a>-->
+              <? endif; ?>
           </div>
         </div>
+      <? /* finc: SolrLido-specific: Image rights - END */ ?>
       </div>
 
     <? // if you have a preview tab but want to move or remove the preview link
@@ -58,11 +71,11 @@ if($loggedin = $this->auth()->isLoggedIn()) {
     <? if ($preview): ?><?=$preview?><? endif; ?>
   </div>
 
-  <div class="col-sm-9">
+  <div class="col-sm-9 info-col">
   <? else: ?>
   <div class="col-sm-12">
   <? endif; ?>
-    <? /* This following line is a finc-specific change */ ?>
+    <? /* finc, SolrLido-specific, next line; CK */ ?>
     <h3 property="name"><?=$this->escapeHtml($this->driver->getTitle())?></h3>
 
     <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $this->escapeHtml($summary[0]) : false; ?>
@@ -83,9 +96,11 @@ if($loggedin = $this->auth()->isLoggedIn()) {
 
     <?/* Display Main Details */?>
     <table class="table table-striped">
+      <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
       <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
       <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle)): ?>
       <tr>
+        <? /* finc, SolrLido-specific, next line; CK */ ?>
         <th><?=$this->transEsc('Journal Title')?>:</th>
         <td>
           <?
@@ -121,8 +136,8 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       </tr>
       <? endif; ?>
 
-
-      <!-- Creator / Originator -->
+      <? /* Creator / Originator */ ?>
+      <? /* finc, SolrLido-specific snippet; Compare with BS solrDefault - core CK */ ?>
       <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
       <? if (isset($authors['main']) && !empty($authors['main'])): ?>
         <tr>
@@ -150,7 +165,9 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           </td>
         </tr>
       <? endif; ?>
+      <? /* Creator / Originator - END */ ?>
 
+      <? /* finc, SolrLido-specific snippet: getSubjectDetails - CK */ ?>
       <? if ($results = $this->driver->getSubjectDetails()): ?>
         <tr class="recordSubjects">
           <th><?= $this->transEsc('Subject Detail') ?>:</th>
@@ -158,6 +175,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc, SolrLido-specific snippet: getSubjectPlaces - CK */ ?>
       <? if ($results = $this->driver->getSubjectPlaces()): ?>
         <tr class="recordSubjects">
           <th><?= $this->transEsc('Subject Place') ?>:</th>
@@ -165,6 +183,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc, SolrLido-specific snippet: getSubjectDates - CK */ ?>
       <? if ($results = $this->driver->getSubjectDates()): ?>
         <tr class="recordSubjects">
           <th><?= $this->transEsc('Subject Date') ?>:</th>
@@ -172,6 +191,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc, SolrLido-specific snippet: getSubjectActors - CK */ ?>
       <? if ($results = $this->driver->getSubjectActors()): ?>
         <tr class="recordSubjects">
           <th><?= $this->transEsc('Subject Actor') ?>:</th>
@@ -179,6 +199,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc, SolrLido-specific snippet: getInstitutions - CK */ ?>
       <? if ($results = $this->driver->getInstitutions()): ?>
         <tr class="recordInstitution">
           <th><?= $this->transEsc('Institution') ?>:</th>
@@ -190,6 +211,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc, SolrLido-specific snippet: getIdentifier - CK */ ?>
       <? if ($results = $this->driver->getIdentifier()): ?>
         <tr class="recordIdentifier">
           <th><?= $this->transEsc('Inventory ID') ?>:</th>
@@ -197,6 +219,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc, SolrLido-specific snippet: getMeasurements - CK */ ?>
       <? if ($results = $this->driver->getMeasurements()): ?>
         <tr class="recordMeasurements">
           <th><?= $this->transEsc('Measurements') ?>:</th>
@@ -204,6 +227,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc, SolrLido-specific snippet: getMeasurementsDescription - CK */ ?>
       <? if ($results = $this->driver->getMeasurementsDescription()): ?>
         <tr class="recordMeasurementsDescription">
           <th><?= $this->transEsc('Measurements') ?>:</th>
@@ -211,6 +235,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc, SolrLido-specific snippet: getCollections - CK */ ?>
       <? if ($results = $this->driver->getCollections()): ?>
         <tr class="recordCollection">
           <th><?= $this->transEsc('Collection') ?>:</th>
@@ -218,15 +243,15 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
-      <!---Format Finc --->
-      <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
+      <? /* Format Finc; compare with solrDefault - core */ ?>
+      <? if (count($this->driver->getFormats()) > 0): ?>
         <tr>
           <th><?= $this->transEsc('Object type') ?>:</th>
           <td><?= $this->record($this->driver)->getFormatList() ?></td>
         </tr>
       <? endif; ?>
 
-      <!-- Format Lido -->
+      <? /* Format Lido */ ?>
       <? if ($results = $this->driver->getFormatClassifications()): ?>
         <tr class="recordClassifications">
           <th><?= $this->transEsc('Other Classification') ?>:</th>
@@ -278,7 +303,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
           </td>
         </tr>
       <? endforeach; ?>
-      <!-- End -->
+      <? /* Format Lico - END */ ?>
 
       <? $langs = $this->driver->getLanguages(); if (!empty($langs)): ?>
         <tr>
@@ -287,6 +312,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* finc, solrLido-specific: getDateSpan,  */ ?>
       <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan) && !$publicationIsSet): ?>
         <? $contentDisplayed = true; ?>
         <tr>
@@ -297,6 +323,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? /* getEdition: compare with solrDefault - core; CK */ ?>
       <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
       <tr>
         <th><?=$this->transEsc('Edition')?>: </th>
@@ -305,6 +332,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       <? endif; ?>
 
       <?/* Display series section if at least one series exists. */?>
+      <?/* compare with solrAi - core, as series section doesn't exist in solrDefault - core; CK */?>
       <? $series = $this->driver->getSeries(); if (!empty($series)): ?>
       <tr>
         <th><?=$this->transEsc('Series')?>: </th>
@@ -328,6 +356,7 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </td>
       </tr>
       <? endif; ?>
+      <? /* getSeries - End */ ?>
 
       <? $subjects = $this->driver->getAllSubjectHeadings(); if (!empty($subjects)): ?>
       <tr>
@@ -402,9 +431,9 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <tr>
           <th><?=$this->transEsc('Tags')?>: </th>
           <td>
-            <span class="right hidden-print">
-              <a class="tagRecord right" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" data-lightbox><i class="fa fa-plus"></i><?=$this->transEsc('Add Tag')?></a>
-            </span>
+            <a class="tag-record btn btn-link pull-right flip hidden-print" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" data-lightbox>
+              <i class="fa fa-plus" aria-hidden="true"></i> <?=$this->transEsc('Add Tag')?>
+            </a>
             <?=$this->context($this)->renderInContext('record/taglist', array('tagList'=>$tagList, 'loggedin'=>$loggedin)) ?>
           </td>
         </tr>
@@ -413,4 +442,4 @@ if($loggedin = $this->auth()->isLoggedIn()) {
     <?/* End Main Details */?>
   </div>
 </div>
-<!-- recordDriver - solrLido - CORE - END -->
+<!-- finc: recordDriver - solrLido - CORE - END -->

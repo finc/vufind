@@ -1,4 +1,4 @@
-<!-- recordtab - description.phtml -->
+<!-- finc: recordtab - description.phtml -->
 <?
     // Set page title.
     $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
@@ -8,6 +8,7 @@
 ?>
 <? /* summary is deprecated - we use caption - CK */ ?>
 <table class="table table-striped">
+  <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
   <caption class="sr-only"><?=$this->transEsc('Description')?></caption>
   <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
     <? $contentDisplayed = true; ?>
@@ -23,7 +24,7 @@
 
   <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
     <? $contentDisplayed = true; ?>
-    <? /* we use Dates of publication - CK */ ?>
+    <? /* finc: we use Dates of publication - CK */ ?>
     <tr>
       <th><?=$this->transEsc('Dates of publication')?>: </th>
       <td>
@@ -285,4 +286,4 @@
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
 </table>
-<!-- recordtab - description.phtml - END -->
+<!-- finc: recordtab - description.phtml - END -->

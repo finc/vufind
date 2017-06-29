@@ -1,3 +1,4 @@
+<!-- finc: myresearch - fines -->
 <?
     // Set up page title:
     $this->headTitle($this->translate('My Fines'));
@@ -15,6 +16,7 @@
     <?=$this->transEsc('You do not have any fines')?>
   <? else: ?>
     <table class="table table-striped">
+      <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
       <caption class="sr-only">
         <?=$this->transEsc('Your Fines')?>
       </caption>
@@ -54,3 +56,4 @@
 <div class="<?=$this->layoutClass('sidebar')?>">
   <?=$this->context($this)->renderInContext("myresearch/menu.phtml", array('active' => 'fines'))?>
 </div>
+<!-- finc: myresearch - fines - END -->

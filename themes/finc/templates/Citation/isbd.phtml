@@ -1,5 +1,5 @@
 <? if (!empty($this->authors)): ?><?=$this->escapeHtml($this->authors)?>:<br /><? endif; ?>
-<span style="font-style:italic;"><?=$this->escapeHtml($this->title)?></span>
+<span><i><?=$this->escapeHtml($this->title)?></i></span>
 <? if (!empty($this->edition)):   ?>. &mdash; <?=$this->escapeHtml($this->edition)?> <? endif; ?>
 <? if (!empty($this->publisher)): ?>. &mdash; <?=$this->escapeHtml($this->publisher)?><? endif; ?>
 <? if (!empty($this->physical)):  ?>. &mdash; <?=$this->escapeHtml($this->physical)?><? endif; ?>

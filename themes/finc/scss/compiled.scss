@@ -24,8 +24,8 @@
 // The maximum ranges are defined as the next higher element minus 1px, so:
 // '$screen-xs-max' = $screen-sm-min - 1
 // etc: you can use '$screen-xs-max', '$screen-sm-max' and '$screen-md-max'
-// 3. import entire BS or (instances) finc compiled.scss to have variables and mixins defined above applied to it
-@import 'bootstrap';
+// 3. import entire BS (finc) OR import (instances) finc compiled.scss to have variables and mixins defined above applied to it
+@import '../../bootstrap3/scss/bootstrap';
 // @import '../../finc/scss/compiled.scss'
 
 // 4. Customize further - this for BASIC SETTINGS ONLY - all colour customization will be done in in site-specific themes
@@ -113,6 +113,10 @@ h3 {
 ////// H4 atop Sidebar - align to limit and sort
 .sidebar h4 {
   margin-top: .25em;
+
+  @media only screen and (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    font-size: $font-size-base + 2px;
+  }
 }
 
 //// h5
@@ -270,6 +274,12 @@ select {
   }
 }
 
+// remove icons in limiter select boxes in adv. search
+#advSearchForm .limiter-boxes select.form-control {
+  background-image: none;
+  height: auto;
+}
+
 //// Select - END
 
 //// textarea {}
@@ -302,7 +312,9 @@ select {
 // CLASSES (Elements that are used in several places)
 //// DROPDOWNS
 //// remove padding as it creates space above/below menu items (e.g. language selector)
+//// remove box shadow
 .dropdown-menu {
+  box-shadow: none;
   padding-bottom: 0;
   padding-top: 0;
 }
@@ -310,10 +322,11 @@ select {
 //// HOVERABLE DROPDOWNS -- make DDs hoverable as in FNDTN
 // Add the dropdown-on-hover class to the parent li container! OR use on all (see commented-out part below)
 // Menu will show on hover
-.dropdown-on-hover:hover .dropdown-menu {
-  display: block;
+@media only screen and (min-width: $screen-sm-min) {
+  .dropdown-on-hover:hover .dropdown-menu {
+    display: block;
+  }
 }
-
 //// OR use on ALL dropdowns like so
 //.dropdown:hover .dropdown-menu {
 //  display: block;
@@ -343,14 +356,36 @@ select {
   padding: $grid-gutter-width / 8;
 }
 
+//// Off-Canvas
+@media only screen and (max-width: $screen-xs-max) {
+  body.offcanvas .offcanvas-toggle {
+    background: $brand-primary;
+    color: $white;
+    display: block;
+    padding: 1.5rem 0;
+    position: fixed;
+    text-align: center;
+    top: 50%;
+    width: calc(2em - 5px);
+    z-index: 5;
+  }
+}
+//// Off-Canvas - END
+
 //// DATE-RANGE slider (CSS is included in bootstrap-slider.min.css - currently no SCSS version!)
-//// Use parent container to increase specifity;
-//// to avoid the !important, we would need to use even more parent containers
+////// Keep enough room for slider handles; PLS note: there are sliders in sidefacets and adv. search
+.slider-container {
+  padding: 4px 4px 4px 10px;
+}
+
+////// Use parent container to increase specifity;
+////// to avoid the !important, we would need to use even more parent containers
 .slider-track .slider-handle {
   height: 1em;
   margin-top: -.2em !important;
   width: 1em;
 }
+
 
 //// Transparent BUTTONs (Button with border and darker text on light or white BGs)
 .btn-transparent {
@@ -358,7 +393,7 @@ select {
 
   &:hover,
   &:focus {
-    color: darken($btn-transparent-color, 30%);
+    color: $white;
   }
 }
 
@@ -398,7 +433,12 @@ select {
   padding: .75em;
 }
 
-
+//// Collapse on tables:
+////// normally, .collapse.in elements get assigned 'display: block', for tables it must be: 'display: table' or tables won't be 100% wide
+table.collapse.in {
+  display: table;
+}
+//// Collapse on tables - END
 
 //// Source-id branding (WISO etc)
 .branding {
@@ -409,7 +449,8 @@ select {
     display: inline-block;
     height: 20px;
     margin-left: .2em;
-    margin-top: $grid-gutter-width / 8;
+    //margin-top: $grid-gutter-width / 8;
+    margin-top: 0;
     vertical-align: middle;
     width: 70px;
   }
@@ -685,6 +726,11 @@ select {
   margin-top: 0;
 }
 
+//// no-cover - prevent no cover images from being easily clickable and loading in lightbox, used in record - cover
+.nocover {
+  cursor: default;
+}
+
 //// Width 100%
 .w-100,
 .form-control.w-100 {
@@ -788,10 +834,15 @@ header,
   }
   // Searchbox see below
 
+  // Set max height for xs devices
+  @media only screen and (max-width: $screen-xs-max) {
+    min-height: $navbar-height-xs;
+  }
+
   // Define height for navbar on small, allow for stacked search box +
-  @media (max-width: $screen-sm-max) {
+  @media only screen and (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
     min-height: $navbar-height-sm;
-    padding-bottom: $grid-gutter-width / 2;
+    //padding-bottom: $grid-gutter-width / 2;
   }
 
   // style navbar toggler content when opened
@@ -899,7 +950,8 @@ header,
     // push searchbox down on mobile + add border for better looks
     @media only screen and (max-width: $screen-xs-max) {
       border: 1px solid $border-color;
-      margin-top: $grid-gutter-width / 2;
+      margin-bottom: $grid-gutter-width / 4;
+      margin-top: 0;
     }
   }
 
@@ -929,6 +981,23 @@ header,
 }
 
 //// Searchbox on Homepage
+@media only screen and (max-width: $screen-xs-max) {
+  .searchHomeContent {
+    .well {
+      background-color: transparent;
+      border: 0;
+      box-shadow: none;
+      min-height: $grid-gutter-width / 2;
+      padding: 0;
+    }
+
+    .searchForm .navbar-left,
+    .searchForm .navbar-right {
+      border: 0;
+      margin-top: 0;
+    }
+}
+}
 
 //// Autocomplete:
 ////// When using a fixed header + autocomplete, increase the z-index in
@@ -1004,7 +1073,7 @@ header,
 // MAIN CONTENT (SIDEBAR BELOW, ADVANCED SEARCH BELOW)
 #content {
   // push content a little lower to allow for height of navbar/header, same needs to be applied to .sidebar, below!
-  .row:first-of-type {
+  .row:not(.short-view):first-of-type {
     padding-top: $content-top-padding;
 
     // correct content padding on subsequent rows
@@ -1015,6 +1084,10 @@ header,
     // for all widths that use Offcanvas (767px) ($screen-xs-max)
     @media only screen and (max-width: $screen-xs-max) {
       padding-top: $content-top-padding * 4;
+
+      .result .checkbox {
+        margin-top: 0;
+      }
     }
   }
 }
@@ -1035,6 +1108,7 @@ footer .container {
 
 //// Search results
 ////// Bulk Action Toolbar
+.bulk-action-buttons,
 .bulkActionButtons {
   padding-bottom: ($grid-gutter-width / 2);
   padding-top: ($grid-gutter-width / 2);
@@ -1052,18 +1126,29 @@ footer .container {
   margin-left: -($grid-gutter-width / 2);
 }
 
+////// Search results column: make full width on XS
+.search-results-col {
+  @media only screen and (max-width: $screen-xs-max) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 //// Results and bulk action buttons -- add padding, to create normal column padding appearance
 .result,
+.bulk-action-buttons,
 .bulkActionButtons {
   padding-left: ($grid-gutter-width / 2);
 }
 
 //// Results (see BS SCSS/COMPONENTS/... for details)
 .result {
-
+  display: inline-block; // make sure background stripes display on entire container
+  hyphens: auto;
   // Results padding - Do not add margin-top or -bottom as it will result in uneven heights
   padding-bottom: $grid-gutter-width / 1.5;
   padding-top: $grid-gutter-width / 1.5;
+  width: 100%; // make full width, otherwise ugly look
 
   // Alternating colors in search results
   &:nth-of-type(2n) {
@@ -1073,6 +1158,15 @@ footer .container {
   .title {
     font-size: ($font-size-base * 1.25); // overwrites VF-BS-Theme setting
     font-weight: normal; // overwrites VF-BS-Theme setting
+
+    // reset font size for xs
+    @media only screen and (max-width: $screen-xs-max) {
+      font-size: $font-size-base;
+    }
+
+    @media only screen and (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+      font-size: $font-size-base + 2px;
+    }
   }
 }
 
@@ -1111,6 +1205,21 @@ footer .container {
   @include content-centered-display-as-table;
 }
 
+//// Fix pagination on XS
+.pagination {
+  @media screen and (max-width: $screen-xs-max) {
+     li {
+      // hide last and first page buttons
+      &.first,
+      &.last,
+      // select 7th to 11th child
+      &:nth-child(n+10):nth-child(-n+13){
+        display: none;
+      }
+    }
+  }
+}
+
 ////// Pagination & Searchtools - END
 
 //// Search results - END
@@ -1130,6 +1239,11 @@ footer .container {
   border-left: 1px solid $nav-tabs-border-color;
   border-right: 1px solid $nav-tabs-border-color;
   padding: $grid-gutter-width  / 2;
+}
+
+//////// Tab-content active needs to display 'inline-block' top display the border correctly (or content will bleed over)
+.tab-content > .active {
+  display: inline-block;
 }
 
 ////// branch info, opening hours etc
@@ -1308,6 +1422,16 @@ footer .container {
 
 //// More-Toggle - END
 
+//// Toolbar in Detailview -- remove padding on SM up
+@media (min-width: $screen-sm-min) {
+  .nav-stacked.nav > li > a {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+//// Toolbar in Detailview - END
+
+
 // SIDEBAR - END
 
 // FOOTER
@@ -1335,4 +1459,25 @@ footer ul {
 // FOOTER - END
 
 // MODALS
+//// Set modal width to make better use of the screen
+@media (max-width: $screen-xs-max) {
+  .modal-dialog {
+    max-width: 80%; // keep close-button visible
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  .modal-dialog {
+    max-width: 85%;
+    min-width: $modal-md;
+    width: auto;
+  }
+}
+
+@media (min-width: $screen-lg-min) {
+  .modal-dialog {
+    max-width: 900px;
+  }
+}
+
 // MODALS - END

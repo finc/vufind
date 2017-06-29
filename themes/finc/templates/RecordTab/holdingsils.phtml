@@ -1,4 +1,4 @@
-<!-- recordTab - HOLDINGSILS.phtml -->
+<!-- finc: recordTab - HOLDINGSILS -->
 <?
     // Set up convenience variables:
     $account = $this->auth()->getManager();
@@ -10,9 +10,10 @@
 $extUrls = $this->externalCatalogueLink($this->driver)->getLinks();
 
 $offlineMode = $this->ils()->getOfflineMode();
+// finc-specific: $holdings here, #9844, #7187 - CK
 $holdings = [];
-// if we already know that the ils is offline we do not need to query the
-// realtimeholdings
+// finc-specific snippet, #9844, #7187 - CK
+// if we already know that the ils is offline we do not need to query the realtimeholdings
 if (!$offlineMode) {
   try {
     $holdings = $this->driver->getRealTimeHoldings();
@@ -24,7 +25,7 @@ if (!$offlineMode) {
 $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
 ?>
 
-<? /* nxt line = finc-specific - #7841@56988450 - CK */ ?>
+<? /* finc-specific: nxt line - #7841@56988450 - CK */ ?>
 <? $holdingsEmpty = true; ?>
 
 <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn()));?>
@@ -55,7 +56,7 @@ if (!empty($holdingTitleHold)): ?>
       <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
     <? endforeach; ?>
   <? endif; ?>
-  <? /* nxt lines = finc-specific - #9274 - replace if ($openUrlActive): - CK */ ?>
+  <? /* finc-specific snippet - #9274 - replace if ($openUrlActive): - CK */ ?>
   <? if ($openUrlActive): ?>
     <? if (empty($urls)): ?>
       <? $fallbackUrls = $this->driver->tryMethod('getURLs');
@@ -69,7 +70,7 @@ if (!empty($holdingTitleHold)): ?>
     <? endif; ?>
     <?=$openUrl->renderTemplate()?>
   <? endif; ?>
-  <? /* lines = finc-specific - #9274 - END */ ?>
+  <? /* finc-specific snippet - #9274 - END */ ?>
 <? endif; ?>
 <? foreach ($holdings as $holding): ?>
   <? /* nxt line = finc-specific - #7841@56988450 - CK */ ?>
@@ -88,13 +89,14 @@ if (!empty($holdingTitleHold)): ?>
   <? /* nxt line = finc-specific - branch info - CK */ ?>
   <?=$this->branchInfo($this->driver)->getBranchInfo($holding['locationid']);?>
   <table class="table table-striped">
+    <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
     <caption class="sr-only"><?=$this->transEsc('Holdings details from')?> <?=$this->transEsc($holding['location'])?></caption>
     <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']);
     if (!empty($callNos)): ?>
       <tr>
         <th><?=$this->transEsc("Call Number")?>:</th>
         <td>
-          <? /* do we want links back to alphabrows here? - fixme - CK */ ?>
+          <? /* finc: no links back to alphabrows here - CK */ ?>
           <? foreach ($callNos as $callNo): ?>
             <?=$this->escapeHtml($callNo)?><br/>
           <? endforeach; ?>
@@ -122,7 +124,7 @@ if (!empty($holdingTitleHold)): ?>
       $block = !$check && isset($row['addLink']) && $row['addLink'] === 'block';
       $blockStorageRetrievalRequest = !$checkStorageRetrievalRequest && isset($row['addStorageRetrievalRequestLink']) && $row['addStorageRetrievalRequestLink'] === 'block';
       $blockILLRequest = !$checkILLRequest && isset($row['addILLRequestLink']) && $row['addILLRequestLink'] === 'block';
-      // nxt line = finc-specific - emailholds #6096 - CK
+      // finc: nxt line - emailholds #6096 - CK
       $checkEmailHold = (isset($row['checkEmailHold']) && $row['checkEmailHold']);
       ?>
       <? if (isset($row['barcode']) && $row['barcode'] != ""): ?>
@@ -141,34 +143,33 @@ if (!empty($holdingTitleHold)): ?>
                 <span class="text-success"><?=$this->transEsc("Available")?>
                   <link property="availability" href="http://schema.org/InStock"/></span>
                 <? if (!$block && isset($row['link']) && $row['link']): ?>
+                  <? /* finc: hidden-print + title, CK */ ?>
                   <a class="<?=$check ? 'checkRequest ' : ''?>placehold hidden-print" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"
-                     title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>">
+ title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>">
                     <i class="fa fa-flag" aria-hidden="true"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>
                   </a>
                 <? endif; ?>
                 <? if (!$blockStorageRetrievalRequest && isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
-                  <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> placeStorageRetrievalRequest" data-lightbox
-                     href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>"
-                     title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>">
+                  <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> placeStorageRetrievalRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>">
                     <i class="fa fa-flag"
                        aria-hidden="true"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>
                   </a>
                 <? endif; ?>
                 <? if (!$blockILLRequest && isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
                   <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>placeILLRequest" data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"
-                     title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>">
+ title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>">
                     <i class="fa fa-flag" aria-hidden="true"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>
                   </a>
                 <? endif; ?>
-                <? /* finc-specific change - #6096 - CK */ ?>
+                <? /* finc-specific snippet - #6096 - CK */ ?>
                 <? if (isset($row['emailHoldLink']) && $row['emailHoldLink']): ?>
-                  <a class="<?=$checkEmailHold ? 'checkEmailHold ' : ''?>modal-link placeEmailHold " data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['emailHoldLink'])?>"
-                     title="<?=$this->transEsc($checkEmailHold ? "EmailHold::email_hold_check_text" : "EmailHold::email_hold_place_text")?>"><i
-                      class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkEmailHold ? "EmailHold::email_hold_check_text" : "EmailHold::email_hold_place_text")?></a>
+                  <a class="<?=$checkEmailHold ? 'checkEmailHold ' : ''?>modal-link placeEmailHold " data-lightbox href="<?=$this->recordLink()->getRequestUrl($row['emailHoldLink'])?>" title="<?=$this->transEsc($checkEmailHold ? "EmailHold::email_hold_check_text" : "EmailHold::email_hold_place_text")?>"><i
+ class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkEmailHold ? "EmailHold::email_hold_check_text" : "EmailHold::email_hold_place_text")?></a>
                 <? endif; ?>
                 <? /* finc-specific change - #6096 - END */ ?>
               <? else: ?>
                 <? /* Begin Unavailable Items (Recalls) */ ?>
+                <? /* finc: use empty row status and trans unavailable, CK */ ?>
                 <span class="text-danger"><?=empty($row['status']) ? $this->transEsc("Unavailable") : $this->transEsc($row['status'])?>
                   <link property="availability" href="http://schema.org/OutOfStock"/></span>
                 <? if (isset($row['returnDate']) && $row['returnDate']): ?>&ndash; <span class="small"><?=$this->escapeHtml($row['returnDate'])?></span><? endif; ?>
@@ -184,7 +185,7 @@ if (!empty($holdingTitleHold)): ?>
                   </a>
                 <? endif; ?>
               <? endif; ?>
-              <? /* finc-specific change - nxt line - CK */ ?>
+              <? /* finc: use && empty row item notes - CK */ ?>
               <? if (isset($row['item_notes']) && !empty($row['item_notes'])): ?>
                 <div class="item-notes">
                   <strong><?=$this->transEsc("Item Notes")?>:</strong>
@@ -226,7 +227,7 @@ if (!empty($holdingTitleHold)): ?>
   </table>
 <? endforeach; ?>
 
-<? /* nxt 3 lines = finc-specific - #7841@56988450 - CK */ ?>
+<? /* finc-specific: nxt 3 lines - #7841@56988450 - CK */ ?>
 <? if ($holdingsEmpty && $this->driver->tryMethod('getLocalOrderInformation') == 'e'): ?>
   <h3><?=$this->transEsc("This item has already been ordered and will be available shortly")?></h3>
 <? endif; ?>
@@ -254,4 +255,4 @@ if (!empty($holdingTitleHold)): ?>
     <? endforeach; ?>
   </table>
 <? endif; ?>
-<!-- recordTab - HOLDINGSILS.phtml end -->
+<!-- finc: recordTab - HOLDINGSILS - END -->

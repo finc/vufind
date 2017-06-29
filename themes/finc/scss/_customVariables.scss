@@ -157,10 +157,16 @@ $navbar-height: 80px !default;
 $navbar-height-sm: $navbar-height / 2 !default;
 //// Set navbar-height for small devices, USE px as rem will throw an error in conjunction _variables.scss
 $navbar-height-xs: $navbar-height / 3 !default;
+$navbar-max-height-xs: 40px;
 
 //// Top-padding for #content -> .row first-of-type (and .sidebar) - change this value to change both;
 //// sidebar gets an additional padding on half the content-top-padding for better horizontal alignment
 $content-top-padding: $grid-gutter-width / 4 !default;
+
+//// MODAL dimensions
+$modal-lg: 900px !default;
+$modal-md: 600px !default;
+$modal-sm: 300px !default;
 
 
 // BREADCRUMBS

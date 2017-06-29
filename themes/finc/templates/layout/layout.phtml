@@ -2,8 +2,8 @@
 <html lang="<?=$this->layout()->userLang?>">
 <head>
   <? $this->headThemeResources() ?>
-  <? /* remove meta because of Validator error - CK */
-       /*  <meta charset="utf-8">  */
+  <? /* remove meta because of W3C Validator error - CK */
+     /*  <meta charset="utf-8">  */
   ?>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -29,7 +29,7 @@
   <?
   if (!isset($this->renderingError)) {
     // Add translation strings
-    // PDA is a custom finc string - CK
+    // PDA (BELOW) is a custom finc string - CK
     $this->jsTranslations()->addStrings(
       array(
         'pda_send_success' => 'PDA::pda_send_success',
@@ -38,6 +38,7 @@
         'bulk_noitems_advice' => 'bulk_noitems_advice',
         'bulk_save_success' => 'bulk_save_success',
         'close' => 'close',
+        'collection_empty' => 'collection_empty',
         'error_occurred' => 'An error has occurred',
         'go_to_list' => 'go_to_list',
         'libphonenumber_invalid' => 'libphonenumber_invalid',
@@ -48,8 +49,11 @@
         'libphonenumber_tooshort' => 'libphonenumber_tooshort',
         'libphonenumber_tooshortidd' => 'libphonenumber_tooshortidd',
         'loading' => 'Loading',
-        'sms_success' => 'sms_success',
-        'number_thousands_separator' => ['number_thousands_separator', null, ',']
+        'more' => 'more',
+        'number_thousands_separator' => [
+            'number_thousands_separator', null, ','
+        ],
+        'sms_success' => 'sms_success'
       )
     );
     // Add libphonenumber.js strings
@@ -70,9 +74,17 @@
       $this->headScript()->appendFile("vendor/cookies.js");
       $this->headScript()->appendFile("cart.js");
       $domain = $cart->getCookieDomain();
+          if (!empty($domain)) {
       $this->headScript()->appendScript(
-        'var cartCookieDomain = ' . (!empty($domain) ? "'$domain'" : 'false') . ';'
+              'VuFind.cart.setDomain("' . $domain . '");'
       );
+          }
+          $cookiePath = $cart->getCookiePath();
+          if (!empty($cookiePath)) {
+            $this->headScript()->appendScript(
+              'VuFind.cart.setCookiePath("' . $cookiePath . '");'
+            );
+          }
       $this->jsTranslations()->addStrings(
         array(
           'addBookBag' => 'Add to Book Bag',
@@ -124,14 +136,19 @@ if (!isset($this->layout()->searchbox)) {
   $this->layout()->searchbox = $this->render('search/searchbox.phtml');
 }
 ?>
-
+<? if (isset($this->layout()->srmessage)): // message for benefit of screen-reader users ?>
+  <span class="sr-only"><?=$this->layout()->srmessage ?></span>
+<? endif; ?>
 <a class="sr-only" href="#searchslots"><?=$this->transEsc('Skip to search')?></a>
 <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content')?></a>
 
+<? /* Start header here, not above, custom finc, CK */ ?>
 <header class="hidden-print">
-  <div class="container">
+  <div class="container navbar">
     <?=$this->render('header.phtml')?>
   </div>
+
+  <? /* Call searchbox in header.phtml, CK */ ?>
 
   <? if ((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
     && !empty($this->layout()->breadcrumbs)
@@ -156,6 +173,7 @@ if (!isset($this->layout()->searchbox)) {
       <? endif; ?>
     </ul>
   <? endif; ?>
+
 </header>
 
 
@@ -188,7 +206,7 @@ if (!isset($this->layout()->searchbox)) {
 <? if ($this->recaptcha()->active()): ?>
   <?=$this->inlineScript(\Zend\View\Helper\HeadScript::FILE, "https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit&hl=" . $this->layout()->userLang, 'SET')?>
 <? endif; ?>
-<? /* Enable Tooltips */ ?>
+<? /* Enable Tooltips, finc-specific, CK */ ?>
 <script type="text/javascript">
   $(document).ready(function () {
     $("body").tooltip({selector: '[data-toggle=tooltip]'});

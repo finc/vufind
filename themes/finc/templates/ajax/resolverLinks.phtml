@@ -1,4 +1,4 @@
-<!-- ajax - resolverlinks.phtml -->
+<!-- finc: ajax - resolverlinks -->
 <div>
   <? /* finc-specific change #8447 - CK */ ?>
   <? $noResolverContent = true; ?>
@@ -32,7 +32,8 @@
   <? endif; ?>
 
   <? /* finc-specific change - commented out in #7643 - CK */ ?>
-  <? /**<? if (!empty($this->print)): ?>
+  <? /*
+ <? if (!empty($this->print)): ?>
     <? $noResolverContent = false; ?>
     <div class="openurls">
       <strong><?=$this->transEsc('Holdings')?></strong>
@@ -62,11 +63,15 @@
         <? endforeach; ?>
       </ul>
     <? endif; ?>
-  </div> */ ?>
+  </div>
+  */ ?>
+  <? /* finc-specific change - commented out in #7643 - END */ ?>
+
   <? /* finc-specific change #9274 - CK */ ?>
   <? if ($noResolverContent): // no content to show, so tell the user ?>
     <span id="noResolverContentMessage" style="display: none"><?=$this->resolver . ': ' . $this->translate('no_resolver_links')?></span>
     <script>if ($('#urlsHideable').length) { $('#urlsHideable').show(); } else { $('#noResolverContentMessage').show(); }</script>
   <? endif; ?>
+  <? /* finc-specific change #9274 - END */ ?>
 </div>
-<!-- ajax - resolverlinks.phtml - END -->
+<!-- finc: ajax - resolverlinks - END -->

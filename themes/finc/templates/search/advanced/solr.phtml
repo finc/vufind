@@ -1,3 +1,4 @@
+<!-- finc: search - advanced - solr -->
 <? if (!empty($this->facetList) || !empty($this->checkboxFacets)): ?>
   <div class="row">
     <? /* use xs-cols to improve mobile view, finc-specific, CK */ ?>
@@ -6,7 +7,8 @@
       <? if (!empty($this->checkboxFacets)): ?>
         <?=$this->render('search/advanced/checkbox-filters.phtml')?>
       <? endif; ?>
-      <div class="row">
+      <? /* finc: we need the limiter-boxes class to set select height to auto + remove bg image - CK */ ?>
+      <div class="row limiter-boxes">
         <? foreach ($this->facetList as $field => $list): ?>
           <div class="col-sm-<?=floor(12/count($this->facetList)) ?>">
             <label for="limit_<?=$this->escapeHtmlAttr(str_replace(' ', '', $field))?>"><?=$this->transEsc($list['label'])?>:</label>
@@ -54,3 +56,4 @@
   <?=$this->render('search/advanced/limit.phtml')?>
   <?=$this->render('search/advanced/ranges.phtml')?>
 </div>
+<!-- finc: search - advanced - solr - END -->

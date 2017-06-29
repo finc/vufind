@@ -1,3 +1,4 @@
+<!-- finc: ajax - status-unavailable-services -->
 <?
 // defaultServiceStatusMessage for multiple status and as fallback for missing translations
 $defaultServiceStatusMessage = 'HoldingStatus::services_available_html';
@@ -16,8 +17,10 @@ $translator = function ($in) use ($that) {
 $serviceList = implode('', array_map($translator, $services));
 
 ?>
-<span class="label alert services-<?=implode('-', $services)?>">
+<span class="label label-danger services-<?=implode('-', $services)?>">
   <?=$serviceStatusMessage === $defaultServiceStatusMessage
       ? $this->translate($serviceStatusMessage, ['%%list%%' => $serviceList])
       : '<span class="service_' . $services[0] . '">' . $serviceStatusMessage . '</span>' ?>
 </span>
+<!-- finc: ajax - status-unavailable-services - END -->
+

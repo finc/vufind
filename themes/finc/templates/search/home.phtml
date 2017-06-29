@@ -1,4 +1,4 @@
-<!-- search - home.PHTML begin -->
+<!-- finc: search - home -->
 <?
 // Set page title.
 $this->headTitle($this->translate('Search Home'));
@@ -20,8 +20,7 @@ $this->layout()->breadcrumbs = false;
 ?>
 
 <div class="searchHomeContent">
-  <? /* finc-specific? VF moved this to separate template Helpers - ils-offline.phtml
- - verify if applicable for us fixme Ck */ ?>
+  <? /* finc-specific: #7187@89bb6e70; VF moved the original BS code to a separate template: helpers - ils-offline.phtml - CK */ ?>
   <?
   $ilsStatusScript = <<<JS
       $(document).ready(function() {
@@ -37,8 +36,9 @@ $this->layout()->breadcrumbs = false;
       });
 JS;
   ?>
-  <? /* finc-specific? - END */ ?>
+  <? /* finc-specific: #7187 - END */ ?>
   <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $ilsStatusScript, 'SET'); ?>
+  <? /* finc: don't use role='search' here but in searchbox template */ ?>
   <div class="well well-lg clearfix">
     <?=$this->context($this)->renderInContext("search/searchbox.phtml", ['ignoreHiddenFilterMemory' => true])?>
   </div>
@@ -74,6 +74,7 @@ JS;
         <noscript>
       <? endif; ?>
       <? $sortedList = $this->sortFacetList($this->results, $field, $details['list'], $basicSearch); ?>
+      <? /* finc: keep .browsesuggest to prevent torn-apart look if only 2 cols are present - CK */ ?>
       <div class="<?= $field == 'callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?> browsesuggest">
         <h2><?= $this->transEsc('home_browse') . ' ' . $this->transEsc($details['label']) ?></h2>
         <div class="row">
@@ -122,4 +123,4 @@ JS;
     <? endforeach; ?>
   </div>
 <? endif; ?>
-<!-- search - home.PHTML end -->
+<!-- finc: search - home - END -->
