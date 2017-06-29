@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
  * @package  View_Helpers
@@ -136,15 +136,23 @@ class Factory
     public static function getOpenUrl(ServiceManager $sm)
     {
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver');
-        $openUrlRules = json_decode(
-            file_get_contents(
-                \VuFind\Config\Locator::getConfigPath('OpenUrlRules.json')
-            ),
-            true
-        );
+
+        // check if config json exists, as fallback empty array is passed to
+        // constructor
+        if (file_exists(
+            \VuFind\Config\Locator::getConfigPath('OpenUrlRules.json')
+        )) {
+            $openUrlRules = json_decode(
+                file_get_contents(
+                    \VuFind\Config\Locator::getConfigPath('OpenUrlRules.json')
+                ),
+                true
+            );
+        }
+
         return new OpenUrl(
             $sm->get('context'),
-            $openUrlRules,
+            empty($openUrlRules) ? [] : $openUrlRules,
             isset($config->General) ? $config : null
         );
     }
@@ -172,15 +180,22 @@ class Factory
      */
     public static function getExternalCatalogueLink(ServiceManager $sm)
     {
-        $externalAccessLinks = json_decode(
-            file_get_contents(
-                \VuFind\Config\Locator::getConfigPath('ExternalCatalogue.json')
-            ),
-            true
-        );
+        // check if config json exists, as fallback empty array is passed to
+        // constructor
+        if (file_exists(
+            \VuFind\Config\Locator::getConfigPath('ExternalCatalogue.json')
+        )) {
+            $externalAccessLinks = json_decode(
+                file_get_contents(
+                    \VuFind\Config\Locator::getConfigPath('ExternalCatalogue.json')
+                ),
+                true
+            );
+        }
+
         return new ExternalCatalogueLink(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            $externalAccessLinks
+            empty($externalAccessLinks) ? [] : $externalAccessLinks
         );
     }
 

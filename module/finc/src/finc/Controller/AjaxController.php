@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
  * @package  Controller
@@ -201,7 +201,10 @@ class AjaxController extends \VuFind\Controller\AjaxController
                 // If a full status display has been requested, append the HTML:
                 if ($showFullStatus) {
                     $current['full_status'] = $renderer->render(
-                        'ajax/status-full.phtml', ['statusItems' => $record]
+                        'ajax/status-full.phtml', [
+                            'statusItems' => $record,
+                            'callnumberHandler' => $this->getCallnumberHandler()
+                         ]
                     );
                 }
                 $current['record_number'] = array_search($current['id'], $ids);
@@ -342,6 +345,10 @@ class AjaxController extends \VuFind\Controller\AjaxController
             }
         }
 
+        $callnumberHandler = $this->getCallnumberHandler(
+            $callNumbers, $callnumberSetting
+        );
+
         // Determine call number string based on findings:
         $callNumber = $this->pickValue(
             $callNumbers, $callnumberSetting, 'Multiple Call Numbers'
@@ -376,7 +383,8 @@ class AjaxController extends \VuFind\Controller\AjaxController
             'reserve_message' => $record[0]['reserve'] == 'Y'
                 ? $this->translate('on_reserve')
                 : $this->translate('Not On Reserve'),
-            'callnumber' => htmlentities($callNumber, ENT_COMPAT, 'UTF-8')
+            'callnumber' => htmlentities($callNumber, ENT_COMPAT, 'UTF-8'),
+            'callnumber_handler' => $callnumberHandler
         ];
     }
     

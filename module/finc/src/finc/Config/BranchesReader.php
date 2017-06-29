@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
  * @package  Config
@@ -27,7 +27,8 @@
  * @link     https://vufind.org Main Site
  */
 namespace finc\Config;
-use Symfony\Component\Yaml\Yaml;
+use VuFind\Config\Locator as Locator,
+    Symfony\Component\Yaml\Yaml;
 
 /**
  * VuFind Branches.yaml Configuration Reader
@@ -39,7 +40,7 @@ use Symfony\Component\Yaml\Yaml;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Site
  */
-class BranchesReader
+class BranchesReader extends \VuFind\Config\SearchSpecsReader
 {
     /**
      * Cache manager
@@ -76,39 +77,49 @@ class BranchesReader
     {
         // Load data if it is not already in the object's cache:
         if (!isset($this->branches[$filename])) {
-            // Connect to branches cache:
-            $cache = (null !== $this->cacheManager)
-                ? $this->cacheManager->getCache('branches') : false;
-
-            // Determine full configuration file path:
-            $fullpath = \VuFind\Config\Locator::getBaseConfigPath($filename);
-            $local = \VuFind\Config\Locator::getLocalConfigPath($filename);
-
-            // Generate cache key:
-            $cacheKey = $filename . '-'
-                . (file_exists($fullpath) ? filemtime($fullpath) : 0);
-            if (!empty($local)) {
-                $cacheKey .= '-local-' . filemtime($local);
-            }
-            $cacheKey = md5($cacheKey);
-
-            // Generate data if not found in cache:
-            if ($cache === false || !($results = $cache->getItem($cacheKey))) {
-                $results = file_exists($fullpath)
-                    ? Yaml::parse(file_get_contents($fullpath)) : [];
-                if (!empty($local)) {
-                    $localResults = Yaml::parse(file_get_contents($local));
-                    foreach ($localResults as $key => $value) {
-                        $results[$key] = $value;
-                    }
-                }
-                if ($cache !== false) {
-                    $cache->setItem($cacheKey, $results);
-                }
-            }
-            $this->branches[$filename] = $results;
+            $this->branches[$filename] = $this->getFromPaths(
+                Locator::getBaseConfigPath($filename),
+                Locator::getLocalConfigPath($filename)
+            );
         }
 
         return $this->branches[$filename];
     }
+
+    /**
+     * Given core and local filenames, retrieve the searchspecs data.
+     *
+     * @param string $defaultFile Full path to file containing default YAML
+     * @param string $customFile  Full path to file containing local customizations
+     * (may be null if no local file exists).
+     *
+     * @return array
+     */
+    protected function getFromPaths($defaultFile, $customFile = null)
+    {
+        // Connect to searchspecs cache:
+        $cache = (null !== $this->cacheManager)
+            ? $this->cacheManager->getCache('branches') : false;
+
+        // Generate cache key:
+        $cacheKey = basename($defaultFile) . '-'
+            . (file_exists($defaultFile) ? filemtime($defaultFile) : 0);
+        if (!empty($customFile)) {
+            $cacheKey .= '-local-' . filemtime($customFile);
+        }
+        $cacheKey = md5($cacheKey);
+
+        // Generate data if not found in cache:
+        if ($cache === false || !($results = $cache->getItem($cacheKey))) {
+            $results = $this->parseYaml($customFile, $defaultFile);
+            if ($cache !== false) {
+                $cache->setItem($cacheKey, $results);
+            }
+        }
+
+        return $results;
+    }
+
+
+
 }
