@@ -1,12 +1,16 @@
+sudo: false
 language: php
 php:
   - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
 
 before_script:
-  - composer install
-  - pyrus install pear/PHP_CodeSniffer
+  - pear channel-discover pear.phing.info
+  - pear install phing/phing
+  - phpenv config-rm xdebug.ini
   - phpenv rehash
 
 script:
-  - phpunit --stderr --configuration phpunit.xml
-  - phpcs --standard=PEAR --extensions=php $PWD/src
+  - phing startup phpunitfast phpcs-console php-cs-fixer-dryrun

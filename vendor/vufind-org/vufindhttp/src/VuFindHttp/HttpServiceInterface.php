@@ -18,27 +18,25 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @category VuFind2
+ * @category VuFind
  * @package  Http
  * @author   David Maus <maus@hab.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://github.com/dmj/vf2-proxy
+ * @link     https://vufind.org/wiki/development
  */
-
 namespace VuFindHttp;
 
 /**
  * VuFind HTTP service interface definition.
  *
- * @category VuFind2
+ * @category VuFind
  * @package  Http
  * @author   David Maus <maus@hab.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://github.com/dmj/vf2-proxy
+ * @link     https://vufind.org/wiki/development
  */
-
 interface HttpServiceInterface
 {
     /**
@@ -51,7 +49,7 @@ interface HttpServiceInterface
      *
      * @return \Zend\Http\Client
      */
-    public function proxify(\Zend\Http\Client $client, array $options = array());
+    public function proxify(\Zend\Http\Client $client, array $options = []);
 
     /**
      * Perform a GET request.
@@ -59,10 +57,13 @@ interface HttpServiceInterface
      * @param string $url     Request URL
      * @param array  $params  Request parameters
      * @param float  $timeout Request timeout in seconds
+     * @param array  $headers Request headers
      *
      * @return \Zend\Http\Response
      */
-    public function get($url, array $params = array(), $timeout = null);
+    public function get($url, array $params = [], $timeout = null,
+        array $headers = []
+    );
 
     /**
      * Perform a POST request.
@@ -71,11 +72,12 @@ interface HttpServiceInterface
      * @param mixed  $body    Request body document
      * @param string $type    Request body content type
      * @param float  $timeout Request timeout in seconds
+     * @param array  $headers Request http-headers
      *
      * @return \Zend\Http\Response
      */
     public function post($url, $body = null, $type = 'application/octet-stream',
-        $timeout = null
+        $timeout = null, array $headers = []
     );
 
     /**
@@ -87,7 +89,7 @@ interface HttpServiceInterface
      *
      * @return \Zend\Http\Response
      */
-    public function postForm($url, array $params = array(), $timeout = null);
+    public function postForm($url, array $params = [], $timeout = null);
 
     /**
      * Return a new proxy client.
@@ -98,8 +100,8 @@ interface HttpServiceInterface
      *
      * @return \Zend\Http\Client
      */
-    public function createClient($url, $method = \Zend\Http\Request::METHOD_GET,
-        $timeout = null
+    public function createClient($url = null,
+        $method = \Zend\Http\Request::METHOD_GET, $timeout = null
     );
 
 }

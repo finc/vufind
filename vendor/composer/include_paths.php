@@ -10,4 +10,6 @@ return array(
     $vendorDir . '/pear/file_marc',
     $vendorDir . '/pear/validate',
     $vendorDir . '/pear/validate_ispn',
+    $vendorDir . '/pdepend/pdepend/src/main/php',
+    $vendorDir . '/phpmd/phpmd/src/main/php',
 );

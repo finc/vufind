@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind
  * @package  Harvest_Tools
@@ -136,8 +136,6 @@ class HarvesterConsoleRunner
                 'sslcafile-s' => 'Path to SSL certificate authority file',
                 'nosslverifypeer' => 'Disable SSL verification',
                 'sanitize' => 'Strip illegal characters from XML',
-                'sanitizeRegex-s' =>
-                    'Optional regular expression defining XML characters to remove',
                 'badXMLLog-s' => 'Filename (relative to harvest directory) to log'
                     . ' XML fixed by sanitize setting'
                 
@@ -160,7 +158,6 @@ class HarvesterConsoleRunner
             'injectDate', 'injectId', 'injectSetName', 'injectSetSpec',
             'idSearch', 'idReplace', 'dateGranularity', 'harvestedIdLog',
             'badXMLLog', 'httpUser', 'httpPass', 'sslcapath', 'sslcafile',
-            'sanitizeRegex',
         ];
         foreach ($directMapSettings as $setting) {
             if ($value = $this->opts->getOption($setting)) {

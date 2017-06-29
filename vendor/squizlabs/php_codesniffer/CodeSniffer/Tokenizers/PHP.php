@@ -657,52 +657,6 @@ class PHP_CodeSniffer_Tokenizers_PHP
             }
 
             /*
-                Before PHP 7, the ?? operator was tokenized as
-                T_INLINE_THEN followed by T_INLINE_THEN.
-                So look for and combine these tokens in earlier versions.
-            */
-
-            if ($tokenIsArray === false
-                && $token[0] === '?'
-                && isset($tokens[($stackPtr + 1)]) === true
-                && $tokens[($stackPtr + 1)][0] === '?'
-            ) {
-                $newToken            = array();
-                $newToken['code']    = T_COALESCE;
-                $newToken['type']    = 'T_COALESCE';
-                $newToken['content'] = '??';
-                $finalTokens[$newStackPtr] = $newToken;
-
-                $newStackPtr++;
-                $stackPtr++;
-                continue;
-            }
-
-            /*
-                Tokens after a double colon may be look like scope openers,
-                such as when writing code like Foo::NAMESAPCE, but they are
-                only ever variables or strings.
-            */
-
-            if ($stackPtr > 1
-                && $tokens[($stackPtr - 1)][0] === T_PAAMAYIM_NEKUDOTAYIM
-                && $tokenIsArray === true
-                && $token[0] !== T_STRING
-                && $token[0] !== T_VARIABLE
-                && $token[0] !== T_DOLLAR
-                && isset(PHP_CodeSniffer_Tokens::$emptyTokens[$token[0]]) === false
-            ) {
-                $newToken            = array();
-                $newToken['code']    = T_STRING;
-                $newToken['type']    = 'T_STRING';
-                $newToken['content'] = $token[1];
-                $finalTokens[$newStackPtr] = $newToken;
-
-                $newStackPtr++;
-                continue;
-            }
-
-            /*
                 Before PHP 7, the <=> operator was tokenized as
                 T_IS_SMALLER_OR_EQUAL followed by T_GREATER_THAN.
                 So look for and combine these tokens in earlier versions.
@@ -732,7 +686,6 @@ class PHP_CodeSniffer_Tokenizers_PHP
                 && $token[0] === T_STRING
                 && strtolower($token[1]) === 'trait'
                 && $tokens[($stackPtr - 1)][0] !== T_OBJECT_OPERATOR
-                && $tokens[($stackPtr - 1)][0] !== T_PAAMAYIM_NEKUDOTAYIM
             ) {
                 $finalTokens[$newStackPtr] = array(
                                               'content' => $token[1],
@@ -948,6 +901,7 @@ class PHP_CodeSniffer_Tokenizers_PHP
                 // the parenthesis map clean, so let's tag these tokens as
                 // T_ARRAY_HINT.
                 if ($newToken['code'] === T_ARRAY) {
+                    // Recalculate number of tokens.
                     for ($i = $stackPtr; $i < $numTokens; $i++) {
                         if ($tokens[$i] === '(') {
                             break;
@@ -970,8 +924,7 @@ class PHP_CodeSniffer_Tokenizers_PHP
 
                 // This is a special case for the PHP 5.5 classname::class syntax
                 // where "class" should be T_STRING instead of T_CLASS.
-                if (($newToken['code'] === T_CLASS
-                    || $newToken['code'] === T_FUNCTION)
+                if ($newToken['code'] === T_CLASS
                     && $finalTokens[($newStackPtr - 1)]['code'] === T_DOUBLE_COLON
                 ) {
                     $newToken['code'] = T_STRING;
@@ -1052,17 +1005,11 @@ class PHP_CodeSniffer_Tokenizers_PHP
 
             if ($tokens[$i]['code'] === T_FUNCTION) {
                 // Context sensitive keywords support.
-                for ($x = ($i + 1); $x < $numTokens; $x++) {
+                for ($x = ($i + 1); $i < $numTokens; $x++) {
                     if (isset(PHP_CodeSniffer_Tokens::$emptyTokens[$tokens[$x]['code']]) === false) {
                         // Non-whitespace content.
                         break;
                     }
-                }
-
-                if ($x === $numTokens) {
-                    // We got to the end without finding any more
-                    // non-whitespace content.
-                    continue;
                 }
 
                 if (in_array($tokens[$x]['code'], array(T_STRING, T_OPEN_PARENTHESIS, T_BITWISE_AND), true) === false) {
@@ -1137,7 +1084,7 @@ class PHP_CodeSniffer_Tokenizers_PHP
 
                 for ($x = ($tokenAfterReturnTypeHint - 1); $x > $i; $x--) {
                     if (isset(PHP_CodeSniffer_Tokens::$emptyTokens[$tokens[$x]['code']]) === false) {
-                        if (in_array($tokens[$x]['code'], array(T_STRING, T_ARRAY, T_CALLABLE, T_SELF, T_PARENT), true) === true) {
+                        if ($tokens[$x]['code'] === T_STRING || $tokens[$x]['code'] === T_ARRAY) {
                             if (PHP_CODESNIFFER_VERBOSITY > 1) {
                                 $line = $tokens[$x]['line'];
                                 $type = $tokens[$x]['type'];
@@ -1288,6 +1235,25 @@ class PHP_CodeSniffer_Tokenizers_PHP
                 }
 
                 if ($tokens[$x]['code'] !== T_STRING) {
+                    if (PHP_CODESNIFFER_VERBOSITY > 1) {
+                        $line = $tokens[$x]['line'];
+                        $type = $tokens[$x]['type'];
+                        echo "\t* token $x on line $line changed from $type to T_STRING".PHP_EOL;
+                    }
+
+                    $tokens[$x]['code'] = T_STRING;
+                    $tokens[$x]['type'] = 'T_STRING';
+                }
+            } else if ($tokens[$i]['code'] === T_PAAMAYIM_NEKUDOTAYIM) {
+                // Context sensitive keywords support.
+                for ($x = ($i + 1); $i < $numTokens; $x++) {
+                    if (isset(PHP_CodeSniffer_Tokens::$emptyTokens[$tokens[$x]['code']]) === false) {
+                        // Non-whitespace content.
+                        break;
+                    }
+                }
+
+                if (in_array($tokens[$x]['code'], array(T_STRING, T_VARIABLE, T_DOLLAR), true) === false) {
                     if (PHP_CODESNIFFER_VERBOSITY > 1) {
                         $line = $tokens[$x]['line'];
                         $type = $tokens[$x]['type'];

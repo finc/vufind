@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/vufind-org/vufindcode.svg?branch=master)](https://travis-ci.org/vufind-org/vufind)
 VuFindCode
 ==========
 

@@ -56,26 +56,16 @@ class Squiz_Sniffs_PHP_InnerFunctionsSniff implements PHP_CodeSniffer_Sniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        $function = $phpcsFile->getCondition($stackPtr, T_FUNCTION);
-        if ($function === false) {
-            // Not a nested function.
-            return;
-        }
+        if ($phpcsFile->hasCondition($stackPtr, T_FUNCTION) === true) {
+            $prev = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1), null, true);
+            if ($tokens[$prev]['code'] === T_EQUAL) {
+                // Ignore closures.
+                return;
+            }
 
-        $class = $phpcsFile->getCondition($stackPtr, T_ANON_CLASS);
-        if ($class !== false && $class > $function) {
-            // Ignore methods in anon classes.
-            return;
+            $error = 'The use of inner functions is forbidden';
+            $phpcsFile->addError($error, $stackPtr, 'NotAllowed');
         }
-
-        $prev = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1), null, true);
-        if ($tokens[$prev]['code'] === T_EQUAL) {
-            // Ignore closures.
-            return;
-        }
-
-        $error = 'The use of inner functions is forbidden';
-        $phpcsFile->addError($error, $stackPtr, 'NotAllowed');
 
     }//end process()
 

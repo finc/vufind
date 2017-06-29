@@ -87,10 +87,7 @@ class Squiz_Sniffs_Operators_IncrementDecrementUsageSniff implements PHP_CodeSni
 
         // Work out where the variable is so we know where to
         // start looking for other operators.
-        if ($tokens[($stackPtr - 1)]['code'] === T_VARIABLE
-            || ($tokens[($stackPtr - 1)]['code'] === T_STRING
-            && $tokens[($stackPtr - 2)]['code'] === T_OBJECT_OPERATOR)
-        ) {
+        if ($tokens[($stackPtr - 1)]['code'] === T_VARIABLE) {
             $start = ($stackPtr + 1);
         } else {
             $start = ($stackPtr + 2);

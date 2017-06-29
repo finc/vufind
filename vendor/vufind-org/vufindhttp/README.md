@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/vufind-org/vufindhttp.svg?branch=master)](https://travis-ci.org/vufind-org/vufindhttp)
 VuFindHttp
 ==========
 
@@ -5,7 +6,7 @@ Introduction
 ------------
 VuFindHttp contains a convenience class built around Zend\Http\Client which allows
 creation of proxy-aware clients and convenient GET/POST behavior. This is part of
-the VuFind project (http://vufind.org) but may be useful for any software dealing
+the VuFind project (https://vufind.org) but may be useful for any software dealing
 with HTTP calls.
 
 

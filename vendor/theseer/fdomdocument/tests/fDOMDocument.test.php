@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2010-2013 Arne Blankerts <arne@blankerts.de>
+ * Copyright (c) 2010-2017 Arne Blankerts <arne@blankerts.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -48,7 +48,7 @@ namespace TheSeer\fDOM\Tests {
      * @author     Arne Blankerts <arne@blankerts.de>
      * @copyright  Arne Blankerts <arne@blankerts.de>, All rights reserved.
      */
-    class fDOMDocumentTest extends \PHPUnit_Framework_TestCase {
+    class fDOMDocumentTest extends \PHPUnit\Framework\TestCase {
 
         /**
          * @var fDOMDocument
@@ -79,6 +79,34 @@ namespace TheSeer\fDOM\Tests {
          */
         public function testAttemptingToLoadAnXMLStringWithAnUndefinedEntityThrowsException() {
             $this->dom->loadXML('<?xml version="1.0" ?><root>&undefined;</root>');
+        }
+
+        /**
+         * @expectedException \TheSeer\fDOM\fDOMException
+         */
+        public function testAttemptingToLoadAnEmptyXMLStringThrowsException() {
+            $this->dom->loadXML('');
+        }
+
+        /**
+         * @expectedException \TheSeer\fDOM\fDOMException
+         */
+        public function testAttemptingToLoadWithEmptyFilenameThrowsException() {
+            $this->dom->load('');
+        }
+
+        /**
+         * @expectedException \TheSeer\fDOM\fDOMException
+         */
+        public function testAttemptingToLoadHTMLWithAnEmptyFilenameThrowsException() {
+            $this->dom->loadHTMLFile('');
+        }
+
+        /**
+         * @expectedException \TheSeer\fDOM\fDOMException
+         */
+        public function testAttemptingToLoadHMLWithAnEmptyStringThrowsException() {
+            $this->dom->loadHTML('');
         }
 
         /**

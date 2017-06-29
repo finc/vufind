@@ -787,11 +787,13 @@ class Statement extends PDOStatement
     /**
      * Closes the cursor, enabling the statement to be executed again.
      *
+     * @throws Oci8Exception
      * @return bool TRUE on success or FALSE on failure.
+     * @todo Implement method
      */
     public function closeCursor()
     {
-        return oci_free_cursor($this->sth);
+        throw new Oci8Exception("closeCursor has not been implemented");
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
@@ -23,7 +24,11 @@ class ProjectServiceContainer extends Container
      */
     public function __construct()
     {
-        $this->services = array();
+        $this->services =
+        $this->scopedServices =
+        $this->scopeStacks = array();
+        $this->scopes = array();
+        $this->scopeChildren = array();
         $this->methodMap = array(
             'bar' => 'getBarService',
         );

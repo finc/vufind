@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2010-2013 Arne Blankerts <arne@blankerts.de>
+ * Copyright (c) 2010-2017 Arne Blankerts <arne@blankerts.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -44,7 +44,7 @@ namespace TheSeer\fDOM\Tests {
     use TheSeer\fDOM\XPathQuery;
     use TheSeer\fDOM\fDOMDocument;
 
-    class XPathQueryTest extends \PHPUnit_Framework_TestCase {
+    class XPathQueryTest extends \PHPUnit\Framework\TestCase {
 
         private $dom;
 

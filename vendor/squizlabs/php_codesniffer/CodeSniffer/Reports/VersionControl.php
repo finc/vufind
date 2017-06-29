@@ -107,12 +107,9 @@ abstract class PHP_CodeSniffer_Reports_VersionControl implements PHP_CodeSniffer
                     if ($showSources === true) {
                         $source = $error['source'];
                         if (isset($this->_sourceCache[$author][$source]) === false) {
-                            $this->_sourceCache[$author][$source] = array(
-                                                                     'count'   => 1,
-                                                                     'fixable' => $error['fixable'],
-                                                                    );
+                            $this->_sourceCache[$author][$source] = 1;
                         } else {
-                            $this->_sourceCache[$author][$source]['count']++;
+                            $this->_sourceCache[$author][$source]++;
                         }
                     }
                 }
@@ -186,7 +183,7 @@ abstract class PHP_CodeSniffer_Reports_VersionControl implements PHP_CodeSniffer
         foreach ($this->_authorCache as $author => $count) {
             $maxLength = max($maxLength, strlen($author));
             if ($showSources === true && isset($this->_sourceCache[$author]) === true) {
-                foreach ($this->_sourceCache[$author] as $source => $sourceData) {
+                foreach ($this->_sourceCache[$author] as $source => $count) {
                     if ($source === 'count') {
                         continue;
                     }
@@ -211,16 +208,6 @@ abstract class PHP_CodeSniffer_Reports_VersionControl implements PHP_CodeSniffer
         }
 
         echo "\033[0m";
-
-        if ($showSources === true) {
-            $maxSniffWidth = ($width - 15);
-
-            if ($totalFixable > 0) {
-                $maxSniffWidth -= 4;
-            }
-        }
-
-        $fixableSources = 0;
 
         foreach ($this->_authorCache as $author => $count) {
             if ($this->_praiseCache[$author]['good'] === 0) {
@@ -248,43 +235,15 @@ abstract class PHP_CodeSniffer_Reports_VersionControl implements PHP_CodeSniffer
                 asort($errors);
                 $errors = array_reverse($errors);
 
-                foreach ($errors as $source => $sourceData) {
+                foreach ($errors as $source => $count) {
                     if ($source === 'count') {
                         continue;
                     }
 
-                    $count = $sourceData['count'];
-
-                    $srcLength = strlen($source);
-                    if ($srcLength > $maxSniffWidth) {
-                        $source = substr($source, 0, $maxSniffWidth);
-                    }
-
                     $line = str_repeat(' ', (5 - strlen($count))).$count;
-
-                    echo '         ';
-                    if ($totalFixable > 0) {
-                        echo '[';
-                        if ($sourceData['fixable'] === true) {
-                            echo 'x';
-                            $fixableSources++;
-                        } else {
-                            echo ' ';
-                        }
-
-                        echo '] ';
-                    }
-
-                    echo $source;
-                    if ($totalFixable > 0) {
-                        echo str_repeat(' ', ($width - 18 - strlen($source)));
-                    } else {
-                        echo str_repeat(' ', ($width - 14 - strlen($source)));
-                    }
-
-                    echo $line.PHP_EOL;
-                }//end foreach
-            }//end if
+                    echo '         '.$source.str_repeat(' ', ($width - 14 - strlen($source))).$line.PHP_EOL;
+                }
+            }
         }//end foreach
 
         echo str_repeat('-', $width).PHP_EOL;
@@ -301,13 +260,8 @@ abstract class PHP_CodeSniffer_Reports_VersionControl implements PHP_CodeSniffer
         echo "\033[0m";
 
         if ($totalFixable > 0) {
-            if ($showSources === true) {
-                echo PHP_EOL.str_repeat('-', $width).PHP_EOL;
-                echo "\033[1mPHPCBF CAN FIX THE $fixableSources MARKED SOURCES AUTOMATICALLY ($totalFixable VIOLATIONS IN TOTAL)\033[0m";
-            } else {
-                echo PHP_EOL.str_repeat('-', $width).PHP_EOL;
-                echo "\033[1mPHPCBF CAN FIX $totalFixable OF THESE SNIFF VIOLATIONS AUTOMATICALLY\033[0m";
-            }
+            echo PHP_EOL.str_repeat('-', $width).PHP_EOL;
+            echo "\033[1mPHPCBF CAN FIX $totalFixable OF THESE SNIFF VIOLATIONS AUTOMATICALLY\033[0m";
         }
 
         echo PHP_EOL.str_repeat('-', $width).PHP_EOL.PHP_EOL;

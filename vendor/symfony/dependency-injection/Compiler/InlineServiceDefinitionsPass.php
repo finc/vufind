@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\DependencyInjection\Compiler;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -72,10 +73,10 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
                     continue;
                 }
 
-                if ($this->isInlineableDefinition($id, $definition = $container->getDefinition($id))) {
+                if ($this->isInlineableDefinition($container, $id, $definition = $container->getDefinition($id))) {
                     $this->compiler->addLogMessage($this->formatter->formatInlineService($this, $id, $this->currentId));
 
-                    if ($definition->isShared()) {
+                    if ($definition->isShared() && ContainerInterface::SCOPE_PROTOTYPE !== $definition->getScope(false)) {
                         $arguments[$k] = $definition;
                     } else {
                         $arguments[$k] = clone $definition;
@@ -100,14 +101,15 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
     /**
      * Checks if the definition is inlineable.
      *
-     * @param string     $id
-     * @param Definition $definition
+     * @param ContainerBuilder $container
+     * @param string           $id
+     * @param Definition       $definition
      *
      * @return bool If the definition is inlineable
      */
-    private function isInlineableDefinition($id, Definition $definition)
+    private function isInlineableDefinition(ContainerBuilder $container, $id, Definition $definition)
     {
-        if (!$definition->isShared()) {
+        if (!$definition->isShared() || ContainerInterface::SCOPE_PROTOTYPE === $definition->getScope(false)) {
             return true;
         }
 
@@ -136,6 +138,10 @@ class InlineServiceDefinitionsPass implements RepeatablePassInterface
             return false;
         }
 
-        return true;
+        if (count($ids) > 1 && $definition->getFactoryService(false)) {
+            return false;
+        }
+
+        return $container->getDefinition(reset($ids))->getScope(false) === $definition->getScope(false);
     }
 }

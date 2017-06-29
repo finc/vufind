@@ -30,13 +30,6 @@
 class Squiz_Sniffs_WhiteSpace_ObjectOperatorSpacingSniff implements PHP_CodeSniffer_Sniff
 {
 
-    /**
-     * Allow newlines instead of spaces.
-     *
-     * @var boolean
-     */
-    public $ignoreNewlines = false;
-
 
     /**
      * Returns an array of tokens this test wants to listen for.
@@ -85,9 +78,7 @@ class Squiz_Sniffs_WhiteSpace_ObjectOperatorSpacingSniff implements PHP_CodeSnif
         $phpcsFile->recordMetric($stackPtr, 'Spacing before object operator', $before);
         $phpcsFile->recordMetric($stackPtr, 'Spacing after object operator', $after);
 
-        if ($before !== 0
-            && ($before !== 'newline' || $this->ignoreNewlines === false)
-        ) {
+        if ($before !== 0) {
             $error = 'Space found before object operator';
             $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'Before');
             if ($fix === true) {
@@ -95,9 +86,7 @@ class Squiz_Sniffs_WhiteSpace_ObjectOperatorSpacingSniff implements PHP_CodeSnif
             }
         }
 
-        if ($after !== 0
-            && ($after !== 'newline' || $this->ignoreNewlines === false)
-        ) {
+        if ($after !== 0) {
             $error = 'Space found after object operator';
             $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'After');
             if ($fix === true) {

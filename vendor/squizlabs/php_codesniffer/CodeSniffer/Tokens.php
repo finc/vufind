@@ -141,10 +141,6 @@ if (defined('T_SPACESHIP') === false) {
     define('T_SPACESHIP', 'PHPCS_T_SPACESHIP');
 }
 
-if (defined('T_COALESCE') === false) {
-    define('T_COALESCE', 'PHPCS_T_COALESCE');
-}
-
 // Tokens used for parsing doc blocks.
 define('T_DOC_COMMENT_STAR', 'PHPCS_T_DOC_COMMENT_STAR');
 define('T_DOC_COMMENT_WHITESPACE', 'PHPCS_T_DOC_COMMENT_WHITESPACE');
@@ -219,7 +215,6 @@ final class PHP_CodeSniffer_Tokens
                                  T_MODULUS             => 5,
                                  T_POW                 => 5,
                                  T_SPACESHIP           => 5,
-                                 T_COALESCE            => 5,
 
                                  T_SL                  => 5,
                                  T_SR                  => 5,
@@ -380,7 +375,6 @@ final class PHP_CodeSniffer_Tokens
                                    T_MODULUS                  => 1,
                                    T_POW                      => 2,
                                    T_SPACESHIP                => 3,
-                                   T_COALESCE                 => 2,
                                    T_BITWISE_AND              => 1,
                                    T_BITWISE_OR               => 1,
                                    T_BITWISE_XOR              => 1,
@@ -572,7 +566,6 @@ final class PHP_CodeSniffer_Tokens
                                 T_MODULUS     => T_MODULUS,
                                 T_POW         => T_POW,
                                 T_SPACESHIP   => T_SPACESHIP,
-                                T_COALESCE    => T_COALESCE,
                                 T_BITWISE_AND => T_BITWISE_AND,
                                 T_BITWISE_OR  => T_BITWISE_OR,
                                 T_BITWISE_XOR => T_BITWISE_XOR,

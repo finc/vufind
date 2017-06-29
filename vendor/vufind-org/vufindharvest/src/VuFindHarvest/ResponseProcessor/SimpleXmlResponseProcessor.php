@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @category VuFind
  * @package  Harvest_Tools
@@ -51,13 +51,6 @@ class SimpleXmlResponseProcessor implements ResponseProcessorInterface
      * @var string|bool
      */
     protected $badXmlLog = false;
-    
-    /**
-     * An array of regex strings used to sanitize XML
-     *
-     * @var array
-     */
-    protected $sanitizeRegex = [];
 
     /**
      * Constructor
@@ -71,9 +64,6 @@ class SimpleXmlResponseProcessor implements ResponseProcessorInterface
             ? $settings['sanitize'] : false;
         $this->badXmlLog = isset($settings['badXMLLog'])
             ? $basePath . $settings['badXMLLog'] : false;
-        $this->sanitizeRegex = isset($settings['sanitizeRegex'])
-            ? $settings['sanitizeRegex']
-            : ['/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u'];
     }
 
     /**
@@ -103,7 +93,8 @@ class SimpleXmlResponseProcessor implements ResponseProcessorInterface
     protected function sanitizeXml($xml)
     {
         // Sanitize the XML if requested:
-        $newXML = trim(preg_replace($this->sanitizeRegex, ' ', $xml, -1, $count));
+        $regex = '/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u';
+        $newXML = trim(preg_replace($regex, ' ', $xml, -1, $count));
 
         if ($count > 0 && $this->badXmlLog) {
             $this->logBadXML($xml);

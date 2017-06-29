@@ -129,13 +129,7 @@ class Generic_Sniffs_Files_LineEndingsSniff implements PHP_CodeSniffer_Sniff
                     || $tokens[($i + 1)]['line'] > $tokens[$i]['line']
                 ) {
                     // Token is the last on a line.
-                    if (isset($tokens[$i]['orig_content']) === true) {
-                        $tokenContent = $tokens[$i]['orig_content'];
-                    } else {
-                        $tokenContent = $tokens[$i]['content'];
-                    }
-
-                    $newContent  = rtrim($tokenContent, "\r\n");
+                    $newContent  = rtrim($tokens[$i]['content'], "\r\n");
                     $newContent .= $eolChar;
                     $phpcsFile->fixer->replaceToken($i, $newContent);
                 }

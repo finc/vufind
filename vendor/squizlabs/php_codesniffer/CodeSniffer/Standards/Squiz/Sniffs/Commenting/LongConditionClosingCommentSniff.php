@@ -59,16 +59,7 @@ class Squiz_Sniffs_Commenting_LongConditionClosingCommentSniff implements PHP_Co
      *
      * @var int
      */
-    public $lineLimit = 20;
-
-    /**
-     * The format the end comment should be in.
-     *
-     * The placeholder %s will be replaced with the type of condition opener.
-     *
-     * @var string
-     */
-    public $commentFormat = '//end %s';
+    protected $lineLimit = 20;
 
 
     /**
@@ -111,7 +102,7 @@ class Squiz_Sniffs_Commenting_LongConditionClosingCommentSniff implements PHP_Co
         }
 
         if ($startCondition['code'] === T_IF) {
-            // If this is actually an ELSE IF, skip it as the brace
+            // If this is actually and ELSE IF, skip it as the brace
             // will be checked by the original IF.
             $else = $phpcsFile->findPrevious(T_WHITESPACE, ($tokens[$stackPtr]['scope_condition'] - 1), null, true);
             if ($tokens[$else]['code'] === T_ELSE) {
@@ -167,7 +158,7 @@ class Squiz_Sniffs_Commenting_LongConditionClosingCommentSniff implements PHP_Co
 
         $lineDifference = ($endBrace['line'] - $startBrace['line']);
 
-        $expected = sprintf($this->commentFormat, $startCondition['content']);
+        $expected = '//end '.$startCondition['content'];
         $comment  = $phpcsFile->findNext(array(T_COMMENT), $stackPtr, null, false);
 
         if (($comment === false) || ($tokens[$comment]['line'] !== $endBrace['line'])) {

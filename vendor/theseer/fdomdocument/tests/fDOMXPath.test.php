@@ -1,6 +1,6 @@
 <?php
     /**
-     * Copyright (c) 2010-2013 Arne Blankerts <arne@blankerts.de>
+     * Copyright (c) 2010-2017 Arne Blankerts <arne@blankerts.de>
      * All rights reserved.
      *
      * Redistribution and use in source and binary forms, with or without modification,
@@ -49,7 +49,7 @@ namespace TheSeer\fDOM\Tests {
      * @author     Arne Blankerts <arne@blankerts.de>
      * @copyright  Arne Blankerts <arne@blankerts.de>, All rights reserved.
      */
-    class fDOMXPathTest extends \PHPUnit_Framework_TestCase {
+    class fDOMXPathTest extends \PHPUnit\Framework\TestCase {
 
         /**
          * @var TheSeer\fDOM\fDOMDocument

@@ -2,6 +2,7 @@
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
@@ -25,7 +26,11 @@ class ProjectServiceContainer extends Container
     {
         $this->parameters = $this->getDefaultParameters();
 
-        $this->services = array();
+        $this->services =
+        $this->scopedServices =
+        $this->scopeStacks = array();
+        $this->scopes = array();
+        $this->scopeChildren = array();
         $this->methodMap = array(
             'test' => 'getTestService',
         );
@@ -69,11 +74,8 @@ class ProjectServiceContainer extends Container
     {
         $name = strtolower($name);
 
-        if (!(isset($this->parameters[$name]) || array_key_exists($name, $this->parameters) || isset($this->loadedDynamicParameters[$name]))) {
+        if (!(isset($this->parameters[$name]) || array_key_exists($name, $this->parameters))) {
             throw new InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
-        }
-        if (isset($this->loadedDynamicParameters[$name])) {
-            return $this->loadedDynamicParameters[$name] ? $this->dynamicParameters[$name] : $this->getDynamicParameter($name);
         }
 
         return $this->parameters[$name];
@@ -86,7 +88,7 @@ class ProjectServiceContainer extends Container
     {
         $name = strtolower($name);
 
-        return isset($this->parameters[$name]) || array_key_exists($name, $this->parameters) || isset($this->loadedDynamicParameters[$name]);
+        return isset($this->parameters[$name]) || array_key_exists($name, $this->parameters);
     }
 
     /**
@@ -103,31 +105,10 @@ class ProjectServiceContainer extends Container
     public function getParameterBag()
     {
         if (null === $this->parameterBag) {
-            $parameters = $this->parameters;
-            foreach ($this->loadedDynamicParameters as $name => $loaded) {
-                $parameters[$name] = $loaded ? $this->dynamicParameters[$name] : $this->getDynamicParameter($name);
-            }
-            $this->parameterBag = new FrozenParameterBag($parameters);
+            $this->parameterBag = new FrozenParameterBag($this->parameters);
         }
 
         return $this->parameterBag;
-    }
-
-    private $loadedDynamicParameters = array();
-    private $dynamicParameters = array();
-
-    /**
-     * Computes a dynamic parameter.
-     *
-     * @param string The name of the dynamic parameter to load
-     *
-     * @return mixed The value of the dynamic parameter
-     *
-     * @throws InvalidArgumentException When the dynamic parameter does not exist
-     */
-    private function getDynamicParameter($name)
-    {
-        throw new InvalidArgumentException(sprintf('The dynamic parameter "%s" must be defined.', $name));
     }
 
     /**

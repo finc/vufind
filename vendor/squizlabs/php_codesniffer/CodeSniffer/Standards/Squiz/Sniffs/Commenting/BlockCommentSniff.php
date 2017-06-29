@@ -30,13 +30,6 @@
 class Squiz_Sniffs_Commenting_BlockCommentSniff implements PHP_CodeSniffer_Sniff
 {
 
-    /**
-     * The --tab-width CLI value that is being used.
-     *
-     * @var int
-     */
-    private $_tabWidth = null;
-
 
     /**
      * Returns an array of tokens this test wants to listen for.
@@ -64,16 +57,6 @@ class Squiz_Sniffs_Commenting_BlockCommentSniff implements PHP_CodeSniffer_Sniff
      */
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
-        if ($this->_tabWidth === null) {
-            $cliValues = $phpcsFile->phpcs->cli->getCommandLineValues();
-            if (isset($cliValues['tabWidth']) === false || $cliValues['tabWidth'] === 0) {
-                // We have no idea how wide tabs are, so assume 4 spaces for fixing.
-                $this->_tabWidth = 4;
-            } else {
-                $this->_tabWidth = $cliValues['tabWidth'];
-            }
-        }
-
         $tokens = $phpcsFile->getTokens();
 
         // If it's an inline comment, return.
@@ -186,18 +169,9 @@ class Squiz_Sniffs_Commenting_BlockCommentSniff implements PHP_CodeSniffer_Sniff
             $error = 'Block comment text must start on a new line';
             $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'NoNewLine');
             if ($fix === true) {
-                $indent = '';
-                if ($tokens[($stackPtr - 1)]['code'] === T_WHITESPACE) {
-                    if (isset($tokens[($stackPtr - 1)]['orig_content']) === true) {
-                        $indent = $tokens[($stackPtr - 1)]['orig_content'];
-                    } else {
-                        $indent = $tokens[($stackPtr - 1)]['content'];
-                    }
-                }
-
                 $comment = preg_replace(
                     '/^(\s*\/\*\*?)/',
-                    '$1'.$phpcsFile->eolChar.$indent,
+                    '$1'.$phpcsFile->eolChar.' ',
                     $tokens[$stackPtr]['content'],
                     1
                 );
@@ -205,7 +179,7 @@ class Squiz_Sniffs_Commenting_BlockCommentSniff implements PHP_CodeSniffer_Sniff
             }
 
             return;
-        }//end if
+        }
 
         $starColumn = ($tokens[$stackPtr]['column'] + 3);
 
@@ -235,18 +209,10 @@ class Squiz_Sniffs_Commenting_BlockCommentSniff implements PHP_CodeSniffer_Sniff
                 $error = 'First line of comment not aligned correctly; expected %s but found %s';
                 $fix   = $phpcsFile->addFixableError($error, $commentLines[1], 'FirstLineIndent', $data);
                 if ($fix === true) {
-                    if (isset($tokens[$commentLines[1]]['orig_content']) === true
-                        && $tokens[$commentLines[1]]['orig_content'][0] === "\t"
-                    ) {
-                        // Line is indented using tabs.
-                        $padding = str_repeat("\t", floor($starColumn / $this->_tabWidth));
-                    } else {
-                        $padding = str_repeat(' ', $starColumn);
-                    }
-
-                    $phpcsFile->fixer->replaceToken($commentLines[1], $padding.ltrim($content));
+                    $newContent = str_repeat(' ', $starColumn).ltrim($content);
+                    $phpcsFile->fixer->replaceToken($commentLines[1], $newContent);
                 }
-            }//end if
+            }
 
             if (preg_match('/^\p{Ll}/u', $commentText) === 1) {
                 $error = 'Block comments must start with a capital letter';
@@ -286,18 +252,10 @@ class Squiz_Sniffs_Commenting_BlockCommentSniff implements PHP_CodeSniffer_Sniff
                 $error = 'Comment line indented incorrectly; expected at least %s but found %s';
                 $fix   = $phpcsFile->addFixableError($error, $line, 'LineIndent', $data);
                 if ($fix === true) {
-                    if (isset($tokens[$line]['orig_content']) === true
-                        && $tokens[$line]['orig_content'][0] === "\t"
-                    ) {
-                        // Line is indented using tabs.
-                        $padding = str_repeat("\t", floor($starColumn / $this->_tabWidth));
-                    } else {
-                        $padding = str_repeat(' ', $starColumn);
-                    }
-
-                    $phpcsFile->fixer->replaceToken($line, $padding.ltrim($tokens[$line]['content']));
+                    $newContent = str_repeat(' ', $starColumn).ltrim($tokens[$line]['content']);
+                    $phpcsFile->fixer->replaceToken($line, $newContent);
                 }
-            }//end if
+            }
         }//end foreach
 
         // Finally, test the last line is correct.

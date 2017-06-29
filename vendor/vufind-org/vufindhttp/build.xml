@@ -4,6 +4,7 @@
   <property name="package"  value="${phing.project.name}" override="true" />
   <property name="builddir" value="${tmp}/build/${phing.project.name}" override="true" />
   <property name="srcdir"   value="${project.basedir}" override="true" />
+  <property name="php-cs-fixers" value="no_blank_lines_before_namespaces,function_call_space,trailing_spaces,unused_use,lowercase_keywords,encoding,parenthesis,php_closing_tag,visibility,duplicate_semicolon,extra_empty_lines,no_blank_lines_after_class_opening,no_empty_lines_after_phpdocs,operators_spaces,spaces_before_semicolon,ternary_spaces,concat_with_spaces,short_array_syntax,phpdoc_no_access,remove_leading_slash_use,eof_ending" />
 
   <!-- Main Target -->
   <target name="main" description="main target">
@@ -39,27 +40,38 @@
 
   <!-- Report rule violations with PHPMD (mess detector) -->
   <target name="phpmd">
-    <exec command="phpmd ${srcdir}/src xml ${srcdir}/tests/phpmd.xml --exclude ${srcdir}/tests --reportfile ${builddir}/reports/phpmd.xml" />
+    <exec command="${srcdir}/vendor/bin/phpmd ${srcdir}/src xml ${srcdir}/tests/phpmd.xml --exclude ${srcdir}/tests --reportfile ${builddir}/reports/phpmd.xml" />
   </target>
 
   <!-- Measure project with phploc -->
   <target name="phploc">
-    <exec command="phploc --log-csv ${builddir}/reports/phploc.csv ${srcdir}/src" />
+    <exec command="${srcdir}/vendor/bin/phploc --log-csv ${builddir}/reports/phploc.csv ${srcdir}/src" />
   </target>
 
   <!-- PHP_Depend code analysis -->
   <target name="pdepend">
-    <exec command="pdepend --jdepend-xml=${builddir}/reports/jdepend.xml --jdepend-chart=${builddir}/reports/dependencies.svg --overview-pyramid=${builddir}/reports/pdepend-pyramid.svg ${srcdir}/src" />
+    <exec command="${srcdir}/vendor/bin/pdepend --jdepend-xml=${builddir}/reports/jdepend.xml --jdepend-chart=${builddir}/reports/dependencies.svg --overview-pyramid=${builddir}/reports/pdepend-pyramid.svg ${srcdir}/src" />
   </target>
 
   <!-- PHP copy-and-paste detection -->
   <target name="phpcpd">
-    <exec command="phpcpd --log-pmd ${builddir}/reports/pmd-cpd.xml --exclude tests ${srcdir}/src" />
+    <exec command="${srcdir}/vendor/bin/phpcpd --log-pmd ${builddir}/reports/pmd-cpd.xml --exclude tests ${srcdir}/src" />
   </target>
 
   <!-- PHP CodeSniffer -->
   <target name="phpcs">
-    <exec command="phpcs --standard=PEAR --ignore=tests/* --extensions=php --report=checkstyle ${srcdir}/src &gt; ${builddir}/reports/checkstyle.xml" escape="false" />
+    <exec command="${srcdir}/vendor/bin/phpcs --standard=PEAR --ignore=tests/* --extensions=php --report=checkstyle ${srcdir}/src &gt; ${builddir}/reports/checkstyle.xml" escape="false" />
+  </target>
+  <target name="phpcs-console">
+    <exec command="${srcdir}/vendor/bin/phpcs --standard=PEAR --ignore=tests/* --extensions=php ${srcdir}/src" escape="false" passthru="true" checkreturn="true" />
+  </target>
+
+  <!-- php-cs-fixer (first task applies fixes, second task simply checks if they are needed) -->
+  <target name="php-cs-fixer">
+    <exec command="${srcdir}/vendor/bin/php-cs-fixer fix ${srcdir}/src --fixers=${php-cs-fixers} --verbose" passthru="true" escape="false" />
+  </target>
+  <target name="php-cs-fixer-dryrun">
+    <exec command="${srcdir}/vendor/bin/php-cs-fixer fix ${srcdir}/src --fixers=${php-cs-fixers} --dry-run --verbose --diff" passthru="true" escape="false" checkreturn="true" />
   </target>
 
   <!-- PHP API Documentation -->
@@ -75,12 +87,12 @@
 
   <!-- PHPUnit -->
   <target name="phpunit" description="Run tests">
-    <exec dir="${srcdir}" command="phpunit -dzend.enable_gc=0 --log-junit ${builddir}/reports/phpunit.xml --coverage-clover ${builddir}/reports/coverage/clover.xml --coverage-html ${builddir}/reports/coverage/" passthru="true" checkreturn="true" />
+    <exec dir="${srcdir}" command="${srcdir}/vendor/bin/phpunit -dzend.enable_gc=0 --log-junit ${builddir}/reports/phpunit.xml --coverage-clover ${builddir}/reports/coverage/clover.xml --coverage-html ${builddir}/reports/coverage/" passthru="true" checkreturn="true" />
   </target>
 
   <!-- PHPUnit without logging output -->
   <target name="phpunitfast" description="Run tests">
-    <exec dir="${srcdir}" command="phpunit -dzend.enable_gc=0" passthru="true" checkreturn="true" />
+    <exec dir="${srcdir}" command="${srcdir}/vendor/bin/phpunit -dzend.enable_gc=0" passthru="true" checkreturn="true" />
   </target>
 
   <!-- Set up dependencies -->

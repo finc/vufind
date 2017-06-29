@@ -128,7 +128,7 @@ class Generic_Sniffs_Formatting_MultipleStatementAlignmentSniff implements PHP_C
         for ($assign = $stackPtr; $assign < $phpcsFile->numTokens; $assign++) {
             if (isset($find[$tokens[$assign]['code']]) === false) {
                 // A blank line indicates that the assignment block has ended.
-                if (isset(PHP_CodeSniffer_Tokens::$emptyTokens[$tokens[$assign]['code']]) === false) {
+                if (isset(PHP_CodeSniffer_tokens::$emptyTokens[$tokens[$assign]['code']]) === false) {
                     if (($tokens[$assign]['line'] - $tokens[$lastCode]['line']) > 1) {
                         break;
                     }
@@ -257,8 +257,6 @@ class Generic_Sniffs_Formatting_MultipleStatementAlignmentSniff implements PHP_C
             return $stackPtr;
         }
 
-        $numAssignments = count($assignments);
-
         $errorGenerated = false;
         foreach ($assignments as $assignment => $data) {
             if ($data['found'] === $data['expected']) {
@@ -279,7 +277,7 @@ class Generic_Sniffs_Formatting_MultipleStatementAlignmentSniff implements PHP_C
                 }
             }
 
-            if ($numAssignments === 1) {
+            if (count($assignments) === 1) {
                 $type  = 'Incorrect';
                 $error = 'Equals sign not aligned correctly; expected %s but found %s';
             } else {
@@ -310,12 +308,10 @@ class Generic_Sniffs_Formatting_MultipleStatementAlignmentSniff implements PHP_C
             }
         }//end foreach
 
-        if ($numAssignments > 1) {
-            if ($errorGenerated === true) {
-                $phpcsFile->recordMetric($stackPtr, 'Adjacent assignments aligned', 'no');
-            } else {
-                $phpcsFile->recordMetric($stackPtr, 'Adjacent assignments aligned', 'yes');
-            }
+        if ($errorGenerated === true) {
+            $phpcsFile->recordMetric($stackPtr, 'Adjacent assignments aligned', 'no');
+        } else {
+            $phpcsFile->recordMetric($stackPtr, 'Adjacent assignments aligned', 'yes');
         }
 
         if ($stopped !== null) {

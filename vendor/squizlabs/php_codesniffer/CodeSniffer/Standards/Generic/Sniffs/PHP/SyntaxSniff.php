@@ -30,13 +30,6 @@
 class Generic_Sniffs_PHP_SyntaxSniff implements PHP_CodeSniffer_Sniff
 {
 
-    /**
-     * The path to the PHP version we are checking with.
-     *
-     * @var string
-     */
-    private $_phpPath = null;
-
 
     /**
      * Returns an array of tokens this test wants to listen for.
@@ -61,20 +54,18 @@ class Generic_Sniffs_PHP_SyntaxSniff implements PHP_CodeSniffer_Sniff
      */
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
-        if ($this->_phpPath === null) {
-            $this->_phpPath = PHP_CodeSniffer::getConfigData('php_path');
-            if ($this->_phpPath === null) {
-                // PHP_BINARY is available in PHP 5.4+.
-                if (defined('PHP_BINARY') === true) {
-                    $this->_phpPath = PHP_BINARY;
-                } else {
-                    return;
-                }
+        $phpPath = PHP_CodeSniffer::getConfigData('php_path');
+        if ($phpPath === null) {
+            // PHP_BINARY is available in PHP 5.4+.
+            if (defined('PHP_BINARY') === true) {
+                $phpPath = PHP_BINARY;
+            } else {
+                return;
             }
         }
 
         $fileName = $phpcsFile->getFilename();
-        $cmd      = $this->_phpPath." -l \"$fileName\" 2>&1";
+        $cmd      = "$phpPath -l \"$fileName\" 2>&1";
         $output   = shell_exec($cmd);
 
         $matches = array();

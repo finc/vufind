@@ -1,13 +1,11 @@
 <?php
 namespace a\name\space;
 
-/*
+/**
  * A comment.
  */
 
 define('A_GLOBAL_CONSTANT', 'foo');
-
-use function time;
 
 function &a_global_function()
 {
@@ -22,9 +20,6 @@ abstract class AnAbstractClass
 {
 }
 
-/**
- * A comment.
- */
 class AClass extends AnAbstractClass implements AnInterface
 {
     const A_CLASS_CONSTANT = 'bar';
@@ -37,7 +32,7 @@ class AClass extends AnAbstractClass implements AnInterface
 
         $a = $_GET['a'];
         $GLOBALS['bar'] = A_GLOBAL_CONSTANT;
-        // Another comment
+
         $o->m();
         $o->$m();
         $o->a;
@@ -46,7 +41,7 @@ class AClass extends AnAbstractClass implements AnInterface
 
     public function aPublicMethod()
     {
-        $a = true ? true : false;
+        $a = TRUE ? TRUE : FALSE;
 
         c::m();
         c::$m();
@@ -57,7 +52,7 @@ class AClass extends AnAbstractClass implements AnInterface
 
     protected function aProtectedMethod()
     {
-        if (true) {
+        if (TRUE) {
         }
 
         $c::m();

@@ -43,6 +43,7 @@ class ResolveReferencesToAliasesPass implements CompilerPassInterface
             $definition->setMethodCalls($this->processArguments($definition->getMethodCalls()));
             $definition->setProperties($this->processArguments($definition->getProperties()));
             $definition->setFactory($this->processFactory($definition->getFactory()));
+            $definition->setFactoryService($this->processFactoryService($definition->getFactoryService(false)), false);
         }
 
         foreach ($container->getAliases() as $id => $alias) {
@@ -69,12 +70,21 @@ class ResolveReferencesToAliasesPass implements CompilerPassInterface
                 $defId = $this->getDefinitionId($id = (string) $argument);
 
                 if ($defId !== $id) {
-                    $arguments[$k] = new Reference($defId, $argument->getInvalidBehavior());
+                    $arguments[$k] = new Reference($defId, $argument->getInvalidBehavior(), $argument->isStrict(false));
                 }
             }
         }
 
         return $arguments;
+    }
+
+    private function processFactoryService($factoryService)
+    {
+        if (null === $factoryService) {
+            return;
+        }
+
+        return $this->getDefinitionId($factoryService);
     }
 
     private function processFactory($factory)
@@ -86,7 +96,7 @@ class ResolveReferencesToAliasesPass implements CompilerPassInterface
         $defId = $this->getDefinitionId($id = (string) $factory[0]);
 
         if ($defId !== $id) {
-            $factory[0] = new Reference($defId, $factory[0]->getInvalidBehavior());
+            $factory[0] = new Reference($defId, $factory[0]->getInvalidBehavior(), $factory[0]->isStrict(false));
         }
 
         return $factory;

@@ -13,8 +13,7 @@ Installation
 ------------
 The recommended method for incorporating this library into your project is to use
 Composer (http://getcomposer.org). If you wish to use this as a stand-alone tool,
-simply clone the repository and run `composer install` or `php composer.phar install`
-(depending on your Composer setup) to download dependencies.
+simply clone the repository and run `composer install` to download dependencies.
 
 
 Concept
@@ -51,11 +50,11 @@ command-line, or else a .ini file containing saved options may be loaded using t
 
 For the most basic harvest, you need to specify the `--url` and `--metadataPrefix`
 options and include a target parameter specifying where records should be
-harvested. For additional options, run `php bin/harvest_oai.php --help`.
+harvested. For additional options, run `bin/harvest_oai.php --help`.
 
 Example:
 
-`php bin/harvest_oai.php --url=http://example.com/oai_server --metadataPrefix=oai_dc my_target_dir`
+`bin/harvest_oai.php --url=http://example.com/oai_server --metadataPrefix=oai_dc my_target_dir`
 
 ### Harvesting with an .ini file
 
@@ -72,7 +71,7 @@ If you specify a parameter following the option list when using an .ini file,
 only the section of the configuration file matching the parameter will be used,
 and records will be harvested to a directory with a matching name. For example:
 
-`php bin/harvest_oai.php --ini=/etc/oai.ini OJS`
+`bin/harvest_oai.php --ini=/etc/oai.ini OJS`
 
 If you omit the parameter, all sections of the .ini file will be harvested in
 sequence.
@@ -101,10 +100,6 @@ namespace to help with standard status output tasks.
 
 Changelog
 ---------
-
-###v2.2.0
-* Added sanitizeRegex setting to optionally allow override of default XML sanitization regular expression.
-* Fixed bug: authentication credentials cleared between requests.
 
 ###v2.1.0
 * Added better support for SSL certificate configuration
