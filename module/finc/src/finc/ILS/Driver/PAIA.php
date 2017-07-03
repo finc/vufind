@@ -73,7 +73,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
     public function __construct(\VuFind\Date\Converter $converter,
         \Zend\Session\SessionManager $sessionManager
     ) {
-        parent::__construct($converter);
+        parent::__construct($converter, $sessionManager);
         $this->sessionManager = $sessionManager;
     }
 
