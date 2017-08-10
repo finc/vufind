@@ -46,8 +46,8 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         <div class="access-rights">
           <div class="image-rights">
                 <? $hasLink = isset($rights['link']); ?>
-                <strong><?= $this->translate("Image Rights") ?>
-                    :</strong> <? if (isset($rights['copyright'])) : ?><? if ($hasLink): ?><a target="_blank" href="<?= $rights['link'] ?>"><? endif; ?><?= $this->transEsc($rights['copyright']) ?><? if ($hasLink): ?></a><? endif ?><? endif ?>
+                <strong><?= $this->translate("Image Rights") ?>:
+                    </strong> <? if (isset($rights['copyright'])) : ?><? if ($hasLink): ?><a target="_blank" href="<?= $rights['link'] ?>"><? endif; ?><?= $this->transEsc($rights['copyright']) ?><? if ($hasLink): ?></a><? endif ?><? endif ?>
           </div>
           <div class="copyright truncate-field">
             <? if (isset($rights['description'])): ?>
@@ -268,17 +268,18 @@ if($loggedin = $this->auth()->isLoggedIn()) {
         </tr>
       <? endif; ?>
 
+      <? $publicationIsSet = false; ?>
       <? $mainFormat = $this->driver->getMainFormat(); ?> <? foreach ($this->driver->getEvents() as $eventType => $events): ?>
         <tr class="recordEvents">
           <!--<th>< ?=$this->transEsc("lido_event_type_{$mainFormat}_$eventType")?>:</th>-->
           <th>
             <? if ($eventType == 'production'): ?>
-              <?= $this->transEsc('expression creation') ?>
+              <?= $this->transEsc('expression creation') ?>:
             <? elseif ($eventType == 'publication'): ?>
-              <?= $this->transEsc('Time of origin') ?>
+              <?= $this->transEsc('Time of origin') ?>:
               <? $publicationIsSet = true; ?>
             <? else: ?>
-              <?= $this->transEsc($eventType) ?>
+              <?= $this->transEsc($eventType) ?>:
             <? endif; ?>
           </th>
           <td>
