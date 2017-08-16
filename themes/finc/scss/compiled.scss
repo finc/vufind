@@ -402,7 +402,7 @@ select {
 
   &:hover,
   &:focus {
-    color: $white;
+    color: darken($btn-transparent-color, 30%);
   }
 }
 
@@ -1409,9 +1409,18 @@ footer .container {
   a {
     color: $badge-link-color;
 
-    &:hover,
-    &:focus {
-      color: $badge-link-hover-color;
+    // make result number appear the same way as before it was linked up (#11177) - CK
+    &.badge-result-count {
+      color: $sidebar-badge-fa-color;
+      cursor: default;
+    }
+
+    // render only the exclude link element in strong hover color
+    i {
+      &:hover,
+      &:focus {
+        color: $badge-link-hover-color;
+      }
     }
   }
 }

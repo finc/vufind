@@ -1,4 +1,4 @@
-<!-- finc: recommend - sidefacets -->
+<!-- finc:- recommend - sidefacets -->
 <?
 $this->headScript()->appendFile('facets.js');
 
@@ -219,12 +219,19 @@ JS;
                     <? else: ?>
                 <a href="<?=$addURL ?>" class="list-group-item facet<?=$thisFacet['operator'] ?><? if ($i >= $facets_before_more): ?> <?=$moreClass ?><?endif ?>">
                         <? endif; ?>
+
+                <? /* Fixme: Is this correct? - CK */ ?>
+                <? /* Finc-specific: make click on found items number select facet, like facet-title - CK */ ?>
               <span class="badge">
-                            <?= $this->localizedNumber($thisFacet['count']) ?>
-                            <? if ($allowExclude): ?>
+                <? if ($allowExclude): ?>
+                  <a href="<?= $addURL ?>" class="badge-result-count"><?= $this->localizedNumber($thisFacet['count']) ?></a>
                   <a href="<?=$this->currentPath().$results->getUrlQuery()->addFacet($title, $thisFacet['value'], 'NOT') ?>" title="<?=$this->transEsc('exclude_facet') ?>"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>
-                            <? endif; ?>
-                          </span>
+                <? else: ?>
+                  <?= $this->localizedNumber($thisFacet['count']) ?>
+                <? endif; ?>
+              </span>
+             <? /* Fixme END - CK */ ?>
+
                     <? if ($allowExclude): ?>
                     <a href="<?= $addURL ?>">
                   <? endif; ?>

@@ -51,20 +51,20 @@ $black: #000;
 //// defined like so '$alert-success-bg: $state-success-bg;')
 $state-light-text-on-dark: $white !default;
 
-$state-success-text: $state-light-text-on-dark;
-$state-success-bg: $brand-success;
+$state-success-text: $state-light-text-on-dark !default;
+$state-success-bg: $brand-success !default;
 //$state-success-border: darken(adjust-hue($state-success-bg, -10), 5%) !default;
 
-$state-info-text: $state-light-text-on-dark;
-$state-info-bg: $brand-info;
+$state-info-text: $state-light-text-on-dark !default;
+$state-info-bg: $brand-info !default;
 // $state-info-border: darken(adjust-hue($state-info-bg, -10), 7%) !default;
 
-$state-warning-text: $state-light-text-on-dark;
-$state-warning-bg: $brand-warning;
+$state-warning-text: $state-light-text-on-dark !default;
+$state-warning-bg: $brand-warning !default;
 // $state-warning-border: darken(adjust-hue($state-warning-bg, -10), 5%) !default;
 
-$state-danger-text: $state-light-text-on-dark; // NOTE: this renders the text white -- requires red background!
-$state-danger-bg: $brand-danger;
+$state-danger-text: $state-light-text-on-dark !default; // NOTE: this renders the text white -- requires red background!
+$state-danger-bg: $brand-danger !default;
 // $state-danger-border: darken(adjust-hue($state-danger-bg, -10), 5%) !default;
 
 //// ALERTS (see states, above, and compiled.scss - Code needs to go there to overwrite defaults)
@@ -109,6 +109,9 @@ $badge-color: $jet !default;
 $badge-font-weight: normal !default;
 $badge-link-color: $brand-primary !default;
 $badge-link-hover-color: $brand-danger !default;
+////// Sidebar Badge/fa Colors
+$sidebar-badge-fa-color: darken($brand-secondary, 40%) !default;
+
 
 //// Accordion/Collapse Toggler
 $toggler: $snow !default;
@@ -153,7 +156,7 @@ $sidebar-item-active-hover-bg: transparentize($brand-primary, .1) !default;
 // DIMENSIONS
 //// The general gutter width (padding between columns) is calculated like so: '$grid-gutter-width / 2'
 //// which gives you the left or right gutter width; this can be taken further by using '$grid-gutter-width / 1.5' etc
-$grid-gutter-width: 30px;
+$grid-gutter-width: 30px !default;
 
 //// Navbar gets a minimum-height of 50px by default, activate and change here!
 //// for fixed navbars, the body requires a padding-bottom of the same height as the navbar
