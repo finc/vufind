@@ -84,6 +84,10 @@ $border-color: $iron !default;
 ////// Note that the nav-tabs have a different border color, use the following variable in your SCSS to change it
 // $nav-tabs-border-color: $gainsboro !default; // defined in BS _variables.scss
 
+// Default border styles
+$border-default-styles: 1px solid $border-color !default;
+
+
 //// PAGER
 $pagination-disabled-color: $gainsboro !default;
 

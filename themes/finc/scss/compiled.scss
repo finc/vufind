@@ -238,6 +238,15 @@ legend {
 //// label {}
 
 //// input {}
+input[type='email'] {
+  border: $border-default-styles;
+  padding: $grid-gutter-width / 4;
+}
+
+input[type='text'] {
+  border: $border-default-styles;
+  padding: $grid-gutter-width / 4;
+}
 
 //// Select - for limit and sort-select widths see above
 ////// remove browser styles on select boxes and add custom styles (below)
