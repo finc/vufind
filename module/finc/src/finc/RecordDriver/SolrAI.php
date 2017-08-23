@@ -388,15 +388,23 @@ class SolrAI extends SolrDefault implements
         $genre = $this->getAIRecord('rft.genre');
         // Set up parameters based on the format of the record:
         switch ($genre) {
-        case 'book':
-            $params = $this->getBookOpenURLParams();
-            break;
-        case 'article':
+        case "article":
             $params = $this->getArticleOpenURLParams();
             break;
-        case 'journal':
+        case "book":
+        case "bookitem":
+            $params = $this->getBookOpenURLParams();
+            break;
+        case "journal":
             $params = $this->getJournalOpenURLParams();
             break;
+        case "conference":
+        case "document":
+        case "issue":
+        case "preprint":
+        case "proceeding":
+        case "report":
+        case "unknown":
         default:
             $format = $this->getFormats();
             $params = $this->getUnknownFormatOpenURLParams($format);
