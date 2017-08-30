@@ -1,4 +1,4 @@
-<!-- finc: recordtab - acquistionpda -->
+<!-- finc - recordtab - acquistionpda -->
 <?
 // Set page title.
 $this->headTitle(
@@ -16,16 +16,14 @@ $this->headTitle(
           <p class="alert alert-danger"><?= $this->transEsc('PDA::pda_restriction_text') ?></p>
           <div class="btn-group">
               <? /* Leave title in here - it is used for the tooltip! - CK */ ?>
-            <button class="btn btn-primary" data-toggle="tooltip" title="<?= $this->transEsc('PDA::pda_open_new_window')?>" href="<?= $this->interlibraryloan()->getSwbLink($this->driver) ?>" target="_blank">
+            <a class="btn btn-primary" data-toggle="tooltip" title="<?= $this->transEsc('PDA::pda_open_new_window')?>" href="<?= $this->interlibraryloan()->getSwbLink($this->driver) ?>" target="_blank">
                 <?= $this->transEsc('PDA::pda_tab_interlibrary_button') ?>
-              </button>
-
-
-              <button class="btn btn-primary pda-button <?= $controllerClass ?>" data-lightbox href="<?= $this->url('record-pda', array('id' => $id)) ?>" rel="nofollow">
+              </a>
+              <a class="btn btn-primary pda-button <?= $controllerClass ?>" data-lightbox href="<?= $this->url('record-pda', array('id' => $id)) ?>" rel="nofollow">
                 <?= $this->transEsc('PDA::pda_tab_order_button') ?>
-              </button>
+              </a>
 
           </div>
         </div>
       </div>
-<!-- finc: recordtab - acquistionpda - END -->
+<!-- finc - recordtab - acquistionpda - END -->

@@ -1,4 +1,4 @@
-<!-- finc: record - PDAFORM -->
+<!-- finc - record - PDAFORM -->
 <?
   // Set page title.
   $this->headTitle($this->translate('PDA::Acquisition'));
@@ -9,19 +9,20 @@
     . '<li class="active">' . $this->transEsc('PDA::Acquisition') . '</li>';
 ?>
 <h2><?=$this->transEsc('PDA::Acquisition') ?>: <span class="title-in-heading"><?=$this->escapeHtml($this->driver->getBreadcrumb())?></span></h2>
-<form method="post" name="acquisitionPDAForm" action="<?=$this->recordLink()->getActionUrl($this->driver, 'PDA')?>">
+<form method="post" name="acquisitionPDAForm" class="form-horizontal" action="<?=$this->recordLink()->getActionUrl($this->driver, 'PDA')?>">
   <?=$this->flashmessages()?>
   <p>
     <?=$this->translate('PDA::pda_order_text')?>
     <?=(strlen($price = $this->driver->getPrice()) > 0) ? $this->translate('PDA::pda_price_text', [':::PRICE:::'=>$this->safeMoneyFormat($price)]) : ''?>
     <?=$this->translate('PDA::pda_delivery_text')?>
   </p>
-  <div class="row no-gutter">
+  <div class="form-group">
     <label class="col-sm-3" for="pdaStatement"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span>:</label>
     <div class="col-sm-9">
       <textarea id="pdaStatement" class="auto" name="pdaStatement" rows="5" type="text" cols="50"><?=isset($this->pdaStatement) ? $this->pdaStatement : ''?></textarea>
     </div>
-
+  </div>
+  <div class="form-group">
     <label class="col-sm-3" for="pdaSubject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span>:</label>
     <div class="col-sm-9">
       <select name="pdaFieldOfStudy" class="form-control">
@@ -33,27 +34,28 @@
         <? endif; ?>
       </select>
     </div>
-    <div class="col-sm-9 col-sm-offset-3">
+  </div>
+  <div class="form-group">
+    <div class="col-sm-12">
       <span>
         <?=$this->recaptcha()->html($this->useRecaptcha) ?>
       </span>
-      <ul class="btn-group">
-        <li>
+      <div class="btn-group" role="group">
           <input type="submit" class="btn btn-primary" role="button" name="submit" value="<?=$this->transEsc('Submit')?>"/>
-        </li>
-        <li>
           <a class="btn btn-primary" data-lightbox-ignore data-toggle="tooltip" title="<?=$this->transEsc('PDA::pda_open_new_window')?>" href="<?=$this->interlibraryloan()->getSwbLink($this->driver)?>"
              target="_blank"><?=$this->transEsc('PDA::pda_tab_interlibrary_button')?>
           </a>
-        </li>
-        <li>
-          <button class="btn btn-transparent" href="#"><?=$this->transEsc('Reset')?></button>
-        </li>
-      </ul>
+        <button class="btn btn-transparent" type="button" data-dismiss="modal" href="#"><?=$this->transEsc('Reset')?></button>
+      </div>
+
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-12">
       <p>
         <?= $this->transEsc('PDA::note_mandatory_fields') ?>
       </p>
     </div>
   </div>
 </form>
-<!-- finc: record - PDAFORM - END -->
+<!-- finc - record - PDAFORM - END -->
