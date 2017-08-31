@@ -136,6 +136,16 @@ $config = [
                 'defaultTab' => null,
             ],
         ],
+        'recorddriver_collection_tabs' => [
+            'VuFind\RecordDriver\AbstractBase' => [
+                'tabs' => [
+                    'CollectionList' => 'CollectionList',
+                    'HierarchyTree' => 'CollectionHierarchyTree',
+                    'Details' => 'StaffViewArray',
+                ],
+                'defaultTab' => null,
+            ],
+        ],
     ],
     // Authorization configuration:
     'zfc_rbac' => [
