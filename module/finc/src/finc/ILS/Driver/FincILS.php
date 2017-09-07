@@ -26,6 +26,8 @@
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace finc\ILS\Driver;
+
+use Herrera\Json\Exception\Exception;
 use VuFind\Exception\ILS as ILSException,
     VuFindSearch\Query\Query, VuFindSearch\Service as SearchService,
     ZfcRbac\Service\AuthorizationServiceAwareInterface,
@@ -33,6 +35,8 @@ use VuFind\Exception\ILS as ILSException,
     Zend\Log\LoggerAwareInterface as LoggerAwareInterface,
     DateTime, DateInterval, DateTimeZone,
     Sabre\VObject;
+use VuFind\Exception\ILS;
+use Zend\Escaper\Escaper;
 
 /**
  * Finc specific ILS Driver for VuFind, using PAIA and DAIA services.
@@ -46,6 +50,23 @@ use VuFind\Exception\ILS as ILSException,
  */
 class FincILS extends PAIA implements LoggerAwareInterface
 {
+
+    // vCard ADR is an ordered list of the following values
+    // 0 - the post office box;
+    // 1 - the extended address (e.g., apartment or suite number);
+    // 2 - the street address;
+    // 3 - the locality (e.g., city);
+    // 4 - the region (e.g., state or province);
+    // 5 - the postal code;
+    // 6 - the country name;
+    // (cf. https://tools.ietf.org/html/rfc6350#section-6.3.1)
+    public static $vcard_address_parameter_map = array(
+            'address1' => '2',
+            'additional' => '1',
+            'city' => '3',
+            'country' => '6',
+            'zip' => '5',
+    );
 
     protected $root_username;
     protected $root_password;
@@ -476,7 +497,6 @@ class FincILS extends PAIA implements LoggerAwareInterface
 
         return $additionalData;
     }
-
     /**
      * Get Patron Profile
      *
@@ -485,6 +505,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * @param array $patron The patron array
      *
      * @return array Array of the patron's profile data on success,
+     * @throws Exception
+     * @to-do  Build back of redundancy of default values by vcard sub-types.
      */
     public function getMyProfile($patron)
     {
@@ -494,23 +516,20 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 try {
                     $vcard = VObject\Reader::read($patron['address']);
 
-                    // vCard ADR is an ordered list of the following values
-                    // 0 - the post office box;
-                    // 1 - the extended address (e.g., apartment or suite number);
-                    // 2 - the street address;
-                    // 3 - the locality (e.g., city);
-                    // 4 - the region (e.g., state or province);
-                    // 5 - the postal code;
-                    // 6 - the country name;
-                    // (cf. https://tools.ietf.org/html/rfc6350#section-6.3.1)
                     if (isset($vcard->ADR)) {
                         foreach ($vcard->ADR as $adr) {
-                            $address[] = explode(";", $adr);
+                            $address[(
+                            (isset($adr->parameters['ALTID']))
+                                ? (string)$adr->parameters['ALTID'] : null
+                            )] = $adr->getParts();
                         }
                     }
                     if (isset($vcard->TEL)) {
                         foreach ($vcard->TEL as $tel) {
-                            $phone[] = $tel;
+                            $phone[(
+                            (isset($tel->parameters['TYPE']))
+                                ? (string)$tel->parameters['TYPE'] : null
+                            )] = (string)$tel;
                         }
                     }
                     if (isset($vcard->EMAIL)) {
@@ -518,25 +537,58 @@ class FincILS extends PAIA implements LoggerAwareInterface
                             $emails[] = $email;
                         }
                     }
+                    if (isset($vcard->ROLE)) {
+                        $group = (string)$vcard->ROLE;
+                    }
+                    if (isset($vcard->{'X-LIBRARY-ILS-PATRON-EDIT-ALLOW'})) {
+                        $editable = $this->getEditableProfileFields(
+                            (string)$vcard->{'X-LIBRARY-ILS-PATRON-EDIT-ALLOW'}
+                        );
+                    }
+
                 } catch (Exception $e) {
                     throw $e;
                 }
             }
 
-            return [
+            $addressParameterMap = self::$vcard_address_parameter_map;
+
+            $replace = isset($this->config['PAIA']['profileFormEmptyInputReplacement'])
+                ? $this->config['PAIA']['profileFormEmptyInputReplacement']
+                : NULL;
+
+            foreach ($address as $key => $altid) {
+                foreach ($addressParameterMap as $parameter => $pos) {
+                    $var = strtolower($parameter . '-' . $key);
+                    $profile[$var] = ($altid[$pos] != $replace)
+                        ? $altid[$pos] : '';
+                    // keep backward compatibility to old forms
+                    // vcard ALTID p is default value
+                    if (strtolower($key) == 'p') {
+                        $profile[$parameter] = ($altid[$pos] != $replace)
+                            ? $altid[$pos] : '';
+                    }
+                }
+            }
+
+            if (isset($phone)) {
+                // fill phone types to profile
+                foreach ($phone as $parameter => $val) {
+                    if ($val == $replace) $val = '';
+                    $var = 'phone-' . $parameter;
+                    $profile[$var] = $val;
+                    // keep backward compatibility to old forms
+                    // vcard TYPE home is default value
+                    if (strtolower($parameter) == "home") {
+                        $profile['phone'] = $val;
+                    }
+                }
+            }
+
+            $idm = [
                 'firstname'  => $patron['firstname'],
                 'lastname'   => $patron['lastname'],
-                'address1'   => (!empty($address[0]) && isset($address[0][1]) && !empty($address[0][2]))
-                    ? $address[0][2] . ' ' . $address[0][1] : null,
-                'address2'   => null,
-                'city'       => (!empty($address[0]) && !empty($address[0][3]))
-                    ? $address[0][3] : null,
-                'country'    => (!empty($address[0]) && !empty($address[0][6]))
-                    ? $address[0][6] : null,
-                'zip'        => (!empty($address[0]) && !empty($address[0][5]))
-                    ? $address[0][5] : null,
-                'phone'      => (!empty($phone[0])) ? $phone[0] : null,
-                'group'      => null,
+                'group' => (!empty($group)) ? $group : null,
                 // PAIA specific custom values
                 'expires'    => isset($patron['expires'])
                     ? $this->convertDate($patron['expires']) : null,
@@ -545,9 +597,252 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 // fincILS and PAIA specific custom values
                 'email'      => !empty($patron['email']) ?
                      $patron['email'] : (!empty($emails[0]) ? $emails[0] : null),
+                'editableFields' => (!empty($editable)) ? $editable : null
             ];
+            return array_merge($idm, $profile);
+
         }
         return [];
+    }
+
+    /**
+     * Get disabled profile fields which cannot modified by user
+     *
+     * @param array $vcard_fields Fields of vcard which can be edited.
+     *
+     * @return array $fields     Translated form Field which can be modified
+     * @access private
+     */
+    private function getEditableProfileFields($vcard_fields)
+    {
+
+        $address_fields = ['address1', 'address2', 'city', 'country', 'zip'];
+        $vcard_fields = explode(',', $vcard_fields);
+        $fields = [];
+
+        foreach ($vcard_fields as $fld) {
+
+            $match = [];
+            if (0 < preg_match('/(TEL|ADR)-(\w+)/', $fld, $match)) {
+                if ($match[1] == "ADR") {
+                    foreach ($address_fields as $part) {
+                        $fields[] = strtolower($part . '-' . $match[2]);
+                    }
+                    // backward compatibility
+                    if ($match[2] == 'P') {
+                        $fields
+                            = array_merge_recursive($fields, $address_fields);
+                    }
+                } elseif ($match[1] == "TEL") {
+                    $fields = 'phone-' . $match[2];
+                    // backward compatibility
+                    if ($match[2] == 'home') {
+                        $fields[] = 'phone';
+                    }
+                }
+            } elseif ($fld == "N") {
+                array_push($fields, 'firstname', 'lastname');
+            } else {
+                $fields[] = strtolower($fld);
+            }
+        }
+        return $fields;
+    }
+
+    /**
+     * Change values of users profile.
+     *
+     * @param array $inval Associative array of key => value. Keys are:
+     *     - memberCode   : User ID returned by patronLogin
+     *     - street       : street and number
+     *     - additional   : optional address value
+     *     - city         : city/village
+     *     - zipCode      : location zip code
+     *     - emailAddress : email address
+     *     - reason       : reason of change
+     * @return boolean true OK, false FAIL
+     * @access public
+     */
+    public function setMyProfile($inval, $patron)
+    {
+
+        $params['memberCode']   = $patron['cat_username'];
+        $params['password']     = $patron['cat_password'];
+
+        if (isset($patron['address']) && strpos($patron['address'],'BEGIN:VCARD') === 0) {
+            $vcard = \Sabre\VObject\Reader::read($patron['address']);
+        } else {
+            $vcard = new VObject\Component\VCard();
+        }
+
+        //handle name
+        $params['name'] = '';
+        $name_array = array_fill(0,2,null);
+        if (isset($inval['firstname'])) {
+            $params['name'] .= $inval['firstname'];
+            $name_array[1] = $inval['firstname'];
+        }
+        if (isset($inval['lastname'])) {
+            $params['name'] .= ' '.$inval['lastname'];
+            $name_array[0] = $inval['lastname'];
+        }
+        $this->setVCardValue($vcard,'FN',$params['name']);
+        $this->setVCardValue($vcard,'N',$name_array);
+
+        //handle e-mail
+        if (isset($inval['email'])) {
+            $params['email'] = $inval['email'];
+            $this->setVCardValue($vcard,'EMAIL',$inval['email']);
+        }
+
+        $addressParameterMap = self::$vcard_address_parameter_map;
+
+        $addressBaseRegex = '(' . implode('|', array_keys($addressParameterMap)) . ')';
+
+        // keep parts of address to process in the end of foreach
+        $address_array = []; // array_fill(0,7,NULL);
+
+        //the empty-field marker in the used ILS
+        $replace = isset($this->config['PAIA']['profileFormEmptyInputReplacement']) ? $this->config['PAIA']['profileFormEmptyInputReplacement'] : NULL;
+
+        foreach ($inval as $key => $val) {
+
+            if (empty($val) && !is_null($replace)) $val = $replace;
+
+            $match = [];
+            // add phone inputs to vcard
+            if (0 < preg_match('/phone-(\w+)/', $key, $match)) {
+                $this->setVCardValue(
+                    $vcard, 'TEL', $match[0], ['type' => $match[1]]
+                );
+            }
+
+            // backward compatibility for old forms
+            // push default phone input to vcard TYPE home
+            if ($key == 'phone') {
+                $this->setVCardValue(
+                    $vcard, 'TEL', $inval['phone'], ['type' => 'home']
+                );
+            }
+
+            // add address inputs to vcard
+            // @to-do reduce redundancy of special address1 treatment case
+            if (0 < preg_match('/' . $addressBaseRegex . '-(\w+)/', $key, $match)) {
+                // match[0] inval
+                // match[1] base of key
+                // match[2] extension of key -> vcard ALTID
+
+                // treat address1 as exceptional case
+                if ($match[1] == 'address1') {
+                    if ($adr = $this->splitAddress($val)) {
+                        $address_array[($match[2])][2]
+                            = $adr[($addressParameterMap[$match[1]])];
+                        if (isset($adr[2])) {
+                            $address_array[($match[2])][1] = $adr[2];
+                        }
+                    } else {
+                        $address_array[($match[2])][2] = $val;
+                    }
+                } else {
+                    $address_array[($match[2])][$addressParameterMap[($match[1])]]
+                        = $val;
+                }
+            }
+
+            // backward compatibility for old forms
+            // push default address input to vcard TYPE p
+            if (array_key_exists($key, $addressParameterMap) && !empty($val)) {
+                if ($key == 'address1') {
+                    if ($adr = $this->splitAddress($val)) {
+                        $address_array['p'][2] = $adr[1];
+                        if (isset($adr[2])) {
+                            $address_array['p'][1] = $adr[2];
+                        }
+                    } else {
+                        $address_array['p'][2] = $val;
+                    }
+                } else {
+                    $address_array['p'][$addressParameterMap[$key]] = $val;
+                }
+            }
+        }
+
+        // prepare address for set vcard value
+        foreach ($address_array as $type => $address) {
+            for ($i = 0; $i < 7; $i++) {
+                if (!array_key_exists($i, $address)) {
+                    $address[$i] = null;
+                }
+            }
+            ksort($address);
+            $this->setVCardValue(
+                $vcard, 'ADR', $address, ['ALTID' => strtoupper($type)]
+            );
+        }
+
+        // process vcard
+        $vcard = $vcard->convert(VObject\Component\VCard::VCARD40);
+        if ($address = $vcard->serialize()) {
+            $params['address'] = $address;
+        }
+
+        $result = $this->paiaUpdatePatron($params,$patron);
+        if ($result['success']) return TRUE;
+
+        $this->debug(__FUNCTION__.' '.$result['sysMessage']);
+        return FALSE;
+    }
+
+    /**
+     * helper function for addresses
+     */
+    private function splitAddress($address) {
+
+        //the inval address might consist of street address and extended address
+        //pattern "<street_address> <extended_address>" with a space in between
+        //@see $this->getMyProfile() on that
+        //however, we cannot assume a consistent pattern in any address part, so
+        //it cannot be split correctly, at least we might try
+
+        //the pattern accepts a typical german street address
+        //like "Musterweg 22a" or "Jemand-Bekanntes-Ring 1 b, Hinterhaus"
+        //where everything behind the comma is assumed to be the extension
+        $conf = $this->config;
+        $regex = '(\D+\d[^\,]*)(?:\,\s*(.*))?';
+        $matches = array();
+        if (preg_match('/'.$regex.'/',$address,$matches)) {
+            return $matches;
+        }
+        return FALSE;
+    }
+
+    /**
+     * Sets value in VCard-Object that may also be somewhere in a sub-component
+     * @param VObject\Component\VCard $vcard
+     * @param string $key
+     * @param string $value
+     * @param array $type Subtype of vcard field as e.g. cell for phone
+     */
+    private function setVCardValue(
+        VObject\Component\VCard $vcard, $key, $value, $type = null
+    )
+    {
+        if (is_string($value)) $value = str_replace(',','',$value);
+        elseif (is_array($value)) array_walk_recursive($value,function (&$value,$key) {$value = str_replace(',','',$value);});
+        if ($vcard->select($key) == array()) {
+
+            // if the key is unknown, we add a new property with the value
+            if (in_array($key, array('TEL', 'ADR'))) {
+                $vcard->createComponent($key);
+            } else {
+                $vcard->createProperty($key);
+            }
+            $vcard->add($key, $value, $type);
+        } else {
+            // if the property/child already exists
+            // we change the value
+            $vcard->{$key}->setValue($value);
+        }
     }
 
     /**

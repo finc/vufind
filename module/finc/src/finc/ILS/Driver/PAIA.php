@@ -32,7 +32,8 @@
 
 namespace finc\ILS\Driver;
 use VuFind\Exception\Auth as AuthException,
-    VuFind\Exception\ILS as ILSException;
+    VuFind\Exception\ILS as ILSException,
+    Sabre\VObject;
 
 /**
  * PAIA ILS Driver for VuFind to get patron information
@@ -1117,6 +1118,69 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             throw $e;
         }
         return $this->paiaParseUserDetails($patron, $responseArray);
+    }
+
+    public function getValidPatronUpdateKeys() {
+
+        return array('name'=>'name','email'=>'email','address'=>'address');
+    }
+
+    /**
+     * update patron information using the PAIA function 'update patron'
+     * see https://gbv.github.io/paia/paia.html#update-patron
+     * @param array $values associative array containing strings for:
+     * <ul>
+     *   <li>name: new full name of the patron</li>
+     *   <li>email: new email address of the patron</li>
+     *   <li>address: new freeform address of the patron</li>
+     * </ul>
+     * All of those are optional. Any other key will be ignored. If additional information shall be saved, this can be done
+     * via the freeform address field. This function here does not make any assumptions on the syntax
+     * of the address field, it should be field with correctly encoded data.
+     *
+     * @param array $patron current patron profile
+     * @return array <ul><li>success: (bool) TRUE on success, FALSE on fail</li><li>details: (string) error details on fail</li></ul>
+     * @throws ILSException
+     */
+    protected function paiaUpdatePatron($values,$patron) {
+
+        // check if user has appropriate scope
+        if (!$this->paiaCheckScope(self::SCOPE_UPDATE_PATRON)) {
+            if (
+                (isset($values['name']) && !$this->paiaCheckScope(self::SCOPE_UPDATE_PATRON_NAME))
+                ||
+                (isset($values['email']) && !$this->paiaCheckScope(self::SCOPE_UPDATE_PATRON_EMAIL))
+                ||
+                (isset($values['address']) && !$this->paiaCheckScope(self::SCOPE_UPDATE_PATRON_ADDRESS))
+            )
+            throw new ILSException('You are not allowed to update the desired patron information.');
+        }
+
+        try {
+            $array_response = $this->paiaPostAsArray(
+                'core/'.$patron['cat_username'], $values
+            );
+        } catch (\Exception $e) {
+            $this->debug($e->getMessage());
+            return [
+                'success' => false,
+                'sysMessage' => $e->getMessage(),
+            ];
+        }
+
+        $details = [];
+        if (array_key_exists('error', $array_response)) {
+            $details = [
+                'success' => false,
+                'sysMessage' => $array_response['error_description']
+            ];
+        } else {
+            $details = [
+                'success' => true,
+                'sysMessage' => 'Successfully requested'
+            ];
+        }
+        return $details;
     }
 
     /**
