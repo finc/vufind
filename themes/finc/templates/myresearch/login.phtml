@@ -1,27 +1,28 @@
 <!-- finc: myresearch - login -->
 <?
-  // Set up page title:
-  $this->headTitle($this->translate('Login'));
+// Set up page title:
+$this->headTitle($this->translate('Login'));
 
-  // Set up breadcrumbs:
-  $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') . '">' . $this->transEsc('Your Account') . '</a></li> <li class="active">' . $this->transEsc('Login') . '</li>';
+// Set up breadcrumbs:
+$this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') . '">' . $this->transEsc('Your Account') . '</a></li> <li class="active">' . $this->transEsc('Login') . '</li>';
 
-  // Convenience variables:
-  $account = $this->auth()->getManager();
-  $hideLogin = !(is_object($account) && $account->loginEnabled());
-  $offlineMode = $this->ils()->getOfflineMode();
+// Convenience variables:
+$account = $this->auth()->getManager();
+$hideLogin = !(is_object($account) && $account->loginEnabled());
+$offlineMode = $this->ils()->getOfflineMode();
 ?>
 
 <? if ($offlineMode == "ils-offline"): ?>
-<div class="alert alert-warning">
-  <?=$this->render('Helpers/ils-offline.phtml', ['offlineModeMsg' => 'ils_offline_login_message'])?>
+  <div class="alert alert-warning">
+    <?=$this->render('Helpers/ils-offline.phtml', ['offlineModeMsg' => 'ils_offline_login_message'])?>
+  </div>
 <? else: ?>
   <h2 class="lightbox-header"><?=$this->transEsc('Login')?></h2>
   <?=$this->flashmessages()?>
-  </div>
+
 
   <? if ($hideLogin): ?>
-  <div class="alert alert-danger"><?=$this->transEsc('login_disabled')?></div>
+    <div class="alert alert-danger"><?=$this->transEsc('login_disabled')?></div>
   <? else: ?>
     <?=$this->auth()->getLogin()?>
   <? endif; ?>
