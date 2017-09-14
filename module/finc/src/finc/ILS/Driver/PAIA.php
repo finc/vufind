@@ -106,8 +106,11 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
 
         $it = $cancelDetails['details'];
         $items = [];
+        $count = 0;
         foreach ($it as $item) {
             $items[] = ['item' => stripslashes($item)];
+            //we count how many items shall be cancelled
+            $count++;
         }
         $patron = $cancelDetails['patron'];
         $post_data = ["doc" => $items];
@@ -133,23 +136,23 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
                 'sysMessage' => $array_response['error']
             ];
         } else {
-            $count = 0;
             $elements = $array_response['doc'];
             foreach ($elements as $element) {
                 $item_id = $element['item'];
-                if ($element['error']) {
+                if (isset($element['error']) && $element['error']) {
                     $details[$item_id] = [
                         'success' => false,
                         'status' => $element['error'],
                         'sysMessage' => 'Cancel request rejected'
                     ];
+                    //if an item could not be cancelled it must not be counted
+                    $count--;
                 } else {
                     $details[$item_id] = [
                         'success' => true,
                         'status' => 'Success',
                         'sysMessage' => 'Successfully cancelled'
                     ];
-                    $count++;
 
                     // DAIA cache cannot be cleared for particular item as PAIA only
                     // operates with specific item URIs and the DAIA cache is setup
