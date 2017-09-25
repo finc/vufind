@@ -17,10 +17,12 @@ $config = [
     ],
     'controllers' => [
         'factories' => [
-            'record' => 'finc\Controller\Factory::getRecordController',
-            'dds' => 'finc\Controller\Factory::getDocumentDeliveryServiceController',
             'ajax' => 'finc\Controller\Factory::getAjaxController',
+            'dds' =>
+                'finc\Controller\Factory::getDocumentDeliveryServiceController',
             'my-research' => 'finc\Controller\Factory::getMyResearchController',
+            'record' => 'finc\Controller\Factory::getRecordController',
+            'resources' => 'finc\Controller\Factory::getAmslResourceController'
         ],
     ],
     'controller_plugins' => [

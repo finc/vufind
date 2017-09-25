@@ -81,6 +81,23 @@ class Factory extends FactoryBase
           );
     }
 
+
+    /**
+     * Construct the AmslResourceController.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return AmslResourceController
+     */
+     public function getAmslResourceController(ServiceManager $sm)
+     {
+        return new AmslResourceController(
+            $sm->getServiceLocator()->get('VuFind/Config')->get('Amsl'),
+            $sm->getServiceLocator()->get('VuFind/Http')
+        );
+    }
+
+
     /**
      * Construct the DocumentDeliveryServiceController.
      *
