@@ -94,8 +94,7 @@ $this->layout()->title = $this->driver->getShortTitle();
               }
               ?>
               <li<?=count($tab_classes) > 0 ? ' class="' . implode(' ', $tab_classes) . '"' : ''?>>
-                <a class="<?=strtolower($tab)?>"
-                   href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>"<? if ($obj->supportsAjax() && in_array($tab, $this->backgroundTabs)): ?> data-background<? endif ?>><?=$this->transEsc($desc)?></a>
+                <a class="<?=strtolower($tab)?>" href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>#tabnav"<? if ($obj->supportsAjax() && in_array($tab, $this->backgroundTabs)): ?> data-background<? endif ?>><?=$this->transEsc($desc)?></a>
               </li>
             <? endforeach; ?>
           </ul>
