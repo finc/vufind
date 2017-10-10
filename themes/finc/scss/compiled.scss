@@ -768,6 +768,79 @@ table.collapse.in {
   }
 }
 
+//// Redi link-resolver traffic lights
+.traffic-light {
+  display: inline;
+  padding: 0;
+  vertical-align: middle;
+
+  span {
+    background-color: $silver; // temporary, will be overwritten by first, second, third items below
+    border-top: 3px solid transparent;
+    display: inline-block;
+    height: 1em;
+    margin: 0 -3px 0 0;
+    padding-right: .5rem;
+    width: 1em;
+
+    &.last {
+      margin-right: .5em;
+    }
+  }
+
+  &.access-denied {
+    span {
+      &.first {
+        background-color: $brand-danger;
+      }
+
+      &.second {
+        background-color: $gainsboro;
+      }
+
+      &.last {
+        background-color: $gainsboro;
+      }
+    }
+  }
+
+  &.access-limited {
+    span {
+      &.first {
+        background-color: $gainsboro;
+      }
+
+      &.second {
+        background-color: $brand-warning;
+      }
+
+      &.last {
+        background-color: $gainsboro;
+      }
+    }
+  }
+
+  &.access-open {
+    span {
+
+      &.first {
+        background-color: $gainsboro;
+      }
+
+      &.second {
+        background-color: $gainsboro;
+      }
+
+      &.last {
+        background-color: $brand-success;
+      }
+    }
+  }
+}
+//// Redi link-resolver traffic lights - END
+
+
+
 // HEADER and NAVBAR FIXED having the same width as rest of the page
 // (the header can also run the full width of the viewport!)
 header,
