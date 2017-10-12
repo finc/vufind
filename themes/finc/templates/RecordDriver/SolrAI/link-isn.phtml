@@ -1,9 +1,9 @@
 <?
   // use advanced search if we have multiple issns
   if (is_array($this->lookfor) && count($this->lookfor) > 1) {
-      $query = '?join=AND&amp;bool0[]=AND&amp;';
+      $query = '?join=AND&amp;bool0[]=OR';
       foreach ($this->lookfor as $issn) {
-          $query .= 'lookfor0[]=' . urlencode($issn) . '&amp;type0[]=ISN';
+          $query .= '&amp;lookfor0[]=' . urlencode($issn) . '&amp;type0[]=ISN';
       }
   } elseif (count($this->lookfor) == 1) {
       $query = '?lookfor=%22' . urlencode($this->lookfor[0]) . '%22&amp;type=ISN';
