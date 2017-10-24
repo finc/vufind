@@ -520,7 +520,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                         foreach ($vcard->ADR as $adr) {
                             $address[(
                             (isset($adr->parameters['ALTID']))
-                                ? (string)$adr->parameters['ALTID'] : null
+                                ? (string)$adr->parameters['ALTID'] : 'p' //sets default key 'p' for private address
                             )] = $adr->getParts();
                         }
                     }
@@ -528,7 +528,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                         foreach ($vcard->TEL as $tel) {
                             $phone[(
                             (isset($tel->parameters['TYPE']))
-                                ? (string)$tel->parameters['TYPE'] : null
+                                ? (string)$tel->parameters['TYPE'] : 'home' //sets default key 'home' for private phone number
                             )] = (string)$tel;
                         }
                     }
