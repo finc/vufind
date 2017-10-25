@@ -1119,9 +1119,7 @@ trait SolrMarcFincTrait
             } // end foreach
         } // end foreach
 
-        // open to discuss if it is better use $this->addFincIDToRecord($array) or
-        // RecordLink as ViewHelper at frontend;
-        return $array;
+        return $this->addFincIDToRecord($array);
     }
 
 
@@ -1286,10 +1284,8 @@ trait SolrMarcFincTrait
                 }
             } // end foreach
         } // end foreach
-
-        // open to discuss if it is better use $this->addFincIDToRecord($array) or
-        // RecordLink as ViewHelper at frontend;
-        return $array;
+        
+        return $this->addFincIDToRecord($array);
     }
 
     /**
