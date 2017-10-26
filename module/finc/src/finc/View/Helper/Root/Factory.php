@@ -65,13 +65,19 @@ class Factory
      */
     public static function getRecord(ServiceManager $sm)
     {
-        return new Record(
+        $return = new Record(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             $sm->get('url'),
             $sm->getServiceLocator()->get('VuFind\AuthManager'),
             $sm->getServiceLocator()->get('finc\Rewrite'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('Resolver')
         );
+
+        //due to https://github.com/vufind-org/vufind/pull/718
+        //we have to explicitly add the cover router (cf. #
+        $return->setCoverRouter($sm->getServiceLocator()->get('VuFind\Cover\Router'));
+
+        return $return;
     }
 
     /**
