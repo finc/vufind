@@ -58,6 +58,13 @@ class Citation extends \VuFind\View\Helper\Root\Citation
         if (!empty($primary)) {
             $authors[] = $primary;
         }
+        if (empty($primary)) {
+            $additionalAuthors = $driver->tryMethod('getAdditionalAuthors');
+            if (!empty($additionalAuthors)) {
+                foreach ($additionalAuthors as $author)
+                    $authors[] = $author['name'];
+            }
+        }
         $secondary = $driver->tryMethod('getSecondaryAuthors');
         if (is_array($secondary) && !empty($secondary)) {
             $authors = array_unique(array_merge($authors, $secondary));

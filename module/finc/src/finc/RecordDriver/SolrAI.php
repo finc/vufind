@@ -314,7 +314,7 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * gets pages as 'start - end' if both exist
+     * Get pages as 'start-end' if both exist
      *
      * @return string pages
      */
@@ -327,7 +327,7 @@ class SolrAI extends SolrDefault implements
         // pages
         $pages = $this->getAIRecord('rft.pages');
         if (!empty($spage) && !empty($epage)) {
-            return sprintf('%s - %s', $spage, $epage);
+            return sprintf('%s-%s', $spage, $epage);
         } elseif (!empty($spage)) {
             return $spage[0];
         } elseif (!empty($epage)) {
