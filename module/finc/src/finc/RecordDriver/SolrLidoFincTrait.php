@@ -91,4 +91,24 @@ trait SolrLidoFincTrait
         return $results;
     }
 
+    /**
+     * Get subject actors
+     *
+     * @return array
+     */
+    public function getSubjectActors()
+    {
+        $results = [];
+        foreach ($this->getSimpleXML()->xpath(
+            'lido/descriptiveMetadata/objectRelationWrap/subjectWrap/'
+            . 'subjectSet/subject/subjectActor/actor/nameActorSet/appellationValue'
+        ) as $node) {
+            if ('preferred' == (string)$node->attributes()->pref) {
+                $results[] = (string)$node;
+            }
+        }
+        return $results;
+    }
+
+
 }
