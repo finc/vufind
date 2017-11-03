@@ -557,16 +557,18 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 ? $this->config['PAIA']['profileFormEmptyInputReplacement']
                 : NULL;
 
-            foreach ($address as $key => $altid) {
-                foreach ($addressParameterMap as $parameter => $pos) {
-                    $var = strtolower($parameter . '-' . $key);
-                    $profile[$var] = ($altid[$pos] != $replace)
-                        ? $altid[$pos] : '';
-                    // keep backward compatibility to old forms
-                    // vcard ALTID p is default value
-                    if (strtolower($key) == 'p') {
-                        $profile[$parameter] = ($altid[$pos] != $replace)
+            if (isset($address)) {
+                foreach ($address as $key => $altid) {
+                    foreach ($addressParameterMap as $parameter => $pos) {
+                        $var = strtolower($parameter . '-' . $key);
+                        $profile[$var] = ($altid[$pos] != $replace)
                             ? $altid[$pos] : '';
+                        // keep backward compatibility to old forms
+                        // vcard ALTID p is default value
+                        if (strtolower($key) == 'p') {
+                            $profile[$parameter] = ($altid[$pos] != $replace)
+                                ? $altid[$pos] : '';
+                        }
                     }
                 }
             }
@@ -599,7 +601,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                      $patron['email'] : (!empty($emails[0]) ? $emails[0] : null),
                 'editableFields' => (!empty($editable)) ? $editable : null
             ];
-            return array_merge($idm, $profile);
+            return (isset($profile)) ? array_merge($idm, $profile) : $idm;
 
         }
         return [];
@@ -634,7 +636,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                             = array_merge_recursive($fields, $address_fields);
                     }
                 } elseif ($match[1] == "TEL") {
-                    $fields = 'phone-' . $match[2];
+                    $fields[] = 'phone-' . $match[2];
                     // backward compatibility
                     if ($match[2] == 'home') {
                         $fields[] = 'phone';
