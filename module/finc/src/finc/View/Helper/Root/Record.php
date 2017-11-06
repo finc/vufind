@@ -301,7 +301,7 @@ class Record extends \VuFind\View\Helper\Root\Record
         }
 
         foreach ($links as &$link) {
-            $link['url'] = $this->rewriteLink($link['url']);
+            $link = $this->rewriteLink($link);
         }
 
         return $links;
@@ -314,36 +314,64 @@ class Record extends \VuFind\View\Helper\Root\Record
      *
      * @access protected
      * @return string $link Return processed link.
+     *
+     * @to-do resolve non consistently behaviour between method pattern and remove
+     *        to handle slashes in urls
      */
-    protected function rewriteLink($link)
+    protected function rewriteLink(&$link)
     {
         $rewrite = $this->config->LinksRewrite->toArray();
         foreach ($rewrite as $r) {
             // is pattern set so try rewrite url
-            if (isset($r['pattern'])) {
+            if (isset($r['pattern']) || $r['remove']) {
+                // is remove pattern than suppress link refs #10834
+                if (isset($r['remove'])) {
+                    if (0 != preg_match(
+                            '/' . addcslashes($r['remove'], '/') . '/i',
+                            trim($link['url'])
+                        )
+                    ) {
+                        unset($link);
+                        return;
+                    }
+                }
 
                 // is search and replace set so try to rewrite url
                 if (isset($r['search']) && isset($r['replace'])) {
                     // check if pattern exists. if at least one match than continue
-                    if (0 != preg_match('/' . $r['pattern'] . '/i', trim($link))) {
+                    if (0 != preg_match(
+                            '/' . $r['pattern'] . '/i', trim($link['url'])
+                        )
+                    ) {
                         // prepare search pattern
                         // should be free of conflicting meta characters
-                        $pattern = str_replace(array('.'), array('\.'), $r['search']);
+                        $pattern
+                            = str_replace(array('.'), array('\.'), $r['search']);
                         $pattern = '/(' . $pattern . ')/i';
                         // replace it only one time
-                        $link = preg_replace($pattern, trim($r['replace']), trim($link), 1, $count);
+                        $link
+                            = preg_replace(
+                            $pattern,
+                            trim($r['replace']),
+                            trim($link['url']),
+                            1,
+                            $count
+                        );
                         // add http if needed
-                        // @todo make it https compatible
-                        if (!preg_match('/^(http:\/\/)/', $link)) {
-                            $link = 'http://' . $link;
+                        // @to-do make it https compatible
+                        if (!preg_match('/^(http:\/\/)/', $link['url'])) {
+                            $link['url'] = 'http://' . $link['url'];
                         }
                     }
                 }
                 // is method set so call alternatively method proceed link
                 if (isset($r['method']) && method_exists($this, $r['method'])) {
                     /* && $count > 0) { @todo fix */
-                    if (0 != preg_match('/' . $r['pattern'] . '/i', trim($link))) {
-                        $link = $this->$r['method']($link);
+                    if (0 != preg_match(
+                            '/' . $r['pattern'] . '/i', trim($link['url'])
+                        )
+                    ) {
+                        $link['url'] = $this->$r['method']($link['url']);
                     }
                 } // end if isset method
 
