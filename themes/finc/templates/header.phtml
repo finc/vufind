@@ -1,7 +1,13 @@
 <!-- finc HEADER -->
 <? $account = $this->auth()->getManager(); ?>
 
-<? /* This nav element is the sticky element in the header - CK */ ?>
+<? /* This nav element is the sticky element in the header - CK;
+ you can use 'Affix' as an alternative to  'navbar-fixed-top' like so:
+ <div data-spy="affix" data-offset-top="1" class="navbar">
+ Do not use 'navbar-fixed-top' and 'affix* at the same time.
+ When using 'affix', set the variables for '$navbar-height', '$navbar-height-xs' and '$navbar-height-sm' in _customVariables.scss to '=0'
+ or set the paddings-top under 'body' in compiled.scss to '=0'
+ */ ?>
 <nav class="navbar navbar-fixed-top">
   <div class="container-fluid">
 

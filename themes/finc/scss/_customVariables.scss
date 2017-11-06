@@ -159,7 +159,9 @@ $sidebar-item-active-hover-bg: transparentize($brand-primary, .1) !default;
 $grid-gutter-width: 30px !default;
 
 //// Navbar gets a minimum-height of 50px by default, activate and change here!
-//// for fixed navbars, the body requires a padding-bottom of the same height as the navbar
+//// For fixed navbars ('navbar-fixed-top' in 'header.phtml'), the body requires a padding-bottom of the same height as the navbar because of postition.fixed
+//// When using 'affix' instead of 'navbar-fixed-top', set '$navbar-height', '$navbar-height-xs' and '$navbar-height-sm' to '=0'
+//// or set the paddings-top under 'body' in compiled.scss to '=0'; see also the comment in header.phtml
 $navbar-height: 80px !default;
 $navbar-height-sm: $navbar-height / 2 !default;
 //// Set navbar-height for small devices, USE px as rem will throw an error in conjunction _variables.scss
