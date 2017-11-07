@@ -184,9 +184,10 @@ if($loggedin = $this->auth()->isLoggedIn()) {
       <? /* finc: NO getFormats here, but getEdition - END */ ?>
       <? /* finc: getDissertationNote, CK */ ?>
       <? $dissertationNote = $this->driver->getDissertationNote(); if (!empty($dissertationNote)): ?>
+      <? $first = true; $dissertation = ''; foreach ($dissertationNote as $val): $dissertation .= (false === $first) ? ', ' . $val : $val ; $first = false; endforeach; ?>
         <tr>
           <th><?=$this->transEsc('Dissertation Note')?>: </th>
-          <td><?=$dissertationNote?></td>
+          <td><?=$this->transEsc($dissertation)?></td>
         </tr>
       <? endif; ?>
       <? /* finc: getDissertationNote, CK */ ?>

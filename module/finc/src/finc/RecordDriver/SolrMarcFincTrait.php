@@ -1881,39 +1881,23 @@ trait SolrMarcFincTrait
     /**
      * Get dissertation notes for the record.
      *
-     * @return array
+     * @return array $retVal
      */
     public function getDissertationNote()
     {
-        $tmpArray = [];
+        $retVal = [];
+        $subFields = ['a','b','c','d','g'];
         $field = $this->getMarcRecord()->getFields('502');
 
         foreach ($field as $subfield) {
-
-            $subfieldA = $subfield->getSubField('a');
-            if ($subfieldA) {
-                $tmpArray[] = $subfieldA->getData();
-            }
-
-            $subfieldB = $subfield->getSubField('b');
-            if ($subfieldB) {
-                $tmpArray[] = $subfieldB->getData();
-            }
-
-            $subfieldC = $subfield->getSubField('c');
-            if ($subfieldC) {
-                $tmpArray[] = $subfieldC->getData();
-            }
-
-            $subfieldD = $subfield->getSubField('d');
-            if ($subfieldD) {
-                $tmpArray[] = $subfieldD->getData();
+            foreach ($subFields as $fld) {
+                $sfld = $subfield->getSubField($fld);
+                if ($sfld) {
+                    $retVal[$fld] = $sfld->getData();
+                }
             }
         }
-        $retVal = implode(', ', $tmpArray);
-
         return $retVal;
-
     }
 
     /**
