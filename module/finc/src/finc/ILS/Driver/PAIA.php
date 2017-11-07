@@ -267,35 +267,39 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
         // PAIA simple data type money: a monetary value with currency (format
         // [0-9]+\.[0-9][0-9] [A-Z][A-Z][A-Z]), for instance 0.80 USD.
         $feeConverter = function ($fee) {
-            $paiaCurrencyPattern = "/^([0-9]+\.[0-9][0-9]) ([A-Z][A-Z][A-Z])$/";
+            $paiaCurrencyPattern = "/^(\-?[0-9]+\.[0-9][0-9]) ([A-Z][A-Z][A-Z])$/";
             if (preg_match($paiaCurrencyPattern, $fee, $feeMatches)) {
                 // VuFind expects fees in PENNIES
                 return ($feeMatches[1]*100);
             }
-            return $fee;
+            return null;
         };
 
         $results = [];
         if (isset($fees['fee'])) {
             foreach ($fees['fee'] as $fee) {
-                $result = [
-                    // fee.amount 	1..1 	money 	amount of a single fee
-                    'amount'      => $feeConverter($fee['amount']),
-                    'checkout'    => '',
-                    // fee.feetype 	0..1 	string 	textual description of the type
-                    // of service that caused the fee
-                    'fine'    => (isset($fee['feetype']) ? $fee['feetype'] : null),
-                    'balance' => $feeConverter($fee['amount']),
-                    // fee.date 	0..1 	date 	date when the fee was claimed
-                    'createdate'  => (isset($fee['date'])
-                        ? $this->convertDate($fee['date']) : null),
-                    'duedate' => '',
-                    // fee.edition 	0..1 	URI 	edition that caused the fee
-                    'id' => (isset($fee['edition'])
-                        ? $this->getAlternativeItemId($fee['edition']) : ''),
-                ];
-                // custom PAIA fields can get added in getAdditionalFeeData
-                $results[] = $result + $this->getAdditionalFeeData($fee, $patron);
+                // won't show this fee if there is a formatting error
+                // see #11128-45, DM
+                if ($amount = $feeConverter($fee['amount'])) {
+                    $result = [
+                        // fee.amount 	1..1 	money 	amount of a single fee
+                        'amount' => $amount,
+                        'checkout' => '',
+                        // fee.feetype 	0..1 	string 	textual description of the type
+                        // of service that caused the fee
+                        'fine' => (isset($fee['feetype']) ? $fee['feetype'] : null),
+                        'balance' => $amount,
+                        // fee.date 	0..1 	date 	date when the fee was claimed
+                        'createdate' => (isset($fee['date'])
+                            ? $this->convertDate($fee['date']) : null),
+                        'duedate' => '',
+                        // fee.edition 	0..1 	URI 	edition that caused the fee
+                        'id' => (isset($fee['edition'])
+                            ? $this->getAlternativeItemId($fee['edition']) : ''),
+                    ];
+                    // custom PAIA fields can get added in getAdditionalFeeData
+                    $results[] = $result + $this->getAdditionalFeeData($fee, $patron);
+                }
             }
         }
         return $results;
