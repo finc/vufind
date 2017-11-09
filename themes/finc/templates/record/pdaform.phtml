@@ -17,14 +17,14 @@
     <?=$this->translate('PDA::pda_delivery_text')?>
   </p>
   <div class="form-group">
-    <label class="col-sm-3" for="pdaStatement"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span>:</label>
-    <div class="col-sm-9">
-      <textarea id="pdaStatement" class="auto" name="pdaStatement" rows="5" type="text" cols="50"><?=isset($this->pdaStatement) ? $this->pdaStatement : ''?></textarea>
+    <label class="col-sm-4" for="pdaStatement"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span>:</label>
+    <div class="col-sm-8">
+      <textarea id="pdaStatement" class="auto" name="pdaStatement" rows="5" type="text" cols="46"><?=isset($this->pdaStatement) ? $this->pdaStatement : ''?></textarea>
     </div>
   </div>
   <div class="form-group">
-    <label class="col-sm-3" for="pdaSubject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span>:</label>
-    <div class="col-sm-9">
+    <label class="col-sm-4" for="pdaSubject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span>:</label>
+    <div class="col-sm-8">
       <select name="pdaFieldOfStudy" class="form-control">
         <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text')?></option>
         <? if (isset( $this->fieldOfStudyList) && is_array( $this->fieldOfStudyList)): ?>
@@ -40,6 +40,8 @@
       <span>
         <?=$this->recaptcha()->html($this->useRecaptcha) ?>
       </span>
+    </div>
+    <div class="col-sm-8 col-sm-push-4">
       <div class="btn-group" role="group">
           <input type="submit" class="btn btn-primary" role="button" name="submit" value="<?=$this->transEsc('Submit')?>"/>
           <a class="btn btn-primary" data-lightbox-ignore data-toggle="tooltip" title="<?=$this->transEsc('PDA::pda_open_new_window')?>" href="<?=$this->interlibraryloan()->getSwbLink($this->driver)?>"

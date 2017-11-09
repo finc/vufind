@@ -192,6 +192,19 @@ form {
   }
 }
 
+//// Set max-width to make sure boxes don't bleed over the edge on XS (e.g. acquisitionpda, source_id:3
+@media (max-width: $screen-xs-max) {
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+  }
+
+  .form-control {
+    max-width: 400px;
+  }
+}
+
 //// Fieldsets
 fieldset {
   border: 1px solid $border-color;
