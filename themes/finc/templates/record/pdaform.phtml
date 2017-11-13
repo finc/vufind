@@ -17,13 +17,13 @@
     <?=$this->translate('PDA::pda_delivery_text')?>
   </p>
   <div class="form-group">
-    <label class="col-sm-4" for="pdaStatement"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span>:</label>
+    <label class="col-sm-4 control-label" for="pdaStatement"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span>:</label>
     <div class="col-sm-8">
       <textarea id="pdaStatement" class="auto" name="pdaStatement" rows="5" type="text" cols="46"><?=isset($this->pdaStatement) ? $this->pdaStatement : ''?></textarea>
     </div>
   </div>
   <div class="form-group">
-    <label class="col-sm-4" for="pdaSubject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span>:</label>
+    <label class="col-sm-4 control-label" for="pdaSubject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span>:</label>
     <div class="col-sm-8">
       <select name="pdaFieldOfStudy" class="form-control">
         <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text')?></option>
