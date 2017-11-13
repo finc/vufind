@@ -116,7 +116,7 @@ class ExternalCatalogueLink extends \Zend\View\Helper\AbstractHelper
         $i = -1; // iterator of extUrls
         $extUrls = [];
 
-        foreach ($this->extCatConf as $recordType => $accessUrl) {
+        foreach ($this->extCatConf as $recordType => $accessUrls) {
             $replaceId = null;
             // get identifier of record id type
             switch ($recordType) {
@@ -129,19 +129,21 @@ class ExternalCatalogueLink extends \Zend\View\Helper\AbstractHelper
                 default:
                     $replaceId = null;
             }
-            foreach ($accessUrl as $institution => $v) {
-                // pre-filter replaceId
-                if (isset($v['filter'])) {
-                    $isReplaceId = (
-                        true === $this->filterAccessibilityUrl($v['filter'])
-                    ) ? $replaceId : null;
-                }
-                // institution filter
-                if (true === in_array($institution, $institutions)
-                    && !empty($isReplaceId)
-                ) {
-                    $extUrls[++$i]['desc'] = $institution;
-                    $extUrls[$i]['url'] = sprintf($v['pattern'], $replaceId);
+            foreach ($accessUrls as $institution => $accessUrl) {
+                foreach ($accessUrl as $v) {
+                    // pre-filter replaceId
+                    if (isset($v['filter'])) {
+                        $isReplaceId = (
+                            true === $this->filterAccessibilityUrl($v['filter'])
+                        ) ? $replaceId : null;
+                    }
+                    // institution filter
+                    if (true === in_array($institution, $institutions)
+                        && !empty($isReplaceId)
+                    ) {
+                        $extUrls[++$i]['desc'] = $institution;
+                        $extUrls[$i]['url'] = sprintf($v['pattern'], $replaceId);
+                    }
                 }
             }
         }
@@ -160,23 +162,77 @@ class ExternalCatalogueLink extends \Zend\View\Helper\AbstractHelper
     protected function filterAccessibilityUrl($filter)
     {
         foreach ($filter as $driverMethod => $val) {
-            $resType = gettype($res = $this->driver->tryMethod($driverMethod));
-            switch ($resType) {
-                case "string":
-                    if (is_array($val)) {
-                        return (in_array($res, $val)) ? true : false;
-                    } else {
-                        return ($res == $val) ? true : false;
-                    }
-                case "array":
-                    if (is_array($val)) {
-                        return (count(array_intersect($res, $val)) > 0) ? true : false;
-                    } else {
-                        return (in_array($val, $res)) ? true : false;
-                    }
-                default:
-                    return false;
+            $resType = gettype($res = $this->driver->tryMethod(
+                ($this->cleanDriverMethod($driverMethod)))
+            );
+            if (false === $this->isFilterExclusive($driverMethod)) {
+                switch ($resType) {
+                    case "string":
+                        if (is_array($val)) {
+                            return (in_array($res, $val)) ? true : false;
+                        } else {
+                            return ($res == $val) ? true : false;
+                        }
+                    case "array":
+                        if (is_array($val)) {
+                            return (count(array_intersect($res, $val)) > 0) ? true : false;
+                        } else {
+                            return (in_array($val, $res)) ? true : false;
+                        }
+                    default:
+                        return false;
+                }
+            // @to-do check if is valid that exclusive filter is poorly the
+            // negative opposite. Beware of immediately return.
+            } else {
+                switch ($resType) {
+                    case "string":
+                        if (is_array($val)) {
+                            return (in_array($res, $val)) ? false : true;
+                        } else {
+                            return ($res == $val) ? false : true;
+                        }
+                    case "array":
+                        if (is_array($val)) {
+                            return (count(array_intersect($res, $val)) > 0) ? false : true;
+                        } else {
+                            return (in_array($val, $res)) ? false : true;
+                        }
+                    default:
+                        return false;
+                }
             }
         }
     }
+
+    /**
+     * Check if filter is exclusive than default/standard inclusive.
+     *
+     * @param string $driverMethod    Value of filter
+     *
+     * @return boolean
+     * @access protected
+     */
+     protected function isFilterExclusive($driverMethod)
+     {
+         return (0 < preg_match('/^\-(.*)$/', $driverMethod)) ? true : false;
+     }
+
+    /**
+     * Clean driver method from additional functions for call of RecordDriver
+     *
+     * @param string $driverMethod    Value of filter
+     *
+     * @return boolean
+     * @access protected
+     */
+    protected function cleanDriverMethod($driverMethod)
+    {
+        $match = [];
+        return (0 < preg_match('/^\-(.*)$/', $driverMethod, $match))
+            ? $match[1] : $driverMethod;
+
+    }
+
+
 }
