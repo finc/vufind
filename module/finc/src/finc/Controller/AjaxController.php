@@ -27,6 +27,7 @@
  */
 namespace finc\Controller;
 use VuFind\Exception\Auth as AuthException;
+use VuFind\View\Helper\Root\SafeMoneyFormat;
 
 /**
  * This controller handles global AJAX functionality
@@ -266,9 +267,11 @@ class AjaxController extends \VuFind\Controller\AjaxController
             $patron
         );
 
-        $additionalAccountInfos['countFines'] = $catalog->getFinesTotal(
+        $smf = new SafeMoneyFormat();
+        $smf->setView($this->getViewRenderer());
+        $additionalAccountInfos['countFines'] = $smf($catalog->getFinesTotal(
             $patron
-        );
+        ));
         
         // Done
         return $this->output($additionalAccountInfos, self::STATUS_OK);
