@@ -201,7 +201,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
             $this->root_username = $this->config['PAIA']['root_username'];
             $this->root_password = $this->config['PAIA']['root_password'];
         }
-        
+
         // get ISIL from config if ILS-specific recordId is barcode for
         // interaction with ILS
         if (!isset($this->mainConfig['InstitutionInfo']['isil'])) {
@@ -357,7 +357,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
         }
         return [];
     }
-    
+
     /*********************************************
      * Custom DAIA methods
      *********************************************/
@@ -425,7 +425,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 parent::getStatuses($this->_getILSRecordIds($ids)), $ids
             ));
     }
-    
+
     /**
      * Override and add to DAIA item status Email Hold availability
      *
@@ -445,7 +445,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
         }
         return $return;
     }
-    
+
     /**
      * Returns the value for "barcode" in VuFind getStatus/getHolding array
      *
@@ -917,10 +917,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
         $session = $this->getSession();
         $details['cat_username'] = $session->patron === 'root' && !empty($username)
             ? $username : $session->patron;
-        
+
         return $details;
     }
-    
+
     /**
      * Customized PAIA support method for PAIA core method 'items' returning only
      * filtered items.
@@ -938,7 +938,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
     {
         // check for existing data in cache
         if ($this->paiaCacheEnabled) {
-            $itemsResponse = $this->getCachedData($patron['cat_username'] . '_items');
+            $itemsResponse = $this->getCachedData($patron['cat_username']);
         }
 
         if (!isset($itemsResponse) || $itemsResponse == null) {
@@ -952,7 +952,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
             }
 
             if ($this->paiaCacheEnabled) {
-                $this->putCachedData($patron['cat_username'] . '_items', $itemsResponse);
+                $this->putCachedData($patron['cat_username'], $itemsResponse);
             }
         }
 
@@ -1087,7 +1087,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
     }
 
     /*********************************************
-     * Finc-ILS specific methods 
+     * Finc-ILS specific methods
      *********************************************/
 
     /**
@@ -1171,7 +1171,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * finc-specific function to total the fines (e.g. for use in MyResearch menu)
      *
      * @param array $patron Patron details returned by patronLogin
-     * 
+     *
      * @return float
      */
     public function getFinesTotal($patron) {
@@ -1222,7 +1222,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
             return '';
         }
     }
-    
+
     /**
      * Helper function to create static ils response
      *
@@ -1472,7 +1472,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
 
         if ($ilsIdentifier != "default") {
             // different ilsIdentifier is configured, retrieve fincid
-            
+
             // if the given ilsIdentifier is known as a dynamic field it is suffixed
             // with the isil
             if (in_array($ilsIdentifier, $this->dynamicFields)) {
