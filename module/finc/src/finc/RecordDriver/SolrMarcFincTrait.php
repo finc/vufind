@@ -52,17 +52,6 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Get value of genre_facet field
-     *
-     * @return string
-     */
-    public function getGenreFacet()
-    {
-        return isset($this->fields['genre_facet'])
-            ? $this->fields['genre_facet'] : '';
-    }
-
-    /**
      * Do we have an attached ILS connection and (finc specific) do we want ILS support
      * for the records source_id and access_facet-value?
      *

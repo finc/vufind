@@ -1201,4 +1201,15 @@ trait SolrDefaultFincTrait
         return isset($this->fields['title_alt']) ?
             $this->fields['title_alt'] : null;
     }
+
+    /**
+     * Get values of genre_facet field
+     *
+     * @return array
+     */
+    public function getGenreFacet()
+    {
+        return isset($this->fields['genre_facet'])
+            ? $this->fields['genre_facet'] : [];
+    }
 }
