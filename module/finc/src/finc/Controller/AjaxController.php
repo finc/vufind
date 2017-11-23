@@ -267,11 +267,9 @@ class AjaxController extends \VuFind\Controller\AjaxController
             $patron
         );
 
-        $smf = new SafeMoneyFormat();
-        $smf->setView($this->getViewRenderer());
-        $additionalAccountInfos['countFines'] = $smf($catalog->getFinesTotal(
+        $additionalAccountInfos['countFines'] = $catalog->getFinesTotal(
             $patron
-        ));
+        );
         
         // Done
         return $this->output($additionalAccountInfos, self::STATUS_OK);
