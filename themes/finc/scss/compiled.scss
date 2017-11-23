@@ -83,6 +83,11 @@ body {
   @media (min-width: $screen-md-min) {
     padding-top: $navbar-height;
   }
+
+  //// for print
+  @media print {
+    padding-top: 0;
+  }
 }
 
 // Collapse/Hide empty containers -- DO NOT INCLUDE span (dropdown carets are empty spans) NOR DIV (slider track handles)
@@ -1414,6 +1419,12 @@ footer {
   .media-left {
     min-width: 16%;
     text-align: center;
+
+    //// remove left padding for print
+    @media print {
+      padding-left: 0;
+    }
+
   }
 }
 
@@ -1458,7 +1469,7 @@ footer {
       // hide last and first page buttons
       &.first,
       &.last,
-        // select 7th to 11th child
+      // select 7th to 11th child
       &:nth-child(n+10):nth-child(-n+13) {
         display: none;
       }

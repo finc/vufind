@@ -116,9 +116,7 @@ if (isset($searchDetails) && is_object($searchDetails)) {
                   </div>
                   <? if($group == 0 && $search == 0): ?>
                     </div>
-                    <? /* finc: moving entire original icon tag inside link WILL BUST removal-button functionality!
-                            (As this will also 'shift search_place_holder') Therefore Keep 'search_place_holder' separate and move icon only !
-                    */ ?>
+                    <? /* finc: use xs-cols to improve mobile view, .middle used in print styles, CK */ ?>
                     <span class="float-left">
                       <span class="search_place_holder hidden" aria-hidden="true"></span>
                       <a href="javascript:void(0);" class="add_search_link hidden">

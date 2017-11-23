@@ -64,8 +64,9 @@ $this->layout()->title = $this->driver->getShortTitle();
 
   <? /* finc-specific: Remove getToolbar from here and add it to sidebar below - CK */ ?>
 
-  <div class="record source<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>">
-    <div class="<?=$this->layoutClass('mainbody')?>">
+  <div class="record source<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?> row">
+    <? /* finc-specific print... class - CK */ ?>
+    <div class="<?=$this->layoutClass('mainbody')?> print-full-width">
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" class="hiddenId"/>
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource"/>
       <?=$this->flashmessages()?>

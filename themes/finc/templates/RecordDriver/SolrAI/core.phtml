@@ -50,7 +50,7 @@
         <p><?=$this->truncate($summary, 300)?></p>
 
         <? if(strlen($summary) > 300): ?>
-          <p><a href='<?=$this->recordLink()->getTabUrl($this->driver, 'Description')?>#tabnav'><?=$this->transEsc('Full description')?></a></p>
+          <p class="hidden-print"><a href='<?=$this->recordLink()->getTabUrl($this->driver, 'Description')?>#tabnav'><?=$this->transEsc('Full description')?></a></p>
         <? endif; ?>
       <? endif; ?>
 
@@ -58,7 +58,7 @@
         <? /* Display the lists that this record is saved to */ ?>
       <div class="savedLists hidden alert alert-info">
           <strong><?=$this->transEsc("Saved in")?>:</strong>
-        </div>
+      </div>
       <? endif; ?>
 
       <?/* Display Main Details */?>
