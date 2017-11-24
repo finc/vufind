@@ -24,7 +24,7 @@
  * @package  View_Helpers
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
+ * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFindTheme\View\Helper;
 use VuFindTheme\ThemeInfo;
@@ -89,6 +89,8 @@ trait ConcatTrait
      * @param stdClass $item Link element object
      *
      * @return string
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getType($item)
     {
@@ -151,7 +153,7 @@ trait ConcatTrait
 
         $this->getContainer()->ksort();
 
-        foreach ($this as $key => $item) {
+        foreach ($this as $item) {
             if ($this->isExcludedFromConcat($item)) {
                 $this->groups[] = [
                     'other' => true,
@@ -192,7 +194,12 @@ trait ConcatTrait
      */
     protected function getResourceCacheDir()
     {
-        return $this->themeInfo->getBaseDir() . '/../local/cache/public/';
+        if (!defined('LOCAL_CACHE_DIR')) {
+            throw new \Exception(
+                'Asset pipeline feature depends on the LOCAL_CACHE_DIR constant.'
+            );
+        }
+        return LOCAL_CACHE_DIR . '/public/';
     }
 
     /**
@@ -291,8 +298,13 @@ trait ConcatTrait
     protected function isPipelineActive()
     {
         if ($this->usePipeline) {
-            $cacheDir = $this->getResourceCacheDir();
-            if (!is_writable($cacheDir)) {
+            try {
+                $cacheDir = $this->getResourceCacheDir();
+            } catch (\Exception $e) {
+                $this->usePipeline = $cacheDir = false;
+                error_log($e->getMessage());
+            }
+            if ($cacheDir && !is_writable($cacheDir)) {
                 $this->usePipeline = false;
                 error_log("Cannot write to $cacheDir; disabling asset pipeline.");
             }
