@@ -600,7 +600,7 @@ trait SolrDefaultFincTrait
      *
      * @return array
      */
-    public function getDeduplicatedAuthors()
+    public function getDeduplicatedAuthors($dataFields = [])
     {
         // use self:: referenced methods to make sure we are not using SolrMarc
         // methods

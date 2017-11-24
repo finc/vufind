@@ -89,7 +89,7 @@ class SolrMarc extends SolrDefault
      *
      * @return array
      */
-    public function getAllSubjectHeadings()
+    public function getAllSubjectHeadings($extended = false)
     {
         // These are the fields that may contain subject headings:
         $fields = [
