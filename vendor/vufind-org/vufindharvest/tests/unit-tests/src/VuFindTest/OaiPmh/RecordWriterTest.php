@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
  * @package  Tests
@@ -69,7 +69,8 @@ class RecordWriterTest extends \PHPUnit_Framework_TestCase
      */
     protected function getMockFormatter()
     {
-        return $this->getMock('VuFindHarvest\OaiPmh\RecordXmlFormatter');
+        return $this->getMockBuilder('VuFindHarvest\OaiPmh\RecordXmlFormatter')
+            ->getMock();
     }
 
     /**
@@ -79,9 +80,9 @@ class RecordWriterTest extends \PHPUnit_Framework_TestCase
      */
     protected function getMockStrategy()
     {
-        return $this->getMock(
+        return $this->getMockBuilder(
             'VuFindHarvest\RecordWriterStrategy\RecordWriterStrategyInterface'
-        );
+        )->getMock();
     }
 
     /**

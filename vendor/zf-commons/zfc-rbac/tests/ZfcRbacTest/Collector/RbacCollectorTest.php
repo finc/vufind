@@ -20,13 +20,11 @@ namespace ZfcRbacTest\Collector;
 
 use Rbac\Role\RoleInterface;
 use Zend\Mvc\MvcEvent;
-use Zend\Permissions\Rbac\Rbac;
 use Zend\Permissions\Rbac\Role;
 use ZfcRbac\Collector\RbacCollector;
 use ZfcRbac\Guard\GuardInterface;
 use ZfcRbac\Options\ModuleOptions;
 use ZfcRbac\Role\InMemoryRoleProvider;
-use ZfcRbac\Role\RoleProviderInterface;
 use ZfcRbac\Service\RoleService;
 use Rbac\Traversal\Strategy\RecursiveRoleIteratorStrategy;
 use ZfcRbacTest\Asset\MockRoleWithPermissionMethod;
@@ -65,6 +63,7 @@ class RbacCollectorTest extends \PHPUnit_Framework_TestCase
         $unserialized = [
             'guards'      => ['foo' => 'bar'],
             'roles'       => ['foo' => 'bar'],
+            'permissions' => ['foo' => 'bar'],
             'options'     => ['foo' => 'bar']
         ];
         $serialized   = serialize($unserialized);
@@ -77,7 +76,19 @@ class RbacCollectorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(['foo' => 'bar'], $collection['guards']);
         $this->assertSame(['foo' => 'bar'], $collection['roles']);
         $this->assertSame(['foo' => 'bar'], $collection['options']);
+        $this->assertSame(['foo' => 'bar'], $collection['permissions']);
     }
+
+    public function testUnserializeThrowsInvalidArgumentException()
+    {
+        $this->setExpectedException('ZfcRbac\Exception\InvalidArgumentException');
+        $collector    = new RbacCollector();
+        $unserialized = 'not_an_array';
+        $serialized   = serialize($unserialized);
+
+        $collector->unserialize($serialized);
+    }
+
 
     public function testCollectNothingIfNoApplicationIsSet()
     {
@@ -250,9 +261,11 @@ class RbacCollectorTest extends \PHPUnit_Framework_TestCase
 
         $roleProvider = $this->getMock('ZfcRbac\Role\RoleProviderInterface');
 
-        $roleService = new RoleService($identityProvider,
+        $roleService = new RoleService(
+            $identityProvider,
             $roleProvider,
-            new RecursiveRoleIteratorStrategy());
+            new RecursiveRoleIteratorStrategy()
+        );
 
         $serviceManager->expects($this->at(0))
             ->method('get')
@@ -270,5 +283,4 @@ class RbacCollectorTest extends \PHPUnit_Framework_TestCase
         $collector->unserialize($collector->serialize());
         return $collector->getCollection();
     }
-
 }

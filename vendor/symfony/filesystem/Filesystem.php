@@ -285,8 +285,6 @@ class Filesystem
      *
      * @param string $filename Path to the file
      *
-     * @return bool
-     *
      * @throws IOException When windows path is longer than 258 characters
      */
     private function isReadable($filename)
@@ -362,31 +360,6 @@ class Filesystem
         $startPathArr = explode('/', trim($startPath, '/'));
         $endPathArr = explode('/', trim($endPath, '/'));
 
-        if ('/' !== $startPath[0]) {
-            array_shift($startPathArr);
-        }
-
-        if ('/' !== $endPath[0]) {
-            array_shift($endPathArr);
-        }
-
-        $normalizePathArray = function ($pathSegments) {
-            $result = array();
-
-            foreach ($pathSegments as $segment) {
-                if ('..' === $segment) {
-                    array_pop($result);
-                } else {
-                    $result[] = $segment;
-                }
-            }
-
-            return $result;
-        };
-
-        $startPathArr = $normalizePathArray($startPathArr);
-        $endPathArr = $normalizePathArray($endPathArr);
-
         // Find for which directory the common path stops
         $index = 0;
         while (isset($startPathArr[$index]) && isset($endPathArr[$index]) && $startPathArr[$index] === $endPathArr[$index]) {
@@ -394,14 +367,10 @@ class Filesystem
         }
 
         // Determine how deep the start path is relative to the common path (ie, "web/bundles" = 2 levels)
-        if (count($startPathArr) === 1 && $startPathArr[0] === '') {
-            $depth = 0;
-        } else {
-            $depth = count($startPathArr) - $index;
-        }
+        $depth = count($startPathArr) - $index;
 
         // When we need to traverse from the start, and we are starting from a root path, don't add '../'
-        if ('/' === $startPath[0] && 0 === $index && 0 === $depth) {
+        if ('/' === $startPath[0] && 0 === $index && 1 === $depth) {
             $traverser = '';
         } else {
             // Repeated "../" for each level need to reach the common path
@@ -562,41 +531,31 @@ class Filesystem
     /**
      * Atomically dumps content into a file.
      *
-     * @param string   $filename The file to be written to
-     * @param string   $content  The data to write into the file
-     * @param null|int $mode     The file mode (octal). If null, file permissions are not modified
-     *                           Deprecated since version 2.3.12, to be removed in 3.0.
+     * @param string $filename The file to be written to
+     * @param string $content  The data to write into the file
      *
      * @throws IOException If the file cannot be written to.
      */
-    public function dumpFile($filename, $content, $mode = 0666)
+    public function dumpFile($filename, $content)
     {
         $dir = dirname($filename);
 
         if (!is_dir($dir)) {
             $this->mkdir($dir);
-        }
-
-        if (!is_writable($dir)) {
+        } elseif (!is_writable($dir)) {
             throw new IOException(sprintf('Unable to write to the "%s" directory.', $dir), 0, null, $dir);
         }
 
+        // Will create a temp file with 0600 access rights
+        // when the filesystem supports chmod.
         $tmpFile = $this->tempnam($dir, basename($filename));
 
         if (false === @file_put_contents($tmpFile, $content)) {
             throw new IOException(sprintf('Failed to write file "%s".', $filename), 0, null, $filename);
         }
 
-        if (null !== $mode) {
-            if (func_num_args() > 2) {
-                @trigger_error('Support for modifying file permissions is deprecated since version 2.3.12 and will be removed in 3.0.', E_USER_DEPRECATED);
-            }
-
-            $this->chmod($tmpFile, $mode);
-        } elseif (file_exists($filename)) {
-            @chmod($tmpFile, fileperms($filename));
-        }
-
+        // Ignore for filesystems that do not support umask
+        @chmod($tmpFile, 0666);
         $this->rename($tmpFile, $filename, true);
     }
 

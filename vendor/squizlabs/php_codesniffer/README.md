@@ -33,7 +33,7 @@ If you prefer using [Composer](http://getcomposer.org/) you can easily install P
 
     composer global require "squizlabs/php_codesniffer=*"
 
-Make sure you have `~/.composer/vendor/bin/` in your PATH.
+Make sure you have the composer bin dir in your PATH. The default value is `~/.composer/vendor/bin/`, but you can check the value that you need to use by running `composer global config bin-dir --absolute`.
 
 Or alternatively, include a dependency for `squizlabs/php_codesniffer` in your `composer.json` file. For example:
 
@@ -50,9 +50,9 @@ You will then be able to run PHP_CodeSniffer from the vendor bin directory:
     ./vendor/bin/phpcs -h
     ./vendor/bin/phpcbf -h
 
-You can also download the PHP\_CodeSniffer source and run the `phpcs` and `phpcbf` commands directly from the Git checkout:
+You can also download the PHP\_CodeSniffer source and run the `phpcs` and `phpcbf` commands directly from the Git clone:
 
-    git clone git://github.com/squizlabs/PHP_CodeSniffer.git
+    git clone https://github.com/squizlabs/PHP_CodeSniffer.git
     cd PHP_CodeSniffer
     php scripts/phpcs -h
     php scripts/phpcbf -h

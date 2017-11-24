@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
  * @package  Tests
@@ -48,11 +48,11 @@ class CombinedRecordWriterStrategyTest extends \PHPUnit_Framework_TestCase
      */
     public function testStrategy()
     {
-        $mock = $this->getMock(
-            'VuFindHarvest\RecordWriterStrategy\CombinedRecordWriterStrategy',
-            ['saveDeletedRecords', 'saveFile'],
-            ['foo', '<wrapper test="true">']
-        );
+        $mock = $this->getMockBuilder(
+            'VuFindHarvest\RecordWriterStrategy\CombinedRecordWriterStrategy'
+        )->setMethods(['saveDeletedRecords', 'saveFile'])
+            ->setConstructorArgs(['foo', '<wrapper test="true">'])
+            ->getMock();
         $expectedXml = '<wrapper test="true"><foo1 /><foo2 /></wrapper>';
         $mock->expects($this->once())->method('saveDeletedRecords')
             ->with($this->equalTo(['d1', 'd2']));

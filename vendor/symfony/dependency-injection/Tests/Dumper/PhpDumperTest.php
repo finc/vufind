@@ -13,11 +13,14 @@ namespace Symfony\Component\DependencyInjection\Tests\Dumper;
 
 use DummyProxyDumper;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Variable;
 use Symfony\Component\ExpressionLanguage\Expression;
 
@@ -138,16 +141,6 @@ class PhpDumperTest extends TestCase
         }
     }
 
-    /**
-     * @group legacy
-     */
-    public function testLegacySynchronizedServices()
-    {
-        $container = include self::$fixturesPath.'/containers/container20.php';
-        $dumper = new PhpDumper($container);
-        $this->assertEquals(str_replace('%path%', str_replace('\\', '\\\\', self::$fixturesPath.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR), file_get_contents(self::$fixturesPath.'/php/services20.php')), $dumper->dump(), '->dump() dumps services');
-    }
-
     public function testServicesWithAnonymousFactories()
     {
         $container = include self::$fixturesPath.'/containers/container19.php';
@@ -156,16 +149,46 @@ class PhpDumperTest extends TestCase
         $this->assertStringEqualsFile(self::$fixturesPath.'/php/services19.php', $dumper->dump(), '->dump() dumps services with anonymous factories');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Service id "bar$" cannot be converted to a valid PHP method name.
-     */
-    public function testAddServiceInvalidServiceId()
+    public function testAddServiceIdWithUnsupportedCharacters()
     {
+        $class = 'Symfony_DI_PhpDumper_Test_Unsupported_Characters';
         $container = new ContainerBuilder();
         $container->register('bar$', 'FooClass');
+        $container->register('bar$!', 'FooClass');
         $dumper = new PhpDumper($container);
-        $dumper->dump();
+        eval('?>'.$dumper->dump(array('class' => $class)));
+
+        $this->assertTrue(method_exists($class, 'getBarService'));
+        $this->assertTrue(method_exists($class, 'getBar2Service'));
+    }
+
+    public function testConflictingServiceIds()
+    {
+        $class = 'Symfony_DI_PhpDumper_Test_Conflicting_Service_Ids';
+        $container = new ContainerBuilder();
+        $container->register('foo_bar', 'FooClass');
+        $container->register('foobar', 'FooClass');
+        $dumper = new PhpDumper($container);
+        eval('?>'.$dumper->dump(array('class' => $class)));
+
+        $this->assertTrue(method_exists($class, 'getFooBarService'));
+        $this->assertTrue(method_exists($class, 'getFoobar2Service'));
+    }
+
+    public function testConflictingMethodsWithParent()
+    {
+        $class = 'Symfony_DI_PhpDumper_Test_Conflicting_Method_With_Parent';
+        $container = new ContainerBuilder();
+        $container->register('bar', 'FooClass');
+        $container->register('foo_bar', 'FooClass');
+        $dumper = new PhpDumper($container);
+        eval('?>'.$dumper->dump(array(
+            'class' => $class,
+            'base_class' => 'Symfony\Component\DependencyInjection\Tests\Fixtures\containers\CustomContainer',
+        )));
+
+        $this->assertTrue(method_exists($class, 'getBar2Service'));
+        $this->assertTrue(method_exists($class, 'getFoobar2Service'));
     }
 
     /**
@@ -263,7 +286,31 @@ class PhpDumperTest extends TestCase
         $container = include self::$fixturesPath.'/containers/container24.php';
         $dumper = new PhpDumper($container);
 
-        $this->assertEquals(file_get_contents(self::$fixturesPath.'/php/services24.php'), $dumper->dump());
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services24.php', $dumper->dump());
+    }
+
+    public function testEnvParameter()
+    {
+        $container = new ContainerBuilder();
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
+        $loader->load('services26.yml');
+        $container->compile();
+        $dumper = new PhpDumper($container);
+
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services26.php', $dumper->dump(), '->dump() dumps inline definitions which reference service_container');
+    }
+
+    /**
+     * @expectedException \Symfony\Component\DependencyInjection\Exception\EnvParameterException
+     * @expectedExceptionMessage Environment variables "FOO" are never used. Please, check your container's configuration.
+     */
+    public function testUnusedEnvParameter()
+    {
+        $container = new ContainerBuilder();
+        $container->getParameter('env(FOO)');
+        $container->compile();
+        $dumper = new PhpDumper($container);
+        $dumper->dump();
     }
 
     public function testInlinedDefinitionReferencingServiceContainer()
@@ -346,5 +393,74 @@ class PhpDumperTest extends TestCase
         $dumper->dump();
 
         $this->addToAssertionCount(1);
+    }
+
+    public function testDumpContainerBuilderWithFrozenConstructorIncludingPrivateServices()
+    {
+        $container = new ContainerBuilder();
+        $container->register('foo_service', 'stdClass')->setArguments(array(new Reference('baz_service')));
+        $container->register('bar_service', 'stdClass')->setArguments(array(new Reference('baz_service')));
+        $container->register('baz_service', 'stdClass')->setPublic(false);
+        $container->compile();
+
+        $dumper = new PhpDumper($container);
+
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/services_private_frozen.php', $dumper->dump());
+    }
+
+    public function testPrivateWithIgnoreOnInvalidReference()
+    {
+        require_once self::$fixturesPath.'/includes/classes.php';
+
+        $container = new ContainerBuilder();
+        $container->register('not_invalid', 'BazClass')
+            ->setPublic(false);
+        $container->register('bar', 'BarClass')
+            ->addMethodCall('setBaz', array(new Reference('not_invalid', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)));
+
+        $dumper = new PhpDumper($container);
+        eval('?>'.$dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Private_With_Ignore_On_Invalid_Reference')));
+
+        $container = new \Symfony_DI_PhpDumper_Test_Private_With_Ignore_On_Invalid_Reference();
+        $this->assertInstanceOf('BazClass', $container->get('bar')->getBaz());
+    }
+
+    public function testDumpHandlesLiteralClassWithRootNamespace()
+    {
+        $container = new ContainerBuilder();
+        $container->register('foo', '\\stdClass');
+
+        $dumper = new PhpDumper($container);
+        eval('?>'.$dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Literal_Class_With_Root_Namespace')));
+
+        $container = new \Symfony_DI_PhpDumper_Test_Literal_Class_With_Root_Namespace();
+
+        $this->assertInstanceOf('stdClass', $container->get('foo'));
+    }
+
+    /**
+     * This test checks the trigger of a deprecation note and should not be removed in major releases.
+     *
+     * @group legacy
+     * @expectedDeprecation The "foo" service is deprecated. You should stop using it, as it will soon be removed.
+     */
+    public function testPrivateServiceTriggersDeprecation()
+    {
+        $container = new ContainerBuilder();
+        $container->register('foo', 'stdClass')
+            ->setPublic(false)
+            ->setDeprecated(true);
+        $container->register('bar', 'stdClass')
+            ->setPublic(true)
+            ->setProperty('foo', new Reference('foo'));
+
+        $container->compile();
+
+        $dumper = new PhpDumper($container);
+        eval('?>'.$dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Private_Service_Triggers_Deprecation')));
+
+        $container = new \Symfony_DI_PhpDumper_Test_Private_Service_Triggers_Deprecation();
+
+        $container->get('bar');
     }
 }

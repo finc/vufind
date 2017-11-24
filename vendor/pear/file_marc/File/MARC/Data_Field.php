@@ -197,15 +197,7 @@ class File_MARC_Data_Field extends File_MARC_Field
      */
     function prependSubfield(File_MARC_Subfield $new_subfield)
     {
-        $pos = 0;
-        $new_subfield->setPosition($pos);
-        $this->subfields->shift($new_subfield);
-        $node = null;
-        $this->subfields->rewind();
-        while ($node = $this->subfields->next()) {
-            $pos++;
-            $node->setPosition($pos);
-        }
+        $this->subfields->unshift($new_subfield);
         return $new_subfield;
     }
     // }}}
@@ -225,22 +217,7 @@ class File_MARC_Data_Field extends File_MARC_Field
      */
     function insertSubfield(File_MARC_Subfield $new_field, File_MARC_Subfield $existing_field, $before = false)
     {
-        switch ($before) {
-        /* Insert before the specified subfield in the record */
-        case true:
-            $this->subfields->insertNode($new_field, $existing_field, true);
-            break;
-
-        /* Insert after the specified subfield in the record */
-        case false:
-            $this->subfields->insertNode($new_field, $existing_field);
-            break;
-
-        default: 
-            $errorMessage = File_MARC_Exception::formatError(File_MARC_Exception::$messages[File_MARC_Exception::ERROR_INSERTSUBFIELD_MODE], array("mode" => $mode));
-            throw new File_MARC_Exception($errorMessage, File_MARC_Exception::ERROR_INSERTSUBFIELD_MODE);
-            return false;
-        }
+        $this->subfields->insertNode($new_field, $existing_field, $before);
         return $new_field;
     }
     // }}}
@@ -382,7 +359,7 @@ class File_MARC_Data_Field extends File_MARC_Field
      *
      * @return File_MARC_List|array returns a linked list of all subfields
      * if $code is null, an array of {@link File_MARC_Subfield} objects if
-     * one or more subfields match, or false if no codes match $code
+     * one or more subfields match, or an empty array if no codes match $code
      */
     function getSubfields($code = null)
     {
@@ -478,6 +455,27 @@ class File_MARC_Data_Field extends File_MARC_Field
             }
         }
         return (string)$this->ind1.$this->ind2.implode("", $subfields).File_MARC::END_OF_FIELD;
+    }
+    // }}}
+    
+    // {{{ getContents()
+    /**
+     * Return fields data content as joined string
+     *
+     * Return all the fields data content as a joined string 
+     *
+     * @param  string $joinChar A string used to join the data conntent.
+     * Default is an empty string
+     * 
+     * @return string Joined string
+     */
+    function getContents($joinChar = '')
+    {
+        $contents = array();
+        foreach($this->subfields as $subfield) {
+            $contents[] = $subfield->getData();
+        }
+        return implode($joinChar, $contents);
     }
     // }}}
 }

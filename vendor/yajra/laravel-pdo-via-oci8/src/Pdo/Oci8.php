@@ -102,16 +102,10 @@ class Oci8 extends PDO
         // Skip replacing ? with a pseudo named parameter on alter/create table command
         if ($this->isNamedParameterable($statement)) {
             // Replace ? with a pseudo named parameter
-            $newStatement = null;
             $parameter    = 0;
-            while ($newStatement !== $statement) {
-                if ($newStatement !== null) {
-                    $statement = $newStatement;
-                }
-                $newStatement = preg_replace('/\?/', ':p' . $parameter, $statement, 1);
-                $parameter++;
-            }
-            $statement = $newStatement;
+            $statement = preg_replace_callback('/(?:\'[^\']*\')(*SKIP)(*F)|\?/', function () use (&$parameter) {
+                return ':p' . $parameter++;
+            }, $statement);
         }
 
         // check if statement is insert function
@@ -526,5 +520,16 @@ class Oci8 extends PDO
     public function getNewCollection($typeName, $schema)
     {
         return oci_new_collection($this->dbh, $typeName, $schema);
+    }
+
+    /**
+     * Special not PDO function.
+     * Get options used in creating the connection.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }
