@@ -18,10 +18,8 @@ $config = [
         'factories' => [
             'record' => 'finc\Controller\Factory::getRecordController',
             'dds' => 'finc\Controller\Factory::getDocumentDeliveryServiceController',
-        ],
-        'invokables' => [
-            'ajax' => 'finc\Controller\AjaxController',
-            'my-research' => 'finc\Controller\MyResearchController'
+            'ajax' => 'finc\Controller\Factory::getAjaxController',
+            'my-research' => 'finc\Controller\Factory::getMyResearchController',
         ],
     ],
     'controller_plugins' => [

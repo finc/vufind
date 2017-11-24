@@ -15,4 +15,5 @@ return array(
     $vendorDir . '/pear/validate',
     $vendorDir . '/pear/validate_ispn',
     $vendorDir . '/phing/phing/classes',
+    $vendorDir . '/pear/net_url2',
 );

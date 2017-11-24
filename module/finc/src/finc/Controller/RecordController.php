@@ -50,17 +50,6 @@ class RecordController extends \VuFind\Controller\RecordController implements
     use CustomTraits\EmailProfileTrait;
 
     /**
-     * Constructor
-     *
-     * @param \Zend\Config\Config $config VuFind configuration
-     */
-    public function __construct(\Zend\Config\Config $config)
-    {
-        // Call standard record controller initialization:
-        parent::__construct($config);
-    }
-
-    /**
      * Returns rewrite object
      *
      * @return object

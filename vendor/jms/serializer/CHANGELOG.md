@@ -1,5 +1,73 @@
 # Change Log
 
+## [1.9.2](https://github.com/schmittjoh/serializer/tree/1.9.2) (2017-11-22)
+
+**Fixed bugs:**
+
+- Missing ClassMetadata deserialization data [\#841](https://github.com/schmittjoh/serializer/pull/841) ([TristanMogwai](https://github.com/TristanMogwai))
+
+**Closed issues:**
+
+- DateTime format documentation [\#836](https://github.com/schmittjoh/serializer/issues/836)
+- Deserialization not working with camelCase [\#831](https://github.com/schmittjoh/serializer/issues/831)
+
+**Merged pull requests:**
+
+- Fix documentation syntax errors on available types [\#839](https://github.com/schmittjoh/serializer/pull/839) ([andy-morgan](https://github.com/andy-morgan))
+- Improve documentation about default DateTime format [\#838](https://github.com/schmittjoh/serializer/pull/838) ([enumag](https://github.com/enumag))
+
+## [1.9.1](https://github.com/schmittjoh/serializer/tree/1.9.1) (2017-10-27)
+**Fixed bugs:**
+
+- Dynamic exclusion strategy, Variable "object" is not valid [\#826](https://github.com/schmittjoh/serializer/issues/826)
+
+**Closed issues:**
+
+- Allow DateTime or Null [\#779](https://github.com/schmittjoh/serializer/issues/779)
+
+**Merged pull requests:**
+
+- Alow to use "object" var in expressions when deserializing [\#827](https://github.com/schmittjoh/serializer/pull/827) ([goetas](https://github.com/goetas))
+
+## [1.9.0](https://github.com/schmittjoh/serializer/tree/1.9.0) (2017-09-28)
+**Implemented enhancements:**
+
+- Doctrine LazyCriteriaCollection not supported [\#814](https://github.com/schmittjoh/serializer/issues/814)
+- Do not require the translator [\#824](https://github.com/schmittjoh/serializer/pull/824) ([goetas](https://github.com/goetas))
+- Added mapping for guid type [\#802](https://github.com/schmittjoh/serializer/pull/802) ([develth](https://github.com/develth))
+- Added translation domain to FormErrorHandler [\#783](https://github.com/schmittjoh/serializer/pull/783) ([prosalov](https://github.com/prosalov))
+
+**Fixed bugs:**
+
+-  Node no longer exists - Deserialize Error [\#817](https://github.com/schmittjoh/serializer/issues/817)
+- Serializer fails if there is no AnnotationDriver in the DriverChain instance [\#815](https://github.com/schmittjoh/serializer/issues/815)
+- Evaluate XML xsi:nil="1" to null  [\#799](https://github.com/schmittjoh/serializer/pull/799) ([Bouwdie](https://github.com/Bouwdie))
+
+**Closed issues:**
+
+- Empty array removed from XML serialization [\#816](https://github.com/schmittjoh/serializer/issues/816)
+- XML Discriminator tags don't work in YAML metadata [\#811](https://github.com/schmittjoh/serializer/issues/811)
+- Launching phpunit does not execute any test [\#809](https://github.com/schmittjoh/serializer/issues/809)
+- Add "bool" Annotation/Type [\#807](https://github.com/schmittjoh/serializer/issues/807)
+- Add support for overriding default annotation driver configuration [\#804](https://github.com/schmittjoh/serializer/issues/804)
+- Add description to PropertyMetadata? [\#800](https://github.com/schmittjoh/serializer/issues/800)
+
+**Merged pull requests:**
+
+- Workaround to avoid triggering simplexml warning [\#825](https://github.com/schmittjoh/serializer/pull/825) ([goetas](https://github.com/goetas))
+- Added null metadata driver [\#822](https://github.com/schmittjoh/serializer/pull/822) ([goetas](https://github.com/goetas))
+- Run Travis tests against modern PHP [\#819](https://github.com/schmittjoh/serializer/pull/819) ([Majkl578](https://github.com/Majkl578))
+- Added bool type alias [\#818](https://github.com/schmittjoh/serializer/pull/818) ([Majkl578](https://github.com/Majkl578))
+
+## [1.8.1](https://github.com/schmittjoh/serializer/tree/1.8.1) (2017-07-13)
+**Closed issues:**
+
+- Version 1.8 is breaking backwards compatibility [\#796](https://github.com/schmittjoh/serializer/issues/796)
+
+**Merged pull requests:**
+
+- Revert back to PSR-0 [\#797](https://github.com/schmittjoh/serializer/pull/797) ([goetas](https://github.com/goetas))
+
 ## [1.8.0](https://github.com/schmittjoh/serializer/tree/1.8.0) (2017-07-12)
 **Implemented enhancements:**
 

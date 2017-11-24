@@ -26,8 +26,11 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  */
+
 namespace finc\Controller;
-use Zend\ServiceManager\ServiceManager;
+
+use Zend\ServiceManager\ServiceManager,
+    VuFind\Controller\Factory as FactoryBase;
 
 /**
  * Factory for various top-level VuFind services.
@@ -41,22 +44,18 @@ use Zend\ServiceManager\ServiceManager;
  *
  * @codeCoverageIgnore
  */
-class Factory
+class Factory extends FactoryBase
 {
-    /**
-     * Construct the RecordController.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return RecordController
-     */
-    public static function getRecordController(ServiceManager $sm)
+    public static function getGenericController($name, ServiceManager $sm)
     {
-        return new RecordController(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
-        );
+        $class = (strpos($name, '\\') === false)
+            ? static::getNamespace() . '\\' . $name : $name;
+        if (!class_exists($class)) {
+            throw new \Exception('Cannot construct ' . $class);
+        }
+        return new $class($sm->getServiceLocator());
     }
-    
+
     /**
      * Construct the DocumentDeliveryServiceController.
      *
@@ -64,7 +63,9 @@ class Factory
      *
      * @return DocumentDeliveryServiceController
      */
-    public static function getDocumentDeliveryServiceController(ServiceManager $sm)
+    public static function getDocumentDeliveryServiceController(
+        ServiceManager $sm
+    )
     {
         $container = new \Zend\Session\Container(
             'DDS', $sm->getServiceLocator()->get('VuFind\SessionManager')
@@ -75,6 +76,12 @@ class Factory
             $container
         );
     }
-    
-    
+
+    private static function getNamespace()
+    {
+        return substr(
+            static::class, 0,
+            strrpos(static::class, '\\')
+        );
+    }
 }
