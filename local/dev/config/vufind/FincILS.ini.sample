@@ -22,17 +22,17 @@ relative_path = ../../../config/vufind/FincILS.ini
 ;####################################################################
 
 [DAIA]
-baseUrl            = http://139.18.19.238:9080/daialibero/daia/
-daiaIdPrefix       = "UBL:ppn:"
+baseUrl            = http://139.18.19.238:9080/daiawachtl/daia/
+daiaIdPrefix       = "DE-15:ppn:"
 ilsIdentifier      = "record_id"
 multiQuery         = true
 daiaResponseFormat = json
+
+[PAIA]
+baseUrl        = http://139.18.19.238:9080/paiawachtl/paia/DE-15/
+paiaCache = false
 
 [Records]
 services[] = 'loan'
 services[] = 'presentation'
 services[] = 'custom'
-
-[PAIA]
-; base URL of the PAIA server
-baseUrl        = http://139.18.19.238:9080/paialibero/paia/DE-15/

@@ -72,7 +72,7 @@ if (!empty($holdingTitleHold)): ?>
   <? endif; ?>
   <? /* finc-specific snippet - #9274 - END */ ?>
 <? endif; ?>
-<? foreach ($holdings as $holding): ?>
+<? foreach ($holdings['holdings'] as $holding): ?>
   <? /* nxt line = finc-specific - #7841@56988450 - CK */ ?>
   <? $holdingsEmpty = false; ?>
   <? /* this next line produces an empty h3 heading in some cases - should be solved more elegantly - Fixme - CK*/ ?>
