@@ -11,3 +11,4 @@ import/solrmarc.log
 /solr
 node_modules
 public/swagger-ui
+.vagrant

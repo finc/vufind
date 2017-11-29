@@ -7,9 +7,9 @@ namespace Composer\Autoload;
 class ComposerStaticInit08c3df1f8e0a68efe6e746ad882c7074
 {
     public static $files = array (
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'fe1bcd0336136e435eaf197895daf81a' => __DIR__ . '/..' . '/nikic/php-parser/lib/bootstrap.php',
         '742b7e606e92b28dd726e835467f413a' => __DIR__ . '/..' . '/herrera-io/json/src/lib/json_version.php',
         'f0e9d233388e461ee3c460665eb265f0' => __DIR__ . '/..' . '/herrera-io/phar-update/src/lib/constants.php',
@@ -63,6 +63,10 @@ class ComposerStaticInit08c3df1f8e0a68efe6e746ad882c7074
         'Y' => 
         array (
             'Yajra\\' => 6,
+        ),
+        'W' => 
+        array (
+            'Whoops\\' => 7,
         ),
         'V' => 
         array (
@@ -287,6 +291,10 @@ class ComposerStaticInit08c3df1f8e0a68efe6e746ad882c7074
         array (
             0 => __DIR__ . '/..' . '/yajra/laravel-pdo-via-oci8/src',
         ),
+        'Whoops\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/filp/whoops/src/Whoops',
+        ),
         'VuFindHarvest\\' => 
         array (
             0 => __DIR__ . '/..' . '/vufind-org/vufindharvest/src',
@@ -418,6 +426,13 @@ class ComposerStaticInit08c3df1f8e0a68efe6e746ad882c7074
     );
 
     public static $prefixesPsr0 = array (
+        'z' => 
+        array (
+            'zf2-whoops' => 
+            array (
+                0 => __DIR__ . '/..' . '/ghislainf/zf2-whoops/src',
+            ),
+        ),
         'p' => 
         array (
             'phpDocumentor' => 
@@ -1917,6 +1932,7 @@ class ComposerStaticInit08c3df1f8e0a68efe6e746ad882c7074
         'Zend_Sniffs_Debug_CodeAnalyzerSniff' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/CodeSniffer/Standards/Zend/Sniffs/Debug/CodeAnalyzerSniff.php',
         'Zend_Sniffs_Files_ClosingTagSniff' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/CodeSniffer/Standards/Zend/Sniffs/Files/ClosingTagSniff.php',
         'Zend_Sniffs_NamingConventions_ValidVariableNameSniff' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/CodeSniffer/Standards/Zend/Sniffs/NamingConventions/ValidVariableNameSniff.php',
+        'Zf2Whoops\\Module' => __DIR__ . '/..' . '/ghislainf/zf2-whoops/Module.php',
         'ZipFileSet' => __DIR__ . '/..' . '/phing/phing/classes/phing/tasks/ext/ZipTask.php',
         'ZipTask' => __DIR__ . '/..' . '/phing/phing/classes/phing/tasks/ext/ZipTask.php',
         'ezcBase' => __DIR__ . '/..' . '/zetacomponents/base/src/base.php',

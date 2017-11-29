@@ -2,6 +2,121 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.7.12 - 2017-04-27
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#235](https://github.com/zendframework/zend-mvc/pull/235) fixes
+  `FormAnnotationBuilderFactory::injectFactory()` to pass the correct
+  arguments to the plugin manager's `injectFactory()` initializer when running
+  under zend-servicemanager v2.
+
+## 2.7.11 - 2017-04-27
+
+### Added
+
+- [#233](https://github.com/zendframework/zend-mvc/pull/233) adds a `replace`
+  entry to the `composer.json` indicating the package replaces
+  zendframework/zend-router. This is done to prevent errors from installing both
+  zend-mvc v2 with zend-router, which could lead to subtle errors when checking
+  exceptions, locating route types, etc. Users should upgrade to zend-mvc v3 if
+  they wish to use the standalone zend-router package.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#229](https://github.com/zendframework/zend-mvc/pull/229) removes the
+  zend-version package from the `require-dev` and `suggest` sections of
+  `composer.json`, and updates the `RouteNotFoundStrategy::getConsoleBanner()`
+  method to no longer use the version constant. Since zend-version has had no
+  real meaning since the 2.5 release, this removes ambiguity for end-users.
+
+### Fixed
+
+- [#223](https://github.com/zendframework/zend-mvc/pull/223) fixes how the
+  `FormAnnotationBuilderFactory` injects the builder with the
+  `FormElementManager` service such that it will work with the latest zend-form
+  releases.
+
+## 2.7.10 - 2016-06-13
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#159](https://github.com/zendframework/zend-mvc/pull/159) removes the
+  dependency on zend-servicemanager-di.
+
+### Fixed
+
+- [#159](https://github.com/zendframework/zend-mvc/pull/159) fixes issues with
+  regards to conflicts between zend-servicemanager v2 and
+  zend-servicemanager-di by re-instating code removed from various
+  servicemanager/DI-related factories in 2.7.9. Two factories,
+  `Zend\Mvc\Service\DiAbstractServiceFactoryFactory` and
+  `Zend\Mvc\Service\DiServiceInitializerFactory`, now raise exceptions if they
+  detect they are running under zend-servicemanager v3, and prompt the developer
+  to install zend-servicemanager-di.
+
+## 2.7.9 - 2016-06-11
+
+### Added
+
+- [#149](https://github.com/zendframework/zend-mvc/pull/149) and
+  [#158](https://github.com/zendframework/zend-mvc/pull/158) add a dependency
+  on zendframework/zend-servicemanager-di in order to provide both backwards and
+  forwards compatibility for the DI/ServiceManager integration.
+
+### Deprecated
+
+- [#158](https://github.com/zendframework/zend-mvc/pull/158) deprecates each of
+  the following classes, which now have equivalents in the
+  zend-servicemanager-di package (which is required by zend-mvc v2, but optional
+  starting with zend-mvc v3):
+  - `Zend\Mvc\Service\DiAbstractServiceFactoryFactory`
+  - `Zend\Mvc\Service\DiFactory`
+  - `Zend\Mvc\Service\DiServiceInitializerFactory`
+  - `Zend\Mvc\Service\DiStrictAbstractServiceFactory`
+  - `Zend\Mvc\Service\DiStrictAbstractServiceFactoryFactory`
+- [#152](https://github.com/zendframework/zend-mvc/pull/152) formally marks the
+  `ControllerLoaderFactory` as deprecated via annotation (though it has been
+  noted as such in the documentation for several years). Use
+  `Zend\Mvc\Service\ControllerManagerFactory` instead.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#149](https://github.com/zendframework/zend-mvc/pull/149) and
+  [#158](https://github.com/zendframework/zend-mvc/pull/158) fix an "undefined
+  variable" issue with `Zend\Mvc\Service\DiAbstractServiceFactoryFactory`.
+- [#153](https://github.com/zendframework/zend-mvc/pull/153) removes the
+  typehint from the `$exception` argument of `DispatchListener::marshalBadControllerEvent()`,
+  fixing an issue when PHP 7 Error types are caught and passed to the method.
+
 ## 2.7.8 - 2016-05-31
 
 ### Added

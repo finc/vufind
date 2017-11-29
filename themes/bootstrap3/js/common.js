@@ -241,8 +241,15 @@ function setupOffcanvas() {
 }
 
 function setupAutocomplete() {
+  // If .autocomplete class is missing, autocomplete is disabled and we should bail out.
+  var searchbox = $('#searchForm_lookfor.autocomplete');
+  if (searchbox.length < 1) {
+    return;
+  }
+  var cacheObj = {};
   // Search autocomplete
-  $('#searchForm_lookfor').autocomplete({
+  searchbox.autocomplete({
+    cacheObj: cacheObj,
     maxResults: 10,
     loadingString: VuFind.translate('loading') + '...',
     handler: function vufindACHandler(input, cb) {
@@ -278,7 +285,11 @@ function setupAutocomplete() {
   });
   // Update autocomplete on type change
   $('#searchForm_type').change(function searchTypeChange() {
-    $('#searchForm_lookfor').autocomplete('clear cache');
+    for (var i in cacheObj) {
+      for (var j in cacheObj[i]) {
+        delete cacheObj[i][j];
+      }
+    }
   });
 }
 
@@ -365,6 +376,11 @@ function setupIeSupport() {
   }
 }
 
+function setupJumpMenus(_container) {
+  var container = _container || $('body');
+  container.find('select.jumpMenu').change(function jumpMenu(){ $(this).parent('form').submit(); });
+}
+
 $(document).ready(function commonDocReady() {
   // Start up all of our submodules
   VuFind.init();
@@ -376,7 +392,7 @@ $(document).ready(function commonDocReady() {
   keyboardShortcuts();
 
   // support "jump menu" dropdown boxes
-  $('select.jumpMenu').change(function jumpMenu(){ $(this).parent('form').submit(); });
+  setupJumpMenus();
 
   // Checkbox select all
   $('.checkbox-select-all').change(function selectAllCheckboxes() {
@@ -429,11 +445,11 @@ $(document).ready(function commonDocReady() {
   // retain filter sessionStorage
   $('.searchFormKeepFilters').click(function retainFiltersInSessionStorage() {
     sessionStorage.setItem('vufind_retain_filters', this.checked ? 'true' : 'false');
+    $('.applied-filter').prop('checked', this.checked);
   });
   if (sessionStorage.getItem('vufind_retain_filters')) {
     var state = (sessionStorage.getItem('vufind_retain_filters') === 'true');
-    $('.searchFormKeepFilters').prop('checked', state);
-    $('#applied-filter').prop('checked', state);
+    $('.searchFormKeepFilters,.applied-filter').prop('checked', state);
   }
 
   setupIeSupport();

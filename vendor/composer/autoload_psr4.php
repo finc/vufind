@@ -47,6 +47,7 @@ return array(
     'ZendService\\ReCaptcha\\' => array($vendorDir . '/zendframework/zendservice-recaptcha/src'),
     'ZendService\\Amazon\\' => array($vendorDir . '/zendframework/zendservice-amazon/src'),
     'Yajra\\' => array($vendorDir . '/yajra/laravel-pdo-via-oci8/src'),
+    'Whoops\\' => array($vendorDir . '/filp/whoops/src/Whoops'),
     'VuFindHarvest\\' => array($vendorDir . '/vufind-org/vufindharvest/src'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
