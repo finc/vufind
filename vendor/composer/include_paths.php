@@ -7,13 +7,13 @@ $baseDir = dirname($vendorDir);
 
 return array(
     $vendorDir . '/pear/pear_exception',
-    $vendorDir . '/pear/console_getopt',
-    $vendorDir . '/pear/pear-core-minimal/src',
-    $vendorDir . '/pear/archive_tar',
     $vendorDir . '/pear/file_marc',
+    $vendorDir . '/pear/net_url2',
     $vendorDir . '/pear/http_request2',
     $vendorDir . '/pear/validate',
     $vendorDir . '/pear/validate_ispn',
     $vendorDir . '/phing/phing/classes',
-    $vendorDir . '/pear/net_url2',
+    $vendorDir . '/pear/console_getopt',
+    $vendorDir . '/pear/pear-core-minimal/src',
+    $vendorDir . '/pear/archive_tar',
 );
