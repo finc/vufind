@@ -3920,66 +3920,6 @@
         ]
     },
     {
-        "name": "ghislainf/zf2-whoops",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/ghislainf/zf2-whoops.git",
-            "reference": "2649cf7caf400409942ddc3f8fe15b89381fc74e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/ghislainf/zf2-whoops/zipball/2649cf7caf400409942ddc3f8fe15b89381fc74e",
-            "reference": "2649cf7caf400409942ddc3f8fe15b89381fc74e",
-            "shasum": ""
-        },
-        "require": {
-            "filp/whoops": "2.*",
-            "php": ">=5.3.3",
-            "zendframework/zend-config": "*",
-            "zendframework/zend-console": "*",
-            "zendframework/zend-eventmanager": "*",
-            "zendframework/zend-mvc": "*"
-        },
-        "time": "2016-06-06T08:41:08+00:00",
-        "type": "module",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "zf2-whoops": "src/"
-            },
-            "classmap": [
-                "./Module.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Balázs Németh",
-                "email": "zsilbi@zsilbi.hu"
-            },
-            {
-                "name": "Ghislain de Fontenay",
-                "homepage": "http://www.ghislainf.me/",
-                "role": "Developer"
-            },
-            {
-                "name": "Filipe Dobreira",
-                "homepage": "https://github.com/filp"
-            },
-            {
-                "name": "Andreas Frömer",
-                "homepage": "https://github.com/icanhazstring"
-            }
-        ],
-        "description": "PHP whoops error on ZF2 framework",
-        "homepage": "https://github.com/ghislainf/zf2-whoops"
-    },
-    {
         "name": "instaclick/php-webdriver",
         "version": "1.4.5",
         "version_normalized": "1.4.5.0",
@@ -8456,5 +8396,65 @@
             "archive",
             "tar"
         ]
+    },
+    {
+        "name": "ghislainf/zf2-whoops",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ghislainf/zf2-whoops.git",
+            "reference": "2649cf7caf400409942ddc3f8fe15b89381fc74e"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ghislainf/zf2-whoops/zipball/2649cf7caf400409942ddc3f8fe15b89381fc74e",
+            "reference": "2649cf7caf400409942ddc3f8fe15b89381fc74e",
+            "shasum": ""
+        },
+        "require": {
+            "filp/whoops": "2.*",
+            "php": ">=5.3.3",
+            "zendframework/zend-config": "*",
+            "zendframework/zend-console": "*",
+            "zendframework/zend-eventmanager": "*",
+            "zendframework/zend-mvc": "*"
+        },
+        "time": "2016-06-06T08:41:08+00:00",
+        "type": "module",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "zf2-whoops": "src/"
+            },
+            "classmap": [
+                "./Module.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Balázs Németh",
+                "email": "zsilbi@zsilbi.hu"
+            },
+            {
+                "name": "Ghislain de Fontenay",
+                "homepage": "http://www.ghislainf.me/",
+                "role": "Developer"
+            },
+            {
+                "name": "Filipe Dobreira",
+                "homepage": "https://github.com/filp"
+            },
+            {
+                "name": "Andreas Frömer",
+                "homepage": "https://github.com/icanhazstring"
+            }
+        ],
+        "description": "PHP whoops error on ZF2 framework",
+        "homepage": "https://github.com/ghislainf/zf2-whoops"
     }
 ]
