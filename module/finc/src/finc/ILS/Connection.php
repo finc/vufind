@@ -90,4 +90,32 @@ class Connection extends \VuFind\ILS\Connection implements TranslatorAwareInterf
         }
         return $response;
     }
+
+    /*
+     * Overrides super method to look up a configurable item for health checks.
+     * TODO: Adjust super method and create pull request to community repo.
+     *
+     * */
+    public function getOfflineMode($healthCheck = false)
+    {
+        // If we have NoILS failover configured, force driver initialization so
+        // we can know we are checking the offline mode against the correct driver.
+        if ($this->hasNoILSFailover()) {
+            $this->getDriver();
+        }
+
+        // If we need to perform a health check, try to do a random item lookup
+        // before proceeding.
+        if ($healthCheck) {
+            $this->getStatus($this->config['healthCheckItemId']);
+        }
+
+        // If we're encountering failures, let's go into ils-offline mode if
+        // the ILS driver does not natively support getOfflineMode().
+        $default = $this->failing ? 'ils-offline' : false;
+
+        // Graceful degradation -- return false if no method supported.
+        return $this->checkCapability('getOfflineMode')
+            ? $this->getDriver()->getOfflineMode() : $default;
+    }
 }
