@@ -680,16 +680,21 @@ class FincILS extends PAIA implements LoggerAwareInterface
         //handle name
         $params['name'] = '';
         $name_array = array_fill(0,2,null);
+        $noname = TRUE;
         if (isset($inval['firstname'])) {
             $params['name'] .= $inval['firstname'];
             $name_array[1] = $inval['firstname'];
+            $noname = FALSE;
         }
         if (isset($inval['lastname'])) {
             $params['name'] .= ' '.$inval['lastname'];
             $name_array[0] = $inval['lastname'];
+            $noname = FALSE;
         }
-        $this->setVCardValue($vcard,'FN',$params['name']);
-        $this->setVCardValue($vcard,'N',$name_array);
+        if (!$noname) {
+            $this->setVCardValue($vcard, 'FN', $params['name']);
+            $this->setVCardValue($vcard, 'N', $name_array);
+        }
 
         //handle e-mail
         if (isset($inval['email'])) {
@@ -715,7 +720,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
             // add phone inputs to vcard
             if (0 < preg_match('/phone-(\w+)/', $key, $match)) {
                 $this->setVCardValue(
-                    $vcard, 'TEL', $match[0], ['type' => $match[1]]
+                    $vcard, 'TEL', $val, ['type' => $match[1]]
                 );
             }
 
@@ -784,6 +789,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
 
         // process vcard
         $vcard = $vcard->convert(VObject\Component\VCard::VCARD40);
+        $n = $vcard->select('N');
         if ($address = $vcard->serialize()) {
             $params['address'] = $address;
         }
@@ -831,7 +837,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
     {
         if (is_string($value)) $value = str_replace(',','',$value);
         elseif (is_array($value)) array_walk_recursive($value,function (&$value,$key) {$value = str_replace(',','',$value);});
-        if ($vcard->select($key) == array()) {
+        $children = $vcard->select($key);
+        if (empty($children)) {
 
             // if the key is unknown, we add a new property with the value
             if (in_array($key, array('TEL', 'ADR'))) {
@@ -841,9 +848,23 @@ class FincILS extends PAIA implements LoggerAwareInterface
             }
             $vcard->add($key, $value, $type);
         } else {
+            $update = FALSE;
+            if (isset($type)) {
+                foreach ($children as &$child) {
+                    foreach ($type as $type_key => $type_value) {
+                        if (in_array($type_value,$child->parameters[strtoupper($type_key)]->getParts())) {
+                            $update = TRUE;
+                            break 2;
+                        }
+                    }
+                }
+            }
             // if the property/child already exists
             // we change the value
-            $vcard->{$key}->setValue($value);
+            if ($update)
+                $vcard->{$key}->setValue($value);
+            else
+                $vcard->add($key,$value,$type);
         }
     }
 
