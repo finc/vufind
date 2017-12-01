@@ -41,14 +41,6 @@ use VuFind\View\Helper\Root\SafeMoneyFormat;
 class AjaxController extends \VuFind\Controller\AjaxController
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Fetch Links from resolver given an OpenURL and format as HTML
      * and output the HTML content in JSON object.
      *
