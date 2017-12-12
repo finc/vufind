@@ -11,6 +11,10 @@ TAGS
 /vendor
 composer.phar
 import/solrmarc.log
+import/*
 node_modules
 public/swagger-ui
 .vagrant
+data/
+config/vufind/config.ini
+*.mrc
