@@ -1214,4 +1214,15 @@ trait SolrDefaultFincTrait
         return isset($this->fields['genre_facet'])
             ? $this->fields['genre_facet'] : [];
     }
+
+    /**
+     * Get values of facet_avail field
+     *
+     * @return array
+     */
+    public function getFacetAvail()
+    {
+        return isset($this->fields['facet_avail'])
+            ? $this->fields['facet_avail'] : [];
+    }
 }
