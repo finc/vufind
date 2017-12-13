@@ -1247,8 +1247,10 @@ class DefaultRecord extends AbstractBase
      */
     public function getTitle()
     {
-        return isset($this->fields['title']) ?
-            $this->fields['title'] : '';
+        return isset($this->fields['title']) && is_array($this->fields['title']) ?
+            $this->fields['title'][0] : $this->fields['title'];
+        //return isset($this->fields['title']) ?
+        //    $this->fields['title'] : '';
     }
 
     /**
