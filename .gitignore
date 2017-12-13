@@ -19,3 +19,4 @@ data/
 config/vufind/config.ini
 *.mrc
 /solr/
+/local/cache/
