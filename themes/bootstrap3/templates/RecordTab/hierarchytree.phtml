@@ -1,6 +1,7 @@
 <?
   // Set page title.
-  $this->headTitle($this->translate('hierarchy_tree') . ': ' . $this->driver->getBreadcrumb());
+  // $this->headTitle($this->translate('hierarchy_tree') . ': ' . $this->driver->getBreadcrumb());
+  $this->headTitle($this->translate('hierarchy_tree'));
   $hierarchyTreeList = $this->tab->getTreeList();
   $activeTree = $this->tab->getActiveTree();
 
