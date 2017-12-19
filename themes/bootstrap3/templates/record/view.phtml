@@ -29,7 +29,7 @@
         </li>
       <? endif; ?>
       <li>
-        <a href="<?=$this->recordLink()->getUrl($this->scrollData['previousRecord'])?>" title="<?=$this->transEsc('Previous Search Result')?>" rel="nofollow">&laquo; <?=$this->transEsc('Prev')?></a>
+        <a class="previous" href="<?=$this->recordLink()->getUrl($this->scrollData['previousRecord'])?>" title="<?=$this->transEsc('Previous Search Result')?>" rel="nofollow">&laquo; <?=$this->transEsc('Prev')?></a>
       </li>
     <? else: ?>
       <? if ($this->scrollData['firstRecord']): ?>
@@ -43,7 +43,7 @@
     ]) ?>
     <? if ($this->scrollData['nextRecord']): ?>
       <li>
-        <a href="<?=$this->recordLink()->getUrl($this->scrollData['nextRecord'])?>" title="<?=$this->transEsc('Next Search Result')?>" rel="nofollow"><?=$this->transEsc('Next')?> &raquo;</a>
+        <a class="next" href="<?=$this->recordLink()->getUrl($this->scrollData['nextRecord'])?>" title="<?=$this->transEsc('Next Search Result')?>" rel="nofollow"><?=$this->transEsc('Next')?> &raquo;</a>
       </li>
       <? if ($this->scrollData['lastRecord']): ?>
         <li>
