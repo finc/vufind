@@ -21,3 +21,4 @@ config/vufind/config.ini
 /solr/
 /local/cache/
 /local/wlb/config/vufind/EDS.ini
+/env.bat
