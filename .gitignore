@@ -22,3 +22,4 @@ config/vufind/config.ini
 /local/cache/
 /local/wlb/config/vufind/EDS.ini
 nbproject
+/env.bat
