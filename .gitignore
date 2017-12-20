@@ -20,3 +20,4 @@ config/vufind/config.ini
 *.mrc
 /solr/
 /local/cache/
+/local/wlb/config/vufind/EDS.ini
