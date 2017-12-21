@@ -16,11 +16,9 @@ node_modules
 public/swagger-ui
 .vagrant
 data/
-config/vufind/config.ini
 *.mrc
 /solr/
-/local/cache/
-/local/wlb/config/vufind/EDS.ini
 nbproject
 /env.bat
-config/vufind/config.ini
+/config/*
+/local/*
