@@ -1,4 +1,4 @@
-<!-- finc - record - PDAFORM -->
+<!-- finc - record - pdaform -->
 <?
   // Set page title.
   $this->headTitle($this->translate('PDA::Acquisition'));
@@ -9,7 +9,7 @@
     . '<li class="active">' . $this->transEsc('PDA::Acquisition') . '</li>';
 ?>
 <h2><?=$this->transEsc('PDA::Acquisition') ?>: <span class="title-in-heading"><?=$this->escapeHtml($this->driver->getBreadcrumb())?></span></h2>
-<form method="post" name="acquisitionPDAForm" class="form-horizontal" action="<?=$this->recordLink()->getActionUrl($this->driver, 'PDA')?>">
+<form method="post" name="acquisitionPDAForm" action="<?=$this->recordLink()->getActionUrl($this->driver, 'PDA')?>">
   <?=$this->flashmessages()?>
   <p>
     <?=$this->translate('PDA::pda_order_text')?>
@@ -60,4 +60,4 @@
     </div>
   </div>
 </form>
-<!-- finc - record - PDAFORM - END -->
+<!-- finc - record - pdaform - END -->

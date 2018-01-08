@@ -61,6 +61,7 @@ $state-info-bg: $brand-info !default;
 
 $state-warning-text: $state-light-text-on-dark !default;
 $state-warning-bg: $brand-warning !default;
+$alert-warning-bkg: $brand-warning !default;
 // $state-warning-border: darken(adjust-hue($state-warning-bg, -10), 5%) !default;
 
 $state-danger-text: $state-light-text-on-dark !default; // NOTE: this renders the text white -- requires red background!
@@ -107,8 +108,8 @@ $btn-transparent-border: $border-color !default;
 $badge-bg: transparent !default;
 $badge-color: $jet !default;
 $badge-font-weight: normal !default;
-$badge-link-color: $brand-primary !default;
-$badge-link-hover-color: $brand-danger !default;
+$badge-link-color: $brand-danger !default;
+$badge-link-hover-color: saturate($brand-danger, 50%) !default;
 ////// Sidebar Badge/fa Colors
 $sidebar-badge-fa-color: darken($brand-secondary, 40%) !default;
 
@@ -163,14 +164,17 @@ $grid-gutter-width: 30px !default;
 //// When using 'affix' instead of 'navbar-fixed-top', set '$navbar-height', '$navbar-height-xs' and '$navbar-height-sm' to '=0'
 //// or set the paddings-top under 'body' in compiled.scss to '=0'; see also the comment in header.phtml
 $navbar-height: 80px !default;
-$navbar-height-sm: $navbar-height / 2 !default;
+$navbar-height-sm: $navbar-height !default;
 //// Set navbar-height for small devices, USE px as rem will throw an error in conjunction _variables.scss
-$navbar-height-xs: $navbar-height / 3 !default;
-$navbar-max-height-xs: 40px;
+$navbar-height-xs: $navbar-height + 40px !default;
+$navbar-max-height-xs: $navbar-height + 40px !default;
 
 //// Top-padding for #content -> .row first-of-type (and .sidebar) - change this value to change both;
 //// sidebar gets an additional padding on half the content-top-padding for better horizontal alignment
-$content-top-padding: $grid-gutter-width / 4 !default;
+$content-top-padding: $grid-gutter-width / 2 !default;
+
+//// Sidebar item padding
+$sidebar-item-padding: .75em 1em !default;
 
 //// MODAL dimensions
 $modal-lg: 900px !default;
@@ -205,6 +209,9 @@ $label-radius: 0 !default;
 
 
 // ALIGNMENTS
+//// Align tops of elements to transparent button-content in same row (e.g. header: searchbox content + navigation on right-hand side)
+$button-top-padding: 6px;
+
 //// Text alignment 'more'-toggles in sidebar;
 //// default is center. If center alignment is desired, comment out this next line
 //// and the '.narrow-toggle ...' in compiled.scss
@@ -221,7 +228,7 @@ $narrow-toggle-text-alignment: left !default;
 // ALIGNMENTS - END
 
 // FUNCTIONS
-//// em Calculator (just write the desired px into the function call, like so font-size: em(12) or em(12px)
+//// em Calculator (just write the desired px into the function call, like so: font-size: em(12) or em(12px)
 @function em($pixels, $context: $font-size-base) {
   @if (unitless($pixels)) {
     $pixels: $pixels * 1px;

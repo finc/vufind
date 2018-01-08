@@ -1,0 +1,11 @@
+<!-- finc: RecordDriver - solrDefault - data-localSignature -->
+<? if (!empty($data)): ?>
+    <? foreach ($data as $field): ?>
+        <? if (!empty($field)): ?>
+            <? foreach ($field as $subfield): ?>
+                <?=trim($this->escapeHtml($subfield))?>
+            <? endforeach; ?>
+        <? endif; ?>
+    <? endforeach; ?>
+<? endif; ?>
+<!-- finc: RecordDriver - solrDefault - data-localSignature - END -->

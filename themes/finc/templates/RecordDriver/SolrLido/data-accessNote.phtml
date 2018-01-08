@@ -1,0 +1,4 @@
+<? foreach ($data as $field): ?>
+    <? if (!empty($field['uri'])): ?><a href="<?= $this->escapeHtmlAttr($field['uri']) ?>"><?= $this->escapeHtml($field['term']) ?><? endif; ?><? if (!empty($field['uri'])): ?></a><? endif; ?>
+    <br/>
+<? endforeach; ?>

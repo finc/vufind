@@ -1,3 +1,4 @@
+<!-- finc: RecordDriver - SolrDefault - mylist -->
 <?
   // Set up some convenience variables:
   $id = $this->driver->getUniqueId();
@@ -9,6 +10,7 @@
     $list_id = null;
     $user_id = $this->user ? $this->user->id : null;
   }
+  // finc: next line finc-specific; required to display public favorites lists, #12052, see also below - CK
   $isEditable = $this->user && $this->user->id === $user_id;
   // Thumbnail
   $coverDetails = $this->record($this->driver)->getCoverDetails('list-entry', 'medium', $this->recordLink()->getUrl($this->driver));
@@ -26,16 +28,13 @@
 <div class="result<? if($this->driver->supportsAjaxStatus()): ?> ajaxItem<? endif ?>">
   <input type="hidden" value="<?=$this->escapeHtmlAttr($id) ?>" class="hiddenId"/>
   <input type="hidden" value="<?=$this->escapeHtmlAttr($source) ?>" class="hiddenSource"/>
-  <div class="checkbox hidden-print">
-    <label><?=$this->record($this->driver)->getCheckbox()?></label>
-  </div>
+  <?=$this->record($this->driver)->getCheckbox()?>
   <div class="media">
     <? if ($thumbnail && $thumbnailAlignment == 'left'): ?>
       <?=$thumbnail ?>
     <? endif; ?>
     <div class="media-body">
-      <div class="row short-view">
-        <div class="col-sm-8">
+      <div class="result-body">
           <div class="resultItemLine1">
             <? $missing = $this->driver instanceof \VuFind\RecordDriver\Missing; ?>
             <? if (!$missing): ?><a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="getFull" data-view="<?=$this->params->getOptions()->getListViewOption() ?>"><? endif; ?>
@@ -170,7 +169,8 @@
           </div>
         </div>
 
-        <div class="col-sm-4 right">
+        <div class="result-links hidden-print">
+        <? /* finc: next line finc-specific; required to display public favorites lists, #12052, see also above - CK */ ?>
         <? if ($isEditable): ?>
           <i class="fa fa-fw fa-edit" aria-hidden="true"></i> <a href="<?=$this->url('myresearch-edit')?>?id=<?=urlencode($id)?>&amp;source=<?=urlencode($source)?><? if (!is_null($list_id)):?>&amp;list_id=<?=urlencode($list_id)?><? endif; ?>" class="edit tool"><?=$this->transEsc('Edit')?></a><br/>
           <? /* Use a different delete URL if we're removing from a specific list or the overall favorites: */
@@ -182,7 +182,7 @@
             $dLabel = 'delete-label-' . preg_replace('[\W]','-',$id);
           ?>
           <div class="dropdown">
-            <i class="fa fa-fw fa-trash-o" aria-hidden="true"></i> <a class="dropdown-toggle" id="<?=$dLabel ?>" role="button" data-toggle="dropdown" data-target="#" href="<?=$deleteUrlGet ?>">
+            <i class="fa fa-fw fa-trash-o" aria-hidden="true"></i> <a class="dropdown-toggle" id="<?=$dLabel ?>" role="button" data-toggle="dropdown" href="<?=$deleteUrlGet ?>">
               <?=$this->transEsc('Delete') ?>
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="<?=$dLabel ?>">
@@ -195,9 +195,10 @@
         <? endif; ?>
         </div>
       </div>
-    </div>
+
     <? if ($thumbnail && $thumbnailAlignment == 'right'): ?>
       <?=$thumbnail ?>
     <? endif; ?>
   </div>
 </div>
+<!-- finc: RecordDriver - SolrDefault - mylist - END -->

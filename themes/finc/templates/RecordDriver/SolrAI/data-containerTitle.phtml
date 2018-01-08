@@ -1,0 +1,30 @@
+<!-- finc: RecordDriver - SolrAi - data-containerTitle -->
+<? if (!(empty($data))): ?>
+    <?
+    $containerSource = $this->driver->tryMethod('getSourceIdentifier');
+    $containerID = $this->driver->tryMethod('getContainerRecordID');
+
+    // finc specific journalLink generation
+    $issns = $this->driver->tryMethod('getISSNs');
+    $journalLink = '';
+
+    // try container id as link - VuFind native behaviour
+    if ($containerID) {
+        $journalLink = $this->recordLink()->getUrl("$containerSource|$containerID");
+    }
+    // try to link via issn - finc adapted behaviour
+    elseif (!empty($issns)) {
+        $journalLink = $this->record($this->driver)->getLink('isn', $issns);
+    }
+    // default take the journal title as link - VuFind native behaviur
+    else {
+        $journalLink = $this->record($this->driver)->getLink('journaltitle', $data);
+    }
+    ?>
+    <a href="<?=$journalLink?>"><?=$this->escapeHtml($data)?></a>
+    <? $ref = $this->driver->tryMethod('getContainerReference'); ?>
+    <? if (!empty($ref)): ?>
+        <?= $this->escapeHtml($ref) ?>
+    <? endif; ?>
+<? endif; ?>
+<!-- finc: RecordDriver - SolrAi - data-containerTitle - END -->

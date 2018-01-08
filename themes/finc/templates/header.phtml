@@ -1,135 +1,133 @@
-<!-- finc HEADER -->
+<!-- finc: header -->
 <? $account = $this->auth()->getManager(); ?>
-
-<? /* This nav element is the sticky element in the header - CK;
- you can use 'Affix' as an alternative to  'navbar-fixed-top' like so:
+<? /* This navbar is the sticky element in the header - CK; you can use 'affix' as an alternative to  'navbar-fixed-top' like so:
  <div data-spy="affix" data-offset-top="1" class="navbar">
- Do not use 'navbar-fixed-top' and 'affix* at the same time.
- When using 'affix', set the variables for '$navbar-height', '$navbar-height-xs' and '$navbar-height-sm' in _customVariables.scss to '=0'
+ Do not use 'navbar-fixed-top' and 'affix' at the same time. When using 'affix', set the variables for
+ '$navbar-height', '$navbar-height-xs' and '$navbar-height-sm' in _customVariables.scss to '=0'
  or set the paddings-top under 'body' in compiled.scss to '=0'
  */ ?>
-<nav class="navbar navbar-fixed-top">
-  <div class="container-fluid">
+<div class="banner container navbar navbar-fixed-top">
+  <? /* This element only holds the mobile toggler and the navbar-brand/library name - CK */ ?>
+  <div class="navbar-header">
+    <? /* mobile navigation toggler - CK */ ?>
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <i class="fa fa-bars" aria-hidden="true"></i>
+    </button>
 
-    <? /* This element ONLY holds toggler and navbar-brand - CK */ ?>
-    <div class="navbar-header">
-      <? /* mobile navigation toggler - CK */ ?>
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <i class="fa fa-bars" aria-hidden="true"></i>
-      </button>
-
-      <h1>
-        <a class="navbar-brand lang-<?=$this->layout()->userLang?>" href="<?=$this->url('home')?>">
-          <? /* Custom finc header - CK */ ?>
+    <h1>
+      <a class="navbar-brand lang-<?=$this->layout()->userLang?>" href="<?=$this->url('home')?>">
+        <? /* Custom finc header - CK*/ ?>
           <span class="hidden-sm hidden-md hidden-lg"><?=$this->transEsc("LibraryName")?></span>
           <img src="<?=$this->imageLink('headerlogo.png')?>" class="hidden-xs" alt="Logo <?=$this->transEsc("LibraryName")?>" title="<?=$this->transEsc("LibraryName")?>">
-          <? /* Custom finc header - END */ ?>
-        </a>
-      </h1>
-    </div>
+        <? /*  Custom finc header - END */ ?>
+      </a>
+    </h1>
+  </div>
 
-    <? if ($this->layout()->searchbox !== false): ?>
-      <? /* remove visible-lg to show on small etc, CK */ ?>
-      <section id="searchslots" class="left">
-        <ul class="navbar-left list-unstyled margin-l-xs">
-          <li>
-            <?=$this->layout()->searchbox?>
-          </li>
+  <div class="flex-container">
+  <? if (!isset($this->layout()->renderingError)): ?>
+    <div class="collapse navbar-collapse right" id="header-collapse">
+      <? /* finc: right-hand navbar section - see flex-container in SCSS:
+              we need this order on XS: navbar-right searchbox
+              but reverse it on anything but mobile */ ?>
+      <nav>
+        <ul class="nav navbar-nav navbar-right flip">
+          <? if ($this->feedback()->tabEnabled()): ?>
+            <li>
+              <a id="feedbackLink" data-lightbox class="btn" href="<?=$this->url('feedback-home')?>"> <i class="fa fa-envelope" aria-hidden="true"></i>
+                <span class="hidden-sm"><?=$this->transEsc("Feedback")?></span>
+              </a>
+            </li>
+          <? endif; ?>
+          <? $cart = $this->cart();
+          if ($cart->isActive()): ?>
+            <li id="cartSummary">
+              <a id="cartItems" class="btn" data-lightbox title="<?=$this->transEsc('View Book Bag')?>" href="<?=$this->url('cart-home')?>">
+                <i class="fa fa-clipboard" aria-hidden="true"></i> <strong><?=count($cart->getItems())?></strong> <span class="cart-label"><?=$this->transEsc('items')?></span>
+                <span class="hidden-sm full<?=!$cart->isFull() ? ' hidden' : ''?>">(<?=$this->transEsc('bookbag_full')?>)</span>
+              </a>
+            </li>
+          <? endif; ?>
+          <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
+            <li class="logoutOptions<? if (!$account->isLoggedIn()): ?> hidden<? endif ?>">
+              <a class="btn" href="<?=$this->url('myresearch-home', array(), array('query' => array('redirect' => 0)))?>">
+                <i class="fa fa-home" aria-hidden="true"></i>
+                <span class="hidden-sm"><?=$this->transEsc("Your Account")?></span>
+              </a>
+            </li>
+
+            <li class="logoutOptions<? if (!$account->isLoggedIn()): ?> hidden<? endif ?>">
+              <a href="<?=$this->url('myresearch-logout')?>" class="logout btn" title="<?=$this->transEsc("Log Out")?>">
+                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                <span class="hidden-sm"><?=$this->transEsc("Log Out")?></span>
+              </a>
+            </li>
+
+            <li id="loginOptions"<? if ($account->isLoggedIn()): ?> class="hidden"<? endif ?>>
+              <? if ($account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')))): ?>
+                <a class="btn" href="<?=$this->url('myresearch-userlogin')?>">
+                  <i class="fa fa-sign-in" aria-hidden="true"></i>
+                  <span class="hidden-sm"><?=$this->transEsc("Institutional Login")?></span>
+                </a>
+              <? else: ?>
+                <a class="btn" href="<?=$this->url('myresearch-userlogin')?>" data-lightbox>
+                  <i class="fa fa-sign-in" aria-hidden="true"></i>
+                  <span class="hidden-sm"><?=$this->transEsc("Login")?></span>
+                </a>
+              <? endif; ?>
+            </li>
+          <? endif; ?>
+
+          <? if (isset($this->layout()->themeOptions) && count($this->layout()->themeOptions) > 1): ?>
+            <li class="theme dropdown">
+              <form method="post" name="themeForm" id="themeForm">
+                <input type="hidden" name="ui"/>
+              </form>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=$this->transEsc("Theme")?> <strong class="caret"></strong></a>
+
+              <ul class="dropdown-menu">
+                <? foreach ($this->layout()->themeOptions as $current): ?>
+                  <li<?=$current['selected'] ? ' class="active"' : ''?>>
+                    <a href="#" onClick="document.themeForm.ui.value='<?=$this->escapeHtmlAttr($current['name'])?>';document.themeForm.submit()"><?=$this->transEsc($current['desc'])?></a>
+                  </li>
+                <? endforeach; ?>
+              </ul>
+            </li>
+          <? endif; ?>
+
+          <? if (isset($this->layout()->allLangs) && count($this->layout()->allLangs) > 1): ?>
+            <li class="language dropdown">
+              <form method="post" name="langForm" id="langForm">
+                <input type="hidden" name="mylang"/>
+              </form>
+              <a href="#" class="btn dropdown-toggle hidden-xs hidden-sm" data-toggle="dropdown" aria-controls="langmenu" aria-expanded="false">
+                <?=$this->transEsc("Language")?> <strong class="caret"></strong>
+              </a>
+              <ul id="langmenu" class="dropdown-menu">
+                <? foreach ($this->layout()->allLangs as $langCode => $langName): ?>
+                  <li<?=$this->layout()->userLang == $langCode ? ' class="active"' : ''?>>
+                    <a class="btn" href="#" onClick="document.langForm.mylang.value='<?=$langCode?>';document.langForm.submit()"><?=$this->displayLanguageOption($langName)?></a>
+                  </li>
+                <? endforeach; ?>
+              </ul>
+            </li>
+          <? endif; ?>
         </ul>
-      </section>
-    <? endif; ?>
-    <? if (!isset($this->layout()->renderingError)): ?>
-      <div class="collapse navbar-collapse right" id="header-collapse">
-        <? /* Right-hand  Nav Section */ ?>
-        <nav>
-          <ul class="nav navbar-nav navbar-right flip">
-
-            <? if ($this->feedback()->tabEnabled()): ?>
-              <li>
-                <a id="feedbackLink" class="btn" data-lightbox href="<?=$this->url('feedback-home')?>">
-                  <i class="fa fa-envelope" aria-hidden="true"></i>
-                  <span class="hidden-sm"><?=$this->transEsc("Feedback")?></span>
-                </a>
-              </li>
-            <? endif; ?>
-            <? $cart = $this->cart();
-            if ($cart->isActive()): ?>
-              <li id="cartSummary">
-                <a id="cartItems" class="btn" data-lightbox title="<?=$this->transEsc('View Book Bag')?>" href="<?=$this->url('cart-home')?>">
-                  <i class="fa fa-clipboard" aria-hidden="true"></i> <strong><?=count($cart->getItems())?></strong>
-                  <span class="hidden-sm"><?=$this->transEsc('items')?><?=$cart->isFull() ? ' (' . $this->transEsc('bookbag_full') . ')' : ''?></span>
-                </a>
-              </li>
-            <? endif; ?>
-            <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
-              <li class="logoutOptions<? if (!$account->isLoggedIn()): ?> hidden<? endif ?>">
-                <a class="btn" href="<?=$this->url('myresearch-home', array(), array('query' => array('redirect' => 0)))?>">
-                  <i class="fa fa-home" aria-hidden="true"></i>
-                  <span class="hidden-sm"><?=$this->transEsc("Your Account")?></span>
-                </a>
-              </li>
-
-              <li class="logoutOptions<? if (!$account->isLoggedIn()): ?> hidden<? endif ?>">
-                <a class="logout btn" href="<?=$this->url('myresearch-logout')?>" title="<?=$this->transEsc("Log Out")?>">
-                  <i class="fa fa-sign-out" aria-hidden="true"></i>
-                  <span class="hidden-sm"><?=$this->transEsc("Log Out")?></span>
-                </a>
-              </li>
-
-              <li id="loginOptions"<? if ($account->isLoggedIn()): ?> class="hidden"<? endif ?>>
-                <? if ($account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')))): ?>
-                  <a class="btn" href="<?=$this->url('myresearch-userlogin')?>">
-                    <i class="fa fa-sign-in" aria-hidden="true"></i>
-                    <span class="hidden-sm"><?=$this->transEsc("Institutional Login")?></span>
-                  </a>
-                <? else: ?>
-                  <a class="btn" href="<?=$this->url('myresearch-userlogin')?>" data-lightbox>
-                    <i class="fa fa-sign-in" aria-hidden="true"></i>
-                    <span class="hidden-sm"><?=$this->transEsc("Login")?></span>
-                  </a>
-                <? endif; ?>
-              </li>
-            <? endif; ?>
-
-            <? if (isset($this->layout()->themeOptions) && count($this->layout()->themeOptions) > 1): ?>
-              <li class="theme dropdown">
-                <form method="post" name="themeForm" id="themeForm">
-                  <input type="hidden" name="ui"/>
-                </form>
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=$this->transEsc("Theme")?> <strong class="caret"></strong></a>
-
-                <ul class="dropdown-menu">
-                  <? foreach ($this->layout()->themeOptions as $current): ?>
-                    <li<?=$current['selected'] ? ' class="active"' : ''?>>
-                      <a href="#" onClick="document.themeForm.ui.value='<?=$this->escapeHtmlAttr($current['name'])?>';document.themeForm.submit()"><?=$this->transEsc($current['desc'])?></a>
-                    </li>
-                  <? endforeach; ?>
-                </ul>
-              </li>
-            <? endif; ?>
-
-            <? if (isset($this->layout()->allLangs) && count($this->layout()->allLangs) > 1): ?>
-              <li class="language dropdown">
-                <form method="post" name="langForm" id="langForm">
-                  <input type="hidden" name="mylang"/>
-                </form>
-                <a class="btn dropdown-toggle hidden-xs hidden-sm" data-toggle="dropdown" href="#" aria-controls="langmenu" aria-expanded="false"><?=$this->transEsc("Language")?> <strong
-                    class="caret"></strong></a>
-
-                <ul id="langmenu" class="dropdown-menu">
-                  <? foreach ($this->layout()->allLangs as $langCode => $langName): ?>
-                    <li<?=$this->layout()->userLang == $langCode ? ' class="active"' : ''?>>
-                      <a class="btn" href="#" onClick="document.langForm.mylang.value='<?=$langCode?>';document.langForm.submit()"><?=$this->displayLanguageOption($langName)?></a>
-                    </li>
-                  <? endforeach; ?>
-                </ul>
-              </li>
-            <? endif; ?>
-          </ul>
+      </nav>
+    </div>
+  <? endif; ?>
+    <? /* finc searchbox: we use searchbox here so it becomes part of the sticky header,
+        we need to place this after the navbar-right for anything but mobile  - see flex-container in SCSS:*/ ?>
+    <? if ($this->layout()->searchbox !== false): ?>
+      <div class="search container left">
+        <nav class="nav searchbox hidden-print">
+          <?=$this->layout()->searchbox?>
         </nav>
       </div>
     <? endif; ?>
+    <? /* finc searchbox - END */ ?>
   </div>
-</nav>
-<!-- finc HEADER - END -->
+</div>
+<? /* If you want to use searchbox in a separate row, insert it here as in bootstrap theme - CK */ ?>
+<!-- finc: header - END -->

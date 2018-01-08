@@ -1,0 +1,20 @@
+<!-- finc: RecordDriver - solrDefault - data-additionals -->
+<? if (!empty($data) && is_array($data)): ?>
+    <? foreach($data as $additional) :?>
+        <? if (isset($additional['identifier'])): ?>
+            <tr>
+                <th>
+                    <?=$this->escapeHtml($additional['identifier'])?>:
+                </th>
+                <td>
+                    <? if(isset($additional['id'])): ?>
+                    <a href="<?=$this->recordLink()->getUrl($additional['id'])?>"><?=$this->escapeHtml($additional['text'])?></a>
+                    <? else: ?>
+                    <?=$this->escapeHtml($additional['text'])?>
+                    <? endif; ?>
+                </td>
+            </tr>
+        <? endif; ?>
+    <? endforeach; ?>
+<? endif; ?>
+<!-- finc: RecordDriver - solrDefault - data-additionals - END -->

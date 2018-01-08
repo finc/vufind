@@ -1,0 +1,14 @@
+<!-- finc: RecordDriver - solrDefault - data-titleUniform -->
+<? if (!empty($data)): ?>
+    <tr>
+        <th>
+            <?=$this->driver->isRDA()
+                ? $this->transEsc('rda_original_title')
+                : $this->transEsc('non_rda_original_title')?>:
+        </th>
+        <td property="title">
+            <a href="<?=$this->record($this->driver)->getLink('title', $data)?>"><?=$this->escapeHtml($data)?></a>
+        </td>
+    </tr>
+<? endif; ?>
+<!-- finc: RecordDriver - solrDefault - data-titleUniform - END -->

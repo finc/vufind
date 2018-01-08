@@ -1,0 +1,16 @@
+<!-- finc: RecordDriver - solrDefault - data-titleDetails -->
+<span property="title">
+<? if (!empty($data)): ?>
+    <? $i = 0; foreach ($data as $title): ?>
+        <?=($i > 0 ? '<br />':'')?><?=$this->escapeHtml($title)?><? $i++ ;?>
+    <? endforeach; ?>
+<? else: ?>
+    <?=$this->escapeHtml(
+        $this->driver->getShortTitle() . '  '
+        . $this->driver->getSubtitle() . '  '
+        . $this->driver->getTitleSection())
+        . ($this->driver->getTitleStatement() ? ' / ' . $this->driver->getTitleStatement() : '')?><br /><?=($this->driver->tryMethod('getTitleOrig') && $this->driver->getTitleOrig() != '' ? $this->escapeHtml($this->driver->getTitleOrig()) : '')
+    ?>
+<? endif; ?>
+</span>
+<!-- finc: RecordDriver - solrDefault - data-titleDetails - END -->

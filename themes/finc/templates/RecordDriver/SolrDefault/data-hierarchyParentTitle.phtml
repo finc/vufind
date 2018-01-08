@@ -1,0 +1,13 @@
+<!-- finc: RecordDriver - solrDefault - data-hierarchyParentTitle -->
+<? if (!empty($data)): ?>
+    <? $hierarchyParentId = $this->driver->tryMethod('getHierarchyParentID'); ?>
+    <? foreach ($data as $key => $title): ?>
+        <? if(isset($hierarchyParentId[$key])): ?>
+            <a href="<?=$this->recordLink()->getUrl($hierarchyParentId[$key]); ?>"><?=$this->escapeHtml($title)?></a>
+        <? else: ?>
+            <?=$this->escapeHtml($title)?>
+        <? endif; ?>
+        <br/>
+        <? endforeach; ?>
+<? endif; ?>
+<!-- finc: RecordDriver - solrDefault - data-hierarchyParentTitle - END -->

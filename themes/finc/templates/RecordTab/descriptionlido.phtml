@@ -3,31 +3,18 @@
 // Set page title.
 $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
 
-// Grab clean ISBN for convenience:
-$isbn = $this->driver->getCleanISBN();
+$formatter = $this->recordDataFormatter();
+$mainFields = $formatter->getData($driver, $formatter->getDefaults('description-lido'));
 ?>
-<table class="table table-striped">
+<table class="table table-striped" summary="<?=$this->transEsc('Description')?>">
   <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
   <caption class="sr-only"><?= $this->transEsc('Description') ?></caption>
-  <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
-  <tr>
-    <th><?= $this->transEsc('Time of origin') ?>:</th>
-    <td>
-        <?= $this->record($this->driver)->mapDateListToRangeView($dateSpan); ?>
-    </td>
-  </tr>
-  <? endif; ?>
-
-  <? $notes = $this->driver->getAccessNote(); if (!empty($notes)): ?>
-  <tr>
-    <th><?= $this->transEsc('Access') ?>:</th>
-    <td>
-      <? foreach ($notes as $field): ?>
-        <? if (!empty($field['uri'])): ?><a href="<?= $this->escapeHtmlAttr($field['uri']) ?>"><?= $this->escapeHtml($field['term']) ?><? endif; ?><? if (!empty($field['uri'])): ?></a><? endif; ?>
-        <br/>
-      <? endforeach; ?>
-    </td>
-  </tr>
+  <? if (!empty($mainFields)): ?>
+    <? foreach ($mainFields as $key => $current): ?>
+      <tr><th><?=$this->transEsc($key)?>:</th><td><?=$current['value']?></td></tr>
+    <? endforeach; ?>
+  <? else: ?>
+    <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
 </table>
 <!-- finc: recordtab - descriptionlido - END -->
