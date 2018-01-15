@@ -185,7 +185,6 @@ class ThemeInfo
                 $currentTheme = $this->allThemeInfo[$currentTheme]['extends'];
             } while ($currentTheme);
         }
-        var_dump($this->allThemeInfo);
 
         return $this->allThemeInfo;
     }
