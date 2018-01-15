@@ -1,0 +1,64 @@
+/*Link Styling*/
+footer {
+    a.external:not(.hasicon) {
+        .externalLink;
+    }
+    a:not(.external):not(.hasicon) {
+        .internalLink;       
+    }
+}
+.main {
+    a.external:not(.hasicon) {
+        .externalLink;
+
+    }
+    a.author {
+        .searchLink;
+    }
+    a.internal:not(.hasicon) {       
+        .internalLink;               
+    }
+}
+.searchicon {
+    .searchLink;
+    
+}
+.main .result, .main .record, .modal-content, .navbar-form, .searchtools, .adv_search_links, .breadcrumbs {
+    a > i.fa {
+        padding-right: 0.3rem;
+    }    
+}
+
+a > i:hover, button> i:hover{
+    cursor: pointer;
+}
+
+.tooltip-inner {
+    ol, ul {
+        margin-left: 0;
+        padding-left: 15px;;
+        text-align: left;
+        
+    }
+}
+
+/*ILL Form*/
+.panel-heading {
+    .fa {
+        color: darken(@panel-primary-heading-bg, 25%);
+        cursor: inherit;        
+    }
+}
+.panel-heading.collapsed {
+    .fa {
+        color: white;;
+        cursor: inherit;        
+    }
+}
+
+
+    
+    
+    
+
+    

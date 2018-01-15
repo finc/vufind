@@ -1,0 +1,141 @@
+/**
+Very basic styles
+**/
+
+.nofloat {
+    float: none;
+    clear: both;    
+    margin: 0;
+    padding: 0;
+}
+/**
+Hintergrundfarbverlauf beim Body 
+**/
+html {
+    min-height: 100%;
+    body:not(.frame) {
+        // This makes body to show below header bar
+        padding-top: @navbar-height;
+        min-height: 100%;
+        .main > .container, footer > .container, header > .container.searchbox  {
+            background-color: white;
+        }
+        .main > .container-fluid, footer > .container-fluid, header > .container-fluid.searchbox  {
+            background-color: white;
+        }
+    }
+}
+
+/*Minimaler abstand zw den Zeilen, damit Bilder nicht am Text kleben*/
+.row.result {    
+    padding: 0.6em 0;
+    &:nth-child(odd) {
+        background-color: @gray-lighter;
+    }  
+}
+.row .record {
+    table.table {
+        th {
+            width: 25%
+            }
+        td {
+            width: 75%            
+            }            
+        // table inside a table - ebsco
+        table {
+            td, th {
+                width: auto;
+            }
+        }
+    }
+    
+}
+/*Platzhalter für die Coverbilder*/
+.cover-placeholder {
+    .title, .author {
+        font-size: @font-size-small;
+    }
+    border: 0.3em solid @brand-primary;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    text-shadow: 1px 0 @gray;
+    text-align: center;
+}
+
+
+.pagination {
+    &:extend(.pagination-lg);
+    .active > a,
+    .active > span{
+        font-weight: bold;        
+    }
+}
+
+/*Styling OpenURL Icon*/
+.open-url-icon {
+    opacity: 0.8; //make icons less blazing
+}
+
+.searchHomeContent {
+    padding-top: 15px;
+    #searchForm {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    @media (min-width: @screen-sm-max) {
+        .title {
+            margin-top: 0;
+        }
+    }
+    .logo {
+        padding-bottom: 15px;
+        float: right;
+    }
+}
+//Backgrounds
+.bg-gray {
+    background-color: darken(@gray-lighter, 5%);
+    /*margin-right: 0;*/
+}
+.result-list {
+    background-color: white;
+}
+
+.fis-bildung-logo {
+    max-height: 3rem;
+    clear: both;
+}
+/**
+RecordTabs get another styling than searchTabs because their background is white
+**/
+.recordTabs {
+    li.active {
+        a {
+            border-top: 1px solid @brand-primary !important;
+            border-right: 1px solid @brand-primary !important;
+            border-left: 1px solid @brand-primary !important;
+        }
+    }
+}
+
+/**
+Ellipsis for too long texts
+**/
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    max-width: 100%;
+    white-space: nowrap;
+}
+
+/**
+H4 headings shoulc look like text. 
+**/
+h4, .h4 {
+    color: @text-color;
+}
+.result .status .label i {
+    font-size: 2em;
+}
