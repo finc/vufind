@@ -1,0 +1,64 @@
+/*Umbauten am Footer für Smartphones*/
+@media (max-width: @screen-sm-min) {
+    footer {
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+            
+            li {
+                float: left;
+                margin-right: 2em;
+            }            
+        }
+        div {
+            padding-bottom: 1em;            
+        }
+    }    
+    
+}
+
+/* footer - auf Grundlage von finc */
+footer {
+    hr {
+        border: 0;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+     .row div .well {
+        /*#gradient > .vertical(@start-color: @gray-lighter; @end-color: lighten(@gray-light, 10%));*/
+/**        border-radius: 0.5em; /* CSS3 */
+        /*border: 0.09em solid #ccc;*/
+        /*box-shadow: 0 0.09em 0.375em @gray-light;*/
+        @media (min-width: @screen-sm-min) {
+            min-height: 10.1em;            
+            
+        }
+        @media (max-width: @screen-xs-max) {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+        @media (min-width: @screen-sm-min) {
+            padding-top: 15px;
+            padding-bottom: 15px;
+        }
+        
+        margin-bottom: 0.2em;
+        padding-left: 15px;
+        padding-right: 15px;
+        background-color: @gray-lighter;
+    }
+
+    .well ul {
+        list-style: none outside none;
+        margin: 0;
+        padding: 0;
+        li a {
+            text-decoration: none;
+        }        
+    }
+    small {
+        float: right;
+        margin: 5px 15px;
+    }
+    
+}
