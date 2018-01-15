@@ -21,4 +21,4 @@ data/
 nbproject
 /env.bat
 /config
-/local/*
+/local
