@@ -20,5 +20,5 @@ data/
 /solr/
 nbproject
 /env.bat
-/config/*
+config/*
 /local/*
