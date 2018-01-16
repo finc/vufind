@@ -59,11 +59,11 @@ class Module
     public function getAutoloaderConfig()
     {
         return [
-            'Zend\Loader\ClassMapAutoloader' => [
-                'classes' => [
-                    'minSO' => __DIR__ . '/src/Bsz/Search/minSO.php'
-                ]
-            ],
+//            'Zend\Loader\ClassMapAutoloader' => [
+//                'classes' => [
+//                    'minSO' => __DIR__ . '/src/Bsz/Search/minSO.php'
+//                ]
+//            ],
             'Zend\Loader\StandardAutoloader' => [
                 'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,

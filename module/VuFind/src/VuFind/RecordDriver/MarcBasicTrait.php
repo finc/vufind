@@ -320,4 +320,6 @@ trait MarcBasicTrait
     {
         return $this->getFieldArray('300', ['a', 'b', 'c', 'e', 'f', 'g'], true);
     }
+    
+
 }

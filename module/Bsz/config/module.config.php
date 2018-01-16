@@ -22,22 +22,22 @@ $config = [
     ],
     'router' => [
         'routes' => [
-            'saveisil'=> [
-                'type'    => 'Segment',
-                'options' => [
-                    'route'    => "/Bsz/saveIsil/:isil",
-                    'constraints' => [
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'isil'       => 'DE-[a-zA-Z0-9\-\/,]+'
-                    ],
-                    'defaults' => [
-                        'controller' => 'Bsz',
-                        'action'     => 'saveIsil',
-                    ]
-                ]
-                
-            ]        
+//            'saveisil'=> [
+//                'type'    => 'Segment',
+//                'options' => [
+//                    'route'    => "/Bsz/saveIsil/:isil",
+//                    'constraints' => [
+//                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+//                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+//                        'isil'       => 'DE-[a-zA-Z0-9\-\/,]+'
+//                    ],
+//                    'defaults' => [
+//                        'controller' => 'Bsz',
+//                        'action'     => 'saveIsil',
+//                    ]
+//                ]
+//                
+//            ]        
         ],
     ], 
     'service_manager' => [
@@ -75,7 +75,7 @@ $config = [
             ],
             'search_options' => [
                 'factories' => [
-                    'interlending' => 'Bsz\Search\Options\Factory::getInterlending',
+//                    'interlending' => 'Bsz\Search\Options\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Options\Factory::getFis',
                     'solr' => 'Bsz\Search\Options\Factory::getSolr'
                 ],                
