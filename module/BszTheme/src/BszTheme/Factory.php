@@ -17,6 +17,9 @@ class Factory
      * @return \BszTheme\ThemeInfo
      */
     public static function getThemeInfo(ServiceManager $sm) {
-        return new ThemeInfo(realpath(APPLICATION_PATH . '/themes'), 'bodensee');
+        $host = $sm->get('Request')->getHeaders()->get('host')->getFieldValue();
+        $parts = explode('.', $host);
+        $tag = isset($parts[0]) ? $parts[0] : 'swb';     
+        return new ThemeInfo(realpath(APPLICATION_PATH . '/themes'), 'bodensee', $tag);
     }
 }
