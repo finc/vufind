@@ -51,7 +51,7 @@ $config = [
 //            'bsz\parser\openurl' => 'Bsz\Parser\Factory::getOpenUrlParser'
         ],
         'invokables' => [
-//            'bsz\mapper'     => 'Bsz\FormatMapper',
+            'bsz\mapper'     => 'Bsz\FormatMapper',
             'bsz\library'    => 'Bsz\Config\Library',
         ],
     ],

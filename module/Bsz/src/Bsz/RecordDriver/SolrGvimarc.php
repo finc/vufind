@@ -25,8 +25,11 @@ use Bsz\FormatMapper;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGvimarc extends \VuFind\RecordDriver\SolrMarc
+class SolrGvimarc extends SolrMarc
 {
+    use \VuFind\RecordDriver\IlsAwareTrait;
+    use \VuFind\RecordDriver\MarcReaderTrait;
+    use \VuFind\RecordDriver\MarcAdvancedTrait;    
 
     /**
      * Used for concatenating subfields
@@ -63,13 +66,12 @@ class SolrGvimarc extends \VuFind\RecordDriver\SolrMarc
      */
     protected $formats;
 
-    //public function __construct(\Bsz\Config\Client $Client,
-    public function __construct(
+    public function __construct(FormatMapper $Mapper, \Bsz\Config\Client $Client,
             $mainConfig = null, $recordConfig = null, $searchSettings = null)
     {
-//        parent::__construct($Mapper, $mainConfig, $recordConfig, $searchSettings);
-//        $this->mapper = $Mapper;
-        parent::__construct($mainConfig, $recordConfig, $searchSettings);
+//        parent::__construct($mainConfig, $recordConfig, $searchSettings);
+        parent::__construct($Mapper, $mainConfig, $recordConfig, $searchSettings);
+        $this->mapper = $Mapper;
         $this->client = $Client;
     }
 
@@ -1542,5 +1544,7 @@ class SolrGvimarc extends \VuFind\RecordDriver\SolrMarc
             return true;
         }
         return false;
-    }    
+    }
+
+    
 }
