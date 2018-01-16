@@ -27,8 +27,7 @@
  */
 namespace Bsz;
 
-use Zend\ModuleManager\ModuleManager,
-        Zend\Mvc\MvcEvent;
+use Zend\Mvc\MvcEvent;
 
 /**
  * ZF2 module definition for the VuFind application
@@ -39,7 +38,7 @@ use Zend\ModuleManager\ModuleManager,
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org
  */
-class Module
+class Module extends \VuFind\Module
 {
     /**
      * Get module configuration
@@ -58,44 +57,23 @@ class Module
      */
     public function getAutoloaderConfig()
     {
-        return [
-//            'Zend\Loader\ClassMapAutoloader' => [
-//                'classes' => [
-//                    'minSO' => __DIR__ . '/src/Bsz/Search/minSO.php'
-//                ]
-//            ],
-            'Zend\Loader\StandardAutoloader' => [
+        return [            'Zend\Loader\StandardAutoloader' => [
                 'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ],
             ],
         ];
     }
-
-    /**
-     * Initialize the module
-     *
-     * @param ModuleManager $m Module manager
-     *
-     * @return void
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function init(ModuleManager $m)
-    {
-    }
     
     /**
      * Bootstrap the module
      *
      * @param MvcEvent $e Event
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * 
+     *
      * @return void
      */
     public function onBootstrap(MvcEvent $e)
     {
-        //$bootstrapper = new Bootstrapper($e);
-        //$bootstrapper->bootstrap();
         $app = $e->getApplication();
         $sm = $app->getServiceManager();
         $config = $sm->get('Config');
