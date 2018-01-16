@@ -38,7 +38,7 @@ use Zend\Mvc\MvcEvent;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org
  */
-class Module
+class Module extends \VuFind\Module
 {
     /**
      * Get module configuration
@@ -64,18 +64,4 @@ class Module
             ],
         ];
     }
-
-    /**
-     * Bootstrap the module
-     *
-     * @param MvcEvent $e Event
-     *
-     * @return void
-     */
-    public function onBootstrap(MvcEvent $e)
-    {
-        $bootstrapper = new Bootstrapper($e);
-        $bootstrapper->bootstrap();
-    }
-
 }
