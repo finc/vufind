@@ -1,7 +1,5 @@
 <?php
 return [
     'extends' => 'bootstrap3',
-    'css' => [
-        'compiled.css',
-    ],
+    // client specific CSS files are added in ThemeInfo.php
 ];

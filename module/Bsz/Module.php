@@ -64,4 +64,17 @@ class Module extends \VuFind\Module
             ],
         ];
     }
+    
+    /**
+     * Bootstrap the module
+     *
+     * @param MvcEvent $e Event
+     *
+     * @return void
+     */
+    public function onBootstrap(MvcEvent $e)
+    {
+        $bootstrapper = new Bootstrapper($e);
+        $bootstrapper->bootstrap();
+    }
 }
