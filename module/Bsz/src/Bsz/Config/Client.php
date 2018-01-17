@@ -370,7 +370,7 @@ class Client extends \Zend\Config\Config
         if (strlen($version) > 0) {
             return $version;
         } else {
-            return 'BOSS 2';
+            return 'BOSS 3';
         }
     }
 
