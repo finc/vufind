@@ -1,0 +1,481 @@
+<?php
+
+/*
+ * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+namespace Bsz\RecordDriver;
+use Bsz\FormatMapper;
+
+/**
+ * Description of EDS
+ *
+ * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
+ */
+class EDS extends \VuFind\RecordDriver\EDS {
+    
+    /**
+     *
+     * @var FormatMapper 
+     */
+    protected $Mapper;
+    
+    public function __construct(FormatMapper $Mapper, $mainConfig = null, $recordConfig = null,
+        $searchSettings = null) {
+        
+        parent::__construct($mainConfig, $recordConfig, $searchSettings);
+        $this->Mapper = $Mapper;
+    }
+    
+    /**
+     * Get the publication type of the record.
+     *
+     * @return string
+     */
+    public function getPubType()
+    {
+        $type = isset($this->fields['Header']['PubType'])
+            ? $this->fields['Header']['PubType'] : '';
+        return $type;
+    }
+    
+    public function getFormats()
+    {
+        $formats = parent::getFormats();
+        return $formats;
+    }
+    
+    /**
+     * Get the items of the record.
+     *
+     * @return array
+     */
+    public function getItems()
+    {
+        $items = [];
+        if (isset($this->fields['Items']) && !empty($this->fields['Items'])) {
+//         \Bsz\Debug::Dump($this->fields);
+            foreach ($this->fields['Items'] as $item) {
+                $items[] = [
+                    'Label' => isset($item['Label']) ? $item['Label'] : '',
+                    'Group' => isset($item['Group']) ? $item['Group'] : '',
+                    'Data'  => isset($item['Data']) && isset($item['Group']) ? 
+                        $this->toHTML($item['Data'], $item['Group']) : ''
+                ];
+            }
+        }
+        return $items;
+    }
+    
+       /**
+     * Get the full text of the record.
+     *
+     * @return string
+     */
+    public function getHTMLFullText()
+    {
+        return (isset($this->fields['FullText']) &&
+                isset($this->fields['FullText']['Text']) &&
+                isset($this->fields['FullText']['Text']['Value'])) ?
+        $this->toHTML($this->fields['FullText']['Text']['Value']) : '';
+    }
+
+    /**
+     * Get the full text availability of the record.
+     *
+     * @return bool
+     */
+    public function hasHTMLFullTextAvailable()
+    {
+        return (isset($this->fields['FullText']) &&
+                isset($this->fields['FullText']['Text']) &&
+                isset($this->fields['FullText']['Text']['Availability']) &&
+                '1' == $this->fields['FullText']['Text']['Availability']) ?
+                true : false;
+    }
+    
+        /**
+     * Get the PDF availability of the record.
+     *
+     * @return bool
+     */
+    public function hasPdfAvailable()
+    {
+        if (isset($this->fields['FullText'])
+            && isset($this->fields['FullText']['Links'])
+        ) {
+            foreach ($this->fields['FullText']['Links'] as $link) {
+                if (isset($link['Type']) && 'pdflink' == $link['Type']) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+        /**
+     * Performs a regex and replaces any url's with links containing themselves
+     * as the text
+     *
+     * @param string $string String to process
+     *
+     * @return string        HTML string
+     */
+    public function linkUrls($string)
+    {
+        /** 
+         * "/\b(https?):\/\/([-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)\b/i",
+         *       'return "<a href=\'".($matches[0])."\'>".($matches[0])."</a>";'
+        **/
+        
+        $linkedString = preg_replace_callback(
+            "/\b(https?):\/\/(dx\.)?([-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)\b/i",
+            create_function(
+                '$matches',
+                'return "<a href=\'".($matches[2])."\'>".($matches[2])."</a>";'
+            ),
+            $string
+        );
+        return $linkedString;
+    }
+    
+        /**
+     * Get the OpenURL parameters to represent this record for COinS even if
+     * supportsOpenUrl() is false for this RecordDriver.
+     *
+     * @return string OpenURL parameters.
+     */
+    public function getCoinsOpenUrl()
+    {
+        $params = $this->getOpenUrl($this->supportsCoinsOpenUrl());
+        return http_build_query($params);
+    }
+    
+       /**
+     * 
+     * @param bool $overrideSupportsOpenUrl
+     * @return array|boolean
+     */
+    public function getOpenUrl($overrideSupportsOpenUrl = false)
+    {
+        // stop here if this record does not support OpenURLs
+        if (!$overrideSupportsOpenUrl && !$this->supportsOpenUrl()) {
+            return false;
+        }
+
+        // Set up parameters based on the format of the record:
+        $format = $this->getOpenUrlFormat();
+        $method = "get{$format}OpenUrlParams";
+        if (method_exists($this, $method)) {
+            $params = $this->$method();
+        } else {
+            $params = $this->getUnknownFormatOpenUrlParams($format);
+        }
+        // Assemble the URL:
+        return $params;
+    }
+    
+    /**
+     * parses Format to OpenURL genre
+     * @return string
+     */
+    protected function getOpenURLFormat()
+    {
+        $ptype = $this->getPubType();
+        if (strpos(strtolower($ptype), 'journal') !== FALSE) {
+            $formats = ['Journal'];
+        } else {
+            $formats = ['Article'];            
+        }
+        return ucfirst(array_shift($formats)); 
+    }
+    
+    
+        /**
+     * Get OpenURL parameters for an article.
+     *
+     * @return array
+     */
+    protected function getArticleOpenUrlParams()
+    {
+        $params = $this->getDefaultOpenUrlParams();
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+        $params['rft.genre'] = 'article';
+        $params['rft.issn'] = (string) $this->getCleanISSN();
+        // an article may have also an ISBN:
+        $params['rft.isbn'] = (string) $this->getCleanISBN();
+        $params['rft.volume'] = $this->getContainerVolume();
+        $params['rft.issue'] = $this->getContainerIssue();
+        $params['rft.spage'] = $this->getContainerStartPage();
+        // unset default title -- we only want jtitle/atitle here:
+        unset($params['rft.title']);
+        $params['rft.jtitle'] = $this->getContainerTitle();
+        $params['rft.atitle'] = $this->getTitle();
+        $params['rft.au'] = $this->getPrimaryAuthor();
+
+        $params['rft.format'] = 'Article';
+        $langs = $this->getLanguages();
+        if (count($langs) > 0) {
+            $params['rft.language'] = $langs[0];
+        }
+        // remove empty fields
+        return array_filter($params);
+    }
+    
+    /**
+     * Get OpenURL parameters for a journal.
+     *
+     * @return array
+     */
+    protected function getJournalOpenURLParams()
+    {
+        $params = [];
+        $params['rft.issn'] = (string) $this->getCleanISSN();
+        $params['rft.jtitle'] = $this->getTitle();
+        $params['rft.genre'] = 'journal';
+        return array_filter($params);
+    }
+    
+        /**
+     * Get the PDF url of the record. If missing, return false
+     *
+     * @return string
+     */
+    public function getPdfLink()
+    {
+        if (isset($this->fields['FullText']['Links'])) {
+            foreach ($this->fields['FullText']['Links'] as $link) {
+                if (isset($link['Type'])
+                    && in_array($link['Type'], $this->pdfTypes) 
+                    && isset($link['Url'])
+                ) {
+                    return $link['Url']; // return PDF link
+                }
+            }
+        }
+        return false;
+    }
+    
+        /**
+     * Indicate whether export is disabled for a particular format.
+     *
+     * @param string $format Export format
+     *
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function exportDisabled($format)
+    {
+        // export templates needs to need changed for EDS support
+        return strtolower($format) != 'ris';
+    }
+    /**
+     * 
+     * @param array $arrayKeys Key path to the needed value
+     * @param int $level only used for recursion
+     * @param array $fields only used for recursion
+     * @return array|string
+     */
+    public function getFieldRecursive($arrayKeys, $level = 0, $fields = null) 
+    {
+
+        if (!$fields) {
+            $fields = $this->fields;
+        }
+        if (isset($fields[$arrayKeys[$level]])) {
+            $newFields = $fields[$arrayKeys[$level]];
+            $level++;                
+            if ($level < count($arrayKeys)) {
+                return $this->getFieldRecursive($arrayKeys, $level, $newFields);     
+            } else {
+                // end of recursion
+                return $newFields;
+            }  
+        }
+        return '';  
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getContainerTitle()
+    {
+        $arrayKeys = [
+            'RecordInfo',
+            'BibRecord',
+            'BibRelationships',
+            'IsPartOfRelationships',
+            0,
+            'BibEntity',
+            'Titles',
+            0,
+            'TitleFull' 
+        ];
+        return $this->getFieldRecursive($arrayKeys);        
+
+    }
+    /**
+     * 
+     * @return string
+     */
+    public function getContainerIssue()
+    {
+        $arrayKeys = [
+            'RecordInfo',
+            'BibRecord',
+            'BibRelationships',
+            'IsPartOfRelationships',
+            0,
+            'BibEntity',
+            'Numbering',
+        ];
+        
+        $numbering = $this->getFieldRecursive($arrayKeys);   
+        if (is_array($numbering)) {
+            foreach ($numbering as $key => $data) {
+                if (isset($data['Type']) && strtolower($data['Type']) == 'issue') {
+                    return isset($data['Value']) ? $data['Value'] : '';
+                }
+            }            
+        }
+        return '';
+    }
+    /**
+     * 
+     * @return string
+     */
+    public function getContainerVolume()
+    {
+        $arrayKeys = [
+            'RecordInfo',
+            'BibRecord',
+            'BibRelationships',
+            'IsPartOfRelationships',
+            0,
+            'BibEntity',
+            'Numbering',
+        ];
+        
+        $numbering = $this->getFieldRecursive($arrayKeys);     
+        if (is_array($numbering)) {
+            foreach ($numbering as $key => $data) {
+                if (isset($data['Type']) && strtolower($data['Type']) == 'volume') {
+                    return isset($data['Value']) ? $data['Value'] : '';
+                }
+            }            
+        }
+        return '';
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getISSNs()
+    {
+        $issns = parent::getIssns();
+        $arrayKeys = [
+            'RecordInfo',
+            'BibRecord',
+            'BibRelationships',
+            'IsPartOfRelationships',
+            0,
+            'BibEntity',
+            'Identifiers',
+        ];
+        
+        $identifiers = $this->getFieldRecursive($arrayKeys);  
+        if (is_array($identifiers)) {
+            foreach ($identifiers as $key => $data) {
+                if (isset($data['Type']) && isset($data['Value']) &&
+                        strtolower($data['Type']) == 'issn-print') 
+                {
+                $issns[] = $data['Value'];
+                }
+            }            
+        }
+        return $issns;
+        
+    }   
+        
+    /**
+     * 
+     * @return string
+     */
+    public function getContainerYear()
+    {
+        $arrayKeys = [
+            'RecordInfo',
+            'BibRecord',
+            'BibRelationships',
+            'IsPartOfRelationships',
+            0,
+            'BibEntity',
+            'Dates',
+            '0',
+            'Y'
+        ];
+        return $this->getFieldRecursive($arrayKeys);        
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getContainerPages()
+    {
+        $arrayKeys = [
+            'RecordInfo',
+            'BibRecord',
+            'BibEntity',
+            'PhysicalDescription',
+            'Pagination',            
+            
+        ];
+        $pages = '';
+        $pagination = $this->getFieldRecursive($arrayKeys);  
+        if (isset($pagination['StartPage'])) {
+            $pages = $pagination['StartPage'];
+        }
+//        if (isset($pagination['PageCount'])) {
+//            $pages .= ', '.$pagination['PageCount']. 'S';
+//        }
+        return $pages;
+        
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getDoi()
+    {
+        $arrayKeys = [
+            'RecordInfo',
+            'BibRecord',
+            'BibEntity',
+            'Identifiers',
+            '0',
+            'Value'
+        ];
+        $doi =  $this->getFieldRecursive($arrayKeys);        
+        return $doi;
+    }    
+    
+}
