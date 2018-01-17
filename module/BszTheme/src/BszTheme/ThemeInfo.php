@@ -81,8 +81,8 @@ class ThemeInfo extends \VuFindTheme\ThemeInfo {
                     }
                 }
             }
-            return $this->allThemeInfo;
         }
+        return $this->allThemeInfo;
     }
     
     /**
