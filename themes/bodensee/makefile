@@ -7,8 +7,6 @@
 
 SOURCES = $(shell ls less/*.less)
 SOURCES := $(filter-out less/vufind.less, $(SOURCES))
-SOURCES := $(filter-out less/home-page.less, $(SOURCES))
-SOURCES := $(filter-out less/a11y.less, $(SOURCES))
 TARGETS = $(patsubst less/%.less,css/%.css,$(SOURCES))
 DEPEND = $(patsubst less/%.less,make/%.d,$(SOURCES))
 print-%:

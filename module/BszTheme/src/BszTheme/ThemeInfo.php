@@ -27,7 +27,7 @@ namespace BszTheme;
  */
 class ThemeInfo extends \VuFindTheme\ThemeInfo {
     
-    protected $Client;
+    protected $tag;
     
     /**
      * Adapted constructor
@@ -36,10 +36,11 @@ class ThemeInfo extends \VuFindTheme\ThemeInfo {
      * @param \Bsz\Config\Client $Client
      */
     
-    public function __construct($baseDir, $safeTheme)
+    public function __construct($baseDir, $safeTheme, $tag)
     {
         $this->baseDir = $baseDir;
         $this->currentTheme = $this->safeTheme = $safeTheme;
+        $this->tag = $tag;
     }
     
     /**
@@ -63,14 +64,41 @@ class ThemeInfo extends \VuFindTheme\ThemeInfo {
                     array_push($css, $this->addClientStylesheet());;
                     $this->allThemeInfo[$currentTheme]['css'] = $css;
                 }
+                $this->allThemeInfo[$currentTheme]['favicon'] = $this->addClientFavicon();
+                
+                
                 $currentTheme = $this->allThemeInfo[$currentTheme]['extends'];
             } while ($currentTheme);
         }
         return $this->allThemeInfo;
     }
     
+    /**
+     * 
+     * @return string
+     */
     public function addClientStylesheet() {
-        return 'wlb.css';
+        return $this->tag.'.css';
+    }    
+    /**
+     * 
+     * @return string
+     */
+    public function addClientFavicon() {
+        return 'favicon/'.$this->tag.'.ico';
     }
-    
+    /**
+     * 
+     * @return string
+     */
+    public function addClientHeader() {
+        return 'header/'.$this->tag.'.jpg';
+    }
+    /**
+     * 
+     * @return string
+     */
+    public function addClientLogo() {
+        return 'logo/'.$this->tag.'.png';
+    }
 }
