@@ -5,51 +5,51 @@ namespace Bsz\Module\Configuration;
 $config = [
     'controllers' => [
         'invokables' => [
-//            'ajax' => 'Bsz\Controller\AjaxController',
-            'bsz' => 'Bsz\Controller\BszController'
+            'ajax' => 'Bsz\Controller\AjaxController',
+            'bsz' => 'Bsz\Controller\BszController',
 //            'fis' => 'Bsz\Controller\FisController',
-//            'holding' => 'Bsz\Controller\HoldingController',
-//            'interlending' => 'Bsz\Controller\InterlendingController',
-//            'test' => 'Bsz\Controller\TestController',
-//            'cart' => 'Bsz\Controller\CartController',
-//            'privacy' => 'Bsz\Controller\BszController',
+            'holding' => 'Bsz\Controller\HoldingController',
+            'interlending' => 'Bsz\Controller\InterlendingController',
+            'test' => 'Bsz\Controller\TestController',
+            'cart' => 'Bsz\Controller\CartController',
+            'privacy' => 'Bsz\Controller\BszController',
 //            'shib' => 'Bsz\Controller\ShibController'
         ],
         'factories' => [
-//            'interlendingrecord' => 'Bsz\Controller\Factory::getInterlendingrecordController',
+            'interlendingrecord' => 'Bsz\Controller\Factory::getInterlendingrecordController',
 //            'fisrecord' => 'Bsz\Controller\Factory::getFisrecordController',
             'record' => 'Bsz\Controller\Factory::getRecordController'
         ],
     ],
     'router' => [
         'routes' => [
-//            'saveisil'=> [
-//                'type'    => 'Segment',
-//                'options' => [
-//                    'route'    => "/Bsz/saveIsil/:isil",
-//                    'constraints' => [
-//                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        'isil'       => 'DE-[a-zA-Z0-9\-\/,]+'
-//                    ],
-//                    'defaults' => [
-//                        'controller' => 'Bsz',
-//                        'action'     => 'saveIsil',
-//                    ]
-//                ]
-//                
-//            ]        
+            'saveisil'=> [
+                'type'    => 'Segment',
+                'options' => [
+                    'route'    => "/Bsz/saveIsil/:isil",
+                    'constraints' => [
+                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'isil'       => 'DE-[a-zA-Z0-9\-\/,]+'
+                    ],
+                    'defaults' => [
+                        'controller' => 'Bsz',
+                        'action'     => 'saveIsil',
+                    ]
+                ]
+                
+            ]        
         ],
     ], 
     'service_manager' => [
         'factories' => [
             'bsz\client'     => 'Bsz\Config\Factory::getClient',
 //            'bsz\libraries'  => 'Bsz\Config\Factory::getLibraries',            
-//            'bsz\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
-//            'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',            
-//            'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',            
-//            'bsz\holding'    => 'Bsz\Factory::getHolding',
-//            'bsz\parser\openurl' => 'Bsz\Parser\Factory::getOpenUrlParser',
+            'bsz\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
+            'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',            
+            'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',            
+            'bsz\holding'    => 'Bsz\Factory::getHolding',
+            'bsz\parser\openurl' => 'Bsz\Parser\Factory::getOpenUrlParser',
         ],
         'invokables' => [
             'bsz\mapper'     => 'Bsz\FormatMapper',
@@ -76,21 +76,21 @@ $config = [
             ],
             'search_options' => [
                 'factories' => [
-//                    'interlending' => 'Bsz\Search\Options\Factory::getInterlending',
+                    'interlending' => 'Bsz\Search\Options\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Options\Factory::getFis',
                     'solr' => 'Bsz\Search\Options\Factory::getSolr'
                 ],                
             ],
             'search_params'  => [
                 'factories' => [
-//                    'interlending' => 'Bsz\Search\Params\Factory::getInterlending',
+                    'interlending' => 'Bsz\Search\Params\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Params\Factory::getFis',
                     'solr' => 'Bsz\Search\Params\Factory::getSolr'
                 ], 
             ],
             'search_results'  => [
                 'factories' => [
-//                    'interlending' => 'Bsz\Search\Results\Factory::getInterlending',
+                    'interlending' => 'Bsz\Search\Results\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Results\Factory::getFis'
                 ], 
             ],
@@ -100,59 +100,59 @@ $config = [
             'Bsz\RecordDriver\SolrGvimarc' => [
                 'tabs' => [
                     'Holdings' => 'HoldingsILS', 
-//                    'Volumes' => 'Volumes',
-//                    'articles' => 'articles',
-//                    'Description' => 'Description',
-//                    'TOC' => 'TOC', 
-//                    'UserComments' => 'UserComments',
-//                    'Reviews' => 'Reviews', 
-//                    'Excerpt' => 'Excerpt',
-//                    'Preview' => 'preview',
-//                    'HierarchyTree' => 'HierarchyTree', 
-//                    'Map' => 'Map',
-//                    'Libraries' => 'Libraries',                    
-////                    'Similar' => 'SimilarItemsCarcousel',
-//                    'Details' => 'StaffViewMARC',
+                    'Volumes' => 'Volumes',
+                    'articles' => 'articles',
+                    'Description' => 'Description',
+                    'TOC' => 'TOC', 
+                    'UserComments' => 'UserComments',
+                    'Reviews' => 'Reviews', 
+                    'Excerpt' => 'Excerpt',
+                    'Preview' => 'preview',
+                    'HierarchyTree' => 'HierarchyTree', 
+                    'Map' => 'Map',
+                    'Libraries' => 'Libraries',                    
+//                    'Similar' => 'SimilarItemsCarcousel',
+                    'Details' => 'StaffViewMARC',
                     
                 ],
                 'defaultTab' => 'Holdings',
             ],
-//            'Bsz\RecordDriver\SolrNtrsoai' => [
-//                'tabs' => [
-//                    'Holdings' => 'HoldingsILS', 
-////                    'Volumes' => 'Volumes',
-//                    'Description' => 'Description',
-//                    'TOC' => 'TOC', 
-//                    'UserComments' => 'UserComments',
-//                    'Reviews' => 'Reviews', 
-//                    'Excerpt' => 'Excerpt',
-//                    'Preview' => 'preview',
-//                    'HierarchyTree' => 'HierarchyTree', 
-//                    'Map' => 'Map',
-////                    'Similar' => 'SimilarItemsCarcousel',
-//                    'Details' => 'StaffViewArray',
-//                    
-//                ],
-//                'defaultTab' => 'Volumes',
-//            ],        
-//            'Bsz\RecordDriver\SolrDlrmarc' => [
-//                'tabs' => [
-//                    'Holdings' => 'HoldingsILS', 
-////                    'Volumes' => 'Volumes',
-//                    'Description' => 'Description',
-//                    'TOC' => 'TOC', 
-//                    'UserComments' => 'UserComments',
-//                    'Reviews' => 'Reviews', 
-//                    'Excerpt' => 'Excerpt',
-//                    'Preview' => 'preview',
-//                    'HierarchyTree' => 'HierarchyTree', 
-//                    'Map' => 'Map',
-////                    'Similar' => 'SimilarItemsCarcousel',
-//                    'Details' => 'StaffViewMARC',
-//                    
-//                ],
-//                'defaultTab' => 'Volumes',
-//            ],
+            'Bsz\RecordDriver\SolrNtrsoai' => [
+                'tabs' => [
+                    'Holdings' => 'HoldingsILS', 
+//                    'Volumes' => 'Volumes',
+                    'Description' => 'Description',
+                    'TOC' => 'TOC', 
+                    'UserComments' => 'UserComments',
+                    'Reviews' => 'Reviews', 
+                    'Excerpt' => 'Excerpt',
+                    'Preview' => 'preview',
+                    'HierarchyTree' => 'HierarchyTree', 
+                    'Map' => 'Map',
+//                    'Similar' => 'SimilarItemsCarcousel',
+                    'Details' => 'StaffViewArray',
+                    
+                ],
+                'defaultTab' => 'Volumes',
+            ],        
+            'Bsz\RecordDriver\SolrDlrmarc' => [
+                'tabs' => [
+                    'Holdings' => 'HoldingsILS', 
+//                    'Volumes' => 'Volumes',
+                    'Description' => 'Description',
+                    'TOC' => 'TOC', 
+                    'UserComments' => 'UserComments',
+                    'Reviews' => 'Reviews', 
+                    'Excerpt' => 'Excerpt',
+                    'Preview' => 'preview',
+                    'HierarchyTree' => 'HierarchyTree', 
+                    'Map' => 'Map',
+//                    'Similar' => 'SimilarItemsCarcousel',
+                    'Details' => 'StaffViewMARC',
+                    
+                ],
+                'defaultTab' => 'Volumes',
+            ],
         ],
     ]
   
@@ -160,11 +160,11 @@ $config = [
 $staticRoutes = [
     'Test/Record', 'Test/phpinfo',
     'Bsz/index', 'Bsz/curl',
-//    'Interlending/Home', 'Interlending/Results', 'Interlending/Advanced',
-//    'InterlendingRecord/Freeform',
+    'Interlending/Home', 'Interlending/Results', 'Interlending/Advanced',
+    'InterlendingRecord/Freeform',
 //    'Fis/Home', 'Fis/Results', 'Fis/Advanced',    
-//    'Holding/Query',
-//    'Bsz/Privacy',     
+    'Holding/Query',
+    'Bsz/Privacy',     
 //    'Shib/Wayf', 'Shib/Redirect',
 ];
 $recordRoutes = [
@@ -176,6 +176,7 @@ $routeGenerator = new \Bsz\Route\RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
 //$routeGenerator->addDynamicRoutes($config, $dynamicRoutes); 
 $routeGenerator->addStaticRoutes($config, $staticRoutes);
+
 return $config;
 
 
