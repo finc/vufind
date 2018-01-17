@@ -143,6 +143,9 @@ JS;
       if (!isset($this->layout()->searchbox)) {
         $this->layout()->searchbox = $this->render('search/searchbox.phtml');
       }
+      if (!isset($this->layout()->searchtabs)) {
+        $this->layout()->searchtabs = $this->render('search/searchtabs.phtml');
+      }
       
       
     ?>
