@@ -129,7 +129,7 @@ class SolrGvimarc extends SolrMarc
      *
      * @return array
      */
-    public function getAllSubjectHeadings()
+    public function getAllSubjectHeadings($extended = false)
     {
         // These are the fields that may contain subject headings:
         $fields = ['600', '610', '611', '630', '648', '650', '651', '655',

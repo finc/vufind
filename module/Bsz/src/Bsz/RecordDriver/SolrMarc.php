@@ -81,7 +81,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      *
      * @return array
      */
-    protected function getSubfieldArray($currentField, $subfields, $concat = true)
+    protected function getSubfieldArray($currentField, $subfields, $concat = true, $separator = ' ')
     {
         // Start building a line of text for the current field
         $matches = [];
