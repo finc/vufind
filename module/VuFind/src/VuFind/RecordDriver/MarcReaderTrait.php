@@ -228,4 +228,22 @@ trait MarcReaderTrait
         // Send back the data in a different format depending on $concat mode:
         return $concat && $matches ? [implode($separator, $matches)] : $matches;
     }
+    
+    /**
+     * Get content from multiple fields, stops if one field returns something.
+     * Order is important
+     * @param array $fields
+     * @return array
+     */
+    public function getFieldsArray($fields)
+    {
+        foreach ($fields as $no => $subfield) {
+            $raw = $this->getFieldArray($no, (array) $subfield, true);
+            if (count($raw) > 0 && !empty($raw[0])) {
+                return $raw;
+            }
+        }
+        return [];
+    }
+    
 }

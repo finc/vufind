@@ -74,7 +74,8 @@ class Module extends \VuFind\Module
      */
     public function onBootstrap(MvcEvent $e)
     {
-        $bootstrapper = new Bootstrapper($e);
-        $bootstrapper->bootstrap();
+        $app = $e->getApplication();
+        $sm = $app->getServiceManager();
+        $config = $sm->get('Config');
     }
 }

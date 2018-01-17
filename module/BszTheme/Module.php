@@ -48,5 +48,5 @@ class Module extends \VuFindTheme\Module
                 'VuFindTheme\ResourceContainer' => 'VuFindTheme\ResourceContainer',
             ],
         ];
-    }
+    }    
 }

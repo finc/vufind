@@ -48,12 +48,12 @@ class Factory
         $vufindconf = $sm->get('VuFind\Config')->get('config')->toArray();
         $bszconf = $sm->get('VuFind\Config')->get('bsz')->toArray();
         $client = new Client(array_merge($vufindconf, $bszconf), true);
-//        if ($client->isIsilSession()) {
-//            $libraries = $sm->get('bsz\libraries');
-//            $request = $sm->get('Request');
-//            $client->setLibraries($libraries);
-//            $client->setRequest($request);
-//        }
+        if ($client->isIsilSession()) {
+            $libraries = $sm->get('bsz\libraries');
+            $request = $sm->get('Request');
+            $client->setLibraries($libraries);
+            $client->setRequest($request);
+        }
         return $client;
     }
 

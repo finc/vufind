@@ -25,8 +25,11 @@ use Bsz\FormatMapper;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGvimarc extends \VuFind\RecordDriver\SolrMarc
+class SolrGvimarc extends SolrMarc
 {
+    use \VuFind\RecordDriver\IlsAwareTrait;
+    use \VuFind\RecordDriver\MarcReaderTrait;
+    use \VuFind\RecordDriver\MarcAdvancedTrait;    
 
     /**
      * Used for concatenating subfields
@@ -63,13 +66,12 @@ class SolrGvimarc extends \VuFind\RecordDriver\SolrMarc
      */
     protected $formats;
 
-    //public function __construct(\Bsz\Config\Client $Client,
-    public function __construct(
+    public function __construct(FormatMapper $Mapper, \Bsz\Config\Client $Client,
             $mainConfig = null, $recordConfig = null, $searchSettings = null)
     {
-//        parent::__construct($Mapper, $mainConfig, $recordConfig, $searchSettings);
-//        $this->mapper = $Mapper;
-        parent::__construct($mainConfig, $recordConfig, $searchSettings);
+//        parent::__construct($mainConfig, $recordConfig, $searchSettings);
+        parent::__construct($Mapper, $mainConfig, $recordConfig, $searchSettings);
+        $this->mapper = $Mapper;
         $this->client = $Client;
     }
 
@@ -930,13 +932,14 @@ class SolrGvimarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function getRealTimeHoldings()
     {
-        if ($this->client->isIsilSession() && !$this->client->hasIsilSession()) {
-            return [];
-        } else {
-            return $this->hasILS() ? $this->holdLogic->getHoldings(
-                            $this->getUniqueID(), $this->getConsortialIDs()
-                    ) : [];
-        }
+//        if ($this->client->isIsilSession() && !$this->client->hasIsilSession()) {
+//            return [];
+//        } else {
+//            return $this->hasILS() ? $this->holdLogic->getHoldings(
+//                            $this->getUniqueID(), $this->getConsortialIDs()
+//                    ) : [];
+//        }
+        return ['holdings' => []];
     }
 
     /**
@@ -1076,8 +1079,8 @@ class SolrGvimarc extends \VuFind\RecordDriver\SolrMarc
         if ($this->isJournal() || $this->isNewsPaper()) {
             $coins['rft.genre'] = 'issue';
         }
-        unset($coins['url_ver']); //only needed for openurls, not for COINS
-        unset($coins['pid']); //only needed for openurls, not for COINS
+        // unset($coins['url_ver']); //only needed for openurls, not for COINS
+        // unset($coins['pid']); //only needed for openurls, not for COINS
         
   
         return http_build_query($coins);
@@ -1482,5 +1485,66 @@ class SolrGvimarc extends \VuFind\RecordDriver\SolrMarc
         }
         return $zdb;
     }
+    /**
+     * is this a Journal, implies it's a serial
+     * 
+     * @return boolean
+     */
+    public function isJournal()
+    {
+        $f008 = null;
+        $f008_21 = '';
+        $f008 = $this->getMarcRecord()->getFields("008", false);
 
+        foreach ($f008 as $field) {
+            $data = strtoupper($field->getData());
+            if (strlen($data) >= 21) {
+                $f008_21 = $data{21};
+            }
+        }
+        if ($this->isSerial() && $f008_21 == 'P') {
+            return true;
+        }
+        return false;
+    }    
+    
+    /**
+     * General serial items. More exact is:
+     * isJournal(), isNewspaper() isMonographicSerial()
+     * @return boolean
+     */
+    public function isSerial()
+    {
+        $leader = $this->getMarcRecord()->getLeader();
+        $leader_7 = strtoupper($leader{7});
+        if ($leader_7 === 'S') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * iIs this a Newspaper?
+     * 
+     * @return boolean
+     */
+    public function isNewspaper()
+    {
+        $f008 = null;
+        $f008_21 = '';
+        $f008 = $this->getMarcRecord()->getFields("008", false);
+
+        foreach ($f008 as $field) {
+            $data = strtoupper($field->getData());
+            if (strlen($data) >= 21) {
+                $f008_21 = $data{21};
+            }
+        }
+        if ($this->isSerial() && $f008_21 == 'N') {
+            return true;
+        }
+        return false;
+    }
+
+    
 }

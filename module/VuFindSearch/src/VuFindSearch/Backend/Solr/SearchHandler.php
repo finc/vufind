@@ -84,10 +84,14 @@ class SearchHandler
         foreach (self::$configKeys as $key) {
             $this->specs[$key] = isset($spec[$key]) ? $spec[$key] : [];
         }
+        
         // Set dismax handler to default if not specified:
         if (empty($this->specs['DismaxHandler'])) {
             $this->specs['DismaxHandler'] = $defaultDismaxHandler;
         }
+        
+        $this->specs['DismaxHandler'] = $defaultDismaxHandler;
+        
         // Set default mm handler if necessary:
         $this->setDefaultMustMatch();
     }

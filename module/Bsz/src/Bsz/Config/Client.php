@@ -61,18 +61,6 @@ class Client extends \Zend\Config\Config
     }
 
     /**
-     * Returns stylesheet filename
-     * @return string
-     */
-    public function getStylesheet()
-    {
-        $stylesheet = $this->get('Site')->get('stylesheet') ?
-                $this->get('BSZ')->get('stylesheet') : $this->getTag() . '.css';
-
-        return $stylesheet;
-    }
-
-    /**
      * Returns first part of domain
      * @return string
      */
@@ -85,16 +73,6 @@ class Client extends \Zend\Config\Config
 
         return $tag;
     }
-
-    /**
-     * Returns first part of domain
-     * @return string
-     */
-    public function getTheme()
-    {
-        return $this->get('Site')->get('theme');
-    }
-
 
     /**
      * Returns footer links for certain box (1-3))
@@ -136,47 +114,6 @@ class Client extends \Zend\Config\Config
         return $links;
     }
    
-
-    /**
-     * Returns custom or default Logo
-     * @return string
-     */
-    public function getLogo()
-    {
-        $logo = '';
-        if ($this->hasIsilSession()) {
-            $first = $this->libraries->getFirst($this->getIsils());
-            if (isset($first)) {
-                $logo = $first->getLogo();
-            }
-        } elseif (!$this->isIsilSession()) {
-            $logo = 'logo/'.$this->getTag().static::LOGO_TYPE;
-        }       
-        return $logo;
-    }
-
-    /**
-     * Returns header image
-     * @return string
-     */
-    public function getHeader()
-    {
-        return 'header/'.$this->getTag().static::HEADER_TYPE;
-    }
-
-    /**
-     * Returns custom or default favicon
-     * @return string
-     */
-    public function getFavicon()
-    {
-        if (file_exists('/data/boss2/themes/'.$this->getTheme().'/images/favicon/'.$this->getTag().static::FAVICON_TYPE)) {
-            return 'favicon/'.$this->getTag().static::FAVICON_TYPE;            
-        } else {
-            return 'favicon/default'.static::FAVICON_TYPE;                       
-        }
-    }
-
     /**
      * Gibt die Webseite der Institution aus. 
      * @param string $mode contactm, imprint, default home page
