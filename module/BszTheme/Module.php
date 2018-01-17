@@ -34,4 +34,28 @@ class Module extends \VuFindTheme\Module
     {
         return new ThemeInfo(realpath(APPLICATION_PATH . '/themes'), 'bodensee');
     }
+    
+    /**
+     * Return service configuration.
+     *
+     * @return array
+     */
+    public function getServiceConfig()
+    {
+        return [
+            'factories' => [
+                'VuFindTheme\MixinGenerator' =>
+                    'VuFindTheme\Module::getMixinGenerator',
+                'VuFindTheme\ThemeCompiler' =>
+                    'VuFindTheme\Module::getThemeCompiler',
+                'VuFindTheme\ThemeGenerator' =>
+                    'VuFindTheme\Module::getThemeGenerator',
+                'VuFindTheme\ThemeInfo' => 'BszTheme\Module::getThemeInfo',
+            ],
+            'invokables' => [
+                'VuFindTheme\Mobile' => 'VuFindTheme\Mobile',
+                'VuFindTheme\ResourceContainer' => 'VuFindTheme\ResourceContainer',
+            ],
+        ];
+    }    
 }

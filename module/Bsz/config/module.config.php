@@ -1,6 +1,7 @@
 <?php
 namespace Bsz\Module\Configuration;
 
+
 $config = [
     'controllers' => [
         'invokables' => [
@@ -42,13 +43,14 @@ $config = [
     ], 
     'service_manager' => [
         'factories' => [
-            'bsz\client'     => 'Bsz\Config\Factory::getClient'            
+            'BszTheme\ThemeInfo' => 'BszTheme\Factory::getThemeInfo',
+            'bsz\client'     => 'Bsz\Config\Factory::getClient',
 //            'bsz\libraries'  => 'Bsz\Config\Factory::getLibraries',            
 //            'bsz\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
 //            'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',            
 //            'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',            
 //            'bsz\holding'    => 'Bsz\Factory::getHolding',
-//            'bsz\parser\openurl' => 'Bsz\Parser\Factory::getOpenUrlParser'
+//            'bsz\parser\openurl' => 'Bsz\Parser\Factory::getOpenUrlParser',
         ],
         'invokables' => [
             'bsz\mapper'     => 'Bsz\FormatMapper',
