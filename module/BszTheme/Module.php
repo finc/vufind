@@ -48,5 +48,20 @@ class Module extends \VuFindTheme\Module
                 'VuFindTheme\ResourceContainer' => 'VuFindTheme\ResourceContainer',
             ],
         ];
-    }    
+    }  
+    
+        /**
+     * Get view helper configuration.
+     *
+     * @return array
+     */
+    public function getViewHelperConfig()
+    {
+        return [
+            'factories' => [
+                'Client' =>         'BszTheme\View\Helper\Factory::getClient',
+                'ClientAsset' =>    'BszTheme\View\Helper\Factory::getclientAsset',
+            ],
+        ];
+    }
 }

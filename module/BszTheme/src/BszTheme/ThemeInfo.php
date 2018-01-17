@@ -99,18 +99,5 @@ class ThemeInfo extends \VuFindTheme\ThemeInfo {
     public function addClientFavicon() {
         return 'favicon/'.$this->tag.'.ico';
     }
-    /**
-     * 
-     * @return string
-     */
-    public function addClientHeader() {
-        return 'header/'.$this->tag.'.jpg';
-    }
-    /**
-     * 
-     * @return string
-     */
-    public function addClientLogo() {
-        return 'logo/'.$this->tag.'.png';
-    }
 }
+
