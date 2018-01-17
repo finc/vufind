@@ -5,7 +5,7 @@ $config = [
     'controllers' => [
         'invokables' => [
 //            'ajax' => 'Bsz\Controller\AjaxController',
-            'bsz' => 'Bsz\Controller\BszController'
+//            'bsz' => 'Bsz\Controller\BszController'
 //            'fis' => 'Bsz\Controller\FisController',
 //            'holding' => 'Bsz\Controller\HoldingController',
 //            'interlending' => 'Bsz\Controller\InterlendingController',
@@ -17,32 +17,34 @@ $config = [
         'factories' => [
 //            'interlendingrecord' => 'Bsz\Controller\Factory::getInterlendingrecordController',
 //            'fisrecord' => 'Bsz\Controller\Factory::getFisrecordController',
-            'record' => 'Bsz\Controller\Factory::getRecordController'
+//            'record' => 'Bsz\Controller\Factory::getRecordController'
         ],
     ],
     'router' => [
         'routes' => [
-            'saveisil'=> [
-                'type'    => 'Segment',
-                'options' => [
-                    'route'    => "/Bsz/saveIsil/:isil",
-                    'constraints' => [
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'isil'       => 'DE-[a-zA-Z0-9\-\/,]+'
-                    ],
-                    'defaults' => [
-                        'controller' => 'Bsz',
-                        'action'     => 'saveIsil',
-                    ]
-                ]
+//            'saveisil'=> [
+//                'type'    => 'Segment',
+//                'options' => [
+//                    'route'    => "/Bsz/saveIsil/:isil",
+//                    'constraints' => [
+//                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+//                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+//                        'isil'       => 'DE-[a-zA-Z0-9\-\/,]+'
+//                    ],
+
+
+//                    'defaults' => [
+//                        'controller' => 'Bsz',
+//                        'action'     => 'saveIsil',
+//                    ]
+//                ]
                 
-            ]        
+//            ]        
         ],
     ], 
     'service_manager' => [
         'factories' => [
-            'bsz\client'     => 'Bsz\Config\Factory::getClient'            
+//            'bsz\client'     => 'Bsz\Config\Factory::getClient'            
 //            'bsz\libraries'  => 'Bsz\Config\Factory::getLibraries',            
 //            'bsz\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
 //            'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',            
@@ -52,14 +54,14 @@ $config = [
         ],
         'invokables' => [
 //            'bsz\mapper'     => 'Bsz\FormatMapper',
-            'bsz\library'    => 'Bsz\Config\Library',
+//            'bsz\library'    => 'Bsz\Config\Library',
         ],
     ],
     'vufind' => [
         'plugin_managers' => [            
             'recorddriver'  => [
                 'factories' => [
-                    'solrgvimarc' => 'Bsz\RecordDriver\Factory::getSolrGviMarc'                    
+//                    'solrgvimarc' => 'Bsz\RecordDriver\Factory::getSolrGviMarc'                    
 //                    'solrdlrmarc' => 'Bsz\RecordDriver\Factory::getSolrDlrMarc',
 //                    'solrntrsoai' => 'Bsz\RecordDriver\Factory::getSolrNtrsoai',                 
 //                    'solrfismarc' => 'Bsz\RecordDriver\Factory::getSolrFisMarc',                    
@@ -67,24 +69,24 @@ $config = [
             ],
             'recordtab' => [
                 'factories' => [
-                    'volumes' => 'Bsz\RecordTab\Factory::getVolumes',                    
-                    'articles' => 'Bsz\RecordTab\Factory::getArticles',                    
-                    'libraries' => 'Bsz\RecordTab\Factory::getLibraries',                    
+//                    'volumes' => 'Bsz\RecordTab\Factory::getVolumes',                    
+//                    'articles' => 'Bsz\RecordTab\Factory::getArticles',                    
+//                    'libraries' => 'Bsz\RecordTab\Factory::getLibraries',                    
                 
                 ],
             ],
             'search_options' => [
                 'factories' => [
-                    'interlending' => 'Bsz\Search\Options\Factory::getInterlending',
+//                    'interlending' => 'Bsz\Search\Options\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Options\Factory::getFis',
-                    'solr' => 'Bsz\Search\Options\Factory::getSolr'
+//                    'solr' => 'Bsz\Search\Options\Factory::getSolr'
                 ],                
             ],
             'search_params'  => [
                 'factories' => [
 //                    'interlending' => 'Bsz\Search\Params\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Params\Factory::getFis',
-                    'solr' => 'Bsz\Search\Params\Factory::getSolr'
+//                    'solr' => 'Bsz\Search\Params\Factory::getSolr'
                 ], 
             ],
             'search_results'  => [
@@ -96,25 +98,25 @@ $config = [
             
         ],
         'recorddriver_tabs' => [
-            'Bsz\RecordDriver\SolrGvimarc' => [
-                'tabs' => [
-                    'Holdings' => 'HoldingsILS', 
-//                    'Volumes' => 'Volumes',
-//                    'articles' => 'articles',
-//                    'Description' => 'Description',
-//                    'TOC' => 'TOC', 
-//                    'UserComments' => 'UserComments',
-//                    'Reviews' => 'Reviews', 
-//                    'Excerpt' => 'Excerpt',
-//                    'Preview' => 'preview',
-//                    'HierarchyTree' => 'HierarchyTree', 
-//                    'Map' => 'Map',
-//                    'Libraries' => 'Libraries',                    
-////                    'Similar' => 'SimilarItemsCarcousel',
-//                    'Details' => 'StaffViewMARC',
-                    
-                ],
-                'defaultTab' => 'Holdings',
+//            'Bsz\RecordDriver\SolrGvimarc' => [
+//                'tabs' => [
+//                    'Holdings' => 'HoldingsILS', 
+////                    'Volumes' => 'Volumes',
+////                    'articles' => 'articles',
+////                    'Description' => 'Description',
+////                    'TOC' => 'TOC', 
+////                    'UserComments' => 'UserComments',
+////                    'Reviews' => 'Reviews', 
+////                    'Excerpt' => 'Excerpt',
+////                    'Preview' => 'preview',
+////                    'HierarchyTree' => 'HierarchyTree', 
+////                    'Map' => 'Map',
+////                    'Libraries' => 'Libraries',                    
+//////                    'Similar' => 'SimilarItemsCarcousel',
+////                    'Details' => 'StaffViewMARC',
+//                    
+//                ],
+//                'defaultTab' => 'Holdings',
             ],
 //            'Bsz\RecordDriver\SolrNtrsoai' => [
 //                'tabs' => [
@@ -153,28 +155,28 @@ $config = [
 //                'defaultTab' => 'Volumes',
 //            ],
         ],
-    ]
+    
   
 ];
-$staticRoutes = [
-    'Test/Record', 'Test/phpinfo',
-    'Bsz/index', 'Bsz/curl',
+//$staticRoutes = [
+//    'Test/Record', 'Test/phpinfo',
+//    'Bsz/index', 'Bsz/curl',
 //    'Interlending/Home', 'Interlending/Results', 'Interlending/Advanced',
 //    'InterlendingRecord/Freeform',
 //    'Fis/Home', 'Fis/Results', 'Fis/Advanced',    
 //    'Holding/Query',
 //    'Bsz/Privacy',     
 //    'Shib/Wayf', 'Shib/Redirect',
-];
+//];
 //$recordRoutes = [
 //    'interlendingrecord' => 'InterlendingRecord',
 //    'fisrecord' => 'FisRecord',
 //];
 
-$routeGenerator = new \Bsz\Route\RouteGenerator();
-$routeGenerator->addRecordRoutes($config, $recordRoutes);
-//$routeGenerator->addDynamicRoutes($config, $dynamicRoutes); 
-$routeGenerator->addStaticRoutes($config, $staticRoutes);
+//$routeGenerator = new \Bsz\Route\RouteGenerator();
+//$routeGenerator->addRecordRoutes($config, $recordRoutes);
+//$routeGenerator->addStaticRoutes($config, $staticRoutes);
 return $config;
 
+?>
 

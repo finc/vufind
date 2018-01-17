@@ -25,13 +25,28 @@ class Module extends \VuFindTheme\Module
             ],
         ];
     }
+   
+    
     /**
-     * Factory function for ThemeInfo object.
-     *
-     * @return ThemeInfo
+     * Here, we override the VuFindTheme module with our own module
+     * @return []
      */
-    public static function getThemeInfo()
+    public function getServiceConfig()
     {
-        return new ThemeInfo(realpath(APPLICATION_PATH . '/themes'), 'bodensee');
+        return [
+            'factories' => [
+                'VuFindTheme\MixinGenerator' =>
+                    'VuFindTheme\Module::getMixinGenerator',
+                'VuFindTheme\ThemeCompiler' =>
+                    'VuFindTheme\Module::getThemeCompiler',
+                'VuFindTheme\ThemeGenerator' =>
+                    'VuFindTheme\Module::getThemeGenerator',
+                'VuFindTheme\ThemeInfo' => 'BszTheme\Factory::getThemeInfo',
+            ],
+            'invokables' => [
+                'VuFindTheme\Mobile' => 'VuFindTheme\Mobile',
+                'VuFindTheme\ResourceContainer' => 'VuFindTheme\ResourceContainer',
+            ],
+        ];
     }
 }
