@@ -59,18 +59,30 @@ class ThemeInfo extends \VuFindTheme\ThemeInfo {
                 $this->allThemeInfo[$currentTheme]
                     = include $this->getThemeConfig($currentTheme);
 
-                 if(isset($this->allThemeInfo[$currentTheme]['css'])) {
-                    $css = $this->allThemeInfo[$currentTheme]['css'];   
-                    array_push($css, $this->addClientStylesheet());;
-                    $this->allThemeInfo[$currentTheme]['css'] = $css;
-                }
-                $this->allThemeInfo[$currentTheme]['favicon'] = $this->addClientFavicon();
                 
                 
                 $currentTheme = $this->allThemeInfo[$currentTheme]['extends'];
             } while ($currentTheme);
+            
+            // Here, we make the css files dynamic
+            $first = array_keys($this->allThemeInfo)[0];
+            $second = array_keys($this->allThemeInfo)[1];
+            $this->allThemeInfo[$first]['favicon'] = $this->addClientFavicon();
+            
+            $css = isset($this->allThemeInfo[$first]['css']) ? $this->allThemeInfo[$first]['css'] : [];   
+            array_push($css, $this->addClientStylesheet());
+            $this->allThemeInfo[$first]['css'] = $css;   
+            
+            // we then remove the compiled.css because it's included in our dynamic version 
+            if (isset($this->allThemeInfo[$second]['css'])) {
+                foreach ($this->allThemeInfo[$second]['css'] as $key => $value) {
+                    if ($value == 'compiled.css') {
+                        unset($this->allThemeInfo[$second]['css'][$key]);
+                    }
+                }
+            }
+            return $this->allThemeInfo;
         }
-        return $this->allThemeInfo;
     }
     
     /**
