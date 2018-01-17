@@ -325,7 +325,7 @@ class Client extends \Zend\Config\Config
      */
     public function getAllClients()
     {
-        $baseDir = '/data/boss2';
+        $baseDir = '/usr/local/boss';
         $Reader = new \Zend\Config\Reader\Ini();
         $dirs = glob($baseDir . '/local/*', GLOB_ONLYDIR);
         $configs = [];
