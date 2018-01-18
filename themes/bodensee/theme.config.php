@@ -6,23 +6,23 @@ $config = [
     'helpers' => [
         'factories' => [
 //            'flashmessages' => 'VuFind\View\Helper\Bootstrap3\Factory::getFlashmessages',
-//            'layoutclass' => 'VuFind\View\Helper\Bodensee\Factory::getLayoutClass',
+            'layoutclass' => 'BszTheme\View\Helper\Bodensee\Factory::getLayoutClass',
 //            'openurl' => 'VuFind\View\Helper\Bodensee\Factory::getOpenUrl',
 //            'searchtabs' => 'VuFind\View\Helper\Bodensee\Factory::getSearchTabs',
 //            'record' => 'VuFind\View\Helper\Bodensee\Factory::getRecord',
 //            'client' => 'Bsz\View\Helper\Factory::getClient',
 //            'libraries' => 'Bsz\View\Helper\Factory::getLibraries',
-//            'recordLink' => 'VuFind\View\Helper\Bodensee\Factory::getRecordLink',
+//            'recordLink' => 'BszTheme\View\Helper\Bodensee\Factory::getRecordLink',
 //            'getLastSearchLink' => 'VuFind\View\Helper\Bodensee\Factory::getGetLastSearchLink',
 //            'illform' => 'Bsz\View\Helper\Factory::getIllForm',
-//            'piwik' => 'VuFind\View\Helper\Bodensee\Factory::getPiwik',
+//            'piwik' => 'BszTheme\View\Helper\Bodensee\Factory::getPiwik',
         ],
         'invokables' => [
 //            'highlight' => 'VuFind\View\Helper\Bootstrap3\Highlight',
 //            'search' => 'VuFind\View\Helper\Bootstrap3\Search',
 //            'vudl' => 'VuDL\View\Helper\Bootstrap3\VuDL',
 //            'mapper' => 'Bsz\View\Helper\FormatMapper',
-//            'string' => 'Bsz\View\Helper\StringHelper',
+//            'string' => 'BszTheme\View\Helper\StringHelper',
         ],
     ]
 ];
