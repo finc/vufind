@@ -60,6 +60,7 @@ $config = [
         'plugin_managers' => [            
             'recorddriver'  => [
                 'factories' => [
+                    'solrdefault' => 'Bsz\RecordDriver\Factory::getSolrDefault',
                     'solrgvimarc' => 'Bsz\RecordDriver\Factory::getSolrGviMarc'                    
 //                    'solrdlrmarc' => 'Bsz\RecordDriver\Factory::getSolrDlrMarc',
 //                    'solrntrsoai' => 'Bsz\RecordDriver\Factory::getSolrNtrsoai',                 
@@ -93,6 +94,12 @@ $config = [
                     'interlending' => 'Bsz\Search\Results\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Results\Factory::getFis'
                 ], 
+            ],
+            'ils_driver' => [
+                'factories' => [
+    //                'daia' => 'Bsz\ILS\Driver\Factory::getDAIA',
+                    'daiaadis' => 'Bsz\ILS\Driver\Factory::getDAIAadis',
+                ]
             ],
             
         ],
@@ -153,6 +160,7 @@ $config = [
                 ],
                 'defaultTab' => 'Volumes',
             ],
+            
         ],
     ]
   

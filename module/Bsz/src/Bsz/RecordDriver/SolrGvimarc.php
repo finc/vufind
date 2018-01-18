@@ -932,13 +932,13 @@ class SolrGvimarc extends SolrMarc
      */
     public function getRealTimeHoldings()
     {
-//        if ($this->client->isIsilSession() && !$this->client->hasIsilSession()) {
-//            return [];
-//        } else {
-//            return $this->hasILS() ? $this->holdLogic->getHoldings(
-//                            $this->getUniqueID(), $this->getConsortialIDs()
-//                    ) : [];
-//        }
+        if ($this->client->isIsilSession() && !$this->client->hasIsilSession()) {
+            return [];
+        } else {
+            return $this->hasILS() ? $this->holdLogic->getHoldings(
+                            $this->getUniqueID(), $this->getConsortialIDs()
+                    ) : [];
+        }
         return ['holdings' => []];
     }
 

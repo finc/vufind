@@ -1,0 +1,99 @@
+<?
+  $this->headTitle($this->translate('ill_request_title'));
+  $this->headScript()->appendFile("vendor/jquery-ui.min.js", null, ['async' => true]);   
+
+  $this->layout()->breadcrumbs = '<li>' . $this->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
+    . '<li class="active">' . $this->transEsc('ill_request_title') . '</li>';
+  $collapse = 'panel-collapse collapse';
+  // avoid notices when using free form
+  $params = !isset($params) ? [] : $params;
+  
+?>
+<h2><?=$this->illform($success, $this->driver)->getText('headline')?></h2>
+<noscript><p class="alert alert-danger"><?=$this->transEsc('Please enable JavaScript.')?></p></noscript>
+<?=$this->flashmessages()?>
+<? if (!isset($success) || !$success): ?>
+<form class="form-horizontal form-ill" novalidate="true" action="<?=$this->recordLink()->getUrl($this->driver, 'Interlending')?>/ILLForm" method="POST" role="form" data-toggle="validator">
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">   
+        <? $content = $this->illForm($success, $this->driver)->renderBibliographicFields() ?>
+        <?= $this->partial('Helpers/ill/panel.phtml', [
+            'title' => 'Bibliographic Details',
+            'open'  => $this->illform($success, $this->driver)->isOpen('details'),
+            'content' => $content,
+        ])?>
+        <? $content = '<p><strong>'.$this->illForm($success, $this->driver)->getText('hint').'</strong></p>';
+            $content .= $this->illform($success, $this->driver)->renderCopies();
+        ?>
+        <?= $this->partial('Helpers/ill/panel.phtml', [
+            'title' => 'paperdata',
+            'open'  => $this->illform($success, $this->driver)->isOpen('paper'),
+            'content' => $content,
+        ])?>        
+        <? $content = $this->render('Helpers/ill/delivery.phtml', ['params' => $params])?>        
+        <?= $this->partial('Helpers/ill/panel.phtml', [
+            'title' => 'delivery_conditions',
+            'open'  => $this->illform($success, $this->driver)->isOpen('delivery'),
+            'content' => $content,
+        ])?>        
+        <? $content = $this->render('Helpers/ill/login.phtml', ['params' => $params, 'driver' => $this->driver])?> 
+        <?= $this->partial('Helpers/ill/panel.phtml', [
+            'title' => 'Benutzerdaten',
+            'open'  => $this->illform($success, $this->driver)->isOpen('login'),
+            'content' => $content,
+        ])?>       
+
+
+        <br/>
+
+        <div class="form-group"> 
+            <div class="col-sm-12">
+                <p>* <?=$this->transEsc('This field is required')?></p>
+                <input type="submit" class="btn btn-primary<?=$this->submitDisabled?' disabled': ''?>" value="<?=$test ? $this->transEsc('Test Order') : $this->transEsc('Order') ?>"/>            
+            </div>
+        </div>
+    </div>
+</form> 
+<div class="nofloat"></div>
+<script type="text/javascript">
+    $(document).ready(function() {     
+        
+        if (!$("input[name='AusgabeOrt']:checked").val()) {
+            $('.place input').first().prop('checked', true);
+        }
+        if ( $('[type="date"]').prop('type') != 'date' ) {
+            $('[type="date"]').datepicker({
+                prevText: '&#x3c;zurück', prevStatus: '',
+                prevJumpText: '&#x3c;&#x3c;', prevJumpStatus: '',
+                nextText: 'Vor&#x3e;', nextStatus: '',
+                nextJumpText: '&#x3e;&#x3e;', nextJumpStatus: '',
+                currentText: 'heute', currentStatus: '',
+                todayText: 'heute', todayStatus: '',
+                clearText: '-', clearStatus: '',
+                closeText: 'schließen', closeStatus: '',
+                monthNames: ['Januar','Februar','März','April','Mai','Juni',
+                'Juli','August','September','Oktober','November','Dezember'],
+                monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun',
+                'Jul','Aug','Sep','Okt','Nov','Dez'],
+                dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+                dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+                dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+                showMonthAfterYear: false,
+                showOn: 'both',
+                dateFormat:'yy-mm-dd',
+                onSelect: function(dateText, datePicker) {
+                    $(this).attr('value', dateText);
+                 }
+            });
+        }    
+        illFormLogic(); 
+    });
+</script>
+<? elseif ($success === true): ?>
+    <a class="btn btn-primary" href="<?=$this->recordLink()->getUrl($this->driver, 'Interlending')?>"><?=$this->transEsc('navigate_back')?></a>
+    <script type="text/javascript">
+        var _paq = _paq || [];
+        _paq.push(['setCustomVariable', 1, 'Fernleihbestellung', 'erfolgreich', 'page']);
+    </script>
+
+<? endif; ?>
