@@ -13,7 +13,7 @@ $config = [
 //            'client' => 'Bsz\View\Helper\Factory::getClient',
 //            'libraries' => 'Bsz\View\Helper\Factory::getLibraries',
 //            'recordLink' => 'BszTheme\View\Helper\Bodensee\Factory::getRecordLink',
-//            'getLastSearchLink' => 'VuFind\View\Helper\Bodensee\Factory::getGetLastSearchLink',
+            'getLastSearchLink' => 'BszTheme\View\Helper\Bodensee\Factory::getGetLastSearchLink',
 //            'illform' => 'Bsz\View\Helper\Factory::getIllForm',
 //            'piwik' => 'BszTheme\View\Helper\Bodensee\Factory::getPiwik',
         ],
