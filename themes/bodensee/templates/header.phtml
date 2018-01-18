@@ -1,0 +1,86 @@
+<? $account = $this->auth()->getManager(); ?>
+<? if ($this->layout()->searchbox !== false ): ?>
+    <div class="navbar-left">
+        <? if (!isset($frame)): ?>
+            <button type="button" class="navbar-toggle btn btn-primary" data-toggle="collapse" data-target="#header-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <i class="fa fa-bars"></i>
+            </button>    
+        <? endif; ?>
+        <?=$this->layout()->searchbox?>
+    </div>
+<? endif; ?>
+<? if (!isset($this->layout()->renderingError)): ?>
+  <div class="collapse navbar-collapse navbar-right" id="header-collapse">
+    <ul class="nav navbar-nav">
+        <? if ($this->client()->isIsilSession() && (!$this->client()->hasIsilSession() || \Bsz\Debug::isInternal())): ?>
+      <li class="dropdown">
+           <?=$this->partial('bsz/illdropdown.phtml')?>           
+      </li>
+      <? endif; ?>
+      <? if ($this->feedback()->tabEnabled()): ?>
+        <li class="hidden-md">
+          <a id="feedbackLink" class="modal-link" href="<?=$this->url('feedback-home') ?>"><i class="fa fa-comment"></i> <?=$this->transEsc("Feedback")?></a>
+        </li>
+      <? endif; ?>
+      <? $cart = $this->cart(); if ($cart->isActive()): ?>
+        <li id="cartSummary">
+          <a id="cartItems" class="modal-link" title="<?=$this->transEsc('View Book Bag')?>" href="<?=$this->url('cart-home')?>"><i class="fa fa-thumb-tack"></i> <strong><?=count($cart->getItems())?></strong> <?=$this->transEsc('items')?><?=$cart->isFull() ? ' (' .  $this->transEsc('bookbag_full') . ')' : ''?></a>
+        </li>
+      <? endif; ?>
+          <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
+            <li class="logoutOptions<? if(!$account->isLoggedIn()): ?> hidden<? endif ?>">
+          <a href="<?=$this->url('myresearch-home', array(), array('query' => array('redirect' => 0)))?>" class="modal-link" title="<?=$this->transEsc("Your Account")?>"><i class="fa fa-star"></i> <?=$this->transEsc("Your Account")?></a>
+            </li>
+            <li class="logoutOptions<? if(!$account->isLoggedIn()): ?> hidden<? endif ?>">
+          <a href="<?=$this->url('myresearch-logout')?>" class="modal-link" title="<?=$this->transEsc("Log Out")?>"><i class="fa fa-sign-out"></i> <?=$this->transEsc("Log Out")?></a>
+            </li>
+            <li id="loginOptions"<? if($account->isLoggedIn()): ?> class="hidden"<? endif ?>>
+          <? if ($account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')))): ?>
+            <a data-toggle="tooltip" data-placement="bottom" title="<?=$this->transEsc('Institutional Login Tooltip')?>" href="<?=$this->url('myresearch-userlogin')?>"><i class="fa fa-user"></i> <?=$this->transEsc("Institutional Login")?></a>
+          <? else: ?>
+            <a href="<?=$this->url('myresearch-userlogin')?>" class="modal-link" title="<?=$this->transEsc("Login")?>"><i class="fa fa-user"></i> <?=$this->transEsc("Login")?></a>
+          <? endif; ?>
+            </li>
+<? endif; ?>
+      <? if(strlen($this->client()->getWebsite('adis') && !$this->client()->isIsilSession()) > 0): ?>
+      <li>
+          <a class="external" data-toggle="tooltip" data-placement="bottom" title="<?=$this->transEsc('header_login_tooltip')?>" href="<?=$this->client()->getWebsite('adis')?>"><i class="fa fa-user"></i> <?=$this->transEsc('header_login_link')?></a>
+      </li>
+      <? endif; ?>
+      <? if (isset($this->layout()->themeOptions) && count($this->layout()->themeOptions) > 1): ?>
+        <li class="dropdown">
+          <form method="post" name="themeForm" action="" id="themeForm">
+            <input type="hidden" name="ui"/>
+          </form>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=$this->transEsc("Theme")?> <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <? foreach ($this->layout()->themeOptions as $current): ?>
+              <li<?=$current['selected'] ? ' class="active"' : ''?>><a href="#" onClick="document.themeForm.ui.value='<?=$this->escapeHtmlAttr($current['name'])?>';document.themeForm.submit()"><?=$this->transEsc($current['desc'])?></a></li>
+            <? endforeach; ?>
+          </ul>
+        </li>
+      <? endif; ?>  
+
+      <? if (isset($this->layout()->allLangs) && count($this->layout()->allLangs) > 1): ?>
+        <li class="dropdown">
+          <form method="post" name="langForm" action="#" id="langForm">
+            <input type="hidden" name="mylang"/>
+          </form>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-down"></i> <span class="text hidden-lg"><?=$this->transEsc('Language')?></span> <img src="<?=$this->imageLink('flags/'.$this->layout()->userLang.'.png')?>" alt="Language Flag" /></a>
+          <ul class="dropdown-menu">
+          <? foreach ($this->layout()->allLangs as $langCode => $langName): ?>
+            <li<?=$this->layout()->userLang == $langCode ? ' class="active"' : ''?>>
+                <a class="" href="#" onClick="document.langForm.mylang.value='<?=$langCode?>';document.langForm.submit()">
+                    <img src="<?=$this->imageLink('flags/'.$langCode.'.png')?>" alt="Flag <?=$this->displayLanguageOption($langName)?>" />
+                    <?=$this->displayLanguageOption($langName)?>
+                </a>
+            </li>
+          <? endforeach; ?>
+          </ul>
+        </li>
+      <? endif; ?>        
+      <li><a title="Home" href="<?=$this->url('home') ?>"><i class="fa fa-home"></i> <spcn class="text hidden-lg"><?=$this->transEsc('Home')?></span></a></li>
+    </ul>
+  </div>
+<? endif; ?>
