@@ -1,0 +1,61 @@
+<?  $labelSize = 3; 
+    $inputSize = 9; 
+    $account = $this->auth()->getManager();
+    $library = $this->libraries()->getFirst($this->client()->getIsils());
+    $authMethod = '';
+    if (isset($library)) {
+        $authMethod = $library->getAuth();
+    }
+ ?>
+<? if (!$account->loginEnabled() || $authMethod != 'shibboleth'): ?>
+<div class=" form-group form-group-sm <?= isset($success) && !$success ? 'has-error' : ''?>">
+    <label class="control-label col-sm-<?=$labelSize?>" for="ill-user"><?=$this->transEsc('Benutzernummer')?>*</label>
+    <div class="col-sm-3">
+        <input required="" type="text" class="form-control" id="ill-user" name="BenutzerNummer" value="<?= isset($params['BenutzerNummer']) ? $params['BenutzerNummer'] : '' ?>"/>
+    </div>
+</div>
+<? $libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>   
+<? $firstLibrary = array_shift($libraries);
+if(isset($firstLibrary) && $firstLibrary->getAuth() == 'tan'): ?>
+    <div class=" form-group form-group-sm <?= isset($success) && !$success ? 'has-error' : ''?>">
+        <label class="control-label col-sm-<?=$labelSize?>" for="ill-tan"><?=$this->transEsc('TAN')?>*</label>
+        <div class="col-sm-3">
+            <input type="password" class="form-control" id="ill-tan" name="TAN" required=""/>
+        </div>
+    </div>
+<? else: ?>
+    <div class=" form-group form-group-sm <?= isset($success) && !$success ? 'has-error' : ''?> ">
+        <label class="control-label col-sm-<?=$labelSize?>" for="ill-password"><?=$this->transEsc('Password')?>*</label>
+        <div class="col-sm-3">
+            <input type="password" class="form-control" id="ill-password" name="Passwort" required=""/>
+        </div>
+    </div>
+<? endif; ?>
+<? elseif ($account->isLoggedIn()): ?>
+<? $identity = $account->getIdentity()?>
+<div CLASS="col-sm-12 col-sm-offset-3">
+    <p><i class="fa fa-check text-success"></i> <?=$this->transEsc('shib_already_logged_in')?></p>    
+</div>
+<!-- user name may be replaced before sending to zfl server -->
+<input type="hidden" name="BenutzerNummer" value="<?=htmlspecialchars($identity->username)?>" />
+<? endif; ?>
+<? $zdb = isset($this->driver) ? $this->driver->getZdbId() : '' ?>
+<? $ppn = 999999999;
+   if (empty($zdb) && isset($this->driver)) {
+       $ppn = $this->driver->getPPN();
+   } elseif (isset($this->driver) && !empty($zdb)) {
+       $ppn = $zdb;
+   }
+?>
+<input type="hidden" name="Verbund" value="<?=$this->escapeHtmlAttr(isset($this->driver) ? $this->driver->tryMethod('getNetwork') : '')?>" />
+<input type="hidden" name="TitelId" value="<?=$this->escapeHtmlAttr($ppn)?>" />
+<? if (isset($this->driver)): ?>
+<input type="hidden" name="Bestellform" value="<?= ($this->driver->isBook()) ? 'Leihen' : 'Kopie' ?>" />
+<? else: ?>
+<input type="hidden" name="Bestellform" value="Kopie" />
+<? endif; ?>
+<input type="hidden" name="Besteller" value="E" />
+<? if (!isset($this->driver)): ?>
+<? // freies Fernleihformular ?>
+<input type="hidden" name="SignZustand" value="on" />
+<? endif; ?>

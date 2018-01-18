@@ -1,0 +1,9 @@
+<? if (!empty($this->openUrl) && !empty($this->openUrlBase)): ?>
+    <a href="<?=$this->escapeHtmlAttr($this->openUrlBase . '?' . $this->openUrl)?>" class="<? if(!empty($this->openUrlGraphic)): ?>hasicon <? endif; ?>external" title="<?=$this->transEsc('redi_link_title')?>">
+        <? if(!empty($this->openUrlGraphic)): ?>
+            <img src="<?=$this->escapeHtmlAttr($this->openUrlGraphic)?>" alt="<?=$this->transEsc('redi_link_text')?>" title="<?=$this->transEsc('redi_link_text')?>" />
+        <? else: ?>
+            <?=$this->transEsc('redi_link_text')?>
+        <? endif; ?>
+    </a><br/>
+<? endif; ?>
