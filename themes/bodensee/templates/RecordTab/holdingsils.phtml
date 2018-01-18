@@ -1,0 +1,163 @@
+<?
+    // Set up convenience variables:
+    $account = $this->auth()->getManager();
+    $user = $account->isLoggedIn();
+    $holdings = $this->driver->getRealTimeHoldings();
+    $unknown = false;
+    $openUrl = $this->openUrl($this->driver, 'holdings');
+    $openUrlActive = $openUrl->isActive();
+    // Account for replace_other_urls setting
+    $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+    $offlineMode = $this->ils()->getOfflineMode();
+    // Set page title.
+    $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
+?>
+<?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
+
+<? if ($offlineMode == "ils-offline"): ?>
+  <div class="alert alert-warning">
+    <h3><?=$this->transEsc('ils_offline_title')?></h3>
+    <p><strong><?=$this->transEsc('ils_offline_status')?></strong></p>
+    <p><?=$this->transEsc('ils_offline_holdings_message')?></p>
+    <? $supportEmail = $this->escapeHtmlAttr($this->systemEmail()); ?>
+    <p><a href="mailto:<?=$supportEmail?>"><?=$supportEmail?></a></p>
+  </div>
+<? endif; ?>
+<? if (($this->ils()->getHoldsMode() == 'driver' && !empty($holdings)) || $this->ils()->getTitleHoldsMode() == 'driver'): ?>
+  <? if ($account->loginEnabled() && $offlineMode != 'ils-offline'): ?>
+    <? if (!$user): ?>
+      <div class="alert alert-info">
+        <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'Holdings')?>?login=true&amp;catalogLogin=true"><?=$this->transEsc("Login")?></a> <?=$this->transEsc("hold_login")?>
+      </div>
+    <? elseif (!$user->cat_username): ?>
+      <div class="alert alert-info">
+        <?=$this->translate("hold_profile_html", array('%%url%%' => $this->currentPath() . '?catalogLogin=true'))?>
+      </div>
+    <? endif; ?>
+  <? endif; ?>
+<? endif; ?>
+<? $holdingTitleHold = $this->driver->tryMethod('getRealTimeTitleHold'); if (!empty($holdingTitleHold)): ?>
+    <a class=" modal-link" title="<?=$this->transEsc('request_place_text')?>" href="<?=$this->recordLink()->getRequestUrl($holdingTitleHold)?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc('title_hold_place')?></a>
+<? endif; ?>
+ <?// removed online access as this is listed in main section ?>
+ <? $recallButtonCounter = 0 ?>
+  
+  <? foreach ($holdings as $holding): ?>
+
+  <? $locationText = $this->transEsc('location_' . $holding['location'], array(), $holding['location']); ?>
+  <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
+  <h3><a href="<?=$holding['locationhref']?>" target="_blank"><?=$locationText?></a></h3>
+  <? elseif(!empty($locationText)): ?>
+  <h3><?=$locationText?></h3>
+  <? endif; ?>
+
+<table class="table table-striped">
+  <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
+  <? endif; ?>
+  <? foreach ($this->ils()->getHoldingsTextFieldNames() as $textField): ?>
+    <? if (!empty($holding[$textField])): ?>
+      <tr>
+        <? // Translation for summary is a special case for backwards-compatibility ?>
+        <th><?=$textField == 'summary' ? $this->transEsc("Volume Holdings") : $this->transEsc(ucfirst($textField))?>:</th>
+        <td>
+          <? foreach ($holding[$textField] as $current): ?>
+            <?=$this->escapeHtml($current)?><br/>
+          <? endforeach; ?>
+        </td>
+      </tr>
+    <? endif; ?>
+  <? endforeach; ?>
+  <? foreach ($holding['items'] as $row): ?>
+
+    <? /* One Recall/Holds-Button for all items */ ?>
+    <? if ($row['status'] != 'For reference' && 
+           $row['status'] != 'Lost' && 
+           $row['status'] != 'Missing' && 
+           $row['status'] != 'Permanent on loan'): 
+           $recallButtonCounter++; 
+       endif; 
+    ?>
+
+    <? if ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIAadis'): //start of new/adis DAIA code ?>
+        <?=$this->render('RecordTab/parts/adisdaia.phtml', ['row' => $row, 'driver' => $this->driver, 'recallButtonCounter' => $recallButtonCounter])?>
+
+    <? else: // start of old DAIA code ?>
+    
+        <?=$this->render('RecordTab/parts/olddaia.phtml', ['row' => $row, 'driver' => $this->driver])?>
+        
+    <? endif; // End of old DAIA code ?>
+  <? endforeach; ?>
+  <? if (!empty($holding['purchase_history'])): ?>
+    <tr>
+      <th><?=$this->transEsc("Most Recent Received Issues")?>:</th>
+      <td>
+        <? foreach ($holding['purchase_history'] as $current): ?>
+          <?=$this->escapeHtml($current['issue'])?><br/>
+        <? endforeach; ?>
+      </td>
+    </tr>
+  <? endif; ?>
+</table>
+<? endforeach; ?>
+
+
+
+<? /* One Recall/Holds-Button for all items */ ?>
+<? if ($this->client()->is('only_one_holds_button')): ?>
+    <? if (isset($row['link']) && ($recallButtonCounter > 0)): ?>
+        <a href="<?=$row['link']?>" class="btn btn-primary recallholdButtonLink <? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external "><?=$this->transEsc('recall/hold')?></a>
+    <? endif; ?>
+<? endif; ?>
+
+
+
+<? $history = $this->driver->getRealTimeHistory(); ?>
+<? if (is_array($history) && !empty($history)): ?>
+<h3><?=$this->transEsc("Most Recent Received Issues")?></h3>
+<table class="table table-striped">
+  <? foreach ($history as $row): ?>
+    <tr><td><?=$this->escapeHtml($row['issue'])?></td></tr>
+  <? endforeach; ?>
+</table>
+<? endif; ?>
+<? if (empty($holdings) || $unknown): ?>
+    <? // Holdings from field 924 ?>
+    <? $localHoldings = $this->driver->getLocalHoldings(); if (count($localHoldings) > 0): ?>
+    <table class="table table-striped">
+        <tr>
+            <th class="col-sm-1 col-xs-2"><?=$this->transEsc('ISIL')?></th>        
+            <th class="col-lg-4"><?=$this->transEsc('Library')?></th>        
+            <th><?=$this->transEsc('Signatur')?></th>
+            <th><?=$this->transEsc('Location')?></th>
+            <? if ($this->driver->isJournal() || $this->driver->isSerial()): ?><th><?=$this->transEsc('Collection')?></th><? endif; ?>
+        </tr>
+        <? foreach ($localHoldings as $holding): ?>
+            <tr>
+                <? $libraries = $this->libraries()->getByIsils([$holding['b']]) ?>
+                <? $library = $libraries->current() ?>
+                <td><strong>
+                    <?= isset($holding['b']) ? $this->escapeHtml($holding['b']) : ''?>
+                    </strong>
+                </td>
+                <td><?= isset($library) ? $this->escapeHtmlAttr((string)$library) : ''?></td>
+                <td><?=isset($holding['g']) ? $this->escapeHtml($holding['g']) : ''?></td>
+                <td><?=isset($holding['h']) ? $this->escapeHtml($holding['h']) : ''?></td>
+                <td>
+                    <? if (isset($holding['z'])):?>
+                        <?=$this->escapeHtml($holding['z'])?> 
+                    <? endif; ?>
+                    <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial()) ): ?>
+                        <? if (isset($holding['z'])):?><br/><? endif; ?>
+                        <?=$this->render('RecordDriver/SolrDefault/parts/adislink.phtml')?>
+                    <? endif; ?>
+                </td>
+            </tr>
+            
+        <? endforeach; ?>
+    </table>
+    <? else: ?>
+    <p class="text-danger"><?=$this->transEsc('No holdings available')?></p>
+    <? endif; ?>
+
+
+<? endif; ?>

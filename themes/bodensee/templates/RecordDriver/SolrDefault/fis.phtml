@@ -1,0 +1,6 @@
+<?if($this->driver->isFisBildung()): ?>
+<?$id = $this->driver->getPPN()?>
+<a class="pull-right" target="_blank" title="<?=$this->transEsc("view_on")?>www.fachportal-paedagogik.de" href="http://www.fachportal-paedagogik.de/fis_bildung/suche/fis_set.html?FId=<?=urlencode($id)?>" class="hasicon external">
+    <img class="fis-bildung-logo" src="/themes/bodensee/images/fis_bildung.gif" alt="FIS Bildung"/>    
+</a>
+<? endif; ?>

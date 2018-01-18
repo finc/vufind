@@ -1,0 +1,75 @@
+<? if($row['callnumber'] != 'Unknown'): ?>
+    <? $check = (isset($row['check']) && $row['check']); ?>
+    <? $checkStorageRetrievalRequest = (isset($row['checkStorageRetrievalRequest']) && $row['checkStorageRetrievalRequest']); ?>
+    <? $checkILLRequest = (isset($row['checkILLRequest']) && $row['checkILLRequest']); ?>
+    <? if (isset($row['barcode']) && $row['barcode'] != "" && !$this->driver->isEBook()): ?>
+      <tr vocab="http://schema.org/" typeof="Offer">
+       
+
+        <th><?=$row['callnumber']?></th>
+        <td>
+          <? if ($row['reserve'] == "Y"): ?>
+            <link property="availability" href="http://schema.org/InStoreOnly" />
+            <?=$this->transEsc("On Reserve - Ask at Circulation Desk")?><br />
+          <? endif; ?>
+          <? if (isset($row['use_unknown_message']) && $row['use_unknown_message']): ?>
+            <span class="text-muted"><?=$this->transEsc("status_unknown_message")?></span>
+          <? else: ?>
+            <? if ($row['availability']): ?>
+              <? /* Begin Available Items (Holds) */ ?>
+               <span class="text-success"><?=$this->transEsc("Available")?><link property="availability" href="http://schema.org/InStock" /></span>
+              <? if (isset($row['link']) && $row['link']): ?>
+                <a class="hasicon <?=$check ? 'checkRequest ' : ''?>inlineblock <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?>  external hasicon" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>"></a>
+              <? endif; ?>
+              <? if (isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
+                <a class="hasicon <?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?> external hasicon placeStorageRetrievalRequest" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
+              <? endif; ?>
+              <? if (isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
+                <a class="hasicon <?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?> external hasicon placeILLRequest" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
+              <? endif; ?>
+              <? if ($this->client()->is('always_place_hold')): ?>
+                <a class="<?=$check ? 'checkRequest' : ''?> <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?> external hasicon inlineblock " data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
+              <? endif; ?>              
+            <? else: ?>
+              <? /* Begin Unavailable Items (Recalls) */ ?>
+              <span class="text-danger"><?=$this->transEsc($row['status'])?><link property="availability" href="http://schema.org/OutOfStock" /></span>
+              <? if (isset($row['returnDate']) && $row['returnDate']): ?>&ndash; <span class="small"><?=$this->escapeHtml($row['returnDate'])?></span><? endif; ?>
+              <? if (isset($row['duedate']) && $row['duedate']): ?>
+                &ndash; <span class="small"><?=$this->transEsc("Due")?>: <?=$this->escapeHtml($row['duedate'])?></span>
+              <? endif; ?>
+              <? if (isset($row['requests_placed']) && $row['requests_placed'] > 0): ?>
+                <span><?=$this->transEsc("Requests")?>: <?=$this->escapeHtml($row['requests_placed'])?></span>
+              <? endif; ?>
+              <? if (isset($row['link']) && $row['link']): ?>
+                <!-- Vormerken / Möglichkeit einer Vormerkung prüfen -->
+                <a class="<?=$check ? 'checkRequest' : ''?> <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?> external hasicon inlineblock " data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
+              <? endif; ?>
+            <? endif; ?>
+          <? endif; ?>
+          <? /* Embed item structured data: library, barcode, call number */ ?>
+          <? if ($row['location']): ?>
+            <meta property="seller" content="<?=$this->escapeHtmlAttr($row['location'])?>" />
+          <? endif; ?>
+          <? if ($row['barcode']): ?>
+            <meta property="serialNumber" content="<?=$this->escapeHtmlAttr($row['barcode'])?>" />
+          <? endif; ?>
+          <? if ($row['callnumber']): ?>
+            <meta property="sku" content="<?=$this->escapeHtmlAttr($row['callnumber'])?>" />
+          <? endif; ?>
+          <? /* Declare that the item is to be borrowed, not for sale */ ?>
+            <link property="businessFunction" href="http://purl.org/goodrelations/v1#LeaseOut" />
+            <link property="itemOffered" href="#record" />
+        </td>
+        <? if (isset($row['part']) && strlen($row['part']) > 0): ?>
+        <td>
+        <?=$this->escapeHtml($row['part'])?>
+        </td>
+        <? endif; ?>
+        <? if (isset($row['about']) && strlen($row['about']) > 0): ?>
+        <td>
+        <?=$this->escapeHtml($row['about'])?>
+        </td>        
+        <? endif; ?>
+      </tr>
+<? endif; ?>
+<? endif; ?>
