@@ -150,36 +150,36 @@ JS;
       </div>
       
     </header>      
-    <nav class="breadcrumbs">
-      <div class="container">
-        <? if((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
-          && !empty($this->layout()->breadcrumbs)
-          && $this->layout()->breadcrumbs !== false
-        ): ?>
-          <ul class="breadcrumb hidden-print">
-          <? if(is_array($this->layout()->breadcrumbs)): ?>
-            <? if(count($this->layout()->breadcrumbs) > 1): ?>
-                <?=$this->render('breadcrumbs/multi.phtml', [
-                  'parents' => $this->layout()->breadcrumbs,
-                    'title' => $this->layout()->title,
-                    'from' => $this->layout()->from
-                ]) ?>
-            <? else: ?>
-                <?=$this->render('breadcrumbs/default.phtml', [
-                  'parents' => $this->layout()->breadcrumbs,
-                    'title' => $this->layout()->title
-                  ]) ?>
+    <main role="main" class="main">
+        <nav class="container breadcrumbs">  
+            <? if((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
+              && !empty($this->layout()->breadcrumbs)
+              && $this->layout()->breadcrumbs !== false
+            ): ?>
+              <ul class="breadcrumb hidden-print">
+              <? if(is_array($this->layout()->breadcrumbs)): ?>
+                <? if(count($this->layout()->breadcrumbs) > 1): ?>
+                    <?=$this->render('breadcrumbs/multi.phtml', [
+                      'parents' => $this->layout()->breadcrumbs,
+                        'title' => $this->layout()->title,
+                        'from' => $this->layout()->from
+                    ]) ?>
+                <? else: ?>
+                    <?=$this->render('breadcrumbs/default.phtml', [
+                      'parents' => $this->layout()->breadcrumbs,
+                        'title' => $this->layout()->title
+                      ]) ?>
+                <? endif; ?>
+              <? else: ?>
+                <?=$this->layout()->breadcrumbs ?>
+              <? endif; ?>
+              </ul>
             <? endif; ?>
-          <? else: ?>
-            <?=$this->layout()->breadcrumbs ?>
-          <? endif; ?>
-          </ul>
-        <? endif; ?>
+        </nav>        
+        <div class="container">
+          <?=$this->layout()->content ?>
         </div>
-      <div class="container">
-        <?=$this->layout()->content ?>
-      </div>
-    </div>
+    </main>   
     <footer class="hidden-print">
       <div class="container">
         <?=$this->render('footer.phtml')?>

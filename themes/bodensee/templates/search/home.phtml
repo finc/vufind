@@ -54,14 +54,14 @@ JS;
       <? else: ?>
           <div class="col-md-9 col-xs-6  hidden-sm hidden-xs">
               <? if ($this->imageLink($this->clientAsset()->getHeader())): ?>
-              <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" alt="Aufmacherbild" />
+              <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" class="img-responsive" alt="Aufmacherbild" />
               <? endif; ?>
           </div>
       <? endif; ?>
       <div class="col-xs-5 col-sm-3 pull-right">
           <? if ($this->imageLink($this->clientAsset()->getLogo()) && ($this->client()->hasIsilSession() || !$this->client()->isIsilSession() )): ?>
             <a href="<?=$this->client()->getWebsite()?>" class="external hasicon">      
-                <img src="<?=$this->imageLink($this->clientAsset()->getLogo())?>" alt="Logo Bibliothek" class="logo"/>
+                <img src="<?=$this->imageLink($this->clientAsset()->getLogo())?>" alt="Logo Bibliothek" class="logo img-responsive"/>
             </a>
           <? endif; ?>
       </div>      
