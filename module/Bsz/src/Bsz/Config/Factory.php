@@ -66,8 +66,10 @@ class Factory
     {
         # fetch mysql connection info out config
         $config = $sm->get('VuFind\Config')->get('config');
-        $adapter = $sm->get('\VuFind\DbAdapterFactory')
-            ->getAdapterFromConnectionString($config->get('Database')->get('db_libraries'));
+        $adapterfactory = $sm->get('\VuFind\DbAdapterFactory');
+        $database = $config->get('Database');
+        $library = $database->get('db_libraries');
+        $adapter = $adapterfactory->getAdapterFromConnectionString($library);
         $resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAYOBJECT, new Library());
         $librariesTable = new Libraries('libraries', $adapter, null, $resultSetPrototype);
         return $librariesTable;
