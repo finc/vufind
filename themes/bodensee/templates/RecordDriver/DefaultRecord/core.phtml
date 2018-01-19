@@ -14,7 +14,7 @@
           <? endif; ?>
             <img alt="" class="recordcover <?=$this->mapper()->mapIcon($this->driver->getFormats())?>" src="<?=$this->escapeHtmlAttr($mediumThumb);?>"/>          
         <? else: ?>
-           <?=$this->render('RecordDriver/SolrDefault/parts/cover.phtml')?>
+           <?=$this->render('RecordDriver/DefaultRecord/parts/cover.phtml')?>
         <? endif; ?>
         <? if ($largeThumb): ?>
           </a>
@@ -53,7 +53,7 @@
                 <? endforeach; ?></td>
             </tr>
             <? endif; ?>      
-            <?=$this->render('RecordDriver/SolrDefault/parts/series.phtml')?>
+            <?=$this->render('RecordDriver/DefaultRecord/parts/series.phtml')?>
             <? $journalTitle = $this->driver->getContainerTitle(); 
               $issue=$this->driver->getContainerIssue(); 
               $relParts=$this->driver->getContainerRelParts(); 
@@ -219,7 +219,7 @@
                 <td><a href="<?=$this->recordLink()->getChildRecordSearchUrl($this->driver)?>"><?=$this->transEsc('child_record_count', array('%%count%%' => $childRecordCount))?></a></td>
             </tr>
             <? endif; ?>    
-            <?=$this->render('RecordDriver/SolrDefault/parts/subjects.phtml')?>
+            <?=$this->render('RecordDriver/DefaultRecord/parts/subjects.phtml')?>
 
             <?
                   $openUrl = $this->openUrl($this->driver, 'record');
@@ -263,7 +263,7 @@
       </tr>
       <? endif; ?>
       
-      <?=$this->render('RecordDriver/SolrDefault/parts/illbutton.phtml')?>
+      <?=$this->render('RecordDriver/DefaultRecord/parts/illbutton.phtml')?>
       <? $recordLinks = $this->driver->getAllRecordLinks(); ?>
       <? if(!empty($recordLinks)): ?>
         <tr>
