@@ -29,7 +29,7 @@ class SolrGvimarc extends SolrMarc
 {
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
-    use \VuFind\RecordDriver\MarcAdvancedTrait;    
+    use \VuFind\RecordDriver\MarcAdvancedTrait;
 
     /**
      * Used for concatenating subfields
@@ -44,7 +44,7 @@ class SolrGvimarc extends SolrMarc
 
     /**
      *
-     * @var FormatMapper 
+     * @var FormatMapper
      */
     protected $mapper;
 
@@ -137,7 +137,7 @@ class SolrGvimarc extends SolrMarc
         $headings = $this->getSubjectHeadings($fields);
         return $headings;
 //        if(array_key_exists('subject_all', $this->fields)) {
-//            return $this->fields['subject_all'];            
+//            return $this->fields['subject_all'];
 //        }
 //        else {
 //            return array();
@@ -165,7 +165,7 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
-     * Get all subjects associated with this item. They are unique. 
+     * Get all subjects associated with this item. They are unique.
      *
      * @return array
      */
@@ -281,14 +281,14 @@ class SolrGvimarc extends SolrMarc
     {
         // issn = 022a:440x:490x:730x:773x:776x:780x:785x
         $issn = array_merge(
-                $this->getFieldArray('022', ['a']), 
-                $this->getFieldArray('029', ['a']), 
-                $this->getFieldArray('440', ['x']), 
-                $this->getFieldArray('490', ['x']), 
-                $this->getFieldArray('730', ['x']), 
-                $this->getFieldArray('773', ['x']), 
-                $this->getFieldArray('776', ['x']), 
-                $this->getFieldArray('780', ['x']), 
+                $this->getFieldArray('022', ['a']),
+                $this->getFieldArray('029', ['a']),
+                $this->getFieldArray('440', ['x']),
+                $this->getFieldArray('490', ['x']),
+                $this->getFieldArray('730', ['x']),
+                $this->getFieldArray('773', ['x']),
+                $this->getFieldArray('776', ['x']),
+                $this->getFieldArray('780', ['x']),
                 $this->getFieldArray('785', ['x'])
         );
         return $issn;
@@ -384,7 +384,7 @@ class SolrGvimarc extends SolrMarc
 
     /**
      * Get PPN of Record
-     * 
+     *
      * @return string
      */
     public function getPPN()
@@ -411,18 +411,18 @@ class SolrGvimarc extends SolrMarc
     public function getPrimaryAuthor()
     {
         //return trim($this->getFirstFieldValue('100', ['a']));
-        
+
         $author = trim($this->getFirstFieldValue('100', ['a']));
         $titles = trim($this->getFirstFieldValue('100', ['c']));
         $dates = trim($this->getFirstFieldValue('100', ['d']));
-        
+
         if (!empty($titles)) {$author .= ', ' . $titles;}
         if (!empty($dates)) {$author .= ', ' . $dates;}
 
-        return $author;                
-                
+        return $author;
+
     }
-    
+
     /**
      * Get the main author of the record.
      *
@@ -431,17 +431,17 @@ class SolrGvimarc extends SolrMarc
     public function getPrimaryAuthorShort()
     {
         //return trim($this->getFirstFieldValue('100', ['a']));
-        
+
         $author = trim($this->getFirstFieldValue('100', ['a']));
         $titles = trim($this->getFirstFieldValue('100', ['c']));
-        
+
         if (!empty($titles)) {$author .= ', ' . $titles;}
 
-        return $author;                
-                
-    }    
+        return $author;
 
-        
+    }
+
+
     /**
      * Get GND-ID from 100|0 with (DE-588)-prefix
      *
@@ -460,8 +460,8 @@ class SolrGvimarc extends SolrMarc
         }
         return $gndauthor;
     }
-    
-    
+
+
     /**
      * Get the item's place of publication.
      *
@@ -509,7 +509,7 @@ class SolrGvimarc extends SolrMarc
         if (is_object($f008)) {
             $f008 = $f008->getData();
             preg_match('/^(\d{2})(\d{2})(\d{2})([a-z])(\d{4})/', $f008, $matches);
-        }                
+        }
         if (array_key_exists(5, $matches)) {
             $years[] = $matches[5];
         }
@@ -520,21 +520,21 @@ class SolrGvimarc extends SolrMarc
                 264 => 'c',
             ];
             $years = $this->getFieldsArray($fields);
-            
+
             foreach ($years as $k => $year) {
                 if ($year == 'anfangs' || $year == 'früher' || $year == 'teils') {
                     unset($years[$k]);
                 } else {
                     // this magix removes braces and other chars
                     $years[$k] = preg_replace('/[^\d-]|-$/', '', $year);
-                } 
+                }
             }
-        
-            
+
+
         }
         if (count($years) > 0) {
-            $return = array_values(array_unique($years));            
-        } 
+            $return = array_values(array_unique($years));
+        }
         return $return;
 
     }
@@ -547,16 +547,45 @@ class SolrGvimarc extends SolrMarc
     public function getSecondaryAuthors()
     {
         $author2 = array_merge(
-            $this->getFieldArray('110', ['a', 'b']), 
-            $this->getFieldArray('111', ['a', 'b']), 
-            $this->getFieldArray('700', ['a', 'b', 'c', 'd']), 
-            $this->getFieldArray('710', ['a', 'b']), 
+            $this->getFieldArray('110', ['a', 'b']),
+            $this->getFieldArray('111', ['a', 'b']),
+            $this->getFieldArray('700', ['a', 'b', 'c', 'd']),
+            $this->getFieldArray('710', ['a', 'b']),
             $this->getFieldArray('711', ['a', 'b'])
         );
         return $author2;
     }
 
-    
+    /**
+     * Return an array of primary and secondary authors
+     * @return array
+     */
+    public function getDeduplicatedAuthors($dataFields = ['role'])
+    {
+        $authors = [];
+        $authors['primary'] = $this->getPrimaryAuthor();
+        $authors['secondary'] = array_unique($this->getSecondaryAuthors());
+        $authors['corporate'] = $this->getCorporateAuthors();
+
+        $corporate = [];
+        $secondary = [];
+        foreach (array_unique($this->getSecondaryAuthors()) as $a) {
+            if (!$a == $authors['primary'] ) {
+                array_push($secondary, $a);
+            }
+        }
+        $authors['secondary'] = array_unique($secondary);
+        foreach (array_unique($this->getCorporateAuthors()) as $c) {
+            if (!$c == $authors['primary'] ) {
+                array_push($corporate, $c);
+            }
+        }
+        $authors['corporate'] = array_unique($corporate);
+
+        return $authors;
+    }
+
+
     /**
      * Get an array of all secondary authors (complementing getPrimaryAuthor()).
      *
@@ -565,14 +594,14 @@ class SolrGvimarc extends SolrMarc
     public function getSecondaryAuthorsShort()
     {
         $author2 = array_merge(
-            $this->getFieldArray('110', ['a', 'b']), 
-            $this->getFieldArray('111', ['a', 'b']), 
-            $this->getFieldArray('700', ['a', 'b', 'c']), 
-            $this->getFieldArray('710', ['a', 'b']), 
+            $this->getFieldArray('110', ['a', 'b']),
+            $this->getFieldArray('111', ['a', 'b']),
+            $this->getFieldArray('700', ['a', 'b', 'c']),
+            $this->getFieldArray('710', ['a', 'b']),
             $this->getFieldArray('711', ['a', 'b'])
         );
         return $author2;
-    }    
+    }
     /**
      * Get an array of all series names containing the record.  Array entries may
      * be either the name string, or an associative array with 'name' and 'number'
@@ -585,8 +614,8 @@ class SolrGvimarc extends SolrMarc
         //series = 440ap:800abcdfpqt:830ap
         //series2 = 490a
         $series = array_merge(
-                $this->getFieldArray('440', ['a', 'p']), 
-                $this->getFieldArray('800', ['a', 'b', 'c', 'd', 'f', 'p', 'q', 't']), 
+                $this->getFieldArray('440', ['a', 'p']),
+                $this->getFieldArray('800', ['a', 'b', 'c', 'd', 'f', 'p', 'q', 't']),
                 $this->getFieldArray('830', ['a', 'p']));
         if (count($series) == 0) {
             $series = $this->getFieldArray('490', ['a']);
@@ -747,7 +776,7 @@ class SolrGvimarc extends SolrMarc
         //url = 856u:555u
 
         $urls = [];
-        $urlFields = array_merge($this->getMarcRecord()->getFields('856'), 
+        $urlFields = array_merge($this->getMarcRecord()->getFields('856'),
                 $this->getMarcRecord()->getFields('555'));
         foreach ($urlFields as $f) {
             $f instanceof File_MARC_Data_Field;
@@ -777,7 +806,7 @@ class SolrGvimarc extends SolrMarc
     /* No Hierrachy functions yet */
 
     /**
-     * As out fiels 773 does not contain any further title information we need 
+     * As out fiels 773 does not contain any further title information we need
      * to query solr again
      *
      * @return array
@@ -798,20 +827,20 @@ class SolrGvimarc extends SolrMarc
                 // QnD
                 // We need the searchClassId here to get proper filters
                 $searchClassId = 'Solr';
-                if (isset($_SERVER['REQUEST_URI']) && 
+                if (isset($_SERVER['REQUEST_URI']) &&
                         strpos($_SERVER['REQUEST_URI'], 'Interlending') !== FALSE) {
                     $searchClassId = 'Interlending';
                 }
-                
+
                 $results = $this->runner->run($params, $searchClassId);
                 $this->container = $results->getResults();
             }
         }
         return $this->container;
     }
-    
+
     /**
-     * Returns ISXN of containing item. ISBN is preferred, if set. 
+     * Returns ISXN of containing item. ISBN is preferred, if set.
      * @return string
      */
     public function getContainerIsxn() {
@@ -824,7 +853,7 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
-     * Returns ISXN of containing item. ISBN is preferred, if set. 
+     * Returns ISXN of containing item. ISBN is preferred, if set.
      * @return string
      */
     public function getContainerRelParts() {
@@ -834,17 +863,17 @@ class SolrGvimarc extends SolrMarc
         $array = $this->getFieldsArray($fields);
         return array_shift($array);
     }
-    
+
     /**
      * This function is used to distinguish between articles from journals
-     * and articles from books. 
+     * and articles from books.
      * @return boolean
      */
     public function isContainerMonography()
     {
         // this is applicable only if item is a part of another item
         if ($this->isPart()) {
-            
+
             $isxn = $this->getContainerIsxn();
             // isbn set
             if (strlen($isxn) > 9) {
@@ -854,13 +883,13 @@ class SolrGvimarc extends SolrMarc
 
                 if (is_array($containers)) {
                     $container = array_shift($containers);
-                    return isset($container) ? $container->isBook() : false;                            
+                    return isset($container) ? $container->isBook() : false;
                 }
             }
         }
         return false;
     }
-    
+
 
     /**
      * Get the main corporate author (if any) for the record.
@@ -943,7 +972,7 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
-     * On electronic Articles, we do not need to query DAIA. 
+     * On electronic Articles, we do not need to query DAIA.
      * @return boolean
      */
     public function supportsAjaxStatus()
@@ -962,7 +991,7 @@ class SolrGvimarc extends SolrMarc
         return true;
     }
 
-    
+
     protected function getBookOpenUrlParams()
     {
         $params = $this->getDefaultOpenUrlParams();
@@ -982,22 +1011,22 @@ class SolrGvimarc extends SolrMarc
         $publication = array_shift($publication);
         if (is_object($publication)) {
             if ($date = $publication->getDate()) {
-                $params['rft.date'] = preg_replace('/[^0-9]/', '', $date);            
+                $params['rft.date'] = preg_replace('/[^0-9]/', '', $date);
             }
             if ($place = $publication->getPlace()) {
-                $params['rft.place'] = $place;            
-            }            
+                $params['rft.place'] = $place;
+            }
         }
         $params['rft.volume'] = $this->getVolume();
-        
-                
-        
-        
-        $publishers = $this->getPublishers();        
+
+
+
+
+        $publishers = $this->getPublishers();
         if (count($publishers) > 0) {
             $params['rft.pub'] = $publishers[0];
         }
-        
+
         $params['rft.edition'] = $this->getEdition();
         $params['rft.isbn'] = (string) $this->getCleanISBN();
         return array_filter($params);
@@ -1006,8 +1035,8 @@ class SolrGvimarc extends SolrMarc
     /**
      * Get OpenURL parameters for an article.
      *
-     * 
-     * 
+     *
+     *
      * @return array
      */
     protected function getArticleOpenUrlParams()
@@ -1022,9 +1051,9 @@ class SolrGvimarc extends SolrMarc
         $params['rft.issue'] = $this->getContainerIssue();
         $params['rft.date'] = $this->getContainerYear();
         if (strpos($this->getContainerPages(), '-') !== FALSE) {
-            $params['rft.pages'] = $this->getContainerPages();            
+            $params['rft.pages'] = $this->getContainerPages();
         } else {
-            $params['rft.spage'] = $this->getContainerPages();                        
+            $params['rft.spage'] = $this->getContainerPages();
         }
         // unset default title -- we only want jtitle/atitle here:
         unset($params['rft.title']);
@@ -1043,7 +1072,7 @@ class SolrGvimarc extends SolrMarc
         }
         return array_filter($params);
     }
-    
+
     /**
      * Get OpenURL parameters for a journal.
      *
@@ -1056,13 +1085,13 @@ class SolrGvimarc extends SolrMarc
         $params['rft.issn'] = (string) $this->getCleanISSN();
         $params['rft.jtitle'] = $this->getTitle();
         $params['rft.genre'] = 'journal';
-        // zdbid is allowed in pid zone only - it is moved there 
+        // zdbid is allowed in pid zone only - it is moved there
         // in OpenURL helper
         $params['pid'] = 'zdbid='.$this->getZdbId();
-        
+
         return array_filter($params);
     }
-    
+
     /**
      * Get the OpenURL parameters to represent this record for COinS even if
      * supportsOpenUrl() is false for this RecordDriver.
@@ -1081,8 +1110,8 @@ class SolrGvimarc extends SolrMarc
         }
         // unset($coins['url_ver']); //only needed for openurls, not for COINS
         // unset($coins['pid']); //only needed for openurls, not for COINS
-        
-  
+
+
         return http_build_query($coins);
     }
 
@@ -1128,8 +1157,8 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
-     * Returns German library network shortcut. 
-     * @param bool $outputIsil 
+     * Returns German library network shortcut.
+     * @param bool $outputIsil
      * @return string
      */
     public function getNetwork($outputIsil = false)
@@ -1176,8 +1205,8 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
-     * Returns an array of related items for multipart results, including 
-     * its own id 
+     * Returns an array of related items for multipart results, including
+     * its own id
      * @return array
      */
     public function getIdsRelated()
@@ -1189,12 +1218,12 @@ class SolrGvimarc extends SolrMarc
             if (count($f773) > 0) {
                 $ids[] = array_shift($f773);
             }
-            $ids[] = $this->getUniqueId();            
+            $ids[] = $this->getUniqueId();
         }
         return array_unique($ids);
     }
-    
-    public function getRelatedEditions() 
+
+    public function getRelatedEditions()
     {
         $related = [];
         # 775 is RAK and 776 RDA *confused*
@@ -1215,17 +1244,17 @@ class SolrGvimarc extends SolrMarc
                     default: $label = 'unknown_field';
                 }
                 if (!array_key_exists($label, $tmp)) {
-                    $tmp[$label] = $subfield->getData();                    
+                    $tmp[$label] = $subfield->getData();
                 }
                 if (!array_key_exists('description', $tmp)) {
                        $tmp['description'] = 'Parallelausgabe';
-                }                
+                }
             }
             // exclude DNB records
             if (isset($tmp['id']) && strpos($tmp['id'], 'DE-600') === FALSE) {
-                $related[] = $tmp;                
+                $related[] = $tmp;
             }
-                
+
         }
         return $related;
     }
@@ -1332,11 +1361,11 @@ class SolrGvimarc extends SolrMarc
         foreach ($pages as $k => $page) {
             preg_match('/\d+ *-? *\d*/', $page, $tmp);
             if (isset($tmp[0]) && $tmp[0] != '-') {
-                $pages[$k] = $tmp[0];                
+                $pages[$k] = $tmp[0];
             } else {
                 unset($pages[$k]);
             }
-        } 
+        }
         return array_shift($pages);
     }
 
@@ -1357,14 +1386,14 @@ class SolrGvimarc extends SolrMarc
         foreach ($years as $k => $year) {
             preg_match('/\d{4}/', $year, $tmp);
             if (isset($tmp[0])) {
-                $years[$k] = $tmp[0];                
+                $years[$k] = $tmp[0];
             } else {
                 unset($years[$k]);
             }
-        }        
+        }
         return array_shift($years);
     }
-    
+
     /**
      * This method returns dirty data, don't use it except for ILL!
      */
@@ -1375,99 +1404,99 @@ class SolrGvimarc extends SolrMarc
 
     /**
      * get local Urls from 924|k and the correspondig linklabel 924|l
-     * 
+     *
      * - $924 is repeatable
      * - |k is repeatable, |l aswell
      * - we can have more than one isil ?is this true? maybe allways the first isil
      * - different Urls from one instition may have different issues (is this true?)
-     *  
+     *
      * @return array
      */
     public function getLocalUrls()
     {
         $localUrls = [];
-        $field = '924'; // Bestandangaben, SWB only 
+        $field = '924'; // Bestandangaben, SWB only
         // take only the first ISIL from config
         $isilsconfig = $this->client->getIsils();
         $isilcurrent = '';
         $addedurls = [];
 
         $holdings = $this->getLocalHoldings();
-       
+
         foreach ($holdings as $holding) {
             $isilcurrent = isset($holding['b']) ? $holding['b'] : null;
             $isils = $this->client->getIsils();
             // we assume the first isil in config.ini is the most important one
-            $firstIsil = array_shift($isils);            
+            $firstIsil = array_shift($isils);
 
             $address = isset($holding['k']) ? $holding['k'] : null;
             $label = isset($holding['l']) ? $holding['l'] : null;
             // Is there a label?  If not, just use the URL itself.
             if (empty($label)) {
                 $label = $address;
-            } 
+            }
             // Prevent adding the same url multiple times
-            if (!in_array($address, $addedurls) && !empty($address) 
-                    && $firstIsil == $isilcurrent    
+            if (!in_array($address, $addedurls) && !empty($address)
+                    && $firstIsil == $isilcurrent
             ) {
-                $localUrls[] = ['isil' => $isilcurrent, 'url' => $address, 'label' => $label];                        
+                $localUrls[] = ['isil' => $isilcurrent, 'url' => $address, 'label' => $label];
             }
             $addedurls[] = $address;
         }
         return $localUrls;
     }
-    
+
     /**
      * Has this record holdings in field 924
-     * 
+     *
      * @return boolean
      */
-    public function hasLocalHoldings() 
+    public function hasLocalHoldings()
     {
         $holdings = $this->getLocalHoldings();
-        return count($holdings) > 0;     
-        
+        return count($holdings) > 0;
+
     }
-    
+
     /**
-     * This method supports wildcard operators in ISILs. 
+     * This method supports wildcard operators in ISILs.
      * @return array
      */
-    public function getLocalHoldings() 
+    public function getLocalHoldings()
     {
         $holdings = [];
         $f924 = $this->getField924(false,true);
         $isils = $this->client->getIsilAvailability();
-        
+
         // Building a regex pattern
         foreach ($isils as $k => $isil) {
-            $isils[$k] = preg_quote($isil, '/');           
+            $isils[$k] = preg_quote($isil, '/');
         }
         $pattern = implode('|', $isils);
         $pattern = '/'.str_replace('\*', '.*', $pattern).'/' ;
-        
+
         foreach ($f924 as $fields) {
             if (isset($fields['b']) && preg_match($pattern, $fields['b'])) {
-                $holdings[] = $fields;                        
+                $holdings[] = $fields;
             }
-        }           
+        }
 
         return $holdings;
-    }   
-    
+    }
+
     /**
      * Get ZDB ID if available
-     * 
+     *
      * @return string
      */
-    public function getZdbId() 
+    public function getZdbId()
     {
         $zdb = '';
         $consortial = $this->getConsortialIDs();
         foreach ($consortial as $id) {
             if (($pos = strpos($id, 'ZDB')) !== FALSE) {
                 $zdb = substr($id, $pos+3);
-            }            
+            }
         }
         // Pull ZDB ID out of recurring field 016
         foreach ($this->getMarcRecord()->getFields('016') as $field) {
@@ -1476,7 +1505,7 @@ class SolrGvimarc extends SolrMarc
                 if ($subfield->getCode() == 'a') {
                     $data = $subfield ->getData();
                 } elseif($subfield->getCode() == '2') {
-                    $isil = $subfield->getData();                    
+                    $isil = $subfield->getData();
                 }
             }
             if ($isil == 'DE-600') {
@@ -1487,7 +1516,7 @@ class SolrGvimarc extends SolrMarc
     }
     /**
      * is this a Journal, implies it's a serial
-     * 
+     *
      * @return boolean
      */
     public function isJournal()
@@ -1506,8 +1535,8 @@ class SolrGvimarc extends SolrMarc
             return true;
         }
         return false;
-    }    
-    
+    }
+
     /**
      * General serial items. More exact is:
      * isJournal(), isNewspaper() isMonographicSerial()
@@ -1525,7 +1554,7 @@ class SolrGvimarc extends SolrMarc
 
     /**
      * iIs this a Newspaper?
-     * 
+     *
      * @return boolean
      */
     public function isNewspaper()
@@ -1546,5 +1575,5 @@ class SolrGvimarc extends SolrMarc
         return false;
     }
 
-    
+
 }
