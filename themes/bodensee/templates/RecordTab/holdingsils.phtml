@@ -219,7 +219,7 @@
                     <? endif; ?>
                     <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial()) ): ?>
                         <? if (isset($holding['z'])):?><br/><? endif; ?>
-                        <?=$this->render('RecordDriver/SolrDefault/parts/adislink.phtml')?>
+                        <?=$this->render('RecordDriver/DefaultRecord/parts/adislink.phtml')?>
                     <? endif; ?>
                 </td>
             </tr>
