@@ -62,6 +62,10 @@ class Module extends \VuFindTheme\Module
                 'Client' =>         'BszTheme\View\Helper\Factory::getClient',
                 'ClientAsset' =>    'BszTheme\View\Helper\Factory::getclientAsset',
             ],
+            'invokables' => [
+                'mapper'        => 'BszTheme\View\Helper\FormatMapper',
+                'string'        => 'BszTheme\View\Helper\StringHelper',
+            ],
         ];
     }
 }
