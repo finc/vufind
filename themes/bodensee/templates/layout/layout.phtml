@@ -135,11 +135,7 @@ JS;
   </head>
   <body class="template-dir-<?=$this->templateDir?> template-name-<?=$this->templateName?> <?=$this->layoutClass('offcanvas-row')?><? if ($this->layout()->rtl): ?> rtl<? endif; ?>">
     <? // we changed this completely! We show the searchbox/searchtabs on any page except advenced search! 
-      $this->layout()->searchbox = $this->render('search/searchbox.phtml');     
-      $this->layout()->searchtabs = $this->render('search/searchtabs.phtml');
-      
-      
-      
+      $this->layout()->searchbox = $this->render('search/searchbox.phtml');
     ?>
     <header class="hidden-print">
       <div class="navbar navbar-default navbar-fixed-top">

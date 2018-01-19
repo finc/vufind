@@ -128,9 +128,6 @@ JS;
       // 3. It is set to a custom string; we should display the provided version
       // Set up default search box if no data was provided from the template;
       // this covers case 1.  Cases 2 and 3 are then covered by logic below.
-      if (!isset($this->layout()->searchbox)) {
-        $this->layout()->searchbox = $this->render('search/searchbox.phtml');
-      }
     ?>
     <header class="hidden-print">
       <? if (isset($this->layout()->srmessage)): // message for benefit of screen-reader users ?>
