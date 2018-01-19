@@ -3,6 +3,9 @@ $config = [
     'extends' => 'bootstrap3',
     // client specific CSS files are added in ThemeInfo.php
       'favicon' => '/themes/bodensee/images/favicon/default.ico',
+    'js' => [
+        'additions.js'
+    ],     
     'helpers' => [
         'factories' => [
 //            'flashmessages' => 'VuFind\View\Helper\Bootstrap3\Factory::getFlashmessages',
