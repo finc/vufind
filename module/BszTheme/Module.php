@@ -60,7 +60,7 @@ class Module extends \VuFindTheme\Module
         return [
             'factories' => [
                 'Client' =>         'BszTheme\View\Helper\Factory::getClient',
-                'ClientAsset' =>    'BszTheme\View\Helper\Factory::getclientAsset',
+                'ClientAsset' =>    'BszTheme\View\Helper\Factory::getClientAsset',
             ],
             'invokables' => [
                 'mapper'        => 'BszTheme\View\Helper\FormatMapper',
