@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150" height="150" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <g>
+  <title>Layer 1</title>
+  <use opacity="0.4" x="-489.363167" y="-884.199632" transform="matrix(0.824246, 0, 0, 0.824246, 416.536, 741.979)" id="svg_171" xlink:href="#svg_170"/>
+ </g>
+ <defs>
+  <svg viewBox="0 0 32 32" y="0px" x="0px" xmlns:xlink="http://www.w3.org/1999/xlink" id="svg_170">
+   <g>
+    <g>
+     <path fill="#010002" d="m26,0h-2v13h-16v-13h-8v32h32v-26l-6,-6zm2,30h-24v-14h24v14l0,0z"/>
+     <rect fill="#010002" height="2" width="20" y="18" x="6"/>
+     <rect fill="#010002" height="2" width="20" y="22" x="6"/>
+     <rect fill="#010002" height="2" width="20" y="26" x="6"/>
+     <rect fill="#010002" height="9" width="4" y="2" x="18"/>
+    </g>
+   </g>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+   <g/>
+  </svg>
+ </defs>
+</svg>

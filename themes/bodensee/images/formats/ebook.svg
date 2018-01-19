@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="150"
+   height="150"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="ebook.svg">
+  <metadata
+     id="metadata31">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs29" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1680"
+     inkscape:window-height="1026"
+     id="namedview27"
+     showgrid="false"
+     inkscape:zoom="6.2933333"
+     inkscape:cx="84.743642"
+     inkscape:cy="83.7915"
+     inkscape:window-x="1920"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g4" />
+  <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+  <g
+     id="g4">
+    <title
+       id="title6">Layer 1</title>
+    <g
+       id="svg_37"
+       style="stroke:none">
+      <path
+         d="m32.230389,118.782463h99.3232c0.303558,0 0.598114,-0.043083 0.881638,-0.110207c0.022034,0 0.041077,0.003014 0.064117,0.003014c2.119934,0 3.842133,-1.7202 3.842133,-3.84214v-108.609781c0.001007,-2.121218 -1.722198,-3.842764 -3.842133,-3.842764h-0.938751h-93.184296h-6.140503c-10.228386,0 -18.548233,8.321719 -18.548233,18.547203c0,0.137156 0.027051,0.267298 0.040375,0.399744c-0.013324,9.445736 -0.130543,96.240675 -0.013324,107.650862c-0.007315,0.223419 -0.034665,0.441818 -0.034665,0.667236c0,9.832245 7.698895,17.88121 17.382772,18.489334c0.194361,0.030045 0.384815,0.058105 0.58639,0.058105h100.849228c2.120941,0 3.84314,-1.720184 3.84314,-3.842148v-14.464844c0,-2.120934 -1.723206,-3.843132 -3.84314,-3.843132s-3.842133,1.722198 -3.842133,3.843132v10.621719h-96.425816c-5.839542,0 -10.606495,-4.635605 -10.840729,-10.417343c0.005711,-0.10318 0.024445,-0.200363 0.022541,-0.305573c-0.003805,-0.169312 -0.009516,-0.431793 -0.013325,-0.781448c0.335825,-5.68956 5.058592,-10.22097 10.831512,-10.22097l0,0zm2.620262,-97.854675c0,-2.121237 1.721497,-3.842733 3.842735,-3.842733s3.842834,1.721497 3.842834,3.842733v78.057121c0,2.120735 -1.721596,3.842934 -3.842834,3.842934s-3.842735,-1.723198 -3.842735,-3.842934v-78.057121l0,0z"
+         id="svg_38"
+         stroke="#FFFFFF"
+         stroke-width="3"
+         fill="#999999"
+         style="stroke:none" />
+    </g>
+    <g
+       id="svg_36" />
+    <g
+       id="svg_35" />
+    <g
+       id="svg_34" />
+    <g
+       id="svg_33" />
+    <g
+       id="svg_32" />
+    <g
+       id="svg_31" />
+    <g
+       id="svg_30" />
+    <g
+       id="svg_29" />
+    <g
+       id="svg_28" />
+    <g
+       id="svg_27" />
+    <g
+       id="svg_26" />
+    <g
+       id="svg_25" />
+    <g
+       id="svg_22" />
+    <g
+       id="svg_21" />
+    <g
+       id="svg_20" />
+    <circle
+       stroke-linejoin="null"
+       stroke-linecap="null"
+       cx="112.44578"
+       cy="60.776756"
+       r="35.586082"
+       id="svg_19"
+       transform="matrix(0.871582,0,0,0.871582,-10.2664,6.4297709)"
+       sodipodi:cx="112.44578"
+       sodipodi:cy="60.776756"
+       sodipodi:rx="35.586082"
+       sodipodi:ry="35.586082"
+       style="fill:#ffffff;stroke:#666666;stroke-width:5;fill-opacity:0.58823532" />
+    <text
+       stroke="null"
+       stroke-linejoin="null"
+       stroke-linecap="null"
+       x="87.975311"
+       y="74.5784"
+       id="svg_18"
+       font-size="69"
+       xml:space="preserve"
+       font-weight="bold"
+       style="font-size:60.13915634px;font-weight:bold;text-anchor:middle;fill:#666666;stroke-width:0;font-family:Sans-serif">e</text>
+  </g>
+</svg>

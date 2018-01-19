@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="150"
+   height="150"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="movie.svg">
+  <metadata
+     id="metadata48">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview46"
+     showgrid="false"
+     inkscape:zoom="1.5733333"
+     inkscape:cx="75"
+     inkscape:cy="75"
+     inkscape:window-x="59"
+     inkscape:window-y="34"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <g
+     id="g4"
+     style="fill:#999999">
+    <title
+       id="title6">Layer 1</title>
+    <use
+       x="9.886312"
+       y="6.697536"
+       transform="matrix(0.354025, 0, 0, 0.354025, -0.0167346, 1.11061)"
+       id="svg_231"
+       xlink:href="#svg_230"
+       style="fill:#999999" />
+  </g>
+  <defs
+     id="defs9">
+    <svg
+       viewBox="0 0 404.021 404.021"
+       height="404.021px"
+       width="404.021px"
+       y="0px"
+       x="0px"
+       id="svg_230"
+       version="1.1">
+      <g
+         id="g12">
+        <path
+           d="m5.738,377.174011h28.069999c3.170002,0 5.739002,-2.569 5.739002,-5.739014v-37.333008h53.683002v37.333008c0,3.170013 2.57,5.739014 5.738998,5.739014h206.083c3.169983,0 5.73999,-2.569 5.73999,-5.739014v-37.333008h53.682007v37.333008c0,3.170013 2.570007,5.739014 5.73999,5.739014h28.070007c3.167999,0 5.735992,-2.569 5.735992,-5.739014v-338.847996c0,-3.170002 -2.567993,-5.739002 -5.735992,-5.739002h-28.070007c-3.169983,0 -5.73999,2.569 -5.73999,5.739002v37.332996h-53.682007v-37.332996c0,-3.170002 -2.570007,-5.739002 -5.73999,-5.739002h-206.083c-3.168999,0 -5.738998,2.569 -5.738998,5.739002v37.332996h-53.683002v-37.332996c0,-3.170002 -2.569,-5.739002 -5.739002,-5.739002h-28.069999c-3.169,0 -5.738,2.569 -5.738,5.739002v338.847996c-0.001,3.169006 2.568,5.739014 5.738,5.739014zm305.054999,-254.98201h53.682007v53.684006h-53.682007v-53.684006l0,0zm0,105.953995h53.682007v53.68399h-53.682007v-53.68399l0,0zm-271.245998,-105.953995h53.683002v53.684006h-53.683002v-53.684006l0,0zm0,105.953995h53.683002v53.68399h-53.683002v-53.68399l0,0z"
+           id="path14" />
+      </g>
+      <g
+         id="g16" />
+      <g
+         id="g18" />
+      <g
+         id="g20" />
+      <g
+         id="g22" />
+      <g
+         id="g24" />
+      <g
+         id="g26" />
+      <g
+         id="g28" />
+      <g
+         id="g30" />
+      <g
+         id="g32" />
+      <g
+         id="g34" />
+      <g
+         id="g36" />
+      <g
+         id="g38" />
+      <g
+         id="g40" />
+      <g
+         id="g42" />
+      <g
+         id="g44" />
+    </svg>
+  </defs>
+</svg>
