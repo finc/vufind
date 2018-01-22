@@ -10,10 +10,14 @@
     </div>
     <? $thumbnail = ob_get_contents(); ?>
   <? ob_end_clean(); ?>
+  <? else: ?>
+    <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">     
+        <span class=""></span>
+    </div>
 <? endif; ?>
 <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
 <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
-<div class="media">
+<div class="media ">
   <? if ($thumbnail && $thumbnailAlignment == 'left'): ?>
     <?=$thumbnail ?>
   <? endif ?>
