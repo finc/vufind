@@ -100,8 +100,8 @@ $config = [
             ],
             'ils_driver' => [
                 'factories' => [
-    //                'daia' => 'Bsz\ILS\Driver\Factory::getDAIA',
-                    'daiaadis' => 'Bsz\ILS\Driver\Factory::getDAIAadis',
+                    'daiabsz' => 'Bsz\ILS\Driver\Factory::getDAIAbsz',
+                    'daia' => 'Bsz\ILS\Driver\Factory::getDAIA',
                 ]
             ],
             

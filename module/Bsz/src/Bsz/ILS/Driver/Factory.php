@@ -36,6 +36,24 @@ use Zend\ServiceManager\ServiceManager;
 class Factory
 {
 
+    public static function getDAIAbsz(ServiceManager $sm)
+    {
+        $client = $sm->getServiceLocator()->get('Bsz\Client');
+        // if we are on ILL portal
+        $baseUrl = '';
+        $isils = $client->getIsils();
+
+        if ($client->isIsilSession() && $client->hasIsilSession()) {            
+            $libraries = $sm->getServiceLocator()->get('Bsz\libraries');
+            $active = $libraries->getFirst($isils);
+            $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
+        }
+        
+
+
+        $converter = $sm->getServiceLocator()->get('VuFind\DateConverter');
+        return new DAIAbsz($converter, $isils, $baseUrl);
+    }
     public static function getDAIA(ServiceManager $sm)
     {
         $client = $sm->getServiceLocator()->get('Bsz\Client');
@@ -47,30 +65,10 @@ class Factory
             $libraries = $sm->getServiceLocator()->get('Bsz\libraries');
             $active = $libraries->getFirst($isils);
             $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
-        }
-        
-
+        }    
 
         $converter = $sm->getServiceLocator()->get('VuFind\DateConverter');
         return new DAIA($converter, $isils, $baseUrl);
-    }
-    public static function getDAIAadis(ServiceManager $sm)
-    {
-        $client = $sm->getServiceLocator()->get('Bsz\Client');
-        // if we are on ILL portal
-        $baseUrl = '';
-        $isils = $client->getIsils();
-
-        if ($client->isIsilSession() && $client->hasIsilSession()) {            
-            $libraries = $sm->getServiceLocator()->get('Bsz\libraries');
-            $active = $libraries->getFirst($isils);
-            $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
-        }
-        
-
-
-        $converter = $sm->getServiceLocator()->get('VuFind\DateConverter');
-        return new DAIAadis($converter, $isils, $baseUrl);
     }
 
 }
