@@ -49,7 +49,7 @@ $basePath = '/InterlendingRecord/';
                         </ul>
                     <? else: ?>
                         <?= $this->transEsc('available_at_current_library') ?>
-                        <?=$this->render('RecordDriver/DefaultRecord/parts/ppnlink.phtml')?>
+                        <?= $this->recordLink()->linkPPN($this->driver) ?> 
                     <? endif; ?>
                 </strong>
             <? else: ?>
@@ -96,7 +96,7 @@ $basePath = '/InterlendingRecord/';
                 <div class="col-sm-9">
                     <span class="help-text">
                         <?= $this->transEsc('ill_article_local') ?><br/>
-                        <?=$this->render('RecordDriver/DefaultRecord/parts/ppnlink.phtml')?>                        
+                        <?= $this->recordLink()->linkPPN($this->driver) ?>                        
                     </span>                    
                 </div>
                 <? endif; ?>

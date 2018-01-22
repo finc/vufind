@@ -40,7 +40,7 @@ use Zend\ServiceManager\ServiceManager;
  *
  * @codeCoverageIgnore
  */
-class Factory
+class Factory 
 {
     /**
      * Construct the Flashmessages helper.
@@ -145,14 +145,28 @@ class Factory
      * Construct the RecordLink helper.
      *
      * @param ServiceManager $sm Service manager.
+     * 
+     * @throws \Bsz\Exception
      *
      * @return Record
      */
     public static function getRecordLink(ServiceManager $sm)
     {
+        $client = $sm->getServiceLocator()->get('bsz\config\client');
+        $libraries = $sm->getServiceLocator()->get('bsz\config\libraries');      
+        try {
+            $library = $libraries->getFirst($client->getIsils());  
+            
+            $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null; 
+        } catch (\Exception $ex) {
+            throw new \Bsz\Exception('Library not found');
+        }
+
+        
         return new RecordLink(
             $sm->getServiceLocator()->get('VuFind\RecordRouter'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $adisUrl            
         );
     }
     /**

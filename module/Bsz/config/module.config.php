@@ -44,7 +44,7 @@ $config = [
     'service_manager' => [
         'factories' => [
             'bsz\config\client'     => 'Bsz\Config\Factory::getClient', 
-            'bsz\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
+            'bsz\config\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
             'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',            
             'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',            
             'bsz\holding'    => 'Bsz\Factory::getHolding',
@@ -56,6 +56,7 @@ $config = [
         ],
         'aliases' => [
             'bsz\client'    => 'Bsz\config\Client',
+            'bsz\libraries' => 'bsz\config\libraries'
         ],
     ],
     'vufind' => [

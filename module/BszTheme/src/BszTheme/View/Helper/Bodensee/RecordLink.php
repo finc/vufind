@@ -31,11 +31,17 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
      * @var \VuFind\Config\config
      */
     protected $config;
+    /**
+     *
+     * @var string
+     */
+    protected $baseURL;
     
-    public function __construct(\VuFind\Record\Router $router, \Zend\Config\Config $config)
+    public function __construct(\VuFind\Record\Router $router, \Zend\Config\Config $config, $baseURL)
     {
         parent::__construct($router);
         $this->config = $config;
+        $this->baseURL = $baseURL;
     }
     
     /**
@@ -123,18 +129,18 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
         return $services;
     }
     
-    public function linkPPN(\Bsz\RecordDriver\SolrMarc$driver, $adisurl = null) 
+    public function linkPPN(\Bsz\RecordDriver\SolrMarc$driver) 
     {
         $id = $driver->getuniqueId();
         $pos = strpos($id, ')');
         $ppn = substr($id, $pos + 1);
         $recordHelper = $this->getView()->plugin('record');        
        
-        if (!empty($adisurl) && $driver->getNetwork() == 'SWB' 
+        if (!empty($this->baseURL) && $driver->getNetwork() == 'SWB' 
             && $recordHelper->isAtFirstIsil()
         ) {
             // Show link to aDIS
-            $link = str_replace('<PPN>', $ppn, $adisurl);
+            $link = str_replace('<PPN>', $ppn, $this->baseUrl);
             
             return $this->getView()->render('Helpers/ppn.phtml', ['ppn' => $ppn, 'link' => $link, 'label' => 'To library OPAC' ]); 
         } else {
@@ -159,25 +165,5 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
             }            
         }
         return $this->getView()->render('Helpers/ppn.phtml', ['ppn' => $ppn, 'link' => $link, 'label' => 'redi_link_text']);        
-    }
-
-    
-    public function linkADIS(\Bsz\RecordDriver\SolrMarc$driver, $adisurl = null) 
-    {
-        $id = $driver->getuniqueId();
-        $pos = strpos($id, ')');
-        $ppn = substr($id, $pos + 1);
-        $recordHelper = $this->getView()->plugin('record');
-        
-        if (!empty($adisurl) && ($recordHelper->isAtCurrentLibrary(false))) {
-            // Show link to aDIS
-            $link = str_replace('<PPN>', $ppn, $adisurl);           
-            return $this->getView()->render('Helpers/adis.phtml', ['ppn' => $ppn, 'link' => $link, 'label' => 'To library OPAC' ]); 
-        }
-    }
-    
-    public function matchIsil($isil) {
-        
-    }
-    
+    }    
 }
