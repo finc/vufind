@@ -27,7 +27,7 @@
     }
     $hiddenFilterParams = $this->searchTabs()->getCurrentHiddenFilterParams($this->searchClassId, $ignoreHiddenFilterMemory, '?');
 ?>
-<? $tabConfig = $this->searchTabs()->getTabConfig($this->searchClassId, $this->lookfor, $this->searchIndex, $this->searchType, $hiddenFilters); ?>
+<? $tabConfig = $this->searchTabs()->getTabConfig($this->searchClassId, $this->lookfor, $this->searchIndex, 'basic', $hiddenFilters); ?>
 <? if ($this->searchType == 'do not go into here, it outputs stuff we do not want in boss!'): ?>
   <div class="navbar-form navbar-left flip">
     <? $tabs = $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
