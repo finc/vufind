@@ -54,9 +54,11 @@ class Factory
         $converter = $sm->getServiceLocator()->get('VuFind\DateConverter');
         return new DAIAbsz($converter, $isils, $baseUrl);
     }
+    
+    
     public static function getDAIA(ServiceManager $sm)
     {
-        $client = $sm->getServiceLocator()->get('Bsz\Client');
+        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
         // if we are on ILL portal
         $baseUrl = '';
         $isils = $client->getIsils();

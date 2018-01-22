@@ -277,8 +277,8 @@ class DAIA extends DAIAbsz
                 $result_item['callnumber'] = $this->getItemCallnumber($item);
                 // get location
                 $result_item['location'] = $this->getItemLocation($item);
-                // get location link
-                $result_item['locationhref'] = $this->getItemLocationLink($item);
+//                // get location link
+//                $result_item['locationhref'] = $this->getItemLocationLink($item);
                 // status and availability will be calculated in own function
                 $result_item = $this->getItemStatus($item) + $result_item;
                 // add result_item to the result array
