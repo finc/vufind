@@ -69,7 +69,7 @@
               <form method="post" name="langForm" id="langForm">
                 <input type="hidden" name="mylang"/>
               </form>
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=$this->transEsc('Language')?></span> <img src="<?=$this->imageLink('flags/'.$this->layout()->userLang.'.png')?>" alt="Language Flag" />
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=$this->transEsc('Language')?> <img src="<?=$this->imageLink('flags/'.$this->layout()->userLang.'.png')?>" alt="Language Flag" /></a>
               <ul class="dropdown-menu">
                 <? foreach ($this->layout()->allLangs as $langCode => $langName): ?>
                     <li<?=$this->layout()->userLang == $langCode ? ' class="active"' : ''?>>
