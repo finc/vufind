@@ -141,17 +141,13 @@
           <? endfor; ?>
         <? endif; ?>
       </div>
-      <div class="adv-submit">
-          <button class="clear-btn btn" type="button"><i class="fa fa-times text-danger"></i> <span class="text-danger"><?= $this->transEsc('Clear')?><span></button>
-          <button class="btn btn-success" type="submit"/><i class="fa fa-search"></i> <?= $this->transEsc('Find')?></button>
-      </div>
       <? if (isset($this->extraAdvancedControls)): ?>
         <div class="clearfix">
           <?=$this->extraAdvancedControls ?>
         </div>
         <div class="adv-submit">
-          <input class="clear-btn btn btn-default" type="button" value="<?= $this->transEsc('Clear')?>">
-          <input class="btn btn-primary" type="submit" value="<?= $this->transEsc('Find')?>">
+            <button class="clear-btn btn" type="button"><i class="fa fa-times text-danger"></i> <span class="text-danger"><?= $this->transEsc('Clear')?><span></button>
+            <button class="btn btn-success" type="submit"/><i class="fa fa-search"></i> <?= $this->transEsc('Find')?></button>
         </div>
       <? endif; ?>
     </div>
