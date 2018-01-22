@@ -43,8 +43,7 @@ $config = [
     ], 
     'service_manager' => [
         'factories' => [
-            'bsz\client'     => 'Bsz\Config\Factory::getClient',
-//            'bsz\libraries'  => 'Bsz\Config\Factory::getLibraries',            
+            'bsz\config\client'     => 'Bsz\Config\Factory::getClient', 
             'bsz\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
             'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',            
             'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',            
@@ -54,6 +53,9 @@ $config = [
         'invokables' => [
             'bsz\mapper'     => 'Bsz\FormatMapper',
             'bsz\library'    => 'Bsz\Config\Library',
+        ],
+        'aliases' => [
+            'bsz\client'    => 'Bsz\config\Client',
         ],
     ],
     'vufind' => [
