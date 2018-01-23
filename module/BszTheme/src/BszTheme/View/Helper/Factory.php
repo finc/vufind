@@ -56,20 +56,20 @@ class Factory {
 //        return new \Bsz\View\Helper\Libraries($libraries);
 //    }
 //    
-//    public static function getIllForm(ServiceManager $sm) 
-//    {
-//        $request = $sm->getServiceLocator()->get('request');
-//        // params from form submission
-//        $params = $request->getPost()->toArray();
-//        // params from open url
-//        $openUrlParams = $request->getQuery()->toArray();
-//        $parser = $sm->getServiceLocator()->get('bsz\parser\openurl');            
-//        $parser->setParams($openUrlParams);
-//        // mapped openURL params
-//        $formParams = $parser->map2Form();
-//        // merge both param sets
-//        $mergedParams = array_merge($formParams, $params);
-//        return new IllForm($mergedParams);        
-//    }
+    public static function getIllForm(ServiceManager $sm) 
+    {
+        $request = $sm->getServiceLocator()->get('request');
+        // params from form submission
+        $params = $request->getPost()->toArray();
+        // params from open url
+        $openUrlParams = $request->getQuery()->toArray();
+        $parser = $sm->getServiceLocator()->get('bsz\parser\openurl');            
+        $parser->setParams($openUrlParams);
+        // mapped openURL params
+        $formParams = $parser->map2Form();
+        // merge both param sets
+        $mergedParams = array_merge($formParams, $params);
+        return new IllForm($mergedParams);        
+    }
     
 }
