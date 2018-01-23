@@ -80,21 +80,21 @@ $config = [
             ],
             'search_options' => [
                 'factories' => [
-                    'interlending' => 'Bsz\Search\Options\Factory::getInterlending',
+//                    'interlending' => 'Bsz\Search\Options\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Options\Factory::getFis',
-                    'solr' => 'Bsz\Search\Options\Factory::getSolr'
+//                    'solr' => 'Bsz\Search\Options\Factory::getSolr'
                 ],                
             ],
             'search_params'  => [
                 'factories' => [
-                    'interlending' => 'Bsz\Search\Params\Factory::getInterlending',
+//                    'interlending' => 'Bsz\Search\Params\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Params\Factory::getFis',
-                    'solr' => 'Bsz\Search\Params\Factory::getSolr'
+//                    'solr' => 'Bsz\Search\Params\Factory::getSolr'
                 ], 
             ],
             'search_results'  => [
                 'factories' => [
-                    'interlending' => 'Bsz\Search\Results\Factory::getInterlending',
+//                    'interlending' => 'Bsz\Search\Results\Factory::getInterlending',
 //                    'fis' => 'Bsz\Search\Results\Factory::getFis'
                 ], 
             ],
