@@ -76,43 +76,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
         
 
     }
-/**
-     * Given a record driver, get a URL for that record.
-     *
-     * @param \VuFind\RecordDriver\AbstractBase|string $driver Record driver
-     * representing record to link to, or source|id pipe-delimited string
-     * @param string                                   $tab    Optional record
-     * @param string $override replace
-     * tab to access
-     *
-     * @return string
-     */
-    public function getTabUrl($driver, $tab = null, $override = null)
-    {
-        // Build the URL:
-        $urlHelper = $this->getView()->plugin('url');
-        $details = $this->router->getTabRouteDetails($driver, $tab);
-        $url = $urlHelper($details['route'], $details['params']);
-        if(isset($override)) {
-            $url = str_replace('Record', ucfirst($override).'Record', $url);
-        }
-        return $url;
-    }
 
-    /**
-     * Get the default URL for a record.
-     *
-     * @param \VuFind\RecordDriver\AbstractBase|string $driver Record driver
-     * representing record to link to, or source|id pipe-delimited string
-     *
-     * @return string
-     */
-    public function getUrl($driver, $override = null )
-    {
-        // Display default tab by default:
-        $url = $this->getTabUrl($driver, null, $override);
-        return $url;
-    }
     
     
     public function getCoverServiceUrls($driver) {
