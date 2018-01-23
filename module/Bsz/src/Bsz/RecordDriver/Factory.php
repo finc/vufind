@@ -60,7 +60,7 @@ class Factory extends \VuFind\RecordDriver\Factory {
             $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
         );
         //We use this to fetch containers - they are missing in out MARC record
-        // $driver->attachSearchRunner($sm->getServiceLocator()->get('VuFind\SearchRunner'));
+        $driver->attachSearchRunner($sm->getServiceLocator()->get('VuFind\SearchRunner'));
         $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
         return $driver;
     }
