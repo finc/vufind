@@ -35,13 +35,13 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
      *
      * @var string
      */
-    protected $baseURL;
+    protected $baseUrl;
     
-    public function __construct(\VuFind\Record\Router $router, \Zend\Config\Config $config, $baseURL)
+    public function __construct(\VuFind\Record\Router $router, \Zend\Config\Config $config, $baseUrl)
     {
         parent::__construct($router);
         $this->config = $config;
-        $this->baseURL = $baseURL;
+        $this->baseUrl = $baseUrl;
     }
     
     /**
@@ -136,7 +136,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
         $ppn = substr($id, $pos + 1);
         $recordHelper = $this->getView()->plugin('record');        
        
-        if (!empty($this->baseURL) && $driver->getNetwork() == 'SWB' 
+        if (!empty($this->baseUrl) && $driver->getNetwork() == 'SWB' 
             && $recordHelper->isAtFirstIsil()
         ) {
             // Show link to aDIS
