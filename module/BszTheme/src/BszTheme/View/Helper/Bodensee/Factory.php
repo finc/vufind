@@ -107,25 +107,7 @@ class Factory
             !empty($isils) ? array_shift($isils) : null            
         );
     }
-    
-    /**
-     * Construct the SearchTabs helper.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SearchTabs
-     */
-    public static function getSearchTabs(ServiceManager $sm)
-    {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        $config = isset($config->SearchTabs)
-            ? $config->SearchTabs->toArray() : [];
-        return new SearchTabs(
-            $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager'),
-            $sm->get('url'), $sm->getServiceLocator()->get('VuFind\SearchTabsHelper')                
-        );
-    }
-    
+      
     /**
      * Construct the Record helper.
      *
