@@ -36,8 +36,10 @@ class Factory {
      */
     public static function getSolr(ServiceManager $sm)
     {
-        $factory = new PluginFactory();
-        $helper = $sm->getServiceLocator()->get('VuFind\HierarchicalFacetHelper');
-        return $factory->createServiceWithName($sm, 'solr', 'Solr', [$helper]);
+        $config = $sm->getServiceLocator()->get('VuFind\Config');
+        $options = $sm->getServiceLocator()
+            ->get('VuFind\SearchOptionsPluginManager')->get('solr');
+        $params = new \Bsz\Search\Solr\Params($options, $config);
+        return $params;
     }
 }
