@@ -63,15 +63,15 @@ class Params extends \VuFind\Search\Solr\Params
     public function getHiddenFilters()
     {
         $hidden = parent::getHiddenFilters();
-        $config = $this->configLoader->get('config');
-        $isils_string = $config->get('Site')->get('isil');
-        $isils = explode(',', $isils_string);
-        foreach ($isils as $isil) {
-            if (Array_key_exists('institution_id', $hidden) 
-                && !in_array($isil, $hidden['institution_id'])) {                
-                array_push($hidden['institution_id'], $isil);
-            }
-        }
+//        $config = $this->configLoader->get('config');
+//        $isils_string = $config->get('Site')->get('isil');
+//        $isils = explode(',', $isils_string);
+//        foreach ($isils as $isil) {
+//            if (Array_key_exists('institution_id', $hidden) 
+//                && !in_array($isil, $hidden['institution_id'])) {                
+//                array_push($hidden['institution_id'], $isil);
+//            }
+//        }
         return $hidden;
     }
 }

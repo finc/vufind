@@ -49,6 +49,8 @@ $config = [
             'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',            
             'bsz\holding'    => 'Bsz\Factory::getHolding',
             'bsz\parser\openurl' => 'Bsz\Parser\Factory::getOpenUrlParser',
+            // override the factory, to make filters dynamic
+            'VuFind\SearchTabsHelper' => 'Bsz\Service\Factory::getSearchTabsHelper',
         ],
         'invokables' => [
             'bsz\mapper'     => 'Bsz\FormatMapper',
