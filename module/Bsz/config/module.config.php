@@ -79,23 +79,15 @@ $config = [
                 ],
             ],
             'search_options' => [
+                'abstract_factories' => ['Bsz\Search\Options\PluginFactory'],
                 'factories' => [
-//                    'interlending' => 'Bsz\Search\Options\Factory::getInterlending',
-//                    'fis' => 'Bsz\Search\Options\Factory::getFis',
-//                    'solr' => 'Bsz\Search\Options\Factory::getSolr'
+                    'solr' => 'Bsz\Search\Options\Factory::getSolr'
                 ],                
             ],
             'search_params'  => [
+                'abstract_factories' => ['Bsz\Search\Params\PluginFactory'],
                 'factories' => [
-//                    'interlending' => 'Bsz\Search\Params\Factory::getInterlending',
-//                    'fis' => 'Bsz\Search\Params\Factory::getFis',
-//                    'solr' => 'Bsz\Search\Params\Factory::getSolr'
-                ], 
-            ],
-            'search_results'  => [
-                'factories' => [
-//                    'interlending' => 'Bsz\Search\Results\Factory::getInterlending',
-//                    'fis' => 'Bsz\Search\Results\Factory::getFis'
+                    'solr' => 'Bsz\Search\Params\Factory::getSolr'
                 ], 
             ],
             'ils_driver' => [
