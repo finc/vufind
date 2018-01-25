@@ -710,7 +710,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
         $address_array = []; // array_fill(0,7,NULL);
 
         //the empty-field marker in the used ILS
-        $replace = isset($this->config['PAIA']['profileFormEmptyInputReplacement']) ? $this->config['PAIA']['profileFormEmptyInputReplacement'] : NULL;
+        $replace = isset($this->config['PAIA']['profileFormEmptyInputReplacement'])
+            ? $this->config['PAIA']['profileFormEmptyInputReplacement'] : NULL;
 
         foreach ($inval as $key => $val) {
 
@@ -835,8 +836,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
         VObject\Component\VCard $vcard, $key, $value, $type = null
     )
     {
-        if (is_string($value)) $value = str_replace(',','',$value);
-        elseif (is_array($value)) array_walk_recursive($value,function (&$value,$key) {$value = str_replace(',','',$value);});
+        if (is_string($value)) {
+            $value = str_replace(',', '', $value);
+        } elseif (is_array($value)) {
+            array_walk_recursive($value, function (&$value, $key) {
+                $value = str_replace(',', '', $value);
+            });
+        }
         $children = $vcard->select($key);
         if (empty($children)) {
 
@@ -848,23 +854,29 @@ class FincILS extends PAIA implements LoggerAwareInterface
             }
             $vcard->add($key, $value, $type);
         } else {
-            $update = FALSE;
             if (isset($type)) {
                 foreach ($children as &$child) {
                     foreach ($type as $type_key => $type_value) {
-                        if (in_array($type_value,$child->parameters[strtoupper($type_key)]->getParts())) {
-                            $update = TRUE;
-                            break 2;
+                        if (in_array(
+                            $type_value,
+                            $child->parameters[strtoupper($type_key)]->getParts()
+                        )) {
+                            $child->setValue($value);
+                            return;
                         }
                     }
                 }
+            // refs #10912
+            // if key exists in first dimension VCARD object return update true
+            } elseif (isset($key)) {
+                foreach ($children as $child) {
+                    if ($key == $child->name) {
+                        $vcard->{$key}->setValue($value);
+                        return;
+                    }
+                }
             }
-            // if the property/child already exists
-            // we change the value
-            if ($update)
-                $vcard->{$key}->setValue($value);
-            else
-                $vcard->add($key,$value,$type);
+            $vcard->add($key, $value, $type);
         }
     }
 
@@ -876,9 +888,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * @param string $username The patron's username
      * @param string $password The patron's login password
      *
-     * @return mixed          Associative array of patron info on successful login,
+     * @return mixed Associative array of patron info on successful login,
      * null on unsuccessful login.
-     *
+     * @access public
+     * @throws \Exception
      * @throws ILSException
      */
     public function patronLogin($username, $password)
@@ -899,7 +912,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                         $password,
                         $username
                     );
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     // TODO? $this->debug('Session expired, login again', 'info');
                     // all error handling is done in paiaHandleErrors so pass on the excpetion
                     throw $e;
@@ -914,7 +927,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                         $username
                     );
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 // all error handling is done in paiaHandleErrors so pass on the excpetion
                 throw $e;
             }
