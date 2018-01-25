@@ -49,7 +49,7 @@
             <tr>
                 <th><?=$this->transEsc('collective_editions')?>:</th>
                 <td><? foreach($container as $cont): ?>
-                    <a class="internal" href="<?=$this->RecordLink()->getUrl($cont, $this->overrideRecordLink)?>"><?=$this->string()->cleanEsc($cont->getTitle())?></a><br/>
+                    <a class="internal" href="<?=$this->RecordLink()->getUrl($cont)?>"><?=$this->string()->cleanEsc($cont->getTitle())?></a><br/>
                 <? endforeach; ?></td>
             </tr>
             <? endif; ?>      
@@ -95,11 +95,7 @@
             <tr>
                 <th><?=$this->transEsc('New Title')?>: </th>
                 <td><? foreach($nextTitles as $field): ?>
-                    <? if(isset($this->overrideRecordLink)): ?>
-                        <a href="<?=$this->url(strtolower($this->overrideRecordLink).'-results')?>?lookfor=%22<?=urlencode($field)?>%22&amp;type=AllFields&amp;filter[]=~material_content_type:%22Journal/Magazine%22"><?=$this->escapeHtml($field)?></a><br/>
-                    <? else: ?>
-                        <a href="<?=$this->url('search-results')?>?lookfor=%22<?=urlencode($field)?>%22&amp;type=AllFields&amp;filter[]=~material_content_type:%22Journal/Magazine%22"><?=$this->escapeHtml($field)?></a><br/>          
-                    <? endif; ?>
+                    <a href="<?=$this->url('search-results')?>?lookfor=%22<?=urlencode($field)?>%22&amp;type=AllFields&amp;filter[]=~material_content_type:%22Journal/Magazine%22"><?=$this->escapeHtml($field)?></a><br/>          
                   <? endforeach; ?></td>
             </tr>
             <? endif; ?>
@@ -108,11 +104,7 @@
                 <th><?=$this->transEsc('Previous Title')?>: </th>
                 <td>
                   <? foreach($prevTitles as $field): ?>
-                    <? if(isset($this->overrideRecordLink)): ?>
-                        <a href="<?=$this->url(strtolower($this->overrideRecordLink).'-results')?>?lookfor=%22<?=urlencode($field)?>%22&amp;type=AllFields&amp;filter[]=~material_content_type:%22Journal/Magazine%22"><?=$this->escapeHtml($field)?></a><br/>
-                    <? else: ?>
-                        <a href="<?=$this->url('search-results')?>?lookfor=%22<?=urlencode($field)?>%22&amp;type=AllFields&amp;filter[]=~material_content_type:%22Journal/Magazine%22"><?=$this->escapeHtml($field)?></a><br/>          
-                    <? endif; ?>
+                     <a href="<?=$this->url('search-results')?>?lookfor=%22<?=urlencode($field)?>%22&amp;type=AllFields&amp;filter[]=~material_content_type:%22Journal/Magazine%22"><?=$this->escapeHtml($field)?></a><br/>          
                   <? endforeach; ?>
                 </td>
             </tr>
@@ -123,13 +115,9 @@
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author">
-                    <a class="author" href="<?=$this->record($this->driver)->getLink('author', $authors['main'], $this->overrideRecordLink)?>"><?=$this->escapeHtml($authors['main'])?></a>
+                    <a class="author" href="<?=$this->url('author-home')?>?author=<?=urlencode($authors['main'])?>"><?=$this->escapeHtml($authors['main'])?></a>
                     <? if ($gnd_author != ''): ?>
-                        <? if(isset($this->overrideRecordLink)): ?>
-                            (<a class="author" href="<?=$this->url(strtolower($this->overrideRecordLink).'-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields">GND-ID</a>) 
-                        <? else: ?>
-                            (<a class="author" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields">GND-ID</a>)
-                        <? endif; ?>
+                       (<a class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields">GND-ID</a>)
                     <? endif; ?>
                 </td>
             </tr>
@@ -137,13 +125,13 @@
             <? if (isset($authors['corporate']) && !empty($authors['corporate'])): ?>
             <tr>
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
-                <td property="creator"><a class="author" href="<?=$this->record($this->driver)->getLink('author', $authors['corporate'],  $this->overrideRecordLink)?>"><?=$this->escapeHtml($authors['corporate'])?></a></td>
+                <td property="creator"><a class="author" href="<?=$this->url('author-home')?>?author=<?=urlencode($authors['corporate'])?>"><?=$this->escapeHtml($authors['corporate'])?></a></td>
             </tr>
             <? endif; ?>
             <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
             <tr>
                 <th><?=$this->transEsc('Other Authors')?>: </th>
-                <td><? $i = 0; foreach ($authors['secondary'] as $field): ?><?=($i++ == 0)?'':', '?><span property="contributor"><a class="author" href="<?=$this->record($this->driver)->getLink('author', $field,  $this->overrideRecordLink)?>"><?=$this->escapeHtml($field)?></a></span><? endforeach; ?></td>
+                <td><? $i = 0; foreach ($authors['secondary'] as $field): ?><?=($i++ == 0)?'':', '?><span property="contributor"><a class="author" href="<?=$this->url('author-home')?>?author=<?=urlencode($field)?>"><?=$this->escapeHtml($field)?></a></span><? endforeach; ?></td>
             </tr>
             <? endif; ?>
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>

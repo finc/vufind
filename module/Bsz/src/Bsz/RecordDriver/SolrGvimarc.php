@@ -563,20 +563,20 @@ class SolrGvimarc extends SolrMarc
     public function getDeduplicatedAuthors($dataFields = ['role'])
     {
         $authors = [];
-        $authors['primary'] = $this->getPrimaryAuthor();
+        $authors['main'] = $this->getPrimaryAuthor();
         $authors['secondary'] = array_unique($this->getSecondaryAuthors());
         $authors['corporate'] = $this->getCorporateAuthors();
 
         $corporate = [];
         $secondary = [];
         foreach (array_unique($this->getSecondaryAuthors()) as $a) {
-            if (!$a == $authors['primary'] ) {
+            if (!$a == $authors['main'] ) {
                 array_push($secondary, $a);
             }
         }
         $authors['secondary'] = array_unique($secondary);
         foreach (array_unique($this->getCorporateAuthors()) as $c) {
-            if (!$c == $authors['primary'] ) {
+            if (!$c == $authors['main'] ) {
                 array_push($corporate, $c);
             }
         }

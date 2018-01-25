@@ -32,7 +32,8 @@ function displayItemStatus(result, $item) {
     $item.find('.callnumber,.hideIfDetailed,.location').addClass('hidden');
     var locationListHTML = "";
     for (var x = 0; x < result.locationList.length; x++) {
-      locationListHTML += '<div class="groupLocation">';
+      locationListHTML += '<div class="row holding">';
+      locationListHTML += '<div class="col-sm-8 groupLocation">';
       if (result.locationList[x].availability) {
         locationListHTML += '<span class="text-success"><i class="fa fa-ok" aria-hidden="true"></i> '
           + result.locationList[x].location + '</span> ';
@@ -48,9 +49,10 @@ function displayItemStatus(result, $item) {
           + result.locationList[x].location + '</span> ';
       }
       locationListHTML += '</div>';
-      locationListHTML += '<div class="groupCallnumber">';
+      locationListHTML += '<div class="col-sm-4 groupCallnumber">';
       locationListHTML += (result.locationList[x].callnumbers)
            ? linkCallnumbers(result.locationList[x].callnumbers, result.locationList[x].callnumber_handler) : '';
+      locationListHTML += '</div>';
       locationListHTML += '</div>';
     }
     $item.find('.locationDetails').removeClass('hidden');
