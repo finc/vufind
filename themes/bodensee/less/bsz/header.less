@@ -21,27 +21,13 @@ header {
         }
         @media (max-width: @screen-xs-max) {
             margin-left: 0 !important;
-            a.navbar-brand {
-                padding: 8px 10px;
-                margin-top: 7px;
-                margin-right: 5px;
-            }
+
         }
         float: right;
-        a.navbar-brand {
-            @media (max-width: @screen-sm-max) {
-                font-size: @finger-friendly-size;
-            }
-            
-            height: auto !important;
-            &:hover, &:focus {
-                color: @navbar-default-link-hover-color;
-                background-color: @navbar-default-link-hover-bg;
-            }
-        }
     }
-    .navbar-header.navbar-right {
+    .navbar-right {
         margin-left: 15px;
+        margin-right: 0 !important;
     }
     #searchForm {
         width: auto !important;
