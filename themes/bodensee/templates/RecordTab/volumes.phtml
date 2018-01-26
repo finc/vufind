@@ -19,10 +19,10 @@
     </tr>
     <? $count = 1; foreach ($content as $result): ?>
         <tr <? if ($count > 20): ?> class="showmore-item hidden"<? endif; ?>>
-            <td><? /** <a class="internal"  href="<?=$this->recordLink()->getUrl($result, $this->overrideRecordLink)?>"><?=$this->string()->cleanEsc($result->getTitle())?> <?=$this->string()->cleanEsc($result->getTitleSection())?></a> **/ ?></td>
+            <td><a class="internal"  href="<?=$this->recordLink()->getUrl($result)?>"><?=$this->string()->cleanEsc($result->getTitle())?> <?=$this->string()->cleanEsc($result->getTitleSection())?></a></td>
             <td><?=implode(', ',$result->getPublicationDates())?></td>
-            <td><?=$result->getVolume()?></td>
-            <td><? /** <?=$result->getPrimaryAuthor()?> **/ ?></td>
+            <td><?=$this->string()->cleanEsc($result->getVolume())?></td>            
+            <td><?=$result->getPrimaryAuthor()?></td>
         </tr>
         <? $count++ ?>  
     <? endforeach; ?>    

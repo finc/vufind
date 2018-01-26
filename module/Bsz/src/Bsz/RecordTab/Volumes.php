@@ -109,9 +109,4 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
         return false;
     }
     
-    public function setSearchClassId($searchClassId) {
-        if(isset($searchClassId) && !empty($searchClassId)) {
-            $this->searchClassId = $searchClassId;            
-        }
-    }
 }

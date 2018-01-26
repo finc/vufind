@@ -41,9 +41,6 @@ class Factory {
         $volumes = new Volumes($sm->getServiceLocator()->get('VuFind\SearchRunner'));
         $request = new \Zend\Http\PhpEnvironment\Request();
         $url = strtolower($request->getUriString());
-        if(strpos($url, 'interlendingrecord') !== FALSE) {
-            $volumes->setSearchClassId('Interlending');
-        }
         return $volumes;
     }
     /**
