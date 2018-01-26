@@ -1,11 +1,4 @@
 <? $account = $this->auth()->getManager(); ?>
-  <div class="navbar-header">
-<!--    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-collapse">
-      <span class="sr-only">Toggle navigation</span>
-      <i class="fa fa-bars" aria-hidden="true"></i>
-    </button>-->
-      <a class="navbar-brand lang-<?=$this->layout()->userLang ?>" href="<?=$this->url('home')?>"><i class="fa fa-home"></i></a>
-  </div>
 <? if ($this->layout()->searchbox !== false && !$this->client()->is('disable_searchbar')): ?>
     <div class="navbar-left">
         <? if (!isset($frame)): ?>
@@ -69,7 +62,7 @@
               <form method="post" name="langForm" id="langForm">
                 <input type="hidden" name="mylang"/>
               </form>
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=$this->transEsc('Language')?> <img src="<?=$this->imageLink('flags/'.$this->layout()->userLang.'.png')?>" alt="Language Flag" /></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="<?=$this->imageLink('flags/'.$this->layout()->userLang.'.png')?>" alt="Language Flag" /> <i class="fa fa-caret-down"></i></a>
               <ul class="dropdown-menu">
                 <? foreach ($this->layout()->allLangs as $langCode => $langName): ?>
                     <li<?=$this->layout()->userLang == $langCode ? ' class="active"' : ''?>>
@@ -82,6 +75,9 @@
               </ul>
             </li>
           <? endif; ?>
+          <li>
+              <a class="lang-<?=$this->layout()->userLang ?>" href="<?=$this->url('home')?>"><i class="fa fa-home"></i></a>  
+          </li>
         </ul>
       </nav>
     </div>
