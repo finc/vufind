@@ -1,0 +1,22 @@
+<? $suggestions = $this->recommend->getSuggestions(); if (!empty($suggestions)): ?>
+  <div class="alert alert-info">
+    <p><?=$this->transEsc('switchquery_intro')?></p>
+    <ul>
+      <? foreach ($suggestions as $desc => $query): ?>
+        <li><?=$this->transEsc($desc)?>: <a href="<?=$this->recommend->getResults()->getUrlQuery()->setSearchTerms($query)?>"><?=$this->escapeHtml($query)?></a>.</li>
+      <? endforeach; ?>
+      <li><?=$this->transEsc('switchquery_removewords')?></li>
+      <li><?=$this->transEsc('switchquery_typos')?></li>
+      <li><?=$this->transEsc('switchquery_other')?></li>
+    </ul>
+    <? if ($this->client()->isIsilSession()): ?> 
+        <?
+            $library = $this->libraries()->getFirst($this->client()->getIsils());
+            $url =  $library->hasCustomUrl() ? $library->getCustomUrl() 
+                    : $this->url('interlendingrecord-freeform');
+        ?>
+        <p><?=$this->transEsc('switchquery_ill')?>
+            &nbsp;<a class="<?=$library->hasCustomUrl()? 'external' : 'internal' ?>" href="<?=$url?>"><?=$this->transEsc('ill_request_free_form')?></a>    <? endif; ?>
+        </p>
+  </div>
+<? endif; ?>
