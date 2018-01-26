@@ -12,7 +12,7 @@
 
   $offlineMode = $this->ils()->getOfflineMode();
   // finc-specific: $holdings here, #9844, #7187 - CK
-  $holdings = [];
+  $holdings = ['holdings' => []];
   // finc-specific snippet, #9844, #7187 - CK
   // if we already know that the ils is offline we do not need to query the realtimeholdings
   if (!$offlineMode) {
