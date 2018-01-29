@@ -28,6 +28,9 @@
 namespace Bsz;
 
 use Zend\Mvc\MvcEvent;
+use Zend\Session\Config\SessionConfig;
+use Zend\Session\SessionManager;
+use Zend\Session\Container;
 
 /**
  * ZF2 module definition for the VuFind application
@@ -77,5 +80,9 @@ class Module extends \VuFind\Module
         $app = $e->getApplication();
         $sm = $app->getServiceManager();
         $config = $sm->get('Config');
+        
+        $sessionConfig = new SessionConfig();
+        $sessionManager = new SessionManager($sessionConfig);
+        $sessionManager->start();
     }
 }
