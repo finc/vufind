@@ -529,15 +529,10 @@ class RecordDataFormatterFactory
             'Published in', 'getContainerTitle', 'data-containerTitle.phtml'
         );
         $spec->setLine(
-            'New Title', 'getNewerTitles', null, ['recordLink' => 'title']
+            'New Title', 'getNewerTitles', 'data-linkViaFincId.phtml'
         );
         $spec->setLine(
-            'Previous Title',
-            'getPreviousTitles',
-            null,
-            [
-                'recordLink' => 'title'
-            ]
+            'Previous Title', 'getPreviousTitles', 'data-linkViaFincId.phtml'
         );
         $spec->setTemplateLine(
             'Authors/Corporations',
