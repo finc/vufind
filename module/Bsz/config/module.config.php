@@ -18,7 +18,7 @@ $config = [
         'factories' => [
             'interlendingrecord' => 'Bsz\Controller\Factory::getInterlendingrecordController',
 //            'fisrecord' => 'Bsz\Controller\Factory::getFisrecordController',
-            'record' => 'Bsz\Controller\Factory::getRecordController'
+//            'record' => 'Bsz\Controller\Factory::getRecordController'
         ],
     ],
     'router' => [
@@ -86,6 +86,12 @@ $config = [
                     'solr' => 'Bsz\Search\Options\Factory::getSolr'
                 ],                
             ],
+            'search_results' => [
+                'abstract_factories' => ['Bsz\Search\Results\PluginFactory'],
+                'factories' => [
+                    'solr' => 'Bsz\Search\Results\Factory::getSolr',
+                ],
+            ],            
             'search_params'  => [
                 'abstract_factories' => ['Bsz\Search\Params\PluginFactory'],
                 'factories' => [
