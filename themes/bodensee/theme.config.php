@@ -15,7 +15,7 @@ $config = [
             'illform' => 'BszTheme\View\Helper\Factory::getIllForm',
             'piwik' => 'BszTheme\View\Helper\Bodensee\Factory::getPiwik',
             // this factory in Bodensee does not yet work so I've linked it to Vufind
-            'searchTabs' => 'VuFind\View\Helper\Root\Factory::getSearchTabs',
+            'searchTabs' => 'BszTheme\View\Helper\Bodensee\Factory::getSearchTabs',
         ],
     ]
 ];
