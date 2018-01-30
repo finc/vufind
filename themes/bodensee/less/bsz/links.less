@@ -29,6 +29,13 @@ footer {
 a > i:hover, button> i:hover{
     cursor: pointer;
 }
+.pager .disabled > a.btn-primary {
+    color: darken(white, 5%);
+    background-color: lighten(@pager-bg, 20%);
+    i {
+        cursor: not-allowed;
+    }
+}
 
 .tooltip-inner {
     ol, ul {
