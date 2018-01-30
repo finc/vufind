@@ -50,7 +50,7 @@
       </li>
       <? if ($this->scrollData['lastRecord']): ?>
         <li>
-          <a href="<?=$this->recordLink()->getUrl($this->scrollData['lastRecord'])?>" title="<?=$this->transEsc('Last Search Result')?>" rel="nofollow"><i class="fa fa-caret-right"></i>;</a>
+          <a class="btn btn-primary" href="<?=$this->recordLink()->getUrl($this->scrollData['lastRecord'])?>" title="<?=$this->transEsc('Last Search Result')?>" rel="nofollow"><i class="fa fa-caret-right"></i><i class="fa fa-caret-right"></i></a>
         </li>
       <? endif; ?>
      <? else: ?>
