@@ -59,7 +59,7 @@ class LayoutClass extends \VuFind\View\Helper\Bootstrap3\LayoutClass
         case 'mainbody':
             return $this->sidebarOnLeft ? 'col-sm-9 col-sm-push-3' : 'col-sm-9';
         case 'mainbody_details':
-            return $this->left ? 'col-sm-12' : 'col-sm-12';
+            return $this->sidebarOnLeft  ? 'col-sm-12' : 'col-sm-12';
             break;
         case 'sidebar':
             return $this->sidebarOnLeft
