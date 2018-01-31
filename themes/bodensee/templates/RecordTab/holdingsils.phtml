@@ -44,15 +44,6 @@
 <? endif; ?>
  <?// removed online access as this is listed in main section ?>
  <? $recallButtonCounter = 0 ?>
-<? if (!empty($urls) || $openUrlActive): ?>
-  <h3><?=$this->transEsc("Internet")?></h3>
-  <? if (!empty($urls)): ?>
-    <? foreach ($urls as $current): ?>
-      <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
-    <? endforeach; ?>
-  <? endif; ?>
-  <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
-<? endif; ?>
 <? foreach ($holdings['holdings'] as $holding): ?>
 <h3>
   <? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
