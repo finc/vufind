@@ -13,8 +13,7 @@
     $preview = $this->record($this->driver)->getPreviews();
   ?>
   <? if ($QRCode || $cover || $preview): ?>
-    <div class="col-sm-3 img-col">
-      <div class="gutter-l">
+  <div class="media-left <?=$this->escapeHtmlAttr($coverDetails['size'])?> img-col">
         <? /* Display thumbnail if appropriate: */ ?>
         <? if($cover): ?>
           <?=$cover?>
@@ -26,21 +25,19 @@
             <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
           </span>
         <? endif; ?>
-      </div>
 
       <? // if you have a preview tab but want to move or remove the preview link
          // from this area of the record view, this can be split into
          // getPreviewData() (should stay here) and
          // getPreviewLink() (can go in your desired tab) ?>
       <? if ($preview): ?>
+        <div class="record-previews">
           <?=$preview?>
+        </div>
       <? endif; ?>
     </div>
-
-    <div class="col-sm-9 info-col">
-  <? else: ?>
-    <div class="col-sm-12">
   <? endif; ?>
+  <div class="media-body">
 
     <? /* For all finc-records; We want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
     <h3 property="name"><?=$this->escapeHtml(preg_replace('/(\s[\/\.:]\s*)*$/', '', $this->truncate($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection(), 100)))?></h3>
@@ -56,7 +53,7 @@
 
     <? if ($this->userlist()->getMode() !== 'disabled'): ?>
       <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists">
+      <div class="savedLists hidden alert alert-info">
         <strong><?=$this->transEsc("Saved in")?>:</strong>
       </div>
     <? endif; ?>
