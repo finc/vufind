@@ -250,8 +250,10 @@
           <td><?=$html?></td>                
       </tr>
       <? endif; ?>
-      
-      <?=$this->render('RecordDriver/DefaultRecord/parts/illbutton.phtml')?>
+
+      <? if ($this->searchTabs()->isILL($this->searchClassId)): ?>
+        <?=$this->render('RecordDriver/DefaultRecord/parts/illbutton.phtml')?>
+      <? endif; ?>
       <? $recordLinks = $this->driver->getAllRecordLinks(); ?>
       <? if(!empty($recordLinks)): ?>
         <tr>
