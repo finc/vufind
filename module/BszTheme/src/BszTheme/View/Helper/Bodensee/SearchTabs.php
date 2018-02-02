@@ -15,5 +15,11 @@ use Zend\View\Helper\Url;
  */
 class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
 {
-    //put your code here
+    public function isILL($searchClassId) {
+        $hiddenFilterStr = urldecode($this->getCurrentHiddenFilterParams($searchClassId));
+        if (strpos($hiddenFilterStr, 'consortium:FL') !== FALSE) {
+            return true;
+        }
+        return false;
+    }
 }
