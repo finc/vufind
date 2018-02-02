@@ -213,8 +213,8 @@ class Holding {
         //Network is added as filter
         $params['filter'] = $params1;
 
-        $results = $this->runner->run($params, 'Interlending');
-        $results instanceof \Bsz\Search\Interlending\Results;
+        $results = $this->runner->run($params, 'Solr');
+        $results instanceof \Bsz\Search\Solr\Results;
         
         return $this->parse($results);
     }

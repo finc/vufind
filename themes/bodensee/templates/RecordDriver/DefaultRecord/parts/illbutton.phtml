@@ -1,3 +1,4 @@
+<? 
 $url = $this->recordLink()->getUrl($this->driver, $this->overrideRecordLink).'/ILLForm';
 $network = $this->driver->getNetwork(); 
 if ($this->customUrl) {
@@ -30,7 +31,7 @@ $available = $this->record($this->driver)->isAvailableForInterlending();
 // for SWB hits this is an ID of a parallel edition
 // for not-SWB hits, this is an id of a similar item in SWB. 
 $swb = $this->record($this->driver)->getSwbId();
-$basePath = '/InterlendingRecord/';
+$basePath = '/Record/';
 ?>
 <tr>
     <th>&nbsp;</th>
