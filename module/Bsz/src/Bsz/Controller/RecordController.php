@@ -27,6 +27,7 @@
  */
 namespace Bsz\Controller;
 use VuFind\RecordDriver\AbstractBase as AbstractRecordDriver;
+use Zend\View\Model\ViewModel;
 
 /**
  * This class was created to make a default record tab behavior possible
