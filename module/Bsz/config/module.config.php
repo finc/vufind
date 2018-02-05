@@ -7,18 +7,14 @@ $config = [
         'invokables' => [
             'ajax' => 'Bsz\Controller\AjaxController',
             'bsz' => 'Bsz\Controller\BszController',
-//            'fis' => 'Bsz\Controller\FisController',
             'holding' => 'Bsz\Controller\HoldingController',
-            'interlending' => 'Bsz\Controller\InterlendingController',
             'test' => 'Bsz\Controller\TestController',
             'cart' => 'Bsz\Controller\CartController',
             'privacy' => 'Bsz\Controller\BszController',
 //            'shib' => 'Bsz\Controller\ShibController'
         ],
         'factories' => [
-            'interlendingrecord' => 'Bsz\Controller\Factory::getInterlendingrecordController',
-//            'fisrecord' => 'Bsz\Controller\Factory::getFisrecordController',
-//            'record' => 'Bsz\Controller\Factory::getRecordController'
+            'record' => 'Bsz\Controller\Factory::getRecordController'
         ],
     ],
     'router' => [
@@ -171,23 +167,18 @@ $config = [
 $staticRoutes = [
     'Test/Record', 'Test/phpinfo',
     'Bsz/index', 'Bsz/curl',
-    'Interlending/Home', 'Interlending/Results', 'Interlending/Advanced',
-    'InterlendingRecord/Freeform',
-//    'Fis/Home', 'Fis/Results', 'Fis/Advanced',    
+    'Record/Freeform',
     'Holding/Query',
     'Bsz/Privacy',     
-//    'Shib/Wayf', 'Shib/Redirect',
 ];
 $recordRoutes = [
-    'interlendingrecord' => 'InterlendingRecord',
-    'fisrecord' => 'FisRecord',
+    'record' => 'Record',
 ];
 
 $routeGenerator = new \Bsz\Route\RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
 //$routeGenerator->addDynamicRoutes($config, $dynamicRoutes); 
 $routeGenerator->addStaticRoutes($config, $staticRoutes);
-
 return $config;
 
 
