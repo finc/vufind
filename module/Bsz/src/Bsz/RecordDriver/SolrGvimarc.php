@@ -424,25 +424,6 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
-     * Get the main author of the record.
-     *
-     * @return string
-     */
-    public function getPrimaryAuthorShort()
-    {
-        //return trim($this->getFirstFieldValue('100', ['a']));
-
-        $author = trim($this->getFirstFieldValue('100', ['a']));
-        $titles = trim($this->getFirstFieldValue('100', ['c']));
-
-        if (!empty($titles)) {$author .= ', ' . $titles;}
-
-        return $author;
-
-    }
-
-
-    /**
      * Get GND-ID from 100|0 with (DE-588)-prefix
      *
      * @return string
@@ -586,22 +567,6 @@ class SolrGvimarc extends SolrMarc
     }
 
 
-    /**
-     * Get an array of all secondary authors (complementing getPrimaryAuthor()).
-     *
-     * @return array
-     */
-    public function getSecondaryAuthorsShort()
-    {
-        $author2 = array_merge(
-            $this->getFieldArray('110', ['a', 'b']),
-            $this->getFieldArray('111', ['a', 'b']),
-            $this->getFieldArray('700', ['a', 'b', 'c']),
-            $this->getFieldArray('710', ['a', 'b']),
-            $this->getFieldArray('711', ['a', 'b'])
-        );
-        return $author2;
-    }
     /**
      * Get an array of all series names containing the record.  Array entries may
      * be either the name string, or an associative array with 'name' and 'number'
