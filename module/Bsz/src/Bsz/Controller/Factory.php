@@ -37,8 +37,10 @@ class Factory {
      */
     public static function getRecordController(ServiceManager $sm)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        return new RecordController($config);
+        return new RecordController(
+            $sm->getServiceLocator(),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        );
     }
 }
 

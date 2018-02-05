@@ -85,7 +85,6 @@ class RecordController extends \VuFind\Controller\RecordController
         if (count($isils) > 0) {
             $this->processIsil();
         }
-        die('ENDE');
         $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');
         // If Request does not have this param, we should not use collapsible 
         // panels
@@ -166,7 +165,7 @@ class RecordController extends \VuFind\Controller\RecordController
                     'test' => $this->isTestMode(),
                     'params' => $params,
                     'submitDisabled' => $submitDisabled,
-                ])->setTemplate('interlending/illform');
+                ])->setTemplate('record/illform');
         return $view;
     }
     
