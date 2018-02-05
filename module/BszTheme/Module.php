@@ -61,6 +61,8 @@ class Module extends \VuFindTheme\Module
             'factories' => [
                 'Client' =>         'BszTheme\View\Helper\Factory::getClient',
                 'ClientAsset' =>    'BszTheme\View\Helper\Factory::getClientAsset',
+                'IllForm' =>        'BszTheme\View\Helper\Bodensee\Factory::getIllForm',
+                'Libraries' =>      'BszTheme\View\Helper\Factory::getLibraries',
             ],
             'invokables' => [
                 'mapper'        => 'BszTheme\View\Helper\FormatMapper',

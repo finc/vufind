@@ -12,7 +12,6 @@ $config = [
             'record' => 'BszTheme\View\Helper\Bodensee\Factory::getRecord',
             'recordLink' => 'BszTheme\View\Helper\Bodensee\Factory::getRecordLink',
             'getLastSearchLink' => 'BszTheme\View\Helper\Bodensee\Factory::getGetLastSearchLink',
-            'illform' => 'BszTheme\View\Helper\Factory::getIllForm',
             'piwik' => 'BszTheme\View\Helper\Bodensee\Factory::getPiwik',
             // this factory in Bodensee does not yet work so I've linked it to Vufind
             'searchTabs' => 'BszTheme\View\Helper\Bodensee\Factory::getSearchTabs',

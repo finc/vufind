@@ -14,7 +14,7 @@ $config = [
 //            'shib' => 'Bsz\Controller\ShibController'
         ],
         'factories' => [
-            'record' => 'Bsz\Controller\Factory::getRecordController'
+            'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController'
         ],
     ],
     'router' => [

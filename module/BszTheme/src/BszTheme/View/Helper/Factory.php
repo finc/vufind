@@ -45,30 +45,16 @@ class Factory {
         $tag = isset($parts[0]) ? $parts[0] : 'swb';     
         return new ClientAsset($tag);
     }
-//    /**
-//     * Get Interlending View Helper
-//     * @param ServiceManager $sm
-//     * @return \Bsz\View\Helper\Bsz\View\Helper\Interlending
-//     */
-//    public static function getLibraries(ServiceManager $sm) 
-//    {
-//        $libraries = $sm->getServiceLocator()->get('bsz\libraries');
-//        return new \Bsz\View\Helper\Libraries($libraries);
-//    }
-//    
-    public static function getIllForm(ServiceManager $sm) 
+    /**
+     * Get Interlending View Helper
+     * @param ServiceManager $sm
+     * @return \Bsz\View\Helper\Bsz\View\Helper\Interlending
+     */
+    public static function getLibraries(ServiceManager $sm) 
     {
-        $request = $sm->getServiceLocator()->get('request');
-        // params from form submission
-        $params = $request->getPost()->toArray();
-        // params from open url
-        $openUrlParams = $request->getQuery()->toArray();
-        $parser = $sm->getServiceLocator()->get('bsz\parser\openurl');            
-        $parser->setParams($openUrlParams);
-        // mapped openURL params
-        $formParams = $parser->map2Form();
-        // merge both param sets
-        $mergedParams = array_merge($formParams, $params);
-        return new IllForm($mergedParams);        
+        $libraries = $sm->getServiceLocator()->get('bsz\libraries');
+        return new Libraries($libraries);
     }
+//    
+
 }

@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace Bsz\View\Helper;
+namespace BszTheme\View\Helper\Bodensee;
 
 use Zend\View\Helper\AbstractHelper,
     Bsz\RecordDriver\SolrMarc;
