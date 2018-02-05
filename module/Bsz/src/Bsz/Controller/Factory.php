@@ -27,30 +27,7 @@ use Zend\ServiceManager\ServiceManager;
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class Factory {
-     /**
-     * Construct the RecordController.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return RecordController
-     */
-    public static function getInterlendingrecordController(ServiceManager $sm)
-    {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        return new InterlendingrecordController($config);
-    }
-     /**
-     * Construct the RecordController.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return RecordController
-     */
-    public static function getFisrecordController(ServiceManager $sm)
-    {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        return new FisrecordController($config);
-    }
+
      /**
      * Construct the RecordController.
      *
