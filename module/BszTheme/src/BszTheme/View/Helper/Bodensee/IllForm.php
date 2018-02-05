@@ -190,7 +190,7 @@ class IllForm extends AbstractHelper
         // the first is the label, the second the fieldname, third the value
         // arrays in value are allowed, they are imploded later
         $fields = [
-            ['Author', 'Verfasser', $this->getFromDriver('getPrimaryAuthorShort')],
+            ['Author', 'Verfasser', $this->getFromDriver('getDeduplicatedAuthors')],
             ['Title', 'Titel', $this->getText('title'), '', true],
             ['Subtitle', 'Untertitel', $this->getText('subtitle')],
 //                ['Edition', 'Auflage', $this->driver->getEdition()],
