@@ -1518,19 +1518,25 @@ class FincILS extends PAIA implements LoggerAwareInterface
             try {
                 // todo: compatible implementation for any SearchBackend (currently Solr only)
                 $query = $ilsIdentifier . ':' . $ilsId;
-                $result = $this->searchService->search('Solr', new Query($query));
+                $result = $this->searchService->search(
+                    'Solr',
+                    new Query($query)
+                );
                 if (count($result) === 0) {
                     throw new \Exception(
-                        'Problem retrieving finc id for record with '
-                        . $this->ilsIdentifier . ":" . $ilsId
+                        'Problem retrieving finc id for record with ' . $query
                     );
                 }
                 return current($result->getRecords())->getUniqueId();
             } catch (\Exception $e) {
                 $this->debug($e);
-                return $ilsId;
+                // refs #12318 return null if no main identifier can delivered
+                return null;
             }
         }
+        // todo: check if return $ilsId is reasonable in context.
+        // return will be only processed if $ilsIdentifier is defined as
+        // 'default'. therefore method hasn't been called properly.
         return $ilsId;
     }
 
@@ -1549,14 +1555,14 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 $this->baseUrl,
                 $daiaMatches
             );
-            $this->httpService->get($daiaMatches[1], [], $this->ilsTestTimeout );
+            $this->httpService->get($daiaMatches[1], [], $this->ilsTestTimeout);
             // test PAIA service
             preg_match(
                 "/^(http[s:\/0-9\.]*(:[0-9]*)?\/[a-z]*)/",
                 $this->paiaURL,
                 $paiaMatches
             );
-            $this->httpService->get($paiaMatches[1], [], $this->ilsTestTimeout );
+            $this->httpService->get($paiaMatches[1], [], $this->ilsTestTimeout);
 
             // test succeeded, save state
             $this->isOnline = true;
