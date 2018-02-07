@@ -422,6 +422,19 @@ class SolrGvimarc extends SolrMarc
         return $author;
 
     }
+    
+    /**
+     * returns all authors from 100 or 700 without life data
+     * @return array
+     */
+    public function getAllAuthorsShort() 
+    {
+        $authors = array_merge(
+            $this->getFieldArray('100', ['a', 'b']),
+            $this->getFieldArray('700', ['a', 'b'])
+        );
+        return array_unique($authors);
+    }
 
     /**
      * Get GND-ID from 100|0 with (DE-588)-prefix

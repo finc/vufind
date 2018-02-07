@@ -187,13 +187,13 @@ class IllForm extends AbstractHelper
      */
     protected function renderBibliographicFieldsBook()
     {
-        $authors[] = $this->getFromDriver('getPrimaryAuthor');
-        $authors[] = $this->getFromDriver('getSecondaryAuthors');
+        $authors = $this->getFromDriver('getAllAuthorsShort');        
+        
         // the first is the label, the second the fieldname, third the value
         // arrays in value are allowed, they are imploded later        
         $fields = [
             
-            ['Author', 'Verfasser', implode('; ', array_unique($authors))],
+            ['Author', 'Verfasser', $authors],
             ['Title', 'Titel', $this->getText('title'), '', true],
             ['Subtitle', 'Untertitel', $this->getText('subtitle')],
 //                ['Edition', 'Auflage', $this->driver->getEdition()],
