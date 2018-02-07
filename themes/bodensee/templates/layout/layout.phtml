@@ -10,6 +10,7 @@
     <?$this->headMeta()->appendName('keywords', 'boss3, boss, bsz, bibliothek, bücher, zeitschriften')?>
     <?$this->headMeta()->appendName('applcation-name', 'BSZ One Step Search (BOSS) v3')?>
     <?=$this->headMeta()?>
+    <? $this->headTitle()->setPostfix(' - '.$this->client()->getTitle());?>
     <?=$this->headTitle()?>
     <?
       // Set up OpenSearch link:
