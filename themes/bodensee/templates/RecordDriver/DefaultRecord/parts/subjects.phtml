@@ -44,6 +44,8 @@
             $descriptionHtml .= '<li>'.$item.'</li>';
           }
           $descriptionHtml .= '</ol>';
+          if ($descriptionHtml == '<ol></ol>') {$descriptionHtml = '';}
+          
           ?>
           <span class="notationLine">
                 <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('rvknotation', $shortcut, $this->searchClassId)?>" class="searchicon" title="<?=$descriptionHtml?>" ><?=$this->transEsc($shortcut)?></a>

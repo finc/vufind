@@ -202,6 +202,16 @@ class SolrGvimarc extends SolrMarc
                 $notationList[$suba->getData()] = $title;
             }
         }
+        foreach ($this->getMarcRecord()->getFields('084') as $field) {
+            $suba = $field->getSubField('a');
+            if ($suba) {
+                $title = [];
+                foreach ($field->getSubFields('k') as $item) {
+                    $title[] = htmlentities($item->getData());
+                }
+                $notationList[$suba->getData()] = $title;
+            }
+        }
         return $notationList;
     }
 
