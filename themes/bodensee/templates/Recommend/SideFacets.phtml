@@ -40,6 +40,9 @@
 <? $hierarchicalFacetSortOptions = $this->recommend->getHierarchicalFacetSortOptions() ?>
 <? if (!empty($sideFacetSet) && $results->getResultTotal() > 0): ?>
   <? foreach ($sideFacetSet as $title => $cluster): ?>
+    <? if ($title == 'consortium' && !$this->searchTabs()->isILL($this->searchClassId)): 
+        continue;
+        endif; ?>
     <div class="facet-group" id="side-panel-<?=$this->escapeHtmlAttr($title) ?>">
       <button class="title<? if(in_array($title, $collapsedFacets)): ?> collapsed<? endif ?>" data-toggle="collapse" href="#side-collapse-<?=$this->escapeHtmlAttr($title) ?>" >
         <?=$this->transEsc($cluster['label'])?>
