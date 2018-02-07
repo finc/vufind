@@ -192,7 +192,7 @@ class SolrGvimarc extends SolrMarc
         $replace = [
             '"' => "'",
         ];
-        foreach ($this->getMarcRecord()->getFields('936') as $field) {
+        foreach ($this->getMarcRecord()->getFields('084') as $field) {
             $suba = $field->getSubField('a');
             if ($suba) {
                 $title = [];
@@ -202,7 +202,7 @@ class SolrGvimarc extends SolrMarc
                 $notationList[$suba->getData()] = $title;
             }
         }
-        foreach ($this->getMarcRecord()->getFields('084') as $field) {
+        foreach ($this->getMarcRecord()->getFields('936') as $field) {
             $suba = $field->getSubField('a');
             if ($suba) {
                 $title = [];
