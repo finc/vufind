@@ -71,6 +71,7 @@ JS;
           <? if(($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>          
             <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>         
           <? elseif($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
+            <? $library = $this->libraries()->getFirst($this->client()->getIsils()); ?>           
             <h2><?=$this->escapeHTML((string)$library)?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>          
           <? endif; ?>
           <p><?=$this->transEsc('homepage_text')?></p>   

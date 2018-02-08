@@ -23,7 +23,8 @@ endif;?>
             elseif (strpos($link, '/') !== FALSE):
                 $url = $link;               
             else:
-                $url = $this->url($link);               
+                $url = $link;               
+                //$url = $this->url($link);               
             endif; ?>
             
             <li><a href="<?=$url?>" class="<?= $external ? 'external' : 'internal'?>" <?= $external ? 'target="boss"' : ''?>><?=$this->transEsc($translation)?></a></li>

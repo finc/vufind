@@ -26,14 +26,21 @@ use Zend\Session\Container;
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class BszController extends \VuFind\Controller\AbstractBase {
-    
    
+    public function __construct() {
+        // you need this constructor even if it's empty
+        // error_reporting(E_ALL);
+    }    
+    
+    
     /**
      * Write isil into Session 
      */
     public function saveIsilAction() {
         
-        $client = $this->getServiceLocator()->get('Bsz\Client');
+        $sl = $this->getServiceLocator();
+        $client = $sl->get('Bsz\Client');
+        // $client = $this->getServiceLocator()->get('Bsz\Client');
         $libraries = $this->getServiceLocator()->get('Bsz\Libraries');  
         
         $isilsRoute = explode(',', $this->params()->fromRoute('isil'));       
@@ -78,7 +85,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
         ) {
             return $this->redirect()->toUrl($referer);
         } else {
-            return $this->forwardTo('interlending', 'home');            
+            return $this->forwardTo('search', 'home');            
         }
         //Forward back to home action
     }

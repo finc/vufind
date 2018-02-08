@@ -1,0 +1,30 @@
+<? $truncate = 60?> 
+    <a class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="<?=implode(', ', $this->client()->getIsils())?>">    
+        <span class="caret"></span>
+        <?=$this->transEsc('Bibliothek')?>
+    </a>
+    <ul class="dropdown-menu column-2" aria-labelledby="dropdownMenu1">
+        <li role="presentation" class="dropdown-header"><?=$this->escapeHTML('Baden-Württemberg')?></li>
+        <? foreach ($this->libraries()->getByCountryId(\Bsz\Config\Libraries::ID_BAWUE) as $library): ?>
+        <? $url = $this->url('saveisil',['isil' => $library->getIsil()] )?>
+        <li role="presentation">
+            <a role="menuitem" href="<?=$this->escapeHtmlAttr($url)?>"><?=$this->escapeHtml($this->truncate($library->getName(), $truncate))?></a>
+        </li>
+        <? endforeach; ?>
+        <li role="presentation" class="dropdown-header"><?=$this->escapeHTML('Saarland')?></li>
+        <? foreach ($this->libraries()->getByCountryId(\Bsz\Config\Libraries::ID_SAARLAND) as $library): ?>
+            <? $url = $this->url('saveisil',['isil' => $library->getIsil()] )?>
+            <li role="presentation">
+                <a role="menuitem" href="<?=$this->escapeHtmlAttr($url)?>"><?=$this->escapeHtml($this->truncate($library->getName(), $truncate))?></a>
+            </li>
+        <? endforeach; ?>
+        <li role="presentation" class="dropdown-header"><?=$this->escapeHTML('Sachsen')?></li>
+        <? foreach ($this->libraries()->getByCountryId(\Bsz\Config\Libraries::ID_SACHSEN) as $library): ?>
+            <? $url = $this->url('saveisil',['isil' => $library->getIsil()] )?>
+            <li role="presentation">
+                <a role="menuitem" href="<?=$this->escapeHtmlAttr($url)?>"><?=$this->escapeHtml($this->truncate($library->getName(), $truncate))?></a>
+            </li>
+        <? endforeach; ?>
+   
+    </ul>
+
