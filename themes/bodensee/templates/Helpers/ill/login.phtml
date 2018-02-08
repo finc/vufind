@@ -49,6 +49,11 @@ if(isset($firstLibrary) && $firstLibrary->getAuth() == 'tan'): ?>
 ?>
 <input type="hidden" name="Verbund" value="<?=$this->escapeHtmlAttr(isset($this->driver) ? $this->driver->tryMethod('getNetwork') : '')?>" />
 <input type="hidden" name="TitelId" value="<?=$this->escapeHtmlAttr($ppn)?>" />
+<? if (isset($this->driver)): ?>
+<input type="hidden" name="Bestellform" value="<?= ($this->driver->isBook()) ? 'Leihen' : 'Kopie' ?>" />
+<? else: ?>
+<input type="hidden" name="Bestellform" value="Kopie" />
+<? endif; ?>
 <input type="hidden" name="Besteller" value="E" />
 <? if (!isset($this->driver)): ?>
 <? // freies Fernleihformular ?>
