@@ -197,7 +197,7 @@ class RecordController extends \VuFind\Controller\RecordController
         }      
         
                 
-        $view = $this->createViewModel([
+        $view = $this->createViewModelWithoutRecord([
             'success' => null,
             'driver' => null,
             'test' => $this->isTestMode(),
@@ -378,7 +378,7 @@ class RecordController extends \VuFind\Controller\RecordController
         
     }
     
-    public function createViewModel($params = null) 
+    public function createViewModelWithoutRecord($params = null) 
     {
         $layout = $this->params()
             ->fromPost('layout', $this->params()->fromQuery('layout', false));
