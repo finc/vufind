@@ -194,7 +194,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 && $first->getAuth() == 'shibboleth') {
             $this->FlashMessenger()->addErrorMessage('You must be logged in first');
             $submitDisabled = true;
-        }
+        }      
         
                 
         $view = $this->createViewModel([
@@ -203,7 +203,7 @@ class RecordController extends \VuFind\Controller\RecordController
             'test' => $this->isTestMode(),
             'submitDisabled' => $submitDisabled
         ]);
-        $view->setTemplate('interlending/illform.phtml');
+        $view->setTemplate('record/illform.phtml');
         return $view;
     }
 
@@ -376,6 +376,20 @@ class RecordController extends \VuFind\Controller\RecordController
                 http_Build_query($params));
 
         
+    }
+    
+    public function createViewModel($params = null) 
+    {
+        $layout = $this->params()
+            ->fromPost('layout', $this->params()->fromQuery('layout', false));
+        if ('lightbox' === $layout) {
+            $this->layout()->setTemplate('layout/lightbox');
+        }
+        $view = new ViewModel($params);
+        $this->layout()->searchClassId = $view->searchClassId = $this->searchClassId;
+        // we don't use a driver in this action
+        // $view->driver = $this->loadRecord();
+        return $view;
     }
 
 }
