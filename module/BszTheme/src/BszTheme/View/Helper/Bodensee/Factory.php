@@ -138,19 +138,18 @@ class Factory
         $libraries = $sm->getServiceLocator()->get('bsz\config\libraries');      
         try {
             $library = $libraries->getFirst($client->getIsils());  
-            
-            $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null; 
+            // @todo: check adisUrl in Detals tab!
+            // $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null;  
         } catch (\Exception $ex) {
             throw new \Bsz\Exception('Library not found');
         }
 
-        
         return new RecordLink(
             $sm->getServiceLocator()->get('VuFind\RecordRouter'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            $adisUrl            
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }
+    
     /**
      * Construct the GetLastSearchLink helper.
      *
