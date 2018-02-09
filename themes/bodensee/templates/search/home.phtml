@@ -18,7 +18,7 @@
   $this->layout()->breadcrumbs = false;
 
   
-
+  $library = $this->libraries()->getFirst($this->client()->getIsils());
   
 ?>
 <div class="col-sm-12 searchHomeContent">
@@ -59,11 +59,11 @@ JS;
           </div>
       <? endif; ?>
       <div class="col-xs-5 col-sm-3 pull-right">
-          <? if ($this->imageLink($this->clientAsset()->getLogo()) && ($this->client()->hasIsilSession() || !$this->client()->isIsilSession() )): ?>
+          <? // if ($this->imageLink($this->clientAsset()->getLogo()) && ($this->client()->hasIsilSession() || !$this->client()->isIsilSession() )): ?>
             <a href="<?=$this->client()->getWebsite()?>" class="external hasicon">      
-                <img src="<?=$this->imageLink($this->clientAsset()->getLogo())?>" alt="Logo Bibliothek" class="logo img-responsive"/>
+                <img src="<?=$this->imageLink($library->getLogo()); ?>" alt="Logo Bibliothek" class="logo img-responsive"/>
             </a>
-          <? endif; ?>
+          <? // endif; ?>
       </div>      
   </div>
   <div class="row">   
@@ -71,7 +71,6 @@ JS;
           <? if(($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>          
             <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>         
           <? elseif($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
-            <? $library = $this->libraries()->getFirst($this->client()->getIsils()); ?>           
             <h2><?=$this->escapeHTML((string)$library)?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>          
           <? endif; ?>
           <p><?=$this->transEsc('homepage_text')?></p>   
