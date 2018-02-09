@@ -97,7 +97,12 @@ class ThemeInfo extends \VuFindTheme\ThemeInfo {
      * @return string
      */
     public function addClientFavicon() {
-        return 'favicon/'.$this->tag.'.ico';
+        if (file_exists($this->baseDir.'/'.$this->currentTheme.'/images/favicon/'.$this->tag.'.ico')) {
+            return 'favicon/'.$this->getTag().static::FAVICON_TYPE;            
+        } else {
+            return 'favicon/default.ico';                       
+        }
+
     }
 }
 
