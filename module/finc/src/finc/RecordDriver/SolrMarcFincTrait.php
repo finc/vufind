@@ -1583,6 +1583,9 @@ trait SolrMarcFincTrait
             preg_match("/^(\([A-z]*-[A-z0-9]*\))?\s*([A-z0-9]*)\s*$/", $value, $matches);
             if (!empty($matches[2])) {
                 $query = 'record_id:' . $matches[2];
+                if ($sid = $this->fields['source_id']) {
+                    $query .= ' AND source_id:'.$sid;
+                }
                 $result = $this->searchService->search('Solr', new Query($query));
                 if (count($result) === 0) {
                     $this->debug('Could not retrieve id for record with ' . $query);
