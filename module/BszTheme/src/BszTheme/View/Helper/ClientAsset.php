@@ -2,7 +2,8 @@
 
 namespace BszTheme\View\Helper;
 use Zend\View\Helper\AbstractHelper,
-    Zend\View\Renderer\RendererInterface as Renderer;
+    Zend\View\Renderer\RendererInterface as Renderer,
+    Zend\Session\Container;
 
 
 /**
@@ -14,13 +15,21 @@ class ClientAsset extends AbstractHelper
 {
     protected $tag;
     
+    protected $isil = null;
+    
     /**
      * The first part of the domain name
      * 
      * @param string $tag
      */
     public function __construct($tag) {
+        
         $this->tag = $tag;
+        
+        $container = new Container('fernleihe');
+        if ($container->offsetExists('isil')) {
+            $this->isil = (array)$container->offsetGet('isil');
+        }
     }
     
     public function __invoke() {

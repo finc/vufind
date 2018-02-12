@@ -251,9 +251,6 @@
       </tr>
       <? endif; ?>
 
-      <? if ($this->searchTabs()->isILL($this->searchClassId)): ?>
-        <?=$this->render('RecordDriver/DefaultRecord/parts/illbutton.phtml')?>
-      <? endif; ?>
       <? $recordLinks = $this->driver->getAllRecordLinks(); ?>
       <? if(!empty($recordLinks)): ?>
         <tr>
@@ -289,8 +286,11 @@
                   <? endif; ?>
                 </div>
             </td>
-        </tr>
+        </tr>        
         <? endif; ?>
+              <? if ($this->searchTabs()->isILL($this->searchClassId)): ?>
+        <?=$this->render('RecordDriver/DefaultRecord/parts/illbutton.phtml')?>
+      <? endif; ?>
     </table>
     <?/* End Main Details */?>
       <? if ($this->driver->isFisBildung()): ?> 
