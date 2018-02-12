@@ -1,0 +1,50 @@
+<?
+  $this->layout()->searchbox = $this->context($this)->renderInContext(
+      'search/searchbox.phtml', ['frame' => true]);
+?>
+<?=$this->doctype('HTML5')?>
+<html>    
+    <head>      
+        <?=$this->headTitle($this->transEsc('Search'))?>  
+        <?$this->headThemeResources()?>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="robots" content="noindex, nofollow" />    
+        <?=$this->headLink()?>
+        <? 
+          // Remove unnecessary scripts
+          $this->headScript()->offsetUnset(2);
+          $this->headScript()->offsetUnset(3);
+          $this->headScript()->offsetUnset(4);
+          $this->headScript()->offsetUnset(5);
+          $this->headScript()->offsetUnset(6);
+          
+        ?>
+        <?=$this->headScript()?>
+    </head>
+    <body class="frame">
+        <header>
+            <?=$this->layout()->searchbox ?>                
+        </header>
+        <script type="text/javascript">
+            // disable tab links here
+            $(document).ready(function(){
+                $('#searchForm').attr('target', '_blank');
+                $('.nav-tabs li a').click(function() {
+                    $('.nav-tabs li').removeClass('active');
+                    $(this).parent().addClass('active');
+                    var path = $(this).attr('href');
+                    if (path-length == 0 ) {
+                        path = '/Search/Results';
+                    } else if (path.indexOf('EDS') >= 0) {
+                        path = path.replace('Home', 'Search');                        
+                    } else {
+                        path = path.replace('Home', 'Results');                                                
+                    }                    
+                    $('#searchForm').attr('action', path);
+                    return false;
+                });
+            });
+        </script>
+    </body>    
+</html>
