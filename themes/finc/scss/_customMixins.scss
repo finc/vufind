@@ -1,0 +1,21 @@
+// Right-hand border on Sidebar? Only activate when border butts right border, leave commented out for standard border
+@mixin right-border-on-sidebar($border-right-width) {
+  border-right-width: $border-right-width;
+}
+
+// for $border-right-width:  SEE customVariables
+
+// Activate when Sidebar ought to be pulled to the right edge/border
+@mixin pull-sidebar-to-right($margin-right-width) {
+  margin-right: $margin-right-width;
+}
+
+// for $margin-right-width:  SEE customVariables
+
+//// Pagination (Search results) AND searchtools (Search results)
+//// Default is left, we use centered alignment. If left is desired,
+//// comment out next mixing and '.pagination ...'  and 'searchtools ...' in compiled.scss
+@mixin content-centered-display-as-table {
+  display: table;
+  margin: 1.5em auto;
+}

@@ -7,7 +7,7 @@
 // Do NOT EDIT  compiled.css
 // 1.   Define or re-define KEY VARIABLES and MIXINS (see 1.1 ff below) OR import your own
 @import 'customVariables';
-//@import 'customMixins';
+@import 'customMixins';
 // 1.1  Unless imported, define standard colour variables here which are used in variables below prior to finc.scss import
 // e.g. $brand-primary: #008CBA !default;   // bondi-blue
 // $brand-secondary: #e7e7e7 !default; // white-lilac
@@ -1529,11 +1529,10 @@ footer {
 // MAIN CONTENT - END
 
 // SIDEBAR
-//// pull content to right border
+//// pull content to right border for sidebar right
 .container .sidebar {
-  margin-right: -15px;
-
   &.right {
+    @include pull-sidebar-to-right($margin-right-width);
     padding-left: 0;
   }
 }
@@ -1550,17 +1549,22 @@ footer {
   }
 }
 
-//// Style facets to have the same height as items in myresearch-menu + remove right-hand borders
+//// Style facets to have the same height as items in myresearch-menu
 .facet-group .facet,
 .facet-group .title {
-  border-right: 0;
   padding: $sidebar-item-padding;
 }
 
-.facet-group .collapse,
-.facet-group .collapsing,
-.facet-group > .facet {
-  border-right: 0;
+//// Remove right-hand borders for facets on the right only,
+//// ONLY works when sidebar butts right border
+.sidebar.right {
+  .facet-group .facet,
+  .facet-group .title,
+  .facet-group .collapse,
+  .facet-group .collapsing,
+  .facet-group > .facet {
+    @include right-border-on-sidebar($border-right-width);
+  }
 }
 
 ////// Pull exclude facets to the right, align with accordion/collapse triangles and headings
@@ -1572,7 +1576,7 @@ footer {
 //// Offcanvas is used to widths of 767px ($screen-xs-max)
 @media only screen and (max-width: $screen-xs-max) {
   .offcanvas.active .sidebar {
-    padding-right: ($grid-gutter-width /2);
+    padding-right: ($grid-gutter-width / 2);
   }
 }
 

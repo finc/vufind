@@ -88,6 +88,10 @@ $border-color: $iron !default;
 // Default border styles
 $border-default-styles: 1px solid $border-color !default;
 
+// Width and position of Sidebar border (see customMixins.scss) -- change to "0" and "-15px" only for sidebar on the right, butting on right border
+$border-right-width: 1px !default;
+$margin-right-width: inherit !default;
+
 
 //// PAGER
 $pagination-disabled-color: $gainsboro !default;
@@ -175,6 +179,10 @@ $content-top-padding: $grid-gutter-width / 2 !default;
 
 //// Sidebar item padding
 $sidebar-item-padding: .75em 1em !default;
+
+//// Table cell padding - adjust in themes to avoid content jumps when switching tabs
+// $table-cell-padding: 5px !default;
+
 
 //// MODAL dimensions
 $modal-lg: 900px !default;
