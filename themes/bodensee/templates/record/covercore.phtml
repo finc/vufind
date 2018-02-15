@@ -1,0 +1,17 @@
+<? /* Display thumbnail if appropriate: */ ?>
+<?  $formats = $this->driver->getFormats();
+    $icon = $this->mapper()->mapIcon($formats);
+?>
+<? if ($cover): ?>
+  <? if ($this->link): ?>
+    <a class="modal-popup cover" data-toggle="modal" href="#" data-img-url="<?=$this->escapeHtmlAttr($cover); ?>" data-title="title">
+  <? endif; ?>
+  <img <? if ($linkPreview): ?>data-linkpreview="true" <? endif; ?>class="recordcover <?=$icon?>" src="<?=$this->escapeHtmlAttr($cover); ?>"/>
+  <? if ($this->link): ?>
+    </a>
+  <? endif; ?>
+<? else: ?>
+  <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?> medium">     
+    <span class=""></span>
+  </div>
+<? endif; ?>

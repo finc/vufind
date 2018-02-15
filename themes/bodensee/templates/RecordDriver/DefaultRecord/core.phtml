@@ -1,26 +1,24 @@
 
 <div class="row" vocab="http://schema.org/" resource="#record">    
-    <div class="col-xs-10 col-sm-3 pull-right">        
-        <? /* Display thumbnail if appropriate: */ ?>
-        <? $formats = $this->driver->getFormats();        
-           $format = array_shift($formats);
-           //$this->format = $this->mapper()->mapIcon($format);
-        ?>
-        <? $mediumThumb = $this->record($this->driver)->getThumbnail('medium'); 
-           $largeThumb = $this->record($this->driver)->getThumbnail('large'); ?>
-        <? if ($mediumThumb): ?>
-          <? if ($largeThumb): ?>
-          <a class="modal-popup cover" data-toggle="modal" href="#" data-img-url="<?=$this->escapeHtmlAttr($largeThumb);?>" data-title="<?= $this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection()) ?>">
-          <? endif; ?>
-            <img alt="" class="recordcover <?=$this->mapper()->mapIcon($this->driver->getFormats())?>" src="<?=$this->escapeHtmlAttr($mediumThumb);?>"/>          
-        <? else: ?>
-           <?=$this->render('RecordDriver/DefaultRecord/parts/cover.phtml')?>
-        <? endif; ?>
-        <? if ($largeThumb): ?>
-          </a>
-        <? endif; ?>        
+    <div class="col-xs-10 col-sm-3 pull-right">
+<?
+  $coverDetails = $this->record($this->driver)->getCoverDetails('core', 'medium', $this->recordLink()->getUrl($this->driver));
+  $cover = $coverDetails['html'];
+  $thumbnail = false;
+  $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
+  if ($cover): ?>
+    <? if ($coverDetails['html'] !== ''): ?> 
+        <div class="media-<?=$thumbnailAlignment ?> <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
+            <?=$cover ?>
+        </div>    
+    <? endif; ?>
+  <? else: ?>
+    <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">     
+        <span class=""></span>
+    </div>
+<? endif; ?>   
 
-        <? /* Display qrcode if appropriate: */ ?>
+<? /* Display qrcode if appropriate: */ ?>
         <? $QRCode = $this->record($this->driver)->getQRCode("core"); ?>
         <? if($QRCode): ?>
           <span class="hidden-xs">
