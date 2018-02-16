@@ -815,10 +815,10 @@ class SolrGvimarc extends SolrMarc
                 // QnD
                 // We need the searchClassId here to get proper filters
                 $searchClassId = 'Solr';
-                if (isset($_SERVER['REQUEST_URI']) &&
-                        strpos($_SERVER['REQUEST_URI'], 'Interlending') !== FALSE) {
-                    $searchClassId = 'Interlending';
-                }
+//                if (isset($_SERVER['REQUEST_URI']) &&
+//                        strpos($_SERVER['REQUEST_URI'], 'Search') !== FALSE) {
+//                    $searchClassId = 'Interlending';
+//                }
 
                 $results = $this->runner->run($params, $searchClassId);
                 $this->container = $results->getResults();
@@ -1189,7 +1189,7 @@ class SolrGvimarc extends SolrMarc
     public function getResourceSource()
     {
         $id = $this->getSourceIdentifier();
-        return $id == 'Solr' || 'Interlending' ? 'VuFind' : $id;
+        return $id == 'Solr' ? 'VuFind' : $id;
     }
 
     /**

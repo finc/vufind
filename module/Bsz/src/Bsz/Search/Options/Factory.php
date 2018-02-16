@@ -27,20 +27,7 @@ use \Zend\ServiceManager\ServiceManager;
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class Factory {
-    /**
-     * Factory for Interlending options object.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return Solr
-     */
-    public static function getInterlending(ServiceManager $sm)
-    {
-        $config = $sm->getServiceLocator()->get('VuFind\Config');
-        $Client = $sm->getServiceLocator()->get('Bsz\Client');
-        $options = new \Bsz\Search\Interlending\Options($config, $Client);
-        return $options;
-    }
+
     /**
      * Factory for Interlending options object.
      *
