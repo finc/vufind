@@ -1530,8 +1530,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 return current($result->getRecords())->getUniqueId();
             } catch (\Exception $e) {
                 $this->debug($e);
-                // refs #12318 return null if no main identifier can delivered
-                return null;
+                // refs #12318 return falls if no main identifier can delivered
+                // null will logically correct but throws exceptions in
+                // subsequential core methods
+                return false;
             }
         }
         // todo: check if return $ilsId is reasonable in context.
