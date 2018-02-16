@@ -17,7 +17,8 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
 {
     public function isILL($searchClassId) {
         $hiddenFilterStr = urldecode($this->getCurrentHiddenFilterParams($searchClassId));
-        if (strpos($hiddenFilterStr, 'consortium:FL') !== FALSE) {
+        if (strpos($hiddenFilterStr, 'consortium:FL') !== FALSE || 
+                strpos($hiddenFilterStr, 'consortium:ZDB') !== FALSE) {
             return true;
         }
         return false;
