@@ -288,10 +288,6 @@ class Holding {
     public function getParallelEditions($ppns, $isils) 
     {
         $params = [];
-        // filtering by solr does not work as some libraries have too many isils
-//        foreach ($isils as $k => $isil) {
-//            $filter[] = 'institution_id:'.$isil;            
-//        }     
 
         foreach ($ppns as $k => $ppn) {
             // escape braces 
@@ -299,12 +295,11 @@ class Holding {
         }
         $orLookfor = implode(' OR ', $ppns);
         $lookfor[] = $orLookfor;
-                
-//        $params['filter'] = $filter;      
+
         $params['lookfor'] = $lookfor;
         $params['wt'] = 'json';
 
-        $results = $this->runner->run($params, 'Interlending');
+        $results = $this->runner->run($params, 'Solr');
         return $results;       
 
     } 

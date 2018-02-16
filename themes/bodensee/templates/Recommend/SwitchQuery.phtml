@@ -9,11 +9,11 @@
       <li><?=$this->transEsc('switchquery_typos')?></li>
       <li><?=$this->transEsc('switchquery_other')?></li>
     </ul>
-    <? if ($this->client()->isIsilSession()): ?> 
+    <? if ($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?> 
         <?
             $library = $this->libraries()->getFirst($this->client()->getIsils());
             $url =  $library->hasCustomUrl() ? $library->getCustomUrl() 
-                    : $this->url('interlendingrecord-freeform');
+                    : $this->url('record-freeform');
         ?>
         <p><?=$this->transEsc('switchquery_ill')?>
             &nbsp;<a class="<?=$library->hasCustomUrl()? 'external' : 'internal' ?>" href="<?=$url?>"><?=$this->transEsc('ill_request_free_form')?></a>    <? endif; ?>

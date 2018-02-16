@@ -23,7 +23,7 @@ use Zend\View\Helper\AbstractHelper,
     Zend\View\Renderer\RendererInterface as Renderer;
 
 /**
- * Description of Interlending
+ * Description of Libraries
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
@@ -31,7 +31,7 @@ class Libraries extends AbstractHelper {
     
     /**
      * Constructor
-     * @var \Bsz\Config\Interlending
+     * @var \Bsz\Config\Libraries
      */
     protected $libraries;
     
@@ -41,7 +41,7 @@ class Libraries extends AbstractHelper {
     
     /**
      * This is called in views
-     * @return bsz\Config\Interlending
+     * @return bsz\Config\Libraries
      */
     public function __invoke() {
         return $this->libraries;

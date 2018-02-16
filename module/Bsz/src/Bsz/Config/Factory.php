@@ -60,7 +60,7 @@ class Factory
     /**
      * 
      * @param ServiceManager $sm
-     * @return \Bsz\Interlending
+     * @return \Bsz\LibrariesTable
      */
     public static function getLibrariesTable(ServiceManager $sm)
     {

@@ -47,7 +47,7 @@ class FisrecordController extends \Bsz\Controller\RecordController {
      */
     protected function resultScrollerActive()
     {
-        $config = $this->getServiceLocator()->get('VuFind\Config')->get('Interlending');
+        $config = $this->getServiceLocator()->get('VuFind\Config')->get('Search');
         return (bool)(isset($config->Record->next_prev_navigation)
             && $config->Record->next_prev_navigation);
     }
