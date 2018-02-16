@@ -3,7 +3,7 @@
     <? foreach ($searchTabs as $tab): ?>
         <? if ($this->permission()->allowDisplay($tab['permission'])): ?>
           <li<?=$tab['selected'] ? ' class="active"' : ''?>>
-            <a <?=$tab['selected'] ? '' : 'href="' . $this->escapeHtmlAttr($tab['url']) . '"' ?>><i class="fa <?=$this->escapeHTMLAttr($tab['icon'])?>"></i><?=$this->transEsc($tab['label']); ?></a>
+            <a <?=$tab['selected'] ? '' : 'href="' . $this->escapeHtmlAttr($tab['url']) . '"' ?>><i class="fa <?=$this->escapeHTMLAttr($tab['icon'])?>"></i><span class="text"><?=$this->transEsc($tab['label']); ?></span></a>
           </li>
         <? elseif ($block = $this->permission()->getAlternateContent($tab['permission'])): ?>
             <?=$block?>
