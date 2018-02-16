@@ -491,6 +491,19 @@ table.collapse.in {
 
 //// Document Delivery Service (DDS) only - END
 
+//// Display styleBasedIcons
+.record,
+.result {
+  .media-left,
+  .media-right {
+    &.record-icon img {
+      display: inline-block;
+      max-width: none;
+      width: $thumbnail-width-small;
+    }
+  }
+}
+
 //// Sprites for Mediaicons
 .sprite-media-icon {
   background: url('../../finc/images/sprite-mediaicons.png') 0 0 repeat;
