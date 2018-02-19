@@ -40,10 +40,23 @@ class Factory {
     
     public static function getClientAsset(ServiceManager $sm) 
     {
+        $client = $sm->getServiceLocator()->get('bsz\config\client');
+        
+        $website = $client->getWebsite();
+        
         $host = $sm->getServiceLocator()->get('Request')->getHeaders()->get('host')->getFieldValue();
         $parts = explode('.', $host);
         $tag = isset($parts[0]) ? $parts[0] : 'swb';     
-        return new ClientAsset($tag);
+        $library = null;
+        $libraries = $sm->getServiceLocator()->get('bsz\config\libraries');
+        if ($libraries instanceof  \Bsz\Config\Libraries) {
+            if ($client->isIsilSession() && $client->hasIsilSession()) {     
+                $isils = $client->getIsils();
+                $library = $libraries->getFirst($isils);     
+                $website = $library->getHomepage();  
+            }
+        }              
+        return new ClientAsset($tag, $website, $library);
     }
     /**
      * Get Interlending View Helper

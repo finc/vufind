@@ -17,19 +17,21 @@ class ClientAsset extends AbstractHelper
     
     protected $isil = null;
     
+    protected $library;
+    
+    protected $website;
+    
     /**
      * The first part of the domain name
      * 
      * @param string $tag
      */
-    public function __construct($tag) {
+    public function __construct($tag, $website, $library = null) {
         
         $this->tag = $tag;
-        
-        $container = new Container('fernleihe');
-        if ($container->offsetExists('isil')) {
-            $this->isil = (array)$container->offsetGet('isil');
-        }
+        $this->library = $library;
+        $this->website = $website;
+
     }
     
     public function __invoke() {
@@ -49,7 +51,25 @@ class ClientAsset extends AbstractHelper
      * @return string
      */
     public function getLogo() {
-        return 'logo/'.$this->tag.'.png';
+        $filename = '';
+        if ($this->library === null) {
+            $filename = 'logo/'.$this->tag.'.png';            
+        } else if ($this->library instanceof \Bsz\Config\Library) {
+            $filename = $this->library->getLogo();
+        }
+
+        if (file_exists('/usr/local/boss/themes/bodensee/images/'.$filename)) {
+            return $filename;
+        }
+        return '';
+    }
+    
+    public function getLogoHtml() {
+        
+        return $this->getView()->render('bsz/logo.phtml', [
+            'website' => $this->website, 
+            'imglink' => $this->getLogo()
+        ]);
     }
     
 }

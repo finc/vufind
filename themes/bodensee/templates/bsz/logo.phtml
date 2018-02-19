@@ -1,0 +1,9 @@
+<?php if (isset($website)): ?>
+<a href="<?=$website?>" class="external hasicon">      
+<?php endif; ?>
+<?php if (!empty($imglink)): ?>
+    <img src="<?=$this->imageLink($imglink); ?>" alt="Logo Bibliothek" class="logo img-responsive"/>
+<?php endif; ?>
+<?php if (isset($website)): ?>
+</a>
+<?php endif; ?>

@@ -128,14 +128,9 @@ class Client extends \Zend\Config\Config
         } else {
             $mode = 'website_' . $mode;
         }
-        if ($this->hasIsilSession()) {
-            $first = $this->libraries->getFirst($this->getIsils());
-            if (isset($first)) {
-                $website = $first->getHomepage();
-            }
-        } else {
-             $website = $this->get('Site')->get($mode);            
-        }
+        
+        $website = $this->get('Site')->get($mode);            
+        
         return $website;
     }
 
