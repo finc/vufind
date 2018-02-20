@@ -201,7 +201,7 @@ class Record extends \VuFind\View\Helper\Root\Record
         }
 
         // printed journals - show hint
-        if ($this->driver->isArticle() || $this->driver->isJournal()) {
+        if ($this->driver->isArticle() || $this->driver->isJournal() || $this->driver->isNewspaper()) {
             return true;
         } 
         // ebooks - always available
