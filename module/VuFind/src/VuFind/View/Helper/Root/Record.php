@@ -494,10 +494,13 @@ class Record extends AbstractHelper
                     break;
                 }
             }
-
-            $details['html'] = $this->contextHelper->renderInContext(
-                'record/cover.phtml', $details
-            );
+            if ($context == 'core') {
+                $details['html'] = $this->contextHelper->renderInContext(
+                    'record/covercore.phtml', $details );                
+            } else {
+                $details['html'] = $this->contextHelper->renderInContext(
+                    'record/cover.phtml', $details);
+            }
         }
         return $details;
     }

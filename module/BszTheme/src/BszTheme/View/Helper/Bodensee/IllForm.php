@@ -192,7 +192,6 @@ class IllForm extends AbstractHelper
         // the first is the label, the second the fieldname, third the value
         // arrays in value are allowed, they are imploded later        
         $fields = [
-            
             ['Author', 'Verfasser', $authors],
             ['Title', 'Titel', $this->getText('title'), '', true],
             ['Subtitle', 'Untertitel', $this->getText('subtitle')],
@@ -388,7 +387,7 @@ class IllForm extends AbstractHelper
             $result = $driver->tryMethod($method);
 
             if (is_array($result)) {      
-                $result = implode(', ', $result);
+                $result = implode('; ', $result);
             }        
             
             if ($method == 'getContainerPages' && empty($result)) {

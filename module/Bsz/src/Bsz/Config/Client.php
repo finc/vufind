@@ -83,8 +83,8 @@ class Client extends \Zend\Config\Config
         $boxName = 'box'.(int)$boxNo;
         $links = $this->get('FooterLinks')->get($boxName);
         if ($boxNo == 2 && count($links) == 0) {
-            $links[] = 'search-history';
-            $links[] = 'search-advanced';
+            $links[] = '/Search/History';
+            $links[] = '/Search/Advanced';
         } else if($boxNo == 1 && $this->isIsilSession() && $this->hasIsilSession()) {
             $library = $this->libraries->getFirst($this->getIsils());
             // freeForm must not be available from footer
@@ -98,7 +98,7 @@ class Client extends \Zend\Config\Config
             }
             
         } else if ($boxNo == 3) {
-            $links[] = 'bsz-privacy';
+            $links[] = 'Bsz/Privacy';
         }        
         
         // Clean up urls

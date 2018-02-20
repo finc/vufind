@@ -141,14 +141,14 @@ class Factory
         $library = $libraries->getFirst($client->getIsils());  
         if ($library instanceof \Bsz\Client\Library) {
             $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null;                 
-        }          
+        }        
           
         return new RecordLink(
             $sm->getServiceLocator()->get('VuFind\RecordRouter'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            $adisUrl            
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }
+    
     /**
      * Construct the GetLastSearchLink helper.
      *
