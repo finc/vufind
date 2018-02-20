@@ -136,15 +136,13 @@ class Factory
     {
         $client = $sm->getServiceLocator()->get('bsz\config\client');
         $libraries = $sm->getServiceLocator()->get('bsz\config\libraries');      
-        try {
-            $library = $libraries->getFirst($client->getIsils());  
-            
-            $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null; 
-        } catch (\Exception $ex) {
-            throw new \Bsz\Exception('Library not found');
-        }
+        $adisUrl = null;
 
-        
+        $library = $libraries->getFirst($client->getIsils());  
+        if ($library instanceof \Bsz\Client\Library) {
+            $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null;                 
+        }          
+          
         return new RecordLink(
             $sm->getServiceLocator()->get('VuFind\RecordRouter'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
