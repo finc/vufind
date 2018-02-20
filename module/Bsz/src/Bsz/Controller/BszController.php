@@ -80,7 +80,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
             $referer = $referer->getFieldValue();
         }
         if (!empty($referer) && strpos($referer, 'saveIsil') === FALSE
-                && ( strpos($referer, '.boss2') > 0 
+                && ( strpos($referer, '.boss') > 0 
                     || strpos($referer, '.localhost') > 0)
         ) {
             return $this->redirect()->toUrl($referer);
