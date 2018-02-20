@@ -1,9 +1,9 @@
 <? 
     $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
-    $hiddenFilterString = '&hiddenFilters[]=';
+    $hiddenFilterString = '';
     foreach ($hiddenFilters as $key => $filter) {
         foreach ($filter as $value) {
-            $hiddenFilterString .= $this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value);
+            $hiddenFilterString .= '&hiddenFilters[]=' . $this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value);
         }
     }
 ?>
