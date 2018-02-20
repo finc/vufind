@@ -1,4 +1,13 @@
 
+<? 
+    $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
+    $hiddenFilterString = '&hiddenFilters[]=';
+    foreach ($hiddenFilters as $key => $filter) {
+        foreach ($filter as $value) {
+            $hiddenFilterString .= $this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value);
+        }
+    }
+?>
 <div class="row" vocab="http://schema.org/" resource="#record">    
     <div class="col-xs-12 col-sm-3 pull-right">
 <?
@@ -113,9 +122,9 @@
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author">
-                    <a class="author" href="<?=$this->url('author-home')?>?author=<?=urlencode($authors['main'])?>"><?=$this->escapeHtml($authors['main'])?></a>
+                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($authors['main'])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($authors['main'])?></a>
                     <? if ($gnd_author != ''): ?>
-                       (<a class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields">GND-ID</a>)
+                       (<a class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a>)
                     <? endif; ?>
                 </td>
             </tr>
@@ -123,13 +132,13 @@
             <? if (isset($authors['corporate']) && !empty($authors['corporate'])): ?>
             <tr>
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
-                <td property="creator"><a class="author" href="<?=$this->url('author-home')?>?author=<?=urlencode($authors['corporate'])?>"><?=$this->escapeHtml($authors['corporate'])?></a></td>
+                <td property="creator"><a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($authors['corporate'])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($authors['corporate'])?></a></td>
             </tr>
             <? endif; ?>
             <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
             <tr>
                 <th><?=$this->transEsc('Other Authors')?>: </th>
-                <td><? $i = 0; foreach ($authors['secondary'] as $field): ?><?=($i++ == 0)?'':', '?><span property="contributor"><a class="author" href="<?=$this->url('author-home')?>?author=<?=urlencode($field)?>"><?=$this->escapeHtml($field)?></a></span><? endforeach; ?></td>
+                <td><? $i = 0; foreach ($authors['secondary'] as $field): ?><?=($i++ == 0)?'':', '?><span property="contributor"><a class="author" href=<?=$this->url('search-results')?>?lookfor=<?=urlencode($field)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($field)?></a></span><? endforeach; ?></td>
             </tr>
             <? endif; ?>
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>

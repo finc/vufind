@@ -1,3 +1,12 @@
+<? 
+    $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
+    $hiddenFilterString = '&hiddenFilters[]=';
+    foreach ($hiddenFilters as $key => $filter) {
+        foreach ($filter as $value) {
+            $hiddenFilterString .= $this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value);
+        }
+    }
+?>
 <?
   $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'medium', $this->recordLink()->getUrl($this->driver));
   $cover = $coverDetails['html'];
@@ -42,9 +51,9 @@
             <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
             <? if ($summAuthors['main'] != ''): ?>
                 <strong><?=$this->transEsc('by')?></strong>
-                <a class="author" href="<?=$this->url('author-home')?>?author=<?=urlencode($summAuthors['main'])?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
+                <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($summAuthors['main'])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
                 <? if ($gnd_author != ''): ?>
-                    (<a class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields">GND-ID</a>)
+                    (<a class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a>)
                 <? endif; ?>
                 <br/>
             <? endif; ?>
