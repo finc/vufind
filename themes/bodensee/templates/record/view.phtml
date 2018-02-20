@@ -23,7 +23,7 @@
 <? if (isset($this->scrollData) && ($this->scrollData['previousRecord'] || $this->scrollData['nextRecord'])): ?>
   <ul class="pager hidden-print">
        <li>
-          <a class="btn btn-info" title="<?=$this->transEsc('Back to Search')?>" href="<?=$this->getLastSearchLink('', '', '', false)?>" class="backtosearch btn btn-info"><i class="fa fa-list-ol"></i></a>
+          <a class="backtosearch btn btn-info" title="<?=$this->transEsc('Back to Search')?>" href="<?=$this->getLastSearchLink('', '', '', false)?>" class="backtosearch btn btn-info"><i class="fa fa-list-ol"></i></a>
       </li>
     <? if ($this->scrollData['previousRecord']): ?>
       <? if ($this->scrollData['firstRecord']): ?>
@@ -46,7 +46,7 @@
     ]) ?>
     <? if ($this->scrollData['nextRecord']): ?>
       <li>
-        <a class="btn btn-primary" class="next" href="<?=$this->recordLink()->getUrl($this->scrollData['nextRecord'])?>" title="<?=$this->transEsc('Next Search Result')?>" rel="nofollow"><i class="fa fa-caret-right"></i></a>
+        <a class="next btn btn-primary" class="next" href="<?=$this->recordLink()->getUrl($this->scrollData['nextRecord'])?>" title="<?=$this->transEsc('Next Search Result')?>" rel="nofollow"><i class="fa fa-caret-right"></i></a>
       </li>
       <? if ($this->scrollData['lastRecord']): ?>
         <li>
