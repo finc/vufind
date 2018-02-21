@@ -1,4 +1,13 @@
  <?/* Display series section if at least one series exists. */?>
+ <? 
+    $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
+    $hiddenFilterString = '';
+    foreach ($hiddenFilters as $key => $filter) {
+        foreach ($filter as $value) {
+            $hiddenFilterString .= '&hiddenFilters[]=' . $this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value);
+        }
+    }
+?>
 <? $series = $this->driver->getSeries(); if (!empty($series)): ?>
 <tr>
 <th><?=$this->transEsc('Series')?>: </th>
@@ -9,14 +18,14 @@
        name.  We should account for both cases to maximize compatibility. */?>
     <? if (is_array($field)): ?>
       <? if (!empty($field['name'])): ?>
-        <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field['name'], $this->overrideRecordLink)?>"><?=$this->escapeHtml($field['name'])?></a>
+        <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field['name'], $this->overrideRecordLink)?><?=$hiddenFilterString?>"><?=$this->escapeHtml($field['name'])?></a>
         <? if (!empty($field['number'])): ?>
           <?=$this->escapeHtml($field['number'])?>
         <? endif; ?>
         <br/>
       <? endif; ?>
     <? else: ?>
-      <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field, $this->overrideRecordLink)?>"><?=$this->escapeHtml($field)?></a><br/>
+      <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field, $this->overrideRecordLink)?><?=$hiddenFilterString?>"><?=$this->escapeHtml($field)?></a><br/>
     <? endif; ?>
   <? endforeach; ?>
 </td>
