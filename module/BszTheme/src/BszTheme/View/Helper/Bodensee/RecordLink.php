@@ -110,7 +110,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
             // show link to Verbundsystem
             switch ($driver->getNetwork()) {
 
-                case 'ZDB': $link = sprintf('http://zdb-katalog.de/title.xhtml?idn=%s&lvr=BAW', $ppn);
+                case 'ZDB': $link = sprintf('http://zdb-opac.de/DB=1.1/PRS=HOL/CMD?ACT=SRCHA&IKT=12&TRM=%s', $ppn);
                     break;
                 case 'HEBIS': $link = sprintf('http://cbsopac.rz.uni-frankfurt.de/DB=2.1/PRS=HOL/CMD?ACT=SRCHA&IKT=12&TRM=%s', $ppn);
                     break;
