@@ -9,14 +9,14 @@
        name.  We should account for both cases to maximize compatibility. */?>
     <? if (is_array($field)): ?>
       <? if (!empty($field['name'])): ?>
-        <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field['name'], $this->overrideRecordLink)?>"><?=$this->escapeHtml($field['name'])?></a>
+        <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field['name'])?>"><?=$this->escapeHtml($field['name'])?></a>
         <? if (!empty($field['number'])): ?>
           <?=$this->escapeHtml($field['number'])?>
         <? endif; ?>
         <br/>
       <? endif; ?>
     <? else: ?>
-      <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field, $this->overrideRecordLink)?>"><?=$this->escapeHtml($field)?></a><br/>
+      <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field)?>"><?=$this->escapeHtml($field)?></a><br/>
     <? endif; ?>
   <? endforeach; ?>
 </td>
