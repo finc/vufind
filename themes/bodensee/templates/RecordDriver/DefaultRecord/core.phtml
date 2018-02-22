@@ -131,7 +131,11 @@
             <? if (isset($authors['corporate']) && !empty($authors['corporate'])): ?>
             <tr>
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
-                <td property="creator"><a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($authors['corporate'])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($authors['corporate'])?></a></td>
+                <td property="creator">
+                <? foreach ($authors['corporate'] as $corp): ?>
+                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($corp)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($corp)?></a><br/>
+                <? endforeach; ?>
+                </td>
             </tr>
             <? endif; ?>
             <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
