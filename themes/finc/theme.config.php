@@ -7,7 +7,7 @@ return array(
     ),
     'helpers' => array(
         'factories' => array(
-            //'permission' => 'finc\View\Helper\Root\Factory::getPermission',
+            'permission' => 'finc\View\Helper\Root\Factory::getPermission',
             'record' => 'finc\View\Helper\Root\Factory::getRecord',
             'recordlink' => 'finc\View\Helper\Root\Factory::getRecordLink',
             'interlibraryloan' =>
