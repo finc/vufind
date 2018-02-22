@@ -1,4 +1,4 @@
-<? 
+<?php 
     $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
     $hiddenFilterString = '';
     foreach ($hiddenFilters as $key => $filter) {
@@ -184,18 +184,40 @@
         $openUrlActive = $openUrl->isActive();
         // Account for replace_other_urls setting
         $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+        if (!is_array($urls)) $urls = array();
+        $localUrls = $this->driver->getLocalUrls(); ?>            
+        <? // Show local Urls ?>
+        <? if (!empty($localUrls[0]['url'])): ?>
+            <div>
+              <? foreach ($localUrls as $current):  ?>
+                <? $pos = strpos($current['label'], ' | '); ?>
+                <? $len = strlen($current['label']); ?>
+                <? if ($this->client()->is('local_url_help_regex')): ?>
+                    <a class="external" href="<?=str_replace('http://dx.doi.org', 'https://doi.org', $current['url'])?>"><?=$pos ? $this->transEsc(substr($current['label'], 0, $pos)) : $this->transEsc($current['label'])?></a>  <?=$pos ? preg_replace($this->client()->getHelpRegEx(), "<a class='external' href='".$this->client()->getHelpUrl()."'>".$this->client()->getHelpGroups()."</a>",  $this->transEsc(substr($current['label'], $pos+3, $len)) ): ''?><br/>
+                <? else: ?>                        
+                    <a class="external" href="<?=str_replace('http://dx.doi.org', 'https://doi.org', $current['url'])?>"><?=$pos ? $this->transEsc(substr($current['label'], 0, $pos)) : $this->transEsc($current['label'])?></a> <?=$pos ? $this->transEsc(substr($current['label'], $pos+3, $len)) : ''?><br/>
+                <? endif; ?>                    
+              <? endforeach; ?>
+            </div>
+        <? else: ?>
+        <? // Show SWB-links ?>        
+            <? if(!$this->driver->isCollection()): ?>
+                <? if (count($urls) > 2): ?>
+                    <? $urls = array_slice($urls, 0, 3) ?>
+                <? endif; ?>
+                <? foreach ($urls as $current): ?>
+                    <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fulltext external"><?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->transEsc($current['desc'])?></a><br/>
+                <? endforeach; ?>
+            <? endif; ?>
+        <? endif; ?>      
 
-        if ($openUrlActive || !empty($urls)): ?>
-        <? if ($openUrlActive): ?>
-          <br/>
-          <?=$openUrl->renderTemplate()?>
-        <? endif; ?>
-        <? if (!is_array($urls)) $urls = [];
-          if(!$this->driver->isCollection()):
-            foreach ($urls as $current): ?>
-              <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fulltext" target="new"><i class="fa fa-external-link" aria-hidden="true"></i> <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></a><br/>
-          <? endforeach; ?>
-        <? endif; ?>
+      <? // JOP resp. Redi Linkresolver  
+         // see VuFind/View/Helper/Bodensee/OpenUrl.php 
+         //     themes/bodensee/Helpers/openurl.phtml
+         //     openurl.js
+      ?>
+      <? if ($openUrlActive): ?>
+          <?=$openUrl->renderTemplate() ?>
       <? endif; ?>
 
       <div class="result-formats">
