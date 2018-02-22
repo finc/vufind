@@ -148,6 +148,16 @@
       </div>      
       <? endif; ?>
       
+      <?= $this->record($this->driver)->getFisLink()?>
+      <? if($this->client()->isIsilSession()
+            && !$this->driver->tryMethod('isFisBildung')
+            && strlen($this->driver->getNetwork()) > 0): ?>
+            <div class="ill-source">                
+                <strong><?=$this->transEsc('Network')?>:</strong>
+                <span class="test"><?=$this->driver->getNetwork() ?></span> 
+            </div>          
+      <? endif; ?>
+      
       <div class="callnumAndLocation ajax-availability hidden">
         <? if ($this->driver->supportsAjaxStatus()): ?>
           <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
