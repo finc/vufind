@@ -515,7 +515,6 @@ class FincILS extends PAIA implements LoggerAwareInterface
             if (isset($patron['address'])) {
                 try {
                     $vcard = VObject\Reader::read($patron['address']);
-
                     if (isset($vcard->ADR)) {
                         foreach ($vcard->ADR as $adr) {
                             $address[(
@@ -539,6 +538,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
                     }
                     if (isset($vcard->ROLE)) {
                         $group = (string)$vcard->ROLE;
+                    }
+                    if (isset($vcard->{'X-LIBRARY-BORROWER-BRANCH'})) {
+                        $home_library
+                            = (string)$vcard->{'X-LIBRARY-BORROWER-BRANCH'};
                     }
                     if (isset($vcard->{'X-LIBRARY-ILS-PATRON-EDIT-ALLOW'})) {
                         $editable = $this->getEditableProfileFields(
@@ -594,12 +597,14 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 // PAIA specific custom values
                 'expires'    => isset($patron['expires'])
                     ? $this->convertDate($patron['expires']) : null,
-                'statuscode' => isset($patron['status']) ? $patron['status'] : null,
+                'statuscode' => isset($patron['status'])
+                    ? $patron['status'] : null,
                 'canWrite'   => in_array(self::SCOPE_WRITE_ITEMS, $this->getSession()->scope),
                 // fincILS and PAIA specific custom values
-                'email'      => !empty($patron['email']) ?
-                     $patron['email'] : (!empty($emails[0]) ? $emails[0] : null),
-                'editableFields' => (!empty($editable)) ? $editable : null
+                'email'      => !empty($patron['email'])
+                    ? $patron['email'] : (!empty($emails[0]) ? $emails[0] : null),
+                'editableFields' => (!empty($editable)) ? $editable : null,
+                'home_library' => (!empty($home_library)) ? $home_library : null
             ];
             return (isset($profile)) ? array_merge($idm, $profile) : $idm;
 

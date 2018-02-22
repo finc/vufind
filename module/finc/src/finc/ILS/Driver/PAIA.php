@@ -320,15 +320,16 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
         //todo: make fields more configurable
         if (is_array($patron)) {
             return [
-                'firstname'  => $patron['firstname'],
-                'lastname'   => $patron['lastname'],
-                'address1'   => null,
-                'address2'   => null,
-                'city'       => null,
-                'country'    => null,
-                'zip'        => null,
-                'phone'      => null,
-                'group'      => null,
+                'firstname'    => $patron['firstname'],
+                'lastname'     => $patron['lastname'],
+                'address1'     => null,
+                'address2'     => null,
+                'city'         => null,
+                'country'      => null,
+                'zip'          => null,
+                'phone'        => null,
+                'group'        => null,
+                'home_library' => null,
                 // PAIA specific custom values
                 'expires'    => isset($patron['expires'])
                     ? $this->convertDate($patron['expires']) : null,
