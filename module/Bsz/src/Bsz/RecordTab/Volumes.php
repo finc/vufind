@@ -81,13 +81,10 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
                     'filter'  => 'material_content_type:Book',
                     'limit'   => 1000,
                 ];
-                if(isset($this->searchClassId)) {
-                    $results = $this->runner->run($params, $this->searchClassId);                    
-                } else {
-                    $results = $this->runner->run($params);                                        
-                }
+
+                $results = $this->runner->run($params); 
                 
-                $results instanceof \VuFind\Search\Solr\Results;
+                $results instanceof \Bsz\Search\Solr\Results;
                 $this->content = $results->getResults();
             }   
         }

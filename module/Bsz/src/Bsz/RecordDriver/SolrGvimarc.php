@@ -1206,13 +1206,12 @@ class SolrGvimarc extends SolrMarc
     {
         $ids = [];
         //parent collection
-        if ($this->isCollection() || $this->isPart()) {
-            $f773 = $this->getFieldArray(773, ['w']);
-            if (count($f773) > 0) {
-                $ids[] = array_shift($f773);
-            }
-            $ids[] = $this->getUniqueId();
+
+        $f773 = $this->getFieldArray(773, ['w']);
+        if (count($f773) > 0) {
+            $ids[] = array_shift($f773);
         }
+        $ids[] = $this->getUniqueId();
         return array_unique($ids);
     }
 

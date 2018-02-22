@@ -81,11 +81,7 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
                     'filter'  => 'material_content_type:Article',                        
                     'limit' => 1000
                 ];
-                if(isset($this->searchClassId)) {
-                    $results = $this->runner->run($params, $this->searchClassId);                    
-                } else {
-                    $results = $this->runner->run($params);                                        
-                }
+                $results = $this->runner->run($params);                                        
                 
                 $results instanceof \VuFind\Search\Solr\Results;
                 $this->content = $results->getResults();
