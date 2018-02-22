@@ -167,7 +167,7 @@ trait PdaTrait
         $view = $this->createViewModel($params);
 
         // Load configuration:
-        $config = $this->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $this->serviceLocator->get('VuFind\Config')->get('config');
         $view->fieldOfStudyList = isset($config->CustomSite->field_of_study)
             ? $config->CustomSite->field_of_study->toArray() : [];
 
