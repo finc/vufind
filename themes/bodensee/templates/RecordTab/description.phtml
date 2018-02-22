@@ -1,4 +1,4 @@
-<?
+<?  
     // Set page title.
     $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
 
@@ -29,7 +29,11 @@
   <? $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->transEsc('ZDB-ID')?>:</th>
-      <td><?=$this->escapeHtml($zdb)?></td>
+      <td>
+          <? if (isset($zdb)): ?>
+            <a class="external" href="http://zdb-katalog.de/title.xhtml?zdb=<?=$this->escapeHtml($zdb)?>&lvr=BAW"><?=$this->escapeHtml($zdb)?></a>
+          <? endif; ?>
+      </td>
     </tr>
   <? endif; ?>
     <? $parallel = $this->driver->tryMethod('getRelatedEditions'); if (count($parallel)): ?>
