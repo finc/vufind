@@ -391,5 +391,30 @@ class RecordController extends \VuFind\Controller\RecordController
         // $view->driver = $this->loadRecord();
         return $view;
     }
+    
+        /**
+     * 
+     * @return View
+     */
+    public function homeAction()
+    {
+        $isils = $this->params()->fromQuery('isil');
+        if (count($isils) > 0) {
+            $this->processIsil();
+        }
+        $view = parent::homeAction();
+        // set OpenUrl for custom ill forms
+        $view->customUrl = strlen($this->getCustomUrl()) > 0 ? $this->getcustomUrl() : false;
+
+        $view->authMethod = '';
+        $client = $this->getServiceLocator()->get('bsz\client');
+        if ($client->isIsilSession() && !$client->hasIsilSession()) {
+            $this->FlashMessenger()->addErrorMessage('missing_isil');
+        } else {
+            $library = $this->getServiceLocator()->get('bsz\libraries')->getFirst($client->getIsils());
+            $view->authMethod = $library->getAuth();
+        } 
+        return $view;
+    }
 
 }
