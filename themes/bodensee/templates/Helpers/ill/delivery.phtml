@@ -1,6 +1,22 @@
 <? $labelSize = 6; ?>
 <? $inputSize = 6; ?>
 <div class="form-group form-group-sm">    
+    <div class=" form-group form-group-sm">
+        <? if (isset($this->driver) && $this->driver->isBook()): 
+            $form = 'Leihen';
+        else: 
+            $form = 'Kopie';
+        endif; ?>
+        <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
+        <div class="col-sm-3 col-xs-1">
+            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?>/>  
+            <span for="ill-copy"><?=$this->transEsc('lend')?></span>
+        </div>
+        <div class="col-sm-3 col-xs-1">
+            <input type="radio" id="ill-copy" name="Bestellform" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?>/>
+            <span for="ill-copy"><?=$this->transEsc('paperdata')?></span>
+        </div>
+    </div>    
     <label class="control-label col-sm-<?=$labelSize?>"><?=$this->transEsc('Library')?>*</label>
     <div class="col-sm-<?=$inputSize ?>">  
         <? $libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>  

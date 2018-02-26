@@ -84,6 +84,14 @@ function illFormLogic() {
         
         
     });      
+    $('input[name=Bestellform]').change(function(e) {
+        if ($(this).val() == 'Leihen') {
+            $('#panel-paperdata .panel-collapse').collapse('hide');            
+        } else {
+            $('#panel-paperdata .panel-collapse').collapse('show');          
+    
+        }
+    });
     
     $('.form-ill').validator({
         disable: false,
