@@ -83,7 +83,8 @@ function illFormLogic() {
             .removeClass('hidden').find('input').first().prop('checked', true);      
         
         
-    });      
+    });
+    // open/close panel according to radio button
     $('input[name=Bestellform]').change(function(e) {
         if ($(this).val() == 'Leihen') {
             $('#panel-paperdata .panel-collapse').collapse('hide');            
@@ -91,7 +92,15 @@ function illFormLogic() {
             $('#panel-paperdata .panel-collapse').collapse('show');          
     
         }
-    });
+    });    
+    // switch radio button according to panel
+    $('#panel-paperdata').on('hidden.bs.collapse', function (e) {
+        $('#ill-lend').prop('checked', true).button('refresh');
+    })
+    $('#panel-paperdata').on('show.bs.collapse', function (e) {
+        $('#ill-copy').prop('checked', true).button('refresh');         
+    })
+    
     
     $('.form-ill').validator({
         disable: false,
@@ -110,17 +119,7 @@ function illFormLogic() {
             costs: 'Costs must not be between 0 and 8. ',
         }
     }).on('submit', function (e) {
-        // i copy fields filled out set Bestellform value to Kopie
-        var copy_fields_length = 0;             
-        $('#panel-paperdata').find('input').each(function() {
-            copy_fields_length += $(this).val().length;
-        });
-        if (copy_fields_length > 0) {
-            $('input[name=Bestellform]').val('Kopie');
-        } 
-//        else {
-//            $('input[name=Bestellform]').val('Leihen');            
-//        }
+
         if (!e.isDefaultPrevented()) {
             // everything is validated, form to be submitted
             $('#collapseFour').collapse('show');
