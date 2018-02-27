@@ -50,7 +50,8 @@
             <div class="form-group"> 
                 <div class="col-sm-12">
                     <p>* <?=$this->transEsc('This field is required')?></p>
-                    <input type="submit" class="btn btn-primary<?=$this->submitDisabled?' disabled': ''?>" value="<?=$test ? $this->transEsc('Test Order') : $this->transEsc('Order') ?>"/>            
+                    <input id="ill-submit" type="submit" class="btn btn-primary<?=$this->submitDisabled?' disabled': ''?>" value="<?=$test ? $this->transEsc('Test Order') : $this->transEsc('Order') ?>"/>            
+                    <label for="ill-submit"><i class="fa fa-check"></i> <?=$this->transEsc('ill_commercial_use')?></label>
                 </div>
             </div>
         </div>
