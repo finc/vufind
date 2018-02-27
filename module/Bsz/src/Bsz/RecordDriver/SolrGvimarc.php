@@ -58,7 +58,7 @@ class SolrGvimarc extends SolrMarc
      *
      * @var array
      */
-    protected $container;
+    protected $container = [];
 
     /**
      *
