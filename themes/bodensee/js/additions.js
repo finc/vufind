@@ -86,7 +86,7 @@ function illFormLogic() {
     });
     // open/close panel according to radio button
     $('input[name=Bestellform]').change(function(e) {
-        if ($(this).val() == 'Leihen') {
+        if ($(this).attr('id') == 'ill-lend') {
             $('#panel-paperdata .panel-collapse').collapse('hide');            
         } else {
             $('#panel-paperdata .panel-collapse').collapse('show');          
@@ -95,10 +95,10 @@ function illFormLogic() {
     });    
     // switch radio button according to panel
     $('#panel-paperdata').on('hidden.bs.collapse', function (e) {
-        $('#ill-lend').prop('checked', true).button('refresh');
+        $('#ill-lend').prop('checked', true);
     })
     $('#panel-paperdata').on('show.bs.collapse', function (e) {
-        $('#ill-copy').prop('checked', true).button('refresh');         
+        $('#ill-copy').prop('checked', true);         
     })
     
     
