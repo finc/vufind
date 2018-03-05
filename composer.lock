@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "248fae384ad67a67e5dbfb9855a2aa5c",
+    "content-hash": "54662ed35ea2e014071aab189a481897",
     "packages": [
         {
             "name": "aferrandini/phpqrcode",
@@ -102,7 +102,7 @@
                 "user agent",
                 "useragent"
             ],
-            "time": "2017-06-06 22:20:56"
+            "time": "2017-06-06T22:20:56+00:00"
         },
         {
             "name": "cap60552/php-sip2",
@@ -287,7 +287,7 @@
             ],
             "description": "PHP whoops error on ZF2 framework",
             "homepage": "https://github.com/ghislainf/zf2-whoops",
-            "time": "2016-06-06 08:41:08"
+            "time": "2016-06-06T08:41:08+00:00"
         },
         {
             "name": "jasig/phpcas",
@@ -1124,7 +1124,7 @@
                 }
             ],
             "description": "More info available on: http://pear.php.net/package/Validate_ISPN",
-            "time": "2015-04-14 04:17:31"
+            "time": "2015-04-14T04:17:31+00:00"
         },
         {
             "name": "phing/phing",
@@ -1857,6 +1857,58 @@
             "time": "2016-04-20T17:26:42+00:00"
         },
         {
+            "name": "zendframework/zend-component-installer",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-component-installer.git",
+                "reference": "5e9beda3b81d29d4d080b110d67f8c8c44d93605"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-component-installer/zipball/5e9beda3b81d29d4d080b110d67f8c8c44d93605",
+                "reference": "5e9beda3b81d29d4d080b110d67f8c8c44d93605",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0",
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "composer/composer": "^1.5.2",
+                "malukenho/docheader": "^0.1.6",
+                "mikey179/vfsstream": "^1.6.5",
+                "phpunit/phpunit": "^5.7.23 || ^6.4.3",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev",
+                    "dev-develop": "1.2-dev"
+                },
+                "class": "Zend\\ComponentInstaller\\ComponentInstaller"
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\ComponentInstaller\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Composer plugin for automating component registration in zend-mvc and Expressive applications",
+            "keywords": [
+                "ZendFramework",
+                "component installer",
+                "composer",
+                "plugin",
+                "zf"
+            ],
+            "time": "2018-01-11T15:03:06+00:00"
+        },
+        {
             "name": "zendframework/zend-config",
             "version": "2.6.0",
             "source": {
@@ -1911,6 +1963,59 @@
                 "zf2"
             ],
             "time": "2016-02-04T23:01:10+00:00"
+        },
+        {
+            "name": "zendframework/zend-config-aggregator",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-config-aggregator.git",
+                "reference": "46460b25c09fb572f807a00cf9dfe9c466792a76"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-config-aggregator/zipball/46460b25c09fb572f807a00cf9dfe9c466792a76",
+                "reference": "46460b25c09fb572f807a00cf9dfe9c466792a76",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "zendframework/zend-stdlib": "^2.7.7 || ^3.1.0"
+            },
+            "require-dev": {
+                "malukenho/docheader": "^0.1.5",
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^5.7.21 || ^6.3",
+                "zendframework/zend-coding-standard": "~1.0.0",
+                "zendframework/zend-config": "^2.6 || ^3.0",
+                "zendframework/zend-servicemanager": "^2.7.7 || ^3.1.1"
+            },
+            "suggest": {
+                "zendframework/zend-config": "Allows loading configuration from XML, INI, YAML, and JSON files"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev",
+                    "dev-develop": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\ConfigAggregator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Lightweight library for collecting and merging configuration from different sources",
+            "keywords": [
+                "ZendFramework",
+                "config-aggregator",
+                "zf"
+            ],
+            "time": "2018-02-26T16:46:30+00:00"
         },
         {
             "name": "zendframework/zend-console",
