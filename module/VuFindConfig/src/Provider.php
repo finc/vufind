@@ -3,7 +3,7 @@
  * VuFind Config Provider
  *
  * Copyright (C) 2010 Villanova University,
- *               2018 Leipzig University <info.ub.uni-leipzig.de>
+ *               2018 Leipzig University Library <info.ub.uni-leipzig.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -75,7 +75,7 @@ class Provider
         return $parentPath ? $this->merge($config, $this->load($parentPath)) : $config;
     }
 
-    // merge logic formerly found within PluginFactory::load
+    // merge logic formerly found within PluginFactory::loadConfig
     protected function merge(Config $child, Config $config)
     {
         $overrideSections = isset($child->Parent_Config->override_full_sections)

@@ -2,7 +2,10 @@
 
 return [
     'service_manager' => [
-        'invokables' => [
+        'factories' => [
+            'VuFind\Config\Manager' => 'Zend\ServiceManager\Factory\InvokableFactory'
+        ],
+        'aliases' => [
             'VuFind\Config' => 'VuFind\Config\Manager'
         ]
     ]

@@ -3,7 +3,7 @@
  * VuFind configuration aggregation
  *
  * Copyright (C) 2010 Villanova University,
- *               2018 Leipzig University <info.ub.uni-leipzig.de>
+ *               2018 Leipzig University Library <info.ub.uni-leipzig.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
