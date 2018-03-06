@@ -245,6 +245,12 @@ legend {
 
 //// label {}
 
+//// Required symbol
+
+.required {
+  color: $brand-danger;
+}
+
 //// input {}
 input[type='email'] {
   border: $border-default-styles;
@@ -277,6 +283,19 @@ select.form-control {
 
   &.form-control {
     background-color: $select-bg-color;
+  }
+}
+
+//// Create list in add to favs dialog
+.form-edit-list {
+  .radio {
+    &.inline {
+      display: block;
+    }
+
+    input {
+      position: relative;
+    }
   }
 }
 
@@ -668,6 +687,10 @@ table.collapse.in {
 //// force inline display
 .inline {
   display: inline;
+
+  .template-name-editlist & {
+    display: inherit;
+  }
 }
 
 //// floats
@@ -1192,7 +1215,7 @@ header,
 ////// When using a fixed header + autocomplete, increase the z-index in
 ////// autocomplete-results to a value higher than the fixed navbar (1030)!
 .autocomplete-results {
-  z-index: 1031;
+  z-index: $zindex-navbar-fixed + 1;
 }
 
 //// Advanced Search links in header
@@ -1278,7 +1301,7 @@ footer {
 }
 
 //// Search results
-//// Add top padding to sidebar and content for better looks -- same as for #content, above;
+//// Add top padding to sidebar and content for better looks;
 .mainbody,
 .sidebar {
   padding-top: $content-top-padding;
@@ -1568,14 +1591,22 @@ footer {
   padding: $sidebar-item-padding;
 }
 
+
+.facet-group .facetOR.active {
+  // Style active facets to get proper left padding
+  .text {
+    text-indent: -3px;
+  }
+}
+
 //// Remove right-hand borders for facets on the right only,
 //// ONLY works when sidebar butts right border
 .sidebar.right {
   .facet-group .facet,
   .facet-group .title,
-  .facet-group .collapse,
-  .facet-group .collapsing,
-  .facet-group > .facet {
+.facet-group .collapse,
+.facet-group .collapsing,
+.facet-group > .facet {
     @include right-border-on-sidebar($border-right-width);
   }
 }
@@ -1583,7 +1614,7 @@ footer {
 ////// Pull exclude facets to the right, align with accordion/collapse triangles and headings
 .facet-group .facet.excludable {
   padding-left: 1.5em;
-  padding-right: 0.5em;
+  padding-right: .5em;
 }
 
 //// Offcanvas is used to widths of 767px ($screen-xs-max)

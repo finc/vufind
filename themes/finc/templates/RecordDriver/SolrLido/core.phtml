@@ -1,3 +1,4 @@
+<!-- finc: RecordDriver - solrLido - core -->
 <div class="media" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
   <?
     if ($loggedin = $this->auth()->isLoggedIn()) {
@@ -6,7 +7,18 @@
     } else {
         $user_id = false;
     }
-
+  $formatRoles = function ($roles) {
+    if (count($roles) == 0) {
+      return '';
+    }
+    $that = $this;
+    $translate = function ($str) use ($that) {
+      return $that->transEsc('CreatorRoles::' . $str);
+    };
+    return ' (' . implode(', ', array_unique(array_map($translate, $roles))) . ')';
+  };
+  ?>
+  <?
     $QRCode = $this->record($this->driver)->getQRCode("core");
     $coverDetails = $this->record($this->driver)->getCoverDetails('core', 'medium', $this->record($this->driver)->getThumbnail('large'));
     $cover = $coverDetails['html'];
@@ -17,6 +29,10 @@
         <? /* Display thumbnail if appropriate: */ ?>
         <? if($cover): ?>
           <?=$cover?>
+        <? /* BOF - finc-specific StyleBasedIcons */ ?>
+      <? elseif ($this->record($this->driver)->showStyleBasedIcons()): ?>
+        <?=$this->record($this->driver)->getFormatIcon()?>
+        <? /* EOF - finc-specific StyleBasedIcons */ ?>
         <? endif; ?>
 
         <? /* Display qrcode if appropriate: */ ?>
@@ -39,7 +55,7 @@
   <? endif; ?>
   <div class="media-body">
 
-    <? /* For all finc-records; We want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
+    <? /* finc: We want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
     <h3 property="name"><?=$this->escapeHtml(preg_replace('/(\s[\/\.:]\s*)*$/', '', $this->truncate($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection(), 100)))?></h3>
 
     <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $this->escapeHtml($summary[0]) : false; ?>
@@ -79,3 +95,4 @@
     <?/* End Main Details */?>
   </div>
 </div>
+<!-- finc: RecordDriver - solrLido - core - END -->
