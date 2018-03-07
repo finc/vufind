@@ -1,6 +1,6 @@
 <?php
 /**
- * VuFind Config Module Configuration
+ * VuFind Config Legacy Services Factory
  *
  * Copyright (C) 2018 Leipzig University Library <info@ub.uni-leipzig.de>
  *
@@ -24,16 +24,14 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 
-return [
-    'service_manager' => [
-        'factories' => [
-            'VuFind\Config\Manager' => 'Zend\ServiceManager\Factory\InvokableFactory',
-            'VuFind\Config\Legacy\Reader' => 'VuFind\Config\Legacy\Factory::getReader'
-        ],
-        'aliases' => [
-            'VuFind\Config' => 'VuFind\Config\Manager',
-            'VuFind\SearchSpecsReader' => 'VuFind\Config\Legacy\Reader',
-            'VuFind\YamlReader' => 'VuFind\Config\Legacy\Reader'
-        ]
-    ]
-];
+namespace VuFind\Config\Legacy;
+
+use Zend\ServiceManager\ServiceLocatorInterface;
+
+class Factory
+{
+    public static function getReader(ServiceLocatorInterface $locator)
+    {
+        return new Reader($locator->get('VuFind\Config'));
+    }
+}

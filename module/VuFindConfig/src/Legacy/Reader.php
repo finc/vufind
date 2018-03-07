@@ -1,9 +1,8 @@
 <?php
 /**
- * VuFind Config PluginManager
+ * VuFind Config Legacy YAML Reader
  *
- * Copyright (C) 2010 Villanova University,
- *               2018 Leipzig University Library <info.ub.uni-leipzig.de>
+ * Copyright (C) 2018 Leipzig University Library <info@ub.uni-leipzig.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -20,14 +19,28 @@
  *
  * @category VuFind
  * @package  VuFindConfig
- * @author   Demian Katz <demian.katz@villanova.edu>
  * @author   Sebastian Kehr <kehr@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU GPLv2
  * @link     https://vufind.org/wiki/development Wiki
  */
-namespace VuFind\Config;
 
-interface PluginManager
+namespace VuFind\Config\Legacy;
+
+use VuFind\Config\Manager;
+
+class Reader
 {
-    public function get($name);
+    protected $manager;
+
+    public function __construct(Manager $manager)
+    {
+        $this->manager = $manager;
+    }
+
+    public function get($name)
+    {
+        $ext = pathinfo($name, PATHINFO_EXTENSION);
+        $key = $ext ? substr_replace($name, "", -strlen($ext) - 1) : $name;
+        return $this->manager->get($key)->toArray();
+    }
 }

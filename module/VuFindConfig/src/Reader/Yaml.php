@@ -1,6 +1,6 @@
 <?php
 /**
- * VuFind Config Module
+ * VuFind Config YAML Reader
  *
  * Copyright (C) 2010 Villanova University,
  *               2018 Leipzig University Library <info@ub.uni-leipzig.de>
@@ -25,16 +25,39 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU GPLv2
  * @link     https://vufind.org/wiki/development Wiki
  */
-namespace VuFind\Config;
+namespace VuFind\Config\Reader;
 
-class_alias('VuFind\Config\Manager', 'VuFind\Config\PluginManager');
-class_alias('VuFind\Config\Legacy\Reader', 'VuFind\Config\YamlReader');
-class_alias('VuFind\Config\Legacy\Reader', 'VuFind\Config\SearchSpecsReader');
+use Symfony\Component\Yaml\Yaml as Parser;
+use VuFind\Config\Manager;
+use Zend\Config\Reader\Yaml as Base;
 
-class Module
+class Yaml extends Base
 {
-    public function getConfig()
+    /**
+     * @var Manager
+     */
+    protected $manager;
+
+    public function __construct(Manager $manager)
     {
-        return include __DIR__ . '/../config/module.config.php';
+        parent::__construct([Parser::class, 'parse']);
+        $this->manager = $manager;
+    }
+
+    public function fromFile($filename)
+    {
+        $data = parent::fromFile($filename);
+        if (!isset($data['@parent_yaml'])) {
+            return $data;
+        }
+
+        $parentData = parent::fromFile($data['@parent_yaml']);
+        unset($data['@parent_yaml']);
+        return array_replace($parentData, $data);
+    }
+
+    public function get($filename)
+    {
+        return $this->manager->get($filename);
     }
 }

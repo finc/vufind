@@ -1,8 +1,9 @@
 <?php
 /**
- * VuFind Config Module Configuration
+ * VuFind Config INI Reader
  *
- * Copyright (C) 2018 Leipzig University Library <info@ub.uni-leipzig.de>
+ * Copyright (C) 2010 Villanova University,
+ *               2018 Leipzig University Library <info@ub.uni-leipzig.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -19,21 +20,22 @@
  *
  * @category VuFind
  * @package  VuFindConfig
+ * @author   Demian Katz <demian.katz@villanova.edu>
  * @author   Sebastian Kehr <kehr@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU GPLv2
  * @link     https://vufind.org/wiki/development Wiki
  */
+namespace VuFind\Config\Reader;
 
-return [
-    'service_manager' => [
-        'factories' => [
-            'VuFind\Config\Manager' => 'Zend\ServiceManager\Factory\InvokableFactory',
-            'VuFind\Config\Legacy\Reader' => 'VuFind\Config\Legacy\Factory::getReader'
-        ],
-        'aliases' => [
-            'VuFind\Config' => 'VuFind\Config\Manager',
-            'VuFind\SearchSpecsReader' => 'VuFind\Config\Legacy\Reader',
-            'VuFind\YamlReader' => 'VuFind\Config\Legacy\Reader'
-        ]
-    ]
-];
+use Zend\Config\Reader\Ini as Base;
+
+class Ini extends Base
+{
+    public function __construct()
+    {
+        // IMHO: configuration files containing special characters in section
+        // names should probably be written in YAML instead of effectivly
+        // preventing nested structures alltogether.
+        $this->setNestSeparator(chr(0));
+    }
+}

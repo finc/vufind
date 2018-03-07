@@ -2,8 +2,7 @@
 /**
  * VuFind Config Manager
  *
- * Copyright (C) 2010 Villanova University,
- *               2018 Leipzig University Library <info.ub.uni-leipzig.de>
+ * Copyright (C) 2018 Leipzig University Library <info@ub.uni-leipzig.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -20,22 +19,19 @@
  *
  * @category VuFind
  * @package  VuFindConfig
- * @author   Demian Katz <demian.katz@villanova.edu>
  * @author   Sebastian Kehr <kehr@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU GPLv2
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\Config;
 
-use Symfony\Component\Yaml\Yaml as YamlParser;
+use VuFind\Config\Reader;
 use Zend\Config\Config;
 use Zend\Config\Factory;
-use Zend\Config\Reader\Ini as IniReader;
-use Zend\Config\Reader\Yaml as YamlReader;
 
 const CONFIG_PATH = APPLICATION_PATH . '/config/config.php';
 
-class Manager implements PluginManager
+class Manager
 {
     /**
      * @var Config
@@ -44,30 +40,14 @@ class Manager implements PluginManager
 
     public function __construct()
     {
-        $this->registerIniReader();
-        $this->registerYamlReader();
+        Factory::registerReader('ini', new Reader\Ini);
+        Factory::registerReader('yaml', new Reader\Yaml($this));
         $this->config = new Config((require CONFIG_PATH)());
     }
 
-    public function get($name)
+    public function get($key)
     {
-        $config = $this->config->{$name};
+        $config = $this->config->$key;
         return $config;
-    }
-
-    protected function registerYamlReader()
-    {
-        $reader = new YamlReader([YamlParser::class, 'parse']);
-        Factory::registerReader('yaml', $reader);
-    }
-
-    protected function registerIniReader()
-    {
-        // IMHO: configuration files containing special characters in section
-        // names should probably be written in YAML instead of effectivly
-        // preventing nested structures alltogether.
-        $reader = new IniReader();
-        $reader->setNestSeparator(chr(0));
-        Factory::registerReader('ini', $reader);
     }
 }

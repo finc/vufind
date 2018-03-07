@@ -2,8 +2,7 @@
 /**
  * VuFind configuration aggregation
  *
- * Copyright (C) 2010 Villanova University,
- *               2018 Leipzig University Library <info.ub.uni-leipzig.de>
+ * Copyright (C) 2018 Leipzig University Library <info@ub.uni-leipzig.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -20,14 +19,10 @@
  *
  * @category VuFind
  * @package  VuFindConfig
- * @author   Demian Katz <demian.katz@villanova.edu>
  * @author   Sebastian Kehr <kehr@ub.uni-leipzig.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU GPLv2
  * @link     https://vufind.org/wiki/development Wiki
  */
-
-// see https://docs.zendframework.com/zend-component-installer/
-// for why config aggregation should take place within this file
 
 use VuFind\Config\Provider;
 use Zend\ConfigAggregator\ArrayProvider;
@@ -38,13 +33,17 @@ return function ()
     $useCache = APPLICATION_ENV != 'development'
         && !defined('VUFIND_PHPUNIT_RUNNING');
 
-    $basePattern = "{" . APPLICATION_PATH . "," . LOCAL_OVERRIDE_DIR . "}/config/vufind/";
-    $filePattern = "{,*/}*.{ini,json,yaml,php}";
+    $cacheFile = LOCAL_CACHE_DIR . '/config.php';
 
+    $basePattern = "{" . LOCAL_OVERRIDE_DIR . "," . APPLICATION_PATH . "}/config/vufind/";
+
+    // cf. https://docs.zendframework.com/zend-component-installer/
+    // for why config aggregation should take place within this file
     $aggregator = new ConfigAggregator([
         new ArrayProvider([ConfigAggregator::ENABLE_CACHE => $useCache]),
-        new Provider($basePattern, $filePattern)
-    ], LOCAL_CACHE_DIR . '/config.php');
+        new Provider($basePattern, "*.ini", Provider::PARSE_PARENT_CONFIG),
+        new Provider($basePattern, "*.{yaml,json}")
+    ], $cacheFile);
 
     return $aggregator->getMergedConfig();
 };

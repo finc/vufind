@@ -3,7 +3,7 @@
  * VuFind Config Provider
  *
  * Copyright (C) 2010 Villanova University,
- *               2018 Leipzig University Library <info.ub.uni-leipzig.de>
+ *               2018 Leipzig University Library <info@ub.uni-leipzig.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -35,22 +35,26 @@ class Provider
 {
     use GlobTrait;
 
+    const PARSE_PARENT_CONFIG = 1;
+
     protected $baseGlob;
 
     protected $fileGlob;
 
-    public function __construct($basePattern, $filePattern)
+    protected $parseParentConfig;
+
+    public function __construct($basePattern, $filePattern, $flags = 0)
     {
-        $this->baseGlob = array_reverse($this->glob($basePattern));
-        $this->fileGlob = $this->glob($basePattern . $filePattern);
+        $this->baseGlob = $this->glob($basePattern);
+        $this->fileGlob = array_reverse($this->glob($basePattern . $filePattern));
+        $this->parseParentConfig = $flags & static::PARSE_PARENT_CONFIG;
     }
 
     public function __invoke()
     {
         $keys = array_map([$this, 'getKey'], $this->fileGlob);
         $entries = array_combine($keys, $this->fileGlob);
-        $result = array_map([$this, 'load'], $entries);
-        return $result;
+        return array_map([$this, 'load'], $entries);
     }
 
     protected function getKey($path)
@@ -58,10 +62,9 @@ class Provider
         foreach ($this->baseGlob as $base) {
             if (strpos($path, $base) === 0) {
                 $path = substr_replace($path, "", 0, strlen($base));
-                $suffix = pathinfo($path, PATHINFO_FILENAME);
                 $prefix = basename($path) === $path
                     ? '' : pathinfo($path, PATHINFO_DIRNAME) . '/';
-                return $prefix . $suffix;
+                return $prefix . pathinfo($path, PATHINFO_FILENAME);
             }
         }
     }
@@ -72,7 +75,9 @@ class Provider
         $parentOpts = $config->Parent_Config ?: new Config([]);
         $parentPath = $parentOpts->path ?: $parentOpts->relative_path
             ? dirname($path) . '/' . $parentOpts->relative_path : null;
-        return $parentPath ? $this->merge($config, $this->load($parentPath)) : $config;
+        return $parentPath && $this->parseParentConfig
+            ? $this->merge($config, $this->load($parentPath)) : $config;
+
     }
 
     // merge logic formerly found within PluginFactory::loadConfig
