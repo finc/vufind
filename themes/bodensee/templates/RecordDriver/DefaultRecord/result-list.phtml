@@ -14,13 +14,13 @@
   $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
   if ($cover):
     ob_start(); ?>
-    <div class="media-<?=$thumbnailAlignment ?> <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
+    <div class="hidden-print media-<?=$thumbnailAlignment ?> <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
       <?=$cover ?>
     </div>
     <? $thumbnail = ob_get_contents(); ?>
   <? ob_end_clean(); ?>
   <? else: ?>
-    <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">     
+    <div class="hidden-print recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">     
         <span class=""></span>
     </div>
 <? endif; ?>
@@ -53,7 +53,7 @@
                 <strong><?=$this->transEsc('by')?></strong>
                 <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($summAuthors['main'])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
                 <? if ($gnd_author != ''): ?>
-                    (<a class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a>)
+                    (<a class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_author?></span>)
                 <? endif; ?>
                 <br/>
             <? endif; ?>

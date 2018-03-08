@@ -3417,6 +3417,9 @@ a.ui-button:active,
   #datevispublishDatexWrapper {
     width: 90%;
   }
+  .result-body {
+    width: 100%;
+  }
 }
 .externalLink:before {
   content: '\f08e';
