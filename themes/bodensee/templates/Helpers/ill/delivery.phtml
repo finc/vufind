@@ -2,10 +2,10 @@
 <? $inputSize = 6; ?>
 <div class="form-group form-group-sm">    
     <div class=" form-group form-group-sm">
-        <? if (isset($this->openpaper) && !$this->openpaper): 
-            $form = 'Leihen';
-        else: 
+        <? if ($this->illform($this->success, $this->driver)->isOpen('paper')): 
             $form = 'Kopie';
+        else: 
+            $form = 'Leihen';
         endif; ?>
         <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
         <div class="col-sm-3 col-xs-1">
