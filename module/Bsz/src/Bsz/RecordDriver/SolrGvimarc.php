@@ -1086,29 +1086,6 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
-     * Get the OpenURL parameters to represent this record for COinS even if
-     * supportsOpenUrl() is false for this RecordDriver.
-     *
-     * @return string OpenURL parameters.
-     */
-    public function getCoinsOpenUrl()
-    {
-        $coins = $this->getOpenUrl($this->supportsCoinsOpenUrl());
-        // COinS accepts article, book, issue, proceeding, conference, preprint, unknown
-        if ($coins['rft.genre'] == 'article') {
-            $coins['rft.genre'] = 'unknown';
-        }
-        if ($this->isJournal() || $this->isNewsPaper()) {
-            $coins['rft.genre'] = 'issue';
-        }
-        // unset($coins['url_ver']); //only needed for openurls, not for COINS
-        // unset($coins['pid']); //only needed for openurls, not for COINS
-
-
-        return http_build_query($coins);
-    }
-
-    /**
      * Pulling isils from field 924
      * @return array
      */

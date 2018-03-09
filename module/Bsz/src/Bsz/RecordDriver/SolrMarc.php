@@ -601,7 +601,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         /**
      * 
      * @param bool $overrideSupportsOpenUrl
-     * @return array|boolean
+     * @return string
      */
     public function getOpenUrl($overrideSupportsOpenUrl = false)
     {
@@ -619,7 +619,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             $params = $this->getUnknownFormatOpenUrlParams($format);
         }
         // Assemble the URL:
-        return $params;
+        return http_build_query($params);
     }
     
     /**
@@ -639,6 +639,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             'ctx_ver' => 'Z39.88-2004',
             'ctx_enc' => 'info:ofi/enc:UTF-8',
             'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator',
+            'rft.title' => $this->getTitle(),
             'rft.date' => $pubDate
         ];
     }
@@ -666,17 +667,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         }
         
         return $params;
-    }
-        /**
-     * Get the OpenURL parameters to represent this record for COinS even if
-     * supportsOpenUrl() is false for this RecordDriver.
-     *
-     * @return string OpenURL parameters.
-     */
-    public function getCoinsOpenUrl()
-    {
-        $coins = $this->getOpenUrl($this->supportsCoinsOpenUrl());
-        return http_build_query($coins);
     }
        
 

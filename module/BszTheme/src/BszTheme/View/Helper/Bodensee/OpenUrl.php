@@ -118,25 +118,49 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
                 )
             );
         }
-        
-        $paramString = $this->parse($this->params);
-        
+
+        // instantiate the resolver plugin to get a proper resolver link
+        $resolver = isset($this->config->resolver)
+            ? $this->config->resolver : 'other';
+        $openurl = $this->recordDriver->getOpenUrl();
+        if ($this->resolverPluginManager->has($resolver)) {
+            $resolverObj = new \VuFind\Resolver\Connection(
+                $this->resolverPluginManager->get($resolver)
+            );
+            $resolverUrl = $resolverObj->getResolverUrl($openurl);
+        } else {
+            $resolverUrl = empty($base) ? '' : $base . '?' . $openurl;
+        }
+
         // Build parameters needed to display the control:
-        $viewParams = [
-            'openUrl' => $paramString,
-            'openUrlBase' => $this->isRedi() ? $base.$this->config->rediid : $base,
-            'openUrlWindow' => empty($this->config->window_settings) ? false : $this->config->window_settings,
-            'openUrlGraphic' => empty($this->config->graphic) ? false : 
-                $this->config->graphic . '?' . $paramString,
-            'openUrlGraphicWidth' => empty($this->config->graphic_width) ? false : $this->config->graphic_width,
-            'openUrlGraphicHeight' => empty($this->config->graphic_height) ? false : $this->config->graphic_height,
+        $params = [
+            'resolverUrl' => $resolverUrl,
+            'openUrl' => $openurl,
+            'openUrlBase' => empty($base) ? false : $base,
+            'openUrlWindow' => empty($this->config->window_settings)
+                ? false : $this->config->window_settings,
+            'openUrlGraphic' => empty($this->config->graphic)
+                ? false : $this->config->graphic,
+            'openUrlGraphicWidth' => empty($this->config->graphic_width)
+                ? false : $this->config->graphic_width,
+            'openUrlGraphicHeight' => empty($this->config->graphic_height)
+                ? false : $this->config->graphic_height,
             'openUrlEmbed' => $embed,
             'openUrlEmbedAutoLoad' => $embedAutoLoad
         ];
-        $this->addImageBasedParams($imagebased, $viewParams);
         
+        if (!empty($this->config->bibid)) {
+            $params['pid'] = 'bibid=' . $this->config->bibid;
+        } elseif (!empty($this->isil)) {
+            $params['pid'] = 'isil=' . $this->isil;                
+        } 
+        
+        $this->addImageBasedParams($imagebased, $params);
+
         // Render the subtemplate:
-        return $this->render($viewParams);
+        return $this->context->__invoke($this->getView())->renderInContext(
+            'Helpers/openurl.phtml', $params
+        );
     }
 
     /**
@@ -144,56 +168,56 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
      * @param array $params
      * @return string
      */
-    protected function parse($params)
-    {
-        // here, we check if all mandytory fields are set. If not, we return []. 
-        if ($this->check($params)) {            
-
-            $orgParams = [
-                'sid' => $this->config->rfr_id,
-                'pid' => ''
-            ];
-            if ($this->area != 'illform') {
-                
-                if (!empty($this->config->bibid)) {
-                    $orgParams['pid'] = 'bibid=' . $this->config->bibid;
-                } elseif (!empty($this->isil)) {
-                    $orgParams['pid'] = 'isil=' . $this->isil;                
-                } 
-                if (array_key_exists('pid', $params)) {
-                    $orgParams['pid'] .= '&'.$params['pid'];
-                    unset($params['pid']);
-                }                
-            }
-            
-            $params = array_merge($params, $orgParams);
-        } else {
-            $params = [];
-        }
-        if ($this->config->version == '0.1') {
-            $this->mapOpenUrl($params);            
-        }
-        return http_build_query($params);
-    }
+//    protected function parse($params)
+//    {
+//        // here, we check if all mandytory fields are set. If not, we return []. 
+//        if ($this->check($params)) {            
+//
+//            $orgParams = [
+//                'sid' => $this->config->rfr_id,
+//                'pid' => ''
+//            ];
+//            if ($this->area != 'illform') {
+//                
+//                if (!empty($this->config->bibid)) {
+//                    $orgParams['pid'] = 'bibid=' . $this->config->bibid;
+//                } elseif (!empty($this->isil)) {
+//                    $orgParams['pid'] = 'isil=' . $this->isil;                
+//                } 
+//                if (array_key_exists('pid', $params)) {
+//                    $orgParams['pid'] .= '&'.$params['pid'];
+//                    unset($params['pid']);
+//                }                
+//            }
+//            
+//            $params = array_merge($params, $orgParams);
+//        } else {
+//            $params = [];
+//        }
+//        if ($this->config->version == '0.1') {
+//            $this->mapOpenUrl($params);            
+//        }
+//        return http_build_query($params);
+//    }
     
-    /**
-     * Simply returns a valid openURL, without rendering this nasty template
-     * 
-     * @param string $baseUrl
-     * @param array $additionalParams
-     * @param bool $map                 map params to old 0.1 standard. 
-     * 
-     * 
-     * @return string 
-     */
-    public function getUrl($baseUrl, $additionalParams = [], $map = false) {
-        $params = $this->recordDriver->getOpenUrl();
-        if ($map) {
-            $params = $this->mapOpenUrl($params, false);            
-        }
-        $query = http_build_query(array_merge($params, $additionalParams));
-        return $baseUrl.'?'.$query;          
-    }
+//    /**
+//     * Simply returns a valid openURL, without rendering this nasty template
+//     * 
+//     * @param string $baseUrl
+//     * @param array $additionalParams
+//     * @param bool $map                 map params to old 0.1 standard. 
+//     * 
+//     * 
+//     * @return string 
+//     */
+//    public function getUrl($baseUrl, $additionalParams = [], $map = false) {
+//        $params = $this->recordDriver->getOpenUrl();
+//        if ($map) {
+//            $params = $this->mapOpenUrl($params, false);            
+//        }
+//        $query = http_build_query(array_merge($params, $additionalParams));
+//        return $baseUrl.'?'.$query;          
+//    }
     
     /**
      * Is this a redi client?
@@ -227,71 +251,71 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
      * 
      * @return array
      */
-    public function mapOpenUrl(& $params, $filterGenre = true)
-    {
-        $newParams = [];
-        $mapping = [
-            'rft_val_fmt' => false,
-            'rft.genre' => 'genre',
-            'rft.issn' => 'issn',
-            'rft.isbn' => 'isbn',
-            'rft.volume' => 'volume',
-            'rft.issue' => 'issue',
-            'rft.spage' => 'spage',
-            'rft.epage' => 'epage',
-            'rft.pages' => 'pages',
-            'rft.place' => 'place',
-            'rft.title' => 'title',
-            'rft.atitle' => 'atitle',
-            'rft.btitle' => 'title',            
-            'rft.jtitle' => 'title',
-            'rft.au' => 'aulast',
-            'rft.date' => 'date',
-            'rft.format' => false,
-            'pid' => 'pid',
-            'sid' => 'sid',
-        ];
-        foreach ($params as $key => $value) {
-            if (isset($mapping[$key]) && $mapping[$key] !== false) {
-                $newParams[$mapping[$key]] = $value;
-            }
-        }
-        if (isset($params['rft.series'])) {
-            $newParams['title'] = $params['rft.series'].': '
-                    .$newParams['title'];
-        }
-        // for the open url ill form, we need genre = bookitem
-        if ($this->area == 'illform' && $newParams['genre'] == 'article'
-                && $this->recordDriver->isContainerMonography()) {
-            $newParams['genre'] = 'bookitem';           
-        }
-        
-        // JOP has a really limited amount of allowed genres
-        $allowedJopGenres = ['article', 'journal'];
-        if ($filterGenre && ($this->isJop() || $this->isRedi()) && 
-                array_key_exists('genre', $newParams) &&                        
-                !in_array($newParams['genre'], $allowedJopGenres)                
-                        
-            ) {
-            switch ($newParams['genre']) {
-                case 'issue': $newParams['genre'] = 'journal';
-                    break;
-                case 'proceeding': $newParams['genre'] = 'journal';
-                    break;
-                case 'conference': $newParams['genre'] = 'journal';
-                    break;
-                // no support for books
-                case 'book': return [];
-                    break;
-                // articles are more probably
-                default: $newParams['genre'] = 'article';
- 
-            }
-                    
-        }
-        $params = array_filter($newParams);  
-        return $params;
-    }
+//    public function mapOpenUrl(& $params, $filterGenre = true)
+//    {
+//        $newParams = [];
+//        $mapping = [
+//            'rft_val_fmt' => false,
+//            'rft.genre' => 'genre',
+//            'rft.issn' => 'issn',
+//            'rft.isbn' => 'isbn',
+//            'rft.volume' => 'volume',
+//            'rft.issue' => 'issue',
+//            'rft.spage' => 'spage',
+//            'rft.epage' => 'epage',
+//            'rft.pages' => 'pages',
+//            'rft.place' => 'place',
+//            'rft.title' => 'title',
+//            'rft.atitle' => 'atitle',
+//            'rft.btitle' => 'title',            
+//            'rft.jtitle' => 'title',
+//            'rft.au' => 'aulast',
+//            'rft.date' => 'date',
+//            'rft.format' => false,
+//            'pid' => 'pid',
+//            'sid' => 'sid',
+//        ];
+//        foreach ($params as $key => $value) {
+//            if (isset($mapping[$key]) && $mapping[$key] !== false) {
+//                $newParams[$mapping[$key]] = $value;
+//            }
+//        }
+//        if (isset($params['rft.series'])) {
+//            $newParams['title'] = $params['rft.series'].': '
+//                    .$newParams['title'];
+//        }
+//        // for the open url ill form, we need genre = bookitem
+//        if ($this->area == 'illform' && $newParams['genre'] == 'article'
+//                && $this->recordDriver->isContainerMonography()) {
+//            $newParams['genre'] = 'bookitem';           
+//        }
+//        
+//        // JOP has a really limited amount of allowed genres
+//        $allowedJopGenres = ['article', 'journal'];
+//        if ($filterGenre && ($this->isJop() || $this->isRedi()) && 
+//                array_key_exists('genre', $newParams) &&                        
+//                !in_array($newParams['genre'], $allowedJopGenres)                
+//                        
+//            ) {
+//            switch ($newParams['genre']) {
+//                case 'issue': $newParams['genre'] = 'journal';
+//                    break;
+//                case 'proceeding': $newParams['genre'] = 'journal';
+//                    break;
+//                case 'conference': $newParams['genre'] = 'journal';
+//                    break;
+//                // no support for books
+//                case 'book': return [];
+//                    break;
+//                // articles are more probably
+//                default: $newParams['genre'] = 'article';
+// 
+//            }
+//                    
+//        }
+//        $params = array_filter($newParams);  
+//        return $params;
+//    }
     
     /**
      * Distinguish between Redi and Jop
@@ -313,28 +337,28 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         }
     }
     
-    /**
-     * Check whether all mandytory params are available
-     * @param array $params
-     * @return boolean
-     */
-    public function check($params) 
-    {
-        $valid = true;
-        // genre is mandatory
-        if (!isset($params['rft.genre'])) {
-            $valid = false;
-        }
-        // there should be at least one title
-        if (!isset($params['rft.title']) && !isset($params['rft.atitle'])
-                && !isset($params['rft.jtitle']) && !isset($params['rft.btitle'])) {
-            $valid = false;
-        }
-// at least REDI can handle missing isbn / issn
-//        if (!isset($params['rft.issn']) && !isset($params['rft.isbn'])) {
+//    /**
+//     * Check whether all mandytory params are available
+//     * @param array $params
+//     * @return boolean
+//     */
+//    public function check($params) 
+//    {
+//        $valid = true;
+//        // genre is mandatory
+//        if (!isset($params['rft.genre'])) {
 //            $valid = false;
-//        }        
-        return $valid;
-            
-    }
+//        }
+//        // there should be at least one title
+//        if (!isset($params['rft.title']) && !isset($params['rft.atitle'])
+//                && !isset($params['rft.jtitle']) && !isset($params['rft.btitle'])) {
+//            $valid = false;
+//        }
+//// at least REDI can handle missing isbn / issn
+////        if (!isset($params['rft.issn']) && !isset($params['rft.isbn'])) {
+////            $valid = false;
+////        }        
+//        return $valid;
+//            
+//    }
 }
