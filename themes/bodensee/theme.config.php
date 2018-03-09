@@ -1,4 +1,4 @@
-<?php
+<?php 
 $config = [
     'extends' => 'bootstrap3',
       'favicon' => '/themes/bodensee/images/favicon/default.ico',
@@ -8,7 +8,7 @@ $config = [
     'helpers' => [
         'factories' => [
             'layoutclass' => 'BszTheme\View\Helper\Bodensee\Factory::getLayoutClass',
-            'openurl' => 'BszTheme\View\Helper\Bodensee\Factory::getOpenUrl',
+            //'openurl' => 'BszTheme\View\Helper\Bodensee\Factory::getOpenUrl',
             'record' => 'BszTheme\View\Helper\Bodensee\Factory::getRecord',
             'recordLink' => 'BszTheme\View\Helper\Bodensee\Factory::getRecordLink',
             'getLastSearchLink' => 'BszTheme\View\Helper\Bodensee\Factory::getGetLastSearchLink',

@@ -62,7 +62,7 @@ class Module extends \VuFindTheme\Module
                 'Client' =>         'BszTheme\View\Helper\Factory::getClient',
                 'ClientAsset' =>    'BszTheme\View\Helper\Factory::getClientAsset',
                 'IllForm' =>        'BszTheme\View\Helper\Bodensee\Factory::getIllForm',
-                'openurl' =>        'BszTheme\View\Helper\Bodensee\Factory::getOpenZrl',
+                //'openurl' =>        'BszTheme\View\Helper\Bodensee\Factory::getOpenUrl',
                 'Libraries' =>      'BszTheme\View\Helper\Factory::getLibraries',
             ],
             'invokables' => [
