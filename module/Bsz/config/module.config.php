@@ -100,7 +100,13 @@ $config = [
                     'daia' => 'Bsz\ILS\Driver\Factory::getDAIA',
                 ]
             ],
-            
+            'resolver_driver' => [
+                'abstract_factories' => ['VuFind\Resolver\Driver\PluginFactory'],
+                'factories' => [
+                    'ezb' => 'Bsz\Resolver\Driver\Factory::getEzb',
+                    'redi' => 'Bsz\Resolver\Driver\Factory::getRedi',
+                ],
+            ]
         ],
         'recorddriver_tabs' => [
             'Bsz\RecordDriver\SolrGvimarc' => [
