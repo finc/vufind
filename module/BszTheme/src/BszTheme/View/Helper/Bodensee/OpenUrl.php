@@ -28,7 +28,9 @@
  */
 
 namespace BszTheme\View\Helper\Bodensee;
+
 use \VuFind\View\Helper\Root\Context;
+use VuFind\Resolver\Driver\PluginManager;
 
 /**
  * OpenURL view helper
@@ -53,11 +55,12 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
      * @param string                           $isil         ISIL, if possible
      */
     public function __construct(Context $context,
-        $openUrlRules, $config = null, $isil = null
+        $openUrlRules, PluginManager $pluginManager, $config = null, $isil = null
     ) {
         $this->context = $context;
         $this->openUrlRules = $openUrlRules;
         $this->config = $config;
+        $this->resolverPluginManager = $pluginManager;
         $this->isil = $isil;
     }
     
@@ -78,7 +81,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         return $this;
     }
 
-    /**
+     /**
      * Public method to render the OpenURL template
      *
      * @param bool $imagebased Indicates if an image based link
@@ -148,13 +151,6 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
             'openUrlEmbed' => $embed,
             'openUrlEmbedAutoLoad' => $embedAutoLoad
         ];
-        
-        if (!empty($this->config->bibid)) {
-            $params['pid'] = 'bibid=' . $this->config->bibid;
-        } elseif (!empty($this->isil)) {
-            $params['pid'] = 'isil=' . $this->isil;                
-        } 
-        
         $this->addImageBasedParams($imagebased, $params);
 
         // Render the subtemplate:
@@ -162,203 +158,62 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
             'Helpers/openurl.phtml', $params
         );
     }
-
-    /**
-     * ADDs some BSZ specific params to tthe given OpenUrl
-     * @param array $params
-     * @return string
-     */
-//    protected function parse($params)
-//    {
-//        // here, we check if all mandytory fields are set. If not, we return []. 
-//        if ($this->check($params)) {            
-//
-//            $orgParams = [
-//                'sid' => $this->config->rfr_id,
-//                'pid' => ''
-//            ];
-//            if ($this->area != 'illform') {
-//                
-//                if (!empty($this->config->bibid)) {
-//                    $orgParams['pid'] = 'bibid=' . $this->config->bibid;
-//                } elseif (!empty($this->isil)) {
-//                    $orgParams['pid'] = 'isil=' . $this->isil;                
-//                } 
-//                if (array_key_exists('pid', $params)) {
-//                    $orgParams['pid'] .= '&'.$params['pid'];
-//                    unset($params['pid']);
-//                }                
-//            }
-//            
-//            $params = array_merge($params, $orgParams);
-//        } else {
-//            $params = [];
-//        }
-//        if ($this->config->version == '0.1') {
-//            $this->mapOpenUrl($params);            
-//        }
-//        return http_build_query($params);
-//    }
-    
-//    /**
-//     * Simply returns a valid openURL, without rendering this nasty template
-//     * 
-//     * @param string $baseUrl
-//     * @param array $additionalParams
-//     * @param bool $map                 map params to old 0.1 standard. 
-//     * 
-//     * 
-//     * @return string 
-//     */
-//    public function getUrl($baseUrl, $additionalParams = [], $map = false) {
-//        $params = $this->recordDriver->getOpenUrl();
-//        if ($map) {
-//            $params = $this->mapOpenUrl($params, false);            
-//        }
-//        $query = http_build_query(array_merge($params, $additionalParams));
-//        return $baseUrl.'?'.$query;          
-//    }
-    
-    /**
-     * Is this a redi client?
-     * @return boolean
-     */
-    public function isRedi() {
-        if (strpos($this->config->url, 'redi') === false ) {
-            return false;
-        } elseif (strpos($this->config->url, 'redi') !== false) {
-            return true;
-        }        
-    }
-
-    /**
-     * is this a JOP cliebnt ?
-     * @return boolean
-     */
-    public function isJop() {
-        if (strpos($this->config->url, 'redi') === false ) {
-            return true;
-        } elseif (strpos($this->config->url, 'redi') !== false) {
-            return false;
-        }        
-    }  
     
         /**
-     * Maps an OpenUrl version >=1.0 to old 0.1
-     * 
-     * @param array $params
-     * @param bool $filterGenre filter Genre according to JOP standard
-     * 
-     * @return array
+     * Support method for renderTemplate() -- process image based parameters.
+     *
+     * @param bool  $imagebased Indicates if an image based link
+     * should be displayed or not (null for system default)
+     * @param array $params     OpenUrl parameters set so far
+     *
+     * @return void
      */
-//    public function mapOpenUrl(& $params, $filterGenre = true)
-//    {
-//        $newParams = [];
-//        $mapping = [
-//            'rft_val_fmt' => false,
-//            'rft.genre' => 'genre',
-//            'rft.issn' => 'issn',
-//            'rft.isbn' => 'isbn',
-//            'rft.volume' => 'volume',
-//            'rft.issue' => 'issue',
-//            'rft.spage' => 'spage',
-//            'rft.epage' => 'epage',
-//            'rft.pages' => 'pages',
-//            'rft.place' => 'place',
-//            'rft.title' => 'title',
-//            'rft.atitle' => 'atitle',
-//            'rft.btitle' => 'title',            
-//            'rft.jtitle' => 'title',
-//            'rft.au' => 'aulast',
-//            'rft.date' => 'date',
-//            'rft.format' => false,
-//            'pid' => 'pid',
-//            'sid' => 'sid',
-//        ];
-//        foreach ($params as $key => $value) {
-//            if (isset($mapping[$key]) && $mapping[$key] !== false) {
-//                $newParams[$mapping[$key]] = $value;
-//            }
-//        }
-//        if (isset($params['rft.series'])) {
-//            $newParams['title'] = $params['rft.series'].': '
-//                    .$newParams['title'];
-//        }
-//        // for the open url ill form, we need genre = bookitem
-//        if ($this->area == 'illform' && $newParams['genre'] == 'article'
-//                && $this->recordDriver->isContainerMonography()) {
-//            $newParams['genre'] = 'bookitem';           
-//        }
-//        
-//        // JOP has a really limited amount of allowed genres
-//        $allowedJopGenres = ['article', 'journal'];
-//        if ($filterGenre && ($this->isJop() || $this->isRedi()) && 
-//                array_key_exists('genre', $newParams) &&                        
-//                !in_array($newParams['genre'], $allowedJopGenres)                
-//                        
-//            ) {
-//            switch ($newParams['genre']) {
-//                case 'issue': $newParams['genre'] = 'journal';
-//                    break;
-//                case 'proceeding': $newParams['genre'] = 'journal';
-//                    break;
-//                case 'conference': $newParams['genre'] = 'journal';
-//                    break;
-//                // no support for books
-//                case 'book': return [];
-//                    break;
-//                // articles are more probably
-//                default: $newParams['genre'] = 'article';
-// 
-//            }
-//                    
-//        }
-//        $params = array_filter($newParams);  
-//        return $params;
-//    }
-    
-    /**
-     * Distinguish between Redi and Jop
-     * @param array $params
-     * @return string
-     */
-    protected function render($params) 
+    protected function addImageBasedParams($imagebased, & $params)
     {
-        if ($this->isJop()) {
-            return $this->context->__invoke($this->getView())->renderInContext(
-                            'Helpers/openurl/jop.phtml', $params
-            );            
-        } else if($this->isRedi()) {
-            return $this->context->__invoke($this->getView())->renderInContext(
-                            'Helpers/openurl/redi.phtml', $params
-            ); 
-        } else {
-            return '';
+        $params['openUrlImageBasedMode'] = $this->getImageBasedLinkingMode();
+        $params['openUrlImageBasedSrc'] = null;
+
+        if (null === $imagebased) {
+            $imagebased = $this->imageBasedLinkingIsActive();
         }
+
+        if ($imagebased) {
+            if (!isset($this->config->dynamic_graphic)) {
+                // if imagebased linking is forced by the template, but it is not
+                // configured properly, throw an exception
+                throw new \Exception(
+                    'Template tries to display OpenURL as image based link, but
+                     Image based linking is not configured! Please set parameter
+                     dynamic_graphic in config file.'
+                );
+            }
+
+            // Check if we have an image-specific OpenURL to use to override
+            // the default value when linking the image.
+            $params['openUrlImageBasedOverride'] = $this->recordDriver
+                ->tryMethod('getImageBasedOpenUrl');
+            
+            $resolver = isset($this->config->resolver)
+                ? $this->config->resolver : 'other';
+            
+            // Concatenate image based OpenUrl base and OpenUrl
+            // to a usable image reference
+            $base = $this->config->dynamic_graphic;                
+         
+            if ($this->resolverPluginManager->has($resolver)) {
+                $resolverObj = new \VuFind\Resolver\Connection(
+                    $this->resolverPluginManager->get($resolver)
+                );
+                $imageOpenUrl = $resolverObj->getResolverImageParams($params['openUrl']);
+            } else {
+                $imageOpenUrl = empty($base) ? '' : $base;
+            }
+//            $imageOpenUrl = $params['openUrlImageBasedOverride']
+//                ? $params['openUrlImageBasedOverride'] : $params['openUrl'];
+            $params['openUrlImageBasedSrc'] = $base
+                . ((false === strpos($base, '?')) ? '?' : '&')
+                . $imageOpenUrl;
+        }
+        return $params;
     }
-    
-//    /**
-//     * Check whether all mandytory params are available
-//     * @param array $params
-//     * @return boolean
-//     */
-//    public function check($params) 
-//    {
-//        $valid = true;
-//        // genre is mandatory
-//        if (!isset($params['rft.genre'])) {
-//            $valid = false;
-//        }
-//        // there should be at least one title
-//        if (!isset($params['rft.title']) && !isset($params['rft.atitle'])
-//                && !isset($params['rft.jtitle']) && !isset($params['rft.btitle'])) {
-//            $valid = false;
-//        }
-//// at least REDI can handle missing isbn / issn
-////        if (!isset($params['rft.issn']) && !isset($params['rft.isbn'])) {
-////            $valid = false;
-////        }        
-//        return $valid;
-//            
-//    }
 }

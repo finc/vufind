@@ -67,4 +67,49 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
 
         return $paramstring;;
     }
+    
+     /**
+     * Downgrade an OpenURL from v1.0 to v0.1 for compatibility with EZB.
+     *
+     * @param array $parsed Array of parameters parsed from the OpenURL.
+     *
+     * @return string       EZB-compatible v0.1 OpenURL
+     */
+    protected function downgradeOpenUrl($parsed)
+    {
+        $downgraded = [];
+
+        // we need 'genre' but only the values
+        // article or journal are allowed...
+        $downgraded[] = "genre=article";
+
+        // ignore all other parameters
+        foreach ($parsed as $key => $value) {
+            // exclude empty parameters
+            if (isset($value) && $value !== '') {
+                if ($key == 'rfr_id') {
+                    $newKey = 'sid';
+                } elseif ($key == 'rft.date') {
+                    $newKey = 'date';
+                } elseif ($key == 'rft.issn') {
+                    $newKey = 'issn';
+                } elseif ($key == 'rft.volume') {
+                    $newKey = 'volume';
+                } elseif ($key == 'rft.issue') {
+                    $newKey = 'issue';
+                } elseif ($key == 'rft.spage') {
+                    $newKey = 'spage';
+                } elseif ($key == 'rft.pages') {
+                    $newKey = 'pages';
+                } else {
+                    $newKey = false;
+                }
+                if ($newKey !== false) {
+                    $downgraded[] = "$newKey=$value";
+                }
+            }
+        }
+
+        return implode('&', $downgraded);
+    }
 }
