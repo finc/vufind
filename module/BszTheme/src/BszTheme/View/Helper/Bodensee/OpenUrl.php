@@ -5,7 +5,8 @@
  *
  * PHP version 5
  *
- * Copyright (C) Villanova University 2010.
+ * Copyright (C) Villanova  
+ *  University 2010.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -138,7 +139,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         // Build parameters needed to display the control:
         $params = [
             'resolverUrl' => $resolverUrl,
-            'openUrl' => $openurl,
+            'openUrl' => $openurl.$this->addBszParams(),
             'openUrlBase' => empty($base) ? false : $base,
             'openUrlWindow' => empty($this->config->window_settings)
                 ? false : $this->config->window_settings,
@@ -215,5 +216,14 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
                 . $imageOpenUrl;
         }
         return $params;
+    }
+    
+    public function addBszParams() 
+    {
+        $add = [
+            'sid='.urlencode($this->config->rfr_id),
+            'pid='.urlencode('isil='.$this->isil),
+        ];
+        return '&'.implode('&', $add);
     }
 }

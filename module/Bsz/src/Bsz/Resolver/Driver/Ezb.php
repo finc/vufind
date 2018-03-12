@@ -71,45 +71,72 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
      /**
      * Downgrade an OpenURL from v1.0 to v0.1 for compatibility with EZB.
      *
-     * @param array $parsed Array of parameters parsed from the OpenURL.
+     * @param array $params Array of parameters parsed from the OpenURL.
      *
      * @return string       EZB-compatible v0.1 OpenURL
      */
-    protected function downgradeOpenUrl($parsed)
+    protected function downgradeOpenUrl($params)
     {
-        $downgraded = [];
-
-        // we need 'genre' but only the values
-        // article or journal are allowed...
-        $downgraded[] = "genre=article";
-
-        // ignore all other parameters
-        foreach ($parsed as $key => $value) {
-            // exclude empty parameters
-            if (isset($value) && $value !== '') {
-                if ($key == 'rfr_id') {
-                    $newKey = 'sid';
-                } elseif ($key == 'rft.date') {
-                    $newKey = 'date';
-                } elseif ($key == 'rft.issn') {
-                    $newKey = 'issn';
-                } elseif ($key == 'rft.volume') {
-                    $newKey = 'volume';
-                } elseif ($key == 'rft.issue') {
-                    $newKey = 'issue';
-                } elseif ($key == 'rft.spage') {
-                    $newKey = 'spage';
-                } elseif ($key == 'rft.pages') {
-                    $newKey = 'pages';
-                } else {
-                    $newKey = false;
-                }
-                if ($newKey !== false) {
-                    $downgraded[] = "$newKey=$value";
-                }
+        $newParams = [];
+        $mapping = [
+            'rft_val_fmt' => false,
+            'rft.genre' => 'genre',
+            'rft.issn' => 'issn',
+            'rft.isbn' => 'isbn',
+            'rft.volume' => 'volume',
+            'rft.issue' => 'issue',
+            'rft.spage' => 'spage',
+            'rft.epage' => 'epage',
+            'rft.pages' => 'pages',
+            'rft.place' => 'place',
+            'rft.title' => 'title',
+            'rft.atitle' => 'atitle',
+            'rft.btitle' => 'title',            
+            'rft.jtitle' => 'title',
+            'rft.au' => 'aulast',
+            'rft.date' => 'date',
+            'rft.format' => false,
+            'pid' => 'pid',
+            'sid' => 'sid',
+        ];
+        foreach ($params as $key => $value) {
+            if (isset($mapping[$key]) && $mapping[$key] !== false) {
+                $newParams[$mapping[$key]] = $value;
             }
         }
-
-        return implode('&', $downgraded);
+        if (isset($params['rft.series'])) {
+            $newParams['title'] = $params['rft.series'].': '
+                    .$newParams['title'];
+        }
+//        // for the open url ill form, we need genre = bookitem
+//        if ($this->area == 'illform' && $newParams['genre'] == 'article'
+//                && $this->recordDriver->isContainerMonography()) {
+//            $newParams['genre'] = 'bookitem';           
+//        }
+        
+        // JOP has a really limited amount of allowed genres
+        $allowedJopGenres = ['article', 'journal'];
+        if (!in_array($newParams['genre'], $allowedJopGenres) ) {
+            switch ($newParams['genre']) {
+                case 'issue': $newParams['genre'] = 'journal';
+                    break;
+                case 'proceeding': $newParams['genre'] = 'journal';
+                    break;
+                case 'conference': $newParams['genre'] = 'journal';
+                    break;
+                // no support for books
+                case 'book': return [];
+                    break;
+                // articles are more probably
+                default: $newParams['genre'] = 'article';
+ 
+            }
+                    
+        }
+        $params = [];
+        foreach (array_filter($newParams) as $param => $val) {
+            $params[] = $param.'='.$val;
+        }         
+        return implode('&', $params);
     }
 }
