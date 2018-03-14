@@ -4,6 +4,7 @@ return array(
     'js' => array(
         'openurl.js',
         'check_item_statuses.js',
+        'finc.js',
     ),
     'helpers' => array(
         'factories' => array(

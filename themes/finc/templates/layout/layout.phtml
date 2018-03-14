@@ -51,7 +51,7 @@
         'loading' => 'Loading',
         'more' => 'more',
         'number_thousands_separator' => [
-          'number_thousands_separator', null, ','
+        'number_thousands_separator', null, ','
         ],
         'sms_success' => 'sms_success'
       ]
@@ -182,15 +182,24 @@ if (!isset($this->layout()->searchbox)) {
 
 
 <!-- MODAL IN CASE WE NEED ONE -->
-<div id="modal" class="modal fade hidden-print" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+<? /* remove aria-hidden attr via JS, move X button to logical pos. in structure + make accessible via tab */ ?>
+<div id="modal" class="modal fade hidden-print" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       <div class="modal-body"><?=$this->transEsc('Loading')?>&nbsp;...</div>
+      <button type="button" class="close" data-dismiss="modal" tabindex="0">
+        <span class="sr-only"><?=$this->transEsc('Close')?></span>
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
     </div>
   </div>
 </div>
-<div class="offcanvas-toggle" data-toggle="offcanvas"><i class="fa" title="<?=$this->transEsc('sidebar_expand')?>"></i></div>
+
+<div class="offcanvas-toggle" data-toggle="offcanvas" tabindex="0">
+  <i class="fa" title="<?=$this->transEsc('sidebar_expand')?>"></i>
+  <span class="sr-only"><?=$this->transEsc('sidebar_expand')?></span>
+</div>
+
 <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
 <?=$this->googleanalytics()?>
 <?=$this->piwik()?>

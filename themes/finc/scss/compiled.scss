@@ -1779,6 +1779,13 @@ footer ul {
   }
 }
 
+@media (min-width: $screen-md-min) {
+  // Automatically set modal's width for larger viewports
+  .modal-dialog {
+    width: $modal-lg;
+  }
+}
+
 @media (min-width: $screen-lg-min) {
   .modal-dialog {
     max-width: em(900px);
