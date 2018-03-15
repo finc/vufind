@@ -125,7 +125,7 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
                 case 'conference': $newParams['genre'] = 'journal';
                     break;
                 // no support for books
-                case 'book': return [];
+                case 'book': return '';
                     break;
                 // articles are more probably
                 default: $newParams['genre'] = 'article';
