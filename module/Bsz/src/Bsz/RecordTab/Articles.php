@@ -45,12 +45,15 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
      */
     protected $searchClassId;
     
+    protected $isils;
+    
     /**
      * Constructor
      * @param SearchRunner $runner
      */
-    public function __construct(SearchRunner $runner) {
+    public function __construct(SearchRunner $runner, $isils = []) {
         $this->runner = $runner;
+        $this->isils = $isils;
     }
     /**
      * Get the on-screen description for this tab
@@ -77,10 +80,16 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
                 $isil = $matches[1];
                 $params = [
                     'sort' => 'publish_date_sort desc',
-                    'lookfor' => implode(' OR ', $relId),
-                    'filter'  => 'material_content_type:Article',                        
+                    'lookfor' => implode(' OR ', $relId),                                      
                     'limit' => 1000
                 ];
+                
+                $filter = [];
+                foreach($this->isils as $isil) {
+                    $filter[] = '~institution_id:'.$isil;
+                }
+                $filter[] = 'material_content_type:Article';
+                $params['filter'] = $filter; 
                 $results = $this->runner->run($params);                                        
                 
                 $results instanceof \VuFind\Search\Solr\Results;
@@ -96,8 +105,7 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
      */
     public function isActive() {
         //getContents to determine active state
-        $this->getContent();
-        if(($this->driver->isCollection() || $this->driver->isPart()
+        if(($this->driver->isJournal() || $this->driver->isNewsPaper()
                 || $this->driver->isMonographicSerial()) && !empty($this->content)) {
             
             return true;

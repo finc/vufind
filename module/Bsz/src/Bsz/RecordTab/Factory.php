@@ -66,7 +66,19 @@ class Factory {
      */
     public static function getArticles(ServiceManager $sm)
     {
-        $articles = new Articles($sm->getServiceLocator()->get('VuFind\SearchRunner'));
+        $last = '';
+        if (isset($_SESSION['Search']['last']) ){
+            $last = urldecode($_SESSION['Search']['last']);
+        }   
+        $isils = [];
+        if (strpos($last, 'consortium=FL') === FALSE 
+            && strpos($last, 'consortium=ZDB') === FALSE
+        ) {
+            $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+            $isils = $client->getIsils();
+        }
+        
+        $articles = new Articles($sm->getServiceLocator()->get('VuFind\SearchRunner'), $isils);
         $request = new \Zend\Http\PhpEnvironment\Request();
         $url = strtolower($request->getUriString());
         return $articles;
