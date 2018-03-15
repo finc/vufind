@@ -20,6 +20,7 @@
 
 namespace Bsz\RecordTab;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Session\Container;
 
 
 /**
@@ -38,9 +39,22 @@ class Factory {
      */
     public static function getVolumes(ServiceManager $sm)
     {
-        $volumes = new Volumes($sm->getServiceLocator()->get('VuFind\SearchRunner'));
-        $request = new \Zend\Http\PhpEnvironment\Request();
-        $url = strtolower($request->getUriString());
+        $last = '';
+        if (isset($_SESSION['Search']['last']) ){
+            $last = urldecode($_SESSION['Search']['last']);
+        }   
+        $isils = [];
+        if (strpos($last, 'consortium=FL') === FALSE 
+            && strpos($last, 'consortium=ZDB') === FALSE
+        ) {
+            $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+            $isils = $client->getIsils();
+        }
+
+
+        $volumes = new Volumes($sm->getServiceLocator()->get('VuFind\SearchRunner'), $isils);
+
+        
         return $volumes;
     }
     /**
