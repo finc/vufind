@@ -26,9 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace finc\View\Helper\Root;
-use Zend\View\Exception\RuntimeException,
-    ZfcRbac\Service\AuthorizationServiceAwareInterface,
-    ZfcRbac\Service\AuthorizationServiceAwareTrait;
 
 /**
  * Permissions view helper
@@ -79,8 +76,8 @@ class Permission extends \Zend\View\Helper\AbstractHelper
         if (!($user = $this->isLoggedIn())) {
             return false;
         }
-
-        return $this->auth != null ? $this->auth->isGranted($permission) : false;
+        return ($this->auth != null)
+            ? $this->auth->isGranted($permission) : false;
     }
     
     /**

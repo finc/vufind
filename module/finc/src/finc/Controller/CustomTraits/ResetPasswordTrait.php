@@ -150,7 +150,7 @@ trait ResetPasswordTrait
     /**
      * Send ResetPassword e-mail.
      *
-     * @param $params Data to be used for Email template
+     * @param array $params Data to be used for Email template
      *
      * @return void
      * @throws MailException

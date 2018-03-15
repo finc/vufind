@@ -96,6 +96,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      *                           (required – VuFind-specific message,
      *                           subject to translation)
      *                sysMessage A system supplied failure message
+     * @throws \Exception
+     * @throws ILSException You are not entitled to write items.
      */
     public function cancelHolds($cancelDetails)
     {
@@ -119,7 +121,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             $array_response = $this->paiaPostAsArray(
                 'core/'.$patron['cat_username'].'/cancel', $post_data
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->debug($e->getMessage());
             return [
                 'success' => false,
@@ -181,6 +183,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      *                       oldPassword.
      *
      * @return array An array with patron information.
+     * @throws \Exception
+     * @throws ILSException You are not entitled to write items.
      */
     public function changePassword($details)
     {
@@ -200,7 +204,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             $array_response = $this->paiaPostAsArray(
                 'auth/change', $post_data
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->debug($e->getMessage());
             return [
                 'success' => false,
@@ -247,6 +251,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      * @param array $patron The patron array from patronLogin
      *
      * @return mixed Array of the patron's fines on success
+     * @throws \Exception
+     * @throws ILSException You are not entitled to read fees
      */
     public function getMyFines($patron)
     {
@@ -259,7 +265,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             $fees = $this->paiaGetAsArray(
                 'core/'.$patron['cat_username'].'/fees'
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // all error handling is done in paiaHandleErrors so pass on the excpetion
             throw $e;
         }
@@ -350,8 +356,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      *
      * @return mixed          Associative array of patron info on successful login,
      * null on unsuccessful login.
-     *
-     * @throws ILSException
+     * @throws \Exception
+     * @throws ILSException Invalid Login, Please try again
      */
     public function patronLogin($username, $password)
     {
@@ -369,7 +375,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
                     $this->paiaGetUserDetails($session->patron),
                     $password
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 // TODO? $this->debug('Session expired, login again', ['info' => 'info']);
                 // all error handling is done in paiaHandleErrors so pass on the excpetion
                 throw $e;
@@ -382,7 +388,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
                     $password
                 );
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // all error handling is done in paiaHandleErrors so pass on the excpetion
             throw $e;
         }
@@ -391,7 +397,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
     /**
      * Handle PAIA request errors and throw appropriate exception.
      *
-     * @param array $error Array containing error messages
+     * @param array $array Array containing error messages
+     *
      * @throws AuthException
      * @throws ILSException
      */
@@ -462,6 +469,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      *
      * @return mixed An array of data on the request including
      * whether or not it was successful and a system message (if available)
+     * @throws \Exception
+     * @throws ILSException You are not entitled to write items
      */
     public function placeHold($holdDetails)
     {
@@ -484,7 +493,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             $array_response = $this->paiaPostAsArray(
                 'core/'.$patron['cat_username'].'/request', $post_data
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->debug($e->getMessage());
             return [
                 'success' => false,
@@ -542,6 +551,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      *                  new_time – string – A new due time
      *                  item_id – The item id of the renewed item
      *                  sysMessage – A system supplied renewal message (optional)
+     * @throws \Exception
+     * @throws ILSException You are not entitled to write items
      */
     public function renewMyItems($details)
     {
@@ -562,7 +573,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             $array_response = $this->paiaPostAsArray(
                 'core/'.$patron['cat_username'].'/renew', $post_data
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->debug($e->getMessage());
             return [
                 'success' => false,
@@ -635,6 +646,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      * @param array $filter Array of properties identifying the wanted items
      *
      * @return array|mixed Array of documents containing the given filter properties
+     * @throws \Exception
+     * @throws ILSException You are not entitled to read items
      */
     protected function paiaGetItems($patron, $filter = [])
     {
@@ -653,7 +666,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
                 $itemsResponse = $this->paiaGetAsArray(
                     'core/'.$patron['cat_username'].'/items'
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 // all error handling is done in paiaHandleErrors so pass on the excpetion
                 throw $e;
             }
@@ -962,7 +975,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      * @param string $file JSON data
      *
      * @return mixed
-     * @throws ILSException
+     * @throws \Exception
      */
     protected function paiaParseJsonAsArray($file)
     {
@@ -973,7 +986,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
         if (isset($responseArray['error'])) {
             try {
                 $this->paiaHandleErrors($responseArray);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw $e;
             }
         }
@@ -987,7 +1000,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      * @param string $file GET target URL
      *
      * @return array|mixed
-     * @throws ILSException
+     * @throws \Exception
      */
     protected function paiaGetAsArray($file)
     {
@@ -998,7 +1011,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
 
         try {
             $responseArray = $this->paiaParseJsonAsArray($responseJson);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // all error handling is done in paiaHandleErrors so pass on the
             // excpetion
             throw $e;
@@ -1043,6 +1056,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      *
      * @return mixed Associative array of patron info on successful login,
      * null on unsuccessful login, PEAR_Error on error.
+     * @throws \Exception
      * @throws ILSException
      */
     protected function paiaLogin($username, $password)
@@ -1062,7 +1076,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
 
         try {
             $responseArray = $this->paiaParseJsonAsArray($responseJson);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // all error handling is done in paiaHandleErrors so pass on the
             // excpetion
             throw $e;
@@ -1130,7 +1144,11 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
 
     public function getValidPatronUpdateKeys() {
 
-        return array('name'=>'name','email'=>'email','address'=>'address');
+        return [
+            'name'=>'name',
+            'email'=>'email',
+            'address'=>'address'
+        ];
     }
 
     /**
@@ -1194,6 +1212,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
     /**
      * Checks if the current scope is set for active session.
      *
+     * @param string $scope Scope of paia
+     *
      * @return boolean
      */
     protected function paiaCheckScope($scope)
@@ -1209,7 +1229,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      *
      * @param string $id     The Bib ID
      * @param array  $data   An Array of item data
-     * @param patron $patron An array of patron data
+     * @param array  $patron An array of patron data
      *
      * @return bool True if request is valid, false if not
      *
@@ -1227,7 +1247,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
      *
      * @param string $id     The Bib ID
      * @param array  $data   An Array of item data
-     * @param patron $patron An array of patron data
+     * @param array  $patron An array of patron data
      *
      * @return bool True if request is valid, false if not
      *

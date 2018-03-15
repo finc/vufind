@@ -63,7 +63,7 @@ class Ezb implements DriverInterface, TranslatorAwareInterface
     /**
      * Resolver configuration
      *
-     * @var \Zend\Config\Resolver
+     * @var \Zend\Config\Resolver $resolver
      */
     protected $config;
 

@@ -59,6 +59,7 @@ trait AcquisitionTrait
      * @todo Open issue: Implementation of accession/domain check of user by PAIA.
      *
      * @return \Zend\View\Model\ViewModel
+     * @throws \Exception Authorization service missing
      */
     public function acquisitionAction()
     {
@@ -193,7 +194,7 @@ trait AcquisitionTrait
     /**
      * Send Acquisition order via e-mail.
      *
-     * @param $params Data to be used for Email template
+     * @param array $params Data to be used for Email template
      *
      * @return void
      * @throws MailException

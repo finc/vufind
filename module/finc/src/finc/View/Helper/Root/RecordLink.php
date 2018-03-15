@@ -27,6 +27,7 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace finc\View\Helper\Root;
+
 use VuFindSearch\Query\Query as Query,
     VuFind\Record\Loader as Loader,
     VuFind\Record\Router as Router,
@@ -61,7 +62,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink
     /**
      * Connection used when searching for fincid
      *
-     * @var VuFindSearch\Service
+     * @var SearchService $searchService
      */
     protected $searchService;
 
@@ -72,8 +73,11 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink
      * @param \VuFind\Record\Loader $loader Record loader
      * @param \VuFindSearch\Service $ss     Search service
      */
-    public function __construct(Router $router, Loader $loader, SearchService $ss)
-    {
+    public function __construct(
+        Router $router,
+        Loader $loader,
+        SearchService $ss
+    ) {
         $this->router = $router;
         $this->recordLoader = $loader;
         $this->searchService = $ss;

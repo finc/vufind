@@ -222,7 +222,9 @@ trait SolrMarcFincTrait
     public function getLocalOrderInformation()
     {
         // loop through all existing LocalMarcFieldOfLibrary
-        if ($fields = $this->getMarcRecord()->getFields($this->getLocalMarcFieldOfLibrary())) {
+        if ($fields = $this->getMarcRecord()->getFields(
+            $this->getLocalMarcFieldOfLibrary())
+        ) {
             foreach($fields as $field) {
                 // return the first occurance of $m
                 if ($field->getSubfield('m')) {
@@ -892,7 +894,9 @@ trait SolrMarcFincTrait
     {
         $retval = [];
 
-        $fields = $this->getMarcRecord()->getFields($this->getLocalMarcFieldOfLibrary());
+        $fields = $this->getMarcRecord()->getFields(
+            $this->getLocalMarcFieldOfLibrary()
+        );
         if (!$fields) {
             return null;
         }
@@ -1708,6 +1712,8 @@ trait SolrMarcFincTrait
      * Get all subject headings associated with this record.  Each heading is
      * returned as an array of chunks, increasing from least specific to most
      * specific.
+     *
+     * @param boolean $extended If dynamic index extension activated
      *
      * @return array
      */

@@ -60,13 +60,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
     // 5 - the postal code;
     // 6 - the country name;
     // (cf. https://tools.ietf.org/html/rfc6350#section-6.3.1)
-    public static $vcard_address_parameter_map = array(
+    public static $vcard_address_parameter_map = [
             'address1' => '2',
             'additional' => '1',
             'city' => '3',
             'country' => '6',
-            'zip' => '5',
-    );
+            'zip' => '5'
+    ];
 
     protected $root_username;
     protected $root_password;
@@ -155,11 +155,18 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @param \VuFind\Date\Converter $converter  Date converter
      * @param \VuFind\Record\Loader  $loader     Record loader
-     * @param \Zend\Config\Config    $mainConfig VuFind main configuration (omit for
-     * built-in defaults)
+     * @param \Zend\Config\Config    $mainConfig VuFind main configuration
+     *                                           (omit for built-in defaults)
+     * @param SearchService          $ss         Search Service
+     * @param mixed                  $mainConfig
+     * @param mixed                  $auth
      */
-    public function __construct(\VuFind\Date\Converter $converter, \Zend\Session\SessionManager $sessionManager,
-        \VuFind\Record\Loader $loader, SearchService $ss, $mainConfig = null,
+    public function __construct(
+        \VuFind\Date\Converter $converter,
+        \Zend\Session\SessionManager $sessionManager,
+        \VuFind\Record\Loader $loader,
+        SearchService $ss,
+        $mainConfig = null,
         $auth = null
     ) {
         parent::__construct($converter, $sessionManager);
@@ -299,8 +306,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * Returns whether hold should be placed via Email for the current item based on
      * settings in FincILS.ini.
      *
-     * @param $item
      * @return array
+     * @access protected
      */
     protected function getEmailHoldValidationCriteria()
     {
@@ -469,7 +476,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * Gets additional array fields for the item.
      * Override this method in your custom PAIA driver if necessary.
      *
-     * @param array $fee The fee array from PAIA
+     * @param array $fee    The fee array from PAIA
+     * @param array $patron Patron data
      *
      * @return array Additional fee data for the item
      */
@@ -667,6 +675,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *     - zipCode      : location zip code
      *     - emailAddress : email address
      *     - reason       : reason of change
+     * @param array $patron Patron data
+     *
      * @return boolean true OK, false FAIL
      * @access public
      */
@@ -808,7 +818,12 @@ class FincILS extends PAIA implements LoggerAwareInterface
     }
 
     /**
-     * helper function for addresses
+     * Helper function for addresses
+     *
+     * @param string $address
+     *
+     * @return mixed
+     * @access private
      */
     private function splitAddress($address) {
 
@@ -823,8 +838,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
         //where everything behind the comma is assumed to be the extension
         $conf = $this->config;
         $regex = '(\D+\d[^\,]*)(?:\,\s*(.*))?';
-        $matches = array();
-        if (preg_match('/'.$regex.'/',$address,$matches)) {
+        $matches = [];
+        if (preg_match('/'.$regex.'/',$address, $matches)) {
             return $matches;
         }
         return FALSE;
@@ -852,7 +867,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
         if (empty($children)) {
 
             // if the key is unknown, we add a new property with the value
-            if (in_array($key, array('TEL', 'ADR'))) {
+            if (in_array($key, ['TEL', 'ADR'])) {
                 $vcard->createComponent($key);
             } else {
                 $vcard->createProperty($key);
@@ -944,8 +959,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
     /**
      * PAIA helper function to map session data to return value of patronLogin()
      *
-     * @param $details  Patron details returned by patronLogin
-     * @param $password Patron cataloge password
+     * @param array  $details  Patron details returned by patronLogin
+     * @param string $password Patron cataloge password
+     * @param string $username
+     *
      * @return mixed
      */
     protected function enrichUserDetails($details, $password, $username = null)
@@ -972,6 +989,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * @param array $filter Array of properties identifying the wanted items
      *
      * @return array|mixed Array of documents containing the given filter properties
+     * @throws \Exception
      */
     protected function paiaGetItems($patron, $filter = [])
     {
@@ -985,7 +1003,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 $itemsResponse = $this->paiaGetAsArray(
                     'core/'.$patron['cat_username'].'/items'
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 // all error handling is done in paiaHandleErrors so pass on the excpetion
                 throw $e;
             }
@@ -1189,10 +1207,12 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * finc-specific function to count items/entries in return values of given
      * functions in order to be shown as numbers in MyReSearch-Menu
      *
-     * @param $functions Array of function names that will get called and the
-     *                   count of their return values being returned
-     * @param $patron    Patron details returned by patronLogin
-     * @return array     Array in the format [function => count]
+     * @param array $functions  Array of function names that will get called
+     *                          and the count of their return values being
+     *                          returned
+     * @param array $patron     Patron details returned by patronLogin
+     *
+*@return array     Array in the format [function => count]
      */
     public function countItems($functions, $patron) {
         $retval = [];

@@ -55,8 +55,12 @@ class CookieManager extends \VuFind\Cookie\CookieManager
      * @param string $sessionName Session cookie name (if null defaults to PHP
      * settings)
      */
-    public function __construct($cookies, $path = '/', $domain = null,
-                                $secure = false, $sessionName = null
+    public function __construct(
+        $cookies,
+        $path = '/',
+        $domain = null,
+        $secure = false,
+        $sessionName = null
     ) {
         $this->cookies = $cookies;
         $this->path = $path;

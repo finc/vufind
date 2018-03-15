@@ -31,7 +31,7 @@
 
 namespace finc\ILS\Logic;
 
-use VuFind\ILS\Connection as ILSConnection;
+use VuFind\Exception\ILS as ILSException;
 
 /**
  * Hold Logic Class
@@ -123,6 +123,7 @@ class Holds extends \VuFind\ILS\Logic\Holds
      * @param array  $ids A list of Source Records (if catalog is for a consortium)
      *
      * @return array A sorted results set
+     * @throws ILSException
      */
     public function getHoldings($id, $ids = null)
     {
@@ -199,9 +200,10 @@ class Holds extends \VuFind\ILS\Logic\Holds
      * Process email holds information in holdings and set the links
      * accordingly.
      *
-     * @param array  $holdings Holdings
-     * @param string $id       Record ID
-     * @param array  $patron   Patron
+     * @param array  $holdings          Holdings
+     * @param string $id                Record ID
+     * @param array  $patron            Patron
+     * @param array  $requestsBlocked
      *
      * @return array Modified holdings
      */

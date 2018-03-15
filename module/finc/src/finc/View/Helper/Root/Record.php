@@ -64,7 +64,7 @@ class Record extends \VuFind\View\Helper\Root\Record
     /**
      * Rewriter
      *
-     * @var \finc\Rewrite
+     * @var \finc\Rewrite $rewrite
      */
     protected $rewrite;
 
@@ -80,6 +80,11 @@ class Record extends \VuFind\View\Helper\Root\Record
      *
      * @param \Zend\Config\Config $config VuFind configuration
      * @param \Zend\View\Helper\Url $helper URL helper
+     * @param \VuFind\Auth\Manager $manager AuthManager
+     * @param mixed $rewrite
+     * @param mixed $resolverConfig
+     *
+     * @access public
      */
     public function __construct(
         $config = null,
@@ -241,7 +246,7 @@ class Record extends \VuFind\View\Helper\Root\Record
      *
      * @param array $dates Dates
      *
-     * @return strings
+     * @return mixed
      */
     public function mapDateListToRangeView($dates)
     {
@@ -261,11 +266,11 @@ class Record extends \VuFind\View\Helper\Root\Record
      *
      * @param string $author Author data
      *
-     * @return strings
+     * @return mixed
      */
     public function removeAuthorDates( $author )
     {
-        $match = array();
+        $match = [];
         if (preg_match('/^(\s|.*)\s(fl.\s|d.\s|ca.\s|\*)*\s?(\d{4})\??(\sor\s\d\d?)?\s?(-|–)?\s?(ca.\s|after\s|†)?(\d{1,4})?(.|,)?$/Uu', $author, $match))
         {
             $author = (isset($match[1])) ? trim($match[1]) : $author;
@@ -346,7 +351,7 @@ class Record extends \VuFind\View\Helper\Root\Record
                         // prepare search pattern
                         // should be free of conflicting meta characters
                         $pattern
-                            = str_replace(array('.'), array('\.'), $r['search']);
+                            = str_replace(['.'], ['\.'], $r['search']);
                         $pattern = '/(' . $pattern . ')/i';
                         // replace it only one time
                         $link

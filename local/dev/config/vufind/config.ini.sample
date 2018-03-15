@@ -25,20 +25,16 @@ override_full_sections = "Http"
 debug           = false
 
 [Index]
-; lokaler Solr
-url             = http://localhost:8080/solr
-; Solr4Entwickler
-;url              = http://172.18.85.142:8085/solr
-; Solr-Devel (Ip-Freischaltung notwendig)
-;url              = http://139.18.19.239:8080/solr
+url             = http://{URL}:{PORT}/solr
 
 [Site]
-url = "http://localhost"
+url = "http://{URL}"
 
 [Authentication]
+method=ILS
 hash_passwords = "1"
 encrypt_ils_password = "1"
-ils_encryption_key = "3e2ac9b644dd4e0b64b179a0309ead13bb59202a"
+ils_encryption_key = "{ENCRYPTION_KEY}"
 
 [Catalog]
 driver = "FincILS"
@@ -47,43 +43,9 @@ driver = "FincILS"
 ; Pfad zu SSL-Zertifikaten in der docker-VM (global für CentOS konfiguriert)
 sslcapath = "/etc/ssl/certs"
 
-; OpenURL configuration institution specified
-; sample configuration for ubl
-[OpenURL]
-url             = "http://www.redi-bw.de/links/ubl?rl_site=ubl"
-rfr_id          = www.ub.uni-leipzig.de
-resolver        = redi
-window_settings = "toolbar=no,location=no,directories=no,buttons=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=550,height=600"
-show_in_results = false    ; include in search results
-show_in_record = false     ; include in core record metadata
-show_in_holdings = true    ; include in holdings tab of record view
-embed = true
-replace_other_urls = true
-
 [Content]
 coversize[result-list] = false
 showStyleBasedIcons = true
 
-[Ebl]
-pattern = "leip.eblib.com"
-secret_key = "yejsecvafChawgya"
-product_sigel[] = "ZDB-89-EBL"
-product_sigel[] = "ZDB-30-PQE"
-
-[LinksRewrite]
-; Personalized rewriting of Open Urls.
-; Start to declare a own group which can have following keys.
-; identifier[pattern] is necessary to switch on rewrite und sort out the right links.
-;    regular expression are allowed
-; identifier[search] is the string to replaced
-; identifier[replace] is the replacing phrase
-; identifier[method] calls an alternative method with the link as parameter.
-;    The method has to be written in the IndexDriver.php
-schweitzer[pattern] = leip.eblib.com
-schweitzer[method] = resolveEblLink
-; naxos[pattern] = www.ln.naxosmusiclibrary.com
-; naxos[search] = www.ln.naxosmusiclibrary.com
-; naxos[replace] = ubl-leipzig.naxosmusiclibrary.com
-; nbn[pattern] =  "^urn:nbn:"
-; nbn[search] =  urn:nbn:
-; nbn[replace] = nbn-resolving.de/urn:nbn:
+[CustomIndex]
+localMarcFieldOfLibraryNamespace = "{NAMESPACE_OF_LIBRARY}"

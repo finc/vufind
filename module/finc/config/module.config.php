@@ -171,13 +171,15 @@ $recordRoutes = [
 
 // Define static routes -- Controller/Action strings
 $staticRoutes = [
-    'MyResearch/Acquisition', 'MyResearch/ResetPassword', 'dds/Home', 'dds/Email',
+    'MyResearch/Acquisition',
+    'MyResearch/ResetPassword',
+    'dds/Home',
+    'dds/Email',
     'Record/EblLink'
 ];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator($nonTabRecordActions);
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
-//$routeGenerator->addDynamicRoutes($config, $dynamicRoutes);
 $routeGenerator->addStaticRoutes($config, $staticRoutes);
 
 return $config;

@@ -44,7 +44,7 @@ class Processor extends \VuFind\XSLT\Processor
      *
      * @param string $xslt   Name of stylesheet (in application/xsl directory)
      * @param string $xml    XML to transform with stylesheet
-     * @param string $params Associative array of XSLT parameters
+     * @param array  $params Associative array of XSLT parameters
      *
      * @return string      Transformed XML
      */

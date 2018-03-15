@@ -92,6 +92,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
                         // Special case -- modify DOI text for special display:
                         $link['title'] = $this->translate('Get full text');
                         $link['coverage'] = '';
+                        break;
                     case 'getFullTxt':
                     default:
                         $electronic[] = $link;
@@ -384,12 +385,15 @@ class AjaxController extends \VuFind\Controller\AjaxController
     /**
      * Reduce an array of service names to a human-readable string.
      *
-     * @param array $services Names of available services.
+     * @param array  $services      Names of available services.
+     * @param string $availability
      *
      * @return string
      */
-    protected function reduceServices(array $services, $availability = 'available')
-    {
+    protected function reduceServices(
+        $services = [],
+        $availability = 'available'
+    ) {
         // Normalize, dedup and sort available services
         $normalize = function ($in) {
             return strtolower(preg_replace('/[^A-Za-z]/', '', $in));

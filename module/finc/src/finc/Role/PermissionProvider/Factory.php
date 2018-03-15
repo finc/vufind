@@ -46,7 +46,7 @@ class Factory
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return Username
+     * @return CatUserType
      */
     public static function getCatUserType(ServiceManager $sm)
     {

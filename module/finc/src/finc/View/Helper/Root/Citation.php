@@ -351,7 +351,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
                 $title .= ' : ' . $subtitle;
             }
         }
-        $titleStatement = array();
+        $titleStatement = [];
         $rawTitlestatement = $this->driver->tryMethod('getTitleStatement');
         if (isset($rawTitlestatement)) {
             $titleStatement[] = $rawTitlestatement;

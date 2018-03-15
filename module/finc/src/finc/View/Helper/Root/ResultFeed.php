@@ -48,6 +48,7 @@ class ResultFeed extends \VuFind\View\Helper\Root\ResultFeed
      * @param \VuFind\RecordDriver\AbstractBase $record Record to add to feed
      *
      * @return void
+     * @throws \Exception Cannot find URL for record.
      */
     protected function addEntry($feed, $record)
     {

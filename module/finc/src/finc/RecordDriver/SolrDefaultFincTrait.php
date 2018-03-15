@@ -598,6 +598,8 @@ trait SolrDefaultFincTrait
      * corporate/corporate_orig/corporate_secondary/corporate_secondary_orig/
      * secondary/secondary_orig keys.
      *
+     * @param array $dataFields
+     *
      * @return array
      */
     public function getDeduplicatedAuthors($dataFields = [])
@@ -1087,7 +1089,7 @@ trait SolrDefaultFincTrait
      *
      * @param string $authordata
      *
-     * @return strings
+     * @return array
      */
     private function _filterAuthorDates( $authordata )
     {

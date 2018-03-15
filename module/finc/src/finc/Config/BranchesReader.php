@@ -27,8 +27,8 @@
  * @link     https://vufind.org Main Site
  */
 namespace finc\Config;
-use VuFind\Config\Locator as Locator,
-    Symfony\Component\Yaml\Yaml;
+
+use VuFind\Config\Locator as Locator;
 
 /**
  * VuFind Branches.yaml Configuration Reader
@@ -119,7 +119,5 @@ class BranchesReader extends \VuFind\Config\SearchSpecsReader
 
         return $results;
     }
-
-
-
 }
+

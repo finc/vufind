@@ -59,7 +59,7 @@ trait EmailProfileTrait
         if (isset($mailConfig->$profile)) {
             return $mailConfig->$profile;
         } else {
-            $this->debug('Missing email profile: ' + $profile);
+            $this->debug('Missing email profile: ' . $profile);
             return [];
         }
     }
