@@ -673,14 +673,16 @@ table.collapse.in {
   }
 }
 
-//// we need to reverse order of the child elements (searchbox + navbar) on anything but mobile for the mobile menu to work as xpected
+//// we need to reverse order of the header child elements (searchbox + navbar) on anything but mobile for the mobile menu to work as xpected
 @media (min-width: $screen-sm-min) {
-  .flex-container > *:first-child {
-    order: 2;
-  }
+  header .flex-container {
+    > *:first-child {
+      order: 2;
+    }
 
-  .flex-container > *:nth-child(2) {
-    order: 1;
+    > *:nth-child(2) {
+      order: 1;
+    }
   }
 }
 
