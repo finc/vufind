@@ -79,7 +79,7 @@ class SolrGvimarcde576 extends SolrGvimarc
     */
     public function getContainerVolume()
     {
-        $volume = $this->getFieldsArray([936 => ['e']]);
+        $volume = $this->getFieldsArray([936 => ['d']]);
         return array_shift($volume);
     }
 
