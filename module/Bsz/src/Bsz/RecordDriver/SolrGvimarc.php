@@ -959,7 +959,7 @@ class SolrGvimarc extends SolrMarc
      */
     public function supportsAjaxStatus()
     {
-        if ($this->getNetWork() != 'SWB') {
+        if ($this->getNetwork() != 'SWB') {
             return false;
         }
         if ($this->client->isIsilSession() && !$this->client->hasIsilSession()) {
@@ -1117,20 +1117,14 @@ class SolrGvimarc extends SolrMarc
 
     /**@deprecated use specialized record_type classes
      * Returns German library network shortcut.
-     * @param bool $outputIsil
      * @return string
      */
     public function getNetwork()
     {
         $raw = trim($this->getUniqueID());
-
         preg_match('/\((.*?)\)/', $raw, $matches);
         $isil = $matches[1];
-        if ($outputIsil) {
-            return $isil;
-        } else {
-            return $this->client->mapNetwork($isil);
-        }
+        return $this->client->mapNetwork($isil);
     }
 
     /**
