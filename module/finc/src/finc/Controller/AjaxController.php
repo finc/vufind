@@ -391,7 +391,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
      * @return string
      */
     protected function reduceServices(
-        $services = [],
+        array $services,
         $availability = 'available'
     ) {
         // Normalize, dedup and sort available services
