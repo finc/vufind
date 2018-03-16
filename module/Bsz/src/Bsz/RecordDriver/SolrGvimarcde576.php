@@ -9,5 +9,19 @@ namespace Bsz\RecordDriver;
  */
 class SolrGvimarcde576 extends SolrGvimarc
 {
-    public function getNetwork() {return 'SWB';}
+    public function getNetwork() {return 'SWB';}    
+
+    /**
+     * For rticles: get container title
+     * 
+     * @return type
+     */
+    public function getContainerTitle()
+    {
+        $fields = [773 => ['a', 't']];
+        $array = $this->getFieldsArray($fields);
+        $title = array_shift($array);
+        return str_replace('In: ', '', $title);
+    }
+    
 }

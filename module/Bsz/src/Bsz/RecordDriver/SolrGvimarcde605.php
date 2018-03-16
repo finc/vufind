@@ -10,4 +10,17 @@ namespace Bsz\RecordDriver;
 class SolrGvimarcde605 extends SolrGvimarc
 {
     public function getNetwork() {return 'HBZ';}
+    
+        /**
+     * For rticles: get container title
+     * 
+     * @return type
+     */
+    public function getContainerTitle()
+    {
+        $fields = [830 => ['a', 't']];
+        $array = $this->getFieldsArray($fields);
+        $title = array_shift($array);
+        return str_replace('In: ', '', $title);
+    }
 }
