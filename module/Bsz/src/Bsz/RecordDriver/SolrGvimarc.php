@@ -21,7 +21,7 @@ namespace Bsz\RecordDriver;
 use Bsz\FormatMapper;
 
 /**
- * Description of SolrGvimarc
+ * @deprecated use specialized record_type classes
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
@@ -30,17 +30,6 @@ class SolrGvimarc extends SolrMarc
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
     use \VuFind\RecordDriver\MarcAdvancedTrait;
-
-    /**
-     * Used for concatenating subfields
-     */
-    const DELIMITER = ' ';
-
-    /**
-     *
-     * @var \Bsz\Config\Libraries;
-     */
-    protected $libraries;
 
     /**
      *
@@ -1126,12 +1115,12 @@ class SolrGvimarc extends SolrMarc
         return $holdings;
     }
 
-    /**
+    /**@deprecated use specialized record_type classes
      * Returns German library network shortcut.
      * @param bool $outputIsil
      * @return string
      */
-    public function getNetwork($outputIsil = false)
+    public function getNetwork()
     {
         $raw = trim($this->getUniqueID());
 

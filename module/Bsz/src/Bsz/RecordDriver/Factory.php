@@ -41,6 +41,7 @@ class Factory extends \VuFind\RecordDriver\Factory {
     }
     /**
      * Factory for SolrMarc record driver.
+     * @deprecated use specialized record_type classes
      *
      * @param ServiceManager $sm Service manager.
      *
@@ -54,40 +55,150 @@ class Factory extends \VuFind\RecordDriver\Factory {
             null,
             $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
         );
-        $driver->attachILS(
-            $sm->getServiceLocator()->get('VuFind\ILSConnection'),
-            $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
-            $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
-        );
-        //We use this to fetch containers - they are missing in out MARC record
-        $driver->attachSearchRunner($sm->getServiceLocator()->get('VuFind\SearchRunner'));
-        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
-        return $driver;
+        return Factory::attach($driver, $sm);
     }
     /**
-     * Factory for SolrMarc record driver.
+     * Factory for SWB record driver
      *
      * @param ServiceManager $sm Service manager.
      *
      * @return SolrMarc
      */
-    public static function getSolrGviMarcde576(ServiceManager $sm)
+    public static function getSolrGvimarcde576(ServiceManager $sm)
     {
         $driver = new SolrGvimarcde576($sm->getServiceLocator()->get('bsz\mapper'), 
             $sm->getServiceLocator()->get('bsz\client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
         );
-        $driver->attachILS(
-            $sm->getServiceLocator()->get('VuFind\ILSConnection'),
-            $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
-            $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+        return Factory::attach($driver, $sm);
+    }
+    
+    /**
+     * Factory for ZDB record driver
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarc
+     */
+    public static function getSolrGviMarcde600(ServiceManager $sm)
+    {
+        $driver = new SolrGvimarcde600($sm->getServiceLocator()->get('bsz\mapper'), 
+            $sm->getServiceLocator()->get('bsz\client'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
         );
-        //We use this to fetch containers - they are missing in out MARC record
-        $driver->attachSearchRunner($sm->getServiceLocator()->get('VuFind\SearchRunner'));
-        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
-        return $driver;
+        return Factory::attach($driver, $sm);
+    }
+    
+    /**
+     * Factory for GBV record driver
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarc
+     */
+    public static function getSolrGviMarcde601(ServiceManager $sm)
+    {
+        $driver = new SolrGvimarcde601($sm->getServiceLocator()->get('bsz\mapper'), 
+            $sm->getServiceLocator()->get('bsz\client'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
+        );
+        return Factory::attach($driver, $sm);
+    }
+    
+    /**
+     * Factory for KOBV record driver
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarc
+     */
+    public static function getSolrGviMarcde602(ServiceManager $sm)
+    {
+        $driver = new SolrGvimarcde602($sm->getServiceLocator()->get('bsz\mapper'), 
+            $sm->getServiceLocator()->get('bsz\client'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
+        );
+        return Factory::attach($driver, $sm);
+    }
+    
+    /**
+     * Factory for HEBIS record driver
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarc
+     */
+    public static function getSolrGviMarcde603(ServiceManager $sm)
+    {
+        $driver = new SolrGvimarcde603($sm->getServiceLocator()->get('bsz\mapper'), 
+            $sm->getServiceLocator()->get('bsz\client'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
+        );
+        return Factory::attach($driver, $sm);
+    }
+    
+    /**
+     * Factory for BVB record driver
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarc
+     */
+    public static function getSolrGviMarcde604(ServiceManager $sm)
+    {
+        $driver = new SolrGvimarcde604($sm->getServiceLocator()->get('bsz\mapper'), 
+            $sm->getServiceLocator()->get('bsz\client'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
+        );
+        return Factory::attach($driver, $sm);
+    }
+    
+    /**
+     * Factory for HBZ record driver
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarc
+     */
+    public static function getSolrGviMarcde605(ServiceManager $sm)
+    {
+        $driver = new SolrGvimarcde605($sm->getServiceLocator()->get('bsz\mapper'), 
+            $sm->getServiceLocator()->get('bsz\client'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
+        );
+        return Factory::attach($driver, $sm);
+    }
+    
+    /**
+     * Factory for DNB record driver
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarc
+     */
+    public static function getSolrGviMarcde101(ServiceManager $sm)
+    {
+        $driver = new SolrGvimarcde101($sm->getServiceLocator()->get('bsz\mapper'), 
+            $sm->getServiceLocator()->get('bsz\client'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
+        );
+        return Factory::attach($driver, $sm);
     }
 
     /**
@@ -109,6 +220,25 @@ class Factory extends \VuFind\RecordDriver\Factory {
             $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
             $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
         );
+        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
+        return $driver;
+    }
+    
+    /**
+     * Attach all the common stuff
+     * 
+     * @param \Bsz\RecordDriver\SolrMarc $driver
+     * @return \Bsz\RecordDriver\SolrMarc
+     */
+    private static function attach(SolrMarc $driver, ServiceManager $sm)
+    {
+        $driver->attachILS(
+            $sm->getServiceLocator()->get('VuFind\ILSConnection'),
+            $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
+            $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+        );
+        //We use this to fetch containers - they are missing in out MARC record
+        $driver->attachSearchRunner($sm->getServiceLocator()->get('VuFind\SearchRunner'));
         $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
         return $driver;
     }
