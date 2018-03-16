@@ -11,7 +11,7 @@ class SolrGvimarcde602 extends SolrGvimarc
 {
     public function getNetwork() {return 'KOBV';}
     
-        /**
+    /**
      * For rticles: get container title
      * 
      * @return type

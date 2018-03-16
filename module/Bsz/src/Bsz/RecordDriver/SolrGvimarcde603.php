@@ -11,8 +11,9 @@ class SolrGvimarcde603 extends SolrGvimarc
 {
     public function getNetwork() {return 'HEBIS';}
     
-        /**
+    /**
      * For rticles: get container title
+     * 
      * @return type
      */
     public function getContainerTitle()

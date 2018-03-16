@@ -11,7 +11,7 @@ class SolrGvimarcde605 extends SolrGvimarc
 {
     public function getNetwork() {return 'HBZ';}
     
-        /**
+    /**
      * For rticles: get container title
      * 
      * @return type

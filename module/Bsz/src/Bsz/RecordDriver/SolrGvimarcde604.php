@@ -11,8 +11,9 @@ class SolrGvimarcde604 extends SolrGvimarc
 {
     public function getNetwork() {return 'BVB';}
     
-        /**
+    /**
      * For rticles: get container title
+         * 
      * @return type
      */
     public function getContainerTitle()

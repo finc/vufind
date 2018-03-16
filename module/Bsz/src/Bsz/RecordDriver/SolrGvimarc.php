@@ -409,8 +409,6 @@ class SolrGvimarc extends SolrMarc
      */
     public function getPrimaryAuthor()
     {
-        //return trim($this->getFirstFieldValue('100', ['a']));
-
         $author = trim($this->getFirstFieldValue('100', ['a']));
         $titles = trim($this->getFirstFieldValue('100', ['c']));
         $dates = trim($this->getFirstFieldValue('100', ['d']));
