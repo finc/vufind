@@ -1,63 +1,51 @@
-<!-- finc - record - pdaform -->
+<!-- finc: record - pdaform -->
 <?
-  // Set page title.
-  $this->headTitle($this->translate('PDA::Acquisition'));
+// Set page title.
+$this->headTitle($this->translate('PDA::Acquisition'));
 
-  // Set up breadcrumbs:
-  $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li>')
-    . '<li>' . $this->recordLink()->getBreadcrumb($this->driver) . '</li>'
-    . '<li class="active">' . $this->transEsc('PDA::Acquisition') . '</li>';
+// Set up breadcrumbs:
+$this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li>')
+  . '<li>' . $this->recordLink()->getBreadcrumb($this->driver) . '</li>'
+  . '<li class="active">' . $this->transEsc('PDA::Acquisition') . '</li>';
 ?>
-<h2><?=$this->transEsc('PDA::Acquisition') ?>: <span class="title-in-heading"><?=$this->escapeHtml($this->driver->getBreadcrumb())?></span></h2>
+<h2><?=$this->transEsc('PDA::Acquisition')?>: <span class="title-in-heading"><?=$this->escapeHtml($this->driver->getBreadcrumb())?></span></h2>
 <form method="post" name="acquisitionPDAForm" action="<?=$this->recordLink()->getActionUrl($this->driver, 'PDA')?>">
   <?=$this->flashmessages()?>
   <p>
     <?=$this->translate('PDA::pda_order_text')?>
-    <?=(strlen($price = $this->driver->getPrice()) > 0) ? $this->translate('PDA::pda_price_text', [':::PRICE:::'=>$this->safeMoneyFormat($price)]) : ''?>
+    <?=(strlen($price = $this->driver->getPrice()) > 0) ? $this->translate('PDA::pda_price_text', [':::PRICE:::' => $this->safeMoneyFormat($price)]) : ''?>
     <?=$this->translate('PDA::pda_delivery_text')?>
   </p>
   <div class="form-group">
-    <label class="col-sm-4 control-label" for="pdaStatement"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span>:</label>
-    <div class="col-sm-8">
-      <textarea id="pdaStatement" class="auto" name="pdaStatement" rows="5" type="text" cols="46"><?=isset($this->pdaStatement) ? $this->pdaStatement : ''?></textarea>
-    </div>
+    <label class="control-label" for="pdaStatement"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span>:</label>
+    <textarea id="pdaStatement" class="form-control" name="pdaStatement" rows="5" type="text" cols="46"><?=isset($this->pdaStatement) ? $this->pdaStatement : ''?></textarea>
   </div>
   <div class="form-group">
-    <label class="col-sm-4 control-label" for="pdaSubject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span>:</label>
-    <div class="col-sm-8">
-      <select name="pdaFieldOfStudy" class="form-control">
-        <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text')?></option>
-        <? if (isset( $this->fieldOfStudyList) && is_array( $this->fieldOfStudyList)): ?>
-          <? foreach ( $this->fieldOfStudyList as $value): ?>
-            <option value="<?=$value?>" <? if (!empty($this->pdaFieldOfStudy) && $value==$this->pdaFieldOfStudy): ?> selected="selected"<? endif; ?>><?= $this->transEsc('PDA::fos_' . $value) ?></option>
-          <? endforeach; ?>
-        <? endif; ?>
-      </select>
-    </div>
+    <label class="control-label" for="pdaSubject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span>:</label>
+    <select name="pdaFieldOfStudy" class="form-control">
+      <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text')?></option>
+      <? if (isset($this->fieldOfStudyList) && is_array($this->fieldOfStudyList)): ?>
+        <? foreach ($this->fieldOfStudyList as $value): ?>
+          <option value="<?=$value?>" <? if (!empty($this->pdaFieldOfStudy) && $value == $this->pdaFieldOfStudy): ?> selected="selected"<? endif; ?>><?=$this->transEsc('PDA::fos_' . $value)?></option>
+        <? endforeach; ?>
+      <? endif; ?>
+    </select>
   </div>
   <div class="form-group">
-    <div class="col-sm-12">
       <span>
-        <?=$this->recaptcha()->html($this->useRecaptcha) ?>
+        <?=$this->recaptcha()->html($this->useRecaptcha)?>
       </span>
-    </div>
-    <div class="col-sm-8 col-sm-push-4">
-      <div class="btn-group" role="group">
-          <input type="submit" class="btn btn-primary" role="button" name="submit" value="<?=$this->transEsc('Submit')?>"/>
-          <a class="btn btn-primary" data-lightbox-ignore data-toggle="tooltip" title="<?=$this->transEsc('PDA::pda_open_new_window')?>" href="<?=$this->interlibraryloan()->getSwbLink($this->driver)?>"
-             target="_blank"><?=$this->transEsc('PDA::pda_tab_interlibrary_button')?>
-          </a>
-        <button class="btn btn-transparent" type="button" data-dismiss="modal" href="#"><?=$this->transEsc('Reset')?></button>
-      </div>
-
-    </div>
+    <input type="submit" class="btn btn-primary" role="button" name="submit" value="<?=$this->transEsc('Submit')?>"/>
+    <a class="btn btn-primary" data-lightbox-ignore data-toggle="tooltip" title="<?=$this->transEsc('PDA::pda_open_new_window')?>" href="<?=$this->interlibraryloan()->getSwbLink($this->driver)?>"
+       target="_blank"><?=$this->transEsc('PDA::pda_tab_interlibrary_button')?>
+    </a>
+    <button class="btn btn-transparent" type="button" data-dismiss="modal" href="#"><?=$this->transEsc('Reset')?></button>
   </div>
+
   <div class="form-group">
-    <div class="col-sm-12">
-      <p>
-        <?= $this->transEsc('PDA::note_mandatory_fields') ?>
-      </p>
-    </div>
+    <p>
+      <?=$this->transEsc('PDA::note_mandatory_fields')?>
+    </p>
   </div>
 </form>
-<!-- finc - record - pdaform - END -->
+<!-- finc: record - pdaform - END -->
