@@ -228,8 +228,7 @@ trait AcquisitionTrait
 
         // Get mailer
         $mailer = new Mailer(
-            $this->getServiceLocator()
-                ->get('VuFind\Mailer')->getTransport()
+            $this->serviceLocator->get('VuFind\Mailer')->getTransport()
         );
 
         // Send the email
