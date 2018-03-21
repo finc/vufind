@@ -46,8 +46,9 @@ class RecordController extends \VuFind\Controller\RecordController implements
     use \VuFind\Log\LoggerAwareTrait;
     use CustomTraits\EblTrait;
     use CustomTraits\EmailHoldTrait;
-    use CustomTraits\PdaTrait;
     use CustomTraits\EmailProfileTrait;
+    use CustomTraits\PdaTrait;
+    use CustomTraits\ReportErrorsTrait;
 
     /**
      * Returns rewrite object

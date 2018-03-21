@@ -46,10 +46,24 @@ use Zend\ServiceManager\ServiceManager,
  */
 class Factory extends FactoryBase
 {
+    /**
+     * Construct a generic controller.
+     *
+     * @param string         $name Name of table to construct (fully qualified
+     * class name, or else a class name within the current namespace)
+     * @param ServiceManager $sm   Service manager
+     *
+     * @return object
+     * @throws \Exception Cannot construct __CLASS__
+     */
     public static function getGenericController($name, ServiceManager $sm)
     {
+        // Prepend the current namespace unless we receive a FQCN:
         $class = (strpos($name, '\\') === false)
-            ? static::getNamespace() . '\\' . $name : $name;
+            ? __NAMESPACE__ . '\\' . $name : $name;
+        if (!class_exists($class) && strpos($name, '\\') === false) {
+            $class = "\\VuFind\\Controller\\$name";
+        }
         if (!class_exists($class)) {
             throw new \Exception('Cannot construct ' . $class);
         }
@@ -74,14 +88,6 @@ class Factory extends FactoryBase
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('DDS'),
             $container
-        );
-    }
-
-    private static function getNamespace()
-    {
-        return substr(
-            static::class, 0,
-            strrpos(static::class, '\\')
         );
     }
 
