@@ -12,20 +12,19 @@ $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink
 <form name="reporterrors" method="post" action="<?=$this->recordLink()->getActionUrl($this->driver, 'ReportErrors')?>">
   <?=$this->flashmessages()?>
   <div class="form-group">
-    <label class="control-label" for="reporterrors_email"><?=$this->transEsc("Email")?></label>
+    <label class="control-label" for="reporterrors_email"><?=$this->transEsc("Email")?>:</label>
       <input type="email" id="reporterrors_email" name="reporterrors_email" class="form-control"<? if (!empty($this->email)): ?> value="<?=$this->email?>"<? endif; ?>/>
-
     <div class="gutter-top gutter-btm <? if (empty($this->email)): ?>hidden<? endif; ?>" id="replyCheckbox">
-      <input type="checkbox" id="reporterrors_checkbox" name="reporterrors_checkbox"<?=($this->reply_requested) ? ' checked' : ''?> class="form-control"/>
       <label for="reporterrors_checkbox" class="control-label"><?=$this->transEsc("reporterrors_response_requested")?></label>
+      <input type="checkbox" id="reporterrors_checkbox" name="reporterrors_checkbox"<?=($this->reply_requested) ? ' checked' : ''?> />
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label" for="comment"><?=$this->transEsc("Note")?></label>
+    <label class="control-label" for="comment"><?=$this->transEsc("Note")?>:</label>
       <textarea id="comment" name="comment" class="form-control" required><?=(!empty($this->comment)) ? $this->comment : ''?></textarea>
   </div>
   <div class="form-group">
-      <input type="submit" class="btn btn-primary" role="button" name="submit" value="<?=$this->transEsc('Send')?>"/>
+    <input type="submit" class="btn btn-primary" role="button" name="submit" value="<?=$this->transEsc('Send')?>"/>
   </div>
 </form>
 <? $script = <<<JS
