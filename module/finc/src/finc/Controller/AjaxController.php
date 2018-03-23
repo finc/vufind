@@ -61,7 +61,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
         if (in_array($requestedResolver, $resolvers) && isset($config->$requestedResolver)) {
             $resolverType = isset($config->$requestedResolver->resolver)
                 ? $config->$requestedResolver->resolver : 'other';
-            $pluginManager = $this->getServiceLocator()
+            $pluginManager = $this->serviceLocator
                 ->get('VuFind\ResolverDriverPluginManager');
             if (!$pluginManager->has($resolverType)) {
                 return $this->output(
