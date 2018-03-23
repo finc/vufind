@@ -16,6 +16,10 @@
         <ul role="navigation" class="nav navbar-nav navbar-right flip">
           <? if ($this->client()->isIsilSession() && (!$this->client()->hasIsilSession() || \Bsz\Debug::isInternal())): ?>
             <li class="dropdown">
+                <a class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="<?=implode(', ', $this->client()->getIsils())?>">    
+                    <span class="caret"></span>
+                    <?=$this->transEsc('Bibliothek')?>
+                </a>
                 <?=$this->partial('bsz/illdropdown.phtml')?>           
             </li>
           <? endif; ?>
