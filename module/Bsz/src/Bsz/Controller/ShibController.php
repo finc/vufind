@@ -33,6 +33,11 @@ namespace Bsz\Controller;
  */
 class ShibController extends \VuFind\Controller\AbstractBase
 {
+    
+    public function __construct() {
+        // we need to override abstractBase __constructor as it requires 
+        // some kind of service locator crap... 
+    }    
     /**
      * This action let's you choose IdP
      */

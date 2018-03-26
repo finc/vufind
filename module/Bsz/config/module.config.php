@@ -10,8 +10,8 @@ $config = [
             'holding' => 'Bsz\Controller\HoldingController',
             'test' => 'Bsz\Controller\TestController',
             'cart' => 'Bsz\Controller\CartController',
-//            'privacy' => 'Bsz\Controller\BszController',
-//            'shib' => 'Bsz\Controller\ShibController'
+            'privacy' => 'Bsz\Controller\BszController',
+            'shib' => 'Bsz\Controller\ShibController'
         ],
         'factories' => [
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController'
@@ -184,6 +184,7 @@ $staticRoutes = [
     'Record/Freeform',
     'Holding/Query',
     'Bsz/Privacy',     
+    'Shib/Wayf', 'Shib/Redirect',
 ];
 $recordRoutes = [
     'record' => 'Record',
