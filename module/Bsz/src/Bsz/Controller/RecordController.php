@@ -408,12 +408,14 @@ class RecordController extends \VuFind\Controller\RecordController
 
         $view->authMethod = '';
         $client = $this->getServiceLocator()->get('bsz\client');
+        $isils = $client->getIsils();
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
             $this->FlashMessenger()->addErrorMessage('missing_isil');
-        } else {
-            $library = $this->getServiceLocator()->get('bsz\libraries')->getFirst($client->getIsils());
+        } else if (count($isils) > 0) {
+            $library = $this->getServiceLocator()->get('bsz\libraries')->getFirst($isils);
             $view->authMethod = $library->getAuth();
         } 
+  
         return $view;
     }
 
