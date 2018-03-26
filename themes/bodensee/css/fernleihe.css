@@ -11261,6 +11261,10 @@ Very basic styles
   margin: 0;
   padding: 0;
 }
+.modal-body > .col-sm-12 {
+  padding-left: 0;
+  padding-right: 0;
+}
 /**
 Hintergrundfarbverlauf beim Body 
 **/
