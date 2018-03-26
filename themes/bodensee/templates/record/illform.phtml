@@ -49,10 +49,18 @@
 
             <div class="form-group"> 
                 <div class="col-sm-12">
-                    <p>* <?=$this->transEsc('This field is required')?></p>
+                    <label for="agree-commercial-use" class="control-label checkbox-inline">
+                        <input type="checkbox" required="" name=agree-commercial-use" class="" id="agree-commercial-use"/> 
+                        <strong><?=$this->transEsc('ill_commercial_use')?>*</strong>
+                    </label>                    
+                </div>  
+            </div>
+            <div class="form-group"> 
+                <div class="col-sm-12">
                     <input id="ill-submit" type="submit" class="btn btn-primary<?=$this->submitDisabled?' disabled': ''?>" value="<?=$test ? $this->transEsc('Test Order') : $this->transEsc('Order') ?>"/>            
-                    <label for="ill-submit"><i class="fa fa-check"></i> <?=$this->transEsc('ill_commercial_use')?></label>
-                </div>
+                    <p>* <?=$this->transEsc('This field is required')?></p>
+                                    
+                </div>  
             </div>
         </div>
     </form> 
