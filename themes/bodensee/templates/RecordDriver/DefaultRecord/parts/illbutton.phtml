@@ -33,6 +33,8 @@ $available = $this->record($this->driver)->isAvailableForInterlending();
 $swb = $this->record($this->driver)->getSwbId();
 $basePath = '/Record/';
 ?>
+<?= var_dump($available) ?>
+<?= var_dump($current) ?>
 <tr>
     <th>&nbsp;</th>
     <td>       
@@ -79,7 +81,7 @@ $basePath = '/Record/';
                         </ul>
                     </strong>
                 <? else: // Titel ist lokal verfügbar, aber trotzdem bestellbar, da wir die Bestandsangaben nicht prüfen können ?> 
-                <div class="col-sm-3" style="padding-left: 0;">                    
+                <div class="col-sm-3" style="padding-left: 0;">                  
                     <span <? if (strpos($class, 'login-required') !== false): ?>
                        data-toggle="popover"
                        data-trigger="focus"
@@ -102,7 +104,7 @@ $basePath = '/Record/';
                 <? endif; ?>
                 
         <? // nicht in lokaler Bibliothek, für die Fernleihe verfügbar ?>
-        <? elseif($available): ?>  
+        <? elseif(!$current && $available): ?>  
         <span <? if (strpos($class, 'login-required') !== false): ?>
            data-toggle="popover"
            data-trigger="focus"
