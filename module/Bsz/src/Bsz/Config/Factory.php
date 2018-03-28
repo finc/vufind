@@ -47,7 +47,12 @@ class Factory
     {
         $vufindconf = $sm->get('VuFind\Config')->get('config')->toArray();
         $bszconf = $sm->get('VuFind\Config')->get('bsz')->toArray();
+        $container = new \Zend\Session\Container(
+            'fernleihe', $sm->get('VuFind\SessionManager')
+        );
+        
         $client = new Client(array_merge($vufindconf, $bszconf), true);
+        $client->appendContainer($container);
         if ($client->isIsilSession()) {
             $libraries = $sm->get('bsz\libraries');
             $request = $sm->get('Request');

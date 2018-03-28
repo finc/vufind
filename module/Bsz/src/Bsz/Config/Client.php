@@ -45,6 +45,16 @@ class Client extends \Zend\Config\Config
      * @var \Bsz\Config\Libraries;
      */
     protected $libraries;
+    
+    /**
+     *
+     * @var Container
+     */
+    protected $container;
+    
+    public function appendContainer(Container $container) {
+        $this->container = $container;
+    }
 
     /**
      * Returns Site Title
@@ -177,19 +187,18 @@ class Client extends \Zend\Config\Config
     public function getIsils()
     {
         
-        $container = new Container('fernleihe');   
         $cookie = null;
         if (isset($this->request)) {
             $cookie = $this->request->getCookie();            
         }
         
         $isils = [];
-        if ($this->isIsilSession() && $container->offsetExists('isil')) {
-            $isils = (array) $container->offsetGet('isil');
+        if ($this->isIsilSession() && $this->container->offsetExists('isil')) {
+            $isils = (array) $this->container->offsetGet('isil');
         } elseif($this->isIsilSession() && isset($cookie->isil)) {
             $isils = explode(',', $cookie->isil);
             // Write isils back to session
-            $container->offsetSet('isil', $isils);
+            $this->container->offsetSet('isil', $isils);
         } else {
             $raw = trim($this->get('Site')->get('isil'));
             if (!empty($raw)) {
