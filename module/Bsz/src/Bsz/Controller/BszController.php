@@ -59,7 +59,9 @@ class BszController extends \VuFind\Controller\AbstractBase {
             throw new \Bsz\Exception('parameter isil missing');
         }
         if (count($isils) > 0) {
-            $container = new Container('fernleihe');
+            $container = new \Zend\Session\Container(
+                'fernleihe', $this->getServiceLocator()->get('VuFind\SessionManager')
+            );
             $container->offsetSet('isil', $isils);     
             $uri= $this->getRequest()->getUri();
             $cookie = new \Zend\Http\Header\SetCookie(
