@@ -181,7 +181,30 @@ function keyboardShortcuts() {
         });
     }
 }
+/**
+ * Prevent the searchbox from triggering an empty search which is slow.
+ * @returns {undefined}
+ */
+function avoidEmptySearch() {
+     var $tabs = $('#searchForm .nav-tabs');
+     $tabs.find('a').click(function(e) {
+        e.preventDefault()
+        var lookfor = $('#searchForm_lookfor').val();
+        var href = $(this).attr('href');
+        if (lookfor.length === 0) {
+            href = href.replace('Results', 'Home');             
+        } else {
+            href = href.replace('Home', 'Results')+'&lookfor='+lookfor;     
+        }
+        // this is like clicking the manipulated link
+        window.location.href = href;    
+        
+     });
+
+ }
+
 $(document).ready(function() {
+  avoidEmptySearch();
   externalLinks();
   bootstrapTooltip();
 //  sidebarOffcanvas();
