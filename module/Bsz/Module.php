@@ -79,10 +79,6 @@ class Module extends \VuFind\Module
     {
         $app = $e->getApplication();
         $sm = $app->getServiceManager();
-        $config = $sm->get('Config');
-        
-        $sessionConfig = new SessionConfig();
-        $sessionManager = new SessionManager($sessionConfig);
-        $sessionManager->start();
+        $config = $sm->get('Config');                
     }
 }
