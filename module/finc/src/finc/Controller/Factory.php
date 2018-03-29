@@ -60,14 +60,25 @@ class Factory extends FactoryBase
     {
         // Prepend the current namespace unless we receive a FQCN:
         $class = (strpos($name, '\\') === false)
-            ? __NAMESPACE__ . '\\' . $name : $name;
-        if (!class_exists($class) && strpos($name, '\\') === false) {
-            $class = "\\VuFind\\Controller\\$name";
-        }
-        if (!class_exists($class)) {
-            throw new \Exception('Cannot construct ' . $class);
+            ? static::getNamespace() . '\\' . $name : $name;
+                 if (!class_exists($class)) {
+                     throw new \Exception('Cannot construct ' . $class);
         }
         return new $class($sm->getServiceLocator());
+      }
+
+    /**
+     * Get namespace of class
+     *
+     * @return string Namespace
+     * @access private
+     */
+    private static function getNamespace()
+    {
+        return substr(
+            static::class, 0,
+            strrpos(static::class, '\\')
+          );
     }
 
     /**
