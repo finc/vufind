@@ -1,11 +1,9 @@
 <?
     // Set page title.
     $this->headTitle($this->translate('Volumes') . ': ' . $this->driver->getBreadcrumb());
-    
-    if($this->driver->tryMethod('isCollection') ||  $this->driver->tryMethod('isPart')) {    
-        $content = $this->tab->getContent();        
-    }
-    
+ 
+    $content = $this->tab->getContent();        
+        
 
 ?>
 <? if(isset($content) && count($content) > 0): ?>

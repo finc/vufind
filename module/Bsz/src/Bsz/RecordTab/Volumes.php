@@ -77,8 +77,6 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
 //                    $relId[$k] = 'id_related_host_item:"'.$id.'"';            
                     $relId[$k] = 'id_related:"'.$id.'"';                    
                 }
-                preg_match('/\((.*?)\)/', $this->driver->getUniqueId(), $matches);
-                $isil = $matches[1];
                 $params = [
                     'sort' => 'publish_date_sort desc',
                     'lookfor' => implode(' OR ', $relId),              
@@ -88,7 +86,7 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
                 $filter = [];
                 foreach($this->isils as $isil) {
                     $filter[] = '~institution_id:'.$isil;
-                }
+                }                    
                 $filter[] = 'material_content_type:Book';
                 $params['filter'] = $filter;
                               
@@ -109,8 +107,8 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
         //getContents to determine active state
         $this->getContent();
         if(($this->driver->isCollection() || $this->driver->isPart()
-                || $this->driver->isMonographicSerial()) && !empty($this->content)) {
-            
+                || $this->driver->isMonographicSerial() 
+                || $this->driver->isJournal()) && !empty($this->content)) {
             return true;
         }
         return false;

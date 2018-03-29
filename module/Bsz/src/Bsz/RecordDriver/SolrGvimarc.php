@@ -1163,11 +1163,9 @@ class SolrGvimarc extends SolrMarc
     public function getIdsRelated()
     {
         $ids = [];
-        //parent collection
-
-        $f773 = $this->getFieldArray(773, ['w']);
-        if (count($f773) > 0) {
-            $ids[] = array_shift($f773);
+        $f773 = $this->getFieldArray(773, ['w'], false);
+        foreach ($f773 as $w) {
+            $ids[] = $w;
         }
         $ids[] = $this->getUniqueId();
         return array_unique($ids);

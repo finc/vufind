@@ -127,7 +127,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     {
 
         $leader = $this->getMarcRecord()->getLeader();
-        $multipartLevel = strtoupper($leader{19});
+        $multipartLevel = strtoupper($leader{19});        
 
         switch ($multipartLevel) {
             case 'A':

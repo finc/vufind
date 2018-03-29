@@ -14,7 +14,7 @@
         $offlineMode = 'ils-offline';
     }
     // Set page title.
-    //$this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
+    $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
 ?>
 
 <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', ['user' => $this->auth()->isLoggedIn()]); ?>
