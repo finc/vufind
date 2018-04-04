@@ -54,6 +54,12 @@ class RecordDataFormatterFactory
     {
         $helper = new RecordDataFormatter();
 
+        $helper->setDefaults(
+            'collection-info', [$this, 'getDefaultCollectionInfoSpecs']
+        );
+        $helper->setDefaults(
+            'collection-record', [$this, 'getDefaultCollectionRecordSpecs']
+        );
         $helper->setDefaults('core', [$this, 'getDefaultCoreSpecs']);
         $helper->setDefaults(
             'description', [$this, 'getDefaultDescriptionSpecs']
@@ -135,6 +141,131 @@ class RecordDataFormatterFactory
         return $spec->getArray();
     }
 
+    /**
+     * Get default specifications for displaying data in collection-info metadata.
+     *
+     * @return array
+     */
+    public function getDefaultCollectionInfoSpecs()
+    {
+        $spec = new RecordDataFormatter\SpecBuilder();
+        $spec->setTemplateLine(
+            'Authors/Corporations',
+            'getDeduplicatedAuthors',
+            'data-authors.phtml',
+            [
+                'useCache' => true,
+                'context' => [
+                    'requiredDataFields' => [
+                        ['name' => 'role', 'prefix' => 'CreatorRoles::']
+                    ]
+                ]
+            ]
+        );
+        $spec->setTemplateLine(
+            'Title', 'getTitleDetails', 'data-titleDetails.phtml'
+        );
+        $spec->setTemplateLine(
+            'Dates of publication', 'getDateSpan', 'data-escapeHtml.phtml'
+        );
+        $spec->setTemplateLine(
+            'Summary', 'getSummary', 'data-escapeHtml.phtml'
+        );
+        $spec->setTemplateLine(
+            'Published', 'getPublicationDetails', 'data-publicationDetails.phtml'
+        );
+        $spec->setLine(
+            'Edition', 'getEdition', null,
+            ['prefix' => '<span property="bookEdition">', 'suffix' => '</span>']
+        );
+        $spec->setTemplateLine(
+            'Subjects', 'getAllSubjectHeadings', 'data-allSubjectHeadings.phtml'
+        );
+        $spec->setTemplateLine(
+            'Online Access', true, 'data-onlineAccess.phtml'
+        );
+        $spec->setTemplateLine(
+            'Item Description', 'getGeneralNotes', 'data-escapeHtml.phtml'
+        );
+        $spec->setTemplateLine(
+            'Production Credits',
+            'getProductionCredits',
+            'data-escapeHtml.phtml'
+        );
+        $spec->setTemplateLine(
+            'Set Multipart',
+            'getHierarchyParentTitle',
+            'data-hierarchyParentTitle.phtml'
+        );
+        $spec->setTemplateLine(
+            'ISBN', 'getISBNs', 'data-escapeHtml.phtml'
+        );
+        $spec->setTemplateLine(
+            'ISSN', 'getISSNs', 'data-escapeHtml.phtml'
+        );
+        $spec->setTemplateLine(
+            'Notes',
+            'getAdditionalNotes',
+            'data-escapeHtml.phtml',
+            [
+                'useCache' => true
+            ]
+        );
+        $spec->setLine(
+            'Format', 'getFormats', 'RecordHelper',
+            ['helperMethod' => 'getFormatList']
+        );
+        $spec->setTemplateLine(
+            'Language', 'getLanguages', 'data-escapeHtml.phtml'
+        );
+        $spec->setTemplateLine(
+            'Additionals',
+            'getAdditionals',
+            'data-additionals.phtml',
+            [
+                'labelFunction' => function() { return null; }
+            ]
+        );
+        return $spec->getArray();
+    }
+
+    /**
+     * Get default specifications for displaying data in collection-record metadata.
+     *
+     * @return array
+     */
+    public function getDefaultCollectionRecordSpecs()
+    {
+        $spec = new RecordDataFormatter\SpecBuilder();
+        $spec->setLine('Summary', 'getSummary');
+        $spec->setTemplateLine(
+            'Authors/Corporations',
+            'getDeduplicatedAuthors',
+            'data-authors.phtml',
+            [
+                'useCache' => true,
+                'context' => [
+                    'requiredDataFields' => [
+                        ['name' => 'role', 'prefix' => 'CreatorRoles::']
+                    ]
+                ]
+            ]
+        );
+        $spec->setTemplateLine(
+            'Language', 'getLanguages', 'data-escapeHtml.phtml'
+        );
+        $spec->setLine(
+            'Format', 'getFormats', 'RecordHelper',
+            ['helperMethod' => 'getFormatList']
+        );
+        $spec->setTemplateLine(
+            'Access', 'getAccessRestrictions', 'data-escapeHtml.phtml'
+        );
+        $spec->setTemplateLine(
+            'Related Items', 'getRelationshipNotes', 'data-escapeHtml.phtml'
+        );
+        return $spec->getArray();
+    }
 
     /**
      * Get default specifications for displaying data in core metadata.

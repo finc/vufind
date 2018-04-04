@@ -13,7 +13,11 @@ $fields = $formatter->getData($driver, $formatter->getDefaults('collection-recor
   <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
   <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
   <? foreach ($fields as $key => $current): ?>
-    <tr><th><?=$this->transEsc($key)?>:</th><td><?=$current['value']?></td></tr>
+    <? if ($key == null): ?>
+      <?=$current['value']?>
+    <? else: ?>
+      <tr><th><?=$this->transEsc($key)?>:</th><td><?=$current['value']?></td></tr>
+    <? endif; ?>
   <? endforeach; ?>
 </table>
 <? endif; ?>
