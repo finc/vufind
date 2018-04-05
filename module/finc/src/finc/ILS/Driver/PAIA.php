@@ -31,9 +31,9 @@
  */
 
 namespace finc\ILS\Driver;
-use VuFind\Exception\Auth as AuthException,
-    VuFind\Exception\ILS as ILSException,
-    Sabre\VObject;
+
+use VuFind\Exception\Auth as AuthException;
+use VuFind\Exception\ILS as ILSException;
 
 /**
  * PAIA ILS Driver for VuFind to get patron information
@@ -367,30 +367,23 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
 
         $session = $this->getSession();
 
-        // if we already have a session with access_token and patron id, try to get
-        // patron info with session data
-        if (isset($session->expires) && $session->expires > time()) {
-            try {
+        try {
+            if (isset($session->expires) && $session->expires > time()) {
                 return $this->enrichUserDetails(
                     $this->paiaGetUserDetails($session->patron),
                     $password
                 );
-            } catch (\Exception $e) {
-                // TODO? $this->debug('Session expired, login again', ['info' => 'info']);
-                // all error handling is done in paiaHandleErrors so pass on the excpetion
-                throw $e;
             }
-        }
-        try {
             if ($this->paiaLogin($username, $password)) {
                 return $this->enrichUserDetails(
                     $this->paiaGetUserDetails($session->patron),
                     $password
                 );
             }
-        } catch (\Exception $e) {
-            // all error handling is done in paiaHandleErrors so pass on the excpetion
-            throw $e;
+        } catch (AuthException $e) {
+            // Swallow auth exceptions and return null compliant to spec at:
+            // https://vufind.org/wiki/development:plugins:ils_drivers#patronlogin
+            return null;
         }
     }
 
