@@ -1423,7 +1423,7 @@ footer {
 
 //// Record View (Detail view)
 ////// Pager
-/////// The pager occurs in record - view but also in collection - view
+/////// The pager occurs in record/view but also in collection/view
 .pager {
   margin-bottom: 0;
 }
@@ -1467,10 +1467,33 @@ footer {
   margin-top: 1em;
 }
 
+.jstree-anchor + .jstree-children {
+  margin-left: 18px;
+  margin-top: 7.5px;
+  padding-left: 0;
+  // 2nd level link, align in one vertical line
+  .jstree-anchor {
+    margin-left: 0;
+    padding-left: 0;
+  }
+}
+
 /////// prevent tree LIs from overspilling on small!
 .hierarchy-tree .jstree-anchor {
   hyphens: auto;
   white-space: normal;
+}
+
+// Current item
+.hierarchy-tree .jstree-clicked {
+  //background-color: $color-action;
+  padding-bottom: .25em;
+  padding-right: .5em;
+  padding-top: .5em;
+  &:hover,
+  &:focus {
+    color: $brand-secondary;
+  }
 }
 
 /////// Make dropdown-icon wider
