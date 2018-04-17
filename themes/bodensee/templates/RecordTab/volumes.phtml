@@ -9,7 +9,7 @@
 ?>
 <? if(isset($content) && count($content) > 0): ?>
 <? $rand = rand(0, 9999)?>
-<table class="table table-striped table-condensed" id="showmore-items-<?=$rand?>">
+<table class="table table-striped table-condensed">
     <tr>
         <th class="col-xs-8"><?=$this->transEsc('Title')?></th>        
         <th class="col-xs-1"><?=$this->transEsc('Year')?></th>
@@ -17,7 +17,7 @@
         <th class="col-xs-2"><?=$this->transEsc('Author')?></th>        
     </tr>
     <? $count = 1; foreach ($content as $result): ?>
-        <tr <? if ($count > 20): ?> class="showmore-item hidden"<? endif; ?>>
+        <tr <? if ($count > 20): ?> class="showmore-<?=$rand?> collapse multi-collapse"<? endif; ?>>
             <td><a class="internal"  href="<?=$this->recordLink()->getUrl($result)?>"><?=$this->string()->cleanEsc($result->getTitle())?> <?=$this->string()->cleanEsc($result->getTitleSection())?></a></td>
             <td><?=implode(', ',$result->getPublicationDates())?></td>
             <td><?=$this->string()->cleanEsc($result->getVolume())?></td>            
@@ -28,7 +28,9 @@
     <? if ($count > 20): ?> 
         <tfoot>
             <tr><td>
-                <a class="btn btn-info btn-xs showmore" id="showmore-<?=$rand?>"><?=$this->transEsc('Showmore')?></a>     
+                <button class="btn btn-info btn-xs" data-toggle="collapse" data-target=".showmore-<?=$rand?>" aria-expanded="false">
+                    <?=$this->transEsc('Showmore')?>
+                </button>    
             </td></tr>
         </tfoot>
     <? endif; ?>        

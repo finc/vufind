@@ -1,25 +1,3 @@
-/*
- * showmore links
- * @returns {undefined}
- */
-function showmore() {
-    $('.showmore').click(function(e) {
-        var id = $(this).attr('id').split('-')[1];
-        $('#showmore-items-'+id+' .showmore-item').removeClass('hidden');
-        $(this).remove();
-        e.preventDefault();
-        return false;
-    })
-}
-
-//function sidebarOffcanvas() {
-//    $('#sidebar-offcanvas-trigger').click(function(){
-//        $(this).toggleClass('active');
-//        $('.container .sidebar').toggleClass('offcanvas-active');
-//        $('body').toggleClass('overflow');
-//    });
-//}
-
 function bootstrapTooltip() {
 
       $('[data-toggle="tooltip"]').tooltip({
@@ -211,5 +189,5 @@ $(document).ready(function() {
   modalPopup();
   keyboardShortcuts();
   remoteModal();
-  showmore();  
+  duplicates();
 });
