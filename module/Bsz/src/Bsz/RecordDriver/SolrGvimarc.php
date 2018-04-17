@@ -183,7 +183,8 @@ class SolrGvimarc extends SolrMarc
         ];
         foreach ($this->getMarcRecord()->getFields('084') as $field) {
             $suba = $field->getSubField('a');
-            if ($suba) {
+            $sub2 = $field->getSubfield('2');
+            if ($suba && strtolower($sub2) == 'rvk') {
                 $title = [];
                 foreach ($field->getSubFields('k') as $item) {
                     $title[] = htmlentities($item->getData());
