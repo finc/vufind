@@ -64,7 +64,6 @@ trait ResetPasswordTrait
         $view = $this->createResetPasswordViewModel();
 
         // Set up reCaptcha
-        //todo: testen!
         $view->useRecaptcha = $this->recaptcha()->active('resetPassword');
 
         // Process form submission:
@@ -184,8 +183,7 @@ trait ResetPasswordTrait
 
         // Get mailer
         $mailer = new Mailer(
-            $this->getServiceLocator()
-                ->get('VuFind\Mailer')->getTransport()
+            $this->serviceLocator->get('VuFind\Mailer')->getTransport()
         );
 
         // Send the email
