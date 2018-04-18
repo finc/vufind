@@ -65,6 +65,8 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
     const SCOPE_WRITE_ITEMS = 'write_items';
     const SCOPE_CHANGE_PASSWORD = 'change_password';
 
+    protected $last_error = null;
+
     /**
      * Constructor
      *
@@ -401,6 +403,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
         //       error code 403 two differing errors are possible
         //       (cf.  http://gbv.github.io/paia/paia.html#request-errors)
         if (isset($array['error'])) {
+            $this->last_error = $array;
             switch ($array['error']) {
                 // cf. http://gbv.github.io/paia/paia.html#request-errors
                 // error        code    error_description
@@ -1257,5 +1260,9 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             return true;
         }
         return false;
+    }
+
+    public function getLastError() {
+        return $this->last_error;
     }
 }
