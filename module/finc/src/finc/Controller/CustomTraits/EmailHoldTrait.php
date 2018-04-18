@@ -170,8 +170,7 @@ trait EmailHoldTrait
                 $to = new Address($emailProfile->to);
                 // Get mailer
                 $mailer = new Mailer(
-                    $this->getServiceLocator()
-                        ->get('VuFind\Mailer')->getTransport()
+                    $this->serviceLocator->get('VuFind\Mailer')->getTransport()
                 );
 
                 $mailer->sendTextHtml(
@@ -195,7 +194,7 @@ trait EmailHoldTrait
         // Find and format the default required date:
         $defaultRequired = $this->emailHold()
             ->getDefaultRequiredDate($checkRequests);
-        $defaultRequired = $this->getServiceLocator()->get('VuFind\DateConverter')
+        $defaultRequired = $this->serviceLocator->get('VuFind\DateConverter')
             ->convertToDisplayDate("U", $defaultRequired);
         try {
             $defaultPickup

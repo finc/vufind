@@ -231,7 +231,7 @@ class Holds extends \VuFind\ILS\Logic\Holds
                     $copy['emailHoldLink'] = $this->getRequestDetails(
                         $copy,
                         $requestConfig['HMACKeys'],
-                        'EmailHoldLink'
+                        'EmailHold'
                     );
 
                     $copy['checkEmailHold']

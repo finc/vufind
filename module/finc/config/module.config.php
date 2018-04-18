@@ -158,7 +158,7 @@ $config = [
 ];
 
 $nonTabRecordActions = [
-    'PDA', 'EmailHold', 'EmailHoldLink', 'ReportErrors'
+    'PDA', 'EmailHold', 'ReportErrors'
 ];
 
 
