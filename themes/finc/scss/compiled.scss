@@ -371,9 +371,16 @@ select {
 
 //// ALERTS
 ////// Light Text on Dark BG
-.alert a {
-  color: $state-light-text-on-dark;
-  text-decoration: underline;
+.alert {
+
+  a {
+    color: $state-light-text-on-dark;
+    text-decoration: underline;
+  }
+
+  &.alert-warning a {
+    color: $oil;
+  }
 }
 
 ////// Alert Text Colors
