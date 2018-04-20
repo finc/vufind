@@ -10,10 +10,10 @@ function showMoreInfoToggle() {
     // finc: Keep Accordion OPEN on load
     // toggleCollectionInfo();
     $("#moreInfoToggle").removeClass('hidden');
-    $("#moreInfoToggle").click(function moreInfoToggleClick(e) {
-        e.preventDefault();
-        toggleCollectionInfo();
-    });
+    //$("#moreInfoToggle").click(function moreInfoToggleClick(e) {
+    //    e.preventDefault();
+    //    toggleCollectionInfo();
+    //});
 }
 
 $(document).ready(function collectionRecordReady() {

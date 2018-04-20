@@ -39,7 +39,7 @@
 
       <? /* finc-specific snippet - Begin - CK */ ?>
       <? /* Do not set to 'hidden', make table below collapse in; adapt collection_record.js to keep accordion open - CK */ ?>
-      <a id="moreInfoToggle" href="#" class="accordion-toggler" data-toggle="collapse" aria-expanded="true">
+      <a id="moreInfoToggle" href="#" class="accordion-toggler collapsed hidden" data-toggle="collapse" data-target="#collectionInfo" aria-expanded="true">
         <?=$this->transEsc('Description')?>
       </a>
     <?/* Display Main Details */?>
@@ -49,7 +49,7 @@
     ?>
     <? if (!empty($fields)): ?>
     <?/* finc: we use 'collapse in' to initially hide the content, CK */?>
-      <table id="collectionInfo" class="table table-striped collapse in" style="display: table">
+      <table id="collectionInfo" class="table table-striped collapse in">
         <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
             <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
         <? foreach ($fields as $key => $current): ?>
