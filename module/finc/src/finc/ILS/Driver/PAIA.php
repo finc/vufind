@@ -206,6 +206,11 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             $array_response = $this->paiaPostAsArray(
                 'auth/change', $post_data
             );
+        } catch (AuthException $e) {
+            return [
+                'success' => false,
+                'status' => 'errorcode_old_password_validation_error'
+            ];
         } catch (\Exception $e) {
             $this->debug($e->getMessage());
             return [
