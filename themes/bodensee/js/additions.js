@@ -180,6 +180,13 @@ function avoidEmptySearch() {
      });
 
  }
+ function duplicates() {
+     $('.duplicates-toggle').click(function(e){
+        $(this).parent().toggleClass('active');
+        $(this).children('i').toggleClass('fa-arrow-down');
+        $(this).children('i').toggleClass('fa-arrow-up');
+     }); 
+ }
 
 $(document).ready(function() {
   avoidEmptySearch();
