@@ -90,6 +90,11 @@ $config = [
                     'solr' => 'Bsz\Search\Options\Factory::getSolr'
                 ],                
             ],
+            'search_backend' => [
+                'factories' => [
+                    'Solr' => 'Bsz\Search\Factory\SolrDefaultBackendFactory',
+                ]
+            ],
             'search_results' => [
                 'abstract_factories' => ['Bsz\Search\Results\PluginFactory'],
                 'factories' => [
@@ -318,7 +323,7 @@ $config = [
             'Bsz\RecordDriver\SolrDlrmarc' => [
                 'tabs' => [
                     'Holdings' => 'HoldingsILS', 
-//                    'Volumes' => 'Volumes',
+                    'Volumes' => 'Volumes',
                     'Description' => 'Description',
                     'TOC' => 'TOC', 
                     'UserComments' => 'UserComments',

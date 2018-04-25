@@ -150,3 +150,24 @@ h4, .h4 {
 .btn-bookbag-toggle {
     list-style-type: none;
 }
+
+.duplicates.collapse {
+    margin-top: @grid-gutter-width/2;
+    .panel {
+        .panel-heading {
+            cursor: pointer;
+        }
+        
+    }
+}
+.tooltip-inner {
+    max-width: 640px;
+}
+
+.panel-group.duplicates .panel{    
+    
+    &:nth-of-type(even) {
+        background-color: @table-bg-accent;
+    }  
+}
+

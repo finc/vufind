@@ -3,7 +3,7 @@ $config = [
     'extends' => 'bootstrap3',
       'favicon' => '/themes/bodensee/images/favicon/default.ico',
     'js' => [
-        'additions.js'
+        'additions.js',
     ],     
     'helpers' => [
         'factories' => [
