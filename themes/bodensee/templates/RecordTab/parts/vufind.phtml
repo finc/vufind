@@ -1,4 +1,4 @@
->? // this files contains the original ils output code from vufind 4.1 - it's not usey by BSZ, as too complicated to maintain?>
+<? // this files contains the original ils output code from vufind 4.1 - it's not usey by BSZ, as too complicated to maintain?>
 
 <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
 <tr>
@@ -26,7 +26,6 @@
     </td>
   </tr>
 <? endforeach; endif; ?>
-<?
 <? foreach ($holding['items'] as $row): ?>
 // AJAX Check record?
 $check = isset($row['check']) && $row['check'];

@@ -904,14 +904,19 @@ class SolrGvimarc extends SolrMarc
         return isset($this->fields['long_lat']) ? $this->fields['long_lat'] : false;
     }
 
+
     /**
-     * Get information on records deduplicated with this one
-     *
-     * @return array Array keyed by source id containing record id
+     * 
+     * @return string
      */
-    public function getDedupData()
-    {
-        return isset($this->fields['dedup_data']) ? $this->fields['dedup_data'] : array();
+    public function getGroupField()
+    {   
+        $conf = $this->client->get('Index')->get('group.field');
+        if (is_string($conf) && isset($this->fields[$conf])) {
+            return $this->fields[$conf];
+        }
+        return '';
+      
     }
 
     public function getBreadcrumb()
@@ -1523,6 +1528,30 @@ class SolrGvimarc extends SolrMarc
         }
         return false;
     }
+
+    /**
+     * Dedup Functions
+     *
+     * @return boolean
+     */
+    
+    public function isSubRecord() 
+    {
+        return isset($this->fields['_isSubRecord']) ? $this->fields['_isSubRecord'] : false;
+    }
+    
+    public function getSubRecords() 
+    {
+        return isset($this->fields['_subRecords']) ? $this->fields['_subRecords'] : null;
+    }
+    
+    public function hasSubRecords() 
+    {
+        if (null !== ($collection = $this->getSubRecords())) {
+            return 0 < $collection->count();
+        }
+        return false;
+    }    
 
 
 }
