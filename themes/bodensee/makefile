@@ -18,7 +18,7 @@ clean:
 	make all
 css/%.css: less/%.less 
 	lessc -s -M '$<' '$@' > 'make/$*.d'
-	lessc -s $< --clean-css="--s0" --source-map="$@.map" $@
+	lessc -s $< --clean-css="--s0 --advanced" --source-map="$@.map" $@
 -include $(DEPEND)
 all: $(TARGETS)
 
