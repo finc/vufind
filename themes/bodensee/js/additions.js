@@ -212,4 +212,5 @@ $(document).ready(function() {
   remoteModal();
   duplicates();
   showmore();
+  $('[data-toggle="popover"]').popover(); 
 });
