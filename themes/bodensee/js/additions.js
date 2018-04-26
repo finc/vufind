@@ -212,5 +212,7 @@ $(document).ready(function() {
   remoteModal();
   duplicates();
   showmore();
-  $('[data-toggle="popover"]').popover(); 
+  $('[data-toggle="popover"]').popover({
+      trigger: 'click focus',
+  }); 
 });
