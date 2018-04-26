@@ -1,3 +1,17 @@
+/*
+ * showmore links
+ * @returns {undefined}
+ */
+function showmore() {
+    $('.showmore').click(function(e) {
+        var id = $(this).attr('id').split('-')[1];
+        $('#showmore-items-'+id+' .showmore-item').removeClass('hidden');
+        $(this).remove();
+        e.preventDefault();
+        return false;
+    })
+}
+
 function bootstrapTooltip() {
 
       $('[data-toggle="tooltip"]').tooltip({
@@ -197,4 +211,5 @@ $(document).ready(function() {
   keyboardShortcuts();
   remoteModal();
   duplicates();
+  showmore();
 });

@@ -27,7 +27,7 @@
             <? endforeach; ?>
         <? else: ?>                
             <? foreach ($field as $subfield): ?>
-            <a class="searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
+            <a class="searchicon showmore-item <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
               <? $count++ ?>
             <? endforeach; ?>
         <? endif; ?>
