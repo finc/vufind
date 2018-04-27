@@ -711,7 +711,7 @@ class RecordDataFormatterFactory
         $spec->setTemplateLine(
             'German Prints Index Number',
             'getIndexOfGermanPrints',
-            'data-publicationDetails.phtml'
+            'data-indexOfGermanPrints.phtml'
         );
         $spec->setTemplateLine(
             'Set Multipart',
