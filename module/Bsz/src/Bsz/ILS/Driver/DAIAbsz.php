@@ -56,6 +56,13 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
      */
     protected $holdings = [];
     
+    /**
+     * Flag to enable multiple DAIA-queries
+     *
+     * @var bool
+     */
+    protected $multiQuery = false;
+    
     public function __construct(\VuFind\Date\Converter $converter, $isil, $baseUrl = '') {
         $this->dateConverter = $converter;
         $this->isil = $isil;

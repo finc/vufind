@@ -35,6 +35,13 @@ use Zend\ServiceManager\ServiceManager;
  */
 class DAIA extends DAIAbsz
 {
+    /**
+     * Flag to enable multiple DAIA-queries
+     *
+     * @var bool
+     */
+    protected $multiQuery = false;
+    
 
     /**
      * Perform an HTTP request.
