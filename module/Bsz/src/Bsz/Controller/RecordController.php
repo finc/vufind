@@ -28,6 +28,7 @@
 namespace Bsz\Controller;
 use VuFind\RecordDriver\AbstractBase as AbstractRecordDriver;
 use Zend\View\Model\ViewModel;
+use \VuFind\Log\Logger;
 
 /**
  * This class was created to make a default record tab behavior possible
@@ -95,6 +96,7 @@ class RecordController extends \VuFind\Controller\RecordController
         $this->baseUrl = $this->isTestMode() ? $config->get('baseurl_test') :
                 $config->get('baseurl_live');
 
+        $this->log->log(Logger::DEBUG, 'BaseURL for ILL-Request: '.$this->baseUrl);
         $params = $this->params()->fromPost();
         
         $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
@@ -137,7 +139,9 @@ class RecordController extends \VuFind\Controller\RecordController
                             ->setParameterPost($params)
                             ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
                     $response = $client->send();
-                    // Parse response HTML
+                    
+                    $this->log->log(Logger::DEBUG, 'flauftrag.pl query string:');
+                    $this->log->log(Logger::DEBUG, http_build_query($client->getRequest()->getQuery()));
                     $dom = new \Zend\Dom\Query($response->getContent());
                     $message = $dom->queryXPath('ergebnis')->getDocument();
                     $success = $this->parseResponse($message);
@@ -297,6 +301,10 @@ class RecordController extends \VuFind\Controller\RecordController
 
             try {
                 $xml = simplexml_load_string($response->getContent());
+                
+                $this->log->log(Logger::DEBUG, 'endnutzer_auth.pl query string:');
+                $this->log->log(Logger::DEBUG, http_build_query($client->getRequest()->getQuery()));
+
             } catch (\Exception $ex) {
                 $this->log->logException($ex, $this->getRequest()->getServer());
                 $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
@@ -304,6 +312,7 @@ class RecordController extends \VuFind\Controller\RecordController
             return (isset($xml->status) && $xml->status == 'FLOK');            
         } else {
             $this->FlashMessenger()->addErrorMessage('ill_request_error_blocked');
+            $this->log->logException('ILL request blocked. Firewall? ');
             return false;
         }
     }
@@ -328,7 +337,11 @@ class RecordController extends \VuFind\Controller\RecordController
                 preg_match_all('/(Fehler \([a-zA-z]*\): )(.*)/', $html->textContent, $matches);
                 $msgText = end($matches);
                 $msgText = array_shift($msgText);
-                $this->FlashMessenger()->addInfoMessage($msgText);
+                $this->FlashMessenger()->addInfoMessage($msgText);        
+                
+                if (empty($msgText)) {
+                    $this->log->log(Logger::DEBUG, $html->textContent);                    
+                }
                 error_reporting($error_reporting);
             } catch (\Exception $ex) {
                 $this->FlashMessenger()->addErrorMessage('ill_request_submit_failure');
