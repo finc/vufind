@@ -28,11 +28,16 @@
 namespace Bsz\Controller;
 use VuFind\RecordDriver\AbstractBase as AbstractRecordDriver;
 use Zend\View\Model\ViewModel;
+use Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
+use Zend\Config\Config as Config;
+use Zend\ServiceManager\ServiceManager as ServiceManager;
+
 
 /**
  * This class was created to make a default record tab behavior possible
  */
-class RecordController extends \VuFind\Controller\RecordController
+class RecordController extends \VuFind\Controller\RecordController 
+    implements LoggerAwareInterface 
 {
     use \VuFind\Controller\HoldsTrait;
     use \VuFind\Controller\ILLRequestsTrait;
@@ -40,6 +45,19 @@ class RecordController extends \VuFind\Controller\RecordController
     use \VuFind\Log\LoggerAwareTrait;
     
     const TIMEOUT = 30;
+    
+        /**
+     * Constructor
+     *
+     * @param ServiceLocatorInterface $sm     Service manager
+     * @param Config                  $config VuFind configuration
+     */
+    public function __construct(ServiceManager $sm, Config $config)
+    {
+        parent::__construct($sm, $config);
+        // Don't know how this can be dont using Traits, eg. at the DAIA class. 
+        $this->logger = $sm->get('vufind\logger');
+    }
     
      /**
      * Default tab for Solr is holdings, excepts its a collection, then volumes. 
