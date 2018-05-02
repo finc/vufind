@@ -28,7 +28,6 @@
 namespace Bsz\Controller;
 use VuFind\RecordDriver\AbstractBase as AbstractRecordDriver;
 use Zend\View\Model\ViewModel;
-use \VuFind\Log\Logger;
 
 /**
  * This class was created to make a default record tab behavior possible
@@ -38,6 +37,7 @@ class RecordController extends \VuFind\Controller\RecordController
     use \VuFind\Controller\HoldsTrait;
     use \VuFind\Controller\ILLRequestsTrait;
     use \VuFind\Controller\StorageRetrievalRequestsTrait;
+    use \VuFind\Log\LoggerAwareTrait;
     
     const TIMEOUT = 30;
     
@@ -92,11 +92,10 @@ class RecordController extends \VuFind\Controller\RecordController
         // panels
         $success = null;
         $this->driver = $this->loadRecord();
-        $this->log = $this->getServiceLocator()->get('vufind\logger');
         $this->baseUrl = $this->isTestMode() ? $config->get('baseurl_test') :
                 $config->get('baseurl_live');
 
-        $this->log->log(Logger::DEBUG, 'BaseURL for ILL-Request: '.$this->baseUrl);
+        $this->debug('BaseURL for ILL-Request: '.$this->baseUrl);
         $params = $this->params()->fromPost();
         
         $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
@@ -140,13 +139,13 @@ class RecordController extends \VuFind\Controller\RecordController
                             ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
                     $response = $client->send();
                     
-                    $this->log->log(Logger::DEBUG, 'flauftrag.pl query string:');
-                    $this->log->log(Logger::DEBUG, http_build_query($client->getRequest()->getQuery()));
+                    $this->debug('flauftrag.pl query string:');
+                    $this->debug(http_build_query($client->getRequest()->getQuery()));
                     $dom = new \Zend\Dom\Query($response->getContent());
                     $message = $dom->queryXPath('ergebnis')->getDocument();
                     $success = $this->parseResponse($message);
                 } catch (\Exception $ex) {
-                    $this->log->logException($ex, $this->getRequest()->getServer());
+                    $this->logError($ex->getMessage());
                     $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
                 }
             } else { // wrong credentials
@@ -302,17 +301,17 @@ class RecordController extends \VuFind\Controller\RecordController
             try {
                 $xml = simplexml_load_string($response->getContent());
                 
-                $this->log->log(Logger::DEBUG, 'endnutzer_auth.pl query string:');
-                $this->log->log(Logger::DEBUG, http_build_query($client->getRequest()->getQuery()));
+                $this->debug('endnutzer_auth.pl query string:');
+                $this->debug(http_build_query($client->getRequest()->getQuery()));
 
             } catch (\Exception $ex) {
-                $this->log->logException($ex, $this->getRequest()->getServer());
+                $this->logError($ex->getMessage());
                 $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
             }
             return (isset($xml->status) && $xml->status == 'FLOK');            
         } else {
             $this->FlashMessenger()->addErrorMessage('ill_request_error_blocked');
-            $this->log->logException('ILL request blocked. Firewall? ');
+            $this->logError('ILL request blocked. Firewall? ');
             return false;
         }
     }
@@ -340,7 +339,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 $this->FlashMessenger()->addInfoMessage($msgText);        
                 
                 if (empty($msgText)) {
-                    $this->log->log(Logger::DEBUG, $html->textContent);                    
+                    $this->debug($html->textContent);                    
                 }
                 error_reporting($error_reporting);
             } catch (\Exception $ex) {
