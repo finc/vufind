@@ -148,22 +148,22 @@ class RecordController extends \VuFind\Controller\RecordController
                 
                 // send real order
                 $client = new \Zend\Http\Client();
-                try {
-                    $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
-                            ->setUri($this->baseUrl . "/flcgi/pflauftrag.pl")
-                            ->setMethod('POST')
-                            ->setOptions(['timeout' => static::TIMEOUT])
-                            ->setParameterPost($params)
-                            ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
-                    $response = $client->send();
-                    
-                    $this->debug('flauftrag.pl query string:');
-                    $this->debug($client->getRequest()->toString());
+                $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
+                        ->setUri($this->baseUrl . "/flcgi/pflauftrag.pl")
+                        ->setMethod('POST')
+                        ->setOptions(['timeout' => static::TIMEOUT])
+                        ->setParameterPost($params)
+                        ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
+                $this->debug('flauftrag.pl query string:');
+                $this->debug($client->getRequest()->toString());
+                $response = $client->send();
+                
+                try {                    
                     $dom = new \Zend\Dom\Query($response->getContent());
                     $message = $dom->queryXPath('ergebnis')->getDocument();
-                    $success = $this->parseResponse($message);
+                    $success = $this->parseResponse($message);    
+
                 } catch (\Exception $ex) {
-                    $this->logError($ex->getMessage());
                     $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
                 }
             } else { // wrong credentials
@@ -354,10 +354,13 @@ class RecordController extends \VuFind\Controller\RecordController
                 preg_match_all('/(Fehler \([a-zA-z]*\): )(.*)/', $html->textContent, $matches);
                 $msgText = end($matches);
                 $msgText = array_shift($msgText);
-                $this->FlashMessenger()->addInfoMessage($msgText);        
+                
+                if (!empty($msgText)) {
+                    $this->FlashMessenger()->addInfoMessage($msgText);                            
+                }
                 
                 if (empty($msgText)) {
-                    $this->debug($html->textContent);                    
+                    $this->debug($html);                    
                 }
                 error_reporting($error_reporting);
             } catch (\Exception $ex) {
