@@ -158,7 +158,7 @@ class RecordController extends \VuFind\Controller\RecordController
                     $response = $client->send();
                     
                     $this->debug('flauftrag.pl query string:');
-                    $this->debug(http_build_query($client->getRequest()->getQuery()));
+                    $this->debug($client->getRequest()->toString());
                     $dom = new \Zend\Dom\Query($response->getContent());
                     $message = $dom->queryXPath('ergebnis')->getDocument();
                     $success = $this->parseResponse($message);
@@ -320,7 +320,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 $xml = simplexml_load_string($response->getContent());
                 
                 $this->debug('endnutzer_auth.pl query string:');
-                $this->debug(http_build_query($client->getRequest()->getQuery()));
+                $this->debug($client->getRequest()->toString());
 
             } catch (\Exception $ex) {
                 $this->logError($ex->getMessage());
