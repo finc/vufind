@@ -159,7 +159,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 $response = $client->send();
                 
                 try {                    
-                    $dom = new \Zend\Dom\Query($response->getContent());
+                    $dom = new \Zend\Dom\Query($response->getBody());
                     $message = $dom->queryXPath('ergebnis')->getDocument();
                     $success = $this->parseResponse($message);    
 
@@ -317,7 +317,7 @@ class RecordController extends \VuFind\Controller\RecordController
             $response = $client->send();
 
             try {
-                $xml = simplexml_load_string($response->getContent());
+                $xml = simplexml_load_string($response->getBody());
                 
                 $this->debug('endnutzer_auth.pl query string:');
                 $this->debug($client->getRequest()->toString());

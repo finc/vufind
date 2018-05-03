@@ -89,6 +89,7 @@ class TestController extends \VuFind\Controller\AbstractBase {
             'MaxKostenKopie' =>  '8',
             'Bemerkung' =>  '',
             'BenutzerNummer' =>  '09011551',
+            // 'Password' => 'Password'
             'Verbund' =>  'SWB',
             'TitelId' =>  '479128995',
             'Besteller' =>  'E',
@@ -97,11 +98,10 @@ class TestController extends \VuFind\Controller\AbstractBase {
         $urlsToTest = [
             "https://fltest.bsz-bw.de/flcgi/pflauftrag.pl",
             "https://zfls-test.bsz-bw.de/flcgi/pflauftrag.pl",
-            'https://git.bsz-bw.de'
         ];
         foreach ($urlsToTest as $uri)
         {
-            echo '<h2>Testing: '.$uri;
+            echo '<h2>Testing: '.$uri.'</h2>';
             if (Debug::isInternal()) {
                 $client = new Client();
                 $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
@@ -109,9 +109,11 @@ class TestController extends \VuFind\Controller\AbstractBase {
                     ->setMethod('POST')
                     ->setOptions(['timeout' => 5])
                     ->setParameterPost($params)
+                    // Schluck, ein Passwort im Code :-/
+                    ->setAuth("boss", "password here");
 
                 $response = $client->send();
-                var_dump($response->getContent());
+                var_dump($response->getBody());
             }
         }
 
