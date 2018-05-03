@@ -112,6 +112,8 @@ class RecordController extends \VuFind\Controller\RecordController
         $this->driver = $this->loadRecord();
         $this->baseUrl = $this->isTestMode() ? $config->get('baseurl_test') :
                 $config->get('baseurl_live');
+        $this->baseUrlAuth = $this->isTestMode() ? $config->get('baseurl_auth_test') :
+                $config->get('baseurl_auth_live');
 
         $this->debug('BaseURL for ILL-Request: '.$this->baseUrl);
         $params = $this->params()->fromPost();
@@ -303,7 +305,7 @@ class RecordController extends \VuFind\Controller\RecordController
             }
             $client = new \Zend\Http\Client();
             $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
-                    ->setUri($this->baseUrl . '/flcgi/endnutzer_auth.pl')
+                    ->setUri($this->baseUrlAuth . '/flcgi/endnutzer_auth.pl')
                     ->setMethod('POST')
                     ->setParameterPost([
                         'sigel' => $params['Sigel'],
