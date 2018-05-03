@@ -32,16 +32,20 @@ class Debug  {
      * @return boolean
      */
     public static function isInternal() {
-        $allowedIps = [];
+        
         $status = false;
+        
+        $allowedIps = [];
         $allowedIps[] = '193.197.29.*';    
         $allowedIps[] = '193.197.31.*';    
         $allowedIps[] = '10.250.6.*';
         $allowedIps[] = '10.250.5.*';        
         $allowedIps[] = '10.250.4.*';        
         $allowedIps[] = '127.0.0.1';
-        $allowedIps[] = '::1';
+        // Uwe Reh
+        $allowedIps[] = '141.2.164.*';
         
+        $allowedIps[] = '::1';        
         
         foreach ($allowedIps as $key => $ip) {
             // replace dots for regex use
@@ -57,40 +61,21 @@ class Debug  {
         }
         return $status;
     }
+   
     /**
-     * Prints variables (only if internal IP)
-     * @param mixed $content
+     * Determin if running on Test Server
+     * @return boolean
      */
-    public static function dump($content = '') {
-        if(static::isInternal()) {
-            $backtrace= debug_backtrace();
-            $debug = array_shift($backtrace);
-            $unit=array('b','kb','mb','gb','tb','pb');
-            $usage = memory_get_usage();
-            $mem = round($usage/pow(1024,($i=floor(log($usage,1024)))),2).' '.$unit[$i];
-            echo '<pre style="background-color: #FFF68F; padding: 5px;">';
-            echo '<div style="font-size: 90%;">';
-            echo '<b>File:</b> '.  $debug['file']."\n";
-            echo '<b>Line:</b> '.$debug['line']."  ";
-            echo '<b>Memory:</b> '.$mem."\n";
-            echo '</div>';
-            echo var_dump($content);             
-            echo '</pre>';
-        }
-    }
-    
     
     public static function isDev() {
          if(isset($_SERVER['HTTP_HOST'])) {
             $host = strtolower($_SERVER['HTTP_HOST']);
-            if(strpos($host, 'boss2test') !== FALSE) {
+            if(strpos($host, 'boss2test') !== FALSE ||
+                   strpos($host, 'bosstest') !== FALSE ) {
                 return true;
-            }
-            else 
-            {
-                return false;
-            }
+            } 
         }
+        return false;
     }
 
 }
