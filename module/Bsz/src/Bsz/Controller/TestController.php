@@ -19,6 +19,8 @@
  */
 
 namespace Bsz\Controller;
+use Bsz\Debug;
+use Zend\Http\Client;
 
 /**
  * Hier kann man alles testen
@@ -58,9 +60,63 @@ class TestController extends \VuFind\Controller\AbstractBase {
     }
     
     public function phpinfoAction() {
-        if (\Bsz\Debug::isInternal()) {
+        if (Debug::isInternal()) {
             phpinfo();
         }
         return $this->getResponse();
+    }
+    
+    public function zflAction() {        
+        
+        
+        $params = [
+            'Verfasser' =>  '',
+            'Titel' =>  'BSZ-Testtitel',
+            'Untertitel' =>  '',
+            'Auflage' =>  '',
+            'Verlag' =>  'Springer-Verlag <Berlin; Heidelberg>',
+            'EOrt' =>  'Konstanz',
+            'EJahr' =>  '2015',
+            'BandTitel' =>  '',
+            'Isbn' =>  '',
+            'AufsatzAutor' =>  '',
+            'AufsatzTitel' =>  '',
+            'Seitenangabe' =>  '',
+            'Bestellform' =>  'Leihen',
+            'Sigel' =>  'Kon 4',
+            'ErledFrist' =>  '2018-08-11',
+            'AndereAuflage' =>  'on',
+            'MaxKostenKopie' =>  '8',
+            'Bemerkung' =>  '',
+            'BenutzerNummer' =>  '09011551',
+            'Verbund' =>  'SWB',
+            'TitelId' =>  '479128995',
+            'Besteller' =>  'E',
+        ];
+       
+        $urlsToTest = [
+            "https://fltest.bsz-bw.de/flcgi/pflauftrag.pl",
+            "https://zfls-test.bsz-bw.de/flcgi/pflauftrag.pl",
+            'https://git.bsz-bw.de'
+        ];
+        foreach ($urlsToTest as $uri)
+        {
+            echo '<h2>Testing: '.$uri;
+            if (Debug::isInternal()) {
+                $client = new Client();
+                $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
+                    ->setUri($uri)
+                    ->setMethod('POST')
+                    ->setOptions(['timeout' => 5])
+                    ->setParameterPost($params)
+
+                $response = $client->send();
+                var_dump($response->getContent());
+            }
+        }
+
+    //avoid any templates being processed
+    return $this->getResponse();
+        
     }
 }
