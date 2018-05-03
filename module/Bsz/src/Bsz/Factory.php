@@ -34,7 +34,7 @@ class Factory {
      * @return \Bsz\Theme\ThemeInfo
      */
     public static function getThemeInfo(ServiceManager $sm) {
-        $Client = $sm->get('bsz\client');
+        $Client = $sm->get('bsz\config\client');
         return new Theme\ThemeInfo(realpath(__DIR__ . '/../../../../themes'), 'bootprint3', $Client);
     }
     /**
@@ -45,7 +45,6 @@ class Factory {
      */
     public static function getHolding(ServiceManager $sm) {        
         return new \Bsz\Holding($sm->get('VuFind\SearchRunner'));
-    }
-    
+    }   
     
 }
