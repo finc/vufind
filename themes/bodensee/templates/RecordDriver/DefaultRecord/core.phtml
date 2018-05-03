@@ -40,8 +40,10 @@
            $title = $this->driver->getTitle();
            $subtitle = $this->driver->getTitleSection();
         ?>
-        <h3 property="name">  
-        <?=$this->escapeHtml($title)?> <small><?=$this->string()->cleanEsc($subtitle)?></small></h3>
+        <h3 property="name">
+        <?=$this->escapeHtml($title)?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
+        <?=$this->render('RecordDriver/DefaultRecord/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
+        </h3>
 
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>
           <? /* Display the lists that this record is saved to */ ?>
