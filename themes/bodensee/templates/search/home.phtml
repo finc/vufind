@@ -63,7 +63,7 @@ JS;
       </div>      
   </div>
   <div class="row">   
-      <div class="col-md-12">
+      <div class="col-md-12">          
           <? if(($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>          
             <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>         
           <? elseif($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
@@ -80,7 +80,7 @@ JS;
               <?=$this->partial('bsz/illdropdown.phtml')?></a>
           <? endif; ?>
      
-          
+          <?=$this->flashmessages()?>
         </div>
   </div>
   <? if($this->client()->is('list_of_clients')): ?>

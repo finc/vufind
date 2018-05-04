@@ -403,6 +403,13 @@ class Client extends \Zend\Config\Config
     public function getHelpGroups()
     {
         return $this->get('Help')->get('groups');
-    }        
+    }   
+    
+    public function getMaintenanceMessage() {
+        if (defined('MAINTENANCE_MODE')) {
+            return getenv('MAINTENANCE_MODE');
+        }
+        return '';
+    }
 }
 

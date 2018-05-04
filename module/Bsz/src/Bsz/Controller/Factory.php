@@ -42,5 +42,14 @@ class Factory {
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }
+    public static function getSearchController(ServiceManager $sm)
+    {
+        return new SearchController(
+            $sm->getServiceLocator(),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        );
+    }
+    
+    
 }
 
