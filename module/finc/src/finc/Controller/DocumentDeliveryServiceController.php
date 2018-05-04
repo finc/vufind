@@ -224,8 +224,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
         try {
             // Send Email
             $mailer = new Mailer(
-                $this->getServiceLocator()
-                    ->get('VuFind\Mailer')->getTransport()
+                $this->serviceLocator->get('VuFind\Mailer')->getTransport()
             );
             $mailer->sendTextHtml(
                 $email['to'],
@@ -460,7 +459,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
      */
     protected function createHttpClient()
     {
-        return $this->getServiceLocator()->get('VuFind\Http')->createClient();
+        return $this->serviceLocator->get('VuFind\Http')->createClient();
     }
 
     /**
@@ -519,7 +518,8 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
                 case 'email':
                     $this->content[$attribute] =
                         (isset($user['email']) && strlen($user['email']) > 0)
-                            ? $user['email'] : $post[$attribute];
+                            ? $user['email']
+                            : (isset($post[$attribute]) ? $post[$attribute] : '');
                     break;
                 case 'inputdepartment':
                     $this->content[$attribute] =
@@ -533,12 +533,14 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
                 case 'username':
                     $this->content[$attribute] =
                         (isset($user['username']) && strlen($user['username']) > 0)
-                            ? trim($user['username']) : trim($post[$attribute]);
+                            ? trim($user['username'])
+                            : trim(isset($post[$attribute]) ? $post[$attribute] : '');
                     break;
                 case 'userid':
                     $this->content[$attribute] =
                         (isset($user['libraryCard']) && strlen($user['libraryCard']) > 0)
-                            ? $user['libraryCard'] : $post[$attribute];
+                            ? $user['libraryCard']
+                            : (isset($post[$attribute]) ? $post[$attribute] : '');
                     break;
                 default:
                     if (!isset($this->content[$attribute])) {
@@ -922,16 +924,22 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
 
         try {
             if (false === isset($this->config['DDS']['url'])) {
-                throw new DDSException('Set of url in [DDS] DDS.ini is binding.');
+                throw new DDSException(
+                    'Set of url in [DDS] DDS.ini is binding.'
+                );
             }
             $api_url = $this->config['DDS']['url'];
             if (false === isset($this->config['DDS']['ns'])) {
-                throw new DDSException('Set of namespace ns in [DDS] DDS.ini is binding.');
+                throw new DDSException(
+                    'Set of namespace ns in [DDS] DDS.ini is binding.'
+                );
             }
             $api_ns = $this->config['DDS']['ns'];
 
             $client = $this->createHttpClient();
-            $client->setUri($api_url . DIRECTORY_SEPARATOR . $api_ns . $request_path);
+            $client->setUri(
+                $api_url . DIRECTORY_SEPARATOR . $api_ns . $request_path
+            );
             $client->setMethod($request_type);
             $client->setRawBody($data);
             $client->setHeaders(
@@ -985,7 +993,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
         if (isset($responseArray['error'])) {
             throw new DDSException(
                 $responseArray['error'],
-                $responseArray['code']
+                isset($responseArray['code']) ? $responseArray['code'] : 400
             );
         }
         return $responseArray;

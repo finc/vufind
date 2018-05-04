@@ -1,5 +1,5 @@
 <!-- finc - documentdeliveryservice - form -->
-<div class="row">
+
   <div class="<?=$this->layoutClass('mainbody')?>">
     <h2><?=$this->transEsc('DDS::dds_form_headline')?></h2>
     <?=$this->flashmessages()?>
@@ -7,7 +7,6 @@
       <? if ($this->department): ?>
         <input type="hidden" name="subito[hdepartment]" value="<?=$this->department?>"/>
       <? endif; ?>
-      <fieldset>
         <legend><?=$this->transEsc("DDS::dds_form_delivery_data")?>:</legend>
         <!-- name -->
         <div class="form-group">
@@ -83,9 +82,7 @@
           <label class="inline control-label" for="smdepartment"><?=$this->transEsc("DDS::form_field_department")?>:*</label>
             <input type="text" id="smdepartment" name="subito[inputdepartment]" class="form-control" <?=(!empty($this->inputdepartment) ? 'value="' . $this->inputdepartment . '"' : '')?>/>
         </div>
-      </fieldset>
 
-      <fieldset>
         <legend><?=$this->transEsc("DDS::dds_form_details_ordered_title")?>:</legend>
         <!-- author -->
         <div class="form-group">
@@ -167,14 +164,10 @@
           <? endif; ?>
           <textarea id="sremarks" name="subito[remarks]" class="form-control"><?=(!empty($this->remarks) ? $this->remarks : '')?></textarea>
         </div>
-        <div class="form-group">
-          <div class="col-sm-9">
-            <input role="button" type="submit" class="btn btn-primary right" value="<?=$this->transEsc("DDS::form_button_submit")?>"/>
-          </div>
-        </div>
-      </fieldset>
+    <input role="button" type="submit" class="btn btn-primary" value="<?=$this->transEsc("DDS::form_button_submit")?>"/>
+
     </form>
-    <div class="subito-pg">
+  <div class="subito-pg margin-t">
       <?=$this->transEsc("DDS::dds_text_questions")?>
       <a href="mailto:info@ub.uni-leipzig.de?subject=<?=$this->transEsc("Dokumentenlieferdienst")?>">info@ub.uni-leipzig.de</a>
     </div>
@@ -190,7 +183,7 @@
         * <?=$this->transEsc("DDS::dds_text_mandatory_fields")?></p>
     </div>
   </div>
-</div>
+
 <?
 $this->inlineScript()->captureStart();
 echo <<<JS
