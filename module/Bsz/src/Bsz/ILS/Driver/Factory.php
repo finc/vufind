@@ -72,5 +72,18 @@ class Factory
         $converter = $sm->getServiceLocator()->get('VuFind\DateConverter');
         return new DAIA($converter, $isils, $baseUrl);
     }
+        /**
+     * Factory for NoILS driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return NoILS
+     */
+    public static function getNoILS(ServiceManager $sm)
+    {
+        return new NoILS($sm->getServiceLocator()->get('VuFind\RecordLoader'));
+    }
+
+    
 
 }

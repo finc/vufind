@@ -112,6 +112,7 @@ $config = [
                 'factories' => [
                     'daiabsz' => 'Bsz\ILS\Driver\Factory::getDAIAbsz',
                     'daia' => 'Bsz\ILS\Driver\Factory::getDAIA',
+                    'noils' => 'Bsz\ILS\Driver\Factory::getNoILS',
                 ]
             ],
             'resolver_driver' => [
