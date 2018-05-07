@@ -324,7 +324,33 @@ class DAIA extends DAIAbsz
             }
         }
         return $unavailable;
-    }   
+    } 
+    
+        /**
+     * Get Hold Link
+     *
+     * The goal for this method is to return a URL to a "place hold" web page on
+     * the ILS OPAC. This is used for ILSs that do not support an API or method
+     * to place Holds.
+     * 
+     * Switch to mobile version of OPAC
+     *
+     * @param string $id      The id of the bib record
+     * @param array  $details Item details from getHoldings return array
+     *
+     * @return string         URL to ILS's OPAC's place hold screen.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getHoldLink($id, $details)
+    {
+        $link = null;
+        if (isset($details['ilslink']) && $details['ilslink'] != '') {
+            $link = str_replace('SOPAC', 'SMOPAC', $details['ilslink']);
+            $details['ilslink'] = $link;
+        }
+        return $details['ilslink'];
+    }
 
 
 
