@@ -39,7 +39,7 @@ class HoldingsILS extends \VuFind\RecordTab\HoldingsILS
      * @return bool
      */
     public function isActive()
-    {
+    {        
         if ($this->catalog && $this->catalog->hasHoldings($this->driver->getUniqueID())) {
             return true;
         } elseif ($this->driver->tryMethod('hasLocalHoldings')) {

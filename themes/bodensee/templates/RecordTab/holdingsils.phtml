@@ -46,6 +46,7 @@
  <? $recallButtonCounter = 0 ?>
 <? foreach ($holdings['holdings'] as $holding): ?>
 <h3>
+    
   <? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
   <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
     <a href="<?=$holding['locationhref']?>" target="_blank"><?=$locationText?></a>
@@ -69,7 +70,12 @@
     <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIAbsz'): // start of old DAIA code ?>    
         <?=$this->render('RecordTab/parts/olddaia.phtml', ['row' => $row, 'driver' => $this->driver])?> 
     <? else: ?>
-        <?=$this->render('RecordTab/parts/vufind.phtml', ['row' => $row, 'driver' => $this->driver])?> 
+        <?=$this->render('RecordTab/parts/vufind.phtml', [
+            'row' => $row, 
+            'driver' => $this->driver, 
+            'tab' => $this->tab,
+            'holding' => $holding
+                ])?> 
     <? endif; // End of old DAIA code ?>
     
   <? endforeach; ?>

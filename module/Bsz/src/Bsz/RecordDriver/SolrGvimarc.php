@@ -1552,6 +1552,20 @@ class SolrGvimarc extends SolrMarc
         }
         return false;
     }    
+    
+        /**
+     * Get Status/Holdings Information from the internally stored MARC Record
+     * (support method used by the NoILS driver).
+     *
+     * @param array $field The MARC Field to retrieve
+     * @param array $data  A keyed array of data to retrieve from subfields
+     *
+     * @return array
+     */
+    public function getFormattedMarcDetails($field, $data)
+    {
+        return parent::getFormattedMarcDetails($field, $data);
+    }
 
 
 }

@@ -81,7 +81,8 @@ class Factory
      */
     public static function getNoILS(ServiceManager $sm)
     {
-        return new NoILS($sm->getServiceLocator()->get('VuFind\RecordLoader'));
+        $libraries = $sm->getServiceLocator()->get('bsz\config\libraries');
+        return new NoILS($sm->getServiceLocator()->get('VuFind\RecordLoader'), $libraries);
     }
 
     
