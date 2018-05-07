@@ -351,6 +351,57 @@ class DAIA extends DAIAbsz
         }
         return $details['ilslink'];
     }
+    
+    /**
+     * Initialize the driver.
+     *
+     * Validate configuration and perform all resource-intensive tasks needed to
+     * make the driver active.
+     *
+     * @throws ILSException
+     * @return void
+     */
+    public function init()
+    {
+        if (isset($this->config['DAIA']['baseUrl']) && !isset($this->baseUrl)) {
+            $this->baseUrl = $this->config['DAIA']['baseUrl'];
+        } elseif (isset($this->config['Global']['baseUrl'])) {
+            throw new ILSException(
+                'Deprecated [Global] section in DAIA.ini present, but no [DAIA] ' .
+                'section found: please update DAIA.ini (cf. config/vufind/DAIA.ini).'
+            );
+        } else {
+            throw new ILSException('DAIA/baseUrl configuration needs to be set.');
+        }
+        var_dump($This->baseUrl);
+        if (isset($this->isil) && strpos($this->baseUrl, '%s') !== FALSE) {
+            $this->baseUrl = sprintf($this->baseUrl, array_shift($this->isil));
+        }         
+        if (isset($this->config['DAIA']['daiaResponseFormat'])) {
+            $this->daiaResponseFormat = strtolower(
+                $this->config['DAIA']['daiaResponseFormat']
+            );
+        } else {
+            $this->debug('No daiaResponseFormat setting found, using default: xml');
+            $this->daiaResponseFormat = 'xml';
+        }
+        if (isset($this->config['DAIA']['daiaIdPrefix'])) {
+            $this->daiaIdPrefix = $this->config['DAIA']['daiaIdPrefix'];
+        } else {
+            $this->debug('No daiaIdPrefix setting found, using default: ppn:');
+            $this->daiaIdPrefix = 'ppn:';
+        }
+        if (isset($this->config['DAIA']['multiQuery'])) {
+            $this->multiQuery = $this->config['DAIA']['multiQuery'];
+        } else {
+            $this->debug('No multiQuery setting found, using default: false');
+        }
+        if (isset($this->config['DAIA']['daiaContentTypes'])) {
+            $this->contentTypesResponse = $this->config['DAIA']['daiaContentTypes'];
+        } else {
+            $this->debug('No ContentTypes for response defined. Accepting any.');
+        }
+    }
 
 
 
