@@ -20,7 +20,7 @@ class SearchController extends \VuFind\Controller\SearchController
         $view = parent::homeAction();
         $msg = getenv('MAINTENANCE_MODE');
         if ($msg != '') {
-            $this->FlashMessenger()->addErrorMessage($msg);
+            $this->FlashMessenger()->addWarningMessage($msg);
         }
         return $view;
     }
