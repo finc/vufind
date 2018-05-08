@@ -652,7 +652,8 @@ class SolrGvimarc extends SolrMarc
         $summaryCodes = ['501', '502', '515', '520'];
         $summary = [];
         foreach ($summaryCodes as $sc) {
-            $summary = array_merge($summary, $this->getFieldArray($sc, ['a']));
+            $tmp = $this->getFieldArray($sc, ['a', 'b', 'c', 'd'], true, ', ');
+            $summary = array_merge($summary, $tmp);
         }
         return $summary;
     }
