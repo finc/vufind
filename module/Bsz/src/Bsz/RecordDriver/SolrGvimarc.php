@@ -819,6 +819,14 @@ class SolrGvimarc extends SolrMarc
         }
         return $this->container;
     }
+    
+    public function getContainerId() {
+        $fields = [
+            773 => ['w'],
+        ];
+        $array = $this->getFieldsArray($fields);
+        return array_shift($array);
+    }
 
     /**
      * Returns ISXN of containing item. ISBN is preferred, if set.

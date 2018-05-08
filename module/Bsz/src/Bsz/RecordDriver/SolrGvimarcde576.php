@@ -18,7 +18,7 @@ class SolrGvimarcde576 extends SolrGvimarc
      */
     public function getContainerTitle()
     {
-        $fields = [773 => ['a', 't']];
+        $fields = [773 => ['t']];
         $array = $this->getFieldsArray($fields);
         $title = array_shift($array);
         return str_replace('In: ', '', $title);
