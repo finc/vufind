@@ -26,8 +26,9 @@
 
 namespace Bsz\ILS\Driver;
 
+use \VuFind\Exception\ILS as ILSException;
 use Zend\ServiceManager\ServiceManager;
-use DOMDocument, VuFind\Exception\ILS as ILSException;
+use DOMDocument;
 
 /**
  * Description of DAIAaDis
