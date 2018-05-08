@@ -27,6 +27,7 @@
 namespace Bsz\ILS\Driver;
 
 use Zend\ServiceManager\ServiceManager;
+use DOMDocument, VuFind\Exception\ILS as ILSException;
 
 /**
  * Description of DAIAaDis
@@ -373,7 +374,6 @@ class DAIA extends DAIAbsz
         } else {
             throw new ILSException('DAIA/baseUrl configuration needs to be set.');
         }
-        var_dump($This->baseUrl);
         if (isset($this->isil) && strpos($this->baseUrl, '%s') !== FALSE) {
             $this->baseUrl = sprintf($this->baseUrl, array_shift($this->isil));
         }         
