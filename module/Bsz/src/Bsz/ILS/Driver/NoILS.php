@@ -89,12 +89,14 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
      */
     protected function getFormattedMarcDetails($recordDriver, $configSection)
     {
-       $parent = parent::getFormattedMarcDetails($recordDriver, $configSection);
-       foreach ($parent as $k => $item) {
-           $isil = $item['location'];
-           $library = $this->libraries->getByIsil($isil);
-           $parent[$k]['location'] = $library->getName();
-           $parent[$k]['locationhref'] = $library->getHomepage();
+        $parent = parent::getFormattedMarcDetails($recordDriver, $configSection);
+        foreach ($parent as $k => $item) {
+            $isil = $item['location'];
+            $library = $this->libraries->getByIsil($isil);
+            if (isset($library)) {
+                $parent[$k]['location'] = $library->getName();
+                $parent[$k]['locationhref'] = $library->getHomepage();               
+            }
        }
 
        return $parent;
