@@ -44,6 +44,7 @@ class Debug  {
         $allowedIps[] = '127.0.0.1';
         // Uwe Reh
         $allowedIps[] = '141.2.164.*';
+        $allowedIps[] = '141.2.165.*';
         // Uwe Reh Homeoffice
 //        $allowedIps[] = gethostbyname('efflebach.selfhost.eu');
         // Stefan Lohrum
