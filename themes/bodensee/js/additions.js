@@ -42,23 +42,24 @@ function modalPopup() {
 });    
 }
 function remoteModal() {
-    $('.modal-remote').click(function(e) {
-       var url = $(this).attr('href');
-       var size = $(this).attr('data-size');
-       if(size === undefined) {
-           size = 'lg';
-       }
-       var name = $(this).attr('data-name');
-       if(name === undefined) {
-           name = "BOSS Modal";
-       }             
+    $('body').on('click', '.modal-remote', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        var size = $(this).attr('data-size');
+        if(size === undefined) {
+            size = 'lg';
+        }
+        var name = $(this).attr('data-name');
+        if(name === undefined) {
+            name = "BOSS Modal";
+        }             
 
-       var html = '<iframe width="100%" style="min-height: 600px;" src="'+url+'" seamless="seamless" name="'+name+'"></iframe>';
-       $('#modal .modal-body').empty().append(html);
-       $('#modal .modal-dialog').addClass('modal-'+size);
-       $('#modal').modal('show');
-       //This prevents the default Link behavior (open new tab)
-       return false;
+        var html = '<iframe width="100%" style="min-height: 600px;" src="'+url+'" seamless="seamless" name="'+name+'"></iframe>';
+        $('#modal .modal-body').empty().append(html);
+        $('#modal .modal-dialog').addClass('modal-'+size);
+        $('#modal').modal('show');
+        //This prevents the default Link behavior (open new tab)
+        return false;
     });
 }
 
