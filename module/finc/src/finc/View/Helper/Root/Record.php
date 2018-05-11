@@ -354,7 +354,7 @@ class Record extends \VuFind\View\Helper\Root\Record
                             = str_replace(['.'], ['\.'], $r['search']);
                         $pattern = '/(' . $pattern . ')/i';
                         // replace it only one time
-                        $link
+                        $link['url']
                             = preg_replace(
                             $pattern,
                             trim($r['replace']),
