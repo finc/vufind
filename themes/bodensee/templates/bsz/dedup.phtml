@@ -8,16 +8,25 @@
     <h1><?=$this->transEsc('dedup_settings')?></h1>
     <p><?=$this->transEsc('dedup_settings_text')?></p>
     
-    <form method="POST" action="#"  class="form-horizontal">
+    <form method="POST" action="#"  class="form-horizontal" data-toggle="validator">
         <div class="form-group">
             <label class="control-label col-sm-8"><?=$this->transEsc('dedup_settings_switch')?></label>
             <div class="col-sm-4">
-                <div class="checkbox">
-                    <input type="checkbox" name="dedup_status" value="1" />
-                </div>                
-            </div>         
-            
+                <label class="radio-inline" for="dedup-on">
+                    <input required type="radio" name="group" value="1" id="dedup-on" <? if ($this->group == '1'):?> checked <? endif; ?> />An
+                </label>   
+                <label class="radio-inline" for="dedup-off">
+                    <input required type="radio" name="group" value="0" id="dedup-off" <? if ($this->group == '0'):?> checked <? endif; ?>/>Aus
+                </label>  
+            </div>            
         </div>
+        <div class="form-group">
+            <label for="group.field" class="control-label col-sm-8"><?=$this->transEsc('dedup_settings_field')?></label>
+            <div class="col-sm-4">
+                <input required type="text" id="group.field" name="group_field" value="<?=$this->escapeHtmlAttr($this->field)?>"/>
+            </div>
+        </div>
+        
         <div class="form-group">        
             <div class="col-sm-offset-8 col-sm-4">
               <button type="submit" class="btn btn-primary"><?=$this->transEsc('Submit')?></button>

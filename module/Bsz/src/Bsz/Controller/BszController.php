@@ -127,9 +127,47 @@ class BszController extends \VuFind\Controller\AbstractBase {
     
     public function dedupAction() {
         
-       $view = $this->createViewModel();
-       $params = $this->params()->fromQuery('dedup_status');       
-       return $view;
+        $config = $this->getServiceLocator()->get('VuFind/Config')->get('config')->get('Index');
+        $container = new \Zend\Session\Container(
+            'dedup', $this->getServiceLocator()->get('VuFind\SessionManager')
+        );
+        
+        $params = [
+            'group' => $config->get('group'),
+            'field' =>$config->get('group.field'),
+            'limit' =>$config->get('group.limit'),            
+        ];
+        $view = $this->createViewModel();
+        $view->setVariables($params);
+        $post = $this->params()->fromPost();     
+        
+        // store form date in session and cookie
+        if (isset($post['group'])) {
+            $uri= $this->getRequest()->getUri();
+            $cookie = new \Zend\Http\Header\SetCookie(
+                    'group', 
+                    $post['group'], 
+                    time() + 14 * 24* 60 * 60, 
+                    '/',
+                    $uri->getHost() );
+            $header = $this->getResponse()->getHeaders();
+            $header->addHeader($cookie);
+            $cookie = new \Zend\Http\Header\SetCookie(
+                    'group.field', 
+                    $post['group_field'], 
+                    time() + 14 * 24* 60 * 60, 
+                    '/',
+                    $uri->getHost() );
+            $header = $this->getResponse()->getHeaders();
+            $header->addHeader($cookie);
+
+            $container->offsetSet('group', $post['group']);
+            $container->offsetSet('group.field', $post['group_field']);            
+            
+            
+        }
+        
+        return $view;
         
     }
 
