@@ -561,19 +561,17 @@ class SolrGvimarc extends SolrMarc
     {
         $authors = [];
         $authors['main'] = $this->getPrimaryAuthor();
-        $authors['secondary'] = array_unique($this->getSecondaryAuthors());
-        $authors['corporate'] = $this->getCorporateAuthors();
 
         $corporate = [];
         $secondary = [];
         foreach (array_unique($this->getSecondaryAuthors()) as $a) {
-            if (!$a == $authors['main'] ) {
+            if (strpos($authors['main'], $a) === FALSE ) {
                 array_push($secondary, $a);
             }
         }
         $authors['secondary'] = array_unique($secondary);
         foreach (array_unique($this->getCorporateAuthors()) as $c) {
-            if (!$c == $authors['main'] ) {
+            if (strpos($authors['main'], $c) === FALSE) {
                 array_push($corporate, $c);
             }
         }
