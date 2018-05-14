@@ -16,8 +16,19 @@
         <strong><?=$this->transEsc('by')?></strong>
         <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($summAuthors['main'])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
         <? if ($gnd_author != ''): ?>
-            (<a class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_author?></span>)
+            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_author?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_author?></span>)
         <? endif; ?>
+        <br/>
+    <? endif; ?>
+    <? if (!empty($summAuthors['secondary'])): ?>
+        <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
+    <strong><? if (!empty($summAuthors['main'])): echo $this->transEsc('and'); else: echo $this->transEsc('by'); endif; ?></strong>
+        <? foreach($summAuthors['secondary'] as $k =>  $au2):?>        
+            <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($au2)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($au2)?></a>
+            <? if (isset($gnd_au2[$k])): ?>
+            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)
+        <? endif; ?>
+        <?endforeach; ?>
         <br/>
     <? endif; ?>
 <? endif; ?>

@@ -452,6 +452,25 @@ class SolrGvimarc extends SolrMarc
         }
         return $gndauthor;
     }
+    
+       /**
+     * Get GND-ID from 700|0 with (DE-588)-prefix
+     *
+     * @return array
+     */
+    public function getSecondaryAuthorGND()
+    {
+        $gndauthor = [];
+
+        $candidates = $this->getFieldArray('700', ['0'], false);
+        
+        foreach ($candidates as $item) {
+            if (strpos($item, '(DE-588)') !== FALSE) {
+                $gndauthor[] = $item;                
+            }
+        }
+        return $gndauthor;
+    }
 
 
     /**
