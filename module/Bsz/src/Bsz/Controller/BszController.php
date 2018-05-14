@@ -124,6 +124,14 @@ class BszController extends \VuFind\Controller\AbstractBase {
        $view->setTerminal(true);
        return $view;
     }   
+    
+    public function dedupAction() {
+        
+       $view = $this->createViewModel();
+       $params = $this->params()->fromQuery('dedup_status');       
+       return $view;
+        
+    }
 
     
     

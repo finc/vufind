@@ -351,6 +351,7 @@ $staticRoutes = [
     'Record/Freeform',
     'Holding/Query',
     'Bsz/Privacy',     
+    'Bsz/Dedup',
     'Shib/Wayf', 'Shib/Redirect',
 ];
 $recordRoutes = [
