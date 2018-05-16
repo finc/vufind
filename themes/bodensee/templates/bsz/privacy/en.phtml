@@ -27,11 +27,11 @@ they are automatically deleted after your visit of your browser.
 The Cookies used by the BSZ to your computer no harm and do not contain viruses.
 </p>
 
-<? /** if($this->piwik('siteid') > 0): ?>
-<h3>Piwik</h3>
-<p>We use tracking software Piwik to our users to count anonymously .</p>
-<iframe style="border: 0; width: 100%; max-height: 115px" src="<?=$this->piwik('baseurl')?>/index.php?module=CoreAdminHome&action=optOut&idsite=<?=$this->piwik('siteid')?>&language=<?=$this->layout()->userLang?>"></iframe> 
-<? endif; **/ ?>
+<? if($this->piwik('siteid') > 0): ?>
+<h3>Matomo</h3>
+<p>We use tracking software Matomo to our users to count anonymously .</p>
+<iframe style="border: 0; width: 100%; max-height: 160px" src="<?=$this->piwik('baseurl')?>/index.php?module=CoreAdminHome&action=optOut&idsite=<?=$this->piwik('siteid')?>&language=<?=$this->layout()->userLang?>"></iframe> 
+<? endif; ?>
 
 
 <h3>Your right : exchange of information</h3>

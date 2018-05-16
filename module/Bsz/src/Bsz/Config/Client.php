@@ -108,7 +108,7 @@ class Client extends \Zend\Config\Config
             }
             
         } else if ($boxNo == 3) {
-            $links[] = 'Bsz/Privacy';
+            $links[] = '/Bsz/Privacy';
         }        
         
         // Clean up urls
