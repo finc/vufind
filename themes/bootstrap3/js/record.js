@@ -1,5 +1,5 @@
-/*global deparam, grecaptcha, recaptchaOnLoad, syn_get_widget, userIsLoggedIn, VuFind */
-/*exported ajaxTagUpdate, recordDocReady */
+/*global deparam, getUrlRoot, grecaptcha, recaptchaOnLoad, resetCaptcha, syn_get_widget, userIsLoggedIn, VuFind, setupJumpMenus */
+/*exported ajaxTagUpdate, recordDocReady, refreshTagListCallback */
 
 /**
  * Functions and event handlers specific to record pages.
@@ -78,9 +78,7 @@ function refreshCommentList($target, recordId, recordSource) {
       return false;
     });
     $target.find('.comment-form input[type="submit"]').button('reset');
-    if (typeof grecaptcha !== 'undefined') {
-      grecaptcha.reset();
-    }
+    resetCaptcha($target);
   });
 }
 
@@ -109,16 +107,15 @@ function registerAjaxCommentRecord() {
       dataType: 'json'
     })
     .done(function addCommentDone(/*response, textStatus*/) {
-      var $tab = $(form).closest('.list-tab-content');
+      var $form = $(form);
+      var $tab = $form.closest('.list-tab-content');
       if (!$tab.length) {
-        $tab = $(form).closest('.tab-pane');
+        $tab = $form.closest('.tab-pane');
       }
       refreshCommentList($tab, id, recordSource);
-      $(form).find('textarea[name="comment"]').val('');
-      $(form).find('input[type="submit"]').button('loading');
-      if (typeof grecaptcha !== 'undefined') {
-        grecaptcha.reset($(form).find('.g-recaptcha').data('captchaId'));
-      }
+      $form.find('textarea[name="comment"]').val('');
+      $form.find('input[type="submit"]').button('loading');
+      resetCaptcha($form);
     })
     .fail(function addCommentFail(response, textStatus) {
       if (textStatus === 'abort' || typeof response.responseJSON === 'undefined') { return; }
@@ -152,31 +149,28 @@ function registerTabEvents() {
   VuFind.lightbox.bind('.tab-pane.active');
 }
 
-function ajaxLoadTab($newTab, tabid, setHash) {
-  // Parse out the base URL for the current record:
-  var urlParts = document.URL.split(/[?#]/);
-  var urlWithoutFragment = urlParts[0];
-  var path = VuFind.path;
-  var urlroot = null;
-  if (path === '') {
-    // special case -- VuFind installed at site root:
-    var chunks = urlWithoutFragment.split('/');
-    urlroot = '/' + chunks[3] + '/' + chunks[4];
+function removeHashFromLocation() {
+  if (window.history.replaceState) {
+    var href = window.location.href.split('#');
+    window.history.replaceState({}, document.title, href[0]);
   } else {
-    // standard case -- VuFind has its own path under site:
-    var pathInUrl = urlWithoutFragment.indexOf(path, urlWithoutFragment.indexOf('//') + 2);
-    var parts = urlWithoutFragment.substring(pathInUrl + path.length + 1).split('/');
-    urlroot = '/' + parts[0] + '/' + parts[1];
+    window.location.hash = '#';
   }
+}
 
+function ajaxLoadTab($newTab, tabid, setHash) {
   // Request the tab via AJAX:
   $.ajax({
-    url: path + urlroot + '/AjaxTab',
+    url: VuFind.path + getUrlRoot(document.URL) + '/AjaxTab',
     type: 'POST',
     data: {tab: tabid}
   })
-  .done(function ajaxLoadTabDone(data) {
-    $newTab.html(data);
+  .always(function ajaxLoadTabDone(data) {
+    if (typeof data === 'object') {
+      $newTab.html(data.responseText ? data.responseText : VuFind.translate('error_occurred'));
+    } else {
+      $newTab.html(data);
+    }
     registerTabEvents();
     if (typeof syn_get_widget === "function") {
       syn_get_widget();
@@ -186,6 +180,7 @@ function ajaxLoadTab($newTab, tabid, setHash) {
     } else {
       removeHashFromLocation();
     }
+    setupJumpMenus($newTab);
   });
   return false;
 }
@@ -216,6 +211,9 @@ function refreshTagList(_target, _loggedin) {
       }
     });
   }
+}
+function refreshTagListCallback() {
+  refreshTagList(false, true);
 }
 
 function ajaxTagUpdate(_link, tag, _remove) {
@@ -263,15 +261,6 @@ function applyRecordTabHash() {
     $initiallyActiveTab.click();
   } else if (newTab.length > 1 && '#' + activeTab !== newTab) {
     $('.' + newTab.substr(1)).click();
-  }
-}
-
-function removeHashFromLocation() {
-  if (window.history.replaceState) {
-    var href = window.location.href.split('#');
-    window.history.replaceState({}, document.title, href[0]);  
-  } else {
-    window.location.hash = '#';  
   }
 }
 

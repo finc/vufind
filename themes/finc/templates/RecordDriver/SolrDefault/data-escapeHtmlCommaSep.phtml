@@ -1,0 +1,9 @@
+<!-- finc: RecordDriver - solrDefault - data-escapeHtmlCommaSep -->
+<? if (!empty($data)): ?>
+    <? if (is_array($data)): ?>
+        <?=implode(', ', array_map(array($this, 'escapeHtml'), $data)); ?>
+    <? else: ?>
+        <?= $this->escapeHtml($data) ?>
+    <? endif; ?>
+<? endif; ?>
+<!-- finc: RecordDriver - solrDefault - data-escapeHtmlCommaSep - END -->

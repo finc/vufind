@@ -62,7 +62,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
     /**
      * Current RecordDriver
      *
-     * @var \VuFind\RecordDriver
+     * @var \VuFind\RecordDriver $driver
      */
     protected $recordDriver;
 
@@ -134,6 +134,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
      * @param array $params     OpenUrl parameters set so far
      *
      * @return void
+     * @throws \Exception Image based linking is not configured
      */
     protected function addImageBasedParams($imagebased, & $params)
     {

@@ -3,8 +3,8 @@
 // Set page title.
 $this->headTitle($this->translate('Search Home'));
 
-// Disable top search box -- this page has a special layout.
-$this->layout()->searchbox = false;
+// finc: disable top search box here if you want the old look, see also below
+// $this->layout()->searchbox = false;
 
 // Set default value if necessary:
 if (!isset($this->searchClassId)) {
@@ -30,23 +30,22 @@ $this->layout()->breadcrumbs = false;
             data: {'offlineModeMsg':'ils_offline_home_message'},
             url: VuFind.path + '/AJAX/JSON?method=getIlsStatus',
             success: function(response) {
-                $('.searchHomeContent').append(response.data);
+              $('.searchHomeContent').prepend(response.data);
             }
         });
       });
 JS;
   ?>
   <? /* finc-specific: #7187 - END */ ?>
-  <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $ilsStatusScript, 'SET'); ?>
-  <? /* finc: don't use role='search' here but in searchbox template */ ?>
-  <div class="well well-lg clearfix">
-    <?=$this->context($this)->renderInContext("search/searchbox.phtml", ['ignoreHiddenFilterMemory' => true])?>
-  </div>
+  <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $ilsStatusScript, 'SET');?>
+
+  <? /* finc: Activate search box here if you want the old look -- otherwise we keep the consisten look with searchbox in header */ ?>
+  <? /* =$this->context($this)->renderInContext("search/searchbox.phtml", ['ignoreHiddenFilterMemory' => true])?>
+  <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, '$("#searchForm_lookfor").focus();', 'SET'); */ ?>
 </div>
 
-<? $facetList = is_object($this->results) ? $this->results->getFacetList() : array(); ?>
 <? if (isset($facetList) && is_array($facetList)): ?>
-  <div class="row">
+  <div class="search-home-facets">
     <? foreach ($facetList as $field => $details): ?>
       <? if (isset($this->hierarchicalFacets) && in_array($field, $this->hierarchicalFacets)): ?>
         <? $this->headScript()->appendFile('vendor/jsTree/jstree.min.js'); ?>
@@ -59,36 +58,38 @@ $(document).ready(function() {
 });
 JS;
         ?>
-        <?= $this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
-        <div class="facet <?= $field == 'callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
-          <h2><?= $this->transEsc('home_browse') . ' ' . $this->transEsc($details['label']) ?></h2>
-          <div id="facet_<?= $this->escapeHtml($field) ?>" class="jstree-facet"
-               data-facet="<?= $this->escapeHtml($field) ?>"
-               data-path="<?= $this->url($basicSearch) ?>"
+        <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET');?>
+        <div class="home-facet <?=$this->escapeHtmlAttr($field)?>">
+          <h2><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></h2>
+          <div id="facet_<?=$this->escapeHtml($field)?>" class="jstree-facet"
+               data-facet="<?=$this->escapeHtml($field)?>"
+               data-path="<?=$this->url($basicSearch)?>"
                data-exclude="0"
                data-operator="AND"
-               data-exclude-title="<?= $this->transEsc('exclude_facet') ?>"
+               data-exclude-title="<?=$this->transEsc('exclude_facet')?>"
                data-sort="all">
           </div>
         </div>
         <noscript>
       <? endif; ?>
       <? $sortedList = $this->sortFacetList($this->results, $field, $details['list'], $basicSearch); ?>
-      <? /* finc: keep .browsesuggest to prevent torn-apart look if only 2 cols are present - CK */ ?>
-      <div class="<?= $field == 'callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?> browsesuggest">
-        <h2><?= $this->transEsc('home_browse') . ' ' . $this->transEsc($details['label']) ?></h2>
-        <div class="row">
-          <ul class="list-unstyled <?=$field == "callnumber-first" ? 'col-sm-6' : 'col-sm-12' ?>">
+      <div class="home-facet <?=$this->escapeHtmlAttr($field)?>">
+        <h2><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></h2>
+        <div class="home-facet-container">
+          <ul class="home-facet-list">
             <? /* Special case: two columns for LC call numbers... */ ?>
             <? if ($field == "callnumber-first"): ?>
             <? $i = 0;
-            foreach ($sortedList as $url => $value): ?>
+            foreach ($sortedList
+
+            as $url => $value): ?>
             <? if (!empty($value)): ?>
-              <li><a href="<?= $url ?>"><?= $this->escapeHtml($value) ?></a></li>
+              <li><a href="<?=$url?>"><?=$this->escapeHtml($value)?></a></li>
             <? else: $i--; ?>
             <? endif; ?>
             <? if (++$i == 10): ?>
-                </ul><ul class="list-unstyled col-sm-6">
+          </ul>
+          <ul class="home-facet-list">
             <? endif; ?>
             <? endforeach; ?>
             <? /* Special case: collections */ ?>
@@ -96,20 +97,19 @@ JS;
               <? $i = 0;
               foreach ($sortedList as $url => $value): ?>
                 <? if (++$i > 10): ?>
-                  <li><a href="<?= $this->url('collections-home') ?>"><strong><?= $this->transEsc("More options") ?>&nbsp;...</strong></a></li>
+                  <li><a href="<?=$this->url('collections-home')?>"><strong><?=$this->transEsc("More options")?>&nbsp;...</strong></a></li>
                   <? break; ?>
-                <? else: ?>
-                  <li><a href="<?= $this->url('collections-bytitle') ?>?title=<?= urlencode($value) ?>"><?= $this->escapeHtml($value) ?></a></li>
                 <? endif; ?>
+                <li><a href="<?=$this->url('collections-bytitle')?>?title=<?=urlencode($value)?>"><?=$this->escapeHtml($value)?></a></li>
               <? endforeach; ?>
             <? else: ?>
               <? $i = 0;
               foreach ($sortedList as $url => $value): ?>
                 <? if (++$i > 10): ?>
-                  <li><a href="<?= $this->url($advSearch) ?>"><strong><?= $this->transEsc("More options") ?>&nbsp;...</strong></a></li>
+                  <li><a href="<?=$this->url($advSearch)?>"><strong><?=$this->transEsc("More options")?>&nbsp;...</strong></a></li>
                   <? break; ?>
                 <? elseif (!empty($value)): ?>
-                  <li><a href="<?= $url ?>"><?= $this->escapeHtml($value) ?></a></li>
+                  <li><a href="<?=$url?>"><?=$this->escapeHtml($value)?></a></li>
                 <? else: $i--; ?>
                 <? endif; ?>
               <? endforeach; ?>

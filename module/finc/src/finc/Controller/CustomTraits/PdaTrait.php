@@ -59,6 +59,7 @@ trait PdaTrait
      * @todo Open issue: Implementation of accession/domain check of user by PAIA.
      *
      * @return \Zend\View\Model\ViewModel
+     * @throws \Exception Authorization service missing
      */
     public function pdaAction()
     {
@@ -167,7 +168,7 @@ trait PdaTrait
         $view = $this->createViewModel($params);
 
         // Load configuration:
-        $config = $this->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $this->serviceLocator->get('VuFind\Config')->get('config');
         $view->fieldOfStudyList = isset($config->CustomSite->field_of_study)
             ? $config->CustomSite->field_of_study->toArray() : [];
 
@@ -183,7 +184,7 @@ trait PdaTrait
     /**
      * Send PDA order via e-mail.
      *
-     * @param $params Data to be used for Email template
+     * @param array $params Data to be used for Email template
      *
      * @return void
      * @throws MailException
@@ -239,8 +240,7 @@ trait PdaTrait
 
         // Get mailer
         $mailer = new Mailer(
-            $this->getServiceLocator()
-                ->get('VuFind\Mailer')->getTransport()
+            $this->serviceLocator->get('VuFind\Mailer')->getTransport()
         );
 
         // Send the email

@@ -45,7 +45,10 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
     <? endif; ?>
     <? /* finc-specific: li + hidden-xs, and li right below CK */ ?>
     <li class="hidden-xs">
-      #<?=$this->localizedNumber($this->scrollData['currentPosition']) . ' ' . $this->transEsc('of') . ' ' . $this->localizedNumber($this->scrollData['resultTotal']) . ' ' . $this->transEsc('results')?>
+      <?=$this->transEsc('of_num_results', [
+        '%%position%%' => $this->localizedNumber($this->scrollData['currentPosition']),
+        '%%total%%' => $this->localizedNumber($this->scrollData['resultTotal'])
+      ]) ?>
     </li>
     <? if ($this->scrollData['nextRecord']): ?>
       <li class="right">
@@ -67,8 +70,8 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
 
 <? /* DON'T pull the toolbar in here but below, finc-specific, CK */ ?>
 
-<div class="record row">
-  <div class="<?=$tree ? 'col-sm-12' : $this->layoutClass('mainbody')?>">
+<div class="record">
+  <div<? if (!$tree): /* in tree mode, do not constrain width with a class */ ?> class="<?=$this->layoutClass('mainbody') ?>"<? endif; ?>>
     <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" class="hiddenId" id="record_id"/>
     <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource"/>
     <?=$this->flashmessages()?>
@@ -82,7 +85,7 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
           <? foreach ($this->tabs as $tab => $obj): ?>
             <? // add current tab to breadcrumbs if applicable:
             $desc = $obj->getDescription();
-            $tab_classes = array();
+              $tab_classes = [];
             if (0 === strcasecmp($this->activeTab, $tab)) {
               if (!$this->loadInitialTabWithAjax || !$obj->supportsAjax()) {
                 $tab_classes[] = 'active';
@@ -117,7 +120,7 @@ $this->layout()->breadcrumbs .= '<li><a href="' . $this->url('collections-home')
     <?=$this->driver->supportsCoinsOpenURL() ? '<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenURL()) . '"></span>' : ''?>
   </div>
 
-  <? if (isset($activeTabObj) && is_callable(array($activeTabObj, 'getSideRecommendations'))): ?>
+  <? if (isset($activeTabObj) && is_callable([$activeTabObj, 'getSideRecommendations'])): ?>
     <div class="<?=$this->layoutClass('sidebar')?>">
 
       <? /* Get the toolbar here, finc-specific, CK */ ?>

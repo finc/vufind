@@ -3,7 +3,7 @@
 <head>
   <? $this->headThemeResources() ?>
   <? /* remove meta because of W3C Validator error - CK */
-     /*  <meta charset="utf-8">  */
+  /*  <meta charset="utf-8">  */
   ?>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -12,12 +12,12 @@
   <?
   // Set up OpenSearch link:
   $this->headLink(
-    array(
+    [
       'href' => $this->url('search-opensearch') . '?method=describe',
       'type' => 'application/opensearchdescription+xml',
       'title' => $this->transEsc('Library Catalog Search'),
       'rel' => 'search'
-    )
+    ]
   );
   ?>
   <!-- RTL styling -->
@@ -31,7 +31,7 @@
     // Add translation strings
     // PDA (BELOW) is a custom finc string - CK
     $this->jsTranslations()->addStrings(
-      array(
+      [
         'pda_send_success' => 'PDA::pda_send_success',
         'add_tag_success' => 'add_tag_success',
         'bulk_email_success' => 'bulk_email_success',
@@ -51,14 +51,14 @@
         'loading' => 'Loading',
         'more' => 'more',
         'number_thousands_separator' => [
-            'number_thousands_separator', null, ','
+        'number_thousands_separator', null, ','
         ],
         'sms_success' => 'sms_success'
-      )
+      ]
     );
     // Add libphonenumber.js strings
     $this->jsTranslations()->addStrings(
-      array(
+      [
         "Phone number invalid" => 'libphonenumber_invalid',
         "Invalid country calling code" => 'libphonenumber_invalidcountry',
         "Invalid region code" => 'libphonenumber_invalidregion',
@@ -66,7 +66,7 @@
         "The string supplied is too long to be a phone number" => 'libphonenumber_toolong',
         "The string supplied is too short to be a phone number" => 'libphonenumber_tooshort',
         "Phone number too short after IDD" => 'libphonenumber_tooshortidd'
-      )
+      ]
     );
     // Deal with cart stuff:
     $cart = $this->cart();
@@ -74,19 +74,19 @@
       $this->headScript()->appendFile("vendor/cookies.js");
       $this->headScript()->appendFile("cart.js");
       $domain = $cart->getCookieDomain();
-          if (!empty($domain)) {
-      $this->headScript()->appendScript(
-              'VuFind.cart.setDomain("' . $domain . '");'
-      );
-          }
-          $cookiePath = $cart->getCookiePath();
-          if (!empty($cookiePath)) {
-            $this->headScript()->appendScript(
-              'VuFind.cart.setCookiePath("' . $cookiePath . '");'
-            );
-          }
+      if (!empty($domain)) {
+        $this->headScript()->appendScript(
+          'VuFind.cart.setDomain("' . $domain . '");'
+        );
+      }
+      $cookiePath = $cart->getCookiePath();
+      if (!empty($cookiePath)) {
+        $this->headScript()->appendScript(
+          'VuFind.cart.setCookiePath("' . $cookiePath . '");'
+        );
+      }
       $this->jsTranslations()->addStrings(
-        array(
+        [
           'addBookBag' => 'Add to Book Bag',
           'bookbagFull' => 'bookbag_full_msg',
           'bookbagMax' => $cart->getMaxSize(),
@@ -97,7 +97,7 @@
           'itemsInBag' => 'items_already_in_bookbag',
           'removeBookBag' => 'Remove from Book Bag',
           'viewBookBag' => 'View Book Bag'
-        )
+        ]
       );
     }
     $this->headScript()->appendScript(
@@ -125,7 +125,7 @@ JS;
   ?>
   <?=$this->headScript()?>
 </head>
-<body class="<?=$this->layoutClass('offcanvas-row')?><? if ($this->layout()->rtl): ?> rtl<? endif; ?>">
+<body class="template-dir-<?=$this->templateDir?> template-name-<?=$this->templateName?> <?=$this->layoutClass('offcanvas-row')?><? if ($this->layout()->rtl): ?> rtl<? endif; ?>">
 <? // Set up the search box -- there are three possible cases:
 // 1. No search box was set; we should default to the normal box
 // 2. It was set to false; we should display nothing
@@ -137,69 +137,69 @@ if (!isset($this->layout()->searchbox)) {
 }
 ?>
 <? if (isset($this->layout()->srmessage)): // message for benefit of screen-reader users ?>
-  <span class="sr-only"><?=$this->layout()->srmessage ?></span>
+  <span class="sr-only"><?=$this->layout()->srmessage?></span>
 <? endif; ?>
 <a class="sr-only" href="#searchslots"><?=$this->transEsc('Skip to search')?></a>
 <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content')?></a>
 
 <? /* Start header here, not above, custom finc, CK */ ?>
 <header class="hidden-print">
-  <div class="container">
-    <?=$this->render('header.phtml')?>
-  </div>
-
-  <? /* Call searchbox in header.phtml, CK */ ?>
-
+  <?=$this->render('header.phtml')?>
+</header>
+<nav class="breadcrumbs">
+  <? /* finc: Don't use .container here or the breadcrumbs will get a left+right padding - CK */ ?>
   <? if ((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
     && !empty($this->layout()->breadcrumbs)
     && $this->layout()->breadcrumbs !== false
   ): ?>
-    <ul class="breadcrumb col-lg-12 large-centered hidden-xs hidden-print">
+    <ul class="breadcrumb large-centered hidden-xs hidden-print">
       <? if (is_array($this->layout()->breadcrumbs)): ?>
         <? if (count($this->layout()->breadcrumbs) > 1): ?>
-          <?=$this->render('breadcrumbs/multi.phtml', array(
+          <?=$this->render('breadcrumbs/multi.phtml', [
             'parents' => $this->layout()->breadcrumbs,
             'title' => $this->layout()->title,
             'from' => $this->layout()->from
-          ))?>
+          ])?>
         <? else: ?>
-          <?=$this->render('breadcrumbs/default.phtml', array(
+          <?=$this->render('breadcrumbs/default.phtml', [
             'parents' => $this->layout()->breadcrumbs,
             'title' => $this->layout()->title
-          ))?>
+          ])?>
         <? endif; ?>
       <? else: ?>
         <?=$this->layout()->breadcrumbs?>
       <? endif; ?>
     </ul>
   <? endif; ?>
-
-</header>
-
-
-<div role="main" class="main template-dir-<?=$this->templateDir?> template-name-<?=$this->templateName?>">
+</nav>
+<div role="main" class="main">
   <div id="content" class="container">
     <?=$this->layout()->content?>
   </div>
 </div>
 
-<footer class="hidden-print">
-  <div class="container">
-    <?=$this->render('footer.phtml')?>
-    <?=$this->layout()->poweredBy?>
-  </div>
-</footer>
+<?=$this->render('footer.phtml')?>
+
 
 <!-- MODAL IN CASE WE NEED ONE -->
-<div id="modal" class="modal fade hidden-print" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+<? /* remove aria-hidden attr via JS, move X button to logical pos. in structure + make accessible via tab */ ?>
+<div id="modal" class="modal fade hidden-print" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       <div class="modal-body"><?=$this->transEsc('Loading')?>&nbsp;...</div>
+      <button type="button" class="close" data-dismiss="modal" tabindex="0">
+        <span class="sr-only"><?=$this->transEsc('Close')?></span>
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
     </div>
   </div>
 </div>
-<div class="offcanvas-toggle" data-toggle="offcanvas"><i class="fa" title="<?=$this->transEsc('sidebar_expand')?>"></i></div>
+
+<div class="offcanvas-toggle" data-toggle="offcanvas" tabindex="0">
+  <i class="fa" title="<?=$this->transEsc('sidebar_expand')?>"></i>
+  <span class="sr-only"><?=$this->transEsc('sidebar_expand')?></span>
+</div>
+
 <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
 <?=$this->googleanalytics()?>
 <?=$this->piwik()?>

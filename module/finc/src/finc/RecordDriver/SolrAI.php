@@ -111,40 +111,6 @@ class SolrAI extends SolrDefault implements
         return $this->getAIRecord('rft.issue');
     }
 
-
-    /**
-     * Get an array of publication detail of first entry combined from
-     * place, publisher and data.
-     *
-     * @return array
-     */
-    /*public function getFirstPublicationDetails()
-    {
-        $place = $this->getPlacesOfPublication();
-        $date = $this->getPublicationDates();
-        $array = array();
-        if (isset($this->fields['format']) && is_array($this->fields['format'])) {
-            $array['issue'] = (isset($this->fields['hierarchy_parent_title']) ?
-                'In: '.$this->fields['hierarchy_parent_title'][0] : '');
-            $array['date'] = ((is_array($date) && (count($date) > 0) ?
-                $date[0] : ''));
-            switch ((count($this->fields['format']) > 0) ?
-                $this->fields['format'][0] : '') {
-                case 'eBook':
-                    $array['place'] = ((is_array($place) && (count($place) > 0) ?
-                        $place[0] : ''));
-                    break;
-                case 'ElectronicArticle':
-                    $array['place'] = '';
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return $array;
-    }*/
-
     /**
      * Has FirstPublicationsDetails a Date in it
      *
@@ -240,8 +206,9 @@ class SolrAI extends SolrDefault implements
      * "Published in" line in RecordDriver core.phtml
      *
      * @return array
+     * @todo revision of method due
      */
-    public function getAIDataIn()
+    public function getPublishedIn()
     {
         return [
             'jtitle' => $this->getJTitle(),
@@ -340,7 +307,7 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * Return the jtitle field of ai records
+     * Return the rft.jtitle field of ai records
      *
      * @return array   Return jtitle fields.
      */
@@ -350,9 +317,9 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * Return the jtitle field of ai records
+     * Return the rft.atitle field of ai records
      *
-     * @return array   Return jtitle fields.
+     * @return array   Return atitle fields.
      */
     public function getATitle()
     {
@@ -360,9 +327,9 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * Return the jtitle field of ai records
+     * Return the rft.btitle field of ai records
      *
-     * @return array   Return jtitle fields.
+     * @return array   Return btitle fields.
      */
     public function getBTitle()
     {

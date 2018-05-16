@@ -41,14 +41,6 @@ use VuFind\View\Helper\Root\SafeMoneyFormat;
 class AjaxController extends \VuFind\Controller\AjaxController
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Fetch Links from resolver given an OpenURL and format as HTML
      * and output the HTML content in JSON object.
      *
@@ -69,7 +61,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
         if (in_array($requestedResolver, $resolvers) && isset($config->$requestedResolver)) {
             $resolverType = isset($config->$requestedResolver->resolver)
                 ? $config->$requestedResolver->resolver : 'other';
-            $pluginManager = $this->getServiceLocator()
+            $pluginManager = $this->serviceLocator
                 ->get('VuFind\ResolverDriverPluginManager');
             if (!$pluginManager->has($resolverType)) {
                 return $this->output(
@@ -100,6 +92,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
                         // Special case -- modify DOI text for special display:
                         $link['title'] = $this->translate('Get full text');
                         $link['coverage'] = '';
+                        break;
                     case 'getFullTxt':
                     default:
                         $electronic[] = $link;
@@ -392,12 +385,15 @@ class AjaxController extends \VuFind\Controller\AjaxController
     /**
      * Reduce an array of service names to a human-readable string.
      *
-     * @param array $services Names of available services.
+     * @param array  $services      Names of available services.
+     * @param string $availability
      *
      * @return string
      */
-    protected function reduceServices(array $services, $availability = 'available')
-    {
+    protected function reduceServices(
+        array $services,
+        $availability = 'available'
+    ) {
         // Normalize, dedup and sort available services
         $normalize = function ($in) {
             return strtolower(preg_replace('/[^A-Za-z]/', '', $in));

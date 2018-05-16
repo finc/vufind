@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
  * @package  Tests
@@ -187,6 +187,44 @@ class RecordXmlFormatterTest extends \PHPUnit_Framework_TestCase
     {
         $formatter = new RecordXmlFormatter();
         $formatter->format('foo', simplexml_load_string('<empty />'));
+    }
+
+    /**
+     * Test global search and replace.
+     *
+     * @return void
+     */
+    public function testGlobalSearchAndReplace()
+    {
+        $formatter = new RecordXmlFormatter(
+            [
+                'globalSearch' => '/leader/',
+                'globalReplace' => 'bloop',
+            ]
+        );
+        $result = $formatter->format('foo', $this->getRecordFromFixture());
+        $xml = simplexml_load_string($result);
+
+        // If search-and-replace worked, the <leader> should have been changed
+        // to <bloop>, affecting the final parsed XML.
+        $this->assertEquals(0, count($xml->leader));
+        $this->assertEquals(1, count($xml->bloop));
+    }
+
+    /**
+     * Test namespace correction by loading a record with a namespace issue
+     * and confirming that it loads as a valid XML object.
+     *
+     * @return void
+     */
+    public function testNamespaceCorrection()
+    {
+        $formatter = new RecordXmlFormatter();
+        $result = $formatter->format(
+            'foo', $this->getRecordFromFixture('oai_doaj.xml')
+        );
+        $xml = simplexml_load_string($result);
+        $this->assertTrue(is_object($xml));
     }
 
     /**

@@ -243,8 +243,13 @@ class PHP_CodeSniffer_Fixer
             $filePath = $this->_currentFile->getFilename();
         }
 
-        $cwd      = getcwd().DIRECTORY_SEPARATOR;
-        $filename = str_replace($cwd, '', $filePath);
+        $cwd = getcwd().DIRECTORY_SEPARATOR;
+        if (strpos($filePath, $cwd) === 0) {
+            $filename = substr($filePath, strlen($cwd));
+        } else {
+            $filename = $filePath;
+        }
+
         $contents = $this->getContents();
 
         if (function_exists('sys_get_temp_dir') === true) {
@@ -261,7 +266,9 @@ class PHP_CodeSniffer_Fixer
 
         // We must use something like shell_exec() because whitespace at the end
         // of lines is critical to diff files.
-        $cmd  = "diff -u -L\"$filename\" -LPHP_CodeSniffer \"$filename\" \"$tempName\"";
+        $filename = escapeshellarg($filename);
+        $cmd      = "diff -u -L$filename -LPHP_CodeSniffer $filename \"$tempName\"";
+
         $diff = shell_exec($cmd);
 
         fclose($fixedFile);
@@ -425,6 +432,41 @@ class PHP_CodeSniffer_Fixer
         $this->_changeset = array();
 
     }//end endChangeset()
+
+
+    /**
+     * Stop recording actions for a changeset, and discard logged changes.
+     *
+     * @return void
+     */
+    public function rollbackChangeset()
+    {
+        $this->_inChangeset = false;
+        $this->_inConflict  = false;
+
+        if (empty($this->_changeset) === false) {
+            if (PHP_CODESNIFFER_VERBOSITY > 1) {
+                $bt = debug_backtrace();
+                if ($bt[1]['class'] === 'PHP_CodeSniffer_Fixer') {
+                    $sniff = $bt[2]['class'];
+                    $line  = $bt[1]['line'];
+                } else {
+                    $sniff = $bt[1]['class'];
+                    $line  = $bt[0]['line'];
+                }
+
+                $numChanges = count($this->_changeset);
+
+                @ob_end_clean();
+                echo "\t\tR: $sniff (line $line) rolled back the changeset ($numChanges changes)".PHP_EOL;
+                echo "\t=> Changeset rolled back".PHP_EOL;
+                ob_start();
+            }
+
+            $this->_changeset = array();
+        }//end if
+
+    }//end rollbackChangeset()
 
 
     /**

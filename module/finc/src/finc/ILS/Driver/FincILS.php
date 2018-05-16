@@ -60,13 +60,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
     // 5 - the postal code;
     // 6 - the country name;
     // (cf. https://tools.ietf.org/html/rfc6350#section-6.3.1)
-    public static $vcard_address_parameter_map = array(
+    public static $vcard_address_parameter_map = [
             'address1' => '2',
             'additional' => '1',
             'city' => '3',
             'country' => '6',
-            'zip' => '5',
-    );
+            'zip' => '5'
+    ];
 
     protected $root_username;
     protected $root_password;
@@ -155,11 +155,18 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @param \VuFind\Date\Converter $converter  Date converter
      * @param \VuFind\Record\Loader  $loader     Record loader
-     * @param \Zend\Config\Config    $mainConfig VuFind main configuration (omit for
-     * built-in defaults)
+     * @param \Zend\Config\Config    $mainConfig VuFind main configuration
+     *                                           (omit for built-in defaults)
+     * @param SearchService          $ss         Search Service
+     * @param mixed                  $mainConfig
+     * @param mixed                  $auth
      */
-    public function __construct(\VuFind\Date\Converter $converter, \Zend\Session\SessionManager $sessionManager,
-        \VuFind\Record\Loader $loader, SearchService $ss, $mainConfig = null,
+    public function __construct(
+        \VuFind\Date\Converter $converter,
+        \Zend\Session\SessionManager $sessionManager,
+        \VuFind\Record\Loader $loader,
+        SearchService $ss,
+        $mainConfig = null,
         $auth = null
     ) {
         parent::__construct($converter, $sessionManager);
@@ -299,8 +306,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * Returns whether hold should be placed via Email for the current item based on
      * settings in FincILS.ini.
      *
-     * @param $item
      * @return array
+     * @access protected
      */
     protected function getEmailHoldValidationCriteria()
     {
@@ -469,7 +476,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * Gets additional array fields for the item.
      * Override this method in your custom PAIA driver if necessary.
      *
-     * @param array $fee The fee array from PAIA
+     * @param array $fee    The fee array from PAIA
+     * @param array $patron Patron data
      *
      * @return array Additional fee data for the item
      */
@@ -515,7 +523,6 @@ class FincILS extends PAIA implements LoggerAwareInterface
             if (isset($patron['address'])) {
                 try {
                     $vcard = VObject\Reader::read($patron['address']);
-
                     if (isset($vcard->ADR)) {
                         foreach ($vcard->ADR as $adr) {
                             $address[(
@@ -539,6 +546,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
                     }
                     if (isset($vcard->ROLE)) {
                         $group = (string)$vcard->ROLE;
+                    }
+                    if (isset($vcard->{'X-LIBRARY-BORROWER-BRANCH'})) {
+                        $home_library
+                            = (string)$vcard->{'X-LIBRARY-BORROWER-BRANCH'};
                     }
                     if (isset($vcard->{'X-LIBRARY-ILS-PATRON-EDIT-ALLOW'})) {
                         $editable = $this->getEditableProfileFields(
@@ -594,12 +605,14 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 // PAIA specific custom values
                 'expires'    => isset($patron['expires'])
                     ? $this->convertDate($patron['expires']) : null,
-                'statuscode' => isset($patron['status']) ? $patron['status'] : null,
+                'statuscode' => isset($patron['status'])
+                    ? $patron['status'] : null,
                 'canWrite'   => in_array(self::SCOPE_WRITE_ITEMS, $this->getSession()->scope),
                 // fincILS and PAIA specific custom values
-                'email'      => !empty($patron['email']) ?
-                     $patron['email'] : (!empty($emails[0]) ? $emails[0] : null),
-                'editableFields' => (!empty($editable)) ? $editable : null
+                'email'      => !empty($patron['email'])
+                    ? $patron['email'] : (!empty($emails[0]) ? $emails[0] : null),
+                'editableFields' => (!empty($editable)) ? $editable : null,
+                'home_library' => (!empty($home_library)) ? $home_library : null
             ];
             return (isset($profile)) ? array_merge($idm, $profile) : $idm;
 
@@ -662,6 +675,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *     - zipCode      : location zip code
      *     - emailAddress : email address
      *     - reason       : reason of change
+     * @param array $patron Patron data
+     *
      * @return boolean true OK, false FAIL
      * @access public
      */
@@ -680,16 +695,21 @@ class FincILS extends PAIA implements LoggerAwareInterface
         //handle name
         $params['name'] = '';
         $name_array = array_fill(0,2,null);
+        $noname = TRUE;
         if (isset($inval['firstname'])) {
             $params['name'] .= $inval['firstname'];
             $name_array[1] = $inval['firstname'];
+            $noname = FALSE;
         }
         if (isset($inval['lastname'])) {
             $params['name'] .= ' '.$inval['lastname'];
             $name_array[0] = $inval['lastname'];
+            $noname = FALSE;
         }
-        $this->setVCardValue($vcard,'FN',$params['name']);
-        $this->setVCardValue($vcard,'N',$name_array);
+        if (!$noname) {
+            $this->setVCardValue($vcard, 'FN', $params['name']);
+            $this->setVCardValue($vcard, 'N', $name_array);
+        }
 
         //handle e-mail
         if (isset($inval['email'])) {
@@ -705,7 +725,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
         $address_array = []; // array_fill(0,7,NULL);
 
         //the empty-field marker in the used ILS
-        $replace = isset($this->config['PAIA']['profileFormEmptyInputReplacement']) ? $this->config['PAIA']['profileFormEmptyInputReplacement'] : NULL;
+        $replace = isset($this->config['PAIA']['profileFormEmptyInputReplacement'])
+            ? $this->config['PAIA']['profileFormEmptyInputReplacement'] : NULL;
 
         foreach ($inval as $key => $val) {
 
@@ -715,7 +736,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
             // add phone inputs to vcard
             if (0 < preg_match('/phone-(\w+)/', $key, $match)) {
                 $this->setVCardValue(
-                    $vcard, 'TEL', $match[0], ['type' => $match[1]]
+                    $vcard, 'TEL', $val, ['type' => $match[1]]
                 );
             }
 
@@ -784,6 +805,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
 
         // process vcard
         $vcard = $vcard->convert(VObject\Component\VCard::VCARD40);
+        $n = $vcard->select('N');
         if ($address = $vcard->serialize()) {
             $params['address'] = $address;
         }
@@ -796,7 +818,12 @@ class FincILS extends PAIA implements LoggerAwareInterface
     }
 
     /**
-     * helper function for addresses
+     * Helper function for addresses
+     *
+     * @param string $address
+     *
+     * @return mixed
+     * @access private
      */
     private function splitAddress($address) {
 
@@ -811,8 +838,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
         //where everything behind the comma is assumed to be the extension
         $conf = $this->config;
         $regex = '(\D+\d[^\,]*)(?:\,\s*(.*))?';
-        $matches = array();
-        if (preg_match('/'.$regex.'/',$address,$matches)) {
+        $matches = [];
+        if (preg_match('/'.$regex.'/',$address, $matches)) {
             return $matches;
         }
         return FALSE;
@@ -829,21 +856,47 @@ class FincILS extends PAIA implements LoggerAwareInterface
         VObject\Component\VCard $vcard, $key, $value, $type = null
     )
     {
-        if (is_string($value)) $value = str_replace(',','',$value);
-        elseif (is_array($value)) array_walk_recursive($value,function (&$value,$key) {$value = str_replace(',','',$value);});
-        if ($vcard->select($key) == array()) {
+        if (is_string($value)) {
+            $value = str_replace(',', '', $value);
+        } elseif (is_array($value)) {
+            array_walk_recursive($value, function (&$value, $key) {
+                $value = str_replace(',', '', $value);
+            });
+        }
+        $children = $vcard->select($key);
+        if (empty($children)) {
 
             // if the key is unknown, we add a new property with the value
-            if (in_array($key, array('TEL', 'ADR'))) {
+            if (in_array($key, ['TEL', 'ADR'])) {
                 $vcard->createComponent($key);
             } else {
                 $vcard->createProperty($key);
             }
             $vcard->add($key, $value, $type);
         } else {
-            // if the property/child already exists
-            // we change the value
-            $vcard->{$key}->setValue($value);
+            if (isset($type)) {
+                foreach ($children as &$child) {
+                    foreach ($type as $type_key => $type_value) {
+                        if (in_array(
+                            $type_value,
+                            $child->parameters[strtoupper($type_key)]->getParts()
+                        )) {
+                            $child->setValue($value);
+                            return;
+                        }
+                    }
+                }
+            // refs #10912
+            // if key exists in first dimension VCARD object return update true
+            } elseif (isset($key)) {
+                foreach ($children as $child) {
+                    if ($key == $child->name) {
+                        $vcard->{$key}->setValue($value);
+                        return;
+                    }
+                }
+            }
+            $vcard->add($key, $value, $type);
         }
     }
 
@@ -855,9 +908,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * @param string $username The patron's username
      * @param string $password The patron's login password
      *
-     * @return mixed          Associative array of patron info on successful login,
+     * @return mixed Associative array of patron info on successful login,
      * null on unsuccessful login.
-     *
+     * @access public
+     * @throws \Exception
      * @throws ILSException
      */
     public function patronLogin($username, $password)
@@ -878,7 +932,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                         $password,
                         $username
                     );
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     // TODO? $this->debug('Session expired, login again', 'info');
                     // all error handling is done in paiaHandleErrors so pass on the excpetion
                     throw $e;
@@ -893,7 +947,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                         $username
                     );
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 // all error handling is done in paiaHandleErrors so pass on the excpetion
                 throw $e;
             }
@@ -905,8 +959,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
     /**
      * PAIA helper function to map session data to return value of patronLogin()
      *
-     * @param $details  Patron details returned by patronLogin
-     * @param $password Patron cataloge password
+     * @param array  $details  Patron details returned by patronLogin
+     * @param string $password Patron cataloge password
+     * @param string $username
+     *
      * @return mixed
      */
     protected function enrichUserDetails($details, $password, $username = null)
@@ -933,6 +989,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * @param array $filter Array of properties identifying the wanted items
      *
      * @return array|mixed Array of documents containing the given filter properties
+     * @throws \Exception
      */
     protected function paiaGetItems($patron, $filter = [])
     {
@@ -946,7 +1003,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 $itemsResponse = $this->paiaGetAsArray(
                     'core/'.$patron['cat_username'].'/items'
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 // all error handling is done in paiaHandleErrors so pass on the excpetion
                 throw $e;
             }
@@ -1150,10 +1207,12 @@ class FincILS extends PAIA implements LoggerAwareInterface
      * finc-specific function to count items/entries in return values of given
      * functions in order to be shown as numbers in MyReSearch-Menu
      *
-     * @param $functions Array of function names that will get called and the
-     *                   count of their return values being returned
-     * @param $patron    Patron details returned by patronLogin
-     * @return array     Array in the format [function => count]
+     * @param array $functions  Array of function names that will get called
+     *                          and the count of their return values being
+     *                          returned
+     * @param array $patron     Patron details returned by patronLogin
+     *
+*@return array     Array in the format [function => count]
      */
     public function countItems($functions, $patron) {
         $retval = [];
@@ -1484,19 +1543,27 @@ class FincILS extends PAIA implements LoggerAwareInterface
             try {
                 // todo: compatible implementation for any SearchBackend (currently Solr only)
                 $query = $ilsIdentifier . ':' . $ilsId;
-                $result = $this->searchService->search('Solr', new Query($query));
+                $result = $this->searchService->search(
+                    'Solr',
+                    new Query($query)
+                );
                 if (count($result) === 0) {
                     throw new \Exception(
-                        'Problem retrieving finc id for record with '
-                        . $this->ilsIdentifier . ":" . $ilsId
+                        'Problem retrieving finc id for record with ' . $query
                     );
                 }
                 return current($result->getRecords())->getUniqueId();
             } catch (\Exception $e) {
                 $this->debug($e);
-                return $ilsId;
+                // refs #12318 return falls if no main identifier can delivered
+                // null will logically correct but throws exceptions in
+                // subsequential core methods
+                return false;
             }
         }
+        // todo: check if return $ilsId is reasonable in context.
+        // return will be only processed if $ilsIdentifier is defined as
+        // 'default'. therefore method hasn't been called properly.
         return $ilsId;
     }
 
@@ -1515,14 +1582,14 @@ class FincILS extends PAIA implements LoggerAwareInterface
                 $this->baseUrl,
                 $daiaMatches
             );
-            $this->httpService->get($daiaMatches[1], [], $this->ilsTestTimeout );
+            $this->httpService->get($daiaMatches[1], [], $this->ilsTestTimeout);
             // test PAIA service
             preg_match(
                 "/^(http[s:\/0-9\.]*(:[0-9]*)?\/[a-z]*)/",
                 $this->paiaURL,
                 $paiaMatches
             );
-            $this->httpService->get($paiaMatches[1], [], $this->ilsTestTimeout );
+            $this->httpService->get($paiaMatches[1], [], $this->ilsTestTimeout);
 
             // test succeeded, save state
             $this->isOnline = true;

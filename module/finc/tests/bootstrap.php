@@ -129,7 +129,8 @@ class Bootstrap
     /**
      * GetConfig
      *
-     * @return Config
+     * @return self::config
+     * @static
      */
     public static function getConfig()
     {

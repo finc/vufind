@@ -1,4 +1,4 @@
-<!-- finc: record - EMAILHOLD -->
+<!-- finc: record - emailhold -->
 <?
     // Set page title.
     $this->headTitle($this->translate('EmailHold::email_hold_place_text') . ': ' . $this->driver->getBreadcrumb());
@@ -17,37 +17,28 @@
 <div class="email-hold-form">
   <form name="placeEmailHold" method="post">
     <? if (in_array("item-issue", $this->extraFields)): ?>
-      <div class="row">
         <div id="emailHoldReference" class="emailHoldReference">
-          <label class="col-sm-3 control-label"><?=$this->transEsc('EmailHold::email_hold_volume')?>:</label>
-          <div class="col-sm-9">
-            <input type="text" name="gatheredDetails[volume]" value="<?=isset($this->gatheredDetails['volume']) ? $this->escapeHtmlAttr($this->gatheredDetails['volume']) : ''?>" class="auto"/><br/>
-          </div>
-          <label class="col-sm-3 control-label"><?=$this->transEsc('EmailHold::email_hold_issue')?>:</label>
-          <div class="col-sm-9">
-            <input type="text" name="gatheredDetails[issue]" value="<?=isset($this->gatheredDetails['issue']) ? $this->escapeHtmlAttr($this->gatheredDetails['issue']) : ''?>" class="auto"/><br/>
-          </div>
-          <label class="col-sm-3 control-label"><?=$this->transEsc('EmailHold::email_hold_year')?>:</label>
-          <div class="col-sm-9">
-            <input type="text" name="gatheredDetails[year]" value="<?=isset($this->gatheredDetails['year']) ? $this->escapeHtmlAttr($this->gatheredDetails['year']) : ''?>" class="auto"/><br/>
-          </div>
-        </div>
+        <label class="control-label" for="volume"><?=$this->transEsc('EmailHold::email_hold_volume')?>:</label>
+        <input type="text" name="gatheredDetails[volume]" value="<?=isset($this->gatheredDetails['volume']) ? $this->escapeHtmlAttr($this->gatheredDetails['volume']) : ''?>" id="volume" class="form-control"/><br/>
+
+        <label class="control-label" for="issue"><?=$this->transEsc('EmailHold::email_hold_issue')?>:</label>
+        <input type="text" name="gatheredDetails[issue]" value="<?=isset($this->gatheredDetails['issue']) ? $this->escapeHtmlAttr($this->gatheredDetails['issue']) : ''?>" id="issue" class="form-control"/><br/>
+
+        <label class="control-label" for="year"><?=$this->transEsc('EmailHold::email_hold_year')?>:</label>
+        <input type="text" name="gatheredDetails[year]" value="<?=isset($this->gatheredDetails['year']) ? $this->escapeHtmlAttr($this->gatheredDetails['year']) : ''?>" id="year" class="form-control"/><br/>
       </div>
     <? endif; ?>
 
     <? if (in_array("requiredByDate", $this->extraFields)): ?>
-      <div class="row">
-        <label class="col-sm-3 control-label"><?=$this->transEsc("EmailHold::hold_required_by")?>:</label>
-        <div class="col-sm-9">
-          <input id="requiredByDate" type="text" name="gatheredDetails[requiredBy]" value="<?=(isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtmlAttr($this->gatheredDetails['requiredBy']) : $this->escapeHtmlAttr($this->defaultRequiredDate)?>" size="8" class="auto"/>
+
+      <label class="control-label" for="requiredByDate"><?=$this->transEsc("EmailHold::hold_required_by")?>:</label>
+      <input id="requiredByDate" type="text" name="gatheredDetails[requiredBy]" value="<?=(isset($this->gatheredDetails['requiredBy']) && !empty($this->gatheredDetails['requiredBy'])) ? $this->escapeHtmlAttr($this->gatheredDetails['requiredBy']) : $this->escapeHtmlAttr($this->defaultRequiredDate)?>" size="8" class="form-control"/>
           (<?=$this->dateTime()->getDisplayDateFormat()?>)
-        </div>
-      </div>
+
     <? endif; ?>
 
     <? if (in_array("pickUpLocation", $this->extraFields)): ?>
       <? if (count($this->pickup) > 1): ?>
-        <div class="row">
           <?
             if (isset($this->gatheredDetails['pickUpLocation']) && $this->gatheredDetails['pickUpLocation'] !== "") {
                 $selected = $this->gatheredDetails['pickUpLocation'];
@@ -57,9 +48,8 @@
                 $selected = $this->defaultPickup;
             }
           ?>
-          <label class="col-sm-3 control-label"><?=$this->transEsc("EmailHold::pick_up_location")?>:</label>
-          <div class="col-sm-9">
-            <select name="gatheredDetails[pickUpLocation]" class="form-control">
+        <label class="control-label" for="pickUpLocation"><?=$this->transEsc("EmailHold::pick_up_location")?>:</label>
+        <select name="gatheredDetails[pickUpLocation]" id="pickUpLocation" class="form-control">
             <? if ($selected === false): ?>
               <option value="" selected="selected">
                 <?=$this->transEsc('EmailHold::select_pickup_location')?>
@@ -71,27 +61,19 @@
               </option>
             <? endforeach; ?>
             </select>
-          </div>
-        </div>
+
       <? else: ?>
         <input type="hidden" name="gatheredDetails[pickUpLocation]" value="<?=$this->escapeHtmlAttr($this->defaultPickup)?>" />
       <? endif; ?>
     <? endif; ?>
 
     <? if (in_array("comments", $this->extraFields)): ?>
-      <div class="row">
-        <label class="col-sm-3 control-label"><?=$this->transEsc("Comments")?>:</label>
-        <div class="col-sm-9">
-          <textarea rows="3" cols="20" name="gatheredDetails[comment]" class="auto"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
-        </div>
-      </div>
+      <label class="control-label" for="comment"><?=$this->transEsc("Comments")?>:</label>
+      <textarea rows="3" cols="20" name="gatheredDetails[comment]" id="comment" class="form-control"><?=isset($this->gatheredDetails['comment']) ? $this->escapeHtml($this->gatheredDetails['comment']) : ''?></textarea>
     <? endif; ?>
 
-    <div class="row">
-      <div class="col-sm-9 col-sm-offset-3">
         <input class="btn btn-primary" type="submit" name="placeEmailHold" role="button" value="<?=$this->transEsc('EmailHold::email_hold_submit_text')?>"/>
-      </div>
-    </div>
+
   </form>
 </div>
-<!-- finc: record - EMAILHOLD - END -->
+<!-- finc: record - emailhold - END -->

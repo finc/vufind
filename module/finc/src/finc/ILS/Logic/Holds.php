@@ -28,8 +28,10 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  */
+
 namespace finc\ILS\Logic;
-use VuFind\ILS\Connection as ILSConnection;
+
+use VuFind\Exception\ILS as ILSException;
 
 /**
  * Hold Logic Class
@@ -60,6 +62,7 @@ class Holds extends \VuFind\ILS\Logic\Holds
 
         // Handle purchase history alongside other textual fields
         $textFieldNames = $this->catalog->getHoldingsTextFieldNames();
+        // TODO: handle purchase history as is done in super class ?!
         $textFieldNames[] = 'purchase_history';
 
         foreach ($holdings as $groupKey => $items) {
@@ -93,9 +96,14 @@ class Holds extends \VuFind\ILS\Logic\Holds
                     }
 
                     if (!empty($item[$fieldName])) {
-                        $targetRef = & $retVal[$groupKey]['textfields'][$fieldName];
+                        $targetRef
+                            = &$retVal[$groupKey]['textfields'][$fieldName];
                         foreach ((array)$item[$fieldName] as $field) {
-                            if (empty($targetRef) || !in_array($field, $targetRef)) {
+                            if (empty($targetRef)
+                                || !in_array(
+                                    $field, $targetRef
+                                )
+                            ) {
                                 $targetRef[] = $field;
                             }
                         }
@@ -115,6 +123,7 @@ class Holds extends \VuFind\ILS\Logic\Holds
      * @param array  $ids A list of Source Records (if catalog is for a consortium)
      *
      * @return array A sorted results set
+     * @throws ILSException
      */
     public function getHoldings($id, $ids = null)
     {
@@ -126,12 +135,12 @@ class Holds extends \VuFind\ILS\Logic\Holds
             // controller and view to inform the user that these credentials are
             // needed for hold data.
             try {
-            $patron = $this->ilsAuth->storedCatalogLogin();
+                $patron = $this->ilsAuth->storedCatalogLogin();
 
-            // Does this ILS Driver handle consortial holdings?
-            $config = $this->catalog->checkFunction(
-                'Holds', compact('id', 'patron')
-            );
+                // Does this ILS Driver handle consortial holdings?
+                $config = $this->catalog->checkFunction(
+                    'Holds', compact('id', 'patron')
+                );
             } catch (ILSException $e) {
                 $patron = false;
                 $config = [];
@@ -142,45 +151,70 @@ class Holds extends \VuFind\ILS\Logic\Holds
                     $id, $patron ? $patron : null, $ids
                 );
             } else {
-                $result = $this->catalog->getHolding($id, $patron ? $patron : null);
+                $result = $this->catalog->getHolding(
+                    $id, $patron ? $patron : null
+                );
             }
+
+            $grb = 'getRequestBlocks'; // use variable to shorten line below:
+            $blocks
+                = $patron
+            && $this->catalog->checkCapability(
+                $grb, compact($patron)
+            )
+                ? $this->catalog->getRequestBlocks($patron) : false;
 
             $mode = $this->catalog->getHoldsMode();
 
             if ($mode == "disabled") {
                 $holdings = $this->standardHoldings($result);
-            } else if ($mode == "driver") {
-                $holdings = $this->driverHoldings($result, $config);
             } else {
-                $holdings = $this->generateHoldings($result, $mode, $config);
+                if ($mode == "driver") {
+                    $holdings = $this->driverHoldings(
+                        $result, $config, !empty($blocks)
+                    );
+                } else {
+                    $holdings = $this->generateHoldings(
+                        $result, $mode, $config
+                    );
+                }
             }
 
             $holdings = $this->processStorageRetrievalRequests(
-                $holdings, $id, $patron
+                $holdings, $id, $patron, !empty($blocks)
             );
-            $holdings = $this->processILLRequests($holdings, $id, $patron);
-            $holdings = $this->processEmailHolds($holdings, $id, $patron);
+            $holdings = $this->processILLRequests(
+                $holdings, $id, $patron, !empty($blocks)
+            );
+            $holdings = $this->processEmailHolds(
+                $holdings, $id, $patron, !empty($blocks)
+            );
         }
-        return $this->formatHoldings($holdings);
+        return [
+            'blocks' => $blocks,
+            'holdings' => $this->formatHoldings($holdings)
+        ];
     }
 
     /**
      * Process email holds information in holdings and set the links
      * accordingly.
      *
-     * @param array  $holdings Holdings
-     * @param string $id       Record ID
-     * @param array  $patron   Patron
+     * @param array  $holdings          Holdings
+     * @param string $id                Record ID
+     * @param array  $patron            Patron
+     * @param array  $requestsBlocked
      *
      * @return array Modified holdings
      */
-    protected function processEmailHolds($holdings, $id, $patron)
+    protected function processEmailHolds(
+        $holdings, $id, $patron, $requestsBlocked
+    )
     {
         if (!is_array($holdings)) {
             return $holdings;
         }
 
-        // Are email holds allowed?
         $requestConfig = $this->catalog->checkFunction(
             'EmailHold', compact('id', 'patron')
         );
@@ -189,50 +223,22 @@ class Holds extends \VuFind\ILS\Logic\Holds
             return $holdings;
         }
 
-        // Generate Links
-        // Loop through each holding
         foreach ($holdings as &$location) {
             foreach ($location as &$copy) {
-                // Is this copy requestable
-                if (isset($copy['addEmailHoldLink'])
+                if (!$requestsBlocked && isset($copy['addEmailHoldLink'])
                     && $copy['addEmailHoldLink']
                 ) {
-                    // If the request is blocked, link to an error page
-                    // instead of the form:
-                    if ($copy['addEmailHoldLink'] === 'block') {
-                        $copy['emailHoldLink']
-                            = $this->getBlockedEmailHoldDetails($copy);
-                    } else {
-                        $copy['emailHoldLink']
-                            = $this->getRequestDetails(
-                                $copy,
-                                $requestConfig['HMACKeys'],
-                                'EmailHold'
-                            );
-                    }
-                    // If we are unsure whether request options are
-                    // available, set a flag so we can check later via AJAX:
+                    $copy['emailHoldLink'] = $this->getRequestDetails(
+                        $copy,
+                        $requestConfig['HMACKeys'],
+                        'EmailHold'
+                    );
+
                     $copy['checkEmailHold']
                         = $copy['addEmailHoldLink'] === 'check';
                 }
             }
         }
         return $holdings;
-    }
-
-    /**
-     * Returns a URL to display a "blocked email hold" message.
-     *
-     * @param array $details An array of item data
-     *
-     * @return array         Details for generating URL
-     */
-    protected function getBlockedEmailHoldDetails($details)
-    {
-        // Build Params
-        return [
-            'action' => 'BlockedEmailHold',
-            'record' => $details['id']
-        ];
     }
 }

@@ -1,0 +1,42 @@
+<? $publicationIsSet = false; ?>
+<? if (count($event = $this->driver->getEvents()) > 0):  ?>
+    <? foreach ($event as $eventType => $events): ?>
+        <tr class="recordEvents">
+            <th>
+                <? if ($eventType == 'production'): ?>
+                    <?= $this->transEsc('expression creation') ?>:
+                <? elseif ($eventType == 'publication'): ?>
+                    <?= $this->transEsc('Time of origin') ?>:
+                    <? $publicationIsSet = true; ?>
+                <? else: ?>
+                    <?= $this->transEsc($eventType) ?>:
+                <? endif; ?>
+            </th>
+            <td>
+                <div class="truncate-field">
+                    <? foreach ($events as $event): ?>
+                        <? if ($event != $events[0]): ?><br/><? endif; ?>
+                        <? if (!empty($event['name'])): ?><?= $this->escapeHtml($event['name']) ?><br/><? endif; ?>
+                        <? if (!empty($event['actors'])): ?>
+                            <? foreach ($event['actors'] as $actor): ?>
+                                <?= $this->escapeHtml($actor['name']) ?><? if (!empty($actor['role'])): ?> (<?= $this->escapeHtml($actor['role']) ?>)<? endif; ?>
+                            <? endforeach; ?>
+                            <br/>
+                        <? endif; ?>
+                        <? if (!empty($event['date'])): ?>
+                            <?= $this->escapeHtml($event['date']) ?><br/>
+                        <? else: ?>
+                            <?= $this->transEsc('undated') ?><br/>
+                        <? endif; ?>
+                        <? if (!empty($event['method'])): ?><?= $this->escapeHtml($event['method']) ?><br/><? endif; ?>
+                        <? if (!empty($event['materials'])): ?><?= implode('<br/>', array_map(array($this, 'escapeHtml'), $event['materials'])) ?><br/><? endif; ?>
+                        <? if (!empty($event['places'])): ?><?= implode('<br/>', array_map(array($this, 'escapeHtml'), $event['places'])) ?><br/><? endif; ?>
+                        <? if (!empty($event['culture'])): ?><?= $this->escapeHtml($event['culture']) ?><br/><? endif; ?>
+
+                        <? if (!empty($event['description'])): ?><?= $this->escapeHtml($event['description']) ?><br/><? endif; ?>
+                    <? endforeach; ?>
+                </div>
+            </td>
+        </tr>
+    <? endforeach; ?>
+<? endif; ?>

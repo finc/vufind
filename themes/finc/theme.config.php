@@ -4,10 +4,11 @@ return array(
     'js' => array(
         'openurl.js',
         'check_item_statuses.js',
+        'finc.js',
     ),
     'helpers' => array(
         'factories' => array(
-            'permission' => 'finc\View\Helper\Root\Factory::getPermission',
+            //'permission' => 'finc\View\Helper\Root\Factory::getPermission',
             'record' => 'finc\View\Helper\Root\Factory::getRecord',
             'recordlink' => 'finc\View\Helper\Root\Factory::getRecordLink',
             'interlibraryloan' =>
@@ -18,6 +19,8 @@ return array(
             'sidefacet' => 'finc\View\Helper\Root\Factory::getSideFacet',
             'externalCatalogueLink' =>
                 'finc\View\Helper\Root\Factory::getExternalCatalogueLink',
+            'recordDataFormatter' =>
+                'finc\View\Helper\Root\RecordDataFormatterFactory',
         ),
         'invokables' => array(
             'resultfeed' => 'finc\View\Helper\Root\ResultFeed'

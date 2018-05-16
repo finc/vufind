@@ -1,27 +1,32 @@
-/*global extractClassParams, VuFind */
+/*global extractClassParams, Hunt, VuFind */
+/* Finc has its own specific 'resolvertype', make sure it is included when updating, CK */
 VuFind.register('openurl', function OpenUrl() {
-  var _loadResolverLinks = function($target, openUrl, searchClassId, resolvertype) {
+  function _loadResolverLinks($target, openUrl, searchClassId, resolvertype) {
     $target.addClass('ajax_availability');
     var url = VuFind.path + '/AJAX/JSON?' + $.param({
-      method:'getResolverLinks',
-      openurl:openUrl,
-      searchClassId:searchClassId,
-      resolvertype:resolvertype});
+      method: 'getResolverLinks',
+      openurl: openUrl,
+      searchClassId: searchClassId,
+      resolvertype: resolvertype
+    });
     $.ajax({
       dataType: 'json',
       url: url
     })
-    .done(function getResolverLinksDone(response) {
-      $target.removeClass('ajax_availability').empty().append(response.data);
-    })
-    .fail(function getResolverLinksFail(response, textStatus) {
-      $target.removeClass('ajax_availability').addClass('text-danger').empty();
-      if (textStatus === 'abort' || typeof response.responseJSON == 'undefined') { return; }
-      $target.append(response.responseJSON.data);
-    });
+      .done(function getResolverLinksDone(response) {
+        $target.removeClass('ajax_availability').empty().append(response.data);
+      })
+      .fail(function getResolverLinksFail(response, textStatus) {
+        $target.removeClass('ajax_availability').addClass('text-danger').empty();
+        if (textStatus === 'abort' || typeof response.responseJSON == 'undefined') {
+          return;
+        }
+        $target.append(response.responseJSON.data);
+      });
   }
 
-  function embedOpenUrlLinks(element) {
+  function embedOpenUrlLinks(el) {
+    var element = $(el);
     // Extract the OpenURL associated with the clicked element:
     var openUrl = element.children('span.openUrl:first').attr('title');
 
@@ -32,7 +37,7 @@ VuFind.register('openurl', function OpenUrl() {
     // Locate the target area for displaying the results:
     var target = controls.next('div.resolver');
 
-    // To chose the right resolver we have to get the resolvertype:
+    // finc-specific, #5334; To chose the right resolver we have to get the resolvertype:
     var resolvertype = element.children('span.resolvertype:first').attr('title');
 
     // If the target is already visible, a previous click has populated it;
@@ -56,12 +61,20 @@ VuFind.register('openurl', function OpenUrl() {
 
     // assign action to the openUrlEmbed link class
     container.find('.openUrlEmbed a').unbind('click').click(function openUrlEmbedClick() {
-      embedOpenUrlLinks($(this));
+      embedOpenUrlLinks(this);
       return false;
     });
 
-    container.find('.openUrlEmbed.openUrlEmbedAutoLoad a').trigger('click');
+    if (typeof Hunt === 'undefined') {
+      container.find('.openUrlEmbed.openUrlEmbedAutoLoad a').trigger('click');
+    } else {
+      new Hunt(
+        container.find('.openUrlEmbed.openUrlEmbedAutoLoad a').toArray(),
+        {enter: embedOpenUrlLinks}
+      );
+    }
   }
+
   return {
     init: init,
     embedOpenUrlLinks: embedOpenUrlLinks

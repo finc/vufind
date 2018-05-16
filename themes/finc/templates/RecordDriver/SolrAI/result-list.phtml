@@ -1,4 +1,4 @@
-<!-- finc: recordDriver - solrAI - RESULT-LIST -->
+<!-- finc: recordDriver - solrAI - result-list -->
 <? /* compare with solrDefault - result-list during upgrades! - CK */ ?>
 <?
 $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'medium', $this->recordLink()->getUrl($this->driver));
@@ -12,7 +12,7 @@ if ($cover):
   </div>
   <? $thumbnail = ob_get_contents(); ?>
   <? ob_end_clean(); ?>
-  <? /* Show finc style-based icons; FIXME: FRANK: BITTE PRUEFEN, ob ich das richtig gebastelt habe! */ ?>
+  <? /* Show finc style-based icons; */ ?>
 <? elseif ($this->record($this->driver)->showStyleBasedIcons()): ?>
   <? ob_start(); ?>
   <div class="media-<?=$thumbnailAlignment?> record-icon">
@@ -30,9 +30,7 @@ if ($cover):
     <?=$thumbnail?>
   <? endif ?>
   <div class="media-body">
-    <div class="row short-view">
-      <? /* finc: use col-xs too for better mobile looks, CK*/ ?>
-      <div class="col-xs-10 col-sm-8 middle">
+    <div class="result-body">
         <div>
           <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull" data-view="<?=$this->params->getOptions()->getListViewOption()?>">
             <?=$this->record($this->driver)->getTitleHtml()?>
@@ -56,11 +54,9 @@ if ($cover):
             <? if (!empty($journalTitle)): ?>
               <?=!empty($summAuthor) ? '<br />' : ''?>
               <?=$this->transEsc('Published in')?>
-              <?
-              $containerSource = $this->driver->getSourceIdentifier();
-              $containerID = $this->driver->getContainerRecordID();
-
-              // finc specific journalLink generation
+              <? $containerSource = $this->driver->getSourceIdentifier();
+                   $containerID = $this->driver->getContainerRecordID();
+             // finc-specific journalLink generation
               $journalLink = '';
               $issns = $this->driver->getISSNs();
 
@@ -81,6 +77,7 @@ if ($cover):
               <?=!empty($summDate) ? ' (' . $this->escapeHtml($summDate) . ')' : ''?>
             <? elseif (!empty($summDate)): ?>
               <?=!empty($summAuthor) ? '<br />' : ''?>
+              <? /* finc-specific: nxt line #8639 - CK */ ?>
               <?=$this->transEsc('Published') . ' ' . $this->escapeHtml($summDate)?>
             <? endif; ?>
             <? $summInCollection = $this->driver->getContainingCollections();
@@ -177,6 +174,7 @@ if ($cover):
           <? endif; ?>
         <? endif; ?>
 
+      <div class="result-formats">
         <?=$this->record($this->driver)->getFormatList()?>
 
         <? /* WISO Label - finc-specific - CK */ ?>
@@ -190,10 +188,13 @@ if ($cover):
           <span class="label label-default"><?=$this->transEsc('Loading')?>&nbsp;...</span>
         </span>
         <? endif; ?>
+      </div>
+
+      <div class="result-previews">
         <?=$this->record($this->driver)->getPreviews()?>
       </div>
-      <? /* finc: use col-xs too for better mobile looks, CK*/ ?>
-      <div class="col-xs-2 col-sm-3 right hidden-print">
+    </div>
+      <div class="result-links hidden-print">
         <? /* Display qrcode if appropriate: */ ?>
         <? if ($QRCode = $this->record($this->driver)->getQRCode("results")): ?>
           <?
@@ -211,28 +212,33 @@ if ($cover):
         </span>
         <? endif; ?>
 
+      <? if ($this->cart()->isActiveInSearch() && $this->params->getOptions()->supportsCart() && $this->cart()->isActive()): ?>
+        <?=$this->render('record/cart-buttons.phtml', ['id' => $this->driver->getUniqueId(), 'source' => $this->driver->getSourceIdentifier()]); ?><br/>
+      <? endif; ?>
+
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-          <? /* Add to favorites */ ?>
-          <? /* Keep Icon inside link - CK */ ?>
-          <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="save-record" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" title="<?=$this->transEsc('Add to favorites')?>">
-            <i class="fa fa-fw fa-star" aria-hidden="true"></i> <span class="hidden-xs hidden-sm"><?=$this->transEsc('Add to favorites')?></span>
+        <?/* if ($this->permission()->allowDisplay('feature.Favorites')): */?>
+          <? /* Add to favorites; finc: keep Icon inside link - CK */ ?>
+          <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="save-record result-link-label" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" title="<?=$this->transEsc('Add to favorites')?>">
+            <i class="result-link-icon fa fa-fw fa-star" aria-hidden="true"></i> <?=$this->transEsc('Add to favorites')?>
           </a><br/>
+          <? elseif ($block = $this->permission()->getAlternateContent('feature.Favorites')): ?>
+            <?=$block?>
+          <? endif; ?>
           <? /* Saved lists */ ?>
           <div class="savedLists alert alert-info hidden">
             <strong><?=$this->transEsc("Saved in")?>:</strong>
           </div>
-        <? endif; ?>
+        <? /* endif; */?>
 
-        <? /* Hierarchy tree link */ ?>
-        <? /* Keep Icon inside link - CK */ ?>
+        <? /* Hierarchy tree link; finc: keep Icon inside link - CK */ ?>
         <? $trees = $this->driver->tryMethod('getHierarchyTrees');
         if (!empty($trees)): ?>
           <? foreach ($trees as $hierarchyID => $hierarchyTitle): ?>
             <div class="hierarchyTreeLink">
               <input type="hidden" value="<?=$this->escapeHtmlAttr($hierarchyID)?>" class="hiddenHierarchyId"/>
-              <a class="hierarchyTreeLinkText" data-lightbox href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>" title="<?=$this->transEsc('hierarchy_tree')?>" data-lightbox-href="<?=$this->recordLink()->getTabUrl($this->driver, 'AjaxTab')?>?hierarchy=<?=urlencode($hierarchyID)?>" data-lightbox-post="tab=hierarchytree">
-                <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
-                <span class="hidden-xs hidden-sm"><?=$this->transEsc('hierarchy_view_context')?></span><? if (count($trees) > 1): ?>: <?=$this->escapeHtml($hierarchyTitle)?><? endif; ?>
+              <a class="hierarchyTreeLinkText result-link-label" data-lightbox href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>#tabnav" title="<?=$this->transEsc('hierarchy_tree')?>" data-lightbox-href="<?=$this->recordLink()->getTabUrl($this->driver, 'AjaxTab')?>?hierarchy=<?=urlencode($hierarchyID)?>" data-lightbox-post="tab=hierarchytree">
+                <i class="result-link-icon fa fa-fw fa-sitemap" aria-hidden="true"></i> <span class="hidden-xs hidden-sm"><?=$this->transEsc('hierarchy_view_context')?></span><? if (count($trees) > 1): ?>: <?=$this->escapeHtml($hierarchyTitle)?><? endif; ?>
               </a>
             </div>
           <? endforeach; ?>
@@ -241,9 +247,8 @@ if ($cover):
         <?=$this->driver->supportsCoinsOpenUrl() ? '<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()) . '"></span>' : ''?>
       </div>
     </div>
-  </div>
   <? if ($thumbnail && $thumbnailAlignment == 'right'): ?>
     <?=$thumbnail?>
   <? endif ?>
 </div>
-<!-- finc: recordDriver - solrAI - RESULT-LIST - END -->
+<!-- finc: recordDriver - solrAI - result-list - END -->

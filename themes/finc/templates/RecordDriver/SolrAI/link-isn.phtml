@@ -1,5 +1,5 @@
 <?
-  // use advanced search if we have multiple issns
+  /* use advanced search if we have multiple issns */
   if (is_array($this->lookfor) && count($this->lookfor) > 1) {
       $query = '?join=AND&amp;bool0[]=OR';
       foreach ($this->lookfor as $issn) {

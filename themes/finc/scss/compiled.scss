@@ -7,7 +7,7 @@
 // Do NOT EDIT  compiled.css
 // 1.   Define or re-define KEY VARIABLES and MIXINS (see 1.1 ff below) OR import your own
 @import 'customVariables';
-//@import 'customMixins';
+@import 'customMixins';
 // 1.1  Unless imported, define standard colour variables here which are used in variables below prior to finc.scss import
 // e.g. $brand-primary: #008CBA !default;   // bondi-blue
 // $brand-secondary: #e7e7e7 !default; // white-lilac
@@ -17,10 +17,10 @@
 // $brand-warning: #f08a24 !default;   // carrot
 // 1.2  DO NOT define site-specific colours in finc - this will be done in site-specific themes
 // 2. For Media queries use:
-// Extra small screen / phone: '$screen-xs-min' (480px);
-// Small screen / tablet: '$screen-sm-min' (768px);
-// Medium screen / desktop: '$screen-md-min' (992px) and
-// Large screen / wide desktop: '$screen-lg-min' (1200px);
+// Extra small screen / phone: '$screen-xs-min' (=480px);
+// Small screen / tablet: '$screen-sm-min' (=768px);
+// Medium screen / desktop: '$screen-md-min' (=992px) and
+// Large screen / wide desktop: '$screen-lg-min' (=1200px);
 // The maximum ranges are defined as the next higher element minus 1px, so:
 // '$screen-xs-max' = $screen-sm-min - 1
 // etc: you can use '$screen-xs-max', '$screen-sm-max' and '$screen-md-max'
@@ -33,7 +33,7 @@
 
 // Allow us to use sections that act as rows
 section {
-  @include make-row();
+  @include make-row;
 }
 
 // PLEASE ORGANIZE YOUR CSS ACCORDING TO THIS GENERAL RULE - keep exceptions to a minimum
@@ -61,7 +61,7 @@ section {
 // .foo {
 //    border: 1px solid red;
 //    margin-left: 1em;
-//    padding: 0 $grid-gutter-width / 2;
+//    padding: 0 ($grid-gutter-width / 2);
 //    width: auto;
 // }
 //
@@ -112,10 +112,12 @@ h3 {
 //// h4
 ////// H4 atop Sidebar - align to limit and sort
 .sidebar h4 {
-  margin-top: .25em;
+  margin-top: 0;
 
+  // keep level with left-hand content
   @media only screen and (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
     font-size: $font-size-base + 2px;
+    margin-top: ($grid-gutter-width / 2);
   }
 }
 
@@ -149,16 +151,16 @@ h3 {
   border: 1px solid $brand-secondary;
   // make columns adapt to content
   table-layout: auto;
+}
 
-  // Remove top borders (_tables.scss)
-  > thead,
-  > tbody,
-  > tfoot {
-    > tr {
-      > th,
-      > td {
-        border-top: 0;
-      }
+// Remove top borders (_tables.scss)
+thead,
+tbody,
+tfoot {
+  > tr {
+    > th,
+    > td {
+      border-top: 0;
     }
   }
 }
@@ -178,12 +180,12 @@ form {
 
   // For INLINE, left-floated 'hits per page' and 'sort by' selectors use
   &.limit,
-  &.sort {
+  &.search-sort {
     float: left;
   }
 
   &.limit {
-    margin-right: $grid-gutter-width / 2;
+    margin-right: ($grid-gutter-width / 2);
   }
 
   // limit the width of the select field if necessary - more select details below
@@ -201,7 +203,7 @@ form {
   }
 
   .form-control {
-    max-width: 400px;
+    max-width: em(400px);
   }
 }
 
@@ -209,29 +211,22 @@ form {
 fieldset {
   border: 1px solid $border-color;
 
-  // Advanced Search - make fieldsets fit in a row (see last-of-type and &col-sm-4 below)
+  // Advanced Search - make fieldsets fit in a row (see last-of-type below)
   .template-name-advanced & {
-    margin-right: $grid-gutter-width / 2;
     margin-top: $grid-gutter-width;
-    padding-bottom: $grid-gutter-width / 2;
+    padding-bottom: ($grid-gutter-width / 2);
+    padding-left: ($grid-gutter-width / 2);
 
-    // Advanced Search - make fieldsets fit in a row (see margin-right above and &col-sm-4 below)
+    // Advanced Search - make fieldsets fit in a row (see margin-right above below)
+    &:nth-of-type(3) {
+      margin-left: ($grid-gutter-width / 2);
+      margin-right: ($grid-gutter-width / 2);
+      width: 30.25%;
+    }
+
     &:last-of-type {
       float: right;
       margin-right: 0;
-    }
-
-    // Advanced Search - make 3 fieldsets fit in a row ( see margin-right and last-of-type above)
-    @media (min-width: $screen-sm-min) {
-      &.col-sm-4 {
-        width: (33.3333333333% - 10.5%);
-      }
-    }
-
-    @media (min-width: $screen-md-min) {
-      &.col-sm-4 {
-        width: (33.3333333333% - 1.5%);
-      }
     }
   }
 }
@@ -243,22 +238,28 @@ legend {
   font-size: ($font-size-base * 1.25);
   margin-bottom: 0;
   // margin-top: $grid-gutter-width;
-  padding-left: $grid-gutter-width / 2;
-  padding-right: $grid-gutter-width / 2;
+  padding-left: ($grid-gutter-width / 2);
+  padding-right: ($grid-gutter-width / 2);
   width: auto;
 }
 
 //// label {}
 
+//// Required symbol
+
+.required {
+  color: $brand-danger;
+}
+
 //// input {}
 input[type='email'] {
   border: $border-default-styles;
-  padding: $grid-gutter-width / 4;
+  padding: ($grid-gutter-width / 4);
 }
 
 input[type='text'] {
   border: $border-default-styles;
-  padding: $grid-gutter-width / 4;
+  padding: ($grid-gutter-width / 4);
 }
 
 //// Select - for limit and sort-select widths see above
@@ -282,6 +283,19 @@ select.form-control {
 
   &.form-control {
     background-color: $select-bg-color;
+  }
+}
+
+//// Create list in add to favs dialog
+.form-edit-list {
+  .radio {
+    &.inline {
+      display: block;
+    }
+
+    input {
+      position: relative;
+    }
   }
 }
 
@@ -349,6 +363,7 @@ select {
     display: block;
   }
 }
+
 //// OR use on ALL dropdowns like so
 //.dropdown:hover .dropdown-menu {
 //  display: block;
@@ -356,15 +371,23 @@ select {
 
 //// ALERTS
 ////// Light Text on Dark BG
-.alert a {
-  color: $state-light-text-on-dark;
-  text-decoration: underline;
+.alert {
+
+  a {
+    color: $state-light-text-on-dark;
+    text-decoration: underline;
+  }
+
+  &.alert-warning a {
+    color: $oil;
+  }
 }
 
 ////// Alert Text Colors
 .alert-success,
 .alert-info,
 .alert-danger {
+  clear: both;
   color: $state-light-text-on-dark;
 
   &:hover {
@@ -374,23 +397,26 @@ select {
 
 .text-danger {
   background-color: $brand-danger;
-  padding: $grid-gutter-width / 8;
+  padding: ($grid-gutter-width / 8);
 }
 
 //// Off-Canvas
 @media only screen and (max-width: $screen-xs-max) {
   body.offcanvas .offcanvas-toggle {
-    background: $brand-primary;
+    background: transparentize($brand-primary, .2);
     color: $white;
     display: block;
+    height: auto;
+    line-height: normal;
     padding: 1.5rem 0;
     position: fixed;
     text-align: center;
     top: 50%;
-    width: calc(2em - 5px);
+    width: calc(2em - 1px);
     z-index: 5;
   }
 }
+
 //// Off-Canvas - END
 
 //// DATE-RANGE slider (CSS is included in bootstrap-slider.min.css - currently no SCSS version!)
@@ -407,7 +433,6 @@ select {
   width: 1em;
 }
 
-
 //// Transparent BUTTONs (Button with border and darker text on light or white BGs)
 .btn-transparent {
   @include button-variant($btn-transparent-color, $btn-transparent-bg, $btn-transparent-border);
@@ -423,7 +448,7 @@ select {
 .accordion-toggler {
   background: $toggler;
   display: block;
-  padding: $grid-gutter-width / 2;
+  padding: ($grid-gutter-width / 2);
   text-align: left;
   width: 100%;
 
@@ -459,6 +484,7 @@ select {
 table.collapse.in {
   display: table;
 }
+
 //// Collapse on tables - END
 
 //// Source-id branding (WISO etc)
@@ -468,12 +494,13 @@ table.collapse.in {
   &.SID48 {
     background: url('../images/wiso-transparent-70x20.png') 0 0 no-repeat;
     display: inline-block;
-    height: 20px;
+    font-size: 100%; // important to render width and height correctly
+    height: em(20px);
     margin-left: .2em;
-    //margin-top: $grid-gutter-width / 8;
+    //margin-top: ($grid-gutter-width / 8);
     margin-top: 0;
     vertical-align: middle;
-    width: 70px;
+    width: em(70px);
   }
 }
 
@@ -489,6 +516,19 @@ table.collapse.in {
 }
 
 //// Document Delivery Service (DDS) only - END
+
+//// Display styleBasedIcons
+.record,
+.result {
+  .media-left,
+  .media-right {
+    &.record-icon img {
+      display: inline-block;
+      max-width: none;
+      width: $thumbnail-width-small;
+    }
+  }
+}
 
 //// Sprites for Mediaicons
 .sprite-media-icon {
@@ -633,9 +673,33 @@ table.collapse.in {
   position: absolute;
 }
 
+// Flex container for wrapping flex elements, such als header
+.flex-container {
+  @media (min-width: $grid-float-breakpoint) {
+    display: flex;
+  }
+}
+
+//// we need to reverse order of the header child elements (searchbox + navbar) on anything but mobile for the mobile menu to work as xpected
+@media (min-width: $screen-sm-min) {
+  header .flex-container {
+    > *:first-child {
+      order: 2;
+    }
+
+    > *:nth-child(2) {
+      order: 1;
+    }
+  }
+}
+
 //// force inline display
 .inline {
   display: inline;
+
+  .template-name-editlist & {
+    display: inherit;
+  }
 }
 
 //// floats
@@ -648,14 +712,26 @@ table.collapse.in {
 }
 
 //// Gutters / No-Gutters; Margins / No-margins
+////// NO Gutter/Padding at all
+.no-gutter-all {
+  padding: 0 !important;
+}
+
+////// No LEFT and RIGHT gutters
 .no-gutter {
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 
   > [class^='col-'] {
     padding-left: 0;
     padding-right: 0;
   }
+}
+
+////// NO gutter top and bottom (keep !important)
+.no-gutter-tp-btm {
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
 }
 
 ////// NO gutter bottom
@@ -681,49 +757,49 @@ table.collapse.in {
 ////// gutter left
 .gutter-l,
 .no-gutter-r.gutter-l {
-  padding-left: $grid-gutter-width / 2;
+  padding-left: ($grid-gutter-width / 2);
 }
 
 ////// gutter bottom
 .gutter-btm {
-  padding-bottom: $grid-gutter-width / 2;
+  padding-bottom: ($grid-gutter-width / 2);
 }
 
 ////// gutter right
 .gutter-r {
-  padding-right: $grid-gutter-width / 2;
+  padding-right: ($grid-gutter-width / 2);
 }
 
 ////// gutter top
 .gutter-top {
-  padding-top: $grid-gutter-width / 2;
+  padding-top: ($grid-gutter-width / 2);
 }
 
 ////// margin bottom
 .margin-btm {
-  margin-bottom: $grid-gutter-width / 2;
+  margin-bottom: ($grid-gutter-width / 2);
 }
 
 ////// margin left
 .margin-l {
-  margin-left: $grid-gutter-width / 2;
+  margin-left: ($grid-gutter-width / 2);
 }
 
 ////// margin left on mobile
 .margin-l-xs {
   @media (max-width: $screen-xs-max) {
-    margin-left: $grid-gutter-width / 2;
+    margin-left: ($grid-gutter-width / 2);
   }
 }
 
 ////// margin right
 .margin-r {
-  margin-right: $grid-gutter-width / 2;
+  margin-right: ($grid-gutter-width / 2);
 }
 
 ////// margin top
 .margin-t {
-  margin-top: $grid-gutter-width / 2;
+  margin-top: ($grid-gutter-width / 2);
 }
 
 ////// NO margin bottom
@@ -850,16 +926,19 @@ table.collapse.in {
     }
   }
 }
+
 //// Redi link-resolver traffic lights - END
-
-
 
 // HEADER and NAVBAR FIXED having the same width as rest of the page
 // (the header can also run the full width of the viewport!)
 header,
 .navbar {
   background-color: $header-bg-color;
+}
 
+header,
+.navbar,
+.breadcrumbs {
   // For a full-width header de-activate margin and all the media queries below;
   // if not using a fixed navbar, also remove '.navbar' above
   margin: 0 auto;
@@ -889,14 +968,14 @@ header,
 //// push navbar in from right, to allow for offcanvas scrollbar
 .offcanvas .navbar-fixed-top {
   @media only screen and (max-width: $screen-xs-max) {
-    right: $grid-gutter-width / 2;
+    right: ($grid-gutter-width / 2);
   }
 }
 
 //// Keep navbar on left, when offcanvas is active, give same appearance as ever
 .offcanvas.active .navbar-fixed-top {
   @media only screen and (max-width: $screen-xs-max) {
-    margin-top: -$navbar-height;
+    margin-top: -$navbar-height-xs;
     position: relative;
   }
 }
@@ -918,11 +997,11 @@ header,
     span {
       display: inline-block;
       margin-left: 0;
-      margin-top: $grid-gutter-width / 2;
+      margin-top: ($grid-gutter-width / 2);
 
       @media (max-width: $screen-sm-max) {
-        margin-left: $grid-gutter-width / 2;
-        margin-top: $grid-gutter-width / 8;
+        margin-left: ($grid-gutter-width / 2);
+        margin-top: ($grid-gutter-width / 8);
       }
     }
   }
@@ -936,14 +1015,16 @@ header,
   // Define height for navbar on small, allow for stacked search box +
   @media only screen and (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
     min-height: $navbar-height-sm;
-    //padding-bottom: $grid-gutter-width / 2;
+    //padding-bottom: ($grid-gutter-width / 2);
   }
 
   // style navbar toggler content when opened
   .navbar-collapse.collapse.in {
-    background-color: $navbar-bg-color;
-    position: absolute;
-    top: $navbar-height-xs * 1.5;
+    @media (min-width: $screen-sm-min) {
+      background-color: $navbar-bg-color;
+      position: absolute;
+      top: $navbar-height-xs * 1.5;
+    }
   }
 
   // Make language dropdown visible, style it and hide active but show selectable language(s)
@@ -980,19 +1061,46 @@ header,
   }
 }
 
-//// Make header navbar on mobile 100% wide
+//// Make right-hand header parts fit with searchbox - see also .search.container above
+#header-collapse {
+  @media (min-width: $grid-float-breakpoint) {
+    flex: 0 1 40%;
+    padding-top: .5em;
+  }
+  // Make smaller to fit searchbox and right-hand nav-elements in
+  @media only screen and (min-width: $screen-sm-min) and (max-width: 994px) {
+    flex: 0 1 25%;
+  }
+
+  // Make right-hand header parts full width for advanced search page since it doesn't use any left-hand header parts
+  .template-name-advanced & {
+    @media (min-width: $grid-float-breakpoint) {
+      flex: 0 1 100%;
+    }
+  }
+}
+
+//// Define header navbar on mobile
 #header-collapse.collapse.in {
   @media (max-width: $screen-sm-max) {
-    width: 100%;
+    background-color: $header-bg-color;
+    // margin-top: -$navbar-height-xs - 10px; // pull over searchbox
 
     li > a.btn {
       text-align: left;
     }
 
     #langmenu {
-      padding-left: $grid-gutter-width / 2;
+      padding-left: ($grid-gutter-width / 2);
       width: 100%;
     }
+  }
+}
+
+// Remove cart text to make searchbox fit on intermediate tablets
+.cart-label {
+  @media only screen and (min-width: $screen-sm-min) and (max-width: 994px) {
+    display: none;
   }
 }
 
@@ -1017,10 +1125,10 @@ header,
   }
 }
 
-//// navbar-right - remove default negative right margin
+//// navbar-right - add negative right margin to align last button in row to content in sidebar below (right padding)
 @media (min-width: $grid-float-breakpoint) {
   .navbar-right {
-    margin-right: 0;
+    margin-right: -$navbar-padding-horizontal;
   }
 }
 
@@ -1037,14 +1145,26 @@ header,
 // NAVBAR - END
 
 // SEARCHBOX and Autocomplete
+// Make seachbox container flexible -- values should complement those of #header-collapse (right-hand side navigation elements)
+.search.container {
+  @media (min-width: $grid-float-breakpoint) {
+    flex: 0 1 60%;
+    padding-top: $button-top-padding;
+  }
+
+  // Make wider to fit searchbox and right-hand nav-elements in
+  @media only screen and (min-width: $screen-sm-min) and (max-width: 994px) {
+    flex: 0 1 75%;
+  }
+}
+
 //// this will get search box and buttons in line
 .searchForm {
-  .navbar-left,
-  .navbar-right {
+  .navbar-left {
     // push searchbox down on mobile + add border for better looks
     @media only screen and (max-width: $screen-xs-max) {
       border: 1px solid $border-color;
-      margin-bottom: $grid-gutter-width / 4;
+      margin-bottom: ($grid-gutter-width / 4);
       margin-top: 0;
     }
   }
@@ -1066,10 +1186,17 @@ header,
   .checkbox {
     clear: both;
     float: none;
-    padding-top: $grid-gutter-width / 4;
+    padding-top: ($grid-gutter-width / 4);
 
     input {
       margin-left: 0;
+    }
+  }
+
+  // make search area fit on Tablets up to 994px by reducing buttons
+  .find-label {
+    @media only screen and (min-width: $screen-sm-min) and (max-width: 994px) {
+      display: none;
     }
   }
 }
@@ -1081,7 +1208,7 @@ header,
       background-color: transparent;
       border: 0;
       box-shadow: none;
-      min-height: $grid-gutter-width / 2;
+      min-height: ($grid-gutter-width / 2);
       padding: 0;
     }
 
@@ -1090,14 +1217,14 @@ header,
       border: 0;
       margin-top: 0;
     }
-}
+  }
 }
 
 //// Autocomplete:
 ////// When using a fixed header + autocomplete, increase the z-index in
 ////// autocomplete-results to a value higher than the fixed navbar (1030)!
 .autocomplete-results {
-  z-index: 1031;
+  z-index: $zindex-navbar-fixed + 1;
 }
 
 //// Advanced Search links in header
@@ -1148,7 +1275,10 @@ header,
 //// When Breadcrumbs are added to header.phtml, it might be necessary to remove the breadcrumb bottom margin
 .breadcrumb {
   font-size: $font-size-breadcrumbs;
+  margin-bottom: 0;
+  margin-top: 0;
   padding-left: ($grid-gutter-width / 2 - 2px); // take 2 px off for borders
+  padding-top: 10px;
 
   // Divider:
   > li + li::before {
@@ -1165,42 +1295,27 @@ header,
 // BREADCRUMBS - END
 
 // MAIN CONTENT (SIDEBAR BELOW, ADVANCED SEARCH BELOW)
-#content {
-  // push content a little lower to allow for height of navbar/header, same needs to be applied to .sidebar, below!
-  .row:not(.short-view):first-of-type {
-    padding-top: $content-top-padding;
-
-    // correct content padding on subsequent rows
-    .row .row {
-      padding-top: 0;
-    }
-
-    // for all widths that use Offcanvas (767px) ($screen-xs-max)
-    @media only screen and (max-width: $screen-xs-max) {
-      padding-top: $content-top-padding * 4;
-
-      .result .checkbox {
-        margin-top: 0;
-      }
-    }
-  }
-}
-
 //// set background and add border round main content, also applies to footer
 .main .container,
 .main .container-fluid,
-footer .container {
+footer {
   background-color: $main-bg;
   border: 1px solid $border-color;
   padding-bottom: $grid-gutter-width / 1.5;
 }
 
-footer .container {
+footer {
   border-top: 0;
-  padding-top: $grid-gutter-width / 1.5;
+  padding-top: ($grid-gutter-width / 1.5);
 }
 
 //// Search results
+//// Add top padding to sidebar and content for better looks;
+.mainbody,
+.sidebar {
+  padding-top: $content-top-padding;
+}
+
 ////// Bulk Action Toolbar
 .bulk-action-buttons,
 .bulkActionButtons {
@@ -1220,14 +1335,6 @@ footer .container {
   margin-left: -($grid-gutter-width / 2);
 }
 
-////// Search results column: make full width on XS
-.search-results-col {
-  @media only screen and (max-width: $screen-xs-max) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
 //// Results and bulk action buttons -- add padding, to create normal column padding appearance
 .result,
 .bulk-action-buttons,
@@ -1237,11 +1344,9 @@ footer .container {
 
 //// Results (see BS SCSS/COMPONENTS/... for details)
 .result {
-  display: inline-block; // make sure background stripes display on entire container
   hyphens: auto;
   // Results padding - Do not add margin-top or -bottom as it will result in uneven heights
-  padding-bottom: $grid-gutter-width / 1.5;
-  padding-top: $grid-gutter-width / 1.5;
+  padding-bottom: ($grid-gutter-width / 2);
   width: 100%; // make full width, otherwise ugly look
 
   // Alternating colors in search results
@@ -1261,6 +1366,11 @@ footer .container {
     @media only screen and (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
       font-size: $font-size-base + 2px;
     }
+  }
+
+  // Make add-to-cart icon same color as link
+  .cart-link-icon {
+    color: inherit;
   }
 }
 
@@ -1299,15 +1409,15 @@ footer .container {
   @include content-centered-display-as-table;
 }
 
-//// Fix pagination on XS
+//// Fix pagination on XS to display fewer items and remove first and last
 .pagination {
   @media screen and (max-width: $screen-xs-max) {
-     li {
+    li {
       // hide last and first page buttons
       &.first,
       &.last,
-      // select 7th to 11th child
-      &:nth-child(n+10):nth-child(-n+13){
+        // select 7th to 11th child
+      &:nth-child(n+10):nth-child(-n+13) {
         display: none;
       }
     }
@@ -1320,30 +1430,42 @@ footer .container {
 
 //// Record View (Detail view)
 ////// Pager
-/////// The pager occurs in record - view but also in collection - view
+/////// The pager occurs in record/view but also in collection/view
 .pager {
   margin-bottom: 0;
 }
 
 ////// Pager - END
+
 ////// Tabs
+/////// Add padding-left to tabs area
+.record-tabs {
+  padding-left: 1em;
+
+  @media screen and (max-width: $screen-xs-max) {
+    padding-left: 0;
+  }
+}
+
 /////// Add left and right borders
 .tab-content {
   border-bottom: 1px solid $nav-tabs-border-color;
   border-left: 1px solid $nav-tabs-border-color;
   border-right: 1px solid $nav-tabs-border-color;
-  padding: $grid-gutter-width  / 2;
+  padding: ($grid-gutter-width / 2);
 }
 
 //////// Tab-content active needs to display 'inline-block' top display the border correctly (or content will bleed over)
 .tab-content > .active {
   display: inline-block;
+  // make tables inside tabs use full width
+  width: 100%;
 }
 
 ////// branch info, opening hours etc
 .holdings-tab {
   .collapse.in {
-    padding-left: $grid-gutter-width / 2;
+    padding-left: ($grid-gutter-width / 2);
   }
 }
 
@@ -1352,10 +1474,33 @@ footer .container {
   margin-top: 1em;
 }
 
+.jstree-anchor + .jstree-children {
+  margin-left: 18px;
+  margin-top: 7.5px;
+  padding-left: 0;
+  // 2nd level link, align in one vertical line
+  .jstree-anchor {
+    margin-left: 0;
+    padding-left: 0;
+  }
+}
+
 /////// prevent tree LIs from overspilling on small!
 .hierarchy-tree .jstree-anchor {
   hyphens: auto;
   white-space: normal;
+}
+
+// Current item
+.hierarchy-tree .jstree-clicked {
+  //background-color: $color-action;
+  padding-bottom: .25em;
+  padding-right: .5em;
+  padding-top: .5em;
+  &:hover,
+  &:focus {
+    color: $brand-secondary;
+  }
 }
 
 /////// Make dropdown-icon wider
@@ -1363,7 +1508,7 @@ footer .container {
 .hierarchy-tree .jstree-open > .jstree-ocl::before {
   font-size: 150%;
   margin-top: -5px;
-  min-width: 30px;
+  min-width: 30px; // do not translate into em
 }
 
 ////// Hierarchy tree - END
@@ -1402,9 +1547,9 @@ footer .container {
 //// Record View - END
 
 //// Home Page
-////// push searchbox well down
-.template-name-home .container {
-  padding-top: $grid-gutter-width / 2;
+////// Add top margin for better looks
+.searchHomeContent {
+  margin-top: 1em;
 }
 
 ////// browsing suggestion lists on home (prevent torn-apart look when 2 columns only)
@@ -1415,30 +1560,35 @@ footer .container {
 //// Home Page - END
 
 //// Advanced Search
+////// Set colors for remove search field buttons
+.adv-term-remove {
+  color: $alert-danger-color;
+
+  &:hover,
+  &:focus {
+    color: $brand-danger;
+    opacity: 1;
+  }
+}
+
 #advSearchForm {
-  // Push Searchform box back in
-  .group.row {
-    margin-left: 0;
-
-    // overwrite BS value here for column width to work
-    .search .middle {
-      width: auto;
-    }
-  }
-
-  // Redefine hover link colors over delete Xes
-  .help-block {
-    &:hover,
-    &:focus {
-      color: $brand-danger;
-      text-decoration: none;
-    }
-  }
-
   // Remove dotted lines around items when hovering over
   .close {
     &:hover,
-    &:focus {outline: none;}
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+////// Swap find and clear buttons for consistency
+.adv-submit {
+  .fnd-btn {
+    float: right;
+  }
+
+  .clear-btn {
+    float: left;
   }
 }
 
@@ -1447,22 +1597,76 @@ footer .container {
 // MAIN CONTENT - END
 
 // SIDEBAR
-//// Add top padding to sidebar for better looks -- same as for #content, above
-.sidebar {
-  padding-top: $content-top-padding / 2;
+//// pull content to right border for sidebar right
+.container .sidebar {
+  &.right {
+    @include pull-sidebar-to-right($margin-right-width);
+    padding-left: 0;
+  }
+}
+
+//// Style my account sidebar menues to get the same look as facets
+.myresearch-menu {
+  border-bottom: 1px solid $border-color;
+  border-left: 1px solid $border-color;
+  border-top: 1px solid $border-color;
+
+  a:not(:last-of-type) {
+    border-bottom: 1px solid $border-color;
+    padding: $sidebar-item-padding; // overwrite values from BS with more sensible values
+  }
+}
+
+//// Style facets to have the same height as items in myresearch-menu
+.facet-group .facet,
+.facet-group .title {
+  padding: $sidebar-item-padding;
+}
+
+
+.facet-group .facetOR.active {
+  // Style active facets to get proper left padding
+  .text {
+    text-indent: -3px;
+  }
+}
+
+//// Remove right-hand borders for facets on the right only,
+//// ONLY works when sidebar butts right border
+.sidebar.right {
+  .facet-group .facet,
+  .facet-group .title,
+.facet-group .collapse,
+.facet-group .collapsing,
+.facet-group > .facet {
+    @include right-border-on-sidebar($border-right-width);
+  }
+}
+
+////// Pull exclude facets to the right, align with accordion/collapse triangles and headings
+.facet-group .facet.excludable {
+  padding-left: 1.5em;
+  padding-right: .5em;
 }
 
 //// Offcanvas is used to widths of 767px ($screen-xs-max)
 @media only screen and (max-width: $screen-xs-max) {
   .offcanvas.active .sidebar {
-    margin-top: $grid-gutter-width / 2;
+    padding-right: ($grid-gutter-width / 2);
   }
 }
 
-//// Selected/active filters on top
-.sidebar .list-group-item.active {
+//// Sidebar standard items - fixme
+.sidebar a {
+  //  border: 1px solid $border-color;
+  //  margin-bottom: -1px;
+}
+
+//// Selected/active filters on top - fixme
+.sidebar .facet.active,
+.sidebar a.active {
   background-color: $brand-warning;
-  border-color: $border-color;
+  //  border-color: $border-color;
 
   // also include icon
   .fa {
@@ -1471,47 +1675,57 @@ footer .container {
 }
 
 //// Collapse-Facet Titles
-.list-group-item.title {
+.facet.title,
+.sidebar a.title {
   background-color: $brand-secondary;
 }
 
 //// Create hover-effect
-.list-group-item:hover:not(.button),
-.list-group-item:focus:not(.button) {
+.facet:hover:not(.button),
+.facet:focus:not(.button) {
   background: $sidebar-item-hover-bg;
+
+  .active-filters & {
+    background: $sidebar-item-active-hover-bg;
+  }
 }
 
-.list-group-item.active:hover:not(.button),
-.list-group-item.active:focus:not(.button) {
+.facet.active:hover:not(.button),
+.facet.active:focus:not(.button) {
   background: $sidebar-item-active-hover-bg;
 }
 
-//// OR- and AND-Facets, item counts in My Account
-.badge {
-  // remove right padding to align with accordion arrows
-  padding-right: 2px;
+//// OR- and AND-Facets + item counts in My Account
+///// Style the exclude icons
+.exclude i {
+  color: $badge-link-color;
 
-  a {
-    color: $badge-link-color;
+  &:hover,
+  &:focus {
+    color: $badge-link-hover-color;
+  }
+}
 
-    // make result number appear the same way as before it was linked up (#11177) - CK
-    &.badge-result-count {
-      color: $sidebar-badge-fa-color;
-      cursor: default;
-    }
+.itemCount {
+  &:hover,
+  &:focus {
+    color: $badge-link-hover-color;
 
-    // render only the exclude link element in strong hover color
-    i {
-      &:hover,
-      &:focus {
-        color: $badge-link-hover-color;
-      }
+    .active & {
+      color: $brand-secondary;
     }
   }
 }
 
-////// light color on dark, when active (My Account) - we need the parent for specificity
-.list-group-item.active > .badge {
+.badge {
+  font-size: 1em;
+  // remove right padding to align with accordion arrows
+  padding-right: 2px;
+}
+
+////// light color on dark, when active (Facets + My Account) - we need the parent for specificity
+.facet.active > .badge,
+.sidebar a.active > .badge {
   background-color: transparent;
   color: $btn-primary-color;
 }
@@ -1526,32 +1740,43 @@ footer .container {
 //// More-Toggle - END
 
 //// Toolbar in Detailview -- remove padding on SM up
+@media (max-width: $screen-xs-max) {
+  .record-nav > li > a,
+  .btn-bookbag-toggle {
+    text-align: left;
+  }
+}
+
 @media (min-width: $screen-sm-min) {
   .nav-stacked.nav > li > a {
     padding-left: 0;
     padding-right: 0;
   }
 }
-//// Toolbar in Detailview - END
 
+.nav .btn-bookbag-toggle a {
+  padding-left: 2px;
+}
+
+//// Toolbar in Detailview - END
 
 // SIDEBAR - END
 
 // FOOTER
-//// For border round footer, see 'footer .container' above
+//// For border around footer and background + top padding,  see 'footer' above
 
 //// Align footer lists to their headings
 footer ul {
-  padding-left: $grid-gutter-width / 2;
+  padding-left: ($grid-gutter-width / 2);
 }
 
 .powered-by {
-  padding: $grid-gutter-width / 2;
+  padding: ($grid-gutter-width / 2);
 
   img {
     height: 1.75em;
-    margin-left: $grid-gutter-width / 4;
-    margin-right: $grid-gutter-width / 4;
+    margin-left: ($grid-gutter-width / 4);
+    margin-right: ($grid-gutter-width / 4);
   }
 
   span {
@@ -1574,13 +1799,45 @@ footer ul {
     max-width: 85%;
     min-width: $modal-md;
     width: auto;
+
+    // complex nesting required to overwrite BS values, CK
+    #modal & {
+      input.form-control {
+        max-width: em(400px);
+      }
+    }
+  }
+}
+
+@media (min-width: $screen-md-min) {
+  // Automatically set modal's width for larger viewports
+  .modal-dialog {
+    width: $modal-lg;
   }
 }
 
 @media (min-width: $screen-lg-min) {
   .modal-dialog {
-    max-width: 900px;
+    max-width: em(900px);
   }
 }
 
 // MODALS - END
+
+// Bookbag
+//// Style items list in bookbag
+.cart ul li {
+  margin-bottom: .5em;
+}
+
+.record-checkbox {
+  float: left;
+  margin-right: .5em;
+
+  input[type='checkbox'],
+  input[type='checkbox']:focus {
+    margin-top: 2px;
+  }
+}
+
+// Bookbag - END

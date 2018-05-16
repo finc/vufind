@@ -23,4 +23,4 @@
 
 [General]
 ; base url to ai blob server
-baseUrl = "https://ai.ub.uni-leipzig.de/blob?%s"
+baseUrl = "https://{URL}/blob?%s"

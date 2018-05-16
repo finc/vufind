@@ -18,10 +18,8 @@ $config = [
         'factories' => [
             'record' => 'finc\Controller\Factory::getRecordController',
             'dds' => 'finc\Controller\Factory::getDocumentDeliveryServiceController',
-        ],
-        'invokables' => [
-            'ajax' => 'finc\Controller\AjaxController',
-            'my-research' => 'finc\Controller\MyResearchController'
+            'ajax' => 'finc\Controller\Factory::getAjaxController',
+            'my-research' => 'finc\Controller\Factory::getMyResearchController',
         ],
     ],
     'controller_plugins' => [
@@ -160,7 +158,7 @@ $config = [
 ];
 
 $nonTabRecordActions = [
-    'PDA', 'EmailHold'
+    'PDA', 'EmailHold', 'ReportErrors'
 ];
 
 
@@ -173,13 +171,15 @@ $recordRoutes = [
 
 // Define static routes -- Controller/Action strings
 $staticRoutes = [
-    'MyResearch/Acquisition', 'MyResearch/ResetPassword', 'dds/Home', 'dds/Email',
+    'MyResearch/Acquisition',
+    'MyResearch/ResetPassword',
+    'dds/Home',
+    'dds/Email',
     'Record/EblLink'
 ];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator($nonTabRecordActions);
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
-//$routeGenerator->addDynamicRoutes($config, $dynamicRoutes);
 $routeGenerator->addStaticRoutes($config, $staticRoutes);
 
 return $config;

@@ -26,6 +26,7 @@
  * @link     https://vufind.org/wiki/development:plugins:hierarchy_components Wiki
  */
 namespace finc\Resolver\Driver;
+
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -62,7 +63,8 @@ class Factory
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return Redi
+     * @return finc\Resolver\Driver\Redi
+     * @todo Not implemented in finc module yet?
      */
     public static function getRedi(ServiceManager $sm)
     {

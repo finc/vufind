@@ -26,8 +26,11 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  */
+
 namespace finc\Controller;
-use Zend\ServiceManager\ServiceManager;
+
+use Zend\ServiceManager\ServiceManager,
+    VuFind\Controller\Factory as FactoryBase;
 
 /**
  * Factory for various top-level VuFind services.
@@ -41,22 +44,43 @@ use Zend\ServiceManager\ServiceManager;
  *
  * @codeCoverageIgnore
  */
-class Factory
+class Factory extends FactoryBase
 {
     /**
-     * Construct the RecordController.
+     * Construct a generic controller.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param string         $name Name of table to construct (fully qualified
+     * class name, or else a class name within the current namespace)
+     * @param ServiceManager $sm   Service manager
      *
-     * @return RecordController
+     * @return object
+     * @throws \Exception Cannot construct __CLASS__
      */
-    public static function getRecordController(ServiceManager $sm)
+    public static function getGenericController($name, ServiceManager $sm)
     {
-        return new RecordController(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
-        );
+        // Prepend the current namespace unless we receive a FQCN:
+        $class = (strpos($name, '\\') === false)
+            ? static::getNamespace() . '\\' . $name : $name;
+                 if (!class_exists($class)) {
+                     throw new \Exception('Cannot construct ' . $class);
+        }
+        return new $class($sm->getServiceLocator());
+      }
+
+    /**
+     * Get namespace of class
+     *
+     * @return string Namespace
+     * @access private
+     */
+    private static function getNamespace()
+    {
+        return substr(
+            static::class, 0,
+            strrpos(static::class, '\\')
+          );
     }
-    
+
     /**
      * Construct the DocumentDeliveryServiceController.
      *
@@ -64,7 +88,9 @@ class Factory
      *
      * @return DocumentDeliveryServiceController
      */
-    public static function getDocumentDeliveryServiceController(ServiceManager $sm)
+    public static function getDocumentDeliveryServiceController(
+        ServiceManager $sm
+    )
     {
         $container = new \Zend\Session\Container(
             'DDS', $sm->getServiceLocator()->get('VuFind\SessionManager')
@@ -75,6 +101,19 @@ class Factory
             $container
         );
     }
-    
-    
+
+    /**
+     * Construct the RecordController.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return RecordController
+     */
+    public static function getRecordController(ServiceManager $sm)
+    {
+        return new RecordController(
+            $sm->getServiceLocator(),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        );
+    }
 }

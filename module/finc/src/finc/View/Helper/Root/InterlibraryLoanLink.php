@@ -53,7 +53,7 @@ class InterlibraryLoanLink extends AbstractHelper
         $url_search = "http://flportal.bsz-bw.de/servlet/locator?sigel=15";
         $url_default = "http://flportal.bsz-bw.de/jsp/start.jsp?sigel=15";
 
-        foreach (array('issn', 'isbn') as $signifier) {
+        foreach (['issn', 'isbn'] as $signifier) {
             $method = "getClean" . strtoupper($signifier);
             $$signifier = $driver->$method();
             if (!empty($$signifier)) {

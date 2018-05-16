@@ -93,11 +93,12 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
      *
      * @param \Zend\Config\Config $config VuFind configuration
      * @param \Zend\Config\Config $dds Document Delivery Service configuration
-     * @param \Zend\Http\Client $client Http client
+     * @param \Zend\Session\Container $session Session container
      */
-    public function __construct(\Zend\Config\Config $config,
-                                \Zend\Config\Config $dds,
-                                \Zend\Session\Container $session
+    public function __construct(
+        \Zend\Config\Config $config,
+        \Zend\Config\Config $dds,
+        \Zend\Session\Container $session
     ) {
         $this->config = array_merge($dds->toArray(), $config->toArray());
         $this->session = $session;
@@ -137,7 +138,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
      * Display Feedback home form.
      *
      * @return \Zend\View\Model\ViewModel
-     * @throws Exception
+     * @throws \Exception Authorization service missing
      */
     public function homeAction()
     {
@@ -150,7 +151,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
 
         $auth = $this->getAuthorizationService();
         if (!$auth) {
-            throw new Exception('Authorization service missing');
+            throw new \Exception('Authorization service missing');
         }
 
         if (!$auth->isGranted($this->accessPermission)) {
@@ -223,8 +224,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
         try {
             // Send Email
             $mailer = new Mailer(
-                $this->getServiceLocator()
-                    ->get('VuFind\Mailer')->getTransport()
+                $this->serviceLocator->get('VuFind\Mailer')->getTransport()
             );
             $mailer->sendTextHtml(
                 $email['to'],
@@ -258,10 +258,10 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
     /**
      * Private authentication function - DocDeliS JTW authentication
      *
-     * @params auth_path    Substitute of path for authentication.
-     * @return mixed        True if authentication successful, null if not
-     *                      successful, PEAR_Error on error.
-     * @throws Exception
+     * @param string $auth_path    Substitute of path for authentication.
+     *
+     * @return mixed                True if authentication successful, null if
+     *                              not successful, PEAR_Error on error.
      * @throws DDSException
      * @access protected
      */
@@ -321,7 +321,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
     /**
      * Private method for build and fill the email templates.
      *
-     * @params array $details   Details to build template
+     * @param array $details   Details to build template
      *
      * @return array [order|customer] Body texts for email
      * @access protected
@@ -459,7 +459,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
      */
     protected function createHttpClient()
     {
-        return $this->getServiceLocator()->get('VuFind\Http')->createClient();
+        return $this->serviceLocator->get('VuFind\Http')->createClient();
     }
 
     /**
@@ -490,9 +490,9 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
             $this->content = array_merge($this->content, $get);
         }
 
-        $structure = array('username', 'phone', 'email', 'userid', 'division',
+        $structure = ['username', 'phone', 'email', 'userid', 'division',
             'department', 'author', 'article', 'journal', 'issn',
-            'publishdate', 'number', 'pages', 'inputdepartment', 'remarks');
+            'publishdate', 'number', 'pages', 'inputdepartment', 'remarks'];
 
         foreach ($structure as $attribute) {
 
@@ -518,7 +518,8 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
                 case 'email':
                     $this->content[$attribute] =
                         (isset($user['email']) && strlen($user['email']) > 0)
-                            ? $user['email'] : $post[$attribute];
+                            ? $user['email']
+                            : (isset($post[$attribute]) ? $post[$attribute] : '');
                     break;
                 case 'inputdepartment':
                     $this->content[$attribute] =
@@ -532,12 +533,14 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
                 case 'username':
                     $this->content[$attribute] =
                         (isset($user['username']) && strlen($user['username']) > 0)
-                            ? trim($user['username']) : trim($post[$attribute]);
+                            ? trim($user['username'])
+                            : trim(isset($post[$attribute]) ? $post[$attribute] : '');
                     break;
                 case 'userid':
                     $this->content[$attribute] =
                         (isset($user['libraryCard']) && strlen($user['libraryCard']) > 0)
-                            ? $user['libraryCard'] : $post[$attribute];
+                            ? $user['libraryCard']
+                            : (isset($post[$attribute]) ? $post[$attribute] : '');
                     break;
                 default:
                     if (!isset($this->content[$attribute])) {
@@ -575,9 +578,9 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
         if (isset($this->config[$identifier][$var])) {
             return $this->config[$identifier][$var];
         } else {
-            throw new DDSException ('Variable [' . $identifier . '] ' . $var . 'is '
+            throw new DDSException(
+                'Variable [' . $identifier . '] ' . $var . 'is '
                 . 'not set at DDS.ini.');
-            return '';
         }
     }
 
@@ -591,8 +594,15 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
     private function preserveVarsAfterSuccessfulOrder()
     {
         $heap = [];
-        foreach (['department', 'inputdepartment', 'division', 'username', 'phone',
-                     'email', 'userid'] as $k) {
+        foreach ([
+            'department',
+            'inputdepartment',
+            'division',
+            'username',
+            'phone',
+            'email',
+            'userid'
+        ] as $k) {
             $heap[$k] = $this->content[$k];
         }
         $this->content = [];;
@@ -821,30 +831,27 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
         // get open url standard
         $version = $this->getOpenUrlVersion($getvars);
         // check if article
-        //if (true === $this->_isOpenUrlGenreArticle($getvars, $version)) {
         if ($version == 'v1_0') {
-            return array(
-                array('article' => 'rft_atitle'),
-                array('author' => array('rft_au', 'rft_aufirst|rft_aulast', 'rft_aucorp')),
-                array('journal' => array('rft_jtitle', 'rft_title')),
-                array('issn' => 'rft_issn'),
-                array('number' => 'rft_volume|rft_issue'),
-                array('publishdate' => 'rft_date'),
-                array('pages' => array('rft_pages', 'rft_spage|rft_epage'))
-            );
+            return [
+                ['article' => 'rft_atitle'],
+                ['author' => ['rft_au', 'rft_aufirst|rft_aulast', 'rft_aucorp']],
+                ['journal' => ['rft_jtitle', 'rft_title']],
+                ['issn' => 'rft_issn'],
+                ['number' => 'rft_volume|rft_issue'],
+                ['publishdate' => 'rft_date'],
+                ['pages' => ['rft_pages', 'rft_spage|rft_epage']]
+            ];
         } else {
-            return array(
-                array('article' => 'atitle'),
-                array('author' => array('aufirst|aulast')),
-                array('journal' => array('title')),
-                array('issn' => 'issn'),
-                array('number' => 'volume|issue'),
-                array('publishdate' => 'date'),
-                array('pages' => array('pages', 'spage|epage'))
-            );
+            return [
+                ['article' => 'atitle'],
+                ['author' => ['aufirst|aulast']],
+                ['journal' => ['title']],
+                ['issn' => 'issn'],
+                ['number' => 'volume|issue'],
+                ['publishdate' => 'date'],
+                ['pages' => ['pages', 'spage|epage']]
+            ];
         }
-        //}
-        return false;
     }
 
     /**
@@ -917,16 +924,22 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
 
         try {
             if (false === isset($this->config['DDS']['url'])) {
-                throw new DDSException('Set of url in [DDS] DDS.ini is binding.');
+                throw new DDSException(
+                    'Set of url in [DDS] DDS.ini is binding.'
+                );
             }
             $api_url = $this->config['DDS']['url'];
             if (false === isset($this->config['DDS']['ns'])) {
-                throw new DDSException('Set of namespace ns in [DDS] DDS.ini is binding.');
+                throw new DDSException(
+                    'Set of namespace ns in [DDS] DDS.ini is binding.'
+                );
             }
             $api_ns = $this->config['DDS']['ns'];
 
             $client = $this->createHttpClient();
-            $client->setUri($api_url . DIRECTORY_SEPARATOR . $api_ns . $request_path);
+            $client->setUri(
+                $api_url . DIRECTORY_SEPARATOR . $api_ns . $request_path
+            );
             $client->setMethod($request_type);
             $client->setRawBody($data);
             $client->setHeaders(
@@ -955,7 +968,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
                 } else {
                     $message = 'HTTP status ' . $response->getStatusCode() . ' received';
                 }
-                throw new DDSException ($message);
+                throw new DDSException($message);
             }
 
             return $this->parseJsonAsArray($response->getBody());
@@ -980,7 +993,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
         if (isset($responseArray['error'])) {
             throw new DDSException(
                 $responseArray['error'],
-                $responseArray['code']
+                isset($responseArray['code']) ? $responseArray['code'] : 400
             );
         }
         return $responseArray;
@@ -989,7 +1002,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
     /**
      * Refresh token if it is e.g. expired.
      *
-     * @params path     Substitute of path for refresh token.
+     * @param string $path Substitute of path for refresh token.
      *
      * @return mixed    True if token refreshed.
      * @access protected
@@ -1018,7 +1031,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
                 } else {
                     $message = 'HTTP status ' . $response->getStatusCode() . ' received';
                 }
-                throw new DDSException ($message);
+                throw new DDSException($message);
             }
 
             $responseArray = $this->parseJsonAsArray($response->getBody());
@@ -1038,7 +1051,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
     /**
      * Store triggered order to database
      *
-     * @params array $content Content
+     * @param array $content Content
      *
      * @access private
      * @return boolean true
@@ -1109,7 +1122,7 @@ class DocumentDeliveryServiceController extends \VuFind\Controller\AbstractBase 
      * Method to set subject for Subito order. Places two possibilities:
      * 1) If exists subject from mysql database 2) if not from subito.ini.
      *
-     * @params array $departmentdetails     Details of department.
+     * @param array $departmentdetails     Details of department.
      *
      * @return string
      * @access private

@@ -54,12 +54,12 @@ trait EmailProfileTrait
     protected function getEmailProfile($profile)
     {
         $mailConfig
-            = $this->getServiceLocator()->get('VuFind\Config')->get('EmailProfiles');
+            = $this->serviceLocator->get('VuFind\Config')->get('EmailProfiles');
 
         if (isset($mailConfig->$profile)) {
             return $mailConfig->$profile;
         } else {
-            $this->debug('Missing email profile: ' + $profile);
+            $this->debug('Missing email profile: ' . $profile);
             return [];
         }
     }

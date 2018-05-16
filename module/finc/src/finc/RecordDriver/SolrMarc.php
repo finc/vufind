@@ -87,9 +87,11 @@ class SolrMarc extends SolrDefault
      * returned as an array of chunks, increasing from least specific to most
      * specific.
      *
+     * @param boolean $extended If dynamic index extension activated
+     *
      * @return array
      */
-    public function getAllSubjectHeadings()
+    public function getAllSubjectHeadings($extended = false)
     {
         // These are the fields that may contain subject headings:
         $fields = [
@@ -1081,6 +1083,7 @@ class SolrMarc extends SolrDefault
      * Get access to the raw File_MARC object.
      *
      * @return \File_MARCBASE
+     * @throws \File_MARC_Exception
      */
     public function getMarcRecord()
     {

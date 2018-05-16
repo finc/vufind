@@ -598,9 +598,11 @@ trait SolrDefaultFincTrait
      * corporate/corporate_orig/corporate_secondary/corporate_secondary_orig/
      * secondary/secondary_orig keys.
      *
+     * @param array $dataFields
+     *
      * @return array
      */
-    public function getDeduplicatedAuthors()
+    public function getDeduplicatedAuthors($dataFields = [])
     {
         // use self:: referenced methods to make sure we are not using SolrMarc
         // methods
@@ -1087,7 +1089,7 @@ trait SolrDefaultFincTrait
      *
      * @param string $authordata
      *
-     * @return strings
+     * @return array
      */
     private function _filterAuthorDates( $authordata )
     {

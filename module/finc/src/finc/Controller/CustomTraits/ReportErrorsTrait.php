@@ -30,8 +30,7 @@ namespace finc\Controller\CustomTraits;
 use VuFind\Exception\Mail as MailException,
     finc\Mailer\Mailer,
     Zend\Mail\Address,
-    Zend\Validator\StringLength,
-    Zend\Validator\Identical;
+    Zend\Validator\StringLength;
 
 /**
  * ReportErrors Trait
@@ -137,7 +136,7 @@ trait ReportErrorsTrait
     /**
      * Send PDA order via e-mail.
      *
-     * @param $params Data to be used for Email template
+     * @param array $params Data to be used for Email template
      *
      * @return void
      * @throws MailException
@@ -193,8 +192,7 @@ trait ReportErrorsTrait
 
         // Get mailer
         $mailer = new Mailer(
-            $this->getServiceLocator()
-                ->get('VuFind\Mailer')->getTransport()
+            $this->serviceLocator->get('VuFind\Mailer')->getTransport()
         );
 
         // Send the email

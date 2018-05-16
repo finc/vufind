@@ -46,19 +46,9 @@ class RecordController extends \VuFind\Controller\RecordController implements
     use \VuFind\Log\LoggerAwareTrait;
     use CustomTraits\EblTrait;
     use CustomTraits\EmailHoldTrait;
-    use CustomTraits\PdaTrait;
     use CustomTraits\EmailProfileTrait;
-
-    /**
-     * Constructor
-     *
-     * @param \Zend\Config\Config $config VuFind configuration
-     */
-    public function __construct(\Zend\Config\Config $config)
-    {
-        // Call standard record controller initialization:
-        parent::__construct($config);
-    }
+    use CustomTraits\PdaTrait;
+    use CustomTraits\ReportErrorsTrait;
 
     /**
      * Returns rewrite object

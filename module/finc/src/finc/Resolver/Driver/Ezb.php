@@ -35,10 +35,10 @@
  * @link     https://vufind.org/wiki/development:plugins:link_resolver_drivers Wiki
  */
 namespace finc\Resolver\Driver;
-use DOMDocument, DOMXpath,
-    \VuFind\Resolver\Driver\DriverInterface as DriverInterface,
-    \VuFind\I18n\Translator\TranslatorAwareInterface as TranslatorAwareInterface;
 
+use DOMDocument, DOMXpath;
+use \VuFind\I18n\Translator\TranslatorAwareInterface as TranslatorAwareInterface;
+use \VuFind\Resolver\Driver\AbstractBase;
 /**
  * EZB Link Resolver Driver
  *
@@ -49,7 +49,7 @@ use DOMDocument, DOMXpath,
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:link_resolver_drivers Wiki
  */
-class Ezb implements DriverInterface, TranslatorAwareInterface
+class Ezb  extends AbstractBase implements TranslatorAwareInterface
 {
     use \VuFind\I18n\Translator\TranslatorAwareTrait;
 
@@ -63,7 +63,7 @@ class Ezb implements DriverInterface, TranslatorAwareInterface
     /**
      * Resolver configuration
      *
-     * @var \Zend\Config\Resolver
+     * @var \Zend\Config\Resolver $resolver
      */
     protected $config;
 
@@ -168,6 +168,20 @@ class Ezb implements DriverInterface, TranslatorAwareInterface
         $this->getPrintResults('3', 'Print partially available', $records, $xpath);
 
         return $records;
+    }
+
+    /**
+     * Allows for resolver driver specific enabling/disabling of the more options
+     * link which will link directly to the resolver URL. This should return false if
+     * the resolver returns data in XML or any other human unfriendly response.
+     *
+     * @return bool
+     */
+    public function supportsMoreOptionsLink()
+    {
+        // the EZB link resolver returns unstyled XML which is not helpful for the
+        // user
+        return false;
     }
 
     /**

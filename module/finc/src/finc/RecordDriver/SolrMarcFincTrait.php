@@ -222,7 +222,9 @@ trait SolrMarcFincTrait
     public function getLocalOrderInformation()
     {
         // loop through all existing LocalMarcFieldOfLibrary
-        if ($fields = $this->getMarcRecord()->getFields($this->getLocalMarcFieldOfLibrary())) {
+        if ($fields = $this->getMarcRecord()->getFields(
+            $this->getLocalMarcFieldOfLibrary())
+        ) {
             foreach($fields as $field) {
                 // return the first occurance of $m
                 if ($field->getSubfield('m')) {
@@ -892,7 +894,9 @@ trait SolrMarcFincTrait
     {
         $retval = [];
 
-        $fields = $this->getMarcRecord()->getFields($this->getLocalMarcFieldOfLibrary());
+        $fields = $this->getMarcRecord()->getFields(
+            $this->getLocalMarcFieldOfLibrary()
+        );
         if (!$fields) {
             return null;
         }
@@ -1137,6 +1141,8 @@ trait SolrMarcFincTrait
     {
         $retval = [];
         $defaultHeading = 'Note';
+        // container for collecting recordIDs to the result array #12941
+        $tempIds = [];
 
         $fields = $this->getMarcRecord()->getFields('787');
         if (!$fields) {
@@ -1152,24 +1158,57 @@ trait SolrMarcFincTrait
                         ? $a->getData() . ': ' . $t->getData()
                         : $a->getData();
 
-                    // does a linked record exist
-                    $link = ($w = $field->getSubfield('w')) ? $w->getData() : '';
+                    $linkFields = $field->getSubfields('w');
+                    foreach ($linkFields as $current) {
+                        $ids = $current->getData();
 
-                    // we expect the links to be ppns prefixed with an ISIL so strip
-                    // the ISIL
+                        // Extract parenthetical prefixes:
+                        if (preg_match(self::BSZ_PATTERN, $ids, $matches)) {
+                            // use the same key to set the record_id into the
+                            // $retval array like it is used for the other
+                            // content below
+                            $tempIds[$i->getData()]['record_id']
+                                = $matches[2] . $matches[3];
+                        }
+                    } // end foreach
+
+                    // add ids already here to the temporary array
+                    // instead of the end of the function with the return value
+                    $tempIds = $this->addFincIDToRecord($tempIds);
+
+                    // does a linked record exist
+                    $link = ($w = $field->getSubfield('w'))
+                        ? $w->getData() : '';
+
+                    // we expect the links to be ppns prefixed with an ISIL so
+                    // strip the ISIL
                     $ppn = preg_replace(
                         "/^\(([A-z])+\-([A-z0-9])+\)\s?/", "", $link
                     );
 
-                    // let's use the main entry heading as associative key and push
-                    // the gathered content into the retval array
+                    $record_id = null;
+                    if (!empty($tempIds[$i->getData()]['id'])) {
+                        $record_id = $tempIds[$i->getData()]['record_id'];
+                    }
+
+                    $id = null;
+                    if (!empty($tempIds[$i->getData()]['id'])) {
+                        $id = $tempIds[$i->getData()]['id'];
+                    }
+
+                    // let's use the main entry heading as associative key and
+                    // push the gathered content into the retval array
+                    // add recordIDs 'record_id' and 'id' to the result array
+                    // cmp. #12941
                     $retval[$i->getData()][] = [
                         'text' => $text,
-                        'link' => (!empty($ppn) ? $ppn : $link)
+                        'link' => (!empty($ppn) ? $ppn : $link),
+                        'record_id' => $record_id,
+                        'id' => $id
                     ];
                 } else {
-                    // no main entry heading found, so push subfield a's content into
-                    // retval using the defaultHeading
+                    // no main entry heading found, so push subfield a's content
+                    // into retval using the defaultHeading
                     $retval[$defaultHeading][] = [
                         'text' => $a->getData(),
                         'link' => ''
@@ -1177,6 +1216,7 @@ trait SolrMarcFincTrait
                 }
             }
         }
+
         return $retval;
     }
 
@@ -1709,9 +1749,11 @@ trait SolrMarcFincTrait
      * returned as an array of chunks, increasing from least specific to most
      * specific.
      *
+     * @param boolean $extended If dynamic index extension activated
+     *
      * @return array
      */
-    public function getAllSubjectHeadings()
+    public function getAllSubjectHeadings($extended = false)
     {
         // These are the fields that may contain subject headings:
         $fields = [

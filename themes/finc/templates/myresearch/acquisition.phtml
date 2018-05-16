@@ -7,51 +7,46 @@ $this->headTitle($this->translate('PDA::pda_form_title'));
 $this->layout()->breadcrumbs = '<li><a href="' . $this->url('myresearch-home') . '">' . $this->transEsc('Your Account') . '</a></li> <li class="active">' . $this->transEsc('PDA::pda_form_title') . '</li>';
 ?>
 
-<div class="row">
-    <div class="<?=$this->layoutClass('mainbody')?>">
-        <h2><?=$this->transEsc('PDA::pda_form_subtitle') ?></h2>
-        <?=$this->flashmessages() ?>
-        <form class="form-horizontal" method="post" action="" name="acquisitionForm">
-            <h6><?=$this->transEsc('PDA::pda_form_suggestions_limit') ?></h6>
-            <div class="form-group row">
-        <label class="col-sm-3 control-label" for="subject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span></label>
-        <div class="col-sm-9">
-                    <select name="field_of_study" class="form-control auto">
-                        <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text') ?></option>
-                        <? if (isset($fieldOfStudyList) && is_array($fieldOfStudyList)): ?>
-                            <? foreach ($fieldOfStudyList as $fieldOfStudy): ?>
-                                <option value="<?=$fieldOfStudy?>" <? if (isset($acquisitionFieldOfStudy) && ($acquisitionFieldOfStudy != '-1') && ($acquisitionFieldOfStudy == $fieldOfStudy)): ?> selected="selected"<? endif; ?>><?= $this->transEsc('PDA::fos_' . $fieldOfStudy) ?></option>
-                            <? endforeach; ?>
-                        <? endif; ?>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row">
-        <label class="col-sm-3 control-label" for="acquistion_reasons"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span></label>
-        <div class="col-sm-9">
-                    <textarea id="acquisition_reasons" type="text" cols="50" rows="5" name="reasons"><?=(isset($acquisitionStatement) && !empty($acquisitionStatement)) ? $acquisitionStatement : ''?></textarea>
-                </div>
-            </div>
-            <div class="form-group row">
-        <label class="col-sm-3 control-label" for="acquistion_proposal"><?=$this->transEsc('PDA::pda_form_proposal_label')?><span class="required">*</span></label>
-        <div class="col-sm-9">
-                    <textarea id="acquisition_proposal" type="text" cols="50" rows="5" name="proposal"><?=(isset($acquisitionProposal) && !empty($acquisitionProposal)) ? $acquisitionProposal : ''?></textarea>
-                </div>
-            </div>
-            <div class="form-group row">
-        <div class="col-sm-9 offset-sm-23">
-          <input class="btn btn-primary" type="submit" name="submit" value="<?=$this->transEsc('Submit')?>"/>
-                </div>
-            </div>
-            <div class="form-group row">
-        <div class="col-sm-9 offset-sm-23">
-                    <?=$this->transEsc('PDA::note_mandatory_fields') ?>
-                </div>
-            </div>
-        </form>
+<div class="<?=$this->layoutClass('mainbody')?>">
+  <h2><?=$this->transEsc('PDA::pda_form_subtitle')?></h2>
+  <?=$this->flashmessages()?>
+  <form method="post" action="" name="acquisitionForm">
+    <h6><?=$this->transEsc('PDA::pda_form_suggestions_limit')?></h6>
+
+    <div class="form-group">
+      <label class="control-label" for="subject"><?=$this->transEsc('PDA::pda_form_field_of_study_label')?><span class="required">*</span></label>
+      <select name="field_of_study" class="form-control" id="subject">
+          <option value="-1"><?=$this->transEsc('PDA::pda_form_field_of_study_text')?></option>
+          <? if (isset($fieldOfStudyList) && is_array($fieldOfStudyList)): ?>
+            <? foreach ($fieldOfStudyList as $fieldOfStudy): ?>
+              <option
+                value="<?=$fieldOfStudy?>" <? if (isset($acquisitionFieldOfStudy) && ($acquisitionFieldOfStudy != '-1') && ($acquisitionFieldOfStudy == $fieldOfStudy)): ?> selected="selected"<? endif; ?>><?=$this->transEsc('PDA::fos_' . $fieldOfStudy)?></option>
+            <? endforeach; ?>
+          <? endif; ?>
+        </select>
+      </div>
+
+    <div class="form-group">
+      <label class="control-label" for="acquistion_reasons"><?=$this->transEsc('PDA::pda_form_statement_label')?><span class="required">*</span></label>
+      <textarea id="acquisition_reasons" type="text" cols="50" rows="5" name="reasons" class="form-control"><?=(isset($acquisitionStatement) && !empty($acquisitionStatement)) ? $acquisitionStatement : ''?></textarea>
+      </div>
+
+    <div class="form-group">
+      <label class="control-label" for="acquistion_proposal"><?=$this->transEsc('PDA::pda_form_proposal_label')?><span class="required">*</span></label>
+      <textarea id="acquisition_proposal" class="form-control" type="text" cols="50" rows="5" name="proposal"><?=(isset($acquisitionProposal) && !empty($acquisitionProposal)) ? $acquisitionProposal : ''?></textarea>
     </div>
-    <div class="<?=$this->layoutClass('sidebar')?>">
-        <?=$this->context($this)->renderInContext("myresearch/menu.phtml", array('active' => 'aquisition'))?>
-    </div>
+
+    <div class="form-group">
+        <input class="btn btn-primary" type="submit" name="submit" value="<?=$this->transEsc('Submit')?>"/>
+      </div>
+
+    <div class="form-group">
+        <?=$this->transEsc('PDA::note_mandatory_fields')?>
+      </div>
+  </form>
 </div>
+<div class="<?=$this->layoutClass('sidebar')?>">
+  <?=$this->context($this)->renderInContext("myresearch/menu.phtml", array('active' => 'aquisition'))?>
+</div>
+
 <!-- finc: myresearch - acquisition - END -->

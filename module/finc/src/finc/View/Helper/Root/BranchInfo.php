@@ -58,7 +58,7 @@ class BranchInfo  extends AbstractHelper
     /**
      * Constructor
      *
-     * @param \Zend\Config\Config $config VuFind configuration
+     * @param ServiceLocatorInterface $serviceLocator
      */
     public function __construct(ServiceLocatorInterface $serviceLocator)
     {

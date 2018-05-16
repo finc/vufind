@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
  * @package  Tests
@@ -204,7 +204,7 @@ class HarvesterFactoryTest extends \PHPUnit_Framework_TestCase
         $response->expects($this->any())
             ->method('getBody')
             ->will($this->returnValue($this->getIdentifyResponse()));
-        $header = $this->getMock('Zend\Http\Header\RetryAfter');
+        $header = $this->getMockBuilder('Zend\Http\Header\RetryAfter')->getMock();
         $header->expects($this->once())
             ->method('getDeltaSeconds')
             ->will($this->returnValue(1));
@@ -276,17 +276,17 @@ class HarvesterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function getMockClient()
     {
-        $query = $this->getMock('Zend\Stdlib\Parameters');
-        $request = $this->getMock('Zend\Http\Request');
+        $query = $this->getMockBuilder('Zend\Stdlib\Parameters')->getMock();
+        $request = $this->getMockBuilder('Zend\Http\Request')->getMock();
         $request->expects($this->any())
             ->method('getQuery')
             ->will($this->returnValue($query));
-        $headers = $this->getMock('Zend\Http\Headers');
-        $response = $this->getMock('Zend\Http\Response');
+        $headers = $this->getMockBuilder('Zend\Http\Headers')->getMock();
+        $response = $this->getMockBuilder('Zend\Http\Response')->getMock();
         $response->expects($this->any())
             ->method('getHeaders')
             ->will($this->returnValue($headers));
-        $client = $this->getMock('Zend\Http\Client');
+        $client = $this->getMockBuilder('Zend\Http\Client')->getMock();
         $client->expects($this->any())
             ->method('getRequest')
             ->will($this->returnValue($request));

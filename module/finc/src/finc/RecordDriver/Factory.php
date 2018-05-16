@@ -87,7 +87,7 @@ class Factory
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return SolrMarcPDA
+     * @return SolrMarcFincPDA
      */
     public static function getSolrMarcFincPDA(ServiceManager $sm)
     {
@@ -230,7 +230,7 @@ class Factory
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return SolrLidoFinc
+     * @return SolrLido
      */
     public static function getSolrLido(ServiceManager $sm)
     {

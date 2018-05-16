@@ -24,11 +24,15 @@ Contributors
 - Nimlhug (Since 2012) / https://github.com/Nimlhug
 - A. Martin Llano (Since 2012) / https://github.com/amllano
 - Juan Basso (Since 2012) / https://github.com/jrbasso
+- Brian Ridley (Since 2013) / https://github.com/ptlis
+- Radosław Mejer (Since 2014) / https://github.com/radmen
+- Tobias Nyholm (Since 2014) / https://github.com/Nyholm
+- Gasillo (Since 2014) / https://github.com/Gasillo
+- Marc Würth (Since 2014) / https://github.com/ravage84
 
-
 ..
    Local Variables:
    mode: rst
    fill-column: 79
-   End: 
+   End:
    vim: et syn=rst tw=79

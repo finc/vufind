@@ -131,7 +131,6 @@ class EblRewrite
      *
      * @return string
      * @access private
-     * @throws Exception    There is no secret key defined in configuration
      */
     private function getEblIdentifier($userid, $timestamp, $statususer)
     {
@@ -145,7 +144,6 @@ class EblRewrite
      *
      * @return string
      * @access private
-     * @throws Exception    There is no secret key defined in configuration
      */
     private function getHashedUser($userid)
     {

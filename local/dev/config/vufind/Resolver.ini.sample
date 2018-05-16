@@ -9,17 +9,17 @@ embed_auto_load = false
 replace_other_urls = false
 
 [Redi]
-url             = "http://www.redi-bw.de/links/ubl?rl_site=ubl"
-rfr_id          = www.ub.uni-leipzig.de
+url             = "{URL}"
+rfr_id          = {RFR_ID}
 resolver        = redi
 
 [Ezb]
-url             = "http://services.d-nb.de/fize-service/gvr/full.xml"
-rfr_id          = www.ub.uni-leipzig.de
+url             = "{URL}"
+rfr_id          = {RFR_ID}
 resolver        = ezb
-sid = "ubl:vufind"
+sid = "{SID}:vufind"
 ;validStatesList = "0,1,2,3"
-bibid = "UBL"
-sigel = 15
-isil = "DE-15"
-bik = "952000-4"
+bibid = "{BIBID}"
+sigel = {ISIL NUMBER}
+isil = "{ISIL}"
+bik = "{BIK}"

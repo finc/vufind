@@ -1,0 +1,30 @@
+<!-- finc: RecordDriver - SolrAi - data-jTitle -->
+<? $jtitle = []; ?>
+<? if (!(empty($data))): ?>
+<? $issns = $this->driver->tryMethod('getISSNs'); ?>
+    <? ob_start(); ?>
+    <? if (!empty($issns)): ?>
+        <a href="<?=$this->record($this->driver)->getLink('isn', $issns)?>">
+            <?=$this->escapeHtml($data)?>
+        </a>
+    <? else: ?>
+        <?=$this->escapeHtml($jtitle)?>
+    <? endif; ?>
+    <?
+    $jtitle[] = trim(preg_replace('/\s+<\//', '</', ob_get_contents()));
+    ob_end_clean();
+    ?>
+<? endif; ?>
+<?
+    // please note: direction of iteration will be displayed
+    $methods = ['getVolume', 'getPublishDateSort', 'getIssues', 'getPages'];
+    foreach ($methods as $method) {
+        if (!(empty($retval = $this->driver->tryMethod($method)))) {
+            $jtitle[] = ($method == 'getPages')
+                ? $this->transEsc('p.') .' '. $this->escapeHtml($retval)
+                : $this->escapeHtml($retval);
+        }
+    }
+?>
+<?=implode(', ', $jtitle)?>
+<!-- finc: RecordDriver - SolrAi - data-jTitle - END -->

@@ -62,7 +62,7 @@ class ExternalCatalogueLink extends \Zend\View\Helper\AbstractHelper
     /**
      * Current RecordDriver
      *
-     * @var \VuFind\RecordDriver
+     * @var \VuFind\RecordDriver $driver
      */
     protected $driver;
 

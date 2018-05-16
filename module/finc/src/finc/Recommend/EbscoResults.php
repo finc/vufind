@@ -30,8 +30,6 @@
  */
 namespace finc\Recommend;
 
-use LosReCaptcha\Service\Exception;
-
 /**
  * Recommendation Module Factory Class
  *
@@ -104,15 +102,15 @@ class EbscoResults implements \VuFind\Recommend\RecommendInterface,
      *
      * @return void
      * @access public
-     * @throws Exception    Isil as namespace for service has not been set yet or
-     *                      is false.
+     * @throws \Exception Isil as namespace for service has not been set yet or
+     *                    is false.
      */
     public function setConfig($settings)
     {
         // Parse out parameters:
         $params = explode(':', $settings);
         if (!isset($params[0]) || (0 < preg_match('/\s/', $params[0]))) {
-            throw new Exception(
+            throw new \Exception(
                 'Isil as namespace for service has not been set yet or is false.'
             );
         }
@@ -156,7 +154,7 @@ class EbscoResults implements \VuFind\Recommend\RecommendInterface,
      *
      * @return void
      * @access public
-     * @throws Exception    JSON type error
+     * @throws \Exception    JSON type error
      */
     public function process($results)
     {
@@ -170,7 +168,7 @@ class EbscoResults implements \VuFind\Recommend\RecommendInterface,
             json_decode($results->getBody(), true)
         );
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception ('JSON type error ' . json_last_error_msg());
+            throw new \Exception('JSON type error ' . json_last_error_msg());
         }
     }
 

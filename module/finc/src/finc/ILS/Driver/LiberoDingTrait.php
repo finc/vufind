@@ -45,10 +45,12 @@ trait LiberoDingTrait
     /**
      * Get connection timeout of Libero request.
      *
+     * @param int $connectTimeout
+     *
      * @return int Connection timeout
      * @access protected
      */
-    protected function getConnectTimeout ( $connectTimeout = 500 )
+    protected function getConnectTimeout ($connectTimeout = 500)
     {
         return $test = (isset($this->config['LiberoDing']['connectTimeout'])
             && is_numeric($this->config['LiberoDing']['connectTimeout']))
@@ -59,10 +61,12 @@ trait LiberoDingTrait
     /**
      * Get response timeout of Libero request.
      *
+     * @param int $responseTimeout
+     *
      * @return int Response timeout.
      * @access protected
      */
-    protected function getResponseTimeout( $responseTimeout = 1000 )
+    protected function getResponseTimeout($responseTimeout = 1000)
     {
         return (isset($this->config['LiberoDing']['responseTimeout'])
             && is_numeric($this->config['LiberoDing']['responseTimeout']))
@@ -74,7 +78,7 @@ trait LiberoDingTrait
      * gets the webscraper url from config
      *
      * @return string
-     * @throws Exception if not defined
+     * @throws \Exception Webscraper url not defined
      */
     protected function getWebScraperUrl()
     {
@@ -89,7 +93,7 @@ trait LiberoDingTrait
      * gets the databasename from config
      *
      * @return string
-     * @throws Exception if not defined
+     * @throws \Exception No database name defined
      */
     protected function getDbName()
     {
@@ -104,7 +108,8 @@ trait LiberoDingTrait
      * Check if there exists a connection to a url.
      *
      * @access public
-     * @return boolean             Retruns true if a connection exists.
+     * @return boolean    Returns true if a connection exists
+     * @throws \Exception Throws ILSException
      */
     public function checkLiberoDingConnection ()
     {
@@ -149,7 +154,7 @@ trait LiberoDingTrait
      *
      * @param $patron
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      * @throws ILSException
      */
     protected function getSystemMessages($patron)
@@ -184,7 +189,7 @@ trait LiberoDingTrait
     /**
      * Remove libero system messages. No native function in vufind.
      *
-     * @param array  $inval      Associative array of key => value. Keys are:
+     * @param array  $patron     Associative array of key => value. Keys are:
      *                           dbName : databaseName of libero
      *                           memberCode : User ID returned by patronLogin
      *                           password : password of user
@@ -192,9 +197,13 @@ trait LiberoDingTrait
      * @param string $toDate     Deadline till all dates should be removed before
      *
      * @return boolean
+     * @throws \Exception Throws ILSException
      */
-    public function removeMySystemMessages($patron, $messageIdList = null, $toDate = null) {
-
+    public function removeMySystemMessages(
+        $patron,
+        $messageIdList = null,
+        $toDate = null
+    ) {
         $params                 = $this->_getLiberoDingRequestParams();
         $params['memberCode']   = $patron['cat_username'];
         $params['password']     = $patron['cat_password'];
@@ -240,8 +249,11 @@ trait LiberoDingTrait
      *     - zipCode      : location zip code
      *     - emailAddress : email address
      *     - reason       : reason of change
+     * @param array $patron Patron data
+     *
      * @return boolean true OK, false FAIL
      * @access public
+     * @throws \Exception Throws ILSException
      */
     public function setMyProfile($inval, $patron)
     {
@@ -319,6 +331,7 @@ trait LiberoDingTrait
      *
      * @return array An associative array
      * @see For content variables see method _profileDataMapper
+     * @throws \Exception Throws ILSException
      */
     protected function getLiberoDingProfile($patron, $mapped = true)
     {
@@ -416,7 +429,6 @@ trait LiberoDingTrait
      * Private Helper function to return LiberoDing request parameters
      *
      * @return array
-     * @throws Exception
      */
     private function _getLiberoDingRequestParams()
     {
@@ -443,8 +455,10 @@ trait LiberoDingTrait
      * Check the given result for key errorcode and return the requested resultKey
      * value
      *
-     * @param $result array
-     * @return array
+     * @param array $result
+     * @param string $resultKey     Key of $result
+     *
+     * @return mixed
      */
     private function _getLiberoDingResult($result, $resultKey)
     {

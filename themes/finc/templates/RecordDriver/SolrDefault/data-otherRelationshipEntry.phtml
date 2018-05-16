@@ -1,0 +1,19 @@
+<!-- finc: RecordDriver - solrDefault - data-otherRelationshipEntry -->
+<? if (!empty($data)): ?>
+    <? foreach ($data as $subject => $values): ?>
+        <tr>
+            <th><?=$this->transEsc($subject)?>: </th>
+            <td>
+                <? foreach ($values as $value): ?>
+                    <? if (!empty($value['link']) && $recordLink = $this->RecordLink()->getRecordLink($value['link'], 'record_id')): ?>
+                        <a href="<?=$recordLink?>"><?=$this->escapeHtml($value['text'])?></a>
+                    <? else: ?>
+                        <?=$this->escapeHtml($value['text'])?>
+                    <? endif; ?>
+                    <br/>
+                <? endforeach; ?>
+            </td>
+        </tr>
+    <? endforeach; ?>
+<? endif; ?>
+<!-- finc: RecordDriver - solrDefault - data-otherRelationshipEntry - END -->

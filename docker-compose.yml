@@ -1,7 +1,7 @@
 version: '2'
 services:
   lamp:
-    image: docker.io/ubleipzig/vufind2:php54
+    image: docker.io/ubleipzig/vufind2:php_5.6
     ports:
       - 80:80
       - 443:443

@@ -1,0 +1,3 @@
+<? foreach ($data as $index => $institution): ?>
+    <?= ($index > 0 ? '<br/>' : '') ?><?= $this->transEsc("source_$institution", array(), $this->translate($institution)) ?>
+<? endforeach; ?>
