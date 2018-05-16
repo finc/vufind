@@ -128,13 +128,12 @@ class BszController extends \VuFind\Controller\AbstractBase {
     public function dedupAction() {
         
         $config = $this->getServiceLocator()->get('VuFind/Config')->get('config')->get('Index');
-        $container = new \Zend\Session\Container(
-            'dedup', $this->getServiceLocator()->get('VuFind\SessionManager')
-        );
+        
+        $container = $this->restoreFromCookie();        
         
         $params = [
-            'group' => $config->get('group'),
-            'field' =>$config->get('group.field'),
+            'group' => $container->offsetExists('group') ? $container->offsetGet('group') : $config->get('group'),
+            'field' => $container->offsetExists('group_field') ? $container->offsetGet('group_field') : $config->get('group.field'),
             'limit' =>$config->get('group.limit'),            
         ];
         $view = $this->createViewModel();
@@ -142,7 +141,8 @@ class BszController extends \VuFind\Controller\AbstractBase {
         $post = $this->params()->fromPost();     
         
         // store form date in session and cookie
-        if (isset($post['group'])) {
+        if (isset($post['submit_dedup_form'])) {
+           
             $uri= $this->getRequest()->getUri();
             $cookie = new \Zend\Http\Header\SetCookie(
                     'group', 
@@ -162,13 +162,31 @@ class BszController extends \VuFind\Controller\AbstractBase {
             $header->addHeader($cookie);
 
             $container->offsetSet('group', $post['group']);
-            $container->offsetSet('group.field', $post['group_field']);            
+            $container->offsetSet('group_field', $post['group_field']);     
+            
+            $this->FlashMessenger()->addSuccessMessage('dedup_settings_success');
             
             
         }
         
         return $view;
         
+    }
+    
+    public function restoreFromCookie() 
+    {
+        $container = new \Zend\Session\Container(
+            'dedup', $this->getServiceLocator()->get('VuFind\SessionManager')
+        );
+        $cookie = $this->getRequest()->getCookie();
+        
+        if (isset($cookie->group)) {
+            $container->offsetSet('group', $cookie->group);
+        }
+        if (isset($cookie->group_field)) {
+            $container->offsetSet('group.field', $cookie->group_field);
+        }
+        return $container;
     }
 
     

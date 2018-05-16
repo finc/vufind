@@ -1,8 +1,10 @@
 <? 
   $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('dedup_settings') . '</li>';
-  $this->headTitle()->setPrefix($this->transEsc('Privacy'));
+  $this->headTitle()->setPrefix($this->transEsc('dedup_settings'));
 ?>
-<?=$this->flashmessages()?>
+<div class="col-sm-12">
+    <?=$this->flashmessages()?>    
+</div>
 <div class="col-sm-6">
     
     <h1><?=$this->transEsc('dedup_settings')?></h1>
@@ -23,13 +25,13 @@
         <div class="form-group">
             <label for="group.field" class="control-label col-sm-8"><?=$this->transEsc('dedup_settings_field')?></label>
             <div class="col-sm-4">
-                <input required type="text" id="group.field" name="group_field" value="<?=$this->escapeHtmlAttr($this->field)?>"/>
+                <input required type="text" id="group_field" name="group_field" value="<?=$this->escapeHtmlAttr($this->field)?>"/>
             </div>
         </div>
         
         <div class="form-group">        
             <div class="col-sm-offset-8 col-sm-4">
-              <button type="submit" class="btn btn-primary"><?=$this->transEsc('Submit')?></button>
+              <button type="submit" name="submit_dedup_form" value="1" class="btn btn-primary"><?=$this->transEsc('Submit')?></button>
             </div>
         </div>
         
