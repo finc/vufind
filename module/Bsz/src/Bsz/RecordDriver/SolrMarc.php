@@ -413,16 +413,24 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         return false;
     }
 
+    
+    /**
+     * Determine  if a record is freely available. 
+     * Indicator 2 references to the record itself. 
+     * 
+     * @return boolean
+     */
     public function isFree()
     {
-        $status = false;
-        $f856 = $this->getFieldsArray([856 => 'z']);
+        $f856 = $this->getMarcRecord()->getFields(856);
         foreach ($f856 as $field) {
-            if (strpos(strtolower($field), 'kostenfrei') !== FALSE) {
-                $status = true;
+            
+            $z = $field->getSubfield('z');
+            if (is_string($z) && strpos(strtolower($z), 'kostenfrei') !== FALSE && $field->getIndicator(2) == 0) {
+                return true;
             }
         }
-        return $status;
+        return false;
     }
 
     /**
