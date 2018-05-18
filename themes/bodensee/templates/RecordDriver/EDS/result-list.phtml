@@ -65,7 +65,7 @@
               $mot = isset($customLink['MouseOverText'])? $customLink['MouseOverText'] : '';
               $icon = isset($customLink['Icon']) ? $customLink['Icon'] : '';
               $name = isset($customLink['Text']) ? $customLink['Text'] : '';
-              // avaoid the image being force-loaded over http which breaks a https connection
+              // avoid the image being force-loaded over http which breaks a https connection
               $icon = str_replace('http://', '//', $icon);
           ?>
           <span>
