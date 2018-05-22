@@ -176,14 +176,21 @@ function keyboardShortcuts() {
 }
 /**
  * Prevent the searchbox from triggering an empty search which is slow.
+ * Add a popover to let the user know
  * @returns {undefined}
  */
 function avoidEmptySearch() {
+    
      var $tabs = $('#searchForm .nav-tabs');
-        var lookfor = $('#searchForm_lookfor').val();
+     var $input = $('#searchForm_lookfor');     
+     // limit to stop search
+     var limit = 2;
+     
      $tabs.find('a').click(function(e) {
         e.preventDefault()
         var href = $(this).attr('href');
+        var lookfor = $input.val();
+        
         if (lookfor.length === 0) {
             href = href.replace('Results', 'Home');             
         } else {
@@ -193,21 +200,20 @@ function avoidEmptySearch() {
         window.location.href = href;    
         
      });
-     console.log(lookfor.length)
      $('#searchForm').submit(function(e) {
-         if ($('#searchForm_lookfor').val().length <= 3) {
-             $('#searchForm_lookfor').attr('data-placement', 'bottom');
+         if ($input.val().length <= limit) {
+             $input.attr('data-placement', 'bottom');
 
-             $('#searchForm_lookfor').popover('show');
+             $input.popover('show');
              return false;
          } else {
-             $('#searchForm_lookfor').popover('hide');
+             $input.popover('hide');
              return true;
          }
      })
-     $('#searchForm_lookfor').on('change keydown paste input', function(e) {
-         if ($('#searchForm_lookfor').val().length > 3) { 
-             $('#searchForm_lookfor').popover('hide');
+     $input.on('change keydown paste input', function(e) {
+         if ($input.val().length > limit) { 
+             $input.popover('hide');
          }
      });
 
