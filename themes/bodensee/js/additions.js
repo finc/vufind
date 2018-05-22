@@ -201,7 +201,7 @@ function avoidEmptySearch() {
         
      });
      $('#searchForm').submit(function(e) {
-         if ($input.val().length <= limit) {
+         if ($input.val().replace( /\W*/gi,"" ).length <= limit) {
              $input.attr('data-placement', 'bottom');
 
              $input.popover('show');
@@ -212,7 +212,7 @@ function avoidEmptySearch() {
          }
      })
      $input.on('change keydown paste input', function(e) {
-         if ($input.val().length > limit) { 
+         if ($input.val().replace( /\W*/gi,"" ).length > limit) { 
              $input.popover('hide');
          }
      });
