@@ -180,9 +180,9 @@ function keyboardShortcuts() {
  */
 function avoidEmptySearch() {
      var $tabs = $('#searchForm .nav-tabs');
+        var lookfor = $('#searchForm_lookfor').val();
      $tabs.find('a').click(function(e) {
         e.preventDefault()
-        var lookfor = $('#searchForm_lookfor').val();
         var href = $(this).attr('href');
         if (lookfor.length === 0) {
             href = href.replace('Results', 'Home');             
@@ -192,6 +192,23 @@ function avoidEmptySearch() {
         // this is like clicking the manipulated link
         window.location.href = href;    
         
+     });
+     console.log(lookfor.length)
+     $('#searchForm').submit(function(e) {
+         if ($('#searchForm_lookfor').val().length <= 3) {
+             $('#searchForm_lookfor').attr('data-placement', 'bottom');
+
+             $('#searchForm_lookfor').popover('show');
+             return false;
+         } else {
+             $('#searchForm_lookfor').popover('hide');
+             return true;
+         }
+     })
+     $('#searchForm_lookfor').on('change keydown paste input', function(e) {
+         if ($('#searchForm_lookfor').val().length > 3) { 
+             $('#searchForm_lookfor').popover('hide');
+         }
      });
 
  }
