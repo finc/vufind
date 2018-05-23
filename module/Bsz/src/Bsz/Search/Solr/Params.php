@@ -2,6 +2,8 @@
 
 namespace Bsz\Search\Solr;
 use VuFindSearch\ParamBag, Bsz\Config;
+use Zend\Session\Container;
+use Zend\Http\Header\Cookie;
 
 /**
  * Description of Params
@@ -10,6 +12,26 @@ use VuFindSearch\ParamBag, Bsz\Config;
  */
 class Params extends \VuFind\Search\Solr\Params
 {
+    
+    /**
+     *
+     * @var Container 
+     */
+    protected $container;
+    
+    /**
+     *
+     * @var Cookie
+     */
+    protected $cookie;
+    
+    public function __construct($options, \VuFind\Config\PluginManager $configLoader,
+        HierarchicalFacetHelper $facetHelper = null, Container $container, Cookie $cookie = null) 
+    {
+        parent::__construct($options, $configLoader);
+        $this->container = $container;
+        $this->cookie = $cookie;
+    }
         /**
      * Return the current filters as an array of strings ['field:filter']
      *
@@ -69,14 +91,28 @@ class Params extends \VuFind\Search\Solr\Params
         // Fetch group params for deduplication
         $config = $this->configLoader->get('config');
         $index = $config->get('Index');
-        $group = (bool)$index->get('group');        
-        if ($group === true) {
+        $group = false;
+        
+        if ($this->container->offsetExists('group')) {
+            $group = $this->container->offsetGet('group');            
+        } elseif ($index->has('group')) {
+            $group = $index->get('group');
+        }
+        
+        if ((bool)$group === true) {
             $backendParams->add('group', 'true');
-
-            $group_field = (null !== $index->get('group.field'))? $index->get('group.field'): '';
+            if ($this->container->offsetExists('group_field')) {
+                $group_field = $this->container->offsetGet('group_field');
+            } elseif ($index->has('group.field')) {
+                $group_field = $index->get('group.field');                
+            }
             $backendParams->add('group.field', $group_field);
 
-            $group_limit = (null !== $index->get('group.limit'))? $index->get('group.limit'): '';
+            if ($this->container->offsetExists('group_limit')) {
+                $group_field = $this->container->offsetGet('group_limit');
+            } elseif ($index->has('group.limit')) {
+                $group_limit = $index->get('group.limit');                
+            };
             $backendParams->add('group.limit', $group_limit);
         }
         
@@ -167,5 +203,24 @@ class Params extends \VuFind\Search\Solr\Params
 //            }
 //        }
         return $hidden;
+    }
+    
+    /**
+     * This method reads the cookie and stores the information into the session 
+     * So we only need to process session bwlow. 
+     * 
+     */
+    
+    protected function restoreFromCookie() {
+        
+        if (isset($this->cookie->group)) {
+            $this->container->offsetSet('group', $this->cookie->group);
+        }
+        if (isset($this->cookie->group_field)) {
+            $this->container->offsetSet('group_field', $this->cookie->group_field);
+        }
+        if (isset($this->cookie->group_limit)) {
+            $this->container->offsetSet('group_limit', $this->cookie->group_limit);
+        }
     }
 }

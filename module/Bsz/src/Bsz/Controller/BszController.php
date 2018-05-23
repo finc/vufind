@@ -153,16 +153,26 @@ class BszController extends \VuFind\Controller\AbstractBase {
             $header = $this->getResponse()->getHeaders();
             $header->addHeader($cookie);
             $cookie = new \Zend\Http\Header\SetCookie(
-                    'group.field', 
+                    'group_field', 
                     $post['group_field'], 
                     time() + 14 * 24* 60 * 60, 
                     '/',
                     $uri->getHost() );
             $header = $this->getResponse()->getHeaders();
             $header->addHeader($cookie);
-
+            $cookie = new \Zend\Http\Header\SetCookie(
+                    'group_limit', 
+                    $post['group_limit'], 
+                    time() + 14 * 24* 60 * 60, 
+                    '/',
+                    $uri->getHost() );
+            $header = $this->getResponse()->getHeaders();
+            $header->addHeader($cookie);
+            
+            
             $container->offsetSet('group', $post['group']);
             $container->offsetSet('group_field', $post['group_field']);     
+            $container->offsetSet('group_limit', $post['group_limit']);     
             
             $this->FlashMessenger()->addSuccessMessage('dedup_settings_success');
             
@@ -184,7 +194,10 @@ class BszController extends \VuFind\Controller\AbstractBase {
             $container->offsetSet('group', $cookie->group);
         }
         if (isset($cookie->group_field)) {
-            $container->offsetSet('group.field', $cookie->group_field);
+            $container->offsetSet('group_field', $cookie->group_field);
+        }
+        if (isset($cookie->group_limit)) {
+            $container->offsetSet('group_limit', $cookie->group_limit);
         }
         return $container;
     }
