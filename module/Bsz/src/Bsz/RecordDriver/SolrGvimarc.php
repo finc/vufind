@@ -937,7 +937,11 @@ class SolrGvimarc extends SolrMarc
      */
     public function getGroupField()
     {   
-        $conf = $this->client->get('Index')->get('group.field');
+        if (isset($_SESSION['dedup']['group_field'])) {
+            $conf = $_SESSION['dedup']['group_field'];
+        } else {
+            $conf = $this->client->get('Index')->get('group.field');            
+        }
         if (is_string($conf) && isset($this->fields[$conf])) {
             return $this->fields[$conf];
         }
