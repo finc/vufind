@@ -88,6 +88,8 @@ class Params extends \VuFind\Search\Solr\Params
         $backendParams = new ParamBag();
         $backendParams->add('year', (int)date('Y')+1);      
         
+        $this->restoreFromCookie();
+        
         // Fetch group params for deduplication
         $config = $this->configLoader->get('config');
         $index = $config->get('Index');
@@ -109,7 +111,7 @@ class Params extends \VuFind\Search\Solr\Params
             $backendParams->add('group.field', $group_field);
 
             if ($this->container->offsetExists('group_limit')) {
-                $group_field = $this->container->offsetGet('group_limit');
+                $group_limit = $this->container->offsetGet('group_limit');
             } elseif ($index->has('group.limit')) {
                 $group_limit = $index->get('group.limit');                
             };

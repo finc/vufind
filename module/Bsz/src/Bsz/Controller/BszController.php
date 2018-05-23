@@ -134,7 +134,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
         $params = [
             'group' => $container->offsetExists('group') ? $container->offsetGet('group') : $config->get('group'),
             'field' => $container->offsetExists('group_field') ? $container->offsetGet('group_field') : $config->get('group.field'),
-            'limit' =>$config->get('group.limit'),            
+            'limit' => $container->offsetExists('group_limit') ? $container->offsetGet('group_limit') : $config->get('group.limit'),            
         ];
         $view = $this->createViewModel();
         $view->setVariables($params);

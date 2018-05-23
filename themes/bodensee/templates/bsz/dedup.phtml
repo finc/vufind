@@ -12,8 +12,8 @@
     
     <form method="POST" action="#"  class="form-horizontal" data-toggle="validator">
         <div class="form-group">
-            <label class="control-label col-sm-8"><?=$this->transEsc('dedup_settings_switch')?></label>
-            <div class="col-sm-4">
+            <label class="control-label col-sm-6"><?=$this->transEsc('dedup_settings_switch')?></label>
+            <div class="col-sm-6">
                 <label class="radio-inline" for="dedup-on">
                     <input required type="radio" name="group" value="1" id="dedup-on" <? if ($this->group == '1'):?> checked <? endif; ?> />An
                 </label>   
@@ -22,18 +22,29 @@
                 </label>  
             </div>            
         </div>
+        <div class="form-group has-info">
+            <label for="group.field" class="control-label col-sm-6"><?=$this->transEsc('dedup_settings_field')?></label>
+            <div class="col-sm-6">
+                <select required name="group_field" id="group_field">
+                    <? for ($i = 1; $i <= 10; $i++): ?>
+                    <option value="test_matchkey_<?=$i?>" <? if ('test_matchkey_'.$i == $this->field):?>selected<? endif; ?>>test_matchkey_<?=$i?></option>
+                    <? endfor; ?>
+                </select><span class="help-block"><?=$this->transEsc('dedup_settings_field_hint')?></span>
+            </div>
+        </div>
         <div class="form-group">
-            <label for="group.field" class="control-label col-sm-8"><?=$this->transEsc('dedup_settings_field')?></label>
-            <div class="col-sm-4">
-                <input required type="text" id="group_field" name="group_field" value="<?=$this->escapeHtmlAttr($this->field)?>"/>
+            <label for="group.limit" class="control-label col-sm-6"><?=$this->transEsc('dedup_settings_limit')?></label>
+            <div class="col-sm-6">
+                <input required type="number" min="3" max="100" id="group_limit" name="group_limit" value="<?=$this->escapeHtmlAttr($this->limit)?>"/>
             </div>
         </div>
         
         <div class="form-group">        
-            <div class="col-sm-offset-8 col-sm-4">
+            <div class="col-sm-offset-6 col-sm-6">
               <button type="submit" name="submit_dedup_form" value="1" class="btn btn-primary"><?=$this->transEsc('Submit')?></button>
             </div>
         </div>
+        
         
     </form>
     
