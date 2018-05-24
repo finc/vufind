@@ -43,7 +43,8 @@ class Factory {
         $container = new \Zend\Session\Container(
             'dedup', $sm->getServiceLocator()->get('VuFind\SessionManager')
         );
-        $cookie = $request = $sm->getServiceLocator()->get('Request')->getCookie();        
+        $request = $request = $sm->getServiceLocator()->get('Request');      
+        $cookie = $request->getCookie() ? $request->getCookie() : null;
         $params = new \Bsz\Search\Solr\Params($options, $config, null, $container, $cookie);      
         
         

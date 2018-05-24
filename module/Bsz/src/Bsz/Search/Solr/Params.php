@@ -97,7 +97,7 @@ class Params extends \VuFind\Search\Solr\Params
         
         if ($this->container->offsetExists('group')) {
             $group = $this->container->offsetGet('group');            
-        } elseif ($index->has('group')) {
+        } elseif ($index->get('group') !== null) {
             $group = $index->get('group');
         }
         
@@ -105,14 +105,14 @@ class Params extends \VuFind\Search\Solr\Params
             $backendParams->add('group', 'true');
             if ($this->container->offsetExists('group_field')) {
                 $group_field = $this->container->offsetGet('group_field');
-            } elseif ($index->has('group.field')) {
+            } elseif ($index->get('group.field') !== null ) {
                 $group_field = $index->get('group.field');                
             }
             $backendParams->add('group.field', $group_field);
 
             if ($this->container->offsetExists('group_limit')) {
                 $group_limit = $this->container->offsetGet('group_limit');
-            } elseif ($index->has('group.limit')) {
+            } elseif ($index->get('group.limit') !== null) {
                 $group_limit = $index->get('group.limit');                
             };
             $backendParams->add('group.limit', $group_limit);
@@ -213,16 +213,20 @@ class Params extends \VuFind\Search\Solr\Params
      * 
      */
     
-    protected function restoreFromCookie() {
+    protected function restoreFromCookie() 
+    {
+        if (isset($this->cookie)) {
+            if (isset($this->cookie->group)) {
+                $this->container->offsetSet('group', $this->cookie->group);
+            }
+            if (isset($this->cookie->group_field)) {
+                $this->container->offsetSet('group_field', $this->cookie->group_field);
+            }
+            if (isset($this->cookie->group_limit)) {
+                $this->container->offsetSet('group_limit', $this->cookie->group_limit);
+            }
+            
+        }
         
-        if (isset($this->cookie->group)) {
-            $this->container->offsetSet('group', $this->cookie->group);
-        }
-        if (isset($this->cookie->group_field)) {
-            $this->container->offsetSet('group_field', $this->cookie->group_field);
-        }
-        if (isset($this->cookie->group_limit)) {
-            $this->container->offsetSet('group_limit', $this->cookie->group_limit);
-        }
     }
 }
