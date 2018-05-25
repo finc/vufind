@@ -114,7 +114,7 @@ class RecordDataFormatterFactory
             ['helperMethod' => 'getFormatList']
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-escapeHtml.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
         );
         $spec->setTemplateLine(
             'Published',
@@ -216,7 +216,7 @@ class RecordDataFormatterFactory
             ['helperMethod' => 'getFormatList']
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-escapeHtml.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
         );
         $spec->setTemplateLine(
             'Additionals',
@@ -252,7 +252,7 @@ class RecordDataFormatterFactory
             ]
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-escapeHtml.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
         );
         $spec->setLine(
             'Format', 'getFormats', 'RecordHelper',
@@ -318,7 +318,7 @@ class RecordDataFormatterFactory
             ['helperMethod' => 'getFormatList']
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-escapeHtml.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
         );
         $spec->setTemplateLine(
             'Published',
@@ -610,7 +610,7 @@ class RecordDataFormatterFactory
         );
         // , context: "recordEvents"
         $spec->setTemplateLine(
-            'Language', 'getLanguages','data-escapeHtml.phtml'
+            'Language', 'getLanguages','data-transEscCommaSep.phtml'
         );
         $spec->setTemplateLine(
             'Time of origin', 'getDateSpan', 'data-dateSpan.phtml'
@@ -701,7 +701,7 @@ class RecordDataFormatterFactory
             ['helperMethod' => 'getFormatList']
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-escapeHtml.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
         );
         $spec->setTemplateLine(
             'Published',
