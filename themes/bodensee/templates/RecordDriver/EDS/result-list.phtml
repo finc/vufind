@@ -67,6 +67,7 @@
               $name = isset($customLink['Text']) ? $customLink['Text'] : '';
               // avoid the image being force-loaded over http which breaks a https connection
               $icon = str_replace('http://', '//', $icon);
+              $url = str_replace('http://', '//', $url);
           ?>
           <span>
             <a href="<?=$this->escapeHtmlAttr($url)?>" title="<?=$this->escapeHtmlAttr($mot)?>" class="custom-link modal-remote">

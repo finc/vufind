@@ -8,8 +8,8 @@
     $accessLevel = $this->driver->getAccessLevel();
     $restrictedView = empty($accessLevel) ? false : true;
 ?>
-<div class="media" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
-  <div class="media-left medium img-col">
+<div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">    
+    <div class="col-xs-12 col-sm-3 pull-right">
     <? if ($thumb): ?>
       <img src="<?=$this->escapeHtmlAttr($thumb)?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
     <? else: ?>
@@ -21,9 +21,9 @@
 
     <div class="external-links">
       <? $pLink = $this->driver->getPLink();
-          if($pLink): ?>
+          if($pLink && false): ?>
         <span>
-          <a href="<?=$this->escapeHtmlAttr($pLink)?>">
+          <a href="<?=$this->escapeHtmlAttr($pLink)?>" class="external">
             <?=$this->transEsc('View in EDS')?>
           </a>
         </span><br />
@@ -31,21 +31,21 @@
       <? $pdfLink = $this->driver->getPdfLink();
           if ($pdfLink): ?>
         <span>
-          <a href="<?=$pdfLink?>" class="icon pdf fulltext">
+          <a href="<?=$pdfLink?>" class="icon pdf fulltext external hasicon">
             <?=$this->transEsc('PDF Full Text')?>
           </a>
         </span><br />
       <? endif; ?>
       <? if ($this->driver->hasHTMLFullTextAvailable()): ?>
         <span>
-          <a href="<?=$this->recordLink()->getUrl($this->driver, 'fulltext')?>#html" class="icon html fulltext">
+          <a href="<?=$this->recordLink()->getUrl($this->driver, 'fulltext')?>#html" class="icon html fulltext external">
             <?=$this->transEsc('HTML Full Text')?>
           </a>
         </span><br />
       <? endif; ?>
     </div>
   </div>
-  <div class="media-body info-col">
+  <div class="col-sm-9">
     <h3 property="name"><?=$this->driver->getTitle()?></h3>
 
     <table class="table table-striped" summary="<?=$this->transEsc('Bibliographic Details')?>">
@@ -74,35 +74,42 @@
         </tr>
       <? elseif ($this->driver->hasHTMLFullTextAvailable() && $restrictedView): ?>
         <tr id="html">
-          <td>
+          <th>
             <?=$this->transEsc('Full text is not displayed to guests')?>
-          </td>
+          </th>
           <td>
-            <a class="login" href="<?=$this->url('myresearch-home')?>" rel="nofollow">
+            <a class="login external" href="<?=$this->url('myresearch-home')?>" rel="nofollow">
               <strong><?=$this->transEsc('Login for full access')?></strong>
             </a>
           </td>
         </tr>
       <? endif; ?>
-    </table>
-
-    <div class="resultItemLine4 custom-links">
-
-    <? $customLinks = array_merge($this->driver->getFTCustomLinks(), $this->driver->getCustomLinks());
-    if (!empty($customLinks)): ?>
+      <? $customLinks = array_merge($this->driver->getFTCustomLinks(), $this->driver->getCustomLinks());
+        if (!empty($customLinks)): ?>
       <? foreach ($customLinks as $customLink): ?>
       <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
           $mot = isset($customLink['MouseOverText'])? $customLink['MouseOverText'] : '';
           $icon = isset($customLink['Icon']) ? $customLink['Icon'] : '';
           $name = isset($customLink['Text']) ? $customLink['Text'] : '';
+          $icon = str_replace('http://', '//', $icon);
+          $url = str_replace('http://', '//', $url);
       ?>
-      <span>
-        <a href="<?=$this->escapeHtmlAttr($url)?>" target="_blank" title="<?=$this->escapeHtmlAttr($mot)?>" class="custom-link">
-          <? if ($icon): ?><img src="<?=$this->escapeHtmlAttr($icon)?>" /> <? endif; ?><?=$this->escapeHtml($name)?>
-        </a>
-      </span>
+      <tr>
+          <th><?=$this->transEsc('Custom Link')?></th>
+          <td>
+            <a href="<?=$this->escapeHtmlAttr($url)?>" target="_blank" title="<?=$this->escapeHtmlAttr($mot)?>" class="custom-link modal-remote">
+            <? if ($icon): ?><img src="<?=$this->escapeHtmlAttr($icon)?>" /> <? endif; ?><?=$this->escapeHtml($name)?>
+              
+          </td>  
+      </tr>
       <? endforeach; ?>
     <? endif; ?>
+    </table>
+
+    <div class="resultItemLine4 custom-links">
+
+    
     </div>
   </div>
 </div>
+<div class="nofloat"></div>
