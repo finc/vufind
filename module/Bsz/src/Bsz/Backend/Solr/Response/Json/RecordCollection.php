@@ -62,7 +62,8 @@ class RecordCollection extends \VuFindSearch\Backend\Solr\Response\Json\RecordCo
     public function getTotal() {
 
         return true === $this->isGrouped()
-            ? $this->response['grouped'][$this->groupFieldName]['ngroups']
+            ? $this->response['stats']['stats_fields'][$this->groupFieldName]['cardinality']
             : $this->response['response']['numFound'];
+        
     }
 }
