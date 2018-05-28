@@ -53,7 +53,11 @@ class Backend extends \VuFindSearch\Backend\Solr\Backend {
             if ($params->contains('group.limit', '')) {
                 $params->set('group.limit', '20');
             }
-            $params->set('group.ngroups', 'true');
+            // ngroups have massive performance penalty!
+            $params->set('group.ngroups', 'false'); 
+            $params->set('stats', 'true');
+            $params->set('stats.field', '{!cardinality=true}'.$params->get('group.field')['0']);
+
         } 
         
         $response   = $this->connector->search($params);
