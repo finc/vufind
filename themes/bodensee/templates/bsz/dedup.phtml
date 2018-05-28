@@ -26,7 +26,7 @@
             <label for="group.field" class="control-label col-sm-6"><?=$this->transEsc('dedup_settings_field')?></label>
             <div class="col-sm-6">
                 <select required name="group_field" id="group_field">
-                    <? for ($i = 1; $i <= 10; $i++): ?>
+                    <? for ($i = 1; $i <= 3; $i++): ?>
                     <option value="test_matchkey_<?=$i?>" <? if ('test_matchkey_'.$i == $this->field):?>selected<? endif; ?>>test_matchkey_<?=$i?></option>
                     <? endfor; ?>
                 </select><span class="help-block"><?=$this->transEsc('dedup_settings_field_hint')?></span>

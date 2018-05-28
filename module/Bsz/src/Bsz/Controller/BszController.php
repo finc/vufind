@@ -131,13 +131,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
         
         $container = $this->restoreFromCookie();        
         
-        $params = [
-            'group' => $container->offsetExists('group') ? $container->offsetGet('group') : $config->get('group'),
-            'field' => $container->offsetExists('group_field') ? $container->offsetGet('group_field') : $config->get('group.field'),
-            'limit' => $container->offsetExists('group_limit') ? $container->offsetGet('group_limit') : $config->get('group.limit'),            
-        ];
-        $view = $this->createViewModel();
-        $view->setVariables($params);
+       
         $post = $this->params()->fromPost();     
         
         // store form date in session and cookie
@@ -176,8 +170,22 @@ class BszController extends \VuFind\Controller\AbstractBase {
             
             $this->FlashMessenger()->addSuccessMessage('dedup_settings_success');
             
-            
+            $params = [
+               'group' => $post['group'],
+               'field' => $post['group_field'],
+               'limit' => $post['group_limit'],            
+            ];            
+        } else {
+            // Load default values from session or config
+            $params = [
+               'group' => $container->offsetExists('group') ? $container->offsetGet('group') : $config->get('group'),
+               'field' => $container->offsetExists('group_field') ? $container->offsetGet('group_field') : $config->get('group.field'),
+               'limit' => $container->offsetExists('group_limit') ? $container->offsetGet('group_limit') : $config->get('group.limit'),            
+            ];            
         }
+        
+        $view = $this->createViewModel();
+        $view->setVariables($params);
         
         return $view;
         
