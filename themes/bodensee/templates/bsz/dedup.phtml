@@ -29,6 +29,8 @@
                     <? for ($i = 1; $i <= 3; $i++): ?>
                     <option value="test_matchkey_<?=$i?>" <? if ('test_matchkey_'.$i == $this->field):?>selected<? endif; ?>>test_matchkey_<?=$i?></option>
                     <? endfor; ?>
+                    <option value="cluster_id" <? if ('cluster_id' == $this->field):?>selected<? endif; ?>>cluster_id</option>
+                    
                 </select><span class="help-block"><?=$this->transEsc('dedup_settings_field_hint')?></span>
             </div>
         </div>
