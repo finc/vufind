@@ -11,7 +11,8 @@ $config = [
             'test' => 'Bsz\Controller\TestController',
             'cart' => 'Bsz\Controller\CartController',
             'privacy' => 'Bsz\Controller\BszController',
-            'shib' => 'Bsz\Controller\ShibController'
+            'shib' => 'Bsz\Controller\ShibController',
+            'edsrecord' => 'Bsz\Controller\EdsrecordController',
         ],
         'factories' => [
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
@@ -75,6 +76,7 @@ $config = [
 //                    'solrdlrmarc' => 'Bsz\RecordDriver\Factory::getSolrDlrMarc',
 //                    'solrntrsoai' => 'Bsz\RecordDriver\Factory::getSolrNtrsoai',                 
 //                    'solrfismarc' => 'Bsz\RecordDriver\Factory::getSolrFisMarc',                    
+                     'eds' => 'Bsz\RecordDriver\Factory::getEDS',
                 ],
             ],
             'recordtab' => [
