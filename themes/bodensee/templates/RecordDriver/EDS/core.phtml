@@ -16,7 +16,7 @@
       <span class="recordcover pt-icon pt-<?=$this->driver->getPubTypeId()?>"></span>
     <? endif; ?>
     <? if ($pubType): ?>
-      <p><?=$this->transEsc($pubType)?></p>
+      <p class="text-center"><?=$this->transEsc($pubType)?></p>
     <? endif; ?>
 
     <div class="external-links">
@@ -95,7 +95,7 @@
           $url = str_replace('http://', '//', $url);
       ?>
       <tr>
-          <th><?=$this->transEsc('Custom Link')?></th>
+          <th><?=$this->transEsc('Custom Link')?>:</th>
           <td>
             <a href="<?=$this->escapeHtmlAttr($url)?>" target="_blank" title="<?=$this->escapeHtmlAttr($mot)?>" class="custom-link modal-remote">
             <? if ($icon): ?><img src="<?=$this->escapeHtmlAttr($icon)?>" /> <? endif; ?><?=$this->escapeHtml($name)?>
