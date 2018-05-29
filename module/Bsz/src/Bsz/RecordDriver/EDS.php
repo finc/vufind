@@ -144,10 +144,11 @@ class EDS extends \VuFind\RecordDriver\EDS {
         
         $linkedString = preg_replace_callback(
             "/\b(https?):\/\/(dx\.)?([-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)\b/i",
-            create_function(
-                '$matches',
-                'return "<a href=\'".($matches[2])."\'>".($matches[2])."</a>";'
-            ),
+            function ($matches) {
+                $class = "external";
+                return "<a class='$class' href='".($matches[0])."'>".
+                        htmlentities($matches[0])."</a>";
+            },
             $string
         );
         return $linkedString;
