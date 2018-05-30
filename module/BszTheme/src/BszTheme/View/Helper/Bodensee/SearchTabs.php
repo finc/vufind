@@ -39,7 +39,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return [
             'id' => $id,
             'class' => $class,
-            'icon' => $this->getIcon($class),            
+            'icon' => $this->getIcon($id),            
             'label' => $label,
             'permission' => $permissionName,
             'selected' => true
@@ -62,7 +62,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return [
             'id' => $id,
             'class' => $class,
-            'icon' => $this->getIcon($class),            
+            'icon' => $this->getIcon($id),            
             'label' => $label,
             'permission' => $permissionName,
             'selected' => false,
@@ -91,7 +91,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return [
             'id' => $id,
             'class' => $class,
-            'icon' => $this->getIcon($class),            
+            'icon' => $this->getIcon($id),            
             'label' => $label,
             'permission' => $permissionName,
             'selected' => false,
@@ -124,7 +124,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return [
             'id' => $id,
             'class' => $class,
-            'icon' => $this->getIcon($class),            
+            'icon' => $this->getIcon($id),            
             'label' => $label,
             'permission' => $permissionName,
             'selected' => false,
@@ -134,19 +134,19 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
     
     /**
      * Get Font Awesome Icon for tab
-     * @param string $class
+     * @param string $id
      * @return string
      */
-    public static function getIcon($class) {
-
-        switch (strtolower($class)) {
+    public static function getIcon($id) 
+    {
+        switch (strtolower($id)) {
             case 'eds': $icon = 'fa-newspaper-o';
                 break;
             case 'summon': $icon = 'fa-newspaper-o';
                 break;
-            case 'solr': $icon = 'fa-book';
-                break;
-            case 'interlending': $icon = 'fa-globe';
+            case 'solr:filtered1': $icon = 'fa-book';
+                break;   
+            case 'solr': $icon = 'fa-globe';
                 break;    
             case 'fis': $icon = 'fa-university';
                 break;    
