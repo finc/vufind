@@ -83,7 +83,8 @@ $config = [
                 'factories' => [
                     'volumes' => 'Bsz\RecordTab\Factory::getVolumes',                    
                     'articles' => 'Bsz\RecordTab\Factory::getArticles',                    
-                    'libraries' => 'Bsz\RecordTab\Factory::getLibraries',                    
+                    'libraries' => 'Bsz\RecordTab\Factory::getLibraries',
+                    'holdingsils' => 'Bsz\RecordTab\Factory::getHoldingsILS',
                 
                 ],
             ],
