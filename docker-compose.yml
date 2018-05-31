@@ -1,44 +1,89 @@
 version: '2'
 services:
-  lamp:
-    image: docker.io/ubleipzig/vufind2:php_5.6
+  php:
+    image: ubleipzig/vufind-php:5.6-5-debug
+    volumes:
+      - ./:/usr/local/vufind
+    environment:
+      VUFIND_LOCAL_DIR: /usr/local/vufind/local/dev
+      VUFIND_CACHE_DIR: /usr/local/vufind/data/cache
+      VUFIND_LOCAL_MODULES: finc
+      VUFIND_ENV: production
+
+  httpd:
+    image: ubleipzig/vufind-httpd:2.4-2
     ports:
       - 80:80
-      - 443:443
-      - 3306:3306
-      # Uncomment the following line if you want to access the Solr server
-      #- 8080:8080
     volumes:
-      - ./:/usr/local/vufind2:z
-      - db-data:/var/lib/mysql:z
-    networks:
-      - default
-    environment:
-      # Uncomment the following lines to configure Shibboleth
-      #- SHIB_SP_ENTITY_ID=https://hmt-eww.finc.info/shibboleth
-      #- SHIB_IDP_ENTITY_ID=https://shib02.hmt-leipzig.de/idp/shibboleth
-      #- SHIB_HOSTNAME=https://141.39.229.5:443
-      - VUFIND_SOLR=remote
-      - VUFIND_HTTPD_CONF=local/dev/httpd-vufind.conf
-      - SMTP_HOST=smtp
-      - SMTP_NAME=vufind3
-      - SMTP_PORT=25
+      - ./:/usr/local/vufind:ro
+      - ./data/cache:/var/cache/vufind:ro
     depends_on:
-      - smtp
-  smtp:
-    image: docker.io/useltmann/mailcollect:latest
+      - php
+
+  db:
+    image: mariadb:10.2
     ports:
-      - 143:143
-      - 25:25
+      - 127.0.0.1:3306:3306
+    volumes:
+      - mariadb-data:/var/lib/mysql:z
+    environment:
+      MYSQL_ROOT_PASSWORD: adminpw
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+  smtp:
+    image: useltmann/mailcollect:8-1
+    ports:
+      - '143:143'
+      - '25:25'
     volumes:
       - mail-data:/home/dev/Maildir:z
-      # Map a folder to Maildir if you do not want to access the smtp container via
-      # email client (don't forget to comment out above volumes definition).
-      #- "~/dockershare/Maildir:/home/dev/Maildir:z"
+
+  grunt:
+    image: ubleipzig/vufind-php:5.6-5-debug
+    volumes:
+      - ./:/usr/local/vufind:z
+      - npm-cache:/home/www-data/.npm
+    environment:
+      NODE_ENV: development
+    command: npm install && node_modules/.bin/grunt watch
+
+  composer:
+    image: ubleipzig/vufind-php:7.2-5-debug
+    volumes:
+      - ./:/usr/local/vufind:z
+      - composer-cache:/home/www-data/.composer
+    command: phing composer -Dcomposer_extra_params=--no-scripts
+
+  autoconfig:
+    image: ubleipzig/vufind-php:5.6-5-debug
+    volumes:
+      - ./:/usr/local/vufind:z
+    environment:
+      VUFIND_SITE: local
+      VUFIND_INSTANCE: dev
+      VUFIND_SKIP_GRUNT: "true"
+      VUFIND_SKIP_COMPOSER: "true"
+      VUFIND_DB_CLIENT: "%"
+      VUFIND_DB_ADMIN_PASSWORD: adminpw
+      VF_config_ini__Authentication__hash_passwords: "true"
+      VF_config_ini__Authentication__encrypt_ils_password: "true"
+      VF_config_ini__Database__database: mysql://vufind:vufindpw@db/vufind
+      VF_config_ini__Index__url: http://172.18.113.12:8080/solr
+      VF_config_ini__Mail__host: smtp
+      VF_config_ini__Mail__port: 25
+      VF_config_ini__Mail__username: dev
+      VF_config_ini__Mail__pasword: dev
+    command: sleep 10 && autoconfig vufind deploy
+    depends_on:
+      - db
 
 volumes:
-  db-data: {}
+  composer-cache: {}
+  npm-cache: {}
   mail-data: {}
+  mariadb-data: {}
 
 networks:
   default:

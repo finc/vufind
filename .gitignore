@@ -1,14 +1,15 @@
 # GNU Emacs temporary files
 .idea
+.vscode
 ChangeLog
 \#*
 .\#*
 TAGS
 *~
-composer.lock
 composer.phar
 import/solrmarc.log
 /solr
-node_modules
-public/swagger-ui
-.vagrant
+/vendor
+/node_modules
+/public/swagger-ui
+/.vagrant
