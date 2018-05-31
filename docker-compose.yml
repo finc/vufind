@@ -8,7 +8,7 @@ services:
       VUFIND_LOCAL_DIR: /usr/local/vufind/local/dev
       VUFIND_CACHE_DIR: /usr/local/vufind/data/cache
       VUFIND_LOCAL_MODULES: finc
-      VUFIND_ENV: production
+      VUFIND_ENV: development
 
   httpd:
     image: ubleipzig/vufind-httpd:2.4-2
@@ -63,8 +63,6 @@ services:
     environment:
       VUFIND_SITE: local
       VUFIND_INSTANCE: dev
-      VUFIND_SKIP_GRUNT: "true"
-      VUFIND_SKIP_COMPOSER: "true"
       VUFIND_DB_CLIENT: "%"
       VUFIND_DB_ADMIN_PASSWORD: adminpw
       VF_config_ini__Authentication__hash_passwords: "true"
