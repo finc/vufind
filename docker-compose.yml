@@ -19,6 +19,7 @@ services:
       - ./data/cache:/var/cache/vufind:ro
     depends_on:
       - php
+    command: httpd -D FOREGROUND -c "ProxyTimeout 3600"
 
   db:
     image: mariadb:10.2
