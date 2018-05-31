@@ -55,6 +55,9 @@ services:
     volumes:
       - ./:/usr/local/vufind:z
       - composer-cache:/home/www-data/.composer
+      - ${SSH_AUTH_SOCK}:/ssh-agent
+    environment:
+      SSH_AUTH_SOCK: /ssh-agent
     command: phing composer -Dcomposer_extra_params=--no-scripts
 
   autoconfig:
