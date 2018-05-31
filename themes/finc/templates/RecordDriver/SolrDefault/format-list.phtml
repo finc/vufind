@@ -1,0 +1,10 @@
+<? foreach ($this->driver->getFormats() as $format): ?>
+  <span class="format <?=$this->record($this->driver)->getFormatClass($format) ?>"><?=$this->transEsc($format) ?></span>
+<? endforeach; ?>
+<? /* New genre string to display nxt to format in RESULT LIST and RECORD/Detail View, #11703, CK */ ?>
+<? $genres = $this->driver->tryMethod('getGenreFacet');?>
+<? if (!empty($genres)): ?>
+  <? foreach($genres as $genre): ?>
+    <span class="format"><?=$this->transEsc($genre)?></span>
+  <?endforeach;?>
+<?endif;?>
