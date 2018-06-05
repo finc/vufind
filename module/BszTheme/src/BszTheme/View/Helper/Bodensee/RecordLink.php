@@ -92,19 +92,19 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
         return $services;
     }
     
-    public function linkPPN(\Bsz\RecordDriver\SolrMarc$driver) 
+    public function linkPPN(\Bsz\RecordDriver\SolrMarc $driver, $url = '') 
     {
         $id = $driver->getuniqueId();
         $pos = strpos($id, ')');
         $ppn = substr($id, $pos + 1);
         $recordHelper = $this->getView()->plugin('record');        
-       
-        if (!empty($this->baseUrl) && $driver->getNetwork() == 'SWB' 
-            && $recordHelper->isAtFirstIsil()
-        ) {
-            // Show link to aDIS
-            $link = str_replace('<PPN>', $ppn, $this->baseUrl);
-            
+        if ($driver->getNetwork() == 'SWB' && $recordHelper->isAtFirstIsil()) {
+            if (!empty($url) ) {
+                $link = str_replace('<PPN>', $ppn, $url);
+            } elseif (!empty($this->baseUrl)) {
+                // $link aDIS URL from config
+                $link = str_replace('<PPN>', $ppn, $this->baseUrl);
+            }
             return $this->getView()->render('Helpers/ppn.phtml', ['ppn' => $ppn, 'link' => $link, 'label' => 'To library OPAC' ]); 
         } else {
             // show link to Verbundsystem
