@@ -6,7 +6,7 @@
     $openUrlActive = $openUrl->isActive();
     // Account for replace_other_urls setting
     $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
-    $offlineMode = $this->ils()->getOfflineMode(true);
+    $offlineMode = $this->ils()->getOfflineMode();
     try {
         $holdings = $this->driver->getRealTimeHoldings();
     } catch (\VuFind\Exception\ILS $e) {
@@ -43,6 +43,7 @@
 <? endif; ?>
  <?// removed online access as this is listed in main section ?>
  <? $recallButtonCounter = 0 ?>
+<? if (isset($holdings['holdings'])): ?>
 <? foreach ($holdings['holdings'] as $holding): ?>
 <h3>
     
@@ -90,6 +91,7 @@
   <? endif; ?>
 </table>
 <? endforeach; ?>
+<? endif; ?>
 
 <? $history = $this->driver->getRealTimeHistory(); ?>
 <? if (is_array($history) && !empty($history)): ?>
