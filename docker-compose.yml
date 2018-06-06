@@ -90,7 +90,7 @@ volumes:
 networks:
   default:
     driver_opts:
-      com.docker.network.bridge.name: vufind-docker-bridge
+      com.docker.network.bridge.name: vufind-bridge
     driver: bridge
     ipam:
       driver: default
