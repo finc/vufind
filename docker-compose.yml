@@ -1,7 +1,7 @@
 version: '2'
 services:
   php:
-    image: ubleipzig/vufind-php:5.6-5-debug
+    image: ubleipzig/vufind-php:5.6-7-debug
     volumes:
       - ./:/usr/local/vufind
     environment:
@@ -42,7 +42,7 @@ services:
       - mail-data:/home/dev/Maildir:z
 
   grunt:
-    image: ubleipzig/vufind-php:5.6-5-debug
+    image: ubleipzig/vufind-php:5.6-7-debug
     volumes:
       - ./:/usr/local/vufind:z
       - npm-cache:/home/www-data/.npm
@@ -51,7 +51,7 @@ services:
     command: npm install && node_modules/.bin/grunt watch
 
   composer:
-    image: ubleipzig/vufind-php:7.2-5-debug
+    image: ubleipzig/vufind-php:7.2-7-debug
     volumes:
       - ./:/usr/local/vufind:z
       - composer-cache:/home/www-data/.composer
@@ -61,7 +61,7 @@ services:
     command: phing composer -Dcomposer_extra_params=--no-scripts
 
   autoconfig:
-    image: ubleipzig/vufind-php:5.6-5-debug
+    image: ubleipzig/vufind-php:5.6-7-debug
     volumes:
       - ./:/usr/local/vufind:z
     environment:
@@ -89,6 +89,8 @@ volumes:
 
 networks:
   default:
+    driver_opts:
+      com.docker.network.bridge.name: vufind-docker-bridge
     driver: bridge
     ipam:
       driver: default
