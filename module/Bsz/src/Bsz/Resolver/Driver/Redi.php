@@ -9,5 +9,16 @@ namespace Bsz\Resolver\Driver;
  */
 class Redi extends \VuFind\Resolver\Driver\Redi
 {
-    //put your code here
+       
+    /**
+     * Allows for resolver driver specific enabling/disabling of the more options
+     * link which will link directly to the resolver URL. This should return false if
+     * the resolver returns data in XML or any other human unfriendly response.
+     *
+     * @return bool
+     */
+    public function supportsMoreOptionsLink()
+    {
+        return false;
+    }
 }
