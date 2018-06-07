@@ -170,6 +170,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 }
             } else { // wrong credentials
                 $this->FlashMessenger()->addErrorMessage('ill_request_error_blocked');
+                $this->logError('ILL request blocked. Checkauth failed');
                 $success = false;
             }
         }
@@ -295,7 +296,8 @@ class RecordController extends \VuFind\Controller\RecordController
     public function checkAuth($params)
     {
         $library = $this->getLibraryBySigel($params['Sigel']);
-        $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');        
+        $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');     
+        $status = false;
 
         if (isset($library)) {
             // is shibboleth auth is used, we do not need to check anything. 
@@ -328,12 +330,13 @@ class RecordController extends \VuFind\Controller\RecordController
                 $this->logError($ex->getMessage());
                 $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
             }
-            return (isset($xml->status) && $xml->status == 'FLOK');            
+            $status = (isset($xml->status) && $xml->status == 'FLOK');            
         } else {
             $this->FlashMessenger()->addErrorMessage('ill_request_error_blocked');
-            $this->logError('ILL request blocked. Firewall? ');
-            return false;
+            $this->logError('ILL request blocked. Sigel not found ');
+            $status = false;
         }
+        return $status;
     }
 
     /**
