@@ -78,7 +78,18 @@ class Factory
         $resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAYOBJECT, new Library());
         $librariesTable = new Libraries('libraries', $adapter, null, $resultSetPrototype);
         return $librariesTable;
-    }   
+    }  
+    
+    public function getDedup(ServiceManager $sm) 
+    {
+        $config = $sm->get('VuFind\Config')->get('config')->get('Index');
+        $container = new \Zend\Session\Container(
+            'dedup', $sm->get('VuFind\SessionManager')
+        );
+        $response = $sm->get('Response');
+        $cookie = $sm->get('Request')->getCookie();
+        return new Dedup($config, $container, $response, $cookie);
+    }
     
 }
 

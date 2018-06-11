@@ -43,6 +43,7 @@ $config = [
         'factories' => [
             'bsz\config\client'     => 'Bsz\Config\Factory::getClient', 
             'bsz\config\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
+            'bsz\config\dedup'  => 'Bsz\Config\Factory::getDedup',  
             'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',            
             'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',            
             'bsz\holding'    => 'Bsz\Factory::getHolding',
