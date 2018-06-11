@@ -80,7 +80,7 @@ class Factory
         return $librariesTable;
     }  
     
-    public function getDedup(ServiceManager $sm) 
+    public static function getDedup(ServiceManager $sm) 
     {
         $config = $sm->get('VuFind\Config')->get('config')->get('Index');
         $container = new \Zend\Session\Container(

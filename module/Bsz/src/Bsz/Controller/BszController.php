@@ -143,6 +143,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
             $params = $dedup->getCurrentSettings();       
         }
         
+        
         $view = $this->createViewModel();
         $view->setVariables($params);
         
