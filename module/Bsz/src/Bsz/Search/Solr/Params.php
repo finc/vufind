@@ -2,8 +2,7 @@
 
 namespace Bsz\Search\Solr;
 use VuFindSearch\ParamBag, Bsz\Config;
-use Zend\Session\Container;
-use Zend\Http\Header\Cookie;
+use Bsz\Config\Dedup;
 
 /**
  * Description of Params
@@ -13,24 +12,14 @@ use Zend\Http\Header\Cookie;
 class Params extends \VuFind\Search\Solr\Params
 {
     
-    /**
-     *
-     * @var Container 
-     */
-    protected $container;
-    
-    /**
-     *
-     * @var Cookie
-     */
-    protected $cookie;
+    protected $dedup;
     
     public function __construct($options, \VuFind\Config\PluginManager $configLoader,
-        HierarchicalFacetHelper $facetHelper = null, Container $container, Cookie $cookie = null) 
+        HierarchicalFacetHelper $facetHelper = null, Dedup $dedup ) 
     {
         parent::__construct($options, $configLoader);
-        $this->container = $container;
-        $this->cookie = $cookie;
+        $$this->dedup = $dedup;
+
     }
         /**
      * Return the current filters as an array of strings ['field:filter']
