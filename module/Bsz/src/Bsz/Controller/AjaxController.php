@@ -236,6 +236,24 @@ class AjaxController extends \VuFind\Controller\AjaxController
 //    }
     
     public function dedupCheckboxAjax() {
-        echo 'Test';
+        $status = $this->params()->fromPost('status');
+        $status = $status == 'true' ? true : false;
+        
+//        $container = new \Zend\Session\Container(
+//            'dedup', 
+//        );
+//        
+//        $container->offsetSet('group', $status);
+        $uri= $this->getRequest()->getUri();
+        $cookie = new \Zend\Http\Header\SetCookie(
+            'group', 
+            $status, 
+            time() + 14 * 24* 60 * 60, 
+            '/',
+            $uri->getHost() );
+        $header = $this->getResponse()->getHeaders();
+        $header->addHeader($cookie);
+        
+        return $this->output([], self::STATUS_OK);
     }
 }
