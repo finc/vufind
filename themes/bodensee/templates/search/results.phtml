@@ -64,22 +64,23 @@
       <? endforeach; ?>
     <? endif; ?>
     <?=$this->flashmessages()?>
-  <nav class="search-header hidden-print">
-    <div class="search-stats">
-        <? if ($recordTotal > 0): ?>
-        <?=$this->context()->renderInContext('search/controls/showing.phtml', ['lookfor' => $lookfor, 'recordTotal' => $recordTotal]) ?>
-        <? else: ?>
-        <h2><?=$this->transEsc('nohit_heading')?></h2>
-        <? endif; ?>
-      </div>
-
-      <? if ($recordTotal > 0): ?>
-      <div class="search-controls">
-        <?=$this->render('search/controls/limit.phtml')?>
-          <?=$this->render('search/controls/sort.phtml')?>
-          <?=$this->render('search/controls/view.phtml')?>
+    <nav class="search-header hidden-print row">      
+        <div class="search-stats col-sm-6">
+            <? if ($recordTotal > 0): ?>
+            <?=$this->context()->renderInContext('search/controls/showing.phtml', ['lookfor' => $lookfor, 'recordTotal' => $recordTotal]) ?>
+            <? else: ?>
+            <h2><?=$this->transEsc('nohit_heading')?></h2>
+            <? endif; ?>
         </div>
-      <? endif; ?>
+
+        <? if ($recordTotal > 0): ?>
+        <div class="search-controls col-sm-6">
+            <?=$this->render('search/controls/limit.phtml')?>
+            <?=$this->render('search/controls/dedup.phtml')?>
+            <?=$this->render('search/controls/sort.phtml')?>
+            <?=$this->render('search/controls/view.phtml')?>
+        </div>
+        <? endif; ?>
   </nav>
     <? /* End Listing Options */ ?>
 
