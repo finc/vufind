@@ -1,8 +1,7 @@
-
 <form class="form-inline search-dedup" action="<?=$this->currentPath()?>" method="POST" name=""dedup">    
     <div class="form-group">
         <label for="dedup-checkbox"><?=$this->transEsc('group hits')?></label>
-        <input type="checkbox" name="dedup-enabled" value="" id="dedup-checkbox" checked/>          
+        <input type="checkbox" name="dedup-enabled" value="" id="dedup-checkbox" <? if ($this->dedup):?>checked<? endif; ?>/>          
     </div>
     <noscript>
     <p>Please enable JavaScript</p>

@@ -88,4 +88,9 @@ class Dedup
         ];
         return $params;
     }
+    
+    public function isActive() {
+        $conf = $this->getCurrentSettings();
+        return $conf['group'] == 1;
+    }
 }
