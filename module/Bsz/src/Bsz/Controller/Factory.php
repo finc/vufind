@@ -26,7 +26,7 @@ use Zend\ServiceManager\ServiceManager;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory {
+class Factory extends \VuFind\Controller\GenericFactory {
 
      /**
      * Construct the RecordController.
@@ -50,6 +50,6 @@ class Factory {
         );
     }
     
-    
+   
 }
 

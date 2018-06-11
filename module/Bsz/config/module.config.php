@@ -5,7 +5,6 @@ namespace Bsz\Module\Configuration;
 $config = [
     'controllers' => [
         'invokables' => [
-            'ajax' => 'Bsz\Controller\AjaxController',
             'bsz' => 'Bsz\Controller\BszController',
             'holding' => 'Bsz\Controller\HoldingController',
             'test' => 'Bsz\Controller\TestController',
@@ -15,6 +14,7 @@ $config = [
             'edsrecord' => 'Bsz\Controller\EdsrecordController',
         ],
         'factories' => [
+            'VuFind\Controller\AjaxController' => 'Bsz\Controller\Factory::getAjaxController',
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
             'VuFind\Controller\SearchController' => 'Bsz\Controller\Factory::getSearchController',
         ],
