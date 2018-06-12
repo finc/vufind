@@ -40,9 +40,8 @@ class Factory {
         $options = $sm->getServiceLocator()
             ->get('VuFind\SearchOptionsPluginManager')->get('solr');
         $dedup = $sm->getServiceLocator()->get('Bsz/Config/Dedup');
-        $params = new \Bsz\Search\Solr\Params($options, $config, null, $dedup);      
-        
-        
+        $params = new \Bsz\Search\Solr\Params($options, $config, null, $dedup);
+
         return $params;
     }
 }
