@@ -420,4 +420,46 @@ class Record extends \VuFind\View\Helper\Root\Record
         return isset($this->resolverConfig->General->replace_other_urls)
         && $this->resolverConfig->General->replace_other_urls;
     }
+
+    /**
+     * Get HTML to render a title.
+     *
+     * @param int $maxLength Maximum length of non-highlighted title.
+     *
+     * @return string
+     */
+    public function getTitleHtml($maxLength = 180)
+    {
+        $highlightedTitle = $this->driver->tryMethod('getHighlightedTitle');
+
+        $titleRegexPattern = '/(\s[\/\.:]\s*)*$/';
+        $shortTitle   = preg_replace(
+            $titleRegexPattern, '', trim($this->driver->tryMethod('getShortTitle'))
+        );
+        $subTitle     = preg_replace(
+            $titleRegexPattern, '', trim($this->driver->tryMethod('getSubTitle'))
+        );
+        $sectionTitle = preg_replace(
+            $titleRegexPattern, '', trim($this->driver->tryMethod('getTitleSection'))
+        );
+        $title = (!empty($shortTitle) ? $shortTitle : preg_replace(
+                $titleRegexPattern, '', trim($this->driver->tryMethod('getTitle'))
+            )) .
+            (!empty($subTitle) ? ': ' . $subTitle : '') .
+            (!empty($sectionTitle) ? ', ' . $sectionTitle : '');
+
+        if (!empty($highlightedTitle)) {
+            $highlight = $this->getView()->plugin('highlight');
+            $addEllipsis = $this->getView()->plugin('addEllipsis');
+            return $highlight($addEllipsis($highlightedTitle, $title));
+        }
+        if (!empty($title)) {
+            $escapeHtml = $this->getView()->plugin('escapeHtml');
+            $truncate = $this->getView()->plugin('truncate');
+            return $escapeHtml($truncate($title, $maxLength));
+        }
+        $transEsc = $this->getView()->plugin('transEsc');
+        return $transEsc('Title not available');
+    }
+
 }
