@@ -2,8 +2,7 @@
 
 namespace Bsz\Search\Solr;
 use VuFindSearch\ParamBag, Bsz\Config;
-use Zend\Session\Container;
-use Zend\Http\Header\Cookie;
+use Bsz\Config\Dedup;
 
 /**
  * Description of Params
@@ -13,24 +12,14 @@ use Zend\Http\Header\Cookie;
 class Params extends \VuFind\Search\Solr\Params
 {
     
-    /**
-     *
-     * @var Container 
-     */
-    protected $container;
-    
-    /**
-     *
-     * @var Cookie
-     */
-    protected $cookie;
+    protected $dedup;
     
     public function __construct($options, \VuFind\Config\PluginManager $configLoader,
-        HierarchicalFacetHelper $facetHelper = null, Container $container, Cookie $cookie = null) 
+        HierarchicalFacetHelper $facetHelper = null, Dedup $dedup ) 
     {
         parent::__construct($options, $configLoader);
-        $this->container = $container;
-        $this->cookie = $cookie;
+        $this->dedup = $dedup;
+
     }
         /**
      * Return the current filters as an array of strings ['field:filter']
@@ -95,23 +84,25 @@ class Params extends \VuFind\Search\Solr\Params
         $index = $config->get('Index');
         $group = false;
         
-        if ($this->container->offsetExists('group')) {
-            $group = $this->container->offsetGet('group');            
+        $dedupParams = $this->dedup->getCurrentSettings();
+        
+        if (isset($dedupParams['group'])) {
+            $group = $dedupParams['group'];            
         } elseif ($index->get('group') !== null) {
             $group = $index->get('group');
         }
         
         if ((bool)$group === true) {
             $backendParams->add('group', 'true');
-            if ($this->container->offsetExists('group_field')) {
-                $group_field = $this->container->offsetGet('group_field');
+            if (isset($dedupParams['group_field'])) {
+                $group_field = $dedupParams['group_field'];
             } elseif ($index->get('group.field') !== null ) {
                 $group_field = $index->get('group.field');                
             }
             $backendParams->add('group.field', $group_field);
 
-            if ($this->container->offsetExists('group_limit')) {
-                $group_limit = $this->container->offsetGet('group_limit');
+            if (isset($dedupParams['group_limit'])) {
+                $group_limit = $dedupParams['group_limit'];
             } elseif ($index->get('group.limit') !== null) {
                 $group_limit = $index->get('group.limit');                
             };

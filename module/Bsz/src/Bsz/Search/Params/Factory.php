@@ -39,15 +39,9 @@ class Factory {
         $config = $sm->getServiceLocator()->get('VuFind\Config');
         $options = $sm->getServiceLocator()
             ->get('VuFind\SearchOptionsPluginManager')->get('solr');
-        
-        $container = new \Zend\Session\Container(
-            'dedup', $sm->getServiceLocator()->get('VuFind\SessionManager')
-        );
-        $request = $request = $sm->getServiceLocator()->get('Request');      
-        $cookie = $request->getCookie() ? $request->getCookie() : null;
-        $params = new \Bsz\Search\Solr\Params($options, $config, null, $container, $cookie);      
-        
-        
+        $dedup = $sm->getServiceLocator()->get('Bsz/Config/Dedup');
+        $params = new \Bsz\Search\Solr\Params($options, $config, null, $dedup);
+
         return $params;
     }
 }
