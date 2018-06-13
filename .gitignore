@@ -6,13 +6,14 @@ ChangeLog
 .\#*
 TAGS
 *~
-composer.phar
-import/solrmarc.log
-/solr
+/downloads
 /vendor
+composer.phar
+import/solrmarc.log*
 /node_modules
 /public/swagger-ui
 /.vagrant
+/solr
 /auth.json
 /core
 /.env
