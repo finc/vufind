@@ -41,7 +41,6 @@ class Factory extends \VuFind\RecordDriver\Factory {
     }
     /**
      * Factory for SolrMarc record driver.
-     * @deprecated use specialized record_type classes
      *
      * @param ServiceManager $sm Service manager.
      *

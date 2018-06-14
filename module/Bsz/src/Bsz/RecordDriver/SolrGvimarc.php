@@ -21,7 +21,6 @@ namespace Bsz\RecordDriver;
 use Bsz\FormatMapper;
 
 /**
- * @deprecated use specialized record_type classes
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
