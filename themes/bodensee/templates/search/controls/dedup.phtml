@@ -1,3 +1,5 @@
+<? if ($this->results instanceof \VuFind\Search\Solr\Results): ?>
+
 <form class="form-inline search-dedup" action="<?=$this->currentPath()?>" method="POST" name=""dedup">    
     <div class="form-group">
         <label for="dedup-checkbox"><?=$this->transEsc('group hits')?></label>
@@ -7,3 +9,5 @@
     <p>Please enable JavaScript</p>
     </noscript>
 </form>
+
+<? endif; ?>
