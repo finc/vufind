@@ -76,9 +76,13 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface {
 
                 // Get first doc (as parent doc)
                 $docFirst = reset($docs);
+                
 
                 // Do sub records exist?
                 if (1 < count($docs)) {
+                    
+                    // We skip the masterrecord in group list 
+                    array_shift($docs);
 
                     // Create new collection for sub records
                     $collectionSub = new $this->collectionClass($docs);
