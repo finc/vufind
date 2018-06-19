@@ -1483,7 +1483,7 @@ trait SolrMarcFincTrait
     {
         $array = [];
         $fields = ['770','775','776'];
-        $subfields = ['a', 'l', 't', 'd', 'e', 'f', 'h', 'o', '7'];
+        $subfields = ['a', 'l', 't', 'd', 'e', 'f', 'h', 'o', '7','z'];
         $i = 0;
 
         foreach ($fields as $field) {
@@ -1937,15 +1937,36 @@ trait SolrMarcFincTrait
     /**
      * Get id of related items
      *
-     * @return string
+     * @return string|array
      * @access protected
      */
-    protected function getRelatedItems()
+    protected function getRelatedItems($allow_multiple_results=FALSE)
     {
-        return $this->getFirstFieldValue('776', ['z']);
+        if ($allow_multiple_results) {
+            return $this->getFieldArray('776', ['z']);
+        } else {
+            return $this->getFirstFieldValue('776', ['z']);
+        }
     }
 
-    /**
+    protected function getRelatedRecords($limit,$backend_id='Solr')
+    {
+
+        $related = $this->getRelatedItems(TRUE);
+
+        if (empty($related)) return [];
+
+        $query = new Query('isbn' . ':' . implode(' OR ',$related) . ' AND NOT id:' . $this->getUniqueID());
+
+        $result = $this->searchService->search($backend_id, $query,0,$limit);
+        $return['first_results'] = $result->getRecords();
+        if ($result->getTotal() > $limit) {
+            $return['more_query'] = $query->getString();
+        }
+        return $return;
+    }
+
+        /**
      * Get RVK classification number with metadata from Marc records.
      *
      * @return array
