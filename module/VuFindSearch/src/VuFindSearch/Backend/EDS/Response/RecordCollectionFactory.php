@@ -2,7 +2,7 @@
 /**
  * Factory for record collection.
  *
- * PHP version 7
+ * PHP version 5
  *
  * Copyright (C) EBSCO Industries 2013
  *
@@ -27,8 +27,8 @@
  */
 namespace VuFindSearch\Backend\EDS\Response;
 
-use VuFindSearch\Exception\InvalidArgumentException;
 use VuFindSearch\Response\RecordCollectionFactoryInterface;
+use VuFindSearch\Exception\InvalidArgumentException;
 
 /**
  * Factory for record collection.
@@ -100,7 +100,7 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface
         ) {
             // Format of the search response
             $records = $response['SearchResult']['Data']['Records'];
-        } elseif (isset($response['Records'])) { // Format of the retrieve response
+        } else if (isset($response['Records'])) { // Format of the retrieve response
             $records = $response['Records'];
         }
 
@@ -109,4 +109,5 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface
         }
         return $collection;
     }
+
 }

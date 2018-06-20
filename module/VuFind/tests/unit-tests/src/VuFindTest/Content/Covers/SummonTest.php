@@ -27,9 +27,7 @@
  * @link     https://vufind.org
  */
 namespace VuFindTest\Content\Covers;
-
-use VuFind\Content\Covers\Summon;
-use VuFindCode\ISBN;
+use VuFindCode\ISBN, VuFind\Content\Covers\Summon;
 
 /**
  * Unit tests for Summon cover loader.

@@ -33,8 +33,8 @@ use VuFindSearch\Backend\BrowZine\Connector;
 use VuFindSearch\Backend\BrowZine\QueryBuilder;
 use VuFindSearch\Backend\BrowZine\Response\RecordCollectionFactory;
 
-use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\FactoryInterface;
 
 /**
  * Factory for BrowZine backend.
@@ -77,7 +77,7 @@ class BrowZineBackendFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceLocator = $serviceLocator->getServiceLocator();
+        $this->serviceLocator = $serviceLocator;
         $configReader = $this->serviceLocator->get('VuFind\Config');
         $this->browzineConfig = $configReader->get('BrowZine');
         if ($this->serviceLocator->has('VuFind\Logger')) {

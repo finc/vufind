@@ -25,8 +25,8 @@
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace VuFind\ILS\Driver;
-
-use VuFind\Exception\ILS as ILSException;
+use VuFind\Config\Reader as ConfigReader,
+    VuFind\Exception\ILS as ILSException;
 
 /**
  * VuFind Connector for Polaris
@@ -244,6 +244,7 @@ class Polaris extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterf
                 'position' => $holds_response->QueuePosition,
                 'title'    => $holds_response->Title,
             ];
+
         }
         return $holds;
     }
@@ -301,6 +302,7 @@ class Polaris extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterf
                 //'designation' => $designation,
                 'holdable' => $holdings_response->Holdable,
             ];
+
         }
         return $holding;
     }
@@ -425,16 +427,17 @@ class Polaris extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterf
                 "holdrequest/{$response->RequestGUID}", 'PUT', '',
                 $reply_jsonrequest
             );
-
+      
             if ($reply_response->StatusValue == 1) {
                 // auto-reply success
-                return [ 'success' => true,  'sysMessage' => $response->Message ];
+                  return [ 'success' => true,  'sysMessage' => $response->Message ];
             } else {
-                return [ 'success' => false, 'sysMessage' => $response->Message ];
+                  return [ 'success' => false, 'sysMessage' => $response->Message ];
             }
         } else {
             return [ 'success' => false, 'sysMessage' => $response->Message ];
         }
+
     }
 
     /**
@@ -627,8 +630,8 @@ class Polaris extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterf
         }
 
         return $fineList;
-    }
 
+    }
     /**
      * Get Patron Profile
      *
@@ -749,6 +752,7 @@ class Polaris extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterf
                 'sysMessage' => $response->ItemRenewResult->BlockRows[0]->ErrorDesc,
                 ];
             }
+
         }
         $result = [
             'count' => $count, 'details' => $item_response,
@@ -875,7 +879,7 @@ class Polaris extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterf
                 . "$items_per_page&page=$page_offset", 'GET',
                 $patron['cat_password']
             );
-
+    
             $checkout_history_array = $response->PatronReadingHistoryGetRows;
             foreach ($checkout_history_array as $checkout_response) {
                 $date = $this->formatJSONTime($checkout_response->CheckOutDate);
@@ -949,7 +953,7 @@ class Polaris extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterf
                  'UserID' => '1',
                  'ActivationDate' => "$jsondate"
                 ];
-
+    
             $response = $this->makeRequest(
                 "patron/{$patron['cat_username']}/holdrequests/$hold_id/inactive",
                 'PUT', $patron['cat_password'], $jsonrequest
@@ -1015,7 +1019,7 @@ class Polaris extends AbstractBase implements \VuFindHttp\HttpServiceAwareInterf
                  'UserID' => '1',
                  'ActivationDate' => "$jsondate"
                  ];
-
+    
             $response = $this->makeRequest(
                 "patron/{$patron['cat_username']}/holdrequests/$hold_id/active",
                 'PUT', $patron['cat_password'], $jsonrequest

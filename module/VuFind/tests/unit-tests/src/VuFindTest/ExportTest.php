@@ -26,9 +26,7 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest;
-
-use VuFind\Export;
-use Zend\Config\Config;
+use VuFind\Export, Zend\Config\Config;
 
 /**
  * Export Support Test Class

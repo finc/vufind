@@ -28,8 +28,7 @@
  */
 namespace VuFindSearch\Backend\Solr\Response\Json;
 
-use Countable;
-use Iterator;
+use Countable, Iterator;
 
 /**
  * SOLR NamedList with parameter json.nl=arrarr.

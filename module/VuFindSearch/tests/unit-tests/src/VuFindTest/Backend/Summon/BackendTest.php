@@ -28,15 +28,15 @@
  */
 namespace VuFindSearch\Backend\Summon;
 
-use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
+use VuFindSearch\ParamBag;
+use VuFindSearch\Query\Query;
 
 use SerialsSolutions_Summon_Exception as SummonException;
 use SerialsSolutions_Summon_Query as SummonQuery;
 
-use VuFindSearch\ParamBag;
+use PHPUnit_Framework_TestCase as TestCase;
 
-use VuFindSearch\Query\Query;
+use InvalidArgumentException;
 
 /**
  * Unit tests for Summon Backend class.

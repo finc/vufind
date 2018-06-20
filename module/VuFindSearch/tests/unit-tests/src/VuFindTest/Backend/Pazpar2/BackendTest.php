@@ -28,10 +28,10 @@
  */
 namespace VuFindTest\Backend\Pazpar2;
 
-use InvalidArgumentException;
-use VuFindSearch\Backend\Pazpar2\Backend;
 use VuFindSearch\Query\Query;
+use VuFindSearch\Backend\Pazpar2\Backend;
 use VuFindTest\Unit\TestCase;
+use InvalidArgumentException;
 
 /**
  * Unit tests for Pazpar2 backend.

@@ -52,7 +52,7 @@ class Locator
     public static function getLocalConfigPath($filename, $path = null,
         $force = false
     ) {
-        if (null === $path) {
+        if (is_null($path)) {
             $path = 'config/vufind';
         }
         if (defined('LOCAL_OVERRIDE_DIR') && strlen(trim(LOCAL_OVERRIDE_DIR)) > 0) {

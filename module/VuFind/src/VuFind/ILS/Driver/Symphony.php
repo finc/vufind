@@ -27,7 +27,6 @@
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace VuFind\ILS\Driver;
-
 use SoapClient;
 use SoapFault;
 use SoapHeader;
@@ -207,7 +206,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
         $reset = false
     ) {
         $data = ['clientID' => $this->config['WebServices']['clientID']];
-        if (null !== $login) {
+        if (!is_null($login)) {
             $data['sessionToken']
                 = $this->getSessionToken($login, $password, $reset);
         }
@@ -546,9 +545,9 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
             }
 
             $library = $this->translatePolicyID('LIBR', $libraryID);
-            // ItemInfo does not include copy numbers, so we generate them under
-            // the assumption that items are being listed in order.
-            $copyNumber = 0;
+            $copyNumber = 0; // ItemInfo does not include copy numbers,
+                             // so we generate them under the assumption
+                             // that items are being listed in order.
 
             $itemInfos = is_array($callInfo->ItemInfo)
                 ? $callInfo->ItemInfo
@@ -1055,7 +1054,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
         return [];
     }
 
-    /**
+     /**
      * Patron Login
      *
      * This is responsible for authenticating a patron against the catalog.
@@ -1130,6 +1129,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
                         break;
                     }
                 }
+
             }
         }
 
@@ -1201,7 +1201,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
                 $group = null;
             }
 
-            list($lastname, $firstname)
+            list($lastname,$firstname)
                 = explode(', ', $result->patronInfo->displayName);
 
             $profile = [
@@ -1331,7 +1331,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
                 ];
             }
             return $holdList;
-        } catch (SoapFault $e) {
+        } catch(SoapFault $e) {
             return null;
         } catch (\Exception $e) {
             throw new ILSException($e->getMessage());
@@ -1410,7 +1410,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
         return $holdDetails['reqnum'];
     }
 
-    /**
+     /**
      * Cancel Holds
      *
      * Attempts to Cancel a hold on a particular item
@@ -1458,7 +1458,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
         return $result;
     }
 
-    /**
+     /**
      * Public Function which retrieves renew, hold and cancel settings from the
      * driver ini file.
      *
@@ -1466,7 +1466,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
      * @param array  $params   Optional feature-specific parameters (array)
      *
      * @return array An array with key-value pairs.
-     *
+      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getConfig($function, $params = null)

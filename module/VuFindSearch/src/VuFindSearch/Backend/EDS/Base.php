@@ -2,7 +2,7 @@
 /**
  * EBSCO Search API abstract base class
  *
- * PHP version 7
+ * PHP version 5
  *
  * Copyright (C) EBSCO Industries 2013
  *
@@ -22,11 +22,12 @@
  * @category EBSCOIndustries
  * @package  EBSCO
  * @author   Michelle Milton <mmilton@epnet.com>
- * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://edswiki.ebscohost.com/EDS_API_Documentation
  */
 namespace VuFindSearch\Backend\EDS;
+
+require_once dirname(__FILE__) . '/Exception.php';
 
 /**
  * EBSCO Search API abstract base class
@@ -37,7 +38,7 @@ namespace VuFindSearch\Backend\EDS;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://edswiki.ebscohost.com/EDS_API_Documentation
  */
-abstract class Base
+abstract class EdsApi_REST_Base
 {
     /**
      * A boolean value determining whether to print debug information
@@ -98,7 +99,7 @@ abstract class Base
     {
         if (is_array($settings)) {
             foreach ($settings as $key => $value) {
-                switch ($key) {
+                switch($key) {
                 case 'debug':
                     $this->debug = $value;
                     break;
@@ -189,6 +190,7 @@ abstract class Base
         $url = $this->edsApiHost . '/retrieve';
         $headers = $this->setTokens($authenticationToken, $sessionToken);
         return $this->call($url, $headers, $qs);
+
     }
 
     /**
@@ -225,7 +227,7 @@ abstract class Base
             "Authenticating: username: $username, password: $password, orgid: $orgid"
         );
         $url = $this->authHost . '/uidauth';
-        $org = $orgid ?? $this->orgId;
+        $org = isset($orgid) ? $orgid : $this->orgId;
         $authInfo = [];
         if (isset($username)) {
             $authInfo['UserId'] = $username;
@@ -237,7 +239,7 @@ abstract class Base
             $authInfo['orgid'] = $org;
         }
         $messageBody = json_encode($authInfo);
-        return $this->call($url, null, null, 'POST', $messageBody);
+        return $this->call($url, null,  null, 'POST', $messageBody);
     }
 
     /**
@@ -287,7 +289,7 @@ abstract class Base
      * @param string $message       Message to POST if $method is POST
      * @param string $messageFormat Format of request $messageBody and responses
      *
-     * @throws ApiException
+     * @throws \EbscoEdsApiException
      * @return object         EDS API response (or an Error object).
      */
     protected function call($baseUrl, $headerParams, $params = [],
@@ -322,7 +324,7 @@ abstract class Base
      *
      * @param array $input The raw response from Summon
      *
-     * @throws ApiException
+     * @throws EbscoEdsApiException
      * @return array       The processed response from EDS API
      */
     protected function process($input)
@@ -330,14 +332,14 @@ abstract class Base
         //process response.
         try {
             $result = json_decode($input, true);
-        } catch (\Exception $e) {
-            throw new ApiException(
+        } catch(Exception $e) {
+            throw new EbscoEdsApiException(
                 'An error occurred when processing EDS Api response: '
                 . $e->getMessage()
             );
         }
         if (!isset($result)) {
-            throw new ApiException('Unknown error processing response');
+            throw new EbscoEdsApiException('Unknown error processing response');
         }
         return $result;
     }

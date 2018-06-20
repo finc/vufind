@@ -28,12 +28,14 @@
  */
 namespace VuFind\Controller;
 
-use VuFind\Exception\ILS as ILSException;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\View\Model\ViewModel;
-use ZfcRbac\Service\AuthorizationServiceAwareInterface;
+use VuFind\Exception\Forbidden as ForbiddenException,
+    VuFind\Exception\ILS as ILSException,
+    Zend\Mvc\Controller\AbstractActionController,
+    Zend\Mvc\MvcEvent,
+    Zend\ServiceManager\ServiceLocatorInterface,
+    Zend\View\Model\ViewModel,
+    ZfcRbac\Service\AuthorizationServiceAwareInterface,
+    ZfcRbac\Service\AuthorizationServiceAwareTrait;
 
 /**
  * VuFind controller base class (defines some methods that can be shared by other
@@ -181,7 +183,7 @@ class AbstractBase extends AbstractActionController
             ) {
                 $view->userEmailInFrom = true;
                 $view->from = $user->email;
-            } elseif (isset($config->Mail->default_from)
+            } else if (isset($config->Mail->default_from)
                 && $config->Mail->default_from
             ) {
                 $view->from = $config->Mail->default_from;

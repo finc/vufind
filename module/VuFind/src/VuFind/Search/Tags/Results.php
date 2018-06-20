@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind\Search\Tags;
-
 use VuFind\Db\Table\Tags as TagsTable;
 use VuFind\Record\Loader;
 use VuFind\Search\Base\Results as BaseResults;

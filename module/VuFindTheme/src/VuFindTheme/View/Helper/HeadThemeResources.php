@@ -97,7 +97,7 @@ class HeadThemeResources extends \Zend\View\Helper\AbstractHelper
     protected function addMetaTags()
     {
         // Set up encoding:
-        $headMeta = $this->getView()->plugin('headMeta');
+        $headMeta = $this->getView()->plugin('headmeta');
         $headMeta()->prependHttpEquiv(
             'Content-Type', 'text/html; charset=' . $this->container->getEncoding()
         );
@@ -117,7 +117,7 @@ class HeadThemeResources extends \Zend\View\Helper\AbstractHelper
     protected function addLinks()
     {
         // Convenient shortcut to view helper:
-        $headLink = $this->getView()->plugin('headLink');
+        $headLink = $this->getView()->plugin('headlink');
 
         // Load CSS (make sure we prepend them in the appropriate order; theme
         // resources should load before extras added by individual templates):
@@ -144,13 +144,11 @@ class HeadThemeResources extends \Zend\View\Helper\AbstractHelper
         // If we have a favicon, load it now:
         $favicon = $this->container->getFavicon();
         if (!empty($favicon)) {
-            $imageLink = $this->getView()->plugin('imageLink');
-            $headLink(
-                [
-                    'href' => $imageLink($favicon),
-                    'type' => 'image/x-icon', 'rel' => 'shortcut icon'
-                ]
-            );
+            $imageLink = $this->getView()->plugin('imagelink');
+            $headLink([
+                'href' => $imageLink($favicon),
+                'type' => 'image/x-icon', 'rel' => 'shortcut icon'
+            ]);
         }
     }
 
@@ -162,7 +160,7 @@ class HeadThemeResources extends \Zend\View\Helper\AbstractHelper
     protected function addScripts()
     {
         // Load Javascript (same ordering considerations as CSS, above):
-        $headScript = $this->getView()->plugin('headScript');
+        $headScript = $this->getView()->plugin('headscript');
         foreach (array_reverse($this->container->getJs()) as $current) {
             $parts =  $this->parseSetting($current);
             $headScript()->prependFile(

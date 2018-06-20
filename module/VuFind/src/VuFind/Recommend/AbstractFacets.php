@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:plugins:recommendation_modules Wiki
  */
 namespace VuFind\Recommend;
-
 use Zend\Config\Config;
 
 /**

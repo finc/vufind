@@ -102,4 +102,5 @@ interface RecordCollectionInterface extends \Countable, \Iterator
      * @return void
      */
     public function add(RecordInterface $record);
+
 }

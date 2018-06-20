@@ -28,7 +28,6 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\Unit;
-
 use Behat\Mink\Element\Element;
 
 /**

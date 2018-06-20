@@ -28,8 +28,8 @@
  */
 namespace VuFindSearch\Backend\EIT\Response\XML;
 
-use VuFindSearch\Exception\InvalidArgumentException;
 use VuFindSearch\Response\RecordCollectionFactoryInterface;
+use VuFindSearch\Exception\InvalidArgumentException;
 
 /**
  * Simple XML-based factory for record collection.

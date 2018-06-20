@@ -26,9 +26,10 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\ServiceManager;
-
-use Zend\ServiceManager\AbstractPluginManager as Base;
-use Zend\ServiceManager\Exception\RuntimeException as ServiceManagerRuntimeException;
+use Zend\ServiceManager\AbstractPluginManager as Base,
+    Zend\ServiceManager\ConfigInterface,
+    Zend\ServiceManager\DelegatorFactoryInterface,
+    Zend\ServiceManager\Exception\RuntimeException as ServiceManagerRuntimeException;
 
 /**
  * VuFind Plugin Manager
@@ -57,7 +58,7 @@ abstract class AbstractPluginManager extends Base
     ) {
         parent::__construct($configOrContainerInstance, $v3config);
         $this->addInitializer(
-            'VuFind\ServiceManager\ZendPluginInitializer', false
+            ['VuFind\ServiceManager\Initializer', 'initPlugin'], false
         );
     }
 
@@ -74,8 +75,12 @@ abstract class AbstractPluginManager extends Base
      */
     public function validatePlugin($plugin)
     {
+        if ($plugin instanceof DelegatorFactoryInterface) {
+            return;
+        }
+        
         $expectedInterface = $this->getExpectedInterface();
-        if (!($plugin instanceof $expectedInterface)) {
+        if (!$plugin instanceof $expectedInterface) {
             throw new ServiceManagerRuntimeException(
                 'Plugin ' . get_class($plugin) . ' does not belong to '
                 . $expectedInterface

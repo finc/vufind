@@ -84,14 +84,10 @@ class SearchHandler
         foreach (self::$configKeys as $key) {
             $this->specs[$key] = isset($spec[$key]) ? $spec[$key] : [];
         }
-        
         // Set dismax handler to default if not specified:
         if (empty($this->specs['DismaxHandler'])) {
             $this->specs['DismaxHandler'] = $defaultDismaxHandler;
         }
-        
-        $this->specs['DismaxHandler'] = $defaultDismaxHandler;
-        
         // Set default mm handler if necessary:
         $this->setDefaultMustMatch();
     }
@@ -144,7 +140,7 @@ class SearchHandler
                 list($name, $value) = $param;
                 if ($name === 'bq') {
                     $boostQuery[] = $value;
-                } elseif ($name === 'bf') {
+                } else if ($name === 'bf') {
                     // BF parameter may contain multiple space-separated functions
                     // with individual boosts.  We need to parse this into _val_
                     // query components:
@@ -460,7 +456,7 @@ class SearchHandler
                     ')';
                 // ...and add a weight if we have one
                 $weight = $sw[1];
-                if (null !== $weight && $weight && $weight > 0) {
+                if (!is_null($weight) && $weight && $weight > 0) {
                     $sstring .= '^' . $weight;
                 }
                 // push it onto the stack of clauses
@@ -474,7 +470,7 @@ class SearchHandler
                     // Add the weight if we have one. Yes, I know, it's redundant
                     // code.
                     $weight = $spec[1];
-                    if (null !== $weight && $weight && $weight > 0) {
+                    if (!is_null($weight) && $weight && $weight > 0) {
                         $sstring .= '^' . $weight;
                     }
                     // ..and push it on the stack of clauses

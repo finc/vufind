@@ -28,7 +28,6 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Db\Table;
-
 use VuFind\Db\Row\RowGateway;
 use Zend\Db\Adapter\Adapter;
 

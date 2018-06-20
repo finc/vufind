@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\View\Helper\Root;
-
 use Zend\View\Helper\AbstractHelper;
 
 /**
@@ -50,9 +49,9 @@ class Browse extends AbstractHelper
      */
     public function getSolrField($action, $backup = null)
     {
-        $action = strtolower($action);
-        $backup = strtolower($backup);
-        switch ($action) {
+        $action = strToLower($action);
+        $backup = strToLower($backup);
+        switch($action) {
         case 'dewey':
             return 'dewey-hundreds';
         case 'lcc':

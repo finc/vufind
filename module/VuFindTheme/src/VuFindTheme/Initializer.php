@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFindTheme;
-
 use Zend\Config\Config;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\View\Http\InjectTemplateListener as BaseInjectTemplateListener;
@@ -269,7 +268,7 @@ class Initializer
     protected function sendThemeOptionsToView()
     {
         // Get access to the view model:
-        $viewModel = $this->serviceManager->get('ViewManager')->getViewModel();
+        $viewModel = $this->serviceManager->get('viewmanager')->getViewModel();
 
         // Send down the view options:
         $viewModel->setVariable('themeOptions', $this->getThemeOptions());
@@ -415,7 +414,7 @@ class Initializer
                 $translator = $this->serviceManager->get('VuFind\Translator');
 
                 $pm = $translator->getPluginManager();
-                $pm->get('ExtendedIni')->addToPathStack($pathStack);
+                $pm->get('extendedini')->addToPathStack($pathStack);
             } catch (\Zend\Mvc\Exception\BadMethodCallException $e) {
                 // This exception likely indicates that translation is disabled,
                 // so we can't proceed.

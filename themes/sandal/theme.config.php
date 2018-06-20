@@ -1,4 +1,4 @@
 <?php
-return [
+return array(
     'extends' => 'bootstrap3',
-];
+);

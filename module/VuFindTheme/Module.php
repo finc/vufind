@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development
  */
 namespace VuFindTheme;
-
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -89,13 +88,14 @@ class Module
     {
         return [
             'factories' => [
-                'headLink' => 'VuFindTheme\View\Helper\Factory::getHeadLink',
-                'headScript' => 'VuFindTheme\View\Helper\Factory::getHeadScript',
-                'headThemeResources' =>
+                'headlink' => 'VuFindTheme\View\Helper\Factory::getHeadLink',
+                'headscript' => 'VuFindTheme\View\Helper\Factory::getHeadScript',
+                'headthemeresources' =>
                     'VuFindTheme\View\Helper\Factory::getHeadThemeResources',
-                'imageLink' => 'VuFindTheme\View\Helper\Factory::getImageLink',
-                'inlineScript' =>
+                'imagelink' => 'VuFindTheme\View\Helper\Factory::getImageLink',
+                'inlinescript' =>
                     'VuFindTheme\View\Helper\Factory::getInlineScript',
+                'mobileurl' => 'VuFindTheme\View\Helper\Factory::getMobileUrl',
             ],
         ];
     }

@@ -28,12 +28,12 @@
  */
 namespace VuFindTest\Backend\Solr;
 
-use InvalidArgumentException;
+use VuFindSearch\Backend\Solr\HandlerMap;
 
 use PHPUnit_Framework_TestCase as TestCase;
 
+use InvalidArgumentException;
 use RuntimeException;
-use VuFindSearch\Backend\Solr\HandlerMap;
 
 /**
  * Unit tests for SOLR HandlerMap.

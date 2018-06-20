@@ -26,8 +26,7 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind;
-
-use Zend\Config\Config;
+use VuFind\SimpleXML, Zend\Config\Config;
 
 /**
  * Export support class

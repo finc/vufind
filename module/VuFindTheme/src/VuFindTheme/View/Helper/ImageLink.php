@@ -68,7 +68,7 @@ class ImageLink extends \Zend\View\Helper\AbstractHelper
         $relPath = 'images/' . $image;
         $currentTheme = $this->themeInfo->findContainingTheme($relPath);
 
-        if (null === $currentTheme) {
+        if (is_null($currentTheme)) {
             return null;
         }
 

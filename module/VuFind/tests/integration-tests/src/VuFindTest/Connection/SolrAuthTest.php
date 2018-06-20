@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\Integration\Connection;
-
 use VuFindSearch\Query\Query;
 
 /**
@@ -38,7 +37,7 @@ use VuFindSearch\Query\Query;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
-class SolrAuthTest extends \VuFindTest\Unit\DbTestCase
+class SolrAuthTest extends \VuFindTest\Unit\TestCase
 {
     /**
      * Standard setup method.

@@ -73,17 +73,6 @@ class SearchController extends AbstractSearch
     }
 
     /**
-     * Show facet list for Solr-driven collections.
-     *
-     * @return mixed
-     */
-    public function collectionfacetlistAction()
-    {
-        $this->searchClassId = 'SolrCollection';
-        return $this->facetListAction();
-    }
-
-    /**
      * Email action - Allows the email form to appear.
      *
      * @return mixed
@@ -171,7 +160,7 @@ class SearchController extends AbstractSearch
         ) {
             $illYes['selected'] = true;
             $savedSearch->getParams()->removeFilter('illustrated:Illustrated');
-        } elseif ($savedSearch
+        } else if ($savedSearch
             && $savedSearch->getParams()->hasFilter('illustrated:"Not Illustrated"')
         ) {
             $illNo['selected'] = true;
@@ -247,18 +236,43 @@ class SearchController extends AbstractSearch
         if ($this->params()->fromQuery('require_login', 'no') !== 'no' && !$user) {
             return $this->forceLogin();
         }
-        $userId = is_object($user) ? $user->id : null;
 
-        $searchHistoryHelper = $this->serviceLocator->get('VuFind\Search\History');
+        // Retrieve search history
+        $search = $this->getTable('Search');
+        $searchHistory = $search->getSearches(
+            $this->serviceLocator->get('VuFind\SessionManager')->getId(),
+            is_object($user) ? $user->id : null
+        );
 
-        if ($this->params()->fromQuery('purge')) {
-            $searchHistoryHelper->purgeSearchHistory($userId);
+        // Build arrays of history entries
+        $saved = $unsaved = [];
 
-            // We don't want to remember the last search after a purge:
-            $this->getSearchMemory()->forgetSearch();
+        // Loop through the history
+        foreach ($searchHistory as $current) {
+            $minSO = $current->getSearchObject();
+
+            // Saved searches
+            if ($current->saved == 1) {
+                $saved[] = $minSO->deminify($this->getResultsManager());
+            } else {
+                // All the others...
+
+                // If this was a purge request we don't need this
+                if ($this->params()->fromQuery('purge') == 'true') {
+                    $current->delete();
+
+                    // We don't want to remember the last search after a purge:
+                    $this->getSearchMemory()->forgetSearch();
+                } else {
+                    // Otherwise add to the list
+                    $unsaved[] = $minSO->deminify($this->getResultsManager());
+                }
+            }
         }
-        $lastSearches = $searchHistoryHelper->getSearchHistory($userId);
-        return $this->createViewModel($lastSearches);
+
+        return $this->createViewModel(
+            ['saved' => $saved, 'unsaved' => $unsaved]
+        );
     }
 
     /**
@@ -684,8 +698,8 @@ class SearchController extends AbstractSearch
     protected function resultScrollerActive()
     {
         $config = $this->serviceLocator->get('VuFind\Config')->get('config');
-        return isset($config->Record->next_prev_navigation)
-            && $config->Record->next_prev_navigation;
+        return (isset($config->Record->next_prev_navigation)
+            && $config->Record->next_prev_navigation);
     }
 
     /**
@@ -713,4 +727,5 @@ class SearchController extends AbstractSearch
             ? $facetConfig->SpecialFacets->hierarchicalFacetSortOptions->toArray()
             : [];
     }
+
 }

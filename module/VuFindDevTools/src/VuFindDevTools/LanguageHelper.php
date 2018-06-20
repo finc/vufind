@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/indexing:alphabetical_heading_browse Wiki
  */
 namespace VuFindDevTools;
-
 use VuFind\I18n\Translator\Loader\ExtendedIni;
 use Zend\Config\Config;
 use Zend\I18n\Translator\TextDomain;
@@ -160,7 +159,7 @@ class LanguageHelper
         if (isset($this->config->Languages->$lang)) {
             return $this->config->Languages->$lang;
         }
-        switch ($lang) {
+        switch($lang) {
         case 'en-gb':
             return 'British English';
         case 'pt-br':

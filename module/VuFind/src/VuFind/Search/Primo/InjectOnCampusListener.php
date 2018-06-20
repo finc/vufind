@@ -27,10 +27,11 @@
  */
 namespace VuFind\Search\Primo;
 
-use Zend\EventManager\EventInterface;
 use Zend\EventManager\SharedEventManagerInterface;
+use Zend\EventManager\EventInterface;
 
-use ZfcRbac\Service\AuthorizationServiceAwareTrait;
+use ZfcRbac\Service\AuthorizationServiceAwareInterface,
+    ZfcRbac\Service\AuthorizationServiceAwareTrait;
 
 /**
  * OnCampus listener.
@@ -125,4 +126,5 @@ class InjectOnCampusListener
 
         return $event;
     }
+
 }

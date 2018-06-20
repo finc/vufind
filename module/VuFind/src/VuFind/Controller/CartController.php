@@ -26,11 +26,10 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind\Controller;
-
-use VuFind\Exception\Forbidden as ForbiddenException;
-use VuFind\Exception\Mail as MailException;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Session\Container;
+use VuFind\Exception\Forbidden as ForbiddenException,
+    VuFind\Exception\Mail as MailException,
+    Zend\ServiceManager\ServiceLocatorInterface,
+    Zend\Session\Container;
 
 /**
  * Book Bag / Bulk Action Controller
@@ -83,11 +82,11 @@ class CartController extends AbstractBase
     {
         if (strlen($this->params()->fromPost('email', '')) > 0) {
             return 'Email';
-        } elseif (strlen($this->params()->fromPost('print', '')) > 0) {
+        } else if (strlen($this->params()->fromPost('print', '')) > 0) {
             return 'PrintCart';
-        } elseif (strlen($this->params()->fromPost('saveCart', '')) > 0) {
+        } else if (strlen($this->params()->fromPost('saveCart', '')) > 0) {
             return 'Save';
-        } elseif (strlen($this->params()->fromPost('export', '')) > 0) {
+        } else if (strlen($this->params()->fromPost('export', '')) > 0) {
             return 'Export';
         }
         // Check if the user is in the midst of a login process; if not,
@@ -149,20 +148,20 @@ class CartController extends AbstractBase
         $this->followup()->retrieveAndClear('cartAction');
         $this->followup()->retrieveAndClear('cartIds');
 
-        $ids = null === $this->params()->fromPost('selectAll')
+        $ids = is_null($this->params()->fromPost('selectAll'))
             ? $this->params()->fromPost('ids')
             : $this->params()->fromPost('idsAll');
 
         // Add items if necessary:
         if (strlen($this->params()->fromPost('empty', '')) > 0) {
             $this->getCart()->emptyCart();
-        } elseif (strlen($this->params()->fromPost('delete', '')) > 0) {
+        } else if (strlen($this->params()->fromPost('delete', '')) > 0) {
             if (empty($ids)) {
                 return $this->redirectToSource('error', 'bulk_noitems_advice');
             } else {
                 $this->getCart()->removeItems($ids);
             }
-        } elseif (strlen($this->params()->fromPost('add', '')) > 0) {
+        } else if (strlen($this->params()->fromPost('add', '')) > 0) {
             if (empty($ids)) {
                 return $this->redirectToSource('error', 'bulk_noitems_advice');
             } else {
@@ -203,14 +202,14 @@ class CartController extends AbstractBase
         $controller = 'Cart';   // assume Cart unless overridden below.
         if (strlen($this->params()->fromPost('email', '')) > 0) {
             $action = 'Email';
-        } elseif (strlen($this->params()->fromPost('print', '')) > 0) {
+        } else if (strlen($this->params()->fromPost('print', '')) > 0) {
             $action = 'PrintCart';
-        } elseif (strlen($this->params()->fromPost('delete', '')) > 0) {
+        } else if (strlen($this->params()->fromPost('delete', '')) > 0) {
             $controller = 'MyResearch';
             $action = 'Delete';
-        } elseif (strlen($this->params()->fromPost('add', '')) > 0) {
+        } else if (strlen($this->params()->fromPost('add', '')) > 0) {
             $action = 'Home';
-        } elseif (strlen($this->params()->fromPost('export', '')) > 0) {
+        } else if (strlen($this->params()->fromPost('export', '')) > 0) {
             $action = 'Export';
         } else {
             throw new \Exception('Unrecognized bulk action.');
@@ -226,7 +225,7 @@ class CartController extends AbstractBase
     public function emailAction()
     {
         // Retrieve ID list:
-        $ids = null === $this->params()->fromPost('selectAll')
+        $ids = is_null($this->params()->fromPost('selectAll'))
             ? $this->params()->fromPost('ids')
             : $this->params()->fromPost('idsAll');
 
@@ -291,7 +290,7 @@ class CartController extends AbstractBase
      */
     public function printcartAction()
     {
-        $ids = null === $this->params()->fromPost('selectAll')
+        $ids = is_null($this->params()->fromPost('selectAll'))
             ? $this->params()->fromPost('ids')
             : $this->params()->fromPost('idsAll');
         if (!is_array($ids) || empty($ids)) {
@@ -323,7 +322,7 @@ class CartController extends AbstractBase
     public function exportAction()
     {
         // Get the desired ID list:
-        $ids = null === $this->params()->fromPost('selectAll')
+        $ids = is_null($this->params()->fromPost('selectAll'))
             ? $this->params()->fromPost('ids')
             : $this->params()->fromPost('idsAll');
         if (!is_array($ids) || empty($ids)) {
@@ -416,7 +415,7 @@ class CartController extends AbstractBase
 
         // Load record information first (no need to prompt for login if we just
         // need to display a "no records" error message):
-        $ids = null === $this->params()->fromPost('selectAll')
+        $ids = is_null($this->params()->fromPost('selectAll'))
             ? $this->params()->fromPost('ids', $this->params()->fromQuery('ids'))
             : $this->params()->fromPost('idsAll');
         if (!is_array($ids) || empty($ids)) {

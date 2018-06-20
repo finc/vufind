@@ -26,12 +26,10 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\View\Helper\Root;
-
 use DateTime;
 use VuFind\I18n\Translator\TranslatorAwareInterface;
-use Zend\Feed\Writer\Feed;
 use Zend\Feed\Writer\Writer as FeedWriter;
-use Zend\ServiceManager\ServiceManager;
+use Zend\Feed\Writer\Feed;
 use Zend\View\Helper\AbstractHelper;
 
 /**
@@ -67,28 +65,26 @@ class ResultFeed extends AbstractHelper implements TranslatorAwareInterface
     }
 
     /**
-     * Set up custom extensions (should be called by factory).
-     *
-     * @param ServiceManager $sm Service manager.
+     * Set up custom extensions.
      *
      * @return void
      */
-    public function registerExtensions(ServiceManager $sm)
+    protected function registerExtensions()
     {
-        $manager = new \Zend\Feed\Writer\ExtensionPluginManager($sm);
+        $manager = new \Zend\Feed\Writer\ExtensionPluginManager();
         $manager->setInvokableClass(
-            'DublinCore\Renderer\Entry',
+            'dublincorerendererentry',
             'VuFind\Feed\Writer\Extension\DublinCore\Renderer\Entry'
         );
         $manager->setInvokableClass(
-            'DublinCore\Entry', 'VuFind\Feed\Writer\Extension\DublinCore\Entry'
+            'dublincoreentry', 'VuFind\Feed\Writer\Extension\DublinCore\Entry'
         );
         $manager->setInvokableClass(
-            'OpenSearch\Renderer\Feed',
+            'opensearchrendererfeed',
             'VuFind\Feed\Writer\Extension\OpenSearch\Renderer\Feed'
         );
         $manager->setInvokableClass(
-            'OpenSearch\Feed', 'VuFind\Feed\Writer\Extension\OpenSearch\Feed'
+            'opensearchfeed', 'VuFind\Feed\Writer\Extension\OpenSearch\Feed'
         );
         FeedWriter::setExtensionManager($manager);
         FeedWriter::registerExtension('OpenSearch');
@@ -106,8 +102,10 @@ class ResultFeed extends AbstractHelper implements TranslatorAwareInterface
      */
     public function __invoke($results, $currentPath = null)
     {
+        $this->registerExtensions();
+
         // Determine base URL if not already provided:
-        if (null === $currentPath) {
+        if (is_null($currentPath)) {
             $currentPath = $this->getView()->plugin('currentpath')->__invoke();
         }
         $serverUrl = $this->getView()->plugin('serverurl');

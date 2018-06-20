@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\View\Helper\Root;
-
 use Zend\View\Exception\RuntimeException;
 
 /**
@@ -48,23 +47,13 @@ class Auth extends \Zend\View\Helper\AbstractHelper
     protected $manager;
 
     /**
-     * ILS Authenticator
-     *
-     * @var \VuFind\Auth\ILSAuthenticator
-     */
-    protected $ilsAuthenticator;
-
-    /**
      * Constructor
      *
-     * @param \VuFind\Auth\Manager          $manager          Authentication manager
-     * @param \VuFind\Auth\ILSAuthenticator $ilsAuthenticator ILS Authenticator
+     * @param \VuFind\Auth\Manager $manager Authentication manager
      */
-    public function __construct(\VuFind\Auth\Manager $manager,
-        \VuFind\Auth\ILSAuthenticator $ilsAuthenticator
-    ) {
+    public function __construct(\VuFind\Auth\Manager $manager)
+    {
         $this->manager = $manager;
-        $this->ilsAuthenticator = $ilsAuthenticator;
     }
 
     /**
@@ -143,16 +132,6 @@ class Auth extends \Zend\View\Helper\AbstractHelper
     public function getCreateFields($context = [])
     {
         return $this->renderTemplate('create.phtml', $context);
-    }
-
-    /**
-     * Get ILS patron record for the currently logged-in user.
-     *
-     * @return array|bool Patron array if available, false otherwise.
-     */
-    public function getILSPatron()
-    {
-        return $this->ilsAuthenticator->storedCatalogLogin();
     }
 
     /**

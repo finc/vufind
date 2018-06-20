@@ -66,7 +66,6 @@ class SpecBuilder
             }
         }
     }
-
     /**
      * Set a generic spec line.
      *

@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Db\Table;
-
 use VuFind\Db\Row\RowGateway;
 use VuFind\Exception\LoginRequired as LoginRequiredException;
 use VuFind\Exception\RecordMissing as RecordMissingException;
@@ -142,7 +141,7 @@ class UserList extends Gateway
                 ->equalTo('r.record_id', $resourceId);
             $select->order(['title']);
 
-            if (null !== $userId) {
+            if (!is_null($userId)) {
                 $select->where->equalTo('ur.user_id', $userId);
             }
         };

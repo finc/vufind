@@ -26,9 +26,8 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\ServiceManager;
-
-use Zend\ServiceManager\AbstractFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\AbstractFactoryInterface,
+    Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * VuFind Abstract Plugin Factory

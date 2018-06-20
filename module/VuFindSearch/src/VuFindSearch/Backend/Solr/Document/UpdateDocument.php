@@ -28,8 +28,8 @@
  */
 namespace VuFindSearch\Backend\Solr\Document;
 
-use SplObjectStorage;
 use VuFindSearch\Backend\Solr\Record\SerializableRecordInterface;
+use SplObjectStorage;
 use XMLWriter;
 
 /**
@@ -116,4 +116,5 @@ class UpdateDocument extends AbstractDocument
     ) {
         $this->records->attach($record, $indexAttr);
     }
+
 }

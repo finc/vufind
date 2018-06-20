@@ -79,4 +79,5 @@ class ConfigController extends AbstractAdmin
         }
         return $this->forwardTo('AdminConfig', 'Home');
     }
+
 }

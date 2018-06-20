@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\Recommend;
-
 use VuFind\Recommend\ExpandFacets;
 
 /**

@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\Solr;
-
 use VuFind\Solr\Utils;
 
 /**
@@ -90,7 +89,7 @@ class UtilsTest extends \VuFindTest\Unit\TestCase
             '2nd Quarter 2004' => '2004-01-01',
             'Nov 2009 and Dec 2009' => '2009-01-01',
         ];
-
+        
         foreach ($tests as $in => $out) {
             $this->assertEquals(
                 $out === null ? null : $out . 'T00:00:00Z', // append standard time value unless null

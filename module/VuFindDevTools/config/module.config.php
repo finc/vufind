@@ -4,10 +4,7 @@ namespace VuFindLocalTemplate\Module\Configuration;
 $config = [
     'controllers' => [
         'factories' => [
-            'VuFindDevTools\Controller\DevtoolsController' => 'VuFindDevTools\Controller\Factory::getDevtoolsController',
-        ],
-        'aliases' => [
-            'DevTools' => 'VuFindDevTools\Controller\DevtoolsController',
+            'devtools' => 'VuFindDevTools\Controller\Factory::getDevtoolsController',
         ],
     ],
     'router' => [

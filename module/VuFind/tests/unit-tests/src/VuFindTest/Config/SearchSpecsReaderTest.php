@@ -26,9 +26,7 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\Config;
-
-use VuFind\Config\Locator;
-use VuFind\Config\SearchSpecsReader;
+use VuFind\Config\Locator, VuFind\Config\SearchSpecsReader;
 
 /**
  * Config SearchSpecsReader Test Class

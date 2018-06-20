@@ -27,6 +27,9 @@
  */
 namespace VuFind\Recommend;
 
+use VuFindSearch\Query\Query,
+    VuFindSearch\ParamBag;
+
 /**
  * RandomRecommend Module
  *
@@ -165,7 +168,7 @@ class RandomRecommend implements RecommendInterface
      * request.
      *
      * @return void
-     */
+    */
     public function init($params, $request)
     {
         if ("retain" !== $this->mode) {
@@ -191,7 +194,7 @@ class RandomRecommend implements RecommendInterface
      * @param \VuFind\Search\Base\Results $results Search results object
      *
      * @return void
-     */
+    */
     public function process($results)
     {
     }

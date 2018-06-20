@@ -3,7 +3,7 @@
 /**
  * EDS API record collection.
  *
- * PHP version 7
+ * PHP version 5
  *
  * Copyright (C) EBSCO Industries 2013
  *
@@ -27,7 +27,6 @@
  * @link     https://vufind.org
  */
 namespace VuFindSearch\Backend\EDS\Response;
-
 use VuFindSearch\Response\AbstractRecordCollection;
 
 /**
@@ -112,6 +111,7 @@ class RecordCollection extends AbstractRecordCollection
                     'count' => $availableFacetValue['Count'],
                     'displayText' => $availableFacetValue['Value']
                 ];
+
             }
             $vufindFacet['counts'] = $values;
             $vufindFacetList[$facet['Id']] = $vufindFacet;
@@ -140,4 +140,5 @@ class RecordCollection extends AbstractRecordCollection
         }
         return 0;
     }
+
 }

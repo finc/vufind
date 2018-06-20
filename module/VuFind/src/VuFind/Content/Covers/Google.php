@@ -56,7 +56,7 @@ class Google extends \VuFind\Content\AbstractCover
      *
      * @return \Zend\Http\Client
      */
-    protected function getHttpClient($url = null)
+    protected function getHttpClient($url)
     {
         if (null === $this->httpService) {
             throw new \Exception('HTTP service missing.');

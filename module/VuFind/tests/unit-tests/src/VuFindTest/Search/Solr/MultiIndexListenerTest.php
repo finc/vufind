@@ -28,12 +28,12 @@
  */
 namespace VuFindTest\Search\Solr;
 
-use VuFind\Search\Solr\MultiIndexListener;
+use VuFindSearch\ParamBag;
 use VuFindSearch\Backend\Solr\Backend;
 use VuFindSearch\Backend\Solr\Connector;
 use VuFindSearch\Backend\Solr\HandlerMap;
 
-use VuFindSearch\ParamBag;
+use VuFind\Search\Solr\MultiIndexListener;
 use VuFindTest\Unit\TestCase;
 use Zend\EventManager\Event;
 

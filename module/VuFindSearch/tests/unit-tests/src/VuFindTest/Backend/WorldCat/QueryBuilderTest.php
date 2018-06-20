@@ -28,8 +28,8 @@
  */
 namespace VuFindTest\Backend\WorldCat;
 
-use PHPUnit_Framework_TestCase;
 use VuFindSearch\Backend\WorldCat\QueryBuilder;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Unit tests for WorldCat query builder

@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind\Config;
-
 use Symfony\Component\Yaml\Yaml;
 
 /**

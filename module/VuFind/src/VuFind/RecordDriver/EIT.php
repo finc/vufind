@@ -36,7 +36,7 @@ namespace VuFind\RecordDriver;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:record_drivers Wiki
  */
-class EIT extends DefaultRecord
+class EIT extends SolrDefault
 {
     /**
      * Used for identifying search backends
@@ -66,7 +66,7 @@ class EIT extends DefaultRecord
     public function setRawData($data)
     {
         // Easy way to recursively convert a SimpleXML Object to an array
-        $data = json_decode(json_encode((array)$data), 1);
+        $data = json_decode(json_encode((array) $data), 1);
         if (isset($data['fields'])) {
             $this->fields = $data['fields'];
         } else {
@@ -150,7 +150,7 @@ class EIT extends DefaultRecord
             $this->controlInfo['jinfo']['issn'] : false;
     }
 
-    /**
+        /**
      * Get the date coverage for a record which spans a period of time (i.e. a
      * journal).  Use getPublicationDates for publication dates of particular
      * monographic items.
@@ -203,6 +203,7 @@ class EIT extends DefaultRecord
             return isset($this->controlInfo['artinfo']['aug']['au'])
                 ? [$this->controlInfo['artinfo']['aug']['au']] : [];
         }
+
     }
 
     /**
@@ -216,7 +217,7 @@ class EIT extends DefaultRecord
             return [
                 $this->controlInfo['pubinfo']['dt']['@attributes']['year']
             ];
-        } elseif (isset($this->controlInfo['pubinfo']['dt'])) {
+        } else if (isset($this->controlInfo['pubinfo']['dt'])) {
             return [$this->controlInfo['pubinfo']['dt']];
         } else {
             return [];
@@ -245,7 +246,7 @@ class EIT extends DefaultRecord
             ? $this->controlInfo['artinfo']['tig']['atl'] : '';
     }
 
-    /**
+        /**
      * Get an array of summary strings for the record.
      *
      * @return array
@@ -268,7 +269,7 @@ class EIT extends DefaultRecord
         return [];
     }
 
-    /**
+        /**
      * Get the full title of the record.
      *
      * @return string
@@ -279,7 +280,7 @@ class EIT extends DefaultRecord
             ? $this->controlInfo['artinfo']['tig']['atl'] : '';
     }
 
-    /**
+        /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
      *
@@ -326,7 +327,7 @@ class EIT extends DefaultRecord
         return $this->fields['fields']['header']['@attributes']['uiTerm'];
     }
 
-    /**
+        /**
      * Get the title of the item that contains this record (i.e. MARC 773s of a
      * journal).
      *
@@ -396,13 +397,13 @@ class EIT extends DefaultRecord
         $pagecount = $this->getContainerPageCount();
         $endpage = $startpage + $pagecount;
         if ($endpage != 0) {
-            return $endpage;
+                return $endpage;
         } else {
             return null;
         }
     }
 
-    /**
+        /**
      * Get a sortable title for the record (i.e. no leading articles).
      *
      * @return string
@@ -425,9 +426,9 @@ class EIT extends DefaultRecord
         $formats = $this->getFormats();
         if (in_array('Book', $formats)) {
             return 'Book';
-        } elseif (in_array('Article', $formats)) {
+        } else if (in_array('Article', $formats)) {
             return 'Article';
-        } elseif (in_array('Journal', $formats)) {
+        } else if (in_array('Journal', $formats)) {
             return 'Journal';
         }
         // Defaulting to "Article" because many EBSCO databases have things like

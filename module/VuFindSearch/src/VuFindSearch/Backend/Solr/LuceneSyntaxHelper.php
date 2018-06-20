@@ -520,7 +520,6 @@ class LuceneSyntaxHelper
         $input = preg_replace('/(\:[:\s]+|[:\s]+:)' . $lookahead . '/', ' ', $input);
         return trim($input, ':');
     }
-
     /**
      * Prepare input to be used in a SOLR query.
      *
@@ -539,7 +538,7 @@ class LuceneSyntaxHelper
 
         // If the user has entered a lone BOOLEAN operator, convert it to lowercase
         // so it is treated as a word (otherwise it will trigger a fatal error):
-        switch (trim($input)) {
+        switch(trim($input)) {
         case 'OR':
             return 'or';
         case 'AND':
@@ -588,7 +587,7 @@ class LuceneSyntaxHelper
             || $this->caseSensitiveBooleans === "0"
         ) {
             return $this->allBools;
-        } elseif ($this->caseSensitiveBooleans === true
+        } else if ($this->caseSensitiveBooleans === true
             || $this->caseSensitiveBooleans === 1
             || $this->caseSensitiveBooleans === "1"
         ) {

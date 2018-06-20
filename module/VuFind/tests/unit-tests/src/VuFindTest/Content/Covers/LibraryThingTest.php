@@ -27,9 +27,7 @@
  * @link     https://vufind.org
  */
 namespace VuFindTest\Content\Covers;
-
-use VuFind\Content\Covers\LibraryThing;
-use VuFindCode\ISBN;
+use VuFindCode\ISBN, VuFind\Content\Covers\LibraryThing;
 
 /**
  * Unit tests for LibraryThing cover loader.

@@ -27,7 +27,6 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Auth;
-
 use VuFind\Exception\Auth as AuthException;
 
 /**
@@ -265,7 +264,6 @@ class CAS extends AbstractBase
 
         return $sortedUserAttributes;
     }
-
     /**
      * Establishes phpCAS Configuration and Enables the phpCAS Client
      *

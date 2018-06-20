@@ -28,9 +28,9 @@
  */
 namespace VuFindSearch\Backend\Exception;
 
-use Exception;
-
 use Zend\Http\Response;
+
+use Exception;
 
 /**
  * HTTP error exception.

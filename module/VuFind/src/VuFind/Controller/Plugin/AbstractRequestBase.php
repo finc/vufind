@@ -26,12 +26,9 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Controller\Plugin;
-
-use VuFind\Crypt\HMAC;
-use VuFind\ILS\Connection;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Zend\Session\Container;
-use Zend\Session\SessionManager;
+use VuFind\Crypt\HMAC, VuFind\ILS\Connection;
+use Zend\Mvc\Controller\Plugin\AbstractPlugin, Zend\Session\Container,
+    Zend\Session\SessionManager;
 
 /**
  * Zend action helper base class to perform request-related actions
@@ -202,7 +199,7 @@ abstract class AbstractRequestBase extends AbstractPlugin
         }
 
         // If we got this far, something is wrong!
-        return false;
+         return false;
     }
 
     /**
@@ -250,7 +247,7 @@ abstract class AbstractRequestBase extends AbstractPlugin
         }
 
         // If we got this far, something is wrong!
-        return false;
+         return false;
     }
 
     /**

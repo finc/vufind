@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind\View\Helper\Root;
-
 use Zend\View\Helper\AbstractHelper;
 
 /**
@@ -70,7 +69,7 @@ class AddEllipsis extends AbstractHelper
                 // otherwise, unless we already have the full string, add ellipses.
                 if (strlen($fullString) < 160) {
                     $title .= substr($fullString, $pos + strlen($dehighlighted));
-                } elseif ($pos + strlen($dehighlighted) < strlen($fullString)) {
+                } else if ($pos + strlen($dehighlighted) < strlen($fullString)) {
                     $title = trim($title) . '...';
                 }
                 return $title;

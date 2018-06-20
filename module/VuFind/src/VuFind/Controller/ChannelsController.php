@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/indexing:alphabetical_heading_browse Wiki
  */
 namespace VuFind\Controller;
-
 use Zend\Config\Config;
 
 /**

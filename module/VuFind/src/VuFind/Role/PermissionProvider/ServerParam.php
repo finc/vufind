@@ -28,7 +28,6 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Role\PermissionProvider;
-
 use Zend\Http\PhpEnvironment\Request;
 
 /**

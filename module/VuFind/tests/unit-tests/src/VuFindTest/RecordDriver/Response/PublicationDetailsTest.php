@@ -27,7 +27,6 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\RecordDriver\Response;
-
 use VuFind\RecordDriver\Response\PublicationDetails;
 
 /**

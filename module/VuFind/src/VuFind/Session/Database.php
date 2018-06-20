@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:plugins:session_handlers Wiki
  */
 namespace VuFind\Session;
-
 use VuFind\Exception\SessionExpired as SessionExpiredException;
 
 /**

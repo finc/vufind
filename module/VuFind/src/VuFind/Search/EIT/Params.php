@@ -27,9 +27,8 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Search\EIT;
-
-use VuFind\Search\Base\Params as BaseParams;
 use VuFindSearch\ParamBag;
+use VuFind\Search\Base\Params as BaseParams;
 
 /**
  * EBSCO Search Parameters

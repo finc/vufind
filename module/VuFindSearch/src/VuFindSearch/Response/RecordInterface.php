@@ -56,4 +56,5 @@ interface RecordInterface
      * @return string
      */
     public function getSourceIdentifier();
+
 }

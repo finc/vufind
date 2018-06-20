@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\ChannelProvider;
-
 use VuFind\Cover\Router as CoverRouter;
 use VuFind\Search\Base\Params;
 

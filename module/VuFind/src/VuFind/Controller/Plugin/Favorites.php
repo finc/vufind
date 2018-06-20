@@ -26,9 +26,8 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Controller\Plugin;
-
-use VuFind\Db\Row\User;
 use VuFind\Exception\LoginRequired as LoginRequiredException;
+use VuFind\Db\Row\User;
 use VuFind\Record\Cache;
 use VuFind\Record\Loader;
 use VuFind\Tags;

@@ -3,7 +3,7 @@
 /**
  * EDS API Querybuilder
  *
- * PHP version 7
+ * PHP version 5
  *
  * Copyright (C) EBSCO Industries 2013
  *
@@ -28,10 +28,10 @@
  */
 namespace VuFindSearch\Backend\EDS;
 
-use VuFindSearch\ParamBag;
 use VuFindSearch\Query\AbstractQuery;
-use VuFindSearch\Query\Query;
 use VuFindSearch\Query\QueryGroup;
+use VuFindSearch\Query\Query;
+use VuFindSearch\ParamBag;
 
 /**
  * EDS API Querybuilder
@@ -138,5 +138,6 @@ class QueryBuilder
             }
         }
         return $groups;
+
     }
 }

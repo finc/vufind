@@ -28,9 +28,9 @@
  */
 namespace VuFindTest\Backend;
 
-use PHPUnit_Framework_TestCase as TestCase;
-
 use VuFindSearch\ParamBag;
+
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Unit tests for handler map base class.

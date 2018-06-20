@@ -27,9 +27,7 @@
  * @link     https://vufind.org/wiki/configuration:external_content Wiki
  */
 namespace VuFind\Cover;
-
-use VuFind\Content\Covers\PluginManager as ApiManager;
-use VuFindCode\ISBN;
+use VuFindCode\ISBN, VuFind\Content\Covers\PluginManager as ApiManager;
 
 /**
  * Book Cover Generator
@@ -303,7 +301,7 @@ class Loader extends \VuFind\ImageLoader
         // are able to display an ISBN or content-type-based image.
         if (!in_array($this->size, $this->validSizes)) {
             $this->loadUnavailable();
-        } elseif (!$this->fetchFromAPI()
+        } else if (!$this->fetchFromAPI()
             && !$this->fetchFromContentType()
         ) {
             if ($generator = $this->getCoverGenerator()) {
@@ -335,13 +333,13 @@ class Loader extends \VuFind\ImageLoader
                 return $this->getCachePath($this->size, $ids['isbn']->get10());
             }
             return $file;
-        } elseif (isset($ids['issn'])) {
+        } else if (isset($ids['issn'])) {
             return $this->getCachePath($this->size, $ids['issn']);
-        } elseif (isset($ids['oclc'])) {
+        } else if (isset($ids['oclc'])) {
             return $this->getCachePath($this->size, 'OCLC' . $ids['oclc']);
-        } elseif (isset($ids['upc'])) {
+        } else if (isset($ids['upc'])) {
             return $this->getCachePath($this->size, 'UPC' . $ids['upc']);
-        } elseif (isset($ids['recordid']) && isset($ids['source'])) {
+        } else if (isset($ids['recordid']) && isset($ids['source'])) {
             return $this->getCachePath(
                 $this->size,
                 'ID' . md5($ids['source'] . '|' . $ids['recordid'])
@@ -399,7 +397,7 @@ class Loader extends \VuFind\ImageLoader
             $this->contentType = 'image/jpeg';
             $this->image = file_get_contents($this->localFile);
             return true;
-        } elseif (isset($this->config->Content->coverimages)) {
+        } else if (isset($this->config->Content->coverimages)) {
             $providers = explode(',', $this->config->Content->coverimages);
             foreach ($providers as $provider) {
                 $provider = explode(':', trim($provider));
@@ -563,7 +561,7 @@ class Loader extends \VuFind\ImageLoader
                 ? trim(strtolower($this->config->Content->coverimagesCache)) : true;
             if ($conf === true || $conf === 1 || $conf === '1' || $conf === 'true') {
                 $cache = true;
-            } elseif ($conf === false || $conf === 0 || $conf === '0'
+            } else if ($conf === false || $conf === 0 || $conf === '0'
                 || $conf === 'false'
             ) {
                 $cache = false;
@@ -600,7 +598,7 @@ class Loader extends \VuFind\ImageLoader
             // Attempt to pull down the image:
             $result = $this->client->setUri($url)->send();
             if (!$result->isSuccess()) {
-                $this->debug("Failed to retrieve image from " + $url);
+                $this->debug('Failed to retrieve image from ' . $url);
                 return false;
             }
             $image = $result->getBody();

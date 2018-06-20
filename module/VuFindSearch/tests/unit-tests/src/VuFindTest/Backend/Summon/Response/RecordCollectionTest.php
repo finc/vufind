@@ -28,8 +28,8 @@
  */
 namespace VuFindTest\Backend\Summon\Response;
 
-use PHPUnit_Framework_TestCase;
 use VuFindSearch\Backend\Summon\Response\RecordCollection;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Unit tests for Summon record collection

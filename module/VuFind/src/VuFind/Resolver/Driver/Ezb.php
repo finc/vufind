@@ -35,9 +35,7 @@
  * @link     https://vufind.org/wiki/development:plugins:link_resolver_drivers Wiki
  */
 namespace VuFind\Resolver\Driver;
-
-use DOMDocument;
-use DOMXpath;
+use DOMDocument, DOMXpath;
 
 /**
  * EZB Link Resolver Driver
@@ -199,17 +197,17 @@ class Ezb extends AbstractBase
             if (isset($value) && $value !== '') {
                 if ($key == 'rfr_id') {
                     $newKey = 'sid';
-                } elseif ($key == 'rft.date') {
+                } else if ($key == 'rft.date') {
                     $newKey = 'date';
-                } elseif ($key == 'rft.issn') {
+                } else if ($key == 'rft.issn') {
                     $newKey = 'issn';
-                } elseif ($key == 'rft.volume') {
+                } else if ($key == 'rft.volume') {
                     $newKey = 'volume';
-                } elseif ($key == 'rft.issue') {
+                } else if ($key == 'rft.issue') {
                     $newKey = 'issue';
-                } elseif ($key == 'rft.spage') {
+                } else if ($key == 'rft.spage') {
                     $newKey = 'spage';
-                } elseif ($key == 'rft.pages') {
+                } else if ($key == 'rft.pages') {
                     $newKey = 'pages';
                 } else {
                     $newKey = false;
@@ -222,7 +220,7 @@ class Ezb extends AbstractBase
 
         return implode('&', $downgraded);
     }
-
+    
     /**
      * Extract electronic results from the EZB response and inject them into the
      * $records array.

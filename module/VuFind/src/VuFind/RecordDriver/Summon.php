@@ -36,7 +36,7 @@ namespace VuFind\RecordDriver;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:record_drivers Wiki
  */
-class Summon extends DefaultRecord
+class Summon extends SolrDefault
 {
     /**
      * Fields that may contain subject headings, and their descriptions
@@ -334,7 +334,7 @@ class Summon extends DefaultRecord
                         'm-d-Y',
                         "{$current['month']}-{$current['day']}-{$current['year']}"
                     );
-                } elseif (isset($current['year'])) {
+                } else if (isset($current['year'])) {
                     $dates[] = $current['year'];
                 }
             }
@@ -444,7 +444,7 @@ class Summon extends DefaultRecord
         ) {
             if ($size === 'small' && isset($this->fields['thumbnail_s'][0])) {
                 return ['proxy' => $this->fields['thumbnail_s'][0]];
-            } elseif (isset($this->fields['thumbnail_m'][0])) {
+            } else if (isset($this->fields['thumbnail_m'][0])) {
                 return ['proxy' => $this->fields['thumbnail_m'][0]];
             }
         }
@@ -526,7 +526,6 @@ class Summon extends DefaultRecord
     {
         return $this->fields['ID'][0];
     }
-
     /**
      * Get the title of the item that contains this record (i.e. MARC 773s of a
      * journal).
@@ -582,7 +581,7 @@ class Summon extends DefaultRecord
     {
         if (isset($this->fields['EndPage'])) {
             return $this->fields['EndPage'][0];
-        } elseif (isset($this->fields['PageCount'])
+        } else if (isset($this->fields['PageCount'])
             && $this->fields['PageCount'] > 1
             && intval($this->fields['StartPage'][0]) > 0
         ) {

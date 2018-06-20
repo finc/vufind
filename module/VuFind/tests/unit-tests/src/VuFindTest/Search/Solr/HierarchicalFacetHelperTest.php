@@ -28,8 +28,8 @@
  */
 namespace VuFindTest\Search\Solr;
 
-use VuFind\Search\Solr\HierarchicalFacetHelper;
 use VuFindTest\Unit\TestCase;
+use VuFind\Search\Solr\HierarchicalFacetHelper;
 
 /**
  * Unit tests for Hierarchical Facet Helper.
@@ -179,6 +179,7 @@ class HierarchicalFacetHelperTest extends TestCase
             $facetList[0]['children'][0]['value'], '1/Book/BookPart/'
         );
         $this->assertEquals($facetList[0]['children'][0]['isApplied'], true);
+
     }
 
     /**

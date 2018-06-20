@@ -96,7 +96,7 @@ abstract class AbstractThemeUtility
                 if (!$this->copyDir("$src/$current", "$dest/$current")) {
                     return false;
                 }
-            } elseif (!file_exists("$dest/$current")
+            } else if (!file_exists("$dest/$current")
                 && !copy("$src/$current", "$dest/$current")
             ) {
                 return $this->setLastError(
@@ -126,7 +126,7 @@ abstract class AbstractThemeUtility
                 if (!$this->deleteDir("$path/$current")) {
                     return false;
                 }
-            } elseif (!unlink("$path/$current")) {
+            } else if (!unlink("$path/$current")) {
                 return $this->setLastError("Cannot delete $path/$current");
             }
         }

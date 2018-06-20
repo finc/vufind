@@ -36,7 +36,7 @@ namespace VuFind\RecordDriver;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:record_drivers Wiki
  */
-class BrowZine extends DefaultRecord
+class BrowZine extends SolrDefault
 {
     /**
      * Get the short (pre-subtitle) title of the record.
@@ -69,7 +69,6 @@ class BrowZine extends DefaultRecord
             ? $this->fields['name']
             : parent::getTitle();
     }
-
     /**
      * Returns one of three things: a full URL to a thumbnail preview of the record
      * if an image is available in an external system; an array of parameters to

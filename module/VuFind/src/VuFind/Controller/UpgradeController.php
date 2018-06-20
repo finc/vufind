@@ -28,15 +28,13 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind\Controller;
-
-use ArrayObject;
-use VuFind\Config\Locator as ConfigLocator;
-use VuFind\Cookie\Container as CookieContainer;
-use VuFind\Cookie\CookieManager;
-use VuFind\Exception\RecordMissing as RecordMissingException;
-use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Session\Container;
+use ArrayObject, VuFind\Config\Locator as ConfigLocator,
+    VuFind\Cookie\Container as CookieContainer,
+    VuFind\Cookie\CookieManager,
+    VuFind\Exception\RecordMissing as RecordMissingException,
+    Zend\Mvc\MvcEvent,
+    Zend\ServiceManager\ServiceLocatorInterface,
+    Zend\Session\Container;
 
 /**
  * Class controls VuFind upgrading.
@@ -606,7 +604,7 @@ class UpgradeController extends AbstractBase
         if ($action == 'Change') {
             $this->session->dbChangeEncoding = true;
             return $this->forwardTo('Upgrade', 'FixDatabase');
-        } elseif ($action == 'Keep') {
+        } else if ($action == 'Keep') {
             $this->session->dbChangeEncoding = false;
             return $this->forwardTo('Upgrade', 'FixDatabase');
         }
@@ -737,7 +735,7 @@ class UpgradeController extends AbstractBase
             if (!is_dir($dir)) {
                 $this->flashMessenger()
                     ->addMessage($dir . ' does not exist.', 'error');
-            } elseif (!file_exists($dir . '/build.xml')) {
+            } else if (!file_exists($dir . '/build.xml')) {
                 $this->flashMessenger()->addMessage(
                     'Could not find build.xml in source directory;'
                     . ' upgrade does not support VuFind versions prior to 1.1.',
@@ -781,7 +779,7 @@ class UpgradeController extends AbstractBase
             if (floor($version) < 2) {
                 $this->flashMessenger()
                     ->addMessage('Illegal version number.', 'error');
-            } elseif ($version >= $this->cookie->newVersion) {
+            } else if ($version >= $this->cookie->newVersion) {
                 $this->flashMessenger()->addMessage(
                     "Source version must be less than {$this->cookie->newVersion}.",
                     'error'

@@ -27,10 +27,8 @@
  * @link     https://vufind.org/wiki/development:plugins:recommendation_modules Wiki
  */
 namespace VuFind\Recommend;
-
 use VuFindSearch\Query\Query;
-use Zend\Http\Request;
-use Zend\StdLib\Parameters;
+use Zend\Http\Request, Zend\StdLib\Parameters;
 
 /**
  * AuthorFacets Recommendations Module

@@ -7,8 +7,8 @@
       $this->headTitle($this->translate('Search Results') . (empty($lookfor) ? '' : " - {$lookfor}"));
   }
 
-  // Set up search box: 
- $this->layout()->searchbox = $this->context($this)->renderInContext(
+  // Set up search box:
+  $this->layout()->searchbox = $this->context($this)->renderInContext(
       'search/searchbox.phtml',
       [
         'lookfor' => $lookfor,

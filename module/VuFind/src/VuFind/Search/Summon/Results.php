@@ -131,7 +131,7 @@ class Results extends \VuFind\Search\Base\Results
         }
 
         // If there is no filter, we'll use all facets as the filter:
-        $filter = null === $filter
+        $filter = is_null($filter)
             ? $this->getParams()->getFacetConfig()
             : $this->stripFilterParameters($filter);
 

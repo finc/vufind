@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind\View\Helper\Root;
-
 use VuFind\Search\Base\Options;
 
 /**
@@ -48,7 +47,7 @@ class GeoCoords extends \Zend\View\Helper\AbstractHelper
     protected $enabled;
 
     /**
-     * Default coordinates
+     * Default coordinates 
      *
      * @var string
      */

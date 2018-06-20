@@ -27,7 +27,6 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind\Config;
-
 use VuFind\Auth\Manager as AuthManager;
 use Zend\Config\Config;
 

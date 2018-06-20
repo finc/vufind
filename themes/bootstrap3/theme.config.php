@@ -1,16 +1,16 @@
 <?php
-return [
+return array(
     'extends' => 'root',
-    'css' => [
+    'css' => array(
         //'vendor/bootstrap.min.css',
         //'vendor/bootstrap-accessibility.css',
         //'vendor/font-awesome.min.css',
         //'bootstrap-custom.css',
         'compiled.css',
-//        'print.css:print',
+        'print.css:print',
         'flex-fallback.css::lt IE 10', // flex polyfill
-    ],
-    'js' => [
+    ),
+    'js' => array(
         'vendor/base64.js:lt IE 10', // btoa polyfill
         'vendor/jquery.min.js',
         'vendor/bootstrap.min.js',
@@ -20,21 +20,21 @@ return [
         'lib/autocomplete.js',
         'common.js',
         'lightbox.js',
-    ],
-    'less' => [
+    ),
+    'less' => array(
         'active' => false,
         'compiled.less'
-    ],
+    ),
     'favicon' => 'vufind-favicon.ico',
-    'helpers' => [
-        'factories' => [
+    'helpers' => array(
+        'factories' => array(
             'flashmessages' => 'VuFind\View\Helper\Bootstrap3\Factory::getFlashmessages',
-            'layoutClass' => 'VuFind\View\Helper\Bootstrap3\Factory::getLayoutClass',
+            'layoutclass' => 'VuFind\View\Helper\Bootstrap3\Factory::getLayoutClass',
             'recaptcha' => 'VuFind\View\Helper\Bootstrap3\Factory::getRecaptcha',
-        ],
-        'invokables' => [
+        ),
+        'invokables' => array(
             'highlight' => 'VuFind\View\Helper\Bootstrap3\Highlight',
             'search' => 'VuFind\View\Helper\Bootstrap3\Search'
-        ]
-    ]
-];
+        )
+    )
+);

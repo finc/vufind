@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\Controller\Plugin;
-
 use VuFind\Search\Results\PluginManager as ResultsManager;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Session\Container as SessionContainer;
@@ -92,8 +91,8 @@ class ResultScroller extends AbstractPlugin
      */
     public function init($searchObject)
     {
-        // Do nothing if disabled:
-        if (!$this->enabled) {
+        // Do nothing if disabled or search is empty:
+        if (!$this->enabled || $searchObject->getResultTotal() === 0) {
             return false;
         }
 
@@ -372,7 +371,7 @@ class ResultScroller extends AbstractPlugin
         if (count($this->data->currIds) > 1) {
             $pos = count($this->data->currIds) - 2;
             $retVal['previousRecord'] = $this->data->currIds[$pos];
-        } elseif (count($this->data->prevIds) > 0) {
+        } else if (count($this->data->prevIds) > 0) {
             $prevPos = count($this->data->prevIds) - 1;
             $retVal['previousRecord'] = $this->data->prevIds[$prevPos];
         }
@@ -485,11 +484,11 @@ class ResultScroller extends AbstractPlugin
                     // the current record is somewhere in the middle of the current
                     // page, ie: not first or last
                     return $this->scrollOnCurrentPage($retVal, $pos);
-                } elseif ($pos == 0) {
+                } else if ($pos == 0) {
                     // this record is first record on the current page
                     return $this
                         ->fetchPreviousPage($retVal, $lastSearch, $pos, $count);
-                } elseif ($pos == $count - 1) {
+                } else if ($pos == $count - 1) {
                     // this record is last record on the current page
                     return $this->fetchNextPage($retVal, $lastSearch, $pos);
                 }

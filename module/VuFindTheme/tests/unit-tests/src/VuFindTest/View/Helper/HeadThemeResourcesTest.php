@@ -26,9 +26,7 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\View\Helper;
-
-use VuFindTheme\ResourceContainer;
-use VuFindTheme\View\Helper\HeadThemeResources;
+use VuFindTheme\ResourceContainer, VuFindTheme\View\Helper\HeadThemeResources;
 
 /**
  * HeadThemeResources view helper Test Class
@@ -94,13 +92,13 @@ class HeadThemeResourcesTest extends \VuFindTest\Unit\TestCase
     {
         $view = $this->createMock('Zend\View\Renderer\PhpRenderer');
         $view->expects($this->at(0))->method('plugin')
-            ->with($this->equalTo('headMeta'))
+            ->with($this->equalTo('headmeta'))
             ->will($this->returnValue($this->getMockHeadMeta()));
         $view->expects($this->at(1))->method('plugin')
-            ->with($this->equalTo('headLink'))
+            ->with($this->equalTo('headlink'))
             ->will($this->returnValue($this->getMockHeadLink()));
         $view->expects($this->at(2))->method('plugin')
-            ->with($this->equalTo('headScript'))
+            ->with($this->equalTo('headscript'))
             ->will($this->returnValue($this->getMockHeadScript()));
         return $view;
     }

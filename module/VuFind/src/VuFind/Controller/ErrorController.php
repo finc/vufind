@@ -63,4 +63,5 @@ class ErrorController extends AbstractActionController
             ['msg' => $this->params()->fromQuery('msg')]
         );
     }
+
 }

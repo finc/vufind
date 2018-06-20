@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\View\Helper\Root;
-
 use VuFind\View\Helper\Root\RecordDataFormatter;
 use VuFind\View\Helper\Root\RecordDataFormatterFactory;
 
@@ -70,10 +69,7 @@ class RecordDataFormatterTest extends \VuFindTest\Unit\ViewHelperTestCase
     {
         $context = new \VuFind\View\Helper\Root\Context();
         return [
-            'auth' => new \VuFind\View\Helper\Root\Auth(
-                $this->getMockBuilder('VuFind\Auth\Manager')->disableOriginalConstructor()->getMock(),
-                $this->getMockBuilder('VuFind\Auth\ILSAuthenticator')->disableOriginalConstructor()->getMock()
-            ),
+            'auth' => new \VuFind\View\Helper\Root\Auth($this->getMockBuilder('VuFind\Auth\Manager')->disableOriginalConstructor()->getMock()),
             'context' => $context,
             'openUrl' => new \VuFind\View\Helper\Root\OpenUrl($context, [], $this->getMockBuilder('VuFind\Resolver\Driver\PluginManager')->disableOriginalConstructor()->getMock()),
             'proxyUrl' => new \VuFind\View\Helper\Root\ProxyUrl(),
@@ -96,8 +92,11 @@ class RecordDataFormatterTest extends \VuFindTest\Unit\ViewHelperTestCase
     protected function getDriver($overrides = [])
     {
         // "Mock out" tag functionality to avoid database access:
+        $methods = [
+            'getBuilding', 'getDeduplicatedAuthors', 'getContainerTitle', 'getTags'
+        ];
         $record = $this->getMockBuilder('VuFind\RecordDriver\SolrDefault')
-            ->setMethods(['getBuilding', 'getContainerTitle', 'getTags'])
+            ->setMethods($methods)
             ->getMock();
         $record->expects($this->any())->method('getTags')
             ->will($this->returnValue([]));
@@ -107,6 +106,15 @@ class RecordDataFormatterTest extends \VuFindTest\Unit\ViewHelperTestCase
             ->will($this->returnValue(0));
         $record->expects($this->any())->method('getContainerTitle')
             ->will($this->returnValue('0'));
+        // Expect only one call to getDeduplicatedAuthors to confirm that caching
+        // works correctly (we need this data more than once, but should only pull
+        // it from the driver once).
+        $authors = [
+            'primary' => ['Vico, Giambattista, 1668-1744.' => []],
+            'secondary' => ['Pandolfi, Claudia.' => []],
+        ];
+        $record->expects($this->once())->method('getDeduplicatedAuthors')
+            ->will($this->returnValue($authors));
 
         // Load record data from fixture file:
         $fixture = json_decode(

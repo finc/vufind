@@ -26,10 +26,9 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Search\Summon;
-
-use SerialsSolutions_Summon_Query as SummonQuery;
-use VuFind\Solr\Utils as SolrUtils;
-use VuFindSearch\ParamBag;
+use SerialsSolutions_Summon_Query as SummonQuery,
+    VuFind\Solr\Utils as SolrUtils,
+    VuFindSearch\ParamBag;
 
 /**
  * Summon Search Parameters
@@ -261,31 +260,31 @@ class Params extends \VuFind\Search\Base\Params
                         $params->set(
                             'holdings', strtolower(trim($safeValue)) == 'true'
                         );
-                    } elseif ($filt['field'] == 'queryExpansion') {
+                    } else if ($filt['field'] == 'queryExpansion') {
                         // Special case -- "query expansion" is a separate parameter
                         // from other facets.
                         $params->set(
                             'expand', strtolower(trim($safeValue)) == 'true'
                         );
-                    } elseif ($filt['field'] == 'openAccessFilter') {
+                    } else if ($filt['field'] == 'openAccessFilter') {
                         // Special case -- "open access filter" is a separate
                         // parameter from other facets.
                         $params->set(
                             'openAccessFilter',
                             strtolower(trim($safeValue)) == 'true'
                         );
-                    } elseif ($filt['field'] == 'excludeNewspapers') {
+                    } else if ($filt['field'] == 'excludeNewspapers') {
                         // Special case -- support a checkbox for excluding
                         // newspapers:
                         $params
                             ->add('filters', "ContentType,Newspaper Article,true");
-                    } elseif ($range = SolrUtils::parseRange($filt['value'])) {
+                    } else if ($range = SolrUtils::parseRange($filt['value'])) {
                         // Special case -- range query (translate [x TO y] syntax):
                         $from = SummonQuery::escapeParam($range['from']);
                         $to = SummonQuery::escapeParam($range['to']);
                         $params
                             ->add('rangeFilters', "{$filt['field']},{$from}:{$to}");
-                    } elseif ($filt['operator'] == 'OR') {
+                    } else if ($filt['operator'] == 'OR') {
                         // Special case -- OR facets:
                         $orFacets[$filt['field']] = isset($orFacets[$filt['field']])
                             ? $orFacets[$filt['field']] : [];
@@ -331,7 +330,7 @@ class Params extends \VuFind\Search\Base\Params
         if (preg_match('/^\[(.*) TO (.*)\]$/', $value, $matches)) {
             // Simple case: [X TO Y]
             $filter['displayText'] = $matches[1] . '-' . $matches[2];
-        } elseif (preg_match($caseInsensitiveRegex, $value, $matches)) {
+        } else if (preg_match($caseInsensitiveRegex, $value, $matches)) {
             // Case insensitive case: [x TO y] OR [X TO Y]; convert
             // only if values in both ranges match up!
             if (strtolower($matches[3]) == strtolower($matches[1])

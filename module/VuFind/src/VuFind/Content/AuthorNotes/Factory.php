@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\Content\AuthorNotes;
-
 use Zend\ServiceManager\ServiceManager;
 
 /**

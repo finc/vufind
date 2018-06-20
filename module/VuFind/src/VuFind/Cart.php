@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind;
-
 use VuFind\Cookie\CookieManager;
 
 /**
@@ -216,7 +215,7 @@ class Cart
      */
     public function isFull()
     {
-        return count($this->items) >= $this->maxSize;
+        return (count($this->items) >= $this->maxSize);
     }
 
     /**

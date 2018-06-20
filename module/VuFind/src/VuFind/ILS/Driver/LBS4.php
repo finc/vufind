@@ -24,7 +24,6 @@
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace VuFind\ILS\Driver;
-
 use VuFind\Exception\ILS as ILSException;
 use VuFind\I18n\Translator\TranslatorAwareInterface;
 
@@ -238,9 +237,9 @@ class LBS4 extends DAIA implements TranslatorAwareInterface
                           ];
                 if ($row[6] == '81') {
                     $result['group'] = $this->translate('Staff');
-                } elseif ($row[6] == '1') {
+                } else if ($row[6] == '1') {
                     $result['group'] = $this->translate('Student');
-                } elseif ($row[6] == '30') {
+                } else if ($row[6] == '30') {
                     $result['group'] = $this->translate('Residents');
                 }
                 $row = sybase_fetch_row($sqlStmt);
@@ -287,15 +286,15 @@ class LBS4 extends DAIA implements TranslatorAwareInterface
             $sqlStmt = sybase_query($sql);
             while ($row = sybase_fetch_row($sqlStmt)) {
                 $result[$count] = [
-                    'id' => $row[0],
-                    'duedate' => substr($row[13], 0, 12),
-                    'barcode' => $row[31],
-                    'renew' => $row[7],
-                    'publication_year' => $row[45],
-                    'renewable' => $row[61],
-                    'message' => $row[60],
-                    'title' => $this->picaRecode($row[44]),
-                    'item_id' => $row[7]
+                    'id'      => $row[0]
+                   ,'duedate' => substr($row[13], 0, 12)
+                   ,'barcode' => $row[31]
+                   ,'renew'   => $row[7]
+                   ,'publication_year' => $row[45]
+                   ,'renewable' => $row[61]
+                   ,'message' => $row[60]
+                   ,'title'   => $this->picaRecode($row[44])
+                   ,'item_id' => $row[7]
                 ];
                 $count++;
             }
@@ -424,7 +423,7 @@ class LBS4 extends DAIA implements TranslatorAwareInterface
                 $fine = $this->picaRecode($row[5]);
                 $amount = (null == $row[2]) ? 0 : $row[2] * 100;
                 //$balance = (null==$row[3])?0:$row[3]*100;
-                $checkout = substr($row[3], 0, 12);
+                $checkout = substr($row[3], 0,  12);
                 $duedate = substr($row[4], 0, 12);
                 $title = $this->picaRecode(substr($row[6], 0, 12));
                 $result[] = [
@@ -467,9 +466,7 @@ class LBS4 extends DAIA implements TranslatorAwareInterface
      */
     protected function prfz($str)
     {
-        $x = 0;
-        $y = 0;
-        $w = 2;
+        $x = 0; $y = 0; $w = 2;
         $stra = str_split($str);
         for ($i = strlen($str); $i > 0; $i--) {
             $c = $stra[$i - 1];
@@ -488,4 +485,5 @@ class LBS4 extends DAIA implements TranslatorAwareInterface
         }
         return $ret;
     }
+
 }

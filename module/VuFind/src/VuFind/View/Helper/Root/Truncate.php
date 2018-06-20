@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\View\Helper\Root;
-
 use Zend\View\Helper\AbstractHelper;
 
 /**
@@ -54,7 +53,7 @@ class Truncate extends AbstractHelper
     {
         if ($len == 0) {
             return '';
-        } elseif (strlen($str) > $len) {
+        } else if (strlen($str) > $len) {
             if (function_exists('mb_substr')) {
                 return trim(mb_substr($str, 0, $len, 'UTF-8')) . $append;
             } else {

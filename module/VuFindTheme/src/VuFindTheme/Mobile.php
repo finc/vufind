@@ -32,7 +32,6 @@
  * @link     https://github.com/ahand/mobileesp MobileESP Project
  */
 namespace VuFindTheme;
-
 use uagent_info;
 
 /**

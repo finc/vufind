@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind\Db\Table;
-
 use VuFind\Db\Row\RowGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
@@ -108,7 +107,7 @@ class Gateway extends AbstractTableGateway
      */
     public function createRow()
     {
-        $obj = clone $this->getResultSetPrototype()->getArrayObjectPrototype();
+        $obj = clone($this->getResultSetPrototype()->getArrayObjectPrototype());
 
         // If this is a PostgreSQL connection, we may need to initialize the ID
         // from a sequence:

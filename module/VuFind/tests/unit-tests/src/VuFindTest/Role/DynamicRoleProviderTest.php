@@ -26,9 +26,7 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\Role;
-
-use VuFind\Role\DynamicRoleProvider;
-use VuFind\Role\PermissionProvider\PluginManager;
+use VuFind\Role\DynamicRoleProvider, VuFind\Role\PermissionProvider\PluginManager;
 
 /**
  * Dynamic Role Provider Test Class
@@ -101,7 +99,7 @@ class DynamicRoleProviderTest extends \VuFindTest\Unit\TestCase
      */
     protected function getFakePluginManager()
     {
-        $pm = new PluginManager($this->getServiceManager());
+        $pm = new PluginManager();
         foreach (['a', 'b', 'c'] as $name) {
             $pm->setService($name, $this->createMock('VuFind\Role\PermissionProvider\PermissionProviderInterface'));
         }

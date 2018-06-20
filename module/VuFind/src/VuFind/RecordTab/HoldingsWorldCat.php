@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:plugins:record_tabs Wiki
  */
 namespace VuFind\RecordTab;
-
 use VuFindSearch\Backend\WorldCat\Connector;
 
 /**

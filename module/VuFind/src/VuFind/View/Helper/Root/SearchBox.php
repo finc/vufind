@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\View\Helper\Root;
-
 use VuFind\Search\Options\PluginManager as OptionsManager;
 
 /**
@@ -318,7 +317,7 @@ class SearchBox extends \Zend\View\Helper\AbstractHelper
                         && $activeHandler == $searchVal;
                     if ($selected) {
                         $selectedFound = true;
-                    } elseif ($backupSelectedIndex === false
+                    } else if ($backupSelectedIndex === false
                         && $target == $activeSearchClass
                     ) {
                         $backupSelectedIndex = count($handlers);
@@ -330,7 +329,7 @@ class SearchBox extends \Zend\View\Helper\AbstractHelper
                         'selected' => $selected
                     ];
                 }
-            } elseif ($type == 'External') {
+            } else if ($type == 'External') {
                 $handlers[] = [
                     'value' => $type . ':' . $target, 'label' => $label,
                     'indent' => false, 'selected' => false

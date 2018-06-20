@@ -28,9 +28,9 @@
  */
 namespace VuFindTest\Backend\Solr\Document;
 
-use PHPUnit_Framework_TestCase;
-
 use VuFindSearch\Backend\Solr\Document\DeleteDocument;
+
+use PHPUnit_Framework_TestCase;
 
 /**
  * Unit tests for SOLR delete document class.

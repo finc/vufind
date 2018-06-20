@@ -28,8 +28,8 @@
  */
 namespace VuFind\Controller\Widget\Solr;
 
-use VuFind\Controller\Widget\WidgetInterface;
 use VuFindSearch\Backend\Solr\Response\Json\Facets;
+use VuFind\Controller\Widget\WidgetInterface;
 
 /**
  * SOLR facet widget interface definition.

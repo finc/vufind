@@ -27,7 +27,6 @@
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace VuFind\ILS\Driver;
-
 use VuFind\Exception\ILS as ILSException;
 
 /**
@@ -148,13 +147,13 @@ class Horizon extends AbstractBase
             if (in_array(strtolower('available:0'), $arrayValues)) {
                 $available = 0;
             }
-            if (in_array(strtolower('reserve:N'), $arrayValues)) {
+            if (in_array(strtolower('reserve:N'),   $arrayValues)) {
                 $reserve  = 'N';
             }
-            if (in_array(strtolower('reserve:Y'), $arrayValues)) {
+            if (in_array(strtolower('reserve:Y'),   $arrayValues)) {
                 $reserve  = 'Y';
             }
-            if (in_array(strtolower('duedate:0'), $arrayValues)) {
+            if (in_array(strtolower('duedate:0'),   $arrayValues)) {
                 $duedate  = '';
             }
         } else {
@@ -510,7 +509,7 @@ class Horizon extends AbstractBase
             $sqlStmt = mssql_query($sql);
             $row = mssql_fetch_assoc($sqlStmt);
             if ($row) {
-                list($lastname, $firstname) = explode(', ', $row['FULLNAME']);
+                list($lastname,$firstname) = explode(', ', $row['FULLNAME']);
                 $user = ['id' => $username,
                               'firstname' => $firstname,
                               'lastname' => $lastname,
@@ -763,7 +762,7 @@ class Horizon extends AbstractBase
             $sqlStmt = mssql_query($sql);
 
             while ($row = mssql_fetch_assoc($sqlStmt)) {
-                $fineList[] = ['amount'     => $row['AMOUNT'],
+                 $fineList[] = ['amount'     => $row['AMOUNT'],
                                      'checkout'   => $row['CHECKOUT'],
                                     'fine' => $row['FINE'],
                                      'balance'    => $row['BALANCE'],
@@ -807,7 +806,7 @@ class Horizon extends AbstractBase
 
             $row = mssql_fetch_assoc($sqlStmt);
             if ($row) {
-                list($lastname, $firstname) = explode(', ', $row['FULLNAME']);
+                list($lastname,$firstname) = explode(', ', $row['FULLNAME']);
                 $profile = ['lastname' => $lastname,
                                 'firstname' => $firstname,
                                 'address1' => $row['ADDRESS1'],
@@ -909,7 +908,7 @@ class Horizon extends AbstractBase
             if (is_numeric($dueTimeStamp)) {
                 if ($now > $dueTimeStamp) {
                     $dueStatus = "overdue";
-                } elseif ($now > $dueTimeStamp - (1 * 24 * 60 * 60)) {
+                } else if ($now > $dueTimeStamp - (1 * 24 * 60 * 60)) {
                     $dueStatus = "due";
                 }
             }

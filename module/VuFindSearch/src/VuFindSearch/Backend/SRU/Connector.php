@@ -27,10 +27,10 @@
  */
 namespace VuFindSearch\Backend\SRU;
 
-use VuFind\XSLT\Processor as XSLTProcessor;
+use VuFindSearch\Backend\Exception\HttpErrorException;
 use VuFindSearch\Backend\Exception\BackendException;
 
-use VuFindSearch\Backend\Exception\HttpErrorException;
+use VuFind\XSLT\Processor as XSLTProcessor;
 
 /**
  * SRU Search Interface
@@ -128,10 +128,10 @@ class Connector implements \Zend\Log\LoggerAwareInterface
     {
         $options = ['operation' => 'scan',
                          'scanClause' => $clause];
-        if (null !== $pos) {
+        if (!is_null($pos)) {
             $options['responsePosition'] = $pos;
         }
-        if (null !== $maxTerms) {
+        if (!is_null($maxTerms)) {
             $options['maximumTerms'] = $maxTerms;
         }
 
@@ -160,10 +160,10 @@ class Connector implements \Zend\Log\LoggerAwareInterface
                          'query' => $query,
                          'startRecord' => ($start) ? $start : 1,
                          'recordSchema' => $schema];
-        if (null !== $limit) {
+        if (!is_null($limit)) {
             $options['maximumRecords'] = $limit;
         }
-        if (null !== $sortBy) {
+        if (!is_null($sortBy)) {
             $options['sortKeys'] = $sortBy;
         }
 

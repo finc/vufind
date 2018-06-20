@@ -26,9 +26,7 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFindTest\Auth;
-
-use VuFind\Auth\LDAP;
-use Zend\Config\Config;
+use VuFind\Auth\LDAP, Zend\Config\Config;
 
 /**
  * LDAP authentication test class.
@@ -53,7 +51,7 @@ class LDAPTest extends \VuFindTest\Unit\DbTestCase
         if (null === $config) {
             $config = $this->getAuthConfig();
         }
-        $obj = clone $this->getAuthManager()->get('LDAP');
+        $obj = clone($this->getAuthManager()->get('LDAP'));
         $obj->setConfig($config);
         return $obj;
     }

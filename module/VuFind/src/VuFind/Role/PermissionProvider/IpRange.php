@@ -29,9 +29,8 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Role\PermissionProvider;
-
-use VuFind\Net\IpAddressUtils;
 use Zend\Http\PhpEnvironment\Request;
+use VuFind\Net\IpAddressUtils;
 
 /**
  * IpRange permission provider for VuFind.

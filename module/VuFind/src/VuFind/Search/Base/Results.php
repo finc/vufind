@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Search\Base;
-
 use VuFind\Record\Loader;
 use VuFind\Search\Factory\UrlQueryHelperFactory;
 use VuFindSearch\Service as SearchService;
@@ -168,7 +167,7 @@ abstract class Results
     public function __clone()
     {
         if (is_object($this->params)) {
-            $this->params = clone $this->params;
+            $this->params = clone($this->params);
         }
         $this->helpers = [];
     }
@@ -301,7 +300,7 @@ abstract class Results
      */
     public function getResultTotal()
     {
-        if (null === $this->resultTotal) {
+        if (is_null($this->resultTotal)) {
             $this->performAndProcessSearch();
         }
         return $this->resultTotal;
@@ -369,7 +368,7 @@ abstract class Results
      */
     public function getResults()
     {
-        if (null === $this->results) {
+        if (is_null($this->results)) {
             $this->performAndProcessSearch();
         }
         return $this->results;
@@ -395,7 +394,7 @@ abstract class Results
         // This data is not available until \VuFind\Db\Table\Search::saveSearch()
         // is called...  blow up if somebody tries to get data that is not yet
         // available.
-        if (null === $this->savedSearch) {
+        if (is_null($this->savedSearch)) {
             throw new \Exception(
                 'Cannot retrieve save status before updateSaveStatus is called.'
             );
@@ -450,7 +449,7 @@ abstract class Results
      */
     public function getQuerySpeed()
     {
-        if (null === $this->queryTime) {
+        if (is_null($this->queryTime)) {
             $this->performAndProcessSearch();
         }
         return $this->queryTime;
@@ -463,7 +462,7 @@ abstract class Results
      */
     public function getStartTime()
     {
-        if (null === $this->queryStartTime) {
+        if (is_null($this->queryStartTime)) {
             $this->performAndProcessSearch();
         }
         return $this->queryStartTime;
@@ -500,7 +499,7 @@ abstract class Results
      */
     public function getRawSuggestions()
     {
-        if (null === $this->suggestions) {
+        if (is_null($this->suggestions)) {
             $this->performAndProcessSearch();
         }
         return $this->suggestions;

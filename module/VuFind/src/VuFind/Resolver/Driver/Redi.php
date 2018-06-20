@@ -28,9 +28,7 @@
  * @link     https://vufind.org/wiki/development:plugins:link_resolver_drivers Wiki
  */
 namespace VuFind\Resolver\Driver;
-
-use DOMDocument;
-use Zend\Dom\DOMXPath;
+use DOMDocument, Zend\Dom\DOMXPath;
 
 /**
  * ReDi Link Resolver Driver
@@ -200,6 +198,7 @@ class Redi extends AbstractBase
 
         if ($ezbResultsNodesText->length == $ezbResultsNodesURL->length) {
             for ($i = 0; $i < $ezbResultsNodesText->length; $i++) {
+
                 $accessClass = 'unknown';
                 $accessClassExpressions = [
                     "denied"    => "//div[@class='t_ezb_result']["

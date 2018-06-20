@@ -26,9 +26,7 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\View\Helper\Root;
-
-use NumberFormatter;
-use Zend\View\Helper\AbstractHelper;
+use NumberFormatter, Zend\View\Helper\AbstractHelper;
 
 /**
  * Safe money format view helper

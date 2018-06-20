@@ -26,10 +26,8 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Controller\Plugin;
-
-use Zend\Db\Adapter\Adapter as DbAdapter;
-use Zend\Db\Metadata\Metadata as DbMetadata;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Zend\Db\Adapter\Adapter as DbAdapter, Zend\Db\Metadata\Metadata as DbMetadata,
+    Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
  * Zend action helper to perform database upgrades
@@ -640,7 +638,7 @@ class DbUpgrade extends AbstractPlugin
             $expectedDefault = (strtoupper($expectedDefault) == 'NULL')
                 ? null : $expectedDefault;
         }
-        return $expectedDefault === $currentDefault;
+        return ($expectedDefault === $currentDefault);
     }
 
     /**

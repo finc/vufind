@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\I18n;
-
 use VuFind\I18n\ExtendedIniNormalizer;
 
 /**
@@ -70,7 +69,7 @@ class ExtendedIniNormalizerTest extends \VuFindTest\Unit\TestCase
             $full = $dir . '/' . $file;
             if ($file != '.' && $file != '..' && is_dir($full)) {
                 $this->checkDirectory($normalizer, $full);
-            } elseif (substr($file, -4) == '.ini') {
+            } else if (substr($file, -4) == '.ini') {
                 $this->assertEquals(
                     $normalizer->normalizeFileToString($full),
                     file_get_contents($full),

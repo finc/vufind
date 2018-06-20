@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:plugins:controllers Wiki
  */
 namespace VuFindApi\Formatter;
-
 use VuFind\I18n\TranslatableString;
 use Zend\View\HelperPluginManager;
 

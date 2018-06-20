@@ -26,7 +26,6 @@
  * @link     http://www.vufind.org  Main Page
  */
 namespace VuFind\Role\PermissionProvider;
-
 use ZfcRbac\Service\AuthorizationService;
 
 /**

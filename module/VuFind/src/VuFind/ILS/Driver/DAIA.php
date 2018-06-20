@@ -31,11 +31,9 @@
  * @link     https://vufind.org/wiki/development:plugins:ils_drivers Wiki
  */
 namespace VuFind\ILS\Driver;
-
-use DOMDocument;
-use VuFind\Exception\ILS as ILSException;
-use VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface;
-use Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
+use DOMDocument, VuFind\Exception\ILS as ILSException,
+    VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
+    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
  * ILS Driver for VuFind to query availability information via DAIA.
@@ -272,7 +270,7 @@ class DAIA extends AbstractBase implements
             // extract the DAIA document for the current id from the
             // HTTPRequest's result
             $doc = $this->extractDaiaDoc($id, $rawResult);
-            if (null !== $doc) {
+            if (!is_null($doc)) {
                 // parse the extracted DAIA document and return the status info
                 $data = $this->parseDaiaDoc($id, $doc);
                 // cache the status information
@@ -335,7 +333,7 @@ class DAIA extends AbstractBase implements
                         // it is assumed that each DAIA document has a unique URI,
                         // so get the document with the corresponding id
                         $doc = $this->extractDaiaDoc($id, $rawResult);
-                        if (null !== $doc) {
+                        if (!is_null($doc)) {
                             // a document with the corresponding id exists, which
                             // means we got status information for that record
                             $data = $this->parseDaiaDoc($id, $doc);
@@ -355,7 +353,7 @@ class DAIA extends AbstractBase implements
                         // extract the DAIA document for the current id from the
                         // HTTPRequest's result
                         $doc = $this->extractDaiaDoc($id, $rawResult);
-                        if (null !== $doc) {
+                        if (!is_null($doc)) {
                             // parse the extracted DAIA document and save the status
                             // info
                             $data = $this->parseDaiaDoc($id, $doc);
@@ -475,6 +473,7 @@ class DAIA extends AbstractBase implements
                 'HTTP status ' . $result->getStatusCode() .
                 ' received, retrieving availability information for record: ' . $id
             );
+
         }
 
         // check if result matches daiaResponseFormat
@@ -507,7 +506,7 @@ class DAIA extends AbstractBase implements
             }
         }
 
-        return $result->getBody();
+        return ($result->getBody());
     }
 
     /**
@@ -935,7 +934,7 @@ class DAIA extends AbstractBase implements
         $return['customData']      = $this->getCustomData($item);
 
         $return['limitation_types'] = $item_limitation_types;
-
+        
         return $return;
     }
 
@@ -1008,9 +1007,9 @@ class DAIA extends AbstractBase implements
 
         // Check if we have at least one service unavailable and a href field is set
         // (either as flag or as actual value for the next action).
-        return $href && count(
+        return ($href && count(
             array_diff($services['unavailable'], $services['available'])
-        );
+        ));
     }
 
     /**
@@ -1052,9 +1051,9 @@ class DAIA extends AbstractBase implements
 
         // Check if we have at least one service unavailable and a href field is set
         // (either as flag or as actual value for the next action).
-        return $href && count(
+        return ($href && count(
             array_diff($services['available'], $services['unavailable'])
-        );
+        ));
     }
 
     /**
@@ -1306,7 +1305,7 @@ class DAIA extends AbstractBase implements
         foreach ($messages as $message) {
             if (isset($message['content'])) {
                 $this->debug(
-                    'Message in DAIA response (' . (string)$context . '): ' .
+                    'Message in DAIA response (' . (string) $context . '): ' .
                     $message['content']
                 );
             }

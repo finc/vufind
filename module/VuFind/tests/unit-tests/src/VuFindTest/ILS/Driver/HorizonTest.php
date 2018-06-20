@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFindTest\ILS\Driver;
-
 use VuFind\ILS\Driver\Horizon;
 
 /**

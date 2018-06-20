@@ -28,9 +28,7 @@
  * @link     https://vufind.org
  */
 namespace VuFindTest\Content\Covers;
-
-use VuFind\Content\Covers\Buchhandel;
-use VuFindCode\ISBN;
+use VuFindCode\ISBN, VuFind\Content\Covers\Buchhandel;
 
 /**
  * Unit tests for Booksite cover loader.

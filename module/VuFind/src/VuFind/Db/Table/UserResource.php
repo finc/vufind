@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Db\Table;
-
 use VuFind\Db\Row\RowGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
@@ -93,10 +92,10 @@ class UserResource extends Gateway
             $select->where->equalTo('r.source', $source)
                 ->equalTo('r.record_id', $resourceId);
 
-            if (null !== $userId) {
+            if (!is_null($userId)) {
                 $select->where->equalTo('user_resource.user_id', $userId);
             }
-            if (null !== $listId) {
+            if (!is_null($listId)) {
                 $select->where->equalTo('user_resource.list_id', $listId);
             }
         };

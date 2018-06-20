@@ -28,8 +28,8 @@
  */
 namespace VuFindTest\Backend\Summon\Response;
 
-use PHPUnit_Framework_TestCase;
 use VuFindSearch\Backend\Summon\Response\RecordCollectionFactory;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Unit tests for Summon record collection factory
@@ -67,6 +67,7 @@ class RecordCollectionFactoryTest extends PHPUnit_Framework_TestCase
     {
         $factory = new RecordCollectionFactory(
             function () {
+
             }
         );
         $factory->factory('bad');

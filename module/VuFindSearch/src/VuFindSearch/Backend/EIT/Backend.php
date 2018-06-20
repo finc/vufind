@@ -28,14 +28,14 @@
  */
 namespace VuFindSearch\Backend\EIT;
 
-use VuFindSearch\Backend\AbstractBackend;
+use VuFindSearch\Query\AbstractQuery;
 
 use VuFindSearch\ParamBag;
 
-use VuFindSearch\Query\AbstractQuery;
+use VuFindSearch\Response\RecordCollectionInterface;
 use VuFindSearch\Response\RecordCollectionFactoryInterface;
 
-use VuFindSearch\Response\RecordCollectionInterface;
+use VuFindSearch\Backend\AbstractBackend;
 
 /**
  * EIT backend.

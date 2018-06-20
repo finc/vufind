@@ -28,7 +28,6 @@
  * @link     https://vufind.org
  */
 namespace VuFindSearch\Backend\LibGuides;
-
 use Zend\Http\Client as HttpClient;
 
 /**

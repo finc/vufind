@@ -72,10 +72,10 @@ class RecordDataFormatterFactory
             [
                 'useCache' => true,
                 'labelFunction' => function ($data) {
-                    return count($data['main']) > 1
+                    return count($data['primary']) > 1
                         ? 'Main Authors' : 'Main Author';
                 },
-                'context' => ['type' => 'main', 'schemaLabel' => 'author'],
+                'context' => ['type' => 'primary', 'schemaLabel' => 'author'],
             ]
         );
         $spec->setTemplateLine(
@@ -140,10 +140,10 @@ class RecordDataFormatterFactory
             [
                 'useCache' => true,
                 'labelFunction' => function ($data) {
-                    return count($data['main']) > 1
+                    return count($data['primary']) > 1
                         ? 'Main Authors' : 'Main Author';
                 },
-                'context' => ['type' => 'main', 'schemaLabel' => 'author'],
+                'context' => ['type' => 'primary', 'schemaLabel' => 'author'],
             ]
         );
         $spec->setTemplateLine(
@@ -276,7 +276,7 @@ class RecordDataFormatterFactory
     public function getDefaultDescriptionSpecs()
     {
         $spec = new RecordDataFormatter\SpecBuilder();
-        $spec->setTemplateLine('Summary', true, 'data-summary.phtml');
+        $spec->setLine('Summary', 'getSummary');
         $spec->setLine('Published', 'getDateSpan');
         $spec->setLine('Item Description', 'getGeneralNotes');
         $spec->setLine('Physical Description', 'getPhysicalDescriptions');

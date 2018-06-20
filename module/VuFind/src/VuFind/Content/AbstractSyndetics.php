@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\Content;
-
 use DOMDocument;
 
 /**
@@ -83,7 +82,7 @@ abstract class AbstractSyndetics extends AbstractBase
      * @return \Zend\Http\Client
      * @throws \Exception
      */
-    protected function getHttpClient($url = null)
+    protected function getHttpClient($url)
     {
         $client = parent::getHttpClient($url);
         $client->setOptions(['timeout' => $this->timeout]);

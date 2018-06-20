@@ -32,8 +32,8 @@ namespace VuFind\Search\Solr;
 
 use VuFindSearch\Backend\BackendInterface;
 
-use Zend\EventManager\EventInterface;
 use Zend\EventManager\SharedEventManagerInterface;
+use Zend\EventManager\EventInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -362,4 +362,5 @@ class DeduplicationListener
         array_unshift($result, '');
         return array_flip($result);
     }
+
 }

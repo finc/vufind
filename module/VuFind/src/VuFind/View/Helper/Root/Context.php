@@ -28,9 +28,7 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\View\Helper\Root;
-
-use Zend\View\Helper\AbstractHelper;
-use Zend\View\Renderer\RendererInterface;
+use Zend\View\Helper\AbstractHelper, Zend\View\Renderer\RendererInterface;
 
 /**
  * Context manager (useful for using render() instead of partial() for better
@@ -77,7 +75,7 @@ class Context extends AbstractHelper
         $view = $this->getView();
 
         foreach ($vars as $k => $v) {
-            if (null === $v) {
+            if (is_null($v)) {
                 unset($view->$k);
             } else {
                 $view->$k = $v;
@@ -113,7 +111,7 @@ class Context extends AbstractHelper
      */
     public function __invoke(RendererInterface $view = null)
     {
-        if (null !== $view) {
+        if (!is_null($view)) {
             $this->setView($view);
         }
         return $this;

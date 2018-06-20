@@ -28,15 +28,15 @@
  */
 namespace VuFind\Search;
 
-use SplObjectStorage;
-
-use UnexpectedValueException;
-use VuFindSearch\Backend\BackendInterface;
-
-use Zend\EventManager\EventInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 use Zend\EventManager\SharedEventManagerInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\EventManager\EventInterface;
+
+use VuFindSearch\Backend\BackendInterface;
+
+use SplObjectStorage;
+use UnexpectedValueException;
 
 /**
  * Manager for search backends.

@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFindTest\Autocomplete;
-
 use VuFind\Autocomplete\Tag;
 
 /**
@@ -74,7 +73,7 @@ class TagTest extends \VuFindTest\Unit\DbTestCase
             ->with($this->equalTo('foo'))
             ->will($this->returnValue($tags));
         $tableManager = $this->getMockBuilder('VuFind\Db\Table\PluginManager')
-            ->disableOriginalConstructor()->setMethods(['get'])->getMock();
+            ->setMethods(['get'])->getMock();
         $tableManager->expects($this->once())->method('get')
             ->with($this->equalTo('Tags'))
             ->will($this->returnValue($tagTable));

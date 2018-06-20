@@ -28,10 +28,10 @@
  */
 namespace VuFindTest\Search;
 
-use VuFind\Search\Factory\UrlQueryHelperFactory;
 use VuFind\Search\UrlQueryHelper;
-use VuFindSearch\Query\Query;
+use VuFind\Search\Factory\UrlQueryHelperFactory;
 use VuFindTest\Unit\TestCase as TestCase;
+use VuFindSearch\Query\Query;
 
 /**
  * UrlQueryHelper unit tests.

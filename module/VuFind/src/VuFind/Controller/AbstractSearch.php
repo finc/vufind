@@ -26,9 +26,7 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Controller;
-
-use VuFind\Search\RecommendListener;
-use VuFind\Solr\Utils as SolrUtils;
+use VuFind\Search\RecommendListener, VuFind\Solr\Utils as SolrUtils;
 use Zend\Stdlib\Parameters;
 
 /**
@@ -191,7 +189,7 @@ class AbstractSearch extends AbstractBase
             || $noRecommend === 'true' || $noRecommend === true
         ) {
             return [];
-        } elseif ($noRecommend === 0 || $noRecommend === '0'
+        } else if ($noRecommend === 0 || $noRecommend === '0'
             || $noRecommend === 'false' || $noRecommend === false
         ) {
             return $all;
@@ -695,7 +693,7 @@ class AbstractSearch extends AbstractBase
         $params->initFromRequest($this->getRequest()->getQuery());
         // Get parameters
         $facet = $this->params()->fromQuery('facet');
-        $page = (int)$this->params()->fromQuery('facetpage', 1);
+        $page = (int) $this->params()->fromQuery('facetpage', 1);
         $options = $results->getOptions();
         $facetSortOptions = $options->getFacetSortOptions();
         $sort = $this->params()->fromQuery('facetsort', null);
@@ -729,8 +727,7 @@ class AbstractSearch extends AbstractBase
                 'results' => $results,
                 'anotherPage' => $facets[$facet]['more'],
                 'sort' => $sort,
-                'sortOptions' => $facetSortOptions,
-                'baseUriExtra' => $this->params()->fromQuery('baseUriExtra'),
+                'sortOptions' => $facetSortOptions
             ]
         );
         $view->setTemplate('search/facet-list');

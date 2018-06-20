@@ -28,7 +28,6 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFind\Db\Table;
-
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 

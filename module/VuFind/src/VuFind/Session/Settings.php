@@ -29,7 +29,6 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\Session;
-
 use Zend\Session\SessionManager;
 
 /**

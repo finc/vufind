@@ -28,8 +28,8 @@
  */
 namespace VuFindTest\Query;
 
-use PHPUnit_Framework_TestCase;
 use VuFindSearch\Query\Query;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Unit tests for Query class.

@@ -26,10 +26,7 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind;
-
-use Zend\Console\Console;
-use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\Http\RouteMatch;
+use Zend\Console\Console, Zend\Mvc\MvcEvent, Zend\Mvc\Router\Http\RouteMatch;
 
 /**
  * VuFind Bootstrapper
@@ -179,7 +176,7 @@ class Bootstrapper
     {
         $callback = function ($event) {
             $serviceManager = $event->getApplication()->getServiceManager();
-            $viewModel = $serviceManager->get('ViewManager')->getViewModel();
+            $viewModel = $serviceManager->get('viewmanager')->getViewModel();
 
             // Grab the template name from the first child -- we can use this to
             // figure out the current template context.
@@ -352,7 +349,7 @@ class Bootstrapper
                 }
             }
             // Send key values to view:
-            $viewModel = $sm->get('ViewManager')->getViewModel();
+            $viewModel = $sm->get('viewmanager')->getViewModel();
             $viewModel->setVariable('userLang', $language);
             $viewModel->setVariable('allLangs', $config->Languages);
             $rtlLangs = isset($config->LanguageSettings->rtl_langs)
@@ -473,7 +470,7 @@ class Bootstrapper
         // a user-friendly message instead of a fatal error.
         $callback = function ($event) {
             $serviceManager = $event->getApplication()->getServiceManager();
-            $viewModel = $serviceManager->get('ViewManager')->getViewModel();
+            $viewModel = $serviceManager->get('viewmanager')->getViewModel();
             $viewModel->renderingError = true;
         };
         $this->events->attach('render.error', $callback, 10000);

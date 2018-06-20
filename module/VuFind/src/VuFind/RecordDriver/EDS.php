@@ -36,7 +36,7 @@ namespace VuFind\RecordDriver;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:record_drivers Wiki
  */
-class EDS extends DefaultRecord
+class EDS extends SolrDefault
 {
     /**
      * Document types that are treated as PDF links.
@@ -391,6 +391,7 @@ class EDS extends DefaultRecord
                     return $this->toHTML($item['Data']);
                 }
             }
+
         }
         return '';
     }
@@ -407,10 +408,10 @@ class EDS extends DefaultRecord
     {
         $linkedString = preg_replace_callback(
             "/\b(https?):\/\/([-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)\b/i",
-            create_function(
-                '$matches',
-                'return "<a href=\'".($matches[0])."\'>".($matches[0])."</a>";'
-            ),
+            function ($matches) {
+                return "<a href='" . $matches[0] . "'>"
+                    . htmlentities($matches[0]) . "</a>";
+            },
             $string
         );
         return $linkedString;

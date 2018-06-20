@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:plugins:hierarchy_components Wiki
  */
 namespace VuFind\RecordTab;
-
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -252,26 +251,6 @@ class Factory
     }
 
     /**
-     * Factory for TOC tab plugin.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return TablesOfContents
-     */
-    public static function getTOC(ServiceManager $sm)
-    {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        // Only instantiate the loader if the feature is enabled:
-        if (isset($config->Content->toc)) {
-            $loader = $sm->getServiceLocator()->get('VuFind\ContentPluginManager')
-                ->get('toc');
-        } else {
-            $loader = null;
-        }
-        return new TOC($loader, static::getHideSetting($config, 'toc'));
-    }
-
-    /**
      * Factory for UserComments tab plugin.
      *
      * @param ServiceManager $sm Service manager.
@@ -284,7 +263,7 @@ class Factory
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
         $useRecaptcha = isset($config->Captcha) && isset($config->Captcha->forms)
             && (trim($config->Captcha->forms) === '*'
-            || strpos($config->Captcha->forms, 'userComments'));
+            || strpos($config->Captcha->forms, 'userComments') !== false);
         return new UserComments(
             'enabled' === $capabilities->getCommentSetting(),
             $useRecaptcha

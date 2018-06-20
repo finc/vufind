@@ -27,9 +27,8 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\ILS\Logic;
-
-use VuFind\Exception\ILS as ILSException;
-use VuFind\ILS\Connection as ILSConnection;
+use VuFind\ILS\Connection as ILSConnection,
+    VuFind\Exception\ILS as ILSException;
 
 /**
  * Hold Logic Class
@@ -218,7 +217,7 @@ class Holds
 
             if ($mode == "disabled") {
                 $holdings = $this->standardHoldings($result);
-            } elseif ($mode == "driver") {
+            } else if ($mode == "driver") {
                 $holdings = $this->driverHoldings($result, $config, !empty($blocks));
             } else {
                 $holdings = $this->generateHoldings($result, $mode, $config);
@@ -341,7 +340,7 @@ class Holds
                             = ($holds_override && isset($copy['holdOverride']))
                             ? $copy['holdOverride'] : $type;
 
-                        switch ($currentType) {
+                        switch($currentType) {
                         case "all":
                             $addlink = true; // always provide link
                             break;

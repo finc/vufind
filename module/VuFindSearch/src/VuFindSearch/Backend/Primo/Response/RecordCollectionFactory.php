@@ -28,9 +28,9 @@
  */
 namespace VuFindSearch\Backend\Primo\Response;
 
-use VuFindSearch\Backend\Solr\Response\Json\Record;
-use VuFindSearch\Exception\InvalidArgumentException;
 use VuFindSearch\Response\RecordCollectionFactoryInterface;
+use VuFindSearch\Exception\InvalidArgumentException;
+use VuFindSearch\Backend\Solr\Response\Json\Record;
 
 /**
  * Simple factory for record collection.
@@ -72,7 +72,7 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface
             $recordFactory = function ($i) {
                 return new Record($i);
             };
-        } elseif (!is_callable($recordFactory)) {
+        } else if (!is_callable($recordFactory)) {
             throw new InvalidArgumentException('Record factory must be callable.');
         }
         $this->recordFactory = $recordFactory;
@@ -90,6 +90,7 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface
      */
     public function factory($response)
     {
+
         if (!is_array($response)) {
             throw new InvalidArgumentException(
                 sprintf(
@@ -104,4 +105,5 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface
         }
         return $collection;
     }
+
 }

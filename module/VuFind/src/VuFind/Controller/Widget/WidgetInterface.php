@@ -64,4 +64,5 @@ interface WidgetInterface
      * @return array
      */
     public function getState();
+
 }

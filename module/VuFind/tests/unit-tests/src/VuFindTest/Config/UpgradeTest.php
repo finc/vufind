@@ -26,7 +26,6 @@
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
 namespace VuFindTest\Config;
-
 use VuFind\Config\Upgrade;
 
 /**
@@ -99,7 +98,7 @@ class UpgradeTest extends \VuFindTest\Unit\TestCase
                 . "the default theme. Your config.ini [Site] theme setting "
                 . "has been reset to the default: bootprint3. You may need to "
                 . "reimplement your custom theme.";
-        } elseif ((float)$version < 2.4) {
+        } else if ((float)$version < 2.4) {
             $expectedWarnings[] = "WARNING: This version of VuFind does not support "
                 . "the blueprint theme. Your config.ini [Site] theme setting "
                 . "has been reset to the default: bootprint3. You may need to "

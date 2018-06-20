@@ -146,5 +146,6 @@ class RecordTest extends \VuFindTest\Unit\MinkTestCase
         );
         $this->tryRecordTabsOnId('testsample1');
         $this->tryLoadingTabHashAndReturningToDefault('testsample2');
+
     }
 }

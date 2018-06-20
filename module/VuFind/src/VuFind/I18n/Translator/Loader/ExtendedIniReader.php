@@ -26,7 +26,6 @@
  * @link     https://vufind.org Main Site
  */
 namespace VuFind\I18n\Translator\Loader;
-
 use Zend\I18n\Translator\TextDomain;
 
 /**

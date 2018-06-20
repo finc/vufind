@@ -28,9 +28,7 @@
  * @link     https://vufind.org/wiki/development:plugins:link_resolver_drivers Wiki
  */
 namespace VuFind\Resolver\Driver;
-
-use DOMDocument;
-use DOMXpath;
+use DOMDocument, DOMXpath;
 
 /**
  * 360Link Link Resolver Driver
@@ -101,7 +99,7 @@ class Threesixtylink extends AbstractBase
 
         $xpath = new DOMXpath($xml);
         $linkGroups = $xpath->query("//ssopenurl:linkGroup[@type='holding']");
-        if (null !== $linkGroups) {
+        if (!is_null($linkGroups)) {
             foreach ($linkGroups as $linkGroup) {
                 $record = [];
                 // select the deepest link returned

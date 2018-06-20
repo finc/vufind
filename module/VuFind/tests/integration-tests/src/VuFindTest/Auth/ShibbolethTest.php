@@ -26,10 +26,7 @@
  * @link     https://vufind.org Main Page
  */
 namespace VuFindTest\Auth;
-
-use VuFind\Auth\Shibboleth;
-use VuFind\Db\Table\User;
-use Zend\Config\Config;
+use VuFind\Auth\Shibboleth, VuFind\Db\Table\User, Zend\Config\Config;
 
 /**
  * Shibboleth authentication test class.
@@ -80,8 +77,9 @@ class ShibbolethTest extends \VuFindTest\Unit\DbTestCase
             $config = $this->getAuthConfig();
         }
         $obj = new Shibboleth($this->createMock('Zend\Session\ManagerInterface'));
-        $initializer = new \VuFind\ServiceManager\ServiceInitializer();
-        $initializer->initialize($obj, $this->getServiceManager());
+        \VuFind\ServiceManager\Initializer::initInstance(
+            $obj, $this->getServiceManager()
+        );
         $obj->setConfig($config);
         return $obj;
     }
@@ -229,6 +227,6 @@ class ShibbolethTest extends \VuFindTest\Unit\DbTestCase
      */
     public static function tearDownAfterClass()
     {
-        static::removeUsers('testuser');
-    }
+         static::removeUsers('testuser');
+   }
 }
