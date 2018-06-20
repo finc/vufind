@@ -86,7 +86,7 @@ if ($cover):
       <? if (!$this->driver->isCollection()): ?>
         <? if ($snippet = $this->driver->getHighlightedSnippet()): ?>
           <? if (!empty($snippet['caption'])): ?>
-            <strong><?=$this->transEsc($snippet['caption'])?>:</strong> ';
+            <strong><?=$this->transEsc($snippet['caption'])?>:</strong>
           <? endif; ?>
           <? if (!empty($snippet['snippet'])): ?>
             <span class="quotestart">&#8220;</span>...<?=$this->highlight($snippet['snippet'])?>...<span class="quoteend">&#8221;</span><br/>
@@ -94,29 +94,29 @@ if ($cover):
         <? endif; ?>
       <? endif; ?>
 
-        <?
-        /* Display information on duplicate records if available */
-        if ($dedupData = $this->driver->getDedupData()): ?>
-          <div class="dedupInformation">
-            <?
-            $i = 0;
-            foreach ($dedupData as $source => $current) {
-            if (++$i == 1) {
-              ?><span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", array(), $source)?></a></span><?
+      <?
+      /* Display information on duplicate records if available */
+      if ($dedupData = $this->driver->getDedupData()): ?>
+        <div class="dedupInformation">
+          <?
+          $i = 0;
+          foreach ($dedupData as $source => $current) {
+          if (++$i == 1) {
+            ?><span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", array(), $source)?></a></span><?
+          } else {
+          if ($i == 2) {
+          ?> <span class="otherSources">(<?=$this->transEsc('Other Sources')?>: <?
             } else {
-            if ($i == 2) {
-            ?> <span class="otherSources">(<?=$this->transEsc('Other Sources')?>: <?
-              } else {
-                ?>, <?
-              }
-              ?><a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", array(), $source)?></a><?
-              }
-              }
-              if ($i > 1) {
-              ?>)</span><?
-          } ?>
-          </div>
-        <? endif; ?>
+              ?>, <?
+            }
+            ?><a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", array(), $source)?></a><?
+            }
+            }
+            if ($i > 1) {
+            ?>)</span><?
+        } ?>
+        </div>
+      <? endif; ?>
 
       <div class="callnumAndLocation ajax-availability hidden">
         <? if ($this->driver->supportsAjaxStatus()): ?>
@@ -197,23 +197,24 @@ if ($cover):
       <? endif; ?>
 
       <? if ($this->cart()->isActiveInSearch() && $this->params->getOptions()->supportsCart() && $this->cart()->isActive()): ?>
-        <?=$this->render('record/cart-buttons.phtml', ['id' => $this->driver->getUniqueId(), 'source' => $this->driver->getSourceIdentifier()]); ?><br/>
+        <?=$this->render('record/cart-buttons.phtml', ['id' => $this->driver->getUniqueId(), 'source' => $this->driver->getSourceIdentifier()]);?><br/>
       <? endif; ?>
 
-        <? if ($this->userlist()->getMode() !== 'disabled'): ?>
+      <? if ($this->userlist()->getMode() !== 'disabled'): ?>
         <? if ($this->permission()->allowDisplay('feature.Favorites')): ?>
           <? /* Add to favorites; finc: keep Icon inside link - CK */ ?>
-          <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="save-record result-link-label" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" title="<?=$this->transEsc('Add to favorites')?>">
+          <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="save-record result-link-label" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>"
+             title="<?=$this->transEsc('Add to favorites')?>">
             <i class="fa fa-fw fa-star" aria-hidden="true"></i> <span class="hidden-xs hidden-sm"><?=$this->transEsc('Add to favorites')?></span>
           </a><br/>
-          <? elseif ($block = $this->permission()->getAlternateContent('feature.Favorites')): ?>
-            <?=$block?>
-          <? endif; ?>
-          <? /* Saved lists */ ?>
-          <div class="savedLists alert alert-info hidden">
-            <strong><?=$this->transEsc("Saved in")?>:</strong>
-          </div>
+        <? elseif ($block = $this->permission()->getAlternateContent('feature.Favorites')): ?>
+          <?=$block?>
         <? endif; ?>
+        <? /* Saved lists */ ?>
+        <div class="savedLists alert alert-info hidden">
+          <strong><?=$this->transEsc("Saved in")?>:</strong>
+        </div>
+      <? endif; ?>
 
       <? /* Hierarchy tree link; finc: keep Icon inside link - CK */ ?>
       <? $trees = $this->driver->tryMethod('getHierarchyTrees');
@@ -224,7 +225,8 @@ if ($cover):
             <a class="hierarchyTreeLinkText result-link-label" data-lightbox href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>#tabnav"
                title="<?=$this->transEsc('hierarchy_tree')?>" data-lightbox-href="<?=$this->recordLink()->getTabUrl($this->driver, 'AjaxTab')?>?hierarchy=<?=urlencode($hierarchyID)?>"
                data-lightbox-post="tab=hierarchytree">
-              <i class="result-link-icon fa fa-fw fa-sitemap" aria-hidden="true"></i> <span><?=$this->transEsc('hierarchy_view_context')?></span><? if (count($trees) > 1): ?>: <?=$this->escapeHtml($hierarchyTitle)?><? endif; ?>
+              <i class="result-link-icon fa fa-fw fa-sitemap" aria-hidden="true"></i>
+              <span><?=$this->transEsc('hierarchy_view_context')?></span><? if (count($trees) > 1): ?>: <?=$this->escapeHtml($hierarchyTitle)?><? endif; ?>
             </a>
           </div>
         <? endforeach; ?>
