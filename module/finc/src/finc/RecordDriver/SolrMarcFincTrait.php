@@ -1902,6 +1902,17 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Get the volume number
+     *
+     * @return array
+     * @access protected
+     */
+    protected function getVolume()
+    {
+        return $this->getFirstFieldValue('245', ['n']);
+    }
+
+    /**
      * Get an array of content notes.
      *
      * @return array

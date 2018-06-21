@@ -126,10 +126,10 @@ class SolrAI extends SolrDefault implements
      *
      * @return string
      */
-    public function getPrimaryAuthor()
+    /*public function getPrimaryAuthor()
     {
         return null;
-    }
+    }*/
 
     /**
      * Get additional entries for personal names.

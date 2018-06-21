@@ -134,4 +134,19 @@ class Factory
             $_COOKIE, $path, $domain, $secure, $session_name
         );
     }
+
+    /**
+     * Construct the export helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Export
+     */
+    public static function getExport(ServiceManager $sm)
+    {
+        return new \finc\Export(
+          $sm->get('VuFind\Config')->get('config'),
+          $sm->get('VuFind\Config')->get('export')
+        );
+    }
 }

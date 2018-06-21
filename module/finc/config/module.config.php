@@ -10,6 +10,7 @@ $config = [
             'VuFind\ILSConnection' => 'finc\Service\Factory::getILSConnection',
             'VuFind\ILSHoldLogic' => 'finc\Service\Factory::getILSHoldLogic',
             'finc\Rewrite' => 'finc\Rewrite\Factory',
+            'VuFind\Export' => 'finc\Service\Factory::getExport',
             'VuFind\SessionManager' => 'finc\Session\ManagerFactory',
             'VuFind\CookieManager' => 'finc\Service\Factory::getCookieManager'
         ]
@@ -165,7 +166,8 @@ $nonTabRecordActions = [
 // Define record view routes -- route name => controller
 // Define record view routes once again to add new nonTabRecordActions
 $recordRoutes = [
-    'record' => 'Record'
+    'record' => 'Record',
+    'export' => 'Export'
 ];
 
 
