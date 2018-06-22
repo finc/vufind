@@ -106,6 +106,7 @@
           $icon = str_replace('http://', '//', $icon);
           $url = str_replace('http://', '//', $url);
       ?>
+      <? if (strpos($url, 'redi-bw.de') === false): ?>
         <tr>
           <td>
             <a href="<?=$this->escapeHtmlAttr(str_replace('http://dx.doi.org', 'https://doi.org', $url))?>" target="_blank" title="<?=$mot?>" class="custom-link">
@@ -113,6 +114,7 @@
             </a>              
           </td>
         </tr>
+        <? endif; ?>
         <? if ($this->client()->is('only_first_customlink')): ?>
             <? break; ?>
         <? endif; ?>      

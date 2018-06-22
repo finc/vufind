@@ -179,7 +179,9 @@ class EDS extends \VuFind\RecordDriver\EDS {
         foreach ($urls as $url) {
             
             if (isset($url['Url']) && strpos($url['Url'], 'redi-bw.de') !== FALSE) {
-                $firstHit = $url['Url'];
+                $pos = strpos($url['Url'], '?');
+                $firstHit = substr($url['Url'], $pos + 1);
+
             }
         }
         return $firstHit;
