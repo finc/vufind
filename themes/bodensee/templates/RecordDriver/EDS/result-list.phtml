@@ -61,8 +61,17 @@
         <span><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank">https://doi.org/<?= $this->driver->getDoi(); ?></a></span>
       </div>
       <? endif; ?>
+      <div class="resultItemLine2 openurl">
+        <? $openUrl = $this->openUrl($this->driver, 'results');
+         $openUrlActive = $openUrl->isActive();
+         $html = $openUrl->renderTemplate();
+        ?>
+        <? if ($openUrlActive && strlen($html) > 0): ?>
+         <?=$html?>
+      <? endif; ?>
+      </div>
 
-      <div class="resultItemLine4 custom-links">
+      <div class="resultItemLine4 custom-links">   
         <? $customLinks = array_merge($this->driver->getFTCustomLinks(), $this->driver->getCustomLinks());
         if (!empty($customLinks)): ?>
           <? foreach ($customLinks as $customLink): ?>
@@ -74,11 +83,13 @@
               $icon = str_replace('http://', '//', $icon);
               $url = str_replace('http://', '//', $url);
           ?>
+          <? if (strpos($url, 'redi-bw.de') === false): ?>
           <span>
             <a href="<?=$this->escapeHtmlAttr($url)?>" title="<?=$this->escapeHtmlAttr($mot)?>" class="custom-link modal-remote">
               <? if ($icon): ?><img src="<?=$this->escapeHtmlAttr($icon)?>" /> <? endif; ?><?=$this->escapeHtml($name)?>
             </a>
           </span>
+          <? endif; ?>
           <? endforeach; ?>
         <? endif; ?>
       </div>
