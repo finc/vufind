@@ -163,7 +163,7 @@ class EDS extends \VuFind\RecordDriver\EDS {
     public function getCoinsOpenUrl()
     {
         $params = $this->getOpenUrl($this->supportsCoinsOpenUrl());
-        return http_build_query($params);
+        return $params;
     }
     
        /**
@@ -185,7 +185,7 @@ class EDS extends \VuFind\RecordDriver\EDS {
 
         }
         // Assemble the URL:
-        return $params;
+        return $firstHit;
     }
     
     /**
