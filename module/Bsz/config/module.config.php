@@ -11,13 +11,13 @@ $config = [
             'cart' => 'Bsz\Controller\CartController',
             'privacy' => 'Bsz\Controller\BszController',
             'shib' => 'Bsz\Controller\ShibController',
-            'edsrecord' => 'Bsz\Controller\EdsrecordController',
         ],
         'factories' => [
             'VuFind\Controller\AjaxController' => 'Bsz\Controller\Factory::getAjaxController',
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
             'VuFind\Controller\SearchController' => 'Bsz\Controller\Factory::getSearchController',
             'VuFind\Controller\MyResearchController' => 'Bsz\Controller\Factory::getMyResearchController',
+            'edsrecord' => 'Bsz\Controller\Factory::getEdsrecordController',
         ],
     ],
     'router' => [
