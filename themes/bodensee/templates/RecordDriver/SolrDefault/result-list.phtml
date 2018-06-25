@@ -41,13 +41,13 @@
   <div class="media-body">
     <div class="result-body">
       <div>
-        <?=$this->render('RecordDriver/DefaultRecord/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
+        <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
           <?=$this->record($this->driver)->getTitleHtml()?>
         </a>
       </div>
 
-         <?=$this->render('RecordDriver/DefaultRecord/parts/author.phtml', [
+         <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
                                         'driver' => $this->driver,
                                         'hiddenFilterString' => $hiddenFilterString                                            
                                         ])?>    
@@ -95,7 +95,7 @@
       <? endif; ?>
       <? $openUrl = $this->openUrl($this->driver, 'results');
         $openUrlActive = $openUrl->isActive();            
-        echo $this->render('RecordDriver/DefaultRecord/parts/links.phtml', [
+        echo $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
             'driver' => $this->driver,
             'hiddenFilterString' => $hiddenFilterString                                            
         ])?>            
@@ -197,12 +197,12 @@
                               
                             </div>
                             <div class="col-xs-8 col-sm-10">    
-                                <?=$this->render('RecordDriver/DefaultRecord/parts/dedup-tooltip.phtml', ['driver' => $sub])?>  
+                                <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $sub])?>  
                                 
                                 <a href="<?=$this->recordLink()->getUrl($sub)?>">
                                     <?=$this->record($sub)->getTitleHtml()?>
                                 </a><br/>
-                                <?=$this->render('RecordDriver/DefaultRecord/parts/author.phtml', [
+                                <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
                                         'driver' => $sub,
                                         'hiddenFilterString' => $hiddenFilterString                                            
                                         ])?>
@@ -210,7 +210,7 @@
                                  $openUrl = null;
                                  $openUrlActive = null;
                                  //$openUrlActive = $openUrl->isActive();            
-                                 echo $this->render('RecordDriver/DefaultRecord/parts/links.phtml', [
+                                 echo $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
                                    'driver' => $sub,
                                    'openUrl' => $openUrl,
                                    'openUrlActive' => $openUrlActive,
