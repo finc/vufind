@@ -1,24 +1,3 @@
-/* --- Layout --- */
-.hierarchy-tree {
-  max-height: 75vh;
-  overflow-y: auto;
-}
-@media (min-width: 768px) {
-  .collection-hierarchytree { display: flex; }
-  .collection-hierarchytree .tree-panel,
-  .collection-hierarchytree #tree-preview {
-    flex-basis: 50%;
-    padding: 1rem;
-  }
-  #modal .collection-hierarchytree { display: block; }
-  #modal .tree-panel {
-    flex-basis: 100%;
-    padding: 0;
-  }
-  #modal #tree-preview { display: none; }
-}
-
-/* --- Look --- */
 .hierarchy-tree,
 .jstree-facet {
   /* jsTree arrows */
@@ -41,7 +20,10 @@
     width: 16px;
     color: #000;
   }
-  .jstree-anchor { padding-left: 5px; }
+  .jstree-anchor {
+    padding-left: 5px;
+    white-space: nowrap;
+  }
   .jstree-container-ul,
   .jstree-children {
     padding-left: 16px;
@@ -106,11 +88,13 @@
   margin-top: 2px;
   margin-right: 4px;
 }
-.jstree-facet .jstree-container-ul { padding: 0; }
-.jstree-facet .active,
-.jstree-facet .active a.jstree-anchor {
-  background-color: @list-group-active-bg;
-  color: #fff;
+.jstree-facet .jstree-container-ul {
+  padding: 0;
+  & > li.active,
+  & > li.active a.jstree-anchor {
+    background-color: #265680;
+    color: #fff;
+  }
 }
 li.jstree-facet,
 li.jstree-node { list-style: none; }

@@ -86,8 +86,7 @@ class Memcache extends AbstractBase
      */
     public function read($sess_id)
     {
-        $value = $this->getConnection()->get("vufind_sessions/{$sess_id}");
-        return empty($value) ? '' : $value;
+        return $this->getConnection()->get("vufind_sessions/{$sess_id}");
     }
 
     /**

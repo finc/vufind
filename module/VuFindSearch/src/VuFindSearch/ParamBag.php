@@ -41,7 +41,7 @@ namespace VuFindSearch;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org
  */
-class ParamBag implements \Countable
+class ParamBag
 {
     /**
      * Parameters
@@ -237,15 +237,5 @@ class ParamBag implements \Countable
             }
         }
         return $request;
-    }
-
-    /**
-     * Get a count of parameters set in the bag.
-     *
-     * @return int
-     */
-    public function count()
-    {
-        return count($this->params);
     }
 }

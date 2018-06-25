@@ -2,7 +2,7 @@
 /**
  * EDS API Backend
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) EBSCO Industries 2013
  *
@@ -22,25 +22,20 @@
  * @category VuFind
  * @package  Search
  * @author   Michelle Milton <mmilton@epnet.com>
+ * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org
  */
 namespace VuFindSearch\Backend\EDS;
 
 use Exception;
-
-use VuFindSearch\Backend\EDS\Zend2 as ApiClient;
-
-use VuFindSearch\Query\AbstractQuery;
-
-use VuFindSearch\ParamBag;
-
-use VuFindSearch\Response\RecordCollectionInterface;
-use VuFindSearch\Response\RecordCollectionFactoryInterface;
-
 use VuFindSearch\Backend\AbstractBackend;
+use VuFindSearch\Backend\EDS\Zend2 as ApiClient;
 use VuFindSearch\Backend\Exception\BackendException;
-
+use VuFindSearch\ParamBag;
+use VuFindSearch\Query\AbstractQuery;
+use VuFindSearch\Response\RecordCollectionFactoryInterface;
+use VuFindSearch\Response\RecordCollectionInterface;
 use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
 use Zend\Config\Config;
 use Zend\Session\Container as SessionContainer;
@@ -183,7 +178,7 @@ class Backend extends AbstractBackend
         $this->defaultProfile = $this->profile;
     }
 
-     /**
+    /**
      * Perform a search and return record collection.
      *
      * @param AbstractQuery $query  Search query
@@ -191,7 +186,7 @@ class Backend extends AbstractBackend
      * @param int           $limit  Search limit
      * @param ParamBag      $params Search backend parameters
      *
-     *@return \VuFindSearch\Response\RecordCollectionInterface
+     * @return \VuFindSearch\Response\RecordCollectionInterface
      **/
     public function search(AbstractQuery $query, $offset, $limit,
         ParamBag $params = null
@@ -232,7 +227,7 @@ class Backend extends AbstractBackend
         try {
             $response = $this->client
                 ->search($searchModel, $authenticationToken, $sessionToken);
-        } catch (\EbscoEdsApiException $e) {
+        } catch (ApiException $e) {
             // if the auth or session token was invalid, try once more
             switch ($e->getApiErrorCode()) {
             case 104:
@@ -247,7 +242,7 @@ class Backend extends AbstractBackend
                     }
                     $response = $this->client
                         ->search($searchModel, $authenticationToken, $sessionToken);
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     throw new BackendException($e->getMessage(), $e->getCode(), $e);
                 }
                 break;
@@ -255,7 +250,7 @@ class Backend extends AbstractBackend
                 $response = [];
                 break;
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->debugPrint("Exception found: " . $e->getMessage());
             throw new BackendException($e->getMessage(), $e->getCode(), $e);
         }
@@ -294,7 +289,7 @@ class Backend extends AbstractBackend
             $response = $this->client->retrieve(
                 $an, $dbId, $authenticationToken, $sessionToken, $hlTerms
             );
-        } catch (\EbscoEdsApiException $e) {
+        } catch (ApiException $e) {
             // if the auth or session token was invalid, try once more
             switch ($e->getApiErrorCode()) {
             case 104:
@@ -310,7 +305,7 @@ class Backend extends AbstractBackend
                     $response = $this->client->retrieve(
                         $an, $dbId, $authenticationToken, $sessionToken, $hlTerms
                     );
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     throw new BackendException($e->getMessage(), $e->getCode(), $e);
                 }
                 break;
@@ -422,10 +417,8 @@ class Backend extends AbstractBackend
         }
         $authTokenData = $this->cache->getItem('edsAuthenticationToken');
         if (isset($authTokenData)) {
-            $currentToken =  isset($authTokenData['token'])
-                ? $authTokenData['token'] : '';
-            $expirationTime = isset($authTokenData['expiration'])
-                ? $authTokenData['expiration'] : 0;
+            $currentToken =  $authTokenData['token'] ?? '';
+            $expirationTime = $authTokenData['expiration'] ?? 0;
             $this->debugPrint(
                 'Cached Authentication data: '
                 . "$currentToken, expiration time: $expirationTime"
@@ -537,7 +530,7 @@ class Backend extends AbstractBackend
         try {
             $authToken = $this->getAuthenticationToken();
             $results = $this->client->createSession($profile, $isGuest, $authToken);
-        } catch(\EbscoEdsApiException $e) {
+        } catch (ApiException $e) {
             $errorCode = $e->getApiErrorCode();
             $desc = $e->getApiErrorDescription();
             $this->debugPrint(
@@ -549,7 +542,7 @@ class Backend extends AbstractBackend
                     $authToken = $this->getAuthenticationToken(true);
                     $results = $this->client
                         ->createSession($this->profile, $isGuest, $authToken);
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     throw new BackendException(
                         $e->getMessage(),
                         $e->getCode(),
@@ -579,26 +572,24 @@ class Backend extends AbstractBackend
         }
         try {
             $response = $this->client->info($authenticationToken, $sessionToken);
-        } catch (\EbscoEdsApiException $e) {
+        } catch (ApiException $e) {
             if ($e->getApiErrorCode() == 104) {
                 try {
                     $authenticationToken = $this->getAuthenticationToken(true);
                     $response = $this->client
                         ->info($authenticationToken, $sessionToken);
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     throw new BackendException(
                         $e->getMessage(),
                         $e->getCode(),
                         $e
                     );
-
                 }
             } else {
                 $response = [];
             }
         }
         return $response;
-
     }
 
     /**

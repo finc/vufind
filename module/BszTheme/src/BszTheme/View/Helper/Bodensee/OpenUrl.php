@@ -135,10 +135,11 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         } else {
             $resolverUrl = empty($base) ? '' : $base . '?' . $openurl;
         }
+
         // Build parameters needed to display the control:
         $params = [
             'resolverUrl' => $resolverUrl,
-            'openUrl' => $openurl,
+            'openUrl' => $openurl.$this->addBszParams(),
             'openUrlBase' => empty($base) ? false : $base,
             'openUrlWindow' => empty($this->config->window_settings)
                 ? false : $this->config->window_settings,
@@ -215,5 +216,14 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
                 . $imageOpenUrl;
         }
         return $params;
-    }  
+    }
+    
+    public function addBszParams() 
+    {
+        $add = [
+            'sid='.urlencode($this->config->rfr_id),
+            'pid='.urlencode('isil='.$this->isil),
+        ];
+        return '&'.implode('&', $add);
+    }
 }

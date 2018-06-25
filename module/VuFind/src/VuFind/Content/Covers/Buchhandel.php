@@ -65,7 +65,7 @@ class Buchhandel extends \VuFind\Content\AbstractCover
         $this->url = $url;
         $this->apiToken = $apiToken;
         $this->supportsIsbn = true;
-        $this->cacheAllowed = false;
+        $this->cacheAllowed = true;
     }
 
     /**

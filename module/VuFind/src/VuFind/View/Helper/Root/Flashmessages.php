@@ -26,7 +26,9 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\View\Helper\Root;
-use Zend\View\Helper\AbstractHelper, Zend\Mvc\Controller\Plugin\FlashMessenger;
+
+use Zend\Mvc\Controller\Plugin\FlashMessenger;
+use Zend\View\Helper\AbstractHelper;
 
 /**
  * Flash message view helper
@@ -76,7 +78,7 @@ class Flashmessages extends AbstractHelper
     public function __invoke()
     {
         $html = '';
-        $namespaces = ['error', 'info', 'success'];
+        $namespaces = ['error', 'info', 'success', 'warning'];
         foreach ($namespaces as $ns) {
             $messages = array_merge(
                 $this->fm->getMessages($ns), $this->fm->getCurrentMessages($ns)

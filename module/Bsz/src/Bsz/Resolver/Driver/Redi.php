@@ -19,6 +19,6 @@ class Redi extends \VuFind\Resolver\Driver\Redi
      */
     public function supportsMoreOptionsLink()
     {
-        return true;
+        return false;
     }
 }

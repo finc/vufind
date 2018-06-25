@@ -32,8 +32,8 @@ namespace VuFind\Search\Solr;
 
 use VuFindSearch\Backend\BackendInterface;
 
-use Zend\EventManager\SharedEventManagerInterface;
 use Zend\EventManager\EventInterface;
+use Zend\EventManager\SharedEventManagerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -152,7 +152,7 @@ class HierarchicalFacetListener
         }
         $context = $event->getParam('context');
         if ($context == 'search' || $context == 'retrieve'
-            || $context == 'retrieveBatch' || $context == 'similar'
+            || $context == 'retrieveBatch'
         ) {
             $this->processHierarchicalFacets($event);
         }

@@ -4,7 +4,7 @@
 
 <h2>Deminifier</h2>
 
-<? if (empty($min)): ?>
+<? if (!$min): ?>
   <form method='POST'>
     Minified text:
     <textarea name="min"></textarea>
@@ -15,25 +15,25 @@
   <pre><? print_r($min) ?></pre>
 <? endif; ?>
 
-<? if (isset($results)): ?>
+<? if ($results): ?>
   <h3>Results Object</h3>
   <p>Class: <?=get_class($results)?></p>
 <? endif; ?>
 
-<? if (isset($query)): ?>
+<? if ($query): ?>
   <h3>Query Object</h3>
   <pre><? print_r($query) ?></pre>
 <? endif; ?>
 
-<? if (isset($backendParams) || isset($queryParams)): ?>
+<? if ($backendParams || $queryParams): ?>
   <h3>Backend Parameters</h3>
-  <? if (isset($queryParams)): ?>
+  <? if ($queryParams): ?>
     <h4>Query Parameters</h4>
     <pre><? print_r($queryParams) ?></pre>
-  <? endif ; ?>
-  <? if (isset($backendParams)): ?>
+  <? endif; ?>
+  <? if ($backendParams): ?>
     <h4>Non-query Parameters</h4>
     <pre><? print_r($backendParams) ?></pre>
-  <? endif ; ?>
+  <? endif; ?>
 <? endif; ?>
 

@@ -27,6 +27,7 @@
  * Wiki
  */
 namespace VuFind\View\Helper\Root;
+
 use VuFind\RecordDriver\AbstractBase as RecordDriver;
 use Zend\View\Helper\AbstractHelper;
 
@@ -178,7 +179,7 @@ class RecordDataFormatter extends AbstractHelper
             return $method;
         }
 
-        $useCache = isset($options['useCache']) && $options['useCache'];
+        $useCache = isset($options['cacheData']) && $options['cacheData'];
 
         if ($useCache) {
             $cacheKey = $driver->getUniqueID() . '|'
@@ -282,7 +283,7 @@ class RecordDataFormatter extends AbstractHelper
             ? $options['separator'] : '<br />';
         $retVal = '';
         $array = (array)$data;
-        $remaining = count($array);
+        $remaining = count($data);
         foreach ($array as $line) {
             $remaining--;
             $text = $escaper($transDomain . $line);

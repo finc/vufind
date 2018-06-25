@@ -28,8 +28,8 @@
  */
 namespace VuFindTest\Backend\BrowZine\Response;
 
-use VuFindSearch\Backend\BrowZine\Response\RecordCollectionFactory;
 use PHPUnit_Framework_TestCase;
+use VuFindSearch\Backend\BrowZine\Response\RecordCollectionFactory;
 
 /**
  * Unit tests for BrowZine record collection factory.
@@ -49,7 +49,7 @@ class RecordCollectionFactoryTest extends PHPUnit_Framework_TestCase
      */
     public function testFactory()
     {
-        $resp = ['data' => [['id' => 1], ['id' => 2], ['id' => 3]]];
+        $resp = ['data' => [[], [], []]];
         $fact = new RecordCollectionFactory();
         $coll = $fact->factory($resp);
         $this->assertEquals(3, count($coll));

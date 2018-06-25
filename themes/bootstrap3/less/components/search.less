@@ -33,11 +33,11 @@
 
 header .container.navbar { margin-bottom: 0; }
 
-.search-sort { display: flex; }
+/*.search-sort { display: flex; }
 .search-sort label {
   line-height: @input-height-base;
   padding-right: .5rem;
-}
+}*/
 .search-stats {
   display: block;
   padding-top: 1rem;
@@ -60,6 +60,7 @@ header .container.navbar { margin-bottom: 0; }
 .result {
   display: flex;
   padding-top: 1rem;
+  padding-bottom: 1rem;
 
   .record-checkbox,
   .record-number { display: none; }
@@ -161,7 +162,7 @@ header .container.navbar { margin-bottom: 0; }
 .btn-bookbag-toggle form { display: inline; }
 .cart-link-icon.fa { margin-right: .3rem; }
 .result .cart-link-icon {
-  color: @text-color;
+  /*color: @text-color;*/
   /* .fa-fw */
   width: 1.28571429em;
   text-align: center;
@@ -303,4 +304,25 @@ body.rtl {
 .title-in-heading {
   font-size: inherit;
   font-style: italic;
+}
+
+/* ------ TOP FACETS ------ */
+.top-title {
+  display: inline-block;
+  padding-top: .5rem;
+  padding-left: .5rem;
+  font-weight: bold;
+  color: #000;
+}
+.top-title .fa {
+  width: 1rem;
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .top-title { padding-top: 0; }
+  .top-title .fa { display: none; }
+  .top-facets .collapse {
+    display: block;
+    height: auto !important;
+  }
 }
