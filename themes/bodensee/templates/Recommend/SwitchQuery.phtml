@@ -9,7 +9,7 @@
       <li><?=$this->transEsc('switchquery_typos')?></li>
       <li><?=$this->transEsc('switchquery_other')?></li>
     </ul>
-    <? if ($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?> 
+    <? if ($this->searchtabs()->isILL($this->searchClassId)): ?> 
         <?
             $library = $this->libraries()->getFirst($this->client()->getIsils());
             $url =  $library->hasCustomUrl() ? $library->getCustomUrl() 

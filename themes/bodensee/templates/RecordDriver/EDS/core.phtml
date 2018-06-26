@@ -85,6 +85,7 @@
           </td>
         </tr>
       <? endif; ?>
+      
 
       <? $customLinks = array_merge($this->driver->getFTCustomLinks(), $this->driver->getCustomLinks());
         if (!empty($customLinks)): ?>
@@ -96,6 +97,7 @@
           $icon = str_replace('http://', '//', $icon);
           $url = str_replace('http://', '//', $url);
       ?>
+      <? if (strpos($url, 'redi-bw.de') === false): ?>
         <tr>
           <td>
             <a href="<?=$this->escapeHtmlAttr(str_replace('http://dx.doi.org', 'https://doi.org', $url))?>" target="_blank" title="<?=$mot?>" class="custom-link">
@@ -103,10 +105,20 @@
             </a>              
           </td>
         </tr>
+        <? endif; ?>
         <? if ($this->client()->is('only_first_customlink')): ?>
             <? break; ?>
         <? endif; ?>      
       <? endforeach; ?>
+      <? endif; ?>
+      <? $openUrl = $this->openUrl($this->driver, 'results');
+         $openUrlActive = $openUrl->isActive();
+         $html = $openUrl->renderTemplate();
+        ?>
+        <? if ($openUrlActive && strlen($html) > 0): ?>
+        <tr>
+            <td colspan="2"><?=$html?></td>
+        </tr>
       <? endif; ?>
     
     </table>

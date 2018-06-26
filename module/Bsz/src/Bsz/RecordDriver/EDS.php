@@ -163,7 +163,7 @@ class EDS extends \VuFind\RecordDriver\EDS {
     public function getCoinsOpenUrl()
     {
         $params = $this->getOpenUrl($this->supportsCoinsOpenUrl());
-        return http_build_query($params);
+        return $params;
     }
     
        /**
@@ -173,21 +173,19 @@ class EDS extends \VuFind\RecordDriver\EDS {
      */
     public function getOpenUrl($overrideSupportsOpenUrl = false)
     {
-        // stop here if this record does not support OpenURLs
-        if (!$overrideSupportsOpenUrl && !$this->supportsOpenUrl()) {
-            return false;
-        }
+        $urls = $this->getFieldRecursive(['CustomLinks']);
+        $firstHit = '';
+        foreach ($urls as $url) {
+            
+            if (isset($url['Url']) && strpos($url['Url'], 'redi-bw.de') !== FALSE) {
+                $pos = strpos($url['Url'], '?');
+                $firstHit = substr($url['Url'], $pos + 1);
 
-        // Set up parameters based on the format of the record:
-        $format = $this->getOpenUrlFormat();
-        $method = "get{$format}OpenUrlParams";
-        if (method_exists($this, $method)) {
-            $params = $this->$method();
-        } else {
-            $params = $this->getUnknownFormatOpenUrlParams($format);
+            }
+
         }
         // Assemble the URL:
-        return $params;
+        return $firstHit;
     }
     
     /**
