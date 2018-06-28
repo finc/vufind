@@ -109,6 +109,11 @@ class Params extends \VuFind\Search\Solr\Params
             $backendParams->add('group.limit', $group_limit);
         }
         
+        // defaultOperator=AND was removed in schema.xml
+        $backendParams->add('q.op', "AND");
+
+        // increase performance for facet queries
+        $backendParams->add('facet.threads', "4");
 
         // Spellcheck
         $backendParams->set(
