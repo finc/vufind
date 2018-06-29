@@ -1,27 +1,33 @@
 <div class="facet">
+    <div class="row">
+        
   <form name="<?=$this->escapeHtmlAttr($this->title)?>Filter" id="<?=$this->escapeHtmlAttr($this->title)?>Filter">
     <?=$results->getUrlQuery()->asHiddenFields(['page' => "/./", 'filter' => "/^{$this->title}:.*/"])?>
     <input type="hidden" name="<?=$this->escapeHtmlAttr($this->facet['type'])?>range[]" value="<?=$this->escapeHtmlAttr($this->title)?>"/>
     <div class="date-fields">
       <? $extraInputAttribs = ($this->facet['type'] == 'date') ? 'maxlength="4" ' : ''; ?>
-      <div class="date-from">
+      <div class="date-from col-sm-6">
         <label for="<?=$this->escapeHtmlAttr($this->title)?>from">
           <?=$this->transEsc('date_from')?>:
         </label>
         <input type="text" class="form-control" name="<?=$this->escapeHtmlAttr($this->title)?>from" id="<?=$this->escapeHtmlAttr($this->title)?>from" value="<?=isset($this->facet['values'][0])?$this->escapeHtmlAttr($this->facet['values'][0]):''?>" <?=$extraInputAttribs?>/>
       </div>
-      <div class="date-to">
+      <div class="date-to col-sm-6">
         <label for="<?=$this->escapeHtmlAttr($this->title)?>to">
           <?=$this->transEsc('date_to')?>:
         </label>
         <input type="text" class="form-control" name="<?=$this->escapeHtmlAttr($this->title)?>to" id="<?=$this->escapeHtmlAttr($this->title)?>to" value="<?=isset($this->facet['values'][1])?$this->escapeHtmlAttr($this->facet['values'][1]):''?>" <?=$extraInputAttribs?>/>
       </div>
     </div>
+    <div class="col-sm-12">
+        
     <? if ($this->facet['type'] == 'date'): ?>
-      <div class="slider-container"><input type="text" class="hidden" id="<?=$this->escapeHtmlAttr($this->title)?><?=$this->escapeHtml($this->facet['type'])?>Slider"/></div>
+      <div class="slider-container col-sm-12"><input type="text" class="hidden" id="<?=$this->escapeHtmlAttr($this->title)?><?=$this->escapeHtml($this->facet['type'])?>Slider"/></div>
     <? endif; ?>
     <input class="btn btn-primary btn-xs" type="submit" value="<?=$this->transEsc('Set')?>"/>
+    </div>
   </form>
+  </div>
 </div>
 <? if ($this->facet['type'] == 'date'): ?>
   <? $this->headScript()->appendFile('vendor/bootstrap-slider.min.js'); ?>
