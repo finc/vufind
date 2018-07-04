@@ -94,10 +94,17 @@ if (is_array($pubPlaces) && is_array($pubDates) && is_array($pubNames)) {
 
 // echo "%C ?\n";
 
-$data = $this->driver->tryMethod('getAIDataIn');
+$data = $this->driver->tryMethod('getPublishedIn');
 if (isset($data['date'])) {
     $date = $data['date'];
     echo "%D {$date}\n";
+}
+
+if (empty($data)) {
+    $date = $this->driver->tryMethod('getPublishDateSort');
+    if (!empty($date)) {
+        echo "%D {$date}}\n";
+    }
 }
 
 $languages = $this->driver->tryMethod('getLanguages');

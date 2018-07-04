@@ -129,10 +129,17 @@ if (is_array($pubPlaces) && is_array($pubDates) && is_array($pubNames)) {
     }
 }
 
-$data = $this->driver->tryMethod('getAIDataIn');
+$data = $this->driver->tryMethod('getPublishedIn');
 if (isset($data['date'])) {
     $date = $data['date'];
     echo "year = {{$date}},\n";
+}
+
+if (empty($data)) {
+    $date = $this->driver->tryMethod('getPublishDateSort');
+    if (!empty($date)) {
+        echo "year = {{$date}},\n";
+    }
 }
 
 $edition = $this->driver->tryMethod('getEdition');
@@ -155,10 +162,17 @@ if (is_array($physical)) {
     }
 }
 
-$isbns = $this->driver->tryMethod('getISSNs');
+$isbns = $this->driver->tryMethod('getISBNs');
 if (is_array($isbns)) {
     foreach ($isbns as $isbn) {
         echo "isbn = {{$isbn}},\n";
+    }
+}
+
+$issns = $this->driver->tryMethod('getISSNs');
+if (is_array($issns)) {
+    foreach ($issns as $issn) {
+        echo "issn = {{$issn}},\n";
     }
 }
 
