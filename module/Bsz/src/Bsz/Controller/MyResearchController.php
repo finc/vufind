@@ -40,10 +40,10 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
         // Logged in?  Forward user to followup action
         // or default action (if no followup provided):
         $url = $this->params()->fromQuery('followupUrl');
-        if (!isset($url)) {
+        if (empty($url)) {
              $url = $this->getFollowupUrl();
         }
-        if (isset($url)) { 
+        if (!empty($url)) { 
             $this->clearFollowupUrl();
             // If a user clicks on the "Your Account" link, we want to be sure
             // they get to their account rather than being redirected to an old
