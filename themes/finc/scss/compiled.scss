@@ -68,6 +68,9 @@ section {
 // Add top-padding to body to accommodate fixed navbar; -- padding should equal navbar-height --
 // the home page, however, has a lower navbar because there is no breadcrumbs there
 body {
+  // fix modal adding padding-right #13625
+  padding-right: 0 !important;
+
   // for mobile
   padding-top: $navbar-height-xs;
 
@@ -751,7 +754,7 @@ table.collapse.in {
 
 ////// NO gutter right
 .no-gutter-r {
-  padding-right: 0;
+  padding-right: 0 !important;
 }
 
 ////// gutter left
@@ -1841,6 +1844,11 @@ footer ul {
   .modal-dialog {
     max-width: em(900px);
   }
+}
+
+// fix modal adding padding-right #13625
+.modal-open {
+  overflow: initial;
 }
 
 // MODALS - END
