@@ -37,8 +37,11 @@
       <? endif; ?>
   <div class="media-body">
 
-    <? /* finc: We want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
-      <h3 property="name"><?=$this->escapeHtml(preg_replace('/(\s[\/\.:]\s*)*$/', '', $this->truncate($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection(), 100)))?></h3>
+    <? /* finc: We want to get rid of trailing special chars in the title and limit its length to 100 chars
+          remove schema name tag here but keept in description, CK
+       */
+    ?>
+      <h3><?=$this->escapeHtml(preg_replace('/(\s[\/\.:]\s*)*$/', '', $this->truncate($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection(), 100)))?></h3>
 
       <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $this->escapeHtml($summary[0]) : false; ?>
       <? if ($summary): ?>

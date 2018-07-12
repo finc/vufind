@@ -198,10 +198,10 @@ class RecordDataFormatterFactory
             'data-hierarchyParentTitle.phtml'
         );
         $spec->setTemplateLine(
-            'ISBN', 'getISBNs', 'data-escapeHtml.phtml'
+            'ISBN', 'getISBNs', 'data-isbn.phtml'
         );
         $spec->setTemplateLine(
-            'ISSN', 'getISSNs', 'data-escapeHtml.phtml'
+            'ISSN', 'getISSNs', 'data-issn.phtml'
         );
         $spec->setTemplateLine(
             'Notes',
@@ -422,10 +422,10 @@ class RecordDataFormatterFactory
             'Bibliography', 'getBibliographyNotes', 'data-escapeHtml.phtml'
         );
         $spec->setTemplateLine(
-            'ISBN', 'getISBNs', 'data-escapeHtml.phtml'
+            'ISBN', 'getISBNs', 'data-isbn.phtml'
         );
         $spec->setTemplateLine(
-            'ISSN', 'getISSNs', 'data-escapeHtml.phtml'
+            'ISSN', 'getISSNs', 'data-issn.phtml'
         );
         $spec->setTemplateLine(
             'DOI', 'getCleanDOI', 'data-escapeHtml.phtml'
