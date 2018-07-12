@@ -1,0 +1,12 @@
+<!-- finc: record - cover -->
+<? /* Display thumbnail if appropriate: */ ?>
+<? /* If we want to load covers in lightbox use .recordcover;
+  the class .nocover prevents nocover images from loading in lightbox or can be used to hide the images */ ?>
+<? if ($cover): ?>
+  <? if ($this->link): ?><a href="<?=$this->escapeHtmlAttr($this->link)?>"><? endif; ?>
+  <img alt="<?=$this->transEsc('Cover Image')?>" <? if ($linkPreview): ?>data-linkpreview="true" <? endif; ?>class="recordcover" src="<?=$this->escapeHtmlAttr($cover); ?>"/>
+  <? if ($this->link): ?></a><? endif; ?>
+<? else: ?>
+  <img src="<?=$this->url('cover-unavailable')?>" <? if ($linkPreview): ?>data-linkpreview="true" <? endif; ?>class="nocover" alt="<?=$this->transEsc('No Cover Image')?>"/>
+<? endif; ?>
+<!-- finc: record - cover - END -->

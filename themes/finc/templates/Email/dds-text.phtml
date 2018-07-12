@@ -1,0 +1,69 @@
+AUFTRAGGEBER:
+--------------
+Name: <?=$this->username?>
+
+Telefon: <?=$this->phone?>
+
+E-Mail: <?=$this->email?>
+
+Lesekartennummer: <?=$this->userid?>
+
+Einrichtung: <?=$this->department?>
+
+<?=$this->group ? 'Status: '. $this->group : '' ?>
+
+ANGABEN ZUM GEWÜNSCHTEN ARTIKEL:
+-------------------------------------
+Autor: <?=$this->author?>
+
+Aufsatztitel: <?=$this->article?>
+
+Zeitschriftentitel: <?=$this->journal?>
+
+ISSN: <?=$this->issn?>
+
+Erscheinungsjahr: <?=$this->publishdate?>
+
+Band/Heft: <?=$this->number?>
+
+Seiten: <?=$this->pages?>
+
+
+Bemerkungen: <?=$this->remarks?>
+
+
+Literaturbestellung / Dokumentenlieferdienst der UBL
+
+Datum: <?=$this->time?> 
+
+-------------------------------------------------------------------
+BEARBEITUNGSVERMERKE DER BIBLIOTHEK:
+
+<? if ($this->division == '15') :?>
+Signatur:
+
+Erledigt am:
+
+Lieferung an: zbmed.fernleihe@medizin.uni-leipzig.de oder
+Ordner X:\ubl-kopien\Medizin
+<? else :?>
+A) WEITERLEITUNG INNERHALB DER UBL:
+
+Standort:
+
+Signatur:
+
+B) SUBITO-BESTELLUNG:
+
+Bestellnummer:
+
+Bestelldatum:
+
+Lieferbibliothek:
+
+Eingang des Artikels:
+
+Eingang der Rechnung:
+<? endif; ?>
+
+<?=!empty($this->subito_url) ? 'Bestelllink für Subito: ' . $this->subito_url : ''?>

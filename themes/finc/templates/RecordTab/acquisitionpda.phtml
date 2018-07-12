@@ -1,0 +1,25 @@
+<!-- finc - recordtab - acquistionpda -->
+<?
+// Set page title.
+$this->headTitle(
+    $this->translate('PDA::Acquisition') . ': ' .
+    $this->driver->getBreadcrumb()
+);
+      // Get some variables
+      $id = $this->driver->getUniqueId();
+      // $controllerClass = 'controller:' . $this->record($this->driver)->getController();
+      $controllerClass = 'controller:SolrMarcFincPDA';
+?>
+          <h2><?= $this->transEsc('PDA::Acquisition') ?></h2>
+          <p><?= $this->transEsc('PDA::pda_initial_text') ?></p>
+          <p class="alert alert-info"><?= $this->transEsc('PDA::pda_restriction_text') ?></p>
+          <div class="btn-group">
+              <? /* Leave title in here - it is used for the tooltip! - CK */ ?>
+            <a class="btn btn-primary" data-toggle="tooltip" title="<?= $this->transEsc('PDA::pda_open_new_window')?>" href="<?= $this->interlibraryloan()->getSwbLink($this->driver) ?>" target="_blank">
+                <?= $this->transEsc('PDA::pda_tab_interlibrary_button') ?>
+              </a>
+              <a class="btn btn-primary pda-button <?= $controllerClass ?>" data-lightbox href="<?= $this->url('record-pda', array('id' => $id)) ?>" rel="nofollow">
+                <?= $this->transEsc('PDA::pda_tab_order_button') ?>
+              </a>
+          </div>
+<!-- finc - recordtab - acquistionpda - END -->

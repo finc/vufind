@@ -1,0 +1,20 @@
+<!-- finc: recordtab - descriptionlido -->
+<?
+// Set page title.
+$this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
+
+$formatter = $this->recordDataFormatter();
+$mainFields = $formatter->getData($driver, $formatter->getDefaults('description-lido'));
+?>
+<table class="table table-striped">
+  <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
+  <caption class="sr-only"><?= $this->transEsc('Description') ?></caption>
+  <? if (!empty($mainFields)): ?>
+    <? foreach ($mainFields as $key => $current): ?>
+      <tr><th><?=$this->transEsc($key)?>:</th><td><?=$current['value']?></td></tr>
+    <? endforeach; ?>
+  <? else: ?>
+    <tr><td><?=$this->transEsc('no_description')?></td></tr>
+  <? endif; ?>
+</table>
+<!-- finc: recordtab - descriptionlido - END -->

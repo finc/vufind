@@ -1,0 +1,72 @@
+/*
+ * Copyright (C) 2012 finc team, team@finc.info
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   finc team
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+import org.marc4j.marc.Record;
+import org.marc4j.marc.DataField;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+
+public Set getRvk(Record record){
+	Set result = new LinkedHashSet();
+	// DataField rvk = (DataField) record.getVariableField("084");
+	// DataField rvkSecond = (DataField) record.getVariableField("936");
+
+    // check if there's "rvk" in the 084 $2; ignore if it isn't
+	// return RVK-Notation from 084 $a
+	List rvk = record.getVariableFields("084");
+	Iterator rvkIter = rvk.iterator();
+    if (rvk != null) {
+		while(rvkIter.hasNext()) {
+            DataField rvk_df = (DataField) rvkIter.next();
+			if (rvk_df.getSubfield('2') != null){
+				if (rvk_df.getSubfield('2').getData().toLowerCase().contains("rvk")) {
+	    			// result.add(indexer.getFirstFieldVal(record, "084a"));
+					result.add(rvk_df.getSubfield('a').getData());
+				} 
+			}
+		}
+	}
+	
+	// In 936 stehen die gleichen RVK-Notationen, die sich schon in 084 finden.
+	// Sie sind lediglich durch Benennung und Identnummer ergänzt.
+	// Diese Notationen müssen also nicht zusätzlich
+	// check if there's 936 and return RVK-Notation from 936 $a
+/*    List fields = record.getVariableFields("936");
+    Iterator fieldsIter = fields.iterator();
+    if (fields != null) {
+		while(fieldsIter.hasNext()) {
+			result.add(indexer.getFirstFieldVal(record, "936a"));
+		}
+	}
+*/
+
+	if (!result.isEmpty()) {
+		return result;
+    }
+
+	// Nothing worked!
+	if (result.isEmpty()) {
+		result.add("No subject assigned");
+    }
+    return result;		
+}

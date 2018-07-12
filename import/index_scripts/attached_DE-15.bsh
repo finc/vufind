@@ -1,0 +1,47 @@
+/*
+ * Copyright (C) 2014 finc team, team@finc.info
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+import org.marc4j.marc.Record;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+static final Logger logger    = Logger.getLogger("de.ubl.import.attached_DE15");
+static final Set institutions = new LinkedHashSet(){{
+    add( "DE-15" );
+}};
+
+/*
+ * Ticket #2048
+ */
+public String getAttached( Record record ) {
+
+    logger.setLevel( Level.WARNING ); // FINE,INFO,ALL,WARNING and so on
+
+    String result = "";
+    String institution = indexer.getFirstFieldVal(record, "852a");
+    if( institution != null && institutions.contains( institution ) ) {
+        String timestamp = indexer.getFirstFieldVal(record, "852z");
+        if( timestamp != null ) result = timestamp;
+    }
+    return result;
+}

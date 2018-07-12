@@ -1,0 +1,27 @@
+{
+  "ppn": {
+    "DE-540": {
+      "pattern": "http://194.94.197.6/libero/WebopacOpenURL.cls?ACTION=DISPLAY&LANG=DE&RID=%s"
+    },
+    "DE-D13": {
+      "pattern": "http://webopac.skd.museum/libero/WebopacOpenURL.cls?ACTION=DISPLAY&RID=%s",
+      "filter": {
+        "getSourceID": [
+          "0",
+          "22"
+        ]
+      }
+    },
+    "DE-L242": {
+      "pattern": "http://webpac.bibhgb.hgb-leipzig.de/libero/WebopacOpenURL.cls?ACTION=DISPLAY&RID=%s"
+    },
+    "DE-D117": {
+      "pattern": "http://www.hfmdd.de:8060/alipac/-/item-local?VID=%s"
+    }
+  },
+  "id": {
+    "DE-14": {
+      "pattern": "http://katalogbeta.slub-dresden.de/id/%s/"
+    }
+  }
+}

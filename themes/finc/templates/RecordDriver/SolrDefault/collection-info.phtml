@@ -1,0 +1,67 @@
+<!-- finc: recordDriver - solrDefault - collection-info -->
+<? $this->headScript()->appendFile('collection_record.js'); ?>
+<div class="media">
+  <? $QRCode = $this->record($this->driver)->getQRCode("core");
+    $coverDetails = $this->record($this->driver)->getCoverDetails('collection-info', 'medium', $this->record($this->driver)->getThumbnail('large'));
+    $cover = $coverDetails['html'];
+     $preview = $this->record($this->driver)->getPreviews(); ?>
+  <? if ($QRCode || $cover || $preview): ?>
+    <div class="media-left <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
+      <? /* Display thumbnail if appropriate: */ ?>
+      <? if($cover): ?>
+        <?=$cover?>
+      <? endif; ?>
+
+      <? /* Display qrcode if appropriate: */ ?>
+      <? if($QRCode): ?>
+        <span class="hidden-xs">
+            <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
+          </span>
+      <? endif; ?>
+
+    <? if ($preview): ?><?=$preview?><? endif; ?>
+  </div>
+  <? endif; ?>
+  <div class="media-body">
+
+      <? /* finc: we want to get rid of trailing special chars in the title and limit its length to 100 chars */ ?>
+    <h2><?=$this->escapeHtml(preg_replace('/(\s[\/\.:]\s*)*$/', '', $this->truncate($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection(), 100)))?></h2>
+
+    <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $summary[0] : false; ?>
+    <? if ($summary): ?>
+      <p><?=$this->escapeHtml($summary)?></p>
+    <? endif; ?>
+
+    <? /* Display the lists that this record is saved to */ ?>
+      <div class="savedLists hidden alert alert-info" id="savedLists">
+      <strong><?=$this->transEsc("Saved in")?>:</strong>
+    </div>
+
+      <? /* finc-specific snippet - Begin - CK */ ?>
+      <? /* Do not set to 'hidden', make table below collapse in; adapt collection_record.js to keep accordion open - CK */ ?>
+      <a id="moreInfoToggle" href="#" class="accordion-toggler collapsed hidden" data-toggle="collapse" data-target="#collectionInfo" aria-expanded="true">
+        <?=$this->transEsc('Description')?>
+      </a>
+    <?/* Display Main Details */?>
+    <?
+    $formatter = $this->recordDataFormatter();
+    $fields = $formatter->getData($driver, $formatter->getDefaults('collection-info'));
+    ?>
+    <? if (!empty($fields)): ?>
+    <?/* finc: we use 'collapse in' to initially hide the content, CK */?>
+      <table id="collectionInfo" class="table table-striped collapse in">
+        <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
+            <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
+        <? foreach ($fields as $key => $current): ?>
+          <? if ($key == null): ?>
+            <?=$current['value']?>
+          <? else: ?>
+            <tr><th><?=$this->transEsc($key)?>:</th><td><?=$current['value']?></td></tr>
+          <? endif; ?>
+        <? endforeach; ?>
+      </table>
+    <? endif; ?>
+    <?/* End Main Details */?>
+  </div>
+</div>
+<!-- finc: recordDriver - solrDefault - collection-info - END -->

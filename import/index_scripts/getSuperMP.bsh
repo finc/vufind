@@ -1,0 +1,98 @@
+/*
+ * Copyright (C) 2012 Leander Seige, seige@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Leander Seige
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import org.apache.commons.lang.StringUtils;
+import java.util.HashMap;
+
+
+public Set getSuperMP(Record record, String fieldnums) {
+
+    Set retval = new LinkedHashSet();
+
+    //HashMap<String, String> resvalues = new HashMap<String, String> ();
+    HashMap resvalues = new HashMap();
+    //HashMap<String, Integer> resscores = new HashMap<String, Integer> ();
+    HashMap resscores = new HashMap();
+
+    String value;
+    String id;
+    Integer score;
+    Integer cscore;
+
+    String[] fields=fieldnums.split(":");
+
+    for(int i =0; i < fields.length ; i++) {
+        field=fields[i];
+
+        fnum=field.substring(0,3);
+        fsfc=field.substring(3,4);
+
+        List fs = record.getVariableFields(fnum);
+        Iterator fsI = fs.iterator();
+
+        if (fs != null) {
+            DataField df;
+            while(fsI.hasNext()) {
+                df = (DataField) fsI.next();
+
+                Subfield fw = df.getSubfield('w');
+                if (fw == null) { // qucosa
+                    fw = df.getSubfield('6');
+                }
+                if (fw != null) {
+                    Subfield fsubany = df.getSubfield(fsfc.charAt(0));
+                    if(fsubany != null) {
+                        value=fsubany.getData().trim();
+                        id=fw.getData().replaceAll("^\\([^\\)]+\\)","");
+                        score=StringUtils.countMatches(value,",");
+
+                        if(resvalues.containsKey(id)) {
+                            cscore=resscores.get(id);
+                            if(cscore>score) {
+                                // System.out.println(">>> skipping: "+fnum+fsfc+": "+value);
+                                continue;
+                            }
+                        }
+                        // System.out.println(">>> choosing: "+fnum+fsfc+": "+value);
+                        resvalues.put(id,value);
+                        resscores.put(id,score);
+                    }
+                }
+            }
+        }
+    }
+    
+    for (String key : resvalues.keySet()) {
+        value="("+key+")"+resvalues.get(key);
+        // System.out.println(">>> adding: "+value);
+        retval.add(value);
+    }
+    
+    return retval;
+}
+
+

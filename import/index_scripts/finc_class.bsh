@@ -1,0 +1,404 @@
+/*
+ * Copyright (C) 2012 finc team, team@finc.info
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   finc team
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+static final Logger logger = Logger.getLogger("de.ubl.import.finc_class");
+
+public Set getFincClass(Record record) {
+
+    logger.setLevel( Level.WARNING ); // FINE,INFO,ALL,WARNING and so on
+
+    Set result = new LinkedHashSet();
+    String val;
+    Subfield s;
+
+    HashMap rvk_sMap = new HashMap();
+    HashMap ddc_sMap = new HashMap();
+    HashMap bic_sMap = new HashMap();
+    HashMap rvk_rMap = new HashMap();
+    HashMap ddc_rMap = new HashMap();
+    HashMap bic_rMap = new HashMap();
+
+    // sMap.put("1","A[A-Z] [0-9]+.*");
+    // rMap.put("1","Allgemeines");
+
+    // RVK	
+    rvk_sMap.put("0", "A[A-Z] [0-9]+.*");
+    rvk_rMap.put("0", "Allgemeines");
+    rvk_sMap.put("1", "B[A-Z] [0-9]+.*");
+    rvk_rMap.put("1", "Theologie und Religionswissenschaft");
+    rvk_sMap.put("2", "C[A-I] [0-9]+.*");
+    rvk_rMap.put("2", "Philosophie");
+    rvk_sMap.put("3", "C[L-Z] [0-9]+.*");
+    rvk_rMap.put("3", "Psychologie");
+    rvk_sMap.put("4", "D[A-Z] [0-9]+.*");
+    rvk_rMap.put("4", "Pädagogik");
+    rvk_sMap.put("5", "E[A-Z] [0-9]+.*");
+    rvk_rMap.put("5", "Allgemeine und vergleichende Sprach- und Literaturwissenschaft, Indogermanistik, Außereuropäische Sprachen und Literaturen");
+    rvk_sMap.put("6", "G[A-Z] [0-9]+.*");
+    rvk_rMap.put("6", "Germanistik, Niederlandistik, Skandinavistik");
+    rvk_sMap.put("7", "H[A-Z] [0-9]+.*");
+    rvk_rMap.put("7", "Anglistik, Amerikanistik");
+    rvk_sMap.put("8", "I[A-Z] [0-9]+.*");
+    rvk_rMap.put("8", "Romanistik");
+    rvk_sMap.put("9", "K[A-Z] [0-9]+.*");
+    rvk_rMap.put("9", "Slawistik");
+    rvk_sMap.put("10", "L[A-C] [0-9]+.*");
+    rvk_rMap.put("10", "Ethnologie (Volks- und Völkerkunde)");
+    rvk_sMap.put("11", "(LD [1-2][0-9]+)|(L[E-G] [0-9]+).*");
+    rvk_rMap.put("11", "Klassische Archäologie");
+    rvk_sMap.put("12", "(LD [3-7][0-9]+)|(L[H-O] [0-9]+).*");
+    rvk_rMap.put("12", "Kunst und Kunstgeschichte");
+    rvk_sMap.put("13", "(LD [8-9][0-9]+)|(L[P-Y] [0-9]+).*");
+    rvk_rMap.put("13", "Musikwissenschaft");
+    rvk_sMap.put("14", "M[A-L] [0-9]+.*");
+    rvk_rMap.put("14", "Politologie");
+    rvk_sMap.put("15", "M[N-W] [0-9]+.*");
+    rvk_rMap.put("15", "Soziologie");
+    rvk_sMap.put("16", "M[X-Z] [0-9]+.*");
+    rvk_rMap.put("16", "Militärwissenschaft");
+    rvk_sMap.put("17", "N[A-Z] [0-9]+.*");
+    rvk_rMap.put("17", "Geschichte");
+    rvk_sMap.put("18", "P[A-Z] [0-9]+.*");
+    rvk_rMap.put("18", "Rechtswissenschaft");
+    rvk_sMap.put("19", "Q[A-Z] [0-9]+.*");
+    rvk_rMap.put("19", "Wirtschaftswissenschaften");
+    rvk_sMap.put("20", "R[A-Z] [0-9]+.*");
+    rvk_rMap.put("20", "Geographie");
+    rvk_sMap.put("21", "S[A-P] [0-9]+.*");
+    rvk_rMap.put("21", "Mathematik");
+    rvk_sMap.put("22", "S[Q-U] [0-9]+.*");
+    rvk_rMap.put("22", "Informatik");
+    rvk_sMap.put("23", "T[A-D] [0-9]+.*");
+    rvk_rMap.put("23", "Allgemeine Naturwissenschaft");
+    rvk_sMap.put("24", "T[E-Z] [0-9]+.*");
+    rvk_rMap.put("24", "Geologie und Paläontologie");
+    rvk_sMap.put("25", "U[A-Z] [0-9]+.*");
+    rvk_rMap.put("25", "Physik");
+    rvk_sMap.put("26", "V[A-Z] [0-9]+.*");
+    rvk_rMap.put("26", "Chemie und Pharmazie");
+    rvk_sMap.put("27", "W[A-Z] [0-9]+.*");
+    rvk_rMap.put("27", "Biologie");
+    rvk_sMap.put("28", "(W[W-Z]|X[A-Z]|Y[A-V]) [0-9]+.*");
+    rvk_rMap.put("28", "Medizin");
+    rvk_sMap.put("29", "Z[A-E] [0-9]+.*");
+    rvk_rMap.put("29", "Land- und Forstwirtschaft, Gartenbau, Fischereiwirtschaft, Hauswirtschaft");
+    rvk_sMap.put("30", "Z[G-S] [0-9]+.*");
+    rvk_rMap.put("30", "Technik");
+    rvk_sMap.put("31", "Z[X-Y] [0-9]+.*");
+    rvk_rMap.put("31", "Sport");
+    rvk_sMap.put("32", "(F[BCEHNOPQTX] [0-9]+)|(FF [1-2][0-9]+).*");
+    rvk_rMap.put("32", "Klassische Philologie");
+    rvk_sMap.put("33", "(FK [0-9]+)|(FF [5-6][0-9]+).*");
+    rvk_rMap.put("33", "Byzantinistik");
+    rvk_sMap.put("34", "F[RUY] [0-9]+.*");
+    rvk_rMap.put("34", "Mittellateinische Philologie");
+    rvk_sMap.put("35", "(F[GL] [0-9]+)|(FD [1-2][0-9]+).*");
+    rvk_rMap.put("35", "Neugriechische Philologie");
+    rvk_sMap.put("36", "F[SVZ] [0-9]+.*");
+    rvk_rMap.put("36", "Neulateinische Philologie");
+    // DDC
+    ddc_sMap.put("37", "^0[1-35-9][0-9].*");
+    ddc_rMap.put("37", "Allgemeines");
+    ddc_sMap.put("38", "((^2[0-9]{2})|(^1[37][0-9])).*");
+    ddc_rMap.put("38", "Theologie und Religionswissenschaft");
+    ddc_sMap.put("39", "^((1[0-46-9])|21)[0-9].*");
+    ddc_rMap.put("39", "Philosophie");
+    ddc_sMap.put("40", "^1[35][0-9].*");
+    ddc_rMap.put("40", "Psychologie");
+    ddc_sMap.put("41", "^37[0-9].*");
+    ddc_rMap.put("41", "Pädagogik");
+    ddc_sMap.put("42", "^(4[019][0-9])|(8[09][0-9]).*");
+    ddc_rMap.put("42", "Allgemeine und vergleichende Sprach- und Literaturwissenschaft, Indogermanistik, Außereuropäische Sprachen und Literaturen");
+    ddc_sMap.put("43", "^(43[0-9])|(83[0-9]).*");
+    ddc_rMap.put("43", "Germanistik, Niederlandistik, Skandinavistik");
+    ddc_sMap.put("44", "^(42[0-9])|(8[12][0-9]).*");
+    ddc_rMap.put("44", "Anglistik, Amerikanistik");
+    ddc_sMap.put("45", "^(4[4-6][0-9])|(8[4-6][0-9]).*");
+    ddc_rMap.put("45", "Romanistik");
+    ddc_sMap.put("46", "^39[0-9].*");
+    ddc_rMap.put("46", "Ethnologie (Volks- und Völkerkunde)");
+    ddc_sMap.put("47", "^93[0-9].*");
+    ddc_rMap.put("47", "Klassische Archäologie");
+    ddc_sMap.put("48", "^7[0234-7][0-9].*");
+    ddc_rMap.put("48", "Kunst und Kunstgeschichte");
+    ddc_sMap.put("49", "^78[0-9].*");
+    ddc_rMap.put("49", "Musikwissenschaft");
+    ddc_sMap.put("50", "^32[0-9].*");
+    ddc_rMap.put("50", "Politologie");
+    ddc_sMap.put("51", "^3[0-367][0-9].*");
+    ddc_rMap.put("51", "Soziologie");
+    ddc_sMap.put("52", "^35[0-9].*");
+    ddc_rMap.put("52", "Militärwissenschaft");
+    ddc_sMap.put("53", "^((9[012-9])|(1[89])|27)[0-9].*");
+    ddc_rMap.put("53", "Geschichte");
+    ddc_sMap.put("54", "^3[45][0-9].*");
+    ddc_rMap.put("54", "Rechtswissenschaft");
+    ddc_sMap.put("55", "^(3[38][0-9])|(65[0-9]).*");
+    ddc_rMap.put("55", "Wirtschaftswissenschaften");
+    ddc_sMap.put("56", "^(91|55)[0-9].*");
+    ddc_rMap.put("56", "Geographie");
+    ddc_sMap.put("57", "^(51|16|31)[0-9].*");
+    ddc_rMap.put("57", "Mathematik");
+    ddc_sMap.put("58", "^(00|77)[0-9].*");
+    ddc_rMap.put("58", "Informatik");
+    ddc_sMap.put("59", "^50[0-9].*");
+    ddc_rMap.put("59", "Allgemeine Naturwissenschaft");
+    ddc_sMap.put("60", "^5[56][0-9].*");
+    ddc_rMap.put("60", "Geologie und Paläontologie");
+    ddc_sMap.put("61", "^5[23][0-9].*");
+    ddc_rMap.put("61", "Physik");
+    ddc_sMap.put("62", "^(54[0-9])|(66[0-9]).*");
+    ddc_rMap.put("62", "Chemie und Pharmazie");
+    ddc_sMap.put("63", "^5[7-9][0-9].*");
+    ddc_rMap.put("63", "Biologie");
+    ddc_sMap.put("64", "^(61|57)[0-9].*");
+    ddc_rMap.put("64", "Medizin");
+    ddc_sMap.put("65", "^(6[34][0-9])|(7[134][0-9]).*");
+    ddc_rMap.put("65", "Land- und Forstwirtschaft, Gartenbau, Fischereiwirtschaft, Hauswirtschaft");
+    ddc_sMap.put("66", "^((6[0-789])|72)[0-9].*");
+    ddc_rMap.put("66", "Technik");
+    ddc_sMap.put("67", "^79[0-9].*");
+    ddc_rMap.put("67", "Sport");
+    ddc_sMap.put("68", "^((4[78])|8[78])[0-9].*");
+    ddc_rMap.put("68", "Klassische Philologie");
+    ddc_sMap.put("69", "^[48]8[0-9].*");
+    ddc_rMap.put("69", "Neugriechische Philologie");
+    ddc_sMap.put("70", "^[48]7[0-9].*");
+    ddc_rMap.put("70", "Neulateinische Philologie");
+    ddc_sMap.put("71", "^04[0-9].*");
+    ddc_rMap.put("71", "no subject assigned");
+    //BIC
+    bic_sMap.put("72", "((^[BGW]$)|(^((B[GJMT])|(G[BLMPT])|(WZ))([A-Z]|$)))");
+    bic_rMap.put("72", "Allgemeines");
+    bic_sMap.put("73", "^HR([A-Z]|$)");
+    bic_rMap.put("73", "Theologie und Religionswissenschaft");
+    bic_sMap.put("74", "^HP([A-Z]|$)");
+    bic_rMap.put("74", "Philosophie");
+    bic_sMap.put("75", "^JM([A-Z]|$)");
+    bic_rMap.put("75", "Psychologie");
+    bic_sMap.put("76", "((^E$)|(^((CJ)|(E[BLS])|(JN)|(YQ))([A-Z]|$)))");
+    bic_rMap.put("76", "Pädagogik");
+    bic_sMap.put("77", "((^[CD]$)|(^((C[BF])|(D[CDNQS]))([A-Z]|$)))");
+    bic_rMap.put("77", "Allgemeine und vergleichende Sprach- und Literaturwissenschaft, Indogermanistik, Außereuropäische Sprachen und Literaturen");
+    bic_sMap.put("78", "^E[BLS]([A-Z]|$)");
+    bic_rMap.put("78", "Anglistik, Amerikanistik");
+    bic_sMap.put("79", "^HD([A-Z]|$)");
+    bic_rMap.put("79", "Klassische Archäologie");
+    bic_sMap.put("80", "((^A$)|(^((A[BCFGJKMNPS])|(WF))([A-Z]|$)))");
+    bic_rMap.put("80", "Kunst und Kunstgeschichte");
+    bic_sMap.put("81", "(((^AS)|(^AV))([A-Z]|$))");
+    bic_rMap.put("81", "Musikwissenschaft");
+    bic_sMap.put("82", "^JP([A-Z]|$)");
+    bic_rMap.put("82", "Politologie");
+    bic_sMap.put("83", "((^J$)|(^J[FHK]([A-Z]|$)))");
+    bic_rMap.put("83", "Soziologie");
+    bic_sMap.put("84", "^JW([A-Z]|$)");
+    bic_rMap.put("84", "Militärwissenschaft");
+    bic_sMap.put("85", "((^H$)|(^(HB|WQ|BG)([A-Z]|$)))");
+    bic_rMap.put("85", "Geschichte");
+    bic_sMap.put("86", "((^L$)|(^L[ABNR]([A-Z]|$)))");
+    bic_rMap.put("86", "Rechtswissenschaft");
+    bic_sMap.put("87", "((^K$)|(^((K[CFJN])|AK|TR|UF)([A-Z]|$)))");
+    bic_rMap.put("87", "Wirtschaftswissenschaften");
+    bic_sMap.put("88", "((^R$)|(^RG([A-Z]|$)))");
+    bic_rMap.put("88", "Geographie");
+    bic_sMap.put("89", "^PB([A-Z]|$)");
+    bic_rMap.put("89", "Mathematik");
+    bic_sMap.put("90", "((^U$)|(^((U[BDFGKLMNQRTY])|TJ)([A-Z]|$)))");
+    bic_rMap.put("90", "Informatik");
+    bic_sMap.put("91", "((^P$)|(^PD([A-Z]|$)))");
+    bic_rMap.put("91", "Allgemeine Naturwissenschaft");
+    bic_sMap.put("92", "^(RB|TH)([A-Z]|$)");
+    bic_rMap.put("92", "Geologie und Paläontologie");
+    bic_sMap.put("93", "^P[GH]([A-Z]|$)");
+    bic_rMap.put("93", "Physik");
+    bic_sMap.put("94", "^(PN|TD|TC)([A-Z]|$)");
+    bic_rMap.put("94", "Chemie und Pharmazie");
+    bic_sMap.put("95", "^(MZ|PS|TC|RN)([A-Z]|$)");
+    bic_rMap.put("95", "Biologie");
+    bic_sMap.put("96", "((^M$)|(^M[BFJMNQRX]([A-Z]|$)))");
+    bic_rMap.put("96", "Medizin");
+    bic_sMap.put("97", "^(RP|TV|WB|WF|WK|WM)([A-Z]|$)");
+    bic_rMap.put("97", "Land- und Forstwirtschaft, Gartenbau, Fischereiwirtschaft, Hauswirtschaft");
+    bic_sMap.put("98", "((^T$)|(^(AM|RN|RP|TC|TD|TH|(T[BGJNQRT]))([A-Z]|$)))");
+    bic_rMap.put("98", "Technik");
+    bic_sMap.put("99", "^WS([A-Z]|$)");
+    bic_rMap.put("99", "Sport");
+    bic_sMap.put("100", "((^[FVY]$)|(^((F[ACFHJKLMPQRTVWXYZ])|(V[FSX])|(W[CDGHJNT])|(Y[BDFNRXZ]))([A-Z]|$)))");
+    bic_rMap.put("100", "no subject assigned");
+
+
+    // sMap.put("28","(W[W-Z]|X[A-Z]|Y[A-V]) [0-9]+.*");
+    // rMap.put("28","Medizin");
+
+    // LCC
+    HashMap lcc_pMap = new HashMap();
+    lcc_pMap.put("^[AZ]+.*", "Allgemeines");
+    lcc_pMap.put("^B[0-9CDHJ]+.*", "Philosophie");
+    lcc_pMap.put("^BF+.*", "Psychologie");
+    lcc_pMap.put("^B[LMPQRSTVX]+.*", "Theologie und Religionswissenschaften");
+    lcc_pMap.put("^C[0-9BDEJNRST]+.*", "Geschichte");
+    lcc_pMap.put("^CC+.*", "Klassische Archäologie");
+    lcc_pMap.put("^[DEF]+.*", "Geschichte");
+    lcc_pMap.put("^G[0-9ABCEF]+.*", "Geographie");
+    lcc_pMap.put("^G[NRT]+.*", "Ethnologie (Volks- und Völkerkunde)");
+    lcc_pMap.put("^GV+.*", "Sport");
+    lcc_pMap.put("^H[0-9AMNQSTVX]+.*", "Soziologie");
+    lcc_pMap.put("^H[BCDEFGJ]+.*", "Wirtschaftswissenschaften");
+    lcc_pMap.put("^J+.*", "Politologie");
+    lcc_pMap.put("^K+.*", "Rechtswissenschaft");
+    lcc_pMap.put("^L+.*", "Pädagogik");
+    lcc_pMap.put("^M+.*", "Musikwissenschaft");
+    lcc_pMap.put("^N+.*", "Kunst und Kunstgeschichte");
+    lcc_pMap.put("^P[0-9BHJKLMNZ]+.*", "Allgemeine und vergleichende Sprach- und Literaturwissenschaft, Indogermanistik, Außereuropäische Sprachen und Literaturen");
+    lcc_pMap.put("^PA+.*", "Klassische Philologie");
+    lcc_pMap.put("^P[CQ]+.*", "Romanistik");
+    lcc_pMap.put("^P[DFT]+.*", "Germanistik, Niederlandistik, Skandinavistik");
+    lcc_pMap.put("^P[ERS]+.*", "Anglistik, Amerikanistik");
+    lcc_pMap.put("^PG+.*", "Slawistik");
+    lcc_pMap.put("^Q[0-9]+.*", "Allgemeine Naturwissenschaft");
+    lcc_pMap.put("^QA+.*", "Mathematik");
+    lcc_pMap.put("^Q[BC]+.*", "Physik");
+    lcc_pMap.put("^QD+.*", "Chemie und Pharmazie");
+    lcc_pMap.put("^QE+.*", "Geologie und Paläontologie");
+    lcc_pMap.put("^Q[HKLMPR]+.*", "Biologie");
+    lcc_pMap.put("^R+.*", "Medizin");
+    lcc_pMap.put("^S+.*", "Land- und Forstwirtschaft, Gartenbau, Fischereiwirtschaft, Hauswirtschaft");
+    lcc_pMap.put("^T+.*", "Technik");
+    lcc_pMap.put("^[UV]+.*", "Militärwissenschaft");
+
+    List fs = record.getVariableFields("084");
+    Iterator fsI = fs.iterator();
+    // RVK
+    if (fs != null) {
+        DataField rvk;
+        while (fsI.hasNext()) {
+            rvk = (DataField) fsI.next();
+            List ss = rvk.getSubfields('2');
+            Iterator ssI = ss.iterator();
+            if (ss != null) {
+                while (ssI.hasNext()) {
+                    s = (Subfield) ssI.next();
+                    if (s.getData().toLowerCase().contains("rvk")) {
+                        val = rvk.getSubfield('a').getData();
+
+                        for (String key : rvk_sMap.keySet()) {
+                            if (val.matches(rvk_sMap.get(key))) {
+                                result.add(rvk_rMap.get(key));
+                                logger.info( "finc_class RVK => " + rvk_rMap.get( key ) );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fs = record.getVariableFields("082");
+    fsI = fs.iterator();
+    // DDC
+    if (fs != null) {
+        DataField ddc;
+        while (fsI.hasNext()) {
+            ddc = (DataField) fsI.next();
+            List ss = ddc.getSubfields('a');
+            Iterator ssI = ss.iterator();
+            if (ss != null) {
+                while (ssI.hasNext()) {
+                    s = (Subfield) ssI.next();
+                    val = s.getData();
+                    for (String key : ddc_sMap.keySet()) {
+                        if (val.matches(ddc_sMap.get(key))) {
+                            result.add(ddc_rMap.get(key));
+                            logger.info( "finc_class DDC => " + ddc_rMap.get( key ) );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fs = record.getVariableFields("072");
+    fsI = fs.iterator();
+    // BIC
+    if (fs != null) {
+        DataField bic;
+        while (fsI.hasNext()) {
+            bic = (DataField) fsI.next();
+            List ss = bic.getSubfields('2');
+            Iterator ssI = ss.iterator();
+            if (ss != null) {
+                while (ssI.hasNext()) {
+                    s = (Subfield) ssI.next();
+                    if (s.getData().toLowerCase().contains("bic")) {
+                        val = bic.getSubfield('a').getData();
+
+                        for (String key : bic_sMap.keySet()) {
+                            if (val.matches(bic_sMap.get(key))) {
+                                result.add(bic_rMap.get(key));
+                                logger.info( "finc_class BIC => " + bic_rMap.get( key ) );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    fs = record.getVariableFields("050");
+    fsI = fs.iterator();
+    // LCC
+    if (fs != null) {
+        DataField lcc;
+        while (fsI.hasNext()) {
+            lcc = (DataField) fsI.next();
+            List ss = lcc.getSubfields('a');
+            Iterator ssI = ss.iterator();
+            if (ss != null) {
+                while (ssI.hasNext()) {
+                    s = (Subfield) ssI.next();
+                    val = s.getData();
+                    // System.out.println("LCC: " + val);
+                    for (String key : lcc_pMap.keySet()) {
+                        if (val.matches(key)) {
+                            result.add(lcc_pMap.get(key));
+                            logger.info( "finc_class LCC => " + lcc_pMap.get( key ) );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    if (result.isEmpty()) result.add("no subject assigned");
+    return result;
+}

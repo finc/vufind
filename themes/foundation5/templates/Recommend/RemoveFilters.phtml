@@ -1,0 +1,6 @@
+<? if ($this->recommend->hasFilters()): ?>
+  <div data-alert class="alert-box info" tabindex="0" aria-live="assertive" role="alertdialog">
+    <?=$this->transEsc('nohit_active_filters')?>
+    <a class="button small warning" href="<?=$this->recommend->getFilterlessUrl()?>"><?=$this->transEsc('nohit_query_without_filters')?></a>
+  </div>
+<? endif; ?>

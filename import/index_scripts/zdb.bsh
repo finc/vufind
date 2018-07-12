@@ -1,0 +1,54 @@
+/*
+ * Copyright (C) 2012 Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+import org.marc4j.marc.Record;
+import java.util.*;
+import java.util.regex.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+static final Logger logger = Logger.getLogger("de.ubl.import.zdb");
+static final Matcher m = Pattern.compile( "ZDB(.+)$" ).matcher( "" );
+
+public String getZdb( Record record ) {
+
+    logger.setLevel( Level.WARNING ); // WARNING,FINE,INFO,ALL and so on
+
+    String zdbString = indexer.getFirstFieldVal( record, "035a" );
+
+    if( zdbString != null ) {
+        zdbString = zdbString.trim();
+        if( zdbString.length() > 0 ) {
+            m.reset( zdbString );
+            if( m.find() ) {
+                String zdb = m.group( 1 );
+                String record_id = indexer.getFirstFieldVal(record, "980a");
+                logger.info( "ZDB record_id => " + record_id + ", zdb => " + zdb );
+                return zdb;
+            }
+        }
+    }
+
+    return "";
+}

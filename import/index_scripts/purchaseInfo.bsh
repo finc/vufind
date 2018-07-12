@@ -1,0 +1,72 @@
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/*
+ * Copyright (C) 2013 Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+org.solrmarc.index.SolrIndexer indexer = null;
+static final Logger logger = Logger.getLogger("de.ubl.import.purchaseinfo");
+static final Map m = Collections.synchronizedMap( new LinkedHashMap() );
+
+/**
+ * Determine Record Format(s)
+ *
+ * @param  Record record
+ * @return Set of sigel
+ */
+public Set purchaseInfo( Record record ) {
+
+    logger.setLevel(Level.WARNING); // FINE,INFO,ALL and so on
+	
+    Set result = new LinkedHashSet();
+
+    if( m.size() == 0 ) {
+        logger.info( "PURCHASE INFO => init sigel map" );
+        m.put( "969m", "DE-15" );
+        m.put( "970m", "DE-L152" );
+        m.put( "971m", "DE-Ch1" );
+        m.put( "972m", "DE-105" );
+        m.put( "973m", "DE-520" );
+        m.put( "974m", "DE-L189" );
+        m.put( "975m", "DE-Zwi2" );
+        m.put( "976m", "DE-Zi4" );
+        m.put( "977m", "DE-D117" );
+        m.put( "978m", "DE-540" );
+        m.put( "979m", "DE-L242" );
+    }
+
+    for( String field : m.keySet() ) {
+        String e = indexer.getFirstFieldVal( record, field );
+        if(e != null && e.equals( "e" )) {
+            result.add( m.get( field ) );
+            logger.info( "PURCHASE INFO => added sigel " + m.get( field ) );
+        }
+    }
+
+    return result;
+}

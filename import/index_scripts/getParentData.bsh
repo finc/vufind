@@ -1,0 +1,172 @@
+import java.io.*;
+import java.sql.*;
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+static final Properties properties = new Properties();
+static final String sDbDrv = "com.mysql.jdbc.Driver";
+static Connection cn = null;
+static PreparedStatement st = null;
+static final Logger logger  = Logger.getLogger("de.ubl.import.getparentdata");
+static Pattern isilPattern;
+
+/*
+ * Copyright (C) 2012 Leander Seige, seige@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hospe that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Finc Team
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+/**
+* Ticket #4087
+* 
+* # marc_local.properties:
+* hierarchytype="series" // todo
+* hierarchy_top_id       = script(getParentData.bsh), getParentData(parent_id)
+* hierarchy_top_title    = script(getParentData.bsh), getParentData(parent_title)
+* hierarchy_parent_id    = script(getParentData.bsh), getParentData(parent_id)
+* hierarchy_parent_title = script(getParentData.bsh), getParentData(parent_title)
+* # hierarchy_sequence =
+* is_hierarchy_id        = script(getParentData.bsh), getParentData(is_hierarchy_id)
+* is_hierarchy_title     = script(getParentData.bsh), getParentData(is_hierarchy_title)
+* 
+*/
+public Set getParentData( Record record, String attribute ) {  
+
+    logger.setLevel(Level.WARNING); // WARNING,FINE,INFO,ALL and so on
+
+    String vufindHome = System.getenv( "VUFIND_HOME_SOLR4" );
+    if (vufindHome == null) {
+        vufindHome = "";
+    }
+
+    Set result = new LinkedHashSet();
+
+    String source_id = indexer.getFirstFieldVal(record, "980b");
+    if(source_id == null || !source_id.equals("0")) {
+        return result; // todo: open up
+    }
+
+    synchronized(properties) {
+        if(properties.size() == 0) {
+            Class.forName( sDbDrv );
+            String ppPath = vufindHome + "/import/index_scripts/mddb.conf";            
+            try {
+                properties.load(new FileInputStream( ppPath ));
+                properties.put("LOAD","true");
+            } catch (IOException e) {
+                logger.severe("ERROR (getParentData) cannot read " + ppPath);
+                return result;
+            }
+            String sDbUrl=properties.getProperty("DatabaseUrl");
+            String sUsr=properties.getProperty("DatabaseUser");
+            String sPwd=properties.getProperty("DatabasePassword");
+            try {
+                logger.info("CONNECT getParentData to " + sDbUrl);
+                cn = DriverManager.getConnection( sDbUrl, sUsr, sPwd );
+                st = cn.prepareStatement(
+                    //"select lpad(t.finc_id,10,0), t.title from parents p, finc_mapping f, parent_titles t where t.finc_id=f.finc_id and f.source_id=p.parent_source_id and f.record_id=p.parent_record_id and p.finc_id=?"
+                    "select lpad(t.finc_id,10,0), t.title, f.finc_id, null from parents p, finc_mapping f, parent_titles t where t.finc_id=f.finc_id and f.source_id=p.parent_source_id and f.record_id=p.parent_record_id and p.finc_id=? UNION select distinct null,null,null,lpad(f.finc_id,10,0) from parents p, finc_mapping f where f.source_id=p.parent_source_id and f.record_id=p.parent_record_id and f.finc_id=?"
+                    // result set has entries when there are parents involved, ie when there's hierarchy. rs(4) is null when current finc_id has no parents but is parent (rs(4) actually not needed).
+                );
+                logger.info("CONNECT getParentData OK => " + sDbUrl);
+            } catch(Exception e) {
+                logger.severe("ERROR getParentData create database connection: " + e.getMessage());
+                return result;
+            }
+            logger.info("CONNECT getParentData to " + sDbUrl);
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable(){
+                public void run() {
+                    logger.info("SHUTTING DOWN getParentData statement");
+                    try { if( null != st ) st.close(); } catch( Exception ex ) {}
+                    logger.info("DISCONNECT getParentData from " + sDbUrl);
+                    try { if( null != cn ) cn.close(); } catch( Exception ex ) {}
+                }
+            }));
+        }
+    }
+
+    String is_hierarchy_title = indexer.getFirstFieldVal(record, "245ab");
+    String finc_id  = indexer.getFirstFieldVal(record, "001");
+    Long fincNumber = Long.valueOf(finc_id);
+    ResultSet    rs = null;
+
+    try {
+        st.setLong( 1, fincNumber);
+        st.setLong( 2, fincNumber);
+        rs = st.executeQuery();
+        while( rs.next() ) {
+            String value = "";
+            switch ( attribute ) {
+                case "parent_id" :
+                    value = rs.getString(1); // finc_id
+                    break;
+                case "parent_title" :
+                    value = rs.getString(2); // title
+                    break;
+                case "is_hierarchy_id" :
+                    // value = rs.getString(4); // returns current finc_id (001) iff we are parent
+                    // if (rs.wasNull()) {
+                    //     value = "";
+                    value = finc_id; // we have result set so there's hierarchy
+                    break;
+                case "is_hierarchy_title" :
+                    //value = rs.getString(4); // returns current finc_id (001) iff we are parent
+                    //if (rs.wasNull()) {
+                    value = is_hierarchy_title;
+                    break;
+                case "hierarchy_top_id" :
+                    //value = rs.getString(4); // returns current finc_id (001) iff we are parent
+                    value = rs.getString(1); // parent finc_id
+                    if (rs.wasNull()) {
+                        value = finc_id;
+                    }
+                    break;
+                case "hierarchy_top_title" :
+                    //value = rs.getString(4); // returns current finc_id (001) iff we are parent
+                    value = rs.getString(1); // parent finc_id
+                    if (rs.wasNull()) {
+                        value = is_hierarchy_title;
+                    }
+                    break;
+                default :
+                    throw new Exception( "Unknown attribute " + attribute);
+            }
+            if (value != null) {
+                result.add(value);
+            }
+        }
+        try { rs.close(); } catch( Exception ex ) {}
+        logger.info( "getParentData: " + attribute + " => " + result);
+    } catch( Exception ex ) {
+        logger.severe( "ERROR getParentData => " + ex.getMessage() );
+    } finally {
+        try { if( null != rs ) rs.close(); } catch( Exception ex ) {}
+    }
+
+    return result;
+}

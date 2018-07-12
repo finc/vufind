@@ -1,0 +1,199 @@
+/*
+ * Copyright (C) 2014 finc team, team@finc.info
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+import java.io.*;
+import java.sql.*;
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+static final Logger logger = Logger.getLogger("de.ubl.import.getpublishdatesort");
+
+static final Matcher dm = Pattern.compile("^\\d{4}$").matcher( "" );
+static final Matcher dateMatcher = Pattern.compile("^\\d{2}[^0-9][^0-9]$").matcher( "" );
+static final Matcher date260cMatcher = Pattern.compile("(\\d{2}[0-9a-zA-Z][0-9a-zA-Z])").matcher( "" );
+
+static final Properties properties = new Properties();
+static final String sDbDrv = "com.mysql.jdbc.Driver";
+static Connection cnPDS = null;
+static PreparedStatement stPDS = null;
+
+/**
+* Ticket Allgemein #1748
+*
+* Datum z.B. '19uu' nach '1999'.
+*/
+public String getPublishDateSort(Record record) {
+
+    logger.setLevel( Level.WARNING ); // FINE,INFO,ALL,WARNING and so on
+
+    returndate = "";
+
+    ControlField fixedField = (ControlField) record.getVariableField("008");
+    if (fixedField != null) {
+        String val = fixedField.getData();
+        if( val != null) {
+            String date = val.substring( 7, 11 );
+            if( dm.reset( date ).find()) {
+                logger.info( "NEW publishDateSort 008 exact match => " + date );
+                returndate = date;
+            } else if( dateMatcher.reset( date ).find() ) { // ..uu pattern
+                logger.info( "publishDateSort 008 GESAMTAUFNAHME");
+                String db = getPublishDateSortDB( record );
+                if( db.isEmpty() ) return date.replaceAll( ".{2}$" , "99" );
+                returndate = db;
+            } else { // match field 260 c, see #2258
+                List fields = record.getVariableFields( "260" );
+                List result = new ArrayList();
+                if (fields != null) {
+                    Iterator fieldsIter = fields.iterator();
+                    while( fieldsIter.hasNext() ) {
+                        DataField dataField = (DataField) fieldsIter.next();
+                        List subfields = dataField.getSubfields( 'c' );
+                        Iterator subfieldsIter = subfields.iterator();
+                        if( subfields != null ) {
+                            if( subfieldsIter.hasNext() ) {
+                                String data = subfieldsIter.next().getData();
+                                if( data != null && date260cMatcher.reset( data ).find() ) {
+                                    result.add( date260cMatcher.group( 1 ) );
+                                }
+                            }
+                        }
+                    }
+                }
+                if( result.size() > 0 ) {
+                    Collections.sort( result);
+                    logger.info( "NEW publishDateSort 260c '" + date + "' => " + result.get( 0 ) );
+                    returndate = result.get( 0 );
+                }
+            }
+        }
+    }
+    // Ticket #2966
+    year_current = Calendar.getInstance().get(Calendar.YEAR);
+    String maxokyear = (year_current + 2).toString();
+    logger.info(year_current + " " + maxokyear + " " + returndate + " " + returndate.compareTo(maxokyear));
+    if (returndate.compareTo(maxokyear) <= 0) { // year+2 ok
+        return returndate;
+    } else {
+        logger.warning("publishDateSort ignoring future value of " + returndate);
+    }
+    return "";
+}
+
+/*
+* Allgemein #2330
+* Gesamtaufnahmen erhalten für die Sortierung das Datum des ältesten Bandes
+*
+* *** NUR BEI SOURCE ID 0 ***
+*/
+private String getPublishDateSortDB( Record record ) {
+
+    String vufindHome = System.getenv( "VUFIND_HOME_SOLR4" );
+    if (vufindHome == null) {
+        vufindHome = "";
+    }
+
+    String result = "";
+
+    String source_id = indexer.getFirstFieldVal( record, "980b" );
+    String record_id = indexer.getFirstFieldVal( record, "980a");
+
+    if( source_id == null || !source_id.equals( "0" ) ) {
+        return( result ); 
+    }
+
+    synchronized(properties) {
+        if(properties.size() == 0) {
+            Class.forName( sDbDrv );
+            try {
+                String ppPath = vufindHome + "/import/index_scripts/mddb.conf";
+                properties.load(new FileInputStream( ppPath ));
+                properties.put("LOAD","true");
+            } catch (IOException e) {
+                logger.severe("ERROR 'getPublishedDateSortDB' reading config file (getItemData)");
+                return(result);
+            }
+            String sDbUrl = properties.getProperty("DatabaseUrl");
+            String sUsr   = properties.getProperty("DatabaseUser");
+            String sPwd   = properties.getProperty("DatabasePassword");
+            try {
+                logger.info("CONNECT 'getPublishedDateSortDB' to " + sDbUrl);
+                cnPDS = DriverManager.getConnection( sDbUrl, sUsr, sPwd );
+                stPDS = cnPDS.prepareStatement(
+                    "SELECT MIN(year) " +
+                    "FROM   parents " +
+                    "WHERE  parent_record_id = ?"
+                );
+                logger.info("CONNECT 'getPublishedDateSortDB' OK => " + sDbUrl);
+            } catch(Exception e) {
+                logger.severe("ERROR 'getPublishedDateSortDB' create database connection: " + e.getMessage());
+                return(result);
+            }
+            logger.info( "CONNECT 'getPublishedDateSortDB' to " + sDbUrl );
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable(){
+                public void run() {
+                    logger.info("SHUTTING DOWN 'getPublishedDateSortDB' statement");
+                    try { if( null != stPDS ) stPDS.close(); } catch( Exception ex ) {}
+                    logger.info("DISCONNECT 'getPublishedDateSortDB' from " + sDbUrl);
+                    try { if( null != cnPDS ) cnPDS.close(); } catch( Exception ex ) {}
+                }
+            }));
+        }
+    }
+
+    // logger.info("CHECKING 'getPublishedDateSortDB', RECORD_ID => " + record_id);
+
+    ResultSet          rsPDS = null;
+
+    try {
+
+        stPDS.setString( 1, "(DE-576)" + record_id );  // ist immer Sigel DE-576
+        stPDS.setString( 1, record_id ); // #4087
+        rsPDS = stPDS.executeQuery();
+        if( rsPDS.next() ) {
+            String minYear = rsPDS.getString( 1 );
+            if( minYear != null ) {
+                result = minYear;
+                logger.info( "getPublishedDateSortDB - ADDING : " + record_id + ", YEAR => " + minYear );
+            } else { result = ""; }
+        } else {
+            result = "";
+        }
+        rsPDS.close(); rsPDS = null;
+
+    } catch( Exception ex ) {
+        logger.severe( "ERROR 'getPublishedDateSortDB' => " + ex.getMessage() );
+    } finally {
+        if( rsPDS != null ) try { rsPDS.close(); } catch( Exception ex ) {}
+    }
+
+    return result;
+}

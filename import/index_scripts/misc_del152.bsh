@@ -1,0 +1,85 @@
+        /*
+ * Copyright (C) 2013 Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+import org.marc4j.marc.Record;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+static final Logger logger = Logger.getLogger("de.ubl.import.miscdel52");
+
+/**
+* Allgemein #1680
+* Beanshell (neu) für misc_del152
+* Wenn source_id = 15, dann gib den Inhalt von 590 $b zurück. Und 590 $a. #872
+* Wenn source_id = 21 und 655 $2 = DE-Wim8, dann gib den Inhalt von 655 $a zurück.
+*/
+public Set misc_del152( Record record ) {
+
+    logger.setLevel( Level.WARNING ); // WARNING,FINE,INFO,ALL and so on
+
+    Set result = new LinkedHashSet();
+    String source_id = indexer.getFirstFieldVal( record, "980b" );
+
+    if( source_id.equals( "15" ) ) {
+        List fs = record.getVariableFields("590");
+        Iterator fsIter = fs.iterator();
+        if (fs != null) {
+            while(fsIter.hasNext()) {
+                DataField df = (DataField) fsIter.next();
+                if (df.getSubfield('a') != null){
+                    String value = df.getSubfield('a').getData().trim();
+                    result.add( value );
+                }
+                if (df.getSubfield('b') != null){
+                    String value = df.getSubfield('b').getData().trim();
+                    result.add( value );
+                }
+            }
+        }
+    } else if( source_id.equals( "21" ) ) {
+        List rvk = record.getVariableFields("655");
+        Iterator rvkIter = rvk.iterator();
+        if (rvk != null) {
+            while(rvkIter.hasNext()) {
+                DataField rvk_df = (DataField) rvkIter.next();
+                if ( rvk_df.getSubfield( '2' ) != null ) {
+                    if ( rvk_df.getSubfield( '2' ).getData().equals( "DE-Wim8" ) ) {
+                        if ( rvk_df.getSubfield( 'a' ) != null ) {
+                            String value = rvk_df.getSubfield('a').getData().trim();
+                            logger.info( "MISCDEL152 655a => " + value);
+                            result.add( value );
+                        }
+                    } 
+                }
+            }
+        }
+    }
+    
+    if( result.isEmpty() ) { result.add( "" ); } // leer
+
+    return result;
+}

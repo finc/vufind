@@ -1,0 +1,28 @@
+<? $records = $this->cart()->getRecordDetails();
+if (!empty($records)): ?>
+  <hr/>
+  <ul class="list-unstyled">
+    <? foreach ($records as $i => $record): ?>
+      <li>
+        <div class="checkbox">
+          <?=$this->record($record)->getCheckbox('cart')?>
+          <a title="<?=$this->transEsc('View Record')?>" href="<?=$this->recordLink()->getUrl($record)?>" data-lightbox-ignore>
+            <?
+            // Collect citation data:
+            $helper = $this->citation($record);
+            $recordtype = $record->getRecordType();
+            ?>
+            <? if ($recordtype == 'ai'): ?>
+              <?=$helper->getCitation('APAAI')?>
+            <? else: ?>
+              <?=$helper->getCitation('APA')?>
+            <? endif; ?>
+          </a>
+
+        </div>
+      </li>
+    <? endforeach; ?>
+  </ul>
+<? else: ?>
+  <p class="alert alert-info"><?=$this->transEsc('bookbag_is_empty')?>.</p>
+<? endif; ?>

@@ -1,0 +1,21 @@
+<?  $formats = $this->driver->getFormats();
+    $translated_formats = [];
+    foreach ($formats as $format): ?>
+        <? $translated_formats[] = $translated_format = $this->transEsc($format); ?>
+  <span class="format <?=$this->record($this->driver)->getFormatClass($format) ?>"><?=$translated_format ?></span>
+<? endforeach; ?>
+<? /* New genre string to display nxt to format in RESULT LIST and RECORD/Detail View, #11703, limit to SID 0 CK */ ?>
+<? $sourceID = $this->driver->getSourceID(); ?>
+<? if ($sourceID == "0"): ?>
+<?  $genres = $this->driver->tryMethod('getGenreFacet');?>
+<? if (!empty($genres)): ?>
+  <? foreach($genres as $genre): ?>
+    <?  $translated_genre = $this->transEsc($genre);
+        //deduplicate output
+        if (!in_array($translated_genre,$translated_formats)):
+    ?>
+      <span class="format"><?=$translated_genre?></span>
+    <? endif; ?>
+  <?endforeach;?>
+<?endif;?>
+<? endif; ?>

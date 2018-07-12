@@ -222,4 +222,5 @@ module.exports = function(grunt) {
     grunt.config.set('sass', sassConfig);
     grunt.task.run('sass');
   });
+  grunt.registerTask('default', ['scss']);
 };

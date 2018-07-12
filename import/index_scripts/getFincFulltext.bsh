@@ -1,0 +1,234 @@
+/*
+ * Copyright (C) 2012 Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+/*
+ * Suche in Inhaltsverzeichnis etc. ("Volltextsuche") als Option gestalten
+ * Zum deserialisieren von JSON wird die Google JSON Software Bibliothek
+ * benötigt (http://code.google.com/p/google-gson/).
+ */
+
+import java.io.*;
+import java.sql.*;
+import java.net.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.marc4j.marc.*;
+import com.google.gson.Gson;
+
+org.solrmarc.index.SolrIndexer indexer = null;
+
+static final Properties fftProperties = new Properties();
+static final Logger logger            = Logger.getLogger("de.ubl.import.getfincfulltext");
+static final Gson gson                = new com.google.gson.GsonBuilder().create();
+
+static final String config = "getFincFulltext.conf";
+static String[] fields;
+
+static final Properties properties_22 = new Properties();
+static final String sDbDrv = "com.mysql.jdbc.Driver";
+static Connection cn = null;
+static PreparedStatement st = null;
+
+public String getFincFulltext(Record record) {
+
+    logger.setLevel(Level.WARNING); // FINE,INFO,WARNING,ALL and so on
+
+    String vufindHome = System.getenv( "VUFIND_HOME_SOLR4" );
+    if (vufindHome == null) {
+        vufindHome = "";
+    }
+
+    // nicht alle durchsuchen, da Z.b. NAXOS eine URL als RECORD ID enthält!!!
+    String source_id = indexer.getFirstFieldVal(record, "980b");
+
+    // Ticket #15555, Qucosa
+    if(source_id != null && source_id.equals( "22" ) ) {
+
+        String qucosaText = "";
+
+        // Datenbank Konfiguration aus 'mddb.conf'
+        synchronized(properties_22) {
+            if(properties_22.size() == 0) {
+                Class.forName( sDbDrv );
+                try {
+                    // mddb3 Datenbankverbindung Einstellungen
+                    String ppPath = vufindHome + "/import/index_scripts/mddb.conf";
+                    // if( vufindHome == null ) ppPath = bsh.cwd + "/../import/index_scripts/mddb.conf";
+                    properties_22.load(new FileInputStream( ppPath ));
+                    properties_22.put("LOAD","true");
+                } catch (IOException e) {
+                    logger.severe("ERROR 'CUCOSA FULLTEXT' reading config file (getFincFulltext)");
+                    return(result);
+                }
+                String sDbUrl = properties_22.getProperty("DatabaseUrl");
+                String sUsr   = properties_22.getProperty("DatabaseUser");
+                String sPwd   = properties_22.getProperty("DatabasePassword");
+
+                try {
+                    logger.info("TRY TO OPEN A CONNECTION 'CUCOSA FULLTEXT': " + sDbUrl);
+                    cn = DriverManager.getConnection( sDbUrl, sUsr, sPwd );
+                    st = cn.prepareStatement(
+                        "SELECT value " +
+                        "FROM annotation " + 
+                        "WHERE source_id = ? " +
+                            "AND sha1sum = ?"
+                    );
+                    logger.info("CONNECTION ESTABLISHED 'CUCOSA FULLTEXT' OK: " + sDbUrl);
+                } catch(Exception e) {
+                    logger.severe("ERROR 'CUCOSA FULLTEXT' create database connection: " + e.getMessage());
+                    return(result);
+                }
+                Runtime.getRuntime().addShutdownHook(new Thread(new Runnable(){
+                    public void run() {
+                        logger.info("SHUTTING DOWN 'CUCOSA FULLTEXT' statement");
+                        try { if( null != st ) st.close(); } catch( Exception ex ) {}
+                        logger.info("DISCONNECT 'CUCOSA FULLTEXT': " + sDbUrl);
+                        try { if( null != cn ) cn.close(); } catch( Exception ex ) {}
+                    }
+                }));
+            }
+        }
+
+        List fields_520 = record.getVariableFields( "520" );
+        if (fields_520 != null) {
+            Iterator fieldsIter = fields_520.iterator();
+            while( fieldsIter.hasNext() ) {
+                DataField dataField = (DataField) fieldsIter.next();
+                List subfields = dataField.getSubfields( '9' );
+                if( subfields != null && !subfields.isEmpty() ) {
+                    // Ist der erste Indikator "2" handelt es sich um das Inhaltsverzeichnis (TOC).
+                    // Ist der erste Indikator "3" handelt es sich um die Zusammenfassung (Abstract).
+                    // char indicator = dataField.getIndicator1();
+                    Iterator subfieldsIter = subfields.iterator();
+                    if( subfields != null ) {
+                        if( subfieldsIter.hasNext() ) {
+
+                            String sha1sum = subfieldsIter.next().getData();
+                            ResultSet          rs = null;
+
+                            try {
+                                st.setString( 1, source_id );
+                                st.setString( 2, sha1sum );
+                                rs = st.executeQuery();
+                                if( rs.next() ) {
+                                    qucosaText = rs.getString(1);
+                                }
+                                try { rs.close(); } catch( Exception ex ) {}
+                                rs = null;
+
+                            } catch( Exception ex ) {
+                                logger.severe( "ERROR 'CUCOSA FULLTEXT' => " + ex.getMessage() );
+                                qucosaText = "";
+                            } finally {
+                                try { if( null != rs ) rs.close(); } catch( Exception ex ) {}
+                            }
+
+                            if( !qucosaText.isEmpty() ) {
+                                String record_id = indexer.getFirstFieldVal( record, "980a" );
+                                logger.info( "FOUND 'CUCOSA FULLTEXT' record_id => " + record_id + ", text => " + qucosaText);
+                                return qucosaText;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if(source_id == null || (!source_id.equals( "0" ) && !source_id.equals( "8" )) ) {
+        logger.info( "FULLTEXT: IGNORE SOURCE ID => " + source_id );
+        return ""; 
+    }
+
+    String record_id = indexer.getFirstFieldVal(record, "980a");
+    if( record_id == null ) {
+        logger.severe( "ERROR FULLTEXT: could't not found record id");
+        return "ERROR FULLTEXT: RECORD ID NOT FOUND";
+    }
+
+    synchronized( fftProperties ) {
+
+        if( fftProperties.size() == 0 ) {
+            logger.info( "FULLTEXT: Read config file => " + config);
+            String ppFile = vufindHome + "/import/index_scripts/" + config;
+            fftProperties.load( new FileInputStream( ppFile ) );
+
+            if ( !fftProperties.containsKey( "keywords" ) ) {
+                Strng errmsg = "ERROR FULLTEXT: Could't find property 'keywords'";
+                logger.severe( errmsg );
+                return errmsg;
+            }
+
+            fftProperties.put( "read", true);
+            fields = fftProperties.get( "keywords" ).toString().trim().split( "," );
+        }
+    }
+            
+    URL url = new URL( fftProperties.get( "solrService" ) + "?q=ppn:" + record_id + "&version=2.2&start=0&wt=json" );
+    URLConnection urlConnection = url.openConnection();
+
+    InputStreamReader in = new InputStreamReader( urlConnection.getInputStream(), "UTF-8" );
+
+    StringBuilder builder = new StringBuilder();
+
+    int c = 0;
+    char[] buff = new char[1024 * 8];
+
+    while( ( c = in.read( buff, 0, buff.length ) ) > 0 ) {
+        builder.append( buff, 0, c );
+    }
+
+    in.close();
+    in = null;
+
+    Map o = gson.fromJson( builder.toString(), Object.class );
+
+    if( o == null ) return "ERROR FULLTEXT: FROM JSON";
+
+    Object mapObj = o.get("response");
+    if( mapObj == null ) return "";
+    Map response = (Map)mapObj;
+
+    Object docsObj = response.get( "docs" );
+    if( docsObj == null ) return "";
+    List docs = (List)docsObj;
+
+    StringBuilder b = new StringBuilder();
+    for(Map docMap : docs) {
+        for(String s : fields) {
+            Object obj = docMap.get(s.trim());
+            if( obj != null ) {
+                b.append(b.length() > 0 ? " " : "").append( obj.toString().trim().replaceAll("\\s+"," "));
+            }
+        }
+    }
+
+    String text = b.toString();
+    if ( text.length() > 0) {
+        logger.info( "FULLTEXT: " + record_id + " => " + ( text.length() <= 80 ? text : text.substring( 0, 80 )));
+    }
+
+    return text;
+
+}

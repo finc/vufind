@@ -1,0 +1,24 @@
+<!-- finc: RecordDriver - solrDefault - data-publicationDetails -->
+<? if (!empty($data)): ?>
+<div itemscope itemtype="http://schema.org/publisher">
+    <? foreach ($data as $field): ?>
+    <span property="publisher" typeof="Organization">
+        <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
+            <span property="location"><?=$this->escapeHtml($pubPlace)?></span>
+        <? endif; ?>
+        <? $pubName = $field->getName(); if (!empty($pubName)): ?>
+            <span property="name"><?=$this->escapeHtml($pubName)?></span>
+        <? endif; ?>
+    </span>
+    <span property="datePublished">
+    <? $pubDateSort = $this->driver->tryMethod('getPublishDateSort'); ?>
+    <? $pubDate = $field->getDate(); if (!empty($pubDateSort)): ?>
+        <?=$this->escapeHtml($pubDateSort)?>
+    <? else: ?>
+        <?=$this->escapeHtml($pubDate)?></span>
+    <? endif; ?>
+    </span><br/>
+    <? endforeach; ?>
+</div>
+<? endif ?>
+<!-- finc: RecordDriver - solrDefault - data-publicationDetails - END -->

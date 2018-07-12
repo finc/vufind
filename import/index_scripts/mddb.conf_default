@@ -1,0 +1,4 @@
+DatabaseUrl = jdbc:mysql://localhost:3306/mddb3
+DatabaseUser = USER
+DatabasePassword = PASS
+

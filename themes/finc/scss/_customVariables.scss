@@ -1,0 +1,252 @@
+// see _variables.scss for default values
+
+// FONTS
+//// Base font size
+$font-size-base: 14px !default;
+//// We use these to define default font stacks
+$font-family-sans-serif: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif !default;
+$font-family-serif: Georgia, Cambria, 'Times New Roman', Times, serif !default;
+$font-family-monospace: Consolas, 'Liberation Mono', Courier, monospace !default;
+
+//// SET FONT SIZES using the following pattern! This is the only way, font sizes will be adapted proportionally
+//// font-size: ($font-size-base * 1.5)
+//// OR us the em-calculator function below, like so: font-size: em(14)
+//// There are also the variables $font-size-large and $...small which are calculated
+//// $font-size-base * 1.25 --> ~18px and $font-size-base * 0.85 --> ~12px
+
+$font-size-breadcrumbs: ($font-size-base * .85) !default;
+
+// Default line height
+$line-height-base: 1.5 !default;
+
+// COLORS
+$brand-primary: #1779ba !default;
+$brand-secondary: #e7e7e7 !default;
+$brand-danger: #cc4b37 !default; // darker red = #a94442
+$brand-info: #008cba !default;
+$brand-success: #43ac6a !default; // darker green = #3c763d
+$brand-warning: #f08a24 !default;
+
+$white: #fff;
+$ghost: #fafafa;
+$snow: #f9f9f9;
+$vapor: #f6f6f6;
+$white-smoke: #f5f5f5;
+$silver: #efefef;
+$smoke: #eee;
+$gainsboro: #ddd;
+$iron: #ccc;
+$base: #aaa;
+$aluminum: #999;
+$jumbo: #888;
+$monsoon: #777;
+$steel: #666;
+$charcoal: #555;
+$tuatara: #444;
+$oil: #333;
+$jet: #222;
+$black: #000;
+
+//// FORM FEEDBACK states colors and, by default, alerts colors (i.e. alerts are
+//// defined like so '$alert-success-bg: $state-success-bg;')
+$state-light-text-on-dark: $white !default;
+
+$state-success-text: $state-light-text-on-dark !default;
+$state-success-bg: $brand-success !default;
+//$state-success-border: darken(adjust-hue($state-success-bg, -10), 5%) !default;
+
+$state-info-text: $state-light-text-on-dark !default;
+$state-info-bg: $brand-info !default;
+// $state-info-border: darken(adjust-hue($state-info-bg, -10), 7%) !default;
+
+$state-warning-text: $state-light-text-on-dark !default;
+$state-warning-bg: $brand-warning !default;
+$alert-warning-bkg: $brand-warning !default;
+// $state-warning-border: darken(adjust-hue($state-warning-bg, -10), 5%) !default;
+
+$state-danger-text: $state-light-text-on-dark !default; // NOTE: this renders the text white -- requires red background!
+$state-danger-bg: $brand-danger !default;
+// $state-danger-border: darken(adjust-hue($state-danger-bg, -10), 5%) !default;
+
+//// ALERTS (see states, above, and compiled.scss - Code needs to go there to overwrite defaults)
+
+//// Highlighter in search results - activate and change BG here
+// mark,
+// .mark {
+//    background-color: $state-warning-bg;
+// }
+
+
+//// FORM ELEMENTS
+$select-bg-color: $ghost !default;
+
+//// BORDERS
+$border-color: $iron !default;
+////// Note that the nav-tabs have a different border color, use the following variable in your SCSS to change it
+// $nav-tabs-border-color: $gainsboro !default; // defined in BS _variables.scss
+
+// Default border styles
+$border-default-styles: 1px solid $border-color !default;
+
+// Width and position of Sidebar border (see customMixins.scss) -- change to "0" and "-15px" only for sidebar on the right, butting on right border
+$border-right-width: 1px !default;
+$margin-right-width: inherit !default;
+
+
+//// PAGER
+$pagination-disabled-color: $gainsboro !default;
+
+//// BUTTONS
+////// Use darker text color when default-buttons are used on white BG (new class: bth-transparent
+////// for updateCart in search results, date-range slider in sidebar and adv search
+////// NOTE that the hover states use the default color too!
+$btn-primary-color: $white !default;
+$btn-primary-bg: $brand-primary !default;
+// $btn-primary-color: $btn-primary-color !default; // already defined this way in BS _variables, use this variable to change it
+// $btn-primary-bg: $brand-primary !default; // already defined this way in BS _variables, use this variable to change it
+$btn-transparent-color: $steel !default;
+$btn-transparent-bg: transparent !default;
+$btn-transparent-border: $border-color !default;
+
+//// BADGES (elements in sidebar that hold the hit numbers)
+$badge-bg: transparent !default;
+$badge-color: $jet !default;
+$badge-font-weight: normal !default;
+$badge-link-color: $brand-danger !default;
+$badge-link-hover-color: saturate($brand-danger, 50%) !default;
+////// Sidebar Badge/fa Colors
+$sidebar-badge-fa-color: darken($brand-secondary, 40%) !default;
+
+
+//// Accordion/Collapse Toggler
+$toggler: $snow !default;
+$toggler-active: lighten($snow, 1%) !default;
+
+//// Dropdown Background - this is used for ALL dropdowns, incl. the language selector;
+//// originally defined under BS _variables.scss, and used in _dropdowns.scss; you could use a value such as
+//// $dropdown-link-hover-color: lighten($brand-primary, 15%);
+//// $dropdown-link-hover-bg: lighten($brand-primary, 50%);
+//// Other variables include $dropdown-link-active-color; $dropdown-link-active-bg; $dropdown-link-color ...
+
+//// Tooltips (default bg is black)
+$tooltip-color: $snow !default;
+$tooltip-bg: lighten($brand-primary, 20%) !default;
+$tooltip-arrow-color: $tooltip-bg !default;
+
+//// ELEMENT COLORS
+$body-bg: $snow !default;
+//// Main content are bg
+$main-bg: $white !default;
+
+//// Header and header elements colors
+$header-bg-color: $gainsboro !default;
+$navbar-bg-color: $header-bg-color !default;
+$navbar-fixed-bg-color: $header-bg-color !default;
+
+//// Breadcrumbs
+$breadcrumb-bg: $brand-primary !default;
+
+$breadcrumb-color: $btn-primary-color !default;
+
+//// Link color for breadcrumb .active
+$breadcrumb-active-color: $btn-primary-color !default;
+
+//// Sidebar item hover effect (doesn't exist in VF out-of-the-box); active is for selected facets
+$sidebar-item-hover-bg: transparentize($brand-secondary, .9) !default;
+$sidebar-item-active-hover-bg: transparentize($brand-primary, .1) !default;
+
+//// ELEMENT COLORS - END
+// COLORS - END
+
+// DIMENSIONS
+//// The general gutter width (padding between columns) is calculated like so: '$grid-gutter-width / 2'
+//// which gives you the left or right gutter width; this can be taken further by using '$grid-gutter-width / 1.5' etc
+$grid-gutter-width: 30px !default;
+
+//// Navbar gets a minimum-height of 50px by default, activate and change here!
+//// For fixed navbars ('navbar-fixed-top' in 'header.phtml'), the body requires a padding-bottom of the same height as the navbar because of postition.fixed
+//// When using 'affix' instead of 'navbar-fixed-top', set '$navbar-height', '$navbar-height-xs' and '$navbar-height-sm' to '=0'
+//// or set the paddings-top under 'body' in compiled.scss to '=0'; see also the comment in header.phtml
+$navbar-height: 80px !default;
+$navbar-height-sm: $navbar-height !default;
+//// Set navbar-height for small devices, USE px as rem will throw an error in conjunction _variables.scss
+$navbar-height-xs: $navbar-height + 40px !default;
+$navbar-max-height-xs: $navbar-height + 40px !default;
+
+//// Top-padding for #content -> .row first-of-type (and .sidebar) - change this value to change both;
+//// sidebar gets an additional padding on half the content-top-padding for better horizontal alignment
+$content-top-padding: $grid-gutter-width / 2 !default;
+
+//// Sidebar item padding
+$sidebar-item-padding: .75em 1em !default;
+
+//// Table cell padding - adjust in themes to avoid content jumps when switching tabs
+// $table-cell-padding: 5px !default;
+
+
+//// MODAL dimensions
+$modal-lg: 900px !default;
+$modal-md: 600px !default;
+$modal-sm: 300px !default;
+
+
+// BREADCRUMBS
+//// Separator between breadcrumb elements, use this variable to change it
+//// $breadcrumb-separator: '/' !default;
+
+
+// GET RID of ALL ROUND CORNERS
+$border-radius-base: 0 !default;
+$border-radius-large: 0 !default;
+$border-radius-small: 0 !default;
+
+$pager-border-radius: 0 !default;
+
+$badge-border-radius: 0 !default;
+
+//// labels.scss uses no variable! Therefore it will be necessary
+//// to overwite in compiled.scss!!, Fixme when done more elegantly in BS
+$label-radius: 0 !default;
+
+// GET RID of ALL ROUND CORNERS - END
+
+// GET RID of BOX-SHADOWS
+.dropdown-menu {
+  box-shadow: none;
+}
+
+
+// ALIGNMENTS
+//// Align tops of elements to transparent button-content in same row (e.g. header: searchbox content + navigation on right-hand side)
+$button-top-padding: 6px;
+
+//// Text alignment 'more'-toggles in sidebar;
+//// default is center. If center alignment is desired, comment out this next line
+//// and the '.narrow-toggle ...' in compiled.scss
+$narrow-toggle-text-alignment: left !default;
+
+//// Pagination (Search results) AND searchtools (Search results)
+//// Default is left, we use centered alignment. If left is desired,
+//// comment out next mixing and '.pagination ...'  and 'searchtools ...' in compiled.scss
+@mixin content-centered-display-as-table {
+  display: table;
+  margin: 1.5em auto;
+}
+
+// ALIGNMENTS - END
+
+// FUNCTIONS
+//// em Calculator (just write the desired px into the function call, like so: font-size: em(12) or em(12px)
+@function em($pixels, $context: $font-size-base) {
+  @if (unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+
+  @if (unitless($context)) {
+    $context: $context * 1px;
+  }
+
+  @return $pixels / $context * 1em;
+}
+
+// FUNCTIONS - END

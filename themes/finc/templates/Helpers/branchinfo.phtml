@@ -1,0 +1,80 @@
+<!-- helpers - branchinfo.phtml -->
+<tr class="holding-info">
+  <td colspan="4">
+    <? /* Keep the accordion-toggler! It makes the link appear as an accordion header - CK */?>
+    <a href="#<?=$info['branchno']?>" class="accordion-toggler" data-toggle="collapse" aria-expanded="false"><?=$this->transEsc('Address-Contact-Hours')?></a>
+    <div id="<?=$info['branchno']?>" class="collapse" aria-expanded="false">
+      <div class="branch-address col-xs-12 col-sm-6">
+              <strong><?=$info['branch']?></strong><br/>
+        <?=$info['streetaddress']?><br/>
+        <?=$info['postalcode']?> <?=$info['city']?>
+      </div>
+      <div class="branch-contact col-xs-12 col-sm-6">
+        <? if (isset($info['tel'])): ?>
+          <? if (is_array($info['tel'])): ?>
+            <? foreach ($info['tel'] as $tel): ?>
+              <?=$this->transEsc('Tel')?>: <?=$tel?><br/>
+            <? endforeach; ?>
+          <? else: ?>
+            <?=$this->transEsc('Tel')?>: <?=$info['tel']?><br/>
+          <? endif; ?>
+        <? endif; ?>
+        <? if (isset($info['fax'])): ?>
+          <?=$this->transEsc('Fax')?>: <?=$info['fax']?><br/>
+        <? endif; ?>
+        <? if (
+          isset($info['email'])
+          && is_array($info['email'])
+          && count($info['email']) > 0
+        ): ?>
+          <? foreach ($info['email'] as $email): ?>
+            <?=$this->transEsc('Email')?>: <?=$email?><br/>
+          <? endforeach; ?>
+        <? else: ?>
+          <?=$this->transEsc('Email')?>: <?=$info['email']?><br/>
+        <? endif; ?>
+        <? if (isset($info['url'])): ?>
+          <a href="<?=$info['url']?>" title="<?=$info['branch']?>">
+            <? if (isset($info['branch'])): ?>
+              <?=$this->transEsc('Link to')?>
+            <? else: ?>
+              <?=$info['url']?>
+            <? endif; ?>
+          </a>
+        <? endif; ?>
+      </div>
+      <div class="branch-hours col-xs-12">
+        <? if (
+          isset($info['openinghours'])
+          && is_array($info['openinghours'])
+          && count($info['openinghours']) > 0
+        ): ?>
+          <? if (isset($info['branchpart'])): ?>
+            <strong><?=$info['branchpart']?></strong>
+          <? endif; ?>
+          <? if ($info['branchno'] != 'zw02'): ?>
+            <?=$this->transEsc('Opening hours')?><br />
+          <? endif; ?>
+          <? foreach ($info['openinghours'] as $line): ?>
+              <?=$line['days']?>: <?=$line['open']?> &ndash; <?=$line['close']?><br />
+          <? endforeach; ?>
+        <? endif; ?>
+      </div>
+    </div>
+    <div class="row">
+      <? if (isset($info['note'])): ?>
+        <div class="branch-note alert alert-info">
+          <? if (is_array($info['note'])): ?>
+            <? foreach ($info['note'] as $notes): ?>
+              <?=$notes?>
+            <? endforeach; ?>
+          <? else: ?>
+            <?=$info['note']?>
+          <? endif; ?>
+        </div>
+      <? endif; ?>
+    </div>
+  </td>
+</tr>
+<?=$this->headScript()?>
+<!-- helpers - branchinfo.phtml - END -->

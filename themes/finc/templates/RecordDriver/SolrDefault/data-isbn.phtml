@@ -1,0 +1,11 @@
+<!-- finc: RecordDriver - SolrDefault - data-isbn -->
+<? if (!empty($data)): ?>
+<? if (is_array($data)): ?>
+  <span property="isbn">
+    <?=implode('<br/>', array_map(array($this, 'escapeHtml'), $data))?>
+  </span>
+<? else: ?>
+<?=$this->escapeHtml($data)?>
+<? endif; ?>
+<? endif; ?>
+<!-- finc: RecordDriver - SolrDefault - data-isbn - END -->

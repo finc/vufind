@@ -1,0 +1,128 @@
+/**
+ * Ticket Allgemein #1750
+ *
+ * Beanshell zum Befüllen vorbereiten, dabei müssen wir flexibel versch. Datenquellen abfragen 
+ * speziell GND und DBpedia, ich habe mappings ;-) * zB Titel, die "118540238" im author_id haben,
+ * können "4053309-8" in connotation_id bekommen, siehe RDF Link in http://d-nb.info/gnd/118540238 *
+ * lokales Cache-System konzipieren, ich habe momentan einen mysql cache laufen,
+ * der genutzt werden kann performs some cool foo and then generates a lot of bar.
+ */
+
+import java.io.*;
+import java.net.*;
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+static final Logger logger = Logger.getLogger("de.ubl.import.getGnd");
+org.solrmarc.index.SolrIndexer indexer = null;
+
+static final Matcher gndM = Pattern.compile( "gnd/(.+)$").matcher( "" );
+static final Matcher fieldM = Pattern.compile("\\(DE-588\\)(\\S+)$").matcher( "" );
+static final Matcher rm = Pattern.compile( "<dc:relation>(.+?)</dc:relation>", Pattern.MULTILINE).matcher( "" );
+
+/* Service URL */
+static final URL url = new URL( "http://139.18.19.243/lulknows/index.php" );
+
+/*
+ * Copyright (C) 2013 Polichronis Tsolakidis, tsolakidis@ub.uni-leipzig.de
+ * Leipzig University Library, Project finc
+ * http://www.ub.uni-leipzig.de
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author   Polichronis Tsolakidis
+ * @license  http://opensource.org/licenses/gpl-3.0.html GNU General Public License
+ * @link     http://finc.info
+ */
+
+public Set getGnd(Record record) {  
+
+    logger.setLevel( Level.WARNING ); // FINE,INFO,ALL,WARNING and so on
+
+    Set result = new LinkedHashSet();
+
+    List gnd = record.getVariableFields("689");
+    Iterator gndIter = gnd.iterator();
+    if (gnd != null) {
+        while(gndIter.hasNext()) {
+            DataField gnd_df = (DataField) gndIter.next();
+            List subfields = gnd_df.getSubfields( '0' );
+            if ( subfields != null ) {
+                Iterator subfieldsIter = subfields.iterator();
+                while( subfieldsIter.hasNext() ) {
+                    String data = subfieldsIter.next().getData();
+                    fieldM.reset( data.trim() );
+                    if( fieldM.find() ) {
+                        result.add( fieldM.group( 1 ) );
+                    }
+                }
+            }
+        }
+    }
+
+    if( result.isEmpty() ) { return result; }
+
+    // sort for cache
+    result = new TreeSet( result );
+    logger.info( "GND: search for => " + result );
+
+    StringBuilder queryList = new StringBuilder();
+    for ( String GND : result ) {
+        queryList.append( queryList.length() == 0 ? "" : "," ).append(GND);
+    }
+
+    result.clear();
+    
+    StringBuilder xml = new StringBuilder();
+
+    HttpURLConnection con = (HttpURLConnection)url.openConnection();
+    con.setRequestMethod( "POST" );
+    con.setDoInput( true );
+    con.setDoOutput( true );
+    con.setUseCaches( false );
+    con.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded" );
+
+    OutputStreamWriter writer = new OutputStreamWriter( con.getOutputStream() );
+
+    writer.write( "template=finc_solr_context&gnd=" + queryList.toString());
+    writer.flush();
+
+    String line;
+    BufferedReader reader = new BufferedReader( new InputStreamReader( con.getInputStream() ) );
+    while ((line = reader.readLine()) != null) {
+      xml.append( line ).append( System.getProperty( "line.separator" ) );
+    }
+    writer.close();
+    reader.close();
+
+    con.disconnect();
+
+    // REGEX Methode
+    rm.reset( xml.toString() );
+    while( rm.find() ) {
+        gndM.reset( rm.group( 1 ) );
+        if( gndM.find() && result.add( gndM.group( 1 )) ) {}
+    }
+    
+    if( !result.isEmpty() ) logger.info( "GND: got gnd => " + result );
+    
+    return result;
+}

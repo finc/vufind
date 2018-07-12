@@ -1,0 +1,7 @@
+<?if (!empty($data)): ?>
+    <? if(is_array($data)): ?>
+        <?=implode(', ', array_map(array($this, 'transEsc'), $data)); ?>
+    <? else: ?>
+        <?= $this->transEsc($data) ?>
+    <? endif; ?>
+<? endif; ?>

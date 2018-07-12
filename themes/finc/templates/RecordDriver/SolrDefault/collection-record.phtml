@@ -1,0 +1,24 @@
+<!-- finc: recordDriver - solrDefault - collection-record -->
+<h2>
+  <?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?>
+</h2>
+<a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc('View Full ' . ($this->driver->isCollection() ? 'Collection' : 'Record'))?></a>
+
+<?
+$formatter = $this->recordDataFormatter();
+$fields = $formatter->getData($driver, $formatter->getDefaults('collection-record'));
+?>
+<? if (!empty($fields)): ?>
+<table class="table table-striped">
+  <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
+  <caption class="sr-only"><?=$this->transEsc('Bibliographic Details')?></caption>
+  <? foreach ($fields as $key => $current): ?>
+    <? if ($key == null): ?>
+      <?=$current['value']?>
+    <? else: ?>
+      <tr><th><?=$this->transEsc($key)?>:</th><td><?=$current['value']?></td></tr>
+    <? endif; ?>
+  <? endforeach; ?>
+</table>
+<? endif; ?>
+<!-- finc: recordDriver - solrDefault - collection-record - END -->

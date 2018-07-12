@@ -1,0 +1,9 @@
+<?
+$formats = [];
+foreach ($this->driver->getFormats() as $format) {
+  $formats[] = $this->record($this->driver)->getRecordIconClass($format);
+}
+$formats = array_unique($formats);
+asort($formats);
+?>
+<span class="record-icon"><img src="<?=$this->imageLink("small/".array_pop($formats).".png")?>" class="hidden-xs" alt="<?=$this->transEsc("record icon")?>" /></span>

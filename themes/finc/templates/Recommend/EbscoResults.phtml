@@ -1,0 +1,29 @@
+<? /* finc: recommend - ebscoresults */ ?>
+<?
+$data = $this->recommend->getResult();
+if (is_array($data['results']) && count($data['results']) > 0): ?>
+  <? /* Design should follow structure of recommend - sidefacets - CK */ ?>
+  <div id="side-panel-ebsco" class="facet-group">
+    <div class="facet title" data-toggle="collapse" href="#side-collapse-ebsco">
+        <?= $this->transEsc('Ebsco::title_hits_databases') ?>
+    </div>
+    <div id="side-collapse-ebsco" class="collapse in">
+        <? foreach ($data['results'] as $result): ?>
+      <div class="facet">
+        <span class="badge">
+                <?= $this->escapeHtml($result['hits']) ?>
+            </span>
+            <a href="<?= $this->escapeHtmlAttr($result['url']) ?>" target="_blank">
+                <?= $this->escapeHtml($this->truncate($this->transEsc('Ebsco::'.$result['database']), 90)) ?>
+            </a>
+      </div>
+        <? endforeach; ?>
+        <a class="facet narrow-toggle" href="<?=$this->escapeHtmlAttr($data['hits_total_url'])?>" target="_blank" rel="nofollow">
+          <?=$this->transEsc('more')?>&nbsp;...
+            </a>
+
+      </div>
+  </div>
+<? endif; ?>
+<? /* finc: recommend - ebscoresults - END */ ?>
+

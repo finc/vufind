@@ -1,0 +1,47 @@
+/* Leander Seige */
+
+import org.marc4j.marc.Record;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+
+public Set getFieldRegex(Record record, String fieldnums, String subfield, String match, String search, String replace) {
+
+    Set result = new LinkedHashSet();
+
+    String[] fields=fieldnums.split(":");
+
+    for(int i =0; i < fields.length ; i++) {
+        field=fields[i];
+
+        List fs = record.getVariableFields(field);
+        Iterator fsI = fs.iterator();
+
+        if (fs != null) {
+            DataField author;
+            while(fsI.hasNext()) {
+                author = (DataField) fsI.next();
+                String val;
+
+                List ss = author.getSubfields(subfield.charAt(0));
+                Iterator ssI = ss.iterator();
+                if (ss != null) {
+                    while (ssI.hasNext()) {
+                        val=ssI.next().getData();
+                        if (val.matches(match)) { 
+                            val=val.replaceAll(search,replace);
+                            val=val.trim();
+                            if(val.length()>0) {
+                                // System.out.println(">>> Value: "+val);
+                                result.add(val);
+                            }
+                        }
+                    }
+                } else {
+                }
+            }
+        } else {
+        }
+     }
+    return result;
+}
+

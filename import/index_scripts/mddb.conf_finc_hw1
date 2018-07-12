@@ -1,0 +1,4 @@
+DatabaseUrl = jdbc:mysql://172.18.85.101:3306/mddb
+DatabaseUser = mddb
+DatabasePassword = mddb
+
