@@ -68,6 +68,7 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
      * @return array|null
      */
     public function getContent() {
+        
         if($this->content === null) {
             $relId = $this->driver->tryMethod('getIdsRelated');   
             $this->content = []; 
