@@ -17,7 +17,7 @@ if ($this->customUrl) {
         'sid' => 'SWB:flportal',   
         'pid' => $pidZoneString
     ];
-    $url = $this->openUrl($this->driver, 'illform')->getUrl($this->customUrl, $addParams, true);
+    $url = $this->openUrl($this->driver, 'illform')->getUrl(null, $addParams);
 }
 $account = $this->auth()->getManager();
 $class = '';

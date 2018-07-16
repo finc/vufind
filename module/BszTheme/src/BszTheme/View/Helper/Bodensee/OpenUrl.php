@@ -215,5 +215,35 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
                 . $imageOpenUrl;
         }
         return $params;
-    }  
+    }
+    
+    /**
+     * Just returns the URL, without rendering. 
+     * 
+     * @return string
+     */
+    public function getUrl($base = '', $additions)
+    {
+        // instantiate the resolver plugin to get a proper resolver link
+        if ($this->area == 'illform') {
+            $resolver = 'ill';            
+        } else {
+            $resolver = isset($this->config->resolver)
+                ? $this->config->resolver : 'other';            
+        }
+
+        $openurl = $this->recordDriver->getOpenUrl();
+        if ($this->resolverPluginManager->has($resolver)) {
+            $resolverObj = new \VuFind\Resolver\Connection(
+                $this->resolverPluginManager->get($resolver)
+            );
+            $resolverUrl = $resolverObj->getResolverUrl($openurl);
+        } else {
+            $resolverUrl = empty($base) ? '' : $base . '?' . $openurl;
+        }
+        
+        $resolverUrl = $resolverUrl.'&'.http_build_query($additions);
+        
+        return $resolverUrl;        
+    }
 }
