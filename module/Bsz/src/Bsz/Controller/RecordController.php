@@ -200,12 +200,14 @@ class RecordController extends \VuFind\Controller\RecordController
         $client = $this->getServiceLocator()->get('Bsz\Client');
                 $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
         $isils = $this->params()->fromQuery('isil');
+        
+        if (count($isils) > 0) {
+            return $this->processIsil();
+        }
+        
         if ($client->isIsilSession() && !$client->hasIsilSession() && count($isils) == 0) {
             $this->FlashMessenger()->addErrorMessage('missing_isil');
             throw new \Bsz\Exception('You must select a library to continue');
-        }
-        if (count($isils) > 0) {
-            $this->processIsil();
         }
         $libraries = $this->getServiceLocator()->get('bsz\libraries');
         $first = $libraries->getFirst($client->getIsils());
@@ -438,7 +440,7 @@ class RecordController extends \VuFind\Controller\RecordController
     {
         $isils = $this->params()->fromQuery('isil');
         if (count($isils) > 0) {
-            $this->processIsil();
+            return $this->processIsil();
         }
         $view = parent::homeAction();
         // set OpenUrl for custom ill forms
