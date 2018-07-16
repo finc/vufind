@@ -237,13 +237,14 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
             $resolverObj = new \VuFind\Resolver\Connection(
                 $this->resolverPluginManager->get($resolver)
             );
+            if (method_exists($resolverObj, 'addParams')) {
+                $resolverObj->addParams($additions);                
+            }
             $resolverUrl = $resolverObj->getResolverUrl($openurl);
         } else {
             $resolverUrl = empty($base) ? '' : $base . '?' . $openurl;
-        }
-        
-        $resolverUrl = $resolverUrl.'&'.http_build_query($additions);
-        
+        }    
+
         return $resolverUrl;        
     }
 }

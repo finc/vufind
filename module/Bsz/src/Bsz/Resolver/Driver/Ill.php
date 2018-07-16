@@ -9,6 +9,8 @@ namespace Bsz\Resolver\Driver;
  */
 class Ill extends Ezb
 {
+    
+    protected $additions = [];
     /**
      * Get Resolver Url
      *
@@ -28,7 +30,9 @@ class Ill extends Ezb
             $tmp2 = explode('=', $current, 2);
             $parsed[$tmp2[0]] = $tmp2[1];
         }
-
+        $parsed['sid'] = 'SWB:flportal';
+        $parsed = array_merge($parsed, $this->additions);
+        
         // Downgrade 1.0 to 0.1
         if ($parsed['ctx_ver'] == 'Z39.88-2004') {
             $openURL = $this->downgradeOpenUrl($parsed);
@@ -92,5 +96,9 @@ class Ill extends Ezb
             $params[] = $param.'='.$val;
         }         
         return implode('&', $params);
+    }
+    
+    public function addParams($additions) {
+        $this->additions = $additions;
     }
 }
