@@ -103,7 +103,7 @@ class RecordController extends \VuFind\Controller\RecordController
     {
         $isils = $this->params()->fromQuery('isil');
         if (count($isils) > 0) {
-            $this->processIsil();
+            return $this->processIsil();
         }
         $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');
         // If Request does not have this param, we should not use collapsible 
