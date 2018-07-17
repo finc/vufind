@@ -157,13 +157,15 @@ h3 {
 }
 
 // Remove top borders (_tables.scss)
-thead,
-tbody,
-tfoot {
-  > tr {
-    > th,
-    > td {
-      border-top: 0;
+.table {
+  thead,
+  tbody,
+  tfoot {
+    > tr {
+      > th,
+      > td {
+        border-top: 0;
+      }
     }
   }
 }
@@ -247,6 +249,19 @@ legend {
 }
 
 //// label {}
+
+.text-success,
+.text-danger {
+  padding: .5em;
+}
+
+.text-success {
+  background-color: $brand-success;
+}
+
+.text-danger {
+  background-color: $brand-danger;
+}
 
 //// Required symbol
 
