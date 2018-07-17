@@ -96,9 +96,5 @@ class Ill extends Ezb
             $params[] = $param.'='.$val;
         }         
         return implode('&', $params);
-    }
-    
-    public function addParams($additions) {
-        $this->additions = $additions;
-    }
+    }    
 }
