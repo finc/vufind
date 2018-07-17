@@ -175,14 +175,13 @@ class EDS extends \VuFind\RecordDriver\EDS {
     {
         $urls = $this->getFieldRecursive(['CustomLinks']);
         $firstHit = '';
-        foreach ($urls as $url) {
-            
-            if (isset($url['Url']) && strpos($url['Url'], 'redi-bw.de') !== FALSE) {
-                $pos = strpos($url['Url'], '?');
-                $firstHit = substr($url['Url'], $pos + 1);
-
+        if (is_array($urls)) {
+            foreach ($urls as $url) {            
+                if (isset($url['Url']) && strpos($url['Url'], 'redi-bw.de') !== FALSE) {
+                    $pos = strpos($url['Url'], '?');
+                    $firstHit = substr($url['Url'], $pos + 1);
+                }
             }
-
         }
         // Assemble the URL:
         return $firstHit;
