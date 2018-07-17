@@ -2,22 +2,7 @@
 $url = $this->recordLink()->getUrl($this->driver).'/ILLForm';
 $network = $this->driver->getNetwork(); 
 if ($this->customUrl) {
-    $pidZoneString = '';
-    $pidZone = [
-        'verbund'   => $network,
-        'idn'       => preg_replace("/\(.*\)/", "", $this->driver->getUniqueId()),
-        'zdbid'     => $this->driver->getZdbId(),
-    ];
-    foreach ($pidZone as $key => $value) {
-        if (!empty($value)) {
-            $pidZoneString .= '<'.$key.'>'.$value.'</'.$key.'>';
-        }        
-    }
-    $addParams = [
-        'sid' => 'SWB:flportal',   
-        'pid' => $pidZoneString
-    ];
-    $url = $this->openUrl($this->driver, 'illform')->getUrl($this->customUrl, $addParams, true);
+    $url = $this->openUrl($this->driver, 'illform')->getUrl();
 }
 $account = $this->auth()->getManager();
 $class = '';

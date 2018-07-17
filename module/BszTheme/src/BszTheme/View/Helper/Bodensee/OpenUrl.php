@@ -215,5 +215,57 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
                 . $imageOpenUrl;
         }
         return $params;
-    }  
+    }
+    
+    /**
+     * Just returns the URL, without rendering. 
+     * 
+     * @return string
+     */
+    public function getUrl($base = '')
+    {
+        // instantiate the resolver plugin to get a proper resolver link
+        if ($this->area == 'illform') {
+            $resolver = 'ill';      
+            $additions = ['pid' => $this->getPidZoneString()];
+        } else {
+            $resolver = isset($this->config->resolver)
+                ? $this->config->resolver : 'other';            
+        }
+
+        $openurl = $this->recordDriver->getOpenUrl();
+        if ($this->resolverPluginManager->has($resolver)) {
+            $resolverObj = new \VuFind\Resolver\Connection(
+                $this->resolverPluginManager->get($resolver)
+            );
+            $resolverUrl = $resolverObj->getResolverUrl($openurl);
+            $resolverUrl .= '&'.http_build_query($additions);
+        } else {
+            $resolverUrl = empty($base) ? '' : $base . '?' . $openurl;
+        }    
+
+        return $resolverUrl;        
+    }
+    
+    /**
+     * This returns an historiy xml-like url param needed for UB Heidelbergs 
+     * custom form
+     * 
+     * @return string
+     */
+    public function getPidZoneString()
+    {
+        $pidZoneString = '';
+        $pidZone = [
+            'verbund'   => $this->recordDriver->getNetwork(),
+            'idn'       => preg_replace("/\(.*\)/", "", $this->recordDriver->getUniqueId()),
+            'zdbid'     => $this->recordDriver->getZdbId(),
+        ];
+        foreach ($pidZone as $key => $value) {
+            if (!empty($value)) {
+                $pidZoneString .= '<'.$key.'>'.$value.'</'.$key.'>';
+            }        
+        }
+        return $pidZoneString;
+    }
 }

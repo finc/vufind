@@ -9,7 +9,7 @@ $config = [
             'holding' => 'Bsz\Controller\HoldingController',
             'test' => 'Bsz\Controller\TestController',
             'cart' => 'Bsz\Controller\CartController',
-            'privacy' => 'Bsz\Controller\BszController',
+            'fprivacy' => 'Bsz\Controller\BszController',
             'shib' => 'Bsz\Controller\ShibController',
         ],
         'factories' => [
@@ -125,6 +125,7 @@ $config = [
                 'factories' => [
                     'ezb' => 'Bsz\Resolver\Driver\Factory::getEzb',
                     'redi' => 'Bsz\Resolver\Driver\Factory::getRedi',
+                    'ill' => 'Bsz\Resolver\Driver\Factory::getIll',
                 ],
             ]
         ],

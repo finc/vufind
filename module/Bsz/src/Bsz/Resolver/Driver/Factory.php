@@ -41,4 +41,22 @@ class Factory
             $sm->getServiceLocator()->get('VuFind\Http')->createClient()
         );
     }
+    
+        /**
+     * Factory for Ezb record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return Ezb
+     */
+    public static function getIll(ServiceManager $sm)
+    {
+        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
+        // This is a special solution for UB Heidelberg
+        $library = $libraries->getByIsil('DE-16');
+        return new Ill(
+            $library->getCustomUrl(),
+            $sm->getServiceLocator()->get('VuFind\Http')->createClient()
+        );
+    }
 }
