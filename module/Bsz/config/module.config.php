@@ -16,8 +16,8 @@ $config = [
             'VuFind\Controller\AjaxController' => 'Bsz\Controller\Factory::getAjaxController',
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
             'VuFind\Controller\SearchController' => 'Bsz\Controller\Factory::getSearchController',
-           'VuFind\Controller\MyResearchController' => 'Bsz\Controller\Factory::getMyResearchController',
-            'edsrecord' => 'Bsz\Controller\Factory::getEdsrecordController',
+                    'VuFind\Controller\MyResearchController' => 'Bsz\Controller\Factory::getMyResearchController',
+            'VuFind\Controller\EdsrecordController' => 'Bsz\Controller\Factory::getEdsrecordController',
         ],
     ],
     'router' => [
