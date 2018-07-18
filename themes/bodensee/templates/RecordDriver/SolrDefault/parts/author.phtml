@@ -7,15 +7,38 @@
 <? if($this->driver->isCollection()): ?>
     <? $summDate = $this->driver->getPublicationDates(); if (!empty($summDate) && isset($summDate[0])): ?>
         <strong><?=$this->transEsc('Published in') . '</strong> <a href="' . $link . '">' . $this->highlight($journalTitle) . '</a>';?>
+        <? $summAuthors = $this->driver->getDeduplicatedAuthors()?> 
         <?=count($summDate) > 0? ' (' . $this->escapeHtml($summDate[0]) . ')' : ''?>               
-    <? endif; ?>        
+    <? endif; ?>      
+    <? if (!empty($summAuthors)): ?>
+    <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
+    <? if (!empty($summAuthors['main'])): ?>
+        <strong><?=$this->transEsc('by')?></strong>
+        <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($summAuthors['main'])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
+        <? if (!empty($gnd_author)): ?>
+            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_author?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_author?></span>)
+        <? endif; ?>
+        <br/>
+    <? endif; ?>
+    <? if (!empty($summAuthors['secondary'])): ?>
+        <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
+    <strong><? if (!empty($summAuthors['main'])): echo $this->transEsc('and'); else: echo $this->transEsc('by'); endif; ?></strong>
+        <? foreach($summAuthors['secondary'] as $k =>  $au2):?>        
+            <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($au2)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($au2)?></a>
+            <? if (isset($gnd_au2[$k])): ?>
+            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)
+        <? endif; ?>
+        <?endforeach; ?>
+        <br/>
+    <? endif; ?>
+    <? endif; ?>
 <? else: ?>
     <? $summAuthors = $this->driver->getDeduplicatedAuthors(); if (!empty($summAuthors)): ?>
     <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
-    <? if ($summAuthors['main'] != ''): ?>
+    <? if (!empty($summAuthors['main'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
         <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($summAuthors['main'])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
-        <? if ($gnd_author != ''): ?>
+        <? if (!empty($gnd_author)): ?>
             (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_author?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_author?></span>)
         <? endif; ?>
         <br/>
