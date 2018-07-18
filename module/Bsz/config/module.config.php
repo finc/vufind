@@ -99,6 +99,7 @@ $config = [
             'search_backend' => [
                 'factories' => [
                     'Solr' => 'Bsz\Search\Factory\SolrDefaultBackendFactory',
+                    'EDS' => 'Bsz\Search\Factory\EdsBackendFactory',
                 ]
             ],
             'search_results' => [
