@@ -52,7 +52,7 @@ class Factory {
         if ($libraries instanceof  \Bsz\Config\Libraries) {
             if ($client->isIsilSession() && $client->hasIsilSession()) {     
                 $isils = $client->getIsils();
-                $library = $libraries->getFirst($isils);     
+                $library = $libraries->getFirstActive($isils);     
                 $website = $library->getHomepage();  
             }
         }              

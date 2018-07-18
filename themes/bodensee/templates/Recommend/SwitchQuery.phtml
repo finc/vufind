@@ -11,7 +11,7 @@
     </ul>
     <? if ($this->searchtabs()->isILL($this->searchClassId)): ?> 
         <?
-            $library = $this->libraries()->getFirst($this->client()->getIsils());
+            $library = $this->libraries()->getFirstActive($this->client()->getIsils());
             $url =  $library->hasCustomUrl() ? $library->getCustomUrl() 
                     : $this->url('record-freeform');
         ?>

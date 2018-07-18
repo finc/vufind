@@ -120,7 +120,7 @@ class Libraries extends TableGateWay
      * @param array $isils
      * @returns Library
      */
-    public function getFirst($isils)
+    public function getFirstActive($isils)
     {
         $result = $this->getActive($isils);
         return array_shift($result);

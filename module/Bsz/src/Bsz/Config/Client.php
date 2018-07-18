@@ -96,7 +96,7 @@ class Client extends \Zend\Config\Config
             $links[] = '/Search/History';
             $links[] = '/Search/Advanced';
         } else if($boxNo == 1 && $this->isIsilSession() && $this->hasIsilSession()) {
-            $library = $this->libraries->getFirst($this->getIsils());
+            $library = $this->libraries->getFirstActive($this->getIsils());
             // freeForm must not be available from footer
 //            if (isset($library)) {
 //                $links[] =  $library->hasCustomUrl() ? $library->getCustomUrl() 

@@ -1,7 +1,7 @@
 <?  $labelSize = 3; 
     $inputSize = 9; 
     $account = $this->auth()->getManager();
-    $library = $this->libraries()->getFirst($this->client()->getIsils());
+    $library = $this->libraries()->getFirstActive($this->client()->getIsils());
     $authMethod = '';
     if (isset($library)) {
         $authMethod = $library->getAuth();

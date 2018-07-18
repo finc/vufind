@@ -140,7 +140,7 @@ class Factory
         $libraries = $sm->getServiceLocator()->get('bsz\config\libraries');      
         $adisUrl = null;
 
-        $library = $libraries->getFirst($client->getIsils());  
+        $library = $libraries->getFirstActive($client->getIsils());  
         if ($library instanceof \Bsz\Client\Library) {
             $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null;                 
         }        

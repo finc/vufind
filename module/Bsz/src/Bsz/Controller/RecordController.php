@@ -125,7 +125,7 @@ class RecordController extends \VuFind\Controller\RecordController
             $this->FlashMessenger()->addErrorMessage('missing_isil');
         } 
         $libraries = $this->getServiceLocator()->get('bsz\libraries');
-        $first = $libraries->getFirst($client->getIsils());
+        $first = $libraries->getFirstActive($client->getIsils());
         $submitDisabled = false;
         
         if ($authManager->loginEnabled() 
@@ -210,7 +210,7 @@ class RecordController extends \VuFind\Controller\RecordController
             throw new \Bsz\Exception('You must select a library to continue');
         }
         $libraries = $this->getServiceLocator()->get('bsz\libraries');
-        $first = $libraries->getFirst($client->getIsils());
+        $first = $libraries->getFirstActive($client->getIsils());
         if ($first !== null && $first->hasCustomUrl()) {
             return $this->redirect()->toUrl($first->getCustomUrl());
         }
@@ -452,7 +452,8 @@ class RecordController extends \VuFind\Controller\RecordController
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
             $this->FlashMessenger()->addErrorMessage('missing_isil');
         } else if (count($isils) > 0) {
-            $library = $this->getServiceLocator()->get('bsz\libraries')->getFirst($isils);
+            $isil = array_shift($isils);
+            $library = $this->getServiceLocator()->get('bsz\libraries')->getByIsil($isil);
             $view->authMethod = $library->getAuth();
         } 
   
