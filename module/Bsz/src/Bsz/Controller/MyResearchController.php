@@ -16,26 +16,26 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
      */
     public function homeAction()
     {
-        // Process login request, if necessary (either because a form has been
-        // submitted or because we're using an external login provider):
-        if ($this->params()->fromPost('processLogin')
-            || $this->getSessionInitiator()
-            || $this->params()->fromPost('auth_method')
-            || $this->params()->fromQuery('auth_method')
-        ) {
-            try {
-                if (!$this->getAuthManager()->isLoggedIn()) {
-                    $this->getAuthManager()->login($this->getRequest());
-                }
-            } catch (AuthException $e) {
-                $this->processAuthenticationException($e);
-            }
-        }
+//        // Process login request, if necessary (either because a form has been
+//        // submitted or because we're using an external login provider):
+//        if ($this->params()->fromPost('processLogin')
+//            || $this->getSessionInitiator()
+//            || $this->params()->fromPost('auth_method')
+//            || $this->params()->fromQuery('auth_method')
+//        ) {
+//            try {
+//                if (!$this->getAuthManager()->isLoggedIn()) {
+//                    $this->getAuthManager()->login($this->getRequest());
+//                }
+//            } catch (AuthException $e) {
+//                $this->processAuthenticationException($e);
+//            }
+//        }
 
         // Not logged in?  Force user to log in:
         if (!$this->getAuthManager()->isLoggedIn()) {
             $this->setFollowupUrlToReferer();
-            return $this->forwardTo('MyResearch', 'Login');
+            return $this->forwardTo('MyResearch', 'UserLogin');
         }
         // Logged in?  Forward user to followup action
         // or default action (if no followup provided):
