@@ -87,7 +87,11 @@
                 $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc($desc) . '</li>';
                 $activeTabObj = $obj;
               }
+          
               if (!$obj->isVisible()) { $tab_classes[] = 'hidden'; }
+              if ($this->client()->is('hide_staff_view') && $tab == 'Details') {
+                  $tab_classes[] = 'hidden';
+              }
               if (!$obj->supportsAjax()) { $tab_classes[] = 'noajax'; }
             ?>
             <li<?=count($tab_classes) > 0 ? ' class="' . implode(' ', $tab_classes) . '"' : ''?>>
