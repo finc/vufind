@@ -98,6 +98,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
         $pos = strpos($id, ')');
         $ppn = substr($id, $pos + 1);
         $recordHelper = $this->getView()->plugin('record');        
+        $link = '';
         if ($driver->getNetwork() == 'SWB' && $recordHelper->isAtFirstIsil()) {
             if (!empty($url) ) {
                 $link = str_replace('<PPN>', $ppn, $url);
