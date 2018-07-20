@@ -169,7 +169,8 @@ $nonTabRecordActions = [
 // Define record view routes once again to add new nonTabRecordActions
 $recordRoutes = [
     'record' => 'Record',
-    'export' => 'Export'
+    'export' => 'Export',
+    'resources' => 'Resources'
 ];
 
 
