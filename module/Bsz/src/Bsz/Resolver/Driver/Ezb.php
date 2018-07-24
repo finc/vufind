@@ -9,7 +9,22 @@ namespace Bsz\Resolver\Driver;
 
 class Ezb extends \VuFind\Resolver\Driver\Ezb
 {
-        /**
+ 
+    
+    protected $pid;
+    /**
+     * Constructor
+     *
+     * @param string            $baseUrl    Base URL for link resolver
+     * @param \Zend\Http\Client $httpClient HTTP client
+     */
+    public function __construct($baseUrl, \Zend\Http\Client $httpClient, $pid = '')
+    {
+        parent::__construct($baseUrl, $httpClient);
+        $this->pid = $pid;
+       
+    }
+    /**
      * Get Resolver Url
      *
      * Transform the OpenURL as needed to get a working link to the resolver.
@@ -33,12 +48,13 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             $tmp2 = explode('=', $current, 2);
             $parsed[$tmp2[0]] = $tmp2[1];
         }
-
+        
         // Downgrade 1.0 to 0.1
         if ($parsed['ctx_ver'] == 'Z39.88-2004') {
             $openURL = $this->downgradeOpenUrl($parsed);
         }
         
+        $openURL .= '&sid=bsz:zdb&pid='.urlencode($this->pid);
 
         // Make the call to the EZB and load results
         $url = $this->baseUrl . '?' . $openURL;
@@ -96,8 +112,8 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             'rft.au' => 'aulast',
             'rft.date' => 'date',
             'rft.format' => false,
-            'pid' => 'pid',
-            'sid' => 'sid',
+//            'sid' => 'sid',
+//            'rfr_id' => 'sid'
         ];
         foreach ($params as $key => $value) {
             if (isset($mapping[$key]) && $mapping[$key] !== false) {
@@ -107,7 +123,8 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
         if (isset($params['rft.series'])) {
             $newParams['title'] = $params['rft.series'].': '
                     .$newParams['title'];
-        }
+        }       
+
 //        // for the open url ill form, we need genre = bookitem
 //        if ($this->area == 'illform' && $newParams['genre'] == 'article'
 //                && $this->recordDriver->isContainerMonography()) {
@@ -133,10 +150,6 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             }
                     
         }
-        $params = [];
-        foreach (array_filter($newParams) as $param => $val) {
-            $params[] = $param.'='.$val;
-        }         
-        return implode('&', $params);
+        return http_build_query($newParams);
     }
 }
