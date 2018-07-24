@@ -51,7 +51,11 @@
               <? endif; ?>
             </li>
           <? endif; ?>
-
+          <? if(strlen($this->client()->getWebsite('adis')) > 0): ?>
+            <li>
+                <a class="external" href="<?=$this->client()->getWebsite('adis')?>"><i class="fa fa-user"></i> <?=$this->transEsc('header_login_link')?></a>
+            </li>
+          <? endif; ?>
           <? if (isset($this->layout()->themeOptions) && count($this->layout()->themeOptions) > 1): ?>
             <li class="theme dropdown">
               <form method="post" name="themeForm" id="themeForm">
