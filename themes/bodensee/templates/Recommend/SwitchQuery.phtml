@@ -12,7 +12,7 @@
     <? if ($this->searchtabs()->isILL($this->searchClassId)): ?> 
         <?
             $library = $this->libraries()->getFirstActive($this->client()->getIsils());
-            $url =  $library->hasCustomUrl() ? $library->getCustomUrl() 
+            $url =  (isset($library) && $library->hasCustomUrl()) ? $library->getCustomUrl() 
                     : $this->url('record-freeform');
         ?>
         <p><?=$this->transEsc('switchquery_ill')?>
