@@ -76,8 +76,8 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
         if ($parsed['ctx_ver'] == 'Z39.88-2004') {
             $openURL = $this->downgradeOpenUrl($parsed);
         }
+        $openURL .= '&sid=bsz:zdb&pid='.urlencode($this->pid);
         
-
         // Make the call to the EZB and load results
         $paramstring = $openURL;
 

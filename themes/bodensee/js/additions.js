@@ -140,8 +140,8 @@ function externalLinks() {
 function keyboardShortcuts() {
     var $searchform = $('#searchForm_lookfor');
     if ($('.pager').length > 0) {
-        $(window).keydown(function(e) {
-          if (!$searchform.is(':focus')) {
+        $(window).keydown(function(e) {  
+            if (!$searchform.is(':focus')) {
             var $target = null;
             switch (e.keyCode) {
               case 37: // left arrow key
@@ -172,8 +172,8 @@ function keyboardShortcuts() {
             }
           }
         });
+      }
     }
-}
 /**
  * Prevent the searchbox from triggering an empty search which is slow.
  * Add a popover to let the user know
@@ -241,6 +241,26 @@ function avoidEmptySearch() {
   })
      });
  }
+ 
+ function openUrlTooltip() {
+     
+    var htmlcontent = '<p style="text-align: left; margin-bottom: 0">';
+    htmlcontent += '<img src="/themes/bodensee/images/jop_online.png" alt="JOP nline"/>&nbsp;'+ VuFind.translate('openurl_tooltip_left')+'<br/>';
+    htmlcontent += '<img src="/themes/bodensee/images/jop_print.png" alt="JOP nline"/>&nbsp;'+ VuFind.translate('openurl_tooltip_right')+'<br/>';
+    htmlcontent += '<i class="fa fa-square text-success"></i> '+VuFind.translate('openurl_tooltip_green')+'<br/>';
+    htmlcontent += '<i class="fa fa-square text-warning"></i> '+VuFind.translate('openurl_tooltip_yellow')+'<br/>';
+    htmlcontent += '<i class="fa fa-square text-danger"></i> '+VuFind.translate('openurl_tooltip_red')+'<br/>';
+    htmlcontent += '</p>';    
+    
+    $('.openUrlControls .imagebased').tooltip({
+        title: htmlcontent,
+        html: true,
+        placement: 'right',
+        toggle: 'hover focus',
+        show: 500,
+        hide: 100,
+    });
+ }
 
 $(document).ready(function() {
   avoidEmptySearch();
@@ -254,5 +274,6 @@ $(document).ready(function() {
   showmore();
   $('[data-toggle="popover"]').popover({
       trigger: 'click focus',
-  }); 
+  });
+  openUrlTooltip();
 });
