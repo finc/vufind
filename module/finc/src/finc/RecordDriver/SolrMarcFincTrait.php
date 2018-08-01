@@ -357,6 +357,9 @@ trait SolrMarcFincTrait
                     //$id = $this->checkIfRecordExists($matches[2]);
                     //if ($id != null) {
                     $array[$key]['record_id'] = $matches[2].$matches[3];
+                    if (null != ($sid = $this->getSourceID())) {
+                        $array[$key]['source_id'] = $sid;
+                    }
                     //}
                     //break;
                 }
@@ -1107,7 +1110,10 @@ trait SolrMarcFincTrait
                 $text = $current->getData();
                 // Extract parenthetical prefixes:
                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
-                    $array[$key]['record_id'] = $matches[2].$matches[3];
+                    $array[$key]['record_id'] = $matches[2] . $matches[3];
+                    if (null != ($sid = $this->getSourceID())) {
+                        $array[$key]['source_id'] = $sid;
+                    }
                 }
             } // end foreach
         } // end foreach
@@ -1267,6 +1273,9 @@ trait SolrMarcFincTrait
                                 // Extract parenthetical prefixes:
                                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
                                     $array[$key]['record_id'] = $matches[2].$matches[3];
+                                    if (null != ($sid = $this->getSourceID())) {
+                                        $array[$key]['source_id'] = $sid;
+                                    }
                                 }
                             } // end foreach
                         } // end if
@@ -1310,6 +1319,9 @@ trait SolrMarcFincTrait
                 // Extract parenthetical prefixes:
                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
                     $array[$key]['record_id'] = $matches[2].$matches[3];
+                    if (null != ($sid = $this->getSourceID())) {
+                        $array[$key]['source_id'] = $sid;
+                    }
                 }
             } // end foreach
         } // end foreach
@@ -1389,6 +1401,23 @@ trait SolrMarcFincTrait
     {
         return $this->getFieldArray('830', ['a', 'v'], false);
     }
+
+    /**
+     * Get source id of marc record. Alternate method getFirstFieldValue returns
+     * null by value "0" therefor it doesn't fit properly.
+     *
+     * @return string|null
+     * @access public
+     */
+    public function getSourceID()
+    {
+        $source_ids = $this->getMarcRecord()->getFields('980');
+        if (!$source_ids) {
+            return null;
+        }
+        return (string)$source_ids[0]->getSubfield('b')->getData();
+    }
+
 
     /**
      * Get local classification of UDK.
@@ -1524,6 +1553,9 @@ trait SolrMarcFincTrait
                                     if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
                                         $array[$i]['record_id']
                                             = $matches[2] . $matches[3];
+                                        if (null != ($sid = $this->getSourceID())) {
+                                            $array[$key]['source_id'] = $sid;
+                                        }
                                     }
                                 }
                             }
