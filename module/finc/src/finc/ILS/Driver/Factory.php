@@ -95,4 +95,34 @@ class Factory
         return $paia;
     }
 
+    /**
+     * @deprecated Remove when Bibliotheca support ends
+     * @param ServiceManager $sm
+     * @return FincTheca
+     */
+    public static function getFincTheca(ServiceManager $sm)
+    {
+        $factory = new \ProxyManager\Factory\LazyLoadingValueHolderFactory($sm->getServiceLocator()->get('VuFind\ProxyConfig'));
+
+        $callback = function (& $wrapped, $proxy) use ($sm) {
+            $wrapped = $sm->getServiceLocator()->get('ZfcRbac\Service\AuthorizationService');
+
+            $proxy->setProxyInitializer(null);
+        };
+
+        $fl = new FincTheca(
+            $sm->getServiceLocator()->get('VuFind\DateConverter'),
+            $sm->getServiceLocator()->get('VuFind\SessionManager'),
+            $sm->getServiceLocator()->get('VuFind\RecordLoader'),
+            $sm->getServiceLocator()->get('VuFind\Search'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $factory->createProxy('ZfcRbac\Service\AuthorizationService', $callback)
+        );
+
+        $fl->setCacheStorage(
+            $sm->getServiceLocator()->get('VuFind\CacheManager')->getCache('object')
+        );
+
+        return $fl;
+    }
 }

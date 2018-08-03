@@ -405,6 +405,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
         }
     }
 
+    protected function doGetStatus($id) {
+        return parent::getStatus($id);
+    }
+
     /**
      * Get Statuses
      *
@@ -1344,7 +1348,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @return \VuFind\RecordDriver\AbstractBase
      */
-    private function _getRecord($id)
+    protected function _getRecord($id)
     {
         return $this->recordLoader->load($id);
     }
@@ -1435,7 +1439,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @return string $ilsRecordId
      */
-    private function _getILSRecordId($id, $ilsIdentifier = null)
+    protected function _getILSRecordId($id, $ilsIdentifier = null)
     {
         // override ilsIdentifier with the ilsIdentifier set in ILS driver config
         if ($ilsIdentifier == null) {

@@ -2073,4 +2073,26 @@ trait SolrMarcFincTrait
     {
         return $this->getFieldArray('384');
     }
+
+    /**
+     * @deprecated Remove when Bibliotheca support ends
+     * @returns items internal Bibliotheca-ID called "Mediennummer"
+     */
+    public function getMediennummer() {
+        // loop through all existing LocalMarcFieldOfLibrary
+        if ($fields = $this->getMarcRecord()->getFields(
+            $this->getLocalMarcFieldOfLibrary())
+        ) {
+            foreach($fields as $field) {
+                // return the first occurance of $m
+                $field = $field->getSubfield('a');
+                if ($field) {
+                    $matches = [];
+                    if (preg_match('/\w+$/',$field->getData(),$matches)) {
+                        return $matches[0];
+                    }
+                }
+            }
+        }
+    }
 }

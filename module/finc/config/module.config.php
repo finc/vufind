@@ -36,6 +36,8 @@ $config = [
                 'factories' => [
                     'fincils' => 'finc\ILS\Driver\Factory::getFincILS',
                     'paia' => 'finc\ILS\Driver\Factory::getPAIA',
+                    //finctheca is deprecated: Remove when Bibliotheca support ends
+                    'finctheca' => 'finc\ILS\Driver\Factory::GetFincTheca'
                 ],
             ],
             'recommend' => [
