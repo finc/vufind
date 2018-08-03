@@ -617,6 +617,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
                     ? $this->convertDate($patron['expires']) : null,
                 'statuscode' => isset($patron['status'])
                     ? $patron['status'] : null,
+                'note' => isset($patron['note'])
+                    ? $patron['note'] : null,
                 'canWrite'   => in_array(self::SCOPE_WRITE_ITEMS, $this->getSession()->scope),
                 // fincILS and PAIA specific custom values
                 'email'      => !empty($patron['email'])

@@ -346,8 +346,12 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
                 // PAIA specific custom values
                 'expires'    => isset($patron['expires'])
                     ? $this->convertDate($patron['expires']) : null,
-                'statuscode' => isset($patron['status']) ? $patron['status'] : null,
-                'canWrite'   => in_array(self::SCOPE_WRITE_ITEMS, $this->getScope()),
+                'statuscode' => isset($patron['status'])
+                    ? $patron['status'] : null,
+                'note' => isset($patron['note'])
+                    ? $patron['note'] : null,
+                'canWrite' =>
+                    in_array(self::SCOPE_WRITE_ITEMS, $this->getScope()),
             ];
         }
         return [];
