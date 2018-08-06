@@ -1,5 +1,7 @@
 <?
-$formats = [];
+/* finc: template is identical with de_15 #13704 - VE */
+
+/*$formats = [];
 foreach ($this->driver->getFormats() as $format) {
   $formats[] = $this->record($this->driver)->getRecordIconClass($format);
 }
@@ -7,3 +9,17 @@ $formats = array_unique($formats);
 asort($formats);
 ?>
 <span class="record-icon"><img src="<?=$this->imageLink("small/".array_pop($formats).".png")?>" class="hidden-xs" alt="<?=$this->transEsc("record icon")?>" /></span>
+*/
+
+if ($this->driver->getRecordType() == "marcfincpda") {
+  $iconClass = $this->record($this->driver)->getRecordIconClass("marcfincpda");
+} elseif ($this->driver->getRecordType() == "lido") {
+  $iconClass = $this->record($this->driver)->getRecordIconClass("object");
+} else {
+  $iconClass = $this->record($this->driver)->getRecordIconClass($this->driver->getAccessFacet());
+}
+?>
+<span class="access-icon hidden-print">
+  <i class="fa <?=$iconClass?>"></i>
+  <span class="hidden-xs"> <?=$this->transEsc("$this->escapeHtml($iconClass)")?></span>
+</span>

@@ -1393,6 +1393,29 @@ footer {
   }
 }
 
+//// access-icon in resultlist
+.result {
+  .media-left {
+    min-width: 16%;
+    text-align: center;
+  }
+}
+
+.access-icon {
+  color: $brand-primary;
+  text-align: center;
+
+  i {
+    font-size: 4.5em;
+    width: 100%;
+  }
+
+  span {
+    font-size: .8em;
+    width: 100%;
+  }
+}
+
 //// Remaining radiusses - The labels.scss uses no variable and format extends it!
 //// Therefore it will be necessary to overwite here in compiled.scss!!, Fixme when done more elegantly in BS
 //// Also, the display settings aren't very useful (no variables either)
