@@ -4,6 +4,7 @@ return array(
     'js' => array(
         'openurl.js',
         'check_item_statuses.js',
+        // remove nxt line when aria-hidden issue fixed, obsolete in VF5, see #12684
         'finc.js',
     ),
     'helpers' => array(
