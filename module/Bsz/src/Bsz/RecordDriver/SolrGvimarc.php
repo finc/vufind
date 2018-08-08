@@ -556,17 +556,28 @@ class SolrGvimarc extends SolrMarc
      */
     public function getSecondaryAuthors()
     {
-        $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd', 'e']);
-
+        $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd']);
+        return $author2;
+    }
+    
+    /**
+     * Get an Array of Author roles
+     * they need to be translated. 
+     *
+     * @return array
+     */
+    public function getSecondaryAuthorsRole()
+    {
+        $author2 = $this->getFieldArray('700', ['4']);
         return $author2;
     }
     
     public function getCorporateAuthors() {
         $corporate = array_merge(
-            $this->getFieldArray('110', ['a', 'b']),//corporate
+            $this->getFieldArray('110', ['a', 'b']),// corporate
             $this->getFieldArray('111', ['a', 'b']),// Meeting
             $this->getFieldArray('710', ['a', 'b']),// corporate
-            $this->getFieldArray('711', ['a', 'b']) //Meeting
+            $this->getFieldArray('711', ['a', 'b']) // Meeting
         );
         return $corporate;
     }

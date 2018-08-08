@@ -22,12 +22,12 @@
     <? endif; ?>
     <? if (!empty($summAuthors['secondary'])): ?>
         <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
-    <strong><? if (!empty($summAuthors['main'])): echo $this->transEsc('and'); else: echo $this->transEsc('by'); endif; ?></strong>
+        <? $role_au2 = $this->driver->getSecondaryAuthorsRole(); ?>
+        <strong><? if (!empty($summAuthors['main'])): echo $this->transEsc('and'); else: echo $this->transEsc('by'); endif; ?></strong>
         <? foreach($summAuthors['secondary'] as $k =>  $au2):?>        
             <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($au2)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($au2)?></a>
             <? if (isset($gnd_au2[$k])): ?>
-            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)
-        <? endif; ?>
+            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>, <?=$this->transEsc($role_au2[$k]);?><? endif; ?>
         <?endforeach; ?>
         <br/>
     <? endif; ?>
@@ -45,12 +45,12 @@
     <? endif; ?>
     <? if (!empty($summAuthors['secondary'])): ?>
         <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
-    <strong><? if (!empty($summAuthors['main'])): echo $this->transEsc('and'); else: echo $this->transEsc('by'); endif; ?></strong>
+        <? $role_au2 = $this->driver->getSecondaryAuthorsRole(); ?>
+        <strong><? if (!empty($summAuthors['main'])): echo $this->transEsc('and'); else: echo $this->transEsc('by'); endif; ?></strong>
         <? foreach($summAuthors['secondary'] as $k =>  $au2):?>        
             <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($au2)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($au2)?></a>
             <? if (isset($gnd_au2[$k])): ?>
-            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)
-        <? endif; ?>
+            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>, <?=$this->transEsc($role_au2[$k]);?><? endif; ?>
         <?endforeach; ?>
         <br/>
     <? endif; ?>
