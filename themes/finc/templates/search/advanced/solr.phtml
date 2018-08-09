@@ -7,6 +7,8 @@
     <? endif; ?>
     <? /* finc: we need the limiter-boxes class to set select height to auto + remove bg image - CK */ ?>
     <div class="solr-facet-container limiter-boxes">
+      <? //narrow the facet list via whitespace from config, #13783, DM
+         $this->facetList = $this->sideFacet()->displayAllowedFacetValues($this->facetList); ?>
       <? foreach ($this->facetList as $field => $list): ?>
         <div class="solr-adv-facet">
           <label for="limit_<?=$this->escapeHtmlAttr(str_replace(' ', '', $field))?>"><?=$this->transEsc($list['label'])?>:</label>
