@@ -1492,7 +1492,7 @@ trait SolrMarcFincTrait
     {
         $array = [];
         $fields = ['770','775','776'];
-        $subfields = ['a', 'l', 't', 'd', 'e', 'f', 'h', 'o', '7','z'];
+        $subfields = ['a', 'l', 't', 'b', 'd', 'e', 'f', 'h', 'o', '7','z'];
         $i = 0;
 
         foreach ($fields as $field) {
