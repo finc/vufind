@@ -1302,6 +1302,26 @@ class FincILS extends PAIA implements LoggerAwareInterface
             return '';
         }
 
+        if (isset($this->staticStatusRules)) {
+            $eval = new \finc\Rules\Evaluator\Evaluator(
+                array_values($this->staticStatusRules['rules']),
+                (array)$this->staticStatusRules['stopFlags']
+            );
+            $context = array(
+                'authenticator' => $this->auth,
+                'record' => $this->_getRecord($id),
+            );
+            $context = $eval($context);
+            return [[
+                'id'           => $id,
+                'availability' => $context['available'],
+                'status'       => $context['available'] ? 'available' : 'unavailable',
+                'reserve'      => 'false',
+                'location'     => '',
+                'callnumber'   => '',
+                'services'     => (array)$context['decider']
+            ]];
+        }
         $permission = $this->_getRecord($id)->tryMethod('getRecordPermission');
 
         $isGranted = $permission != null
