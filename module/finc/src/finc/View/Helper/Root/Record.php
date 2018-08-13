@@ -462,4 +462,29 @@ class Record extends \VuFind\View\Helper\Root\Record
         return $transEsc('Title not available');
     }
 
+    public function getOnlineEditions() {
+
+        $online_keys = array(
+            "Online-Ausg.",
+            "Online-Ausg.:",
+            "Digital. Ausg.",
+            "Online-Ausg. u.d.T.",
+            "Elektronische Reproduktion"
+        );
+        $onlineEditions = [];
+        $recordLinkHelper = $this->getView()->RecordLink();
+        foreach ($this->driver->tryMethod('getAdditionals') as $add) {
+            if (isset($add['identifier']) && in_array($add['identifier'],$online_keys)) {
+                if (isset($add['id'])) {
+                    $link = $recordLinkHelper->getRecordLink($add['id'], 'id');
+                    if (!empty($link)) {
+                        $add['link'] = $link;
+                        $onlineEditions[] = $add;
+                    }
+                }
+            }
+        }
+        return $onlineEditions;
+    }
+
 }
