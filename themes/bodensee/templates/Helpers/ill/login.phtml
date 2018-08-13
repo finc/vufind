@@ -41,13 +41,16 @@ if(isset($firstLibrary) && $firstLibrary->getAuth() == 'tan'): ?>
 <? endif; ?>
 <? $zdb = isset($this->driver) ? $this->driver->getZdbId() : '' ?>
 <? $ppn = 999999999;
+   $verbund = '';
    if (empty($zdb) && isset($this->driver)) {
        $ppn = $this->driver->getPPN();
+       $verbund = $this->driver->tryMethod('getNetwork');
    } elseif (isset($this->driver) && !empty($zdb)) {
        $ppn = $zdb;
+       $verbund = 'ZDB';
    }
 ?>
-<input type="hidden" name="Verbund" value="<?=$this->escapeHtmlAttr(isset($this->driver) ? $this->driver->tryMethod('getNetwork') : '')?>" />
+<input type="hidden" name="Verbund" value="<?=$this->escapeHtmlAttr($verbund)?>" />
 <input type="hidden" name="TitelId" value="<?=$this->escapeHtmlAttr($ppn)?>" />
 <input type="hidden" name="Besteller" value="E" />
 <? if (!isset($this->driver)): ?>
