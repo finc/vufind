@@ -614,34 +614,14 @@ trait SolrMarcFincTrait
         $title = '';
 
         if ($field = $this->getMarcRecord()->getField('245')) {
-            if ($field->getSubfield('a')) {
-                // 245$a
-                $title = $field->getSubfield('a')->getData();
-                // 245$b
-                if ($field->getSubfield('b')) {
-                    // add colon if $h isset and ends with colon
-                    // (see https://intern.finc.info/issues/7972)
-                    if ($field->getSubfield('h')) {
-                        if(preg_match(
-                            '/(\s:\s*)*$/',
-                            $field->getSubfield('h')->getData())
-                        ) {
-                            $title .= ' : ';
-                        }
+            if ($subfield = $field->getSubfield('a')) {
+                // modified due to #13670
+                // > Titel: 245$a $n $p $h $b $c
+                $title = $subfield->getData();
+                foreach (['n', 'p', 'h', 'b', 'c'] as $subkey) {
+                    if ($subfield = $field->getSubfield($subkey)) {
+                        $title .= ' ' . $subfield->getData();
                     }
-                    $title .= ' ' . $field->getSubfield('b')->getData();
-                }
-                // 245$n
-                if ($field->getSubfield('n')) {
-                    $title .= ' ' . $field->getSubfield('n')->getData();
-                }
-                // 245$p
-                if ($field->getSubfield('p')) {
-                    $title .= ' ' . $field->getSubfield('p')->getData();
-                }
-                // 245$c
-                if ($field->getSubfield('c')) {
-                    $title .= ' ' . $field->getSubfield('c')->getData();
                 }
             }
         }
