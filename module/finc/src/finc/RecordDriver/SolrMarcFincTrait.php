@@ -314,17 +314,10 @@ trait SolrMarcFincTrait
      */
     protected function getLocalGivenCallnumber()
     {
-        $retval = [];
-        $arrSignatur = $this->getFieldArray($this->getLocalMarcFieldOfLibrary(), ['i']);
-
-        foreach ($arrSignatur as $signatur) {
-            foreach ($this->isil as $code) {
-                if (0 < preg_match('/^\('.$code.'\)/', $signatur)) {
-                    $retval[] = preg_replace('/^\('.$code.'\)/', '', $signatur);
-                }
-            }
+        if (null != $this->getLocalMarcFieldOfLibrary()) {
+            return $this->getFieldArray($this->getLocalMarcFieldOfLibrary(), ['i']);
         }
-        return $retval;
+        return [];
     }
 
     /**
