@@ -781,8 +781,11 @@ trait SolrDefaultFincTrait
         // use only one solr request for all
         if (isset($array) && is_array($array)) {
             foreach ($array as $line) {
-                if (isset($line['record_id'])) {
-                    $rids[] = $line['record_id'];
+                if (isset($line['record_id']) && isset($line['source_id'])) {
+                    $rids[] = [
+                        'rid' => $line['record_id'],
+                        'sid' => $line['source_id']
+                    ];
                 }
             }
         }
@@ -790,18 +793,19 @@ trait SolrDefaultFincTrait
         // build the query:
         if (count($rids) == 1) {
             // single query:
-            $value = '"'. $rids[0] .'"';
+            $value = 'record_id:' . $rids[0]['rid']
+                     . ' AND source_id:' . $rids[0]['sid'];
         } elseif (count($rids) > 1) {
             // multi query:
-            $value = '(' . implode(' OR ', $rids) . ')';
+            foreach ($rids as $rid) {
+                $parts[] = '(record_id:' . $rid['rid']
+                           . ' AND source_id:' . $rid['sid'] . ')';
+            }
+            $value = '(' . implode(' OR ', $parts) . ')';
         } else {
             return $array;
         }
-        $query = new \VuFindSearch\Query\Query(
-            'record_id:'. $value
-        );
-        //echo '</pre>'; print_r($query); echo '</pre>';
-
+        $query = new \VuFindSearch\Query\Query($value);
         $bag = new ParamBag();
         $bag->set('fl', 'id,record_id');
         $records =  $this->searchService

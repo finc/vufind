@@ -68,6 +68,9 @@ section {
 // Add top-padding to body to accommodate fixed navbar; -- padding should equal navbar-height --
 // the home page, however, has a lower navbar because there is no breadcrumbs there
 body {
+  // fix modal adding padding-right #13625
+  padding-right: 0 !important;
+
   // for mobile
   padding-top: $navbar-height-xs;
 
@@ -751,7 +754,7 @@ table.collapse.in {
 
 ////// NO gutter right
 .no-gutter-r {
-  padding-right: 0;
+  padding-right: 0 !important;
 }
 
 ////// gutter left
@@ -900,7 +903,7 @@ table.collapse.in {
       }
 
       &.second {
-        background-color: $brand-warning;
+        background-color: $traffic-light-yellow;
       }
 
       &.last {
@@ -1594,6 +1597,27 @@ footer {
 
 //// Advanced Search - END
 
+//// Sources List (/sources/home.phtml)
+#sources-list {
+  line-height: 1.5;
+  // align to left edge
+  padding-left: 0;
+
+  // remove list style on top level as sources have a number!
+  li {
+    list-style: none;
+    padding-bottom: .5em;
+
+    // use list style on child elements
+    ul li {
+      list-style: initial;
+      padding-bottom: 0;
+    }
+  }
+}
+//// Sources List - END
+
+
 // MAIN CONTENT - END
 
 // SIDEBAR
@@ -1820,6 +1844,11 @@ footer ul {
   .modal-dialog {
     max-width: em(900px);
   }
+}
+
+// fix modal adding padding-right #13625
+.modal-open {
+  overflow: initial;
 }
 
 // MODALS - END

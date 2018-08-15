@@ -1,0 +1,58 @@
+<!-- finc: amsl/sources-list - home -->
+<?
+// Set up page title:
+$this->headTitle($this->translate('List of available Sources'));
+
+// Set up breadcrumbs:
+$this->layout()->breadcrumbs .= '</li> <li class="active">' . $this->transEsc('List of available Sources') . '</li>';
+?>
+
+<h2><?=$this->transEsc('List of available Sources');?></h2>
+
+<?=$this->flashmessages()?>
+
+<? if (isset($this->sources)): ?>
+<p><?=$this->transEsc('sources_explanatory_line');?></p>
+<form>
+  <div class="form-group">
+    <label for="sources-filter"><?=$this->transEsc('Filter list')?></label>
+    <input type="text" id="sources-filter" class="form-control" placeholder="<?=$this->transEsc('Please enter filter term')?>">
+  </div>
+</form>
+
+<p>
+  <button data-toggle="collapse" class="btn btn-default collapse-all-toggler" href="javascript:void(0)"><?=$this->transEsc('Expand all')?></button>
+</p>
+
+<ul id="sources-list">
+  <? foreach ($this->sources as $label => $source): ?>
+    <? if (!empty($source)): ?>
+      <li>
+        <a data-toggle="collapse" class="collapse-toggler" href="javascript:void(0)">
+          <?=$label?>
+          <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          <span class="sr-only"><?=$this->transEsc('Expand')?></span>
+        </a>
+        <ul class="panel-collapse collapse" aria-expanded="false">
+          <? foreach ($source as $sub_label => $collection): ?>
+            <li><?=$sub_label?></li>
+          <? endforeach; ?>
+        </ul>
+      </li>
+    <? endif; ?>
+  <? endforeach; ?>
+</ul>
+
+<div class="panel panel-primary">
+  <div class="panel-body"><?=$this->transEsc('support_by_dfg'); ?>
+    <a href='http://www.dfg.de' target='_blank'>
+      <img src='<?=$this->imageLink('dfg_logo_text.png')?>' alt='Deutsche Forschungsgemeinschaft, DFG'>
+    </a>
+  </div>
+</div>
+<? endif; ?>
+
+<? /* run collapse togglers + introduce a case-insensitive filter that is capable of filtering multiple filtering terms */
+ echo $this->inlineScript(\Zend\View\Helper\HeadScript::FILE, 'sources-display.js', 'SET');
+?>
+<!-- finc: amsl/sources-list - home - END -->

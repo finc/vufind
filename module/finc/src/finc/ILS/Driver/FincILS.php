@@ -405,6 +405,10 @@ class FincILS extends PAIA implements LoggerAwareInterface
         }
     }
 
+    protected function doGetStatus($id) {
+        return parent::getStatus($id);
+    }
+
     /**
      * Get Statuses
      *
@@ -1298,6 +1302,26 @@ class FincILS extends PAIA implements LoggerAwareInterface
             return '';
         }
 
+        if (isset($this->staticStatusRules)) {
+            $eval = new \finc\Rules\Evaluator\Evaluator(
+                array_values($this->staticStatusRules['rules']),
+                (array)$this->staticStatusRules['stopFlags']
+            );
+            $context = array(
+                'authenticator' => $this->auth,
+                'record' => $this->_getRecord($id),
+            );
+            $context = $eval($context);
+            return [[
+                'id'           => $id,
+                'availability' => $context['available'],
+                'status'       => $context['available'] ? 'available' : 'unavailable',
+                'reserve'      => 'false',
+                'location'     => '',
+                'callnumber'   => '',
+                'services'     => (array)$context['decider']
+            ]];
+        }
         $permission = $this->_getRecord($id)->tryMethod('getRecordPermission');
 
         $isGranted = $permission != null
@@ -1344,7 +1368,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @return \VuFind\RecordDriver\AbstractBase
      */
-    private function _getRecord($id)
+    protected function _getRecord($id)
     {
         return $this->recordLoader->load($id);
     }
@@ -1435,7 +1459,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @return string $ilsRecordId
      */
-    private function _getILSRecordId($id, $ilsIdentifier = null)
+    protected function _getILSRecordId($id, $ilsIdentifier = null)
     {
         // override ilsIdentifier with the ilsIdentifier set in ILS driver config
         if ($ilsIdentifier == null) {

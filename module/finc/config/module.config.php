@@ -17,10 +17,12 @@ $config = [
     ],
     'controllers' => [
         'factories' => [
-            'record' => 'finc\Controller\Factory::getRecordController',
-            'dds' => 'finc\Controller\Factory::getDocumentDeliveryServiceController',
             'ajax' => 'finc\Controller\Factory::getAjaxController',
+            'dds' =>
+                'finc\Controller\Factory::getDocumentDeliveryServiceController',
             'my-research' => 'finc\Controller\Factory::getMyResearchController',
+            'record' => 'finc\Controller\Factory::getRecordController',
+            'resources' => 'finc\Controller\Factory::getAmslResourceController'
         ],
     ],
     'controller_plugins' => [
@@ -34,6 +36,8 @@ $config = [
                 'factories' => [
                     'fincils' => 'finc\ILS\Driver\Factory::getFincILS',
                     'paia' => 'finc\ILS\Driver\Factory::getPAIA',
+                    //finctheca is deprecated: Remove when Bibliotheca support ends
+                    'finctheca' => 'finc\ILS\Driver\Factory::GetFincTheca'
                 ],
             ],
             'recommend' => [
@@ -167,7 +171,8 @@ $nonTabRecordActions = [
 // Define record view routes once again to add new nonTabRecordActions
 $recordRoutes = [
     'record' => 'Record',
-    'export' => 'Export'
+    'export' => 'Export',
+    'resources' => 'Resources'
 ];
 
 

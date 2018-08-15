@@ -357,6 +357,9 @@ trait SolrMarcFincTrait
                     //$id = $this->checkIfRecordExists($matches[2]);
                     //if ($id != null) {
                     $array[$key]['record_id'] = $matches[2].$matches[3];
+                    if (null != ($sid = $this->getSourceID())) {
+                        $array[$key]['source_id'] = $sid;
+                    }
                     //}
                     //break;
                 }
@@ -611,34 +614,14 @@ trait SolrMarcFincTrait
         $title = '';
 
         if ($field = $this->getMarcRecord()->getField('245')) {
-            if ($field->getSubfield('a')) {
-                // 245$a
-                $title = $field->getSubfield('a')->getData();
-                // 245$b
-                if ($field->getSubfield('b')) {
-                    // add colon if $h isset and ends with colon
-                    // (see https://intern.finc.info/issues/7972)
-                    if ($field->getSubfield('h')) {
-                        if(preg_match(
-                            '/(\s:\s*)*$/',
-                            $field->getSubfield('h')->getData())
-                        ) {
-                            $title .= ' : ';
-                        }
+            if ($subfield = $field->getSubfield('a')) {
+                // modified due to #13670
+                // > Titel: 245$a $n $p $h $b $c
+                $title = $subfield->getData();
+                foreach (['n', 'p', 'h', 'b', 'c'] as $subkey) {
+                    if ($subfield = $field->getSubfield($subkey)) {
+                        $title .= ' ' . $subfield->getData();
                     }
-                    $title .= ' ' . $field->getSubfield('b')->getData();
-                }
-                // 245$n
-                if ($field->getSubfield('n')) {
-                    $title .= ' ' . $field->getSubfield('n')->getData();
-                }
-                // 245$p
-                if ($field->getSubfield('p')) {
-                    $title .= ' ' . $field->getSubfield('p')->getData();
-                }
-                // 245$c
-                if ($field->getSubfield('c')) {
-                    $title .= ' ' . $field->getSubfield('c')->getData();
                 }
             }
         }
@@ -1107,7 +1090,10 @@ trait SolrMarcFincTrait
                 $text = $current->getData();
                 // Extract parenthetical prefixes:
                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
-                    $array[$key]['record_id'] = $matches[2].$matches[3];
+                    $array[$key]['record_id'] = $matches[2] . $matches[3];
+                    if (null != ($sid = $this->getSourceID())) {
+                        $array[$key]['source_id'] = $sid;
+                    }
                 }
             } // end foreach
         } // end foreach
@@ -1267,6 +1253,9 @@ trait SolrMarcFincTrait
                                 // Extract parenthetical prefixes:
                                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
                                     $array[$key]['record_id'] = $matches[2].$matches[3];
+                                    if (null != ($sid = $this->getSourceID())) {
+                                        $array[$key]['source_id'] = $sid;
+                                    }
                                 }
                             } // end foreach
                         } // end if
@@ -1310,6 +1299,9 @@ trait SolrMarcFincTrait
                 // Extract parenthetical prefixes:
                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
                     $array[$key]['record_id'] = $matches[2].$matches[3];
+                    if (null != ($sid = $this->getSourceID())) {
+                        $array[$key]['source_id'] = $sid;
+                    }
                 }
             } // end foreach
         } // end foreach
@@ -1389,6 +1381,23 @@ trait SolrMarcFincTrait
     {
         return $this->getFieldArray('830', ['a', 'v'], false);
     }
+
+    /**
+     * Get source id of marc record. Alternate method getFirstFieldValue returns
+     * null by value "0" therefor it doesn't fit properly.
+     *
+     * @return string|null
+     * @access public
+     */
+    public function getSourceID()
+    {
+        $source_ids = $this->getMarcRecord()->getFields('980');
+        if (!$source_ids) {
+            return null;
+        }
+        return (string)$source_ids[0]->getSubfield('b')->getData();
+    }
+
 
     /**
      * Get local classification of UDK.
@@ -1524,6 +1533,9 @@ trait SolrMarcFincTrait
                                     if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
                                         $array[$i]['record_id']
                                             = $matches[2] . $matches[3];
+                                        if (null != ($sid = $this->getSourceID())) {
+                                            $array[$key]['source_id'] = $sid;
+                                        }
                                     }
                                 }
                             }
@@ -2040,5 +2052,27 @@ trait SolrMarcFincTrait
     public function getMusicalKey()
     {
         return $this->getFieldArray('384');
+    }
+
+    /**
+     * @deprecated Remove when Bibliotheca support ends
+     * @returns items internal Bibliotheca-ID called "Mediennummer"
+     */
+    public function getMediennummer() {
+        // loop through all existing LocalMarcFieldOfLibrary
+        if ($fields = $this->getMarcRecord()->getFields(
+            $this->getLocalMarcFieldOfLibrary())
+        ) {
+            foreach($fields as $field) {
+                // return the first occurance of $m
+                $field = $field->getSubfield('a');
+                if ($field) {
+                    $matches = [];
+                    if (preg_match('/\w+$/',$field->getData(),$matches)) {
+                        return $matches[0];
+                    }
+                }
+            }
+        }
     }
 }

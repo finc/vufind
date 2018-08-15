@@ -22,10 +22,12 @@ $types = [
     <? if (!empty($data[$type])): ?>
         <? foreach ($data[$type] as $author => $roles): ?>
             <? ob_start(); ?>
-            <span class="author-data" property="<?=$this->escapeHtml($schemaLabel)?>">
+            <span class="author-data" property="<?=$this->escapeHtml($schemaLabel)?>" typeof="Person">
+              <span property="name">
                 <a href="<?=$this->record($this->driver)->getLink('author', $author)?>">
             <?=$this->escapeHtml($author)?>
                 </a>
+              </span>
                 <?
                 // Display additional data using the appropriate translation prefix
                 // (for example, to render author roles correctly):
