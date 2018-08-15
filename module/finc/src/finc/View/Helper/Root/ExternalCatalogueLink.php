@@ -127,7 +127,7 @@ class ExternalCatalogueLink extends \Zend\View\Helper\AbstractHelper
                     $replaceId = $this->driver->tryMethod('getRID');
                     break;
                 default:
-                    $replaceId = null;
+                    $replaceId = $this->driver->tryMethod('get'.ucfirst($recordType));
             }
             foreach ($accessUrls as $institution => $accessUrl) {
                 foreach ($accessUrl as $v) {
