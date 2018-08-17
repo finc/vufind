@@ -4,7 +4,7 @@
         <? if (isset($additional['identifier'])): ?>
             <tr>
                 <th>
-                    <?=$this->escapeHtml($additional['identifier'])?>:
+                    <?=$this->transEsc($additional['identifier'])?>:
                 </th>
                 <td>
                     <? if(isset($additional['id'])): ?>

@@ -1532,6 +1532,106 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Get specific marc information about containing items. Unflexible solution
+     * for UBL only implemented.
+     *
+     * @return array
+     * @link   https://intern.finc.info/fincproject/issues/1315
+     */
+    public function getSetMultiPart()
+    {
+        $array = [];
+        $fields = [
+            '773' => ['a'=>['',''], 't'=>[': ',''], 'g'=>[' ; ','']],
+            '490' => ['a'=>['','']],
+            '800' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''] ,'g'=>[' ; ','']],
+            '810' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''] ,'g'=>[' ; ','']],
+            '811' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''] ,'g'=>[' ; ','']],
+            '830' => ['a'=>['',''], 'v'=>[' ; ','']]
+        ];
+        $i = 0;
+
+        foreach ($fields as $field => $subfields) {
+            $related = $this->getMarcRecord()->getFields($field);
+            // if no entry stop
+            if ($related) {
+                // loop through all found fields
+                foreach ($related as $key => $line) {
+                    // first lets look for identifiers - identifiers are vital as
+                    // those are used to identify the text in the frontend (e.g. as
+                    // table headers)
+                    // so, proceed only if we have an identifier
+
+                    // lets collect the text
+                    // https://intern.finc.info/issues/6896#note-7
+                    $text = [];
+                    foreach ($subfields as $subfield => list($l_delim,$r_delim)) {
+                        $val = $line->getSubfield($subfield);
+                        if ($field == '773' && $subfield == 'a') {
+                            if ($line->getIndicator(1) == 1) {
+                                $field245 = $this->getMarcRecord()->getField('245');
+                                if ($sub245a = $field245->getSubfield('a')) {
+                                    $text[] = $sub245a->getData();
+                                }
+                                unset($subfields['t']);
+                            } elseif (empty($val)) {
+                                continue;
+                            } else {
+                                $text[] = $l_delim.$val->getData().$r_delim;
+                            }
+                        } else {
+                            if (empty($val)) continue;
+                            if ($field == '490') {
+                                if ($line->getIndicator(1) == 0) {
+                                    $text[] = $l_delim.$val->getData().$r_delim;
+                                }
+                            } elseif ($subfield == 'v' && in_array($field, ['800', '810', '811'])) {
+                                if (!empty($val)) {
+                                    $text[] = $l_delim.$val->getData().$r_delim;
+                                    // do not use the next (and last) subfield $g,
+                                    // if $v is already set
+                                    break;
+                                }
+                            } else {
+                                $text[] = $l_delim.$val->getData().$r_delim;
+                            }
+                        }
+                    }
+
+                    // we can have text without links but no links without text, so
+                    // only proceed if we actually have a value for the text
+                    if (count($text) > 0) {
+                        $array[$i] = [
+                            'text'       => implode('', $text),
+                            'identifier' => ($line->getSubfield('i'))
+                                ? $line->getSubfield('i')->getData() : 'Set Multipart'
+                        ];
+
+                        // finally we can try to use given PPNs (from the BSZ) to
+                        // link the record
+                        if ($linkFields = $line->getSubfields('w')) {
+                            foreach ($linkFields as $current) {
+                                $text = $current->getData();
+                                // Extract parenthetical prefixes:
+                                if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
+                                    $array[$i]['record_id']
+                                        = $matches[2] . $matches[3];
+                                    if (null != ($sid = $this->getSourceID())) {
+                                        $array[$i]['source_id'] = $sid;
+                                    }
+                                }
+                            }
+                        }
+                        // at least we found some identifier and text so increment
+                        $i++;
+                    }
+                }
+            }
+        }
+        return $this->addFincIDToRecord($array);
+    }
+
+    /**
      * Returns notes and additional information stored in Marc 546$a.
      * Refs. #8509
      *

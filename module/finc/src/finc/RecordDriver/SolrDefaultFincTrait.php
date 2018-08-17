@@ -292,6 +292,24 @@ trait SolrDefaultFincTrait
         return $params;
     }
 
+    public function getSetMultiPart() {
+
+        $ids = $this->getHierarchyParentID();
+        if (empty($ids)) return [];
+        $titles = $this->getHierarchyParentTitle();
+        $result = [];
+        if (count($ids) === count($titles)) {
+            foreach ($ids as $key => $id) {
+                $result[] = [
+                    'text' => $titles[$key],
+                    'id' => $id,
+                    'identifier' => 'Set Multipart'
+                ];
+            }
+        }
+        return $result;
+    }
+
     /**
      * Get the hierarchy_parent_id(s) associated with this item (empty if none).
      *
