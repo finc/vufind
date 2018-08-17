@@ -249,7 +249,11 @@ trait SolrDefaultFincTrait
 
         $formats = $explode_formats($formats);
 
-        if (in_array('Book', $formats)) {
+        if (strlen($this->getCleanISSN()) > 0) {
+            return 'Journal';
+        } else if (strlen($this->getCleanISBN()) > 0) {
+            return 'Book';
+        } else if (in_array('Book', $formats)) {
             return 'Book';
         } else if (in_array('Article', $formats)) {
             return 'Article';
@@ -257,10 +261,6 @@ trait SolrDefaultFincTrait
             return 'Journal';
         } else if (isset($formats[0])) {
             return $formats[0];
-        } else if (strlen($this->getCleanISSN()) > 0) {
-            return 'Journal';
-        } else if (strlen($this->getCleanISBN()) > 0) {
-            return 'Book';
         }
         return 'UnknownFormat';
     }
