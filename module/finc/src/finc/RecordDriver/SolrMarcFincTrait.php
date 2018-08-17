@@ -1514,7 +1514,7 @@ trait SolrMarcFincTrait
                                         $array[$i]['record_id']
                                             = $matches[2] . $matches[3];
                                         if (null != ($sid = $this->getSourceID())) {
-                                            $array[$key]['source_id'] = $sid;
+                                            $array[$i]['source_id'] = $sid;
                                         }
                                     }
                                 }
