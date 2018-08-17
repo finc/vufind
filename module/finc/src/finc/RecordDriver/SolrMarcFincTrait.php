@@ -418,7 +418,7 @@ trait SolrMarcFincTrait
      * @access protected
      * @link   https://intern.finc.info/fincproject/issues/969 description
      */
-    protected function getISSN()
+    public function getISSNs()
     {
         return $this->getFieldArray('022', ['a']);
     }
@@ -1492,7 +1492,7 @@ trait SolrMarcFincTrait
     {
         $array = [];
         $fields = ['770','775','776'];
-        $subfields = ['a', 'l', 't', 'd', 'e', 'f', 'h', 'o', '7','z'];
+        $subfields = ['a', 'l', 't', 'b', 'd', 'e', 'f', 'h', 'o', '7','z'];
         $i = 0;
 
         foreach ($fields as $field) {
