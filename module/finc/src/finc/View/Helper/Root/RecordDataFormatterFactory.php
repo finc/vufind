@@ -131,9 +131,8 @@ class RecordDataFormatterFactory
             'child_records', 'getChildRecordCount', 'data-childRecords.phtml',
             ['allowZero' => false]
         );
-        $spec->setTemplateLine(
-            'Online Access', true, 'data-onlineAccess.phtml'
-        );
+        /* finc: remove 'Online Access' in record-details #13770 - VE */
+        /* $spec->setTemplateLine('Online Access', true, 'data-onlineAccess.phtml'); */
         $spec->setTemplateLine(
             'Related Items', 'getAllRecordLinks', 'data-allRecordLinks.phtml'
         );
@@ -181,9 +180,8 @@ class RecordDataFormatterFactory
         $spec->setTemplateLine(
             'Subjects', 'getAllSubjectHeadings', 'data-allSubjectHeadings.phtml'
         );
-        $spec->setTemplateLine(
-            'Online Access', true, 'data-onlineAccess.phtml'
-        );
+        /* finc: remove 'Online Access' in record-details #13770 - VE */
+        /* $spec->setTemplateLine('Online Access', true, 'data-onlineAccess.phtml'); */
         $spec->setTemplateLine(
             'Item Description', 'getGeneralNotes', 'data-escapeHtml.phtml'
         );
@@ -337,7 +335,8 @@ class RecordDataFormatterFactory
             'child_records', 'getChildRecordCount', 'data-childRecords.phtml',
             ['allowZero' => false]
         );
-        $spec->setTemplateLine('Online Access', true, 'data-onlineAccess.phtml');
+        /* finc: remove 'Online Access' in record-details #13770 - VE */
+        /* $spec->setTemplateLine('Online Access', true, 'data-onlineAccess.phtml'); */
         $spec->setTemplateLine(
             'Related Items', 'getAllRecordLinks', 'data-allRecordLinks.phtml'
         );
@@ -624,7 +623,8 @@ class RecordDataFormatterFactory
         $spec->setTemplateLine(
             'Subjects', 'getAllSubjectHeadings', 'data-allSubjectHeadings.phtml'
         );
-        $spec->setTemplateLine('Online Access', true, 'data-onlineAccess.phtml');
+        /* finc: remove 'Online Access' in record-details #13770 -VE */
+        /* $spec->setTemplateLine('Online Access', true, 'data-onlineAccess.phtml'); */
         $spec->setTemplateLine(
             'Related Items', 'getAllRecordLinks', 'data-allRecordLinks.phtml'
         );
@@ -725,7 +725,8 @@ class RecordDataFormatterFactory
             'child_records', 'getChildRecordCount', 'data-childRecords.phtml',
             ['allowZero' => false]
         );
-        $spec->setTemplateLine('Online Access', true, 'data-onlineAccess.phtml');
+        /* finc: remove 'Online Access' in record-details #13770 - VE */
+        /* $spec->setTemplateLine('Online Access', true, 'data-onlineAccess.phtml'); */
         $spec->setTemplateLine(
             'Related Items', 'getAllRecordLinks', 'data-allRecordLinks.phtml'
         );

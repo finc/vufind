@@ -58,7 +58,30 @@ if (!empty($holdingTitleHold)): ?>
   </a>
 <? endif; ?>
 
-<? /* finc: #12682 remove "Internet" ($urls, $openUrlActive) from description-tab (identical information is included in core-template with "Online Access" ) - VE */ ?>
+<? /* finc: add 'Online Access' in holdings-tab #13770 - VE */ ?>
+<? if (!empty($urls) || $openUrlActive): ?>
+  <h3><?=$this->transEsc("Internet")?></h3>
+  <? if (!empty($urls)): ?>
+    <? foreach ($urls as $current): ?>
+      <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
+    <? endforeach; ?>
+  <? endif; ?>
+  <? /* finc-specific snippet - #9274 - replaces if ($openUrlActive): - CK */ ?>
+  <? if ($openUrlActive): ?>
+    <? if (empty($urls)): ?>
+      <? $fallbackUrls = $this->driver->tryMethod('getURLs');
+      if (!empty($fallbackUrls)): ?>
+        <span id="urlsHideable" style="display: none">
+          <? foreach ($fallbackUrls as $current): ?>
+            <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" target="_blank"><?=$this->escapeHtml($current['desc'])?></a><br/>
+          <? endforeach; ?>
+        </span>
+      <? endif; ?>
+    <? endif; ?>
+    <?=$openUrl->renderTemplate()?>
+  <? endif; ?>
+  <? /* finc-specific snippet - #9274 - END */ ?>
+<? endif; ?>
 
 <? foreach ($holdings['holdings'] as $holding): ?>
   <? /* nxt line = finc-specific - #7841@56988450 - CK */ ?>
