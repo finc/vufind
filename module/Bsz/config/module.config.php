@@ -62,7 +62,14 @@ $config = [
         ],
     ],
     'vufind' => [
-        'plugin_managers' => [            
+        'plugin_managers' => [  
+            'recommend' => [
+                'factories' => [
+                    'sidefacets' => 'Bsz\Recommend\Factory::getSideFacets',
+//                    'searchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
+                    
+                ],
+            ],            
             'recorddriver'  => [
                 'factories' => [
                     'solrdefault' => 'Bsz\RecordDriver\Factory::getSolrDefault',
