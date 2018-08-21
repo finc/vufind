@@ -66,7 +66,7 @@ $config = [
             'recommend' => [
                 'factories' => [
                     'sidefacets' => 'Bsz\Recommend\Factory::getSideFacets',
-//                    'searchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
+                    'searchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
                     
                 ],
             ],            
