@@ -26,5 +26,10 @@
         }
     }
 ?>
-<?=implode(', ', $jtitle)?>
+<? /* finc: add schema tags for parent publication #13850 - VE */ ?>
+<span property="isPartOf" typeof="Periodical" resource="#periodical">
+  <span property="name">
+    <?=implode(', ', $jtitle)?>
+  </span>
+</span>
 <!-- finc: RecordDriver - SolrAi - data-jTitle - END -->

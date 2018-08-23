@@ -114,7 +114,7 @@ class RecordDataFormatterFactory
             ['helperMethod' => 'getFormatList']
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSepLang.phtml'
         );
         $spec->setTemplateLine(
             'Published',
@@ -214,7 +214,7 @@ class RecordDataFormatterFactory
             ['helperMethod' => 'getFormatList']
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSepLang.phtml'
         );
         $spec->setTemplateLine(
             'Additionals',
@@ -250,7 +250,7 @@ class RecordDataFormatterFactory
             ]
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSepLang.phtml'
         );
         $spec->setLine(
             'Format', 'getFormats', 'RecordHelper',
@@ -316,7 +316,7 @@ class RecordDataFormatterFactory
             ['helperMethod' => 'getFormatList']
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSepLang.phtml'
         );
         $spec->setTemplateLine(
             'Published',
@@ -609,7 +609,7 @@ class RecordDataFormatterFactory
         );
         // , context: "recordEvents"
         $spec->setTemplateLine(
-            'Language', 'getLanguages','data-transEscCommaSep.phtml'
+            'Language', 'getLanguages','data-transEscCommaSepLang.phtml'
         );
         $spec->setTemplateLine(
             'Time of origin', 'getDateSpan', 'data-dateSpan.phtml'
@@ -701,7 +701,7 @@ class RecordDataFormatterFactory
             ['helperMethod' => 'getFormatList']
         );
         $spec->setTemplateLine(
-            'Language', 'getLanguages', 'data-transEscCommaSep.phtml'
+            'Language', 'getLanguages', 'data-transEscCommaSepLang.phtml'
         );
         $spec->setTemplateLine(
             'Published',

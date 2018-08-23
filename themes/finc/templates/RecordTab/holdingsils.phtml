@@ -173,7 +173,7 @@ if (!empty($holdingTitleHold)): ?>
           <? endif; ?>
             <? /* Embed item structured data: library, barcode, call number */ ?>
             <? if ($row['location']): ?>
-              <meta property="seller" content="<?=$this->escapeHtmlAttr($row['location'])?>"/>
+              <meta property="offeredBy" content="<?=$this->escapeHtmlAttr($row['location'])?>"/>
             <? endif; ?>
             <? if ($row['barcode']): ?>
               <meta property="serialNumber" content="<?=$this->escapeHtmlAttr($row['barcode'])?>"/>
@@ -182,8 +182,10 @@ if (!empty($holdingTitleHold)): ?>
               <meta property="sku" content="<?=$this->escapeHtmlAttr($row['callnumber'])?>"/>
             <? endif; ?>
             <? /* Declare that the item is to be borrowed, not for sale */ ?>
-            <link property="businessFunction" href="http://purl.org/goodrelations/v1#LeaseOut"/>
             <link property="itemOffered" href="#record"/>
+            <!-- finc: price tags can be anywhere but seem to be required for product -->
+            <meta property="price" content="0">
+            <meta property="priceCurrency" content="€">
           </td>
 
           <? /* finc: change separate <tr>-element to <td> with including <span> #13606 - VE */ ?>
