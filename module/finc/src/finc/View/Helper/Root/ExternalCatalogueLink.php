@@ -123,7 +123,7 @@ class ExternalCatalogueLink extends \Zend\View\Helper\AbstractHelper
                 case "id":
                     $replaceId = $this->driver->getUniqueID();
                     break;
-                case "ppn":
+                case "record_id":
                     $replaceId = $this->driver->tryMethod('getRID');
                     break;
                 default:
