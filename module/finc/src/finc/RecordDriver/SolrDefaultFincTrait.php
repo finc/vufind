@@ -57,7 +57,7 @@ trait SolrDefaultFincTrait
      *
      * @return bool
      */
-    public function isCollection()
+/*    public function isCollection()
     {
         // first check as always if we have a collection
         $isCollection = parent::isCollection();
@@ -71,7 +71,7 @@ trait SolrDefaultFincTrait
         // if we've come so far this record is no collection
         return false;
     }
-
+*/
     /**
      * Get all call numbers associated with the record (empty string if none).
      *

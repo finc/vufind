@@ -62,16 +62,23 @@ class HierarchyTree extends \VuFind\RecordTab\HierarchyTree
         $this->config = $config;
     }
 
+    public function getDescription()
+    {
+        if ($this->driver->isCollection()) return parent::getDescription();
+        else return 'From same Collection';
+    }
+
     /**
      * Is this tab active?
      *
      * @return bool
      */
-    public function isActive()
+/*    public function isActive()
     {
         return (
             $this->getRecordDriver()->tryMethod('isSingleElementHierarchyRecord')
                 ? false : parent::isActive()
         );
     }
+*/
 }
