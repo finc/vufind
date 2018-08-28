@@ -185,6 +185,8 @@ trait LiberoDingTrait
             );
             return false;
         }
+        // reload PAIA session by paia login again
+        $this->refreshLogin($patron['cat_username'], $patron['cat_password']);
 
         return $this->_getLiberoDingResultBool($result);
     }

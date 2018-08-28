@@ -967,6 +967,26 @@ class FincILS extends PAIA implements LoggerAwareInterface
     }
 
     /**
+     * Refresh Login
+     *
+     * Refresh by removing time to expire and constraint authenticating via
+     * paiaLogin by patronLogin.
+     *
+     * @param string $username The patron's username
+     * @param string $password The patron's login password
+     *
+     * @return mixed Associative array of patron info on successful login,
+     * null on unsuccessful login.
+     * @access public
+     */
+    public function refreshLogin($username, $password)
+    {
+        $session = $this->getSession();
+        $session->expires = 0;
+        return $this->patronLogin($username, $password);
+    }
+
+    /**
      * PAIA helper function to map session data to return value of patronLogin()
      *
      * @param array  $details  Patron details returned by patronLogin
