@@ -641,6 +641,15 @@ trait SolrDefaultFincTrait
             )
         ];
 
+        $all_empty = TRUE;
+        foreach ($authors as $type => $values) {
+            if (!empty($values)) {
+                $all_empty = FALSE;
+                break;
+            }
+        }
+        if ($all_empty) return [];
+
         // deduplicate
         $dedup = function (&$array1, &$array2) {
             if (!empty($array1) && !empty($array2)) {
