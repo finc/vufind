@@ -1267,9 +1267,9 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     public function getFinesTotal($patron) {
         $fines = $this->getMyFines($patron);
-        $total = 0;
+        $total = 0.0;
         foreach ($fines as $fee) {
-            $total += (int) $fee['amount'];
+            $total += (float) $fee['amount'];
         }
         return $total / 100;
     }
