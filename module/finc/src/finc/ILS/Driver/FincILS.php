@@ -466,7 +466,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     protected function getItemBarcode($item)
     {
-        if (isset($item['id']) && preg_match("/^".$this->daiaIdPrefix."([A-Za-z0-9]+):([A-Za-z0-9]+)$/", $item['id'], $matches)) {
+        if (isset($item['id'])
+            && preg_match(
+                "/^" . $this->daiaIdPrefix . "([A-Za-z0-9]+):([^:]+)$/",
+                $item['id'],
+                $matches
+            )
+        ) {
             return array_pop($matches);
         }
         return parent::getItemBarcode($item);
