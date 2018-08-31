@@ -7,7 +7,11 @@
                 : $this->transEsc('non_rda_original_title')?>:
         </th>
         <td property="title">
-            <a href="<?=$this->record($this->driver)->getLink('title', $data)?>"><?=$this->escapeHtml($data)?></a>
+            <?if (is_array($data)): ?>
+                <a href="<?=$this->record($this->driver)->getLink('title', $data['title'])?>"><?=$this->escapeHtml($data['title'])?></a> &#x27E8;<?=$this->escapeHtml($data['lang'])?>&#x27E9;
+            <? else: ?>
+                <a href="<?=$this->record($this->driver)->getLink('title', $data)?>"><?=$this->escapeHtml($data)?></a>
+            <? endif; ?>
         </td>
     </tr>
 <? endif; ?>

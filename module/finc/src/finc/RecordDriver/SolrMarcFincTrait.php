@@ -2216,4 +2216,29 @@ trait SolrMarcFincTrait
             }
         }
     }
+
+    public function getTitleUniform() {
+
+        $retval = [];
+        foreach (array('130','240') as $pos => $field_name) {
+            if ($field = $this->getMarcRecord()->getField($field_name)) {
+                if ($field_name === '240') {
+                    if ($field->getIndicator('1') === '0') {
+                        //"Not printed or displayed"
+                        continue;
+                    }
+                }
+                foreach (array(
+                    'title' => 'a',
+                    'lang' => 'g'
+                         ) as $key => $sub_name) {
+                    if ($line = $field->getSubfield($sub_name)) {
+                        $retval[$key] = $line->getData();
+                    }
+                }
+                return $retval;
+            }
+        }
+        return $retval;
+    }
 }
