@@ -1,4 +1,5 @@
 <!-- finc: RecordDriver - solrLido - core -->
+<? /* keep schema tagging here in finc - CK, #13861 */ ?>
 <div class="media" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
   <?
     if ($loggedin = $this->auth()->isLoggedIn()) {
@@ -56,7 +57,7 @@
   <div class="media-body">
 
     <? /* finc: We want to get rid of trailing special chars in the title and limit its length to 100 chars
-          remove schema name tag here but keept in description, CK
+      in finc: keep schema name tag here!! #13861 CK
        */
     ?>
     <h3 property="name"><?=$this->escapeHtml(preg_replace('/(\s[\/\.:]\s*)*$/', '', $this->truncate($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection(), 100)))?></h3>

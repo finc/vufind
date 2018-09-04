@@ -6,8 +6,10 @@ $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBrea
 $formatter = $this->recordDataFormatter();
 $mainFields = $formatter->getData($driver, $formatter->getDefaults('description'));
 ?>
+<? /* finc: remove schema tag here but keep in core,*/ ?>
 <table class="table table-striped">
-  <? /* finc: table summary not supported in html 5, finc-specific solution, CK */ ?>
+  <? /* finc: table summary not supported in html 5, finc-specific solution, CK */
+  /* Table gets filled via recordDriver/.../data-... templates as referenced in RecordDataFormatterFactory */ ?>
   <caption class="sr-only"><?=$this->transEsc('Description')?></caption>
   <? if (!empty($mainFields)): ?>
     <? foreach ($mainFields as $key => $current): ?>
