@@ -1916,6 +1916,34 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Get Cartographic Mathematical Data
+     *
+     * @return array    Return multidimensional array with key of 'coordinates'
+     *                  and 'scale'
+     * @access public
+     */
+    public function getCartographicData() {
+
+        // internal vars
+        $retVal = [];
+        $i = 0;
+        // map of subfield to returning value key
+        $mapper = ['a' => 'scale', 'c' => 'coordinates'];
+
+        $fields = $this->getMarcRecord()->getFields('255');
+        foreach($fields as $f) {
+            foreach ($mapper as $subfield => $key) {
+                $sub = $f->getSubField($subfield);
+                if ($sub) {
+                    $retVal[$i][$key] = $sub->getData();
+                }
+            }
+            $i++;
+        }
+        return $retVal;
+    }
+
+    /**
      * Get an array of content notes.
      *
      * @return array
