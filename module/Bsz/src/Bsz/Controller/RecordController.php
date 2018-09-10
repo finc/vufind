@@ -146,7 +146,6 @@ class RecordController extends \VuFind\Controller\RecordController
             if ($this->checkAuth($params)) {
                 // remove password from TAN field
                 unset($params['Passwort']);
-                unset($params['TAN']);
                 
                 // send real order
                 $client = new \Zend\Http\Client();
