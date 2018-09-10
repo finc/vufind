@@ -146,6 +146,14 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
     protected $label;
     
     /**
+     * type of searchbutton
+     *  'link' = do not append searchterms to link
+     *  '' = append searchterms to link
+     * @var string
+     */
+    protected $type;
+
+    /**
      * Constructor
      *
      * @param string $key API key
@@ -167,7 +175,7 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
     public function setConfig($settings)
     {
         // Parse out parameters:
-        // fieldname[] = "SearchButtons:baseurl:[title]:[image filename]"
+        // fieldname[] = "SearchButtons:baseurl:[title]:[image filename]:[colNumber]:[label]"
         $params = explode(':', $settings);
 
         $this->protocol = (isset($params[0]) && !empty($params[0]))
@@ -188,6 +196,8 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
         $this->label = (isset($params[5]) && !empty($params[5]))
             ? $params[5] : '';  
        
+        $this->type = (isset($params[6]) && !empty($params[6]))
+            ? $params[6] : '';  
         
     }
 
@@ -255,14 +265,18 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
      * @return void
      */
     public function init($params, $request) {
-        // Collect the best possible search term(s):
-        $this->lookfor =  $request->get('lookfor', '');
-        if (empty($this->lookfor) && is_object($params)) {
-            $this->lookfor = $params->getQuery()->getAllTerms();
-        }
-        $this->lookfor = urlencode(trim($this->lookfor));
         
-        $this->targetUrl = $this->protocol . '://' .  $this->baseUrl . $this->lookfor;
+        if ($this->type === 'link') {
+            $this->targetUrl = $this->protocol . '://' .  $this->baseUrl;
+        } else {
+            // Collect the best possible search term(s):
+            $this->lookfor = urlencode(trim($this->lookfor));
+            $this->lookfor =  $request->get('lookfor', '');
+            if (empty($this->lookfor) && is_object($params)) {
+                $this->lookfor = $params->getQuery()->getAllTerms();
+            }
+            $this->targetUrl = $this->protocol . '://' .  $this->baseUrl . $this->lookfor;
+        }
     }
 
     /**

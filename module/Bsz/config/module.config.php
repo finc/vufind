@@ -16,7 +16,7 @@ $config = [
             'VuFind\Controller\AjaxController' => 'Bsz\Controller\Factory::getAjaxController',
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
             'VuFind\Controller\SearchController' => 'Bsz\Controller\Factory::getSearchController',
-                    'VuFind\Controller\MyResearchController' => 'Bsz\Controller\Factory::getMyResearchController',
+            'VuFind\Controller\MyResearchController' => 'Bsz\Controller\Factory::getMyResearchController',
             'VuFind\Controller\EdsrecordController' => 'Bsz\Controller\Factory::getEdsrecordController',
         ],
     ],
@@ -62,7 +62,14 @@ $config = [
         ],
     ],
     'vufind' => [
-        'plugin_managers' => [            
+        'plugin_managers' => [  
+            'recommend' => [
+                'factories' => [
+                    'sidefacets' => 'Bsz\Recommend\Factory::getSideFacets',
+                    'searchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
+                    
+                ],
+            ],            
             'recorddriver'  => [
                 'factories' => [
                     'solrdefault' => 'Bsz\RecordDriver\Factory::getSolrDefault',

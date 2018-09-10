@@ -97,7 +97,7 @@ class TestController extends \VuFind\Controller\AbstractBase {
        
         $urlsToTest = [
             "https://fltest.bsz-bw.de/flcgi/pflauftrag.pl",
-            "https://zfls-test.bsz-bw.de/flcgi/pflauftrag.pl",
+            "https://zfls.bsz-bw.de/flcgi/pflauftrag.pl",
         ];
         foreach ($urlsToTest as $uri)
         {
@@ -110,7 +110,7 @@ class TestController extends \VuFind\Controller\AbstractBase {
                     ->setOptions(['timeout' => 5])
                     ->setParameterPost($params)
                     // Schluck, ein Passwort im Code :-/
-                    ->setAuth("boss", "password here");
+                    ->setAuth("boss", "Passworteingeben");
 
                 $response = $client->send();
                 var_dump($response->getBody());
