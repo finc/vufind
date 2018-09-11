@@ -1,5 +1,6 @@
 <? $labelSize = 6; ?>
 <? $inputSize = 6; ?>
+<? $disabled = ''; ?>
 <div class="form-group form-group-sm">    
     <div class=" form-group form-group-sm">
         <? if ($this->illform($this->success, $this->driver)->isOpen('paper')): 
@@ -8,8 +9,11 @@
             $form = 'Leihen';
         endif; ?>
         <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
+        <? if (isset($this->driver) && ($this->driver->isJournal() || $this->driver->isArticle())): ?>
+            <? $disabled = 'disabled'; ?>
+        <? endif; ?>
         <div class="col-sm-3 col-xs-1">
-            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?>/>  
+            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> <?=$disabled?>/>  
             <span for="ill-copy"><?=$this->transEsc('lend')?></span>
         </div>
         <div class="col-sm-3 col-xs-1">
