@@ -8,9 +8,11 @@
     }
     window.piwikAsyncInit = function () {
         try {
+            <? if ($this->siteId > 0): ?>
             var piwikTracker = Piwik.getTracker("<?=$this->piwikUrl?>piwik.php", <?=$this->siteId?>);
             piwikTracker.setCustomVariable(1, "IllOrder", orderStatus, "visit");  
             piwikTracker.trackPageView();
+            <? endif; ?>          
             <? if ($this->globalSiteId > 0): ?>
             var piwik2 = Piwik.getTracker("<?=$this->piwikUrl?>piwik.php", 28);
             piwik2.setCustomVariable(1, "IllOrder", orderStatus, "visit");                                
@@ -21,7 +23,9 @@
 </script>
 <script type="text/javascript" src="<?=$this->piwikUrl?>piwik.js"></script>
 <noscript>
+    <? if ($this->siteId > 0): ?>
     <p><img src="<?=$this->piwikUrl?>piwik.php?idsite=<?=$this->siteId?>" style="border:0;" alt="" /></p>
+    <? endif; ?>
     <? if ($this->globalSiteId > 0): ?>
     <p><img src="<?=$this->piwikUrl?>piwik.php?idsite=<?=$this->globalSiteId?>" style="border:0;" alt="" /></p>
     <? endif; ?>
