@@ -1,12 +1,3 @@
-
-//make sidebar deal with fixed header. 
-
-.sidebar {
-    background-color: white;
-    z-index: 1030;
-    overflow: scroll;
-}
-
 body.offcanvas .offcanvas-toggle {
     z-index: 1030 !important;
 }
@@ -96,4 +87,19 @@ body.offcanvas .offcanvas-toggle {
               transition: all .25s ease-out;
     }
   }
+}
+
+
+// reduce size of search buttons
+body.offcanvas.active .sidebar {
+    background-color: white;
+    z-index: 1030;
+    overflow: scroll;
+    .searchbutton img {
+        max-width: 8em;
+    }
+}
+
+.searchbutton {
+    margin-bottom: @grid-gutter-width/2;
 }
