@@ -261,6 +261,12 @@ function avoidEmptySearch() {
         hide: 100,
     });
  }
+ 
+ function searchclear() {
+     $('.searchclear').click(function() {
+        $(this).prev().val('');
+     });
+ }
 
 $(document).ready(function() {
   avoidEmptySearch();
@@ -272,6 +278,7 @@ $(document).ready(function() {
   remoteModal();
   duplicates();
   showmore();
+  searchclear();
   $('[data-toggle="popover"]').popover({
       trigger: 'click focus',
   });
