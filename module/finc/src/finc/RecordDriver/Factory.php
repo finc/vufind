@@ -140,7 +140,7 @@ class Factory
         return new SolrAI(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('SolrAI'),
-            null
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
         );
     }
 
