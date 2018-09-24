@@ -83,11 +83,6 @@ class Ill extends Ezb
                 $newParams[$mapping[$key]] = $value;
             }
         }
-        // nicht gewünscht... 
-//        if (isset($params['rft.series'])) {
-//            $newParams['title'] = $params['rft.series'].': '
-//                    .$newParams['title'];
-//        }
         
         # UB Heidelbergs implementation differs from default. 
         switch ($newParams['genre']) {
