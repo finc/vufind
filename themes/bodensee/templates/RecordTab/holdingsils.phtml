@@ -103,7 +103,7 @@
 </table>
 <? endif; ?>
 
-<? if (count($holdings['holdings']) == 0): ?>
+<? if (isset($holdings['holdings']) && count($holdings['holdings']) == 0): ?>
     <? // Holdings from field 924 ?>
     <? $localHoldings = $this->driver->getLocalHoldings(); if (count($localHoldings) > 0): ?>
     <table class="table table-striped">
