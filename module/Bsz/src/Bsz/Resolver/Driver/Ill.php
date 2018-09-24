@@ -55,6 +55,7 @@ class Ill extends Ezb
     protected function downgradeOpenUrl($params)
     {
         $newParams = [];
+        var_dump($params);
         $mapping = [
             'rft_val_fmt' => false,
             'rft.genre' => 'genre',
@@ -67,6 +68,8 @@ class Ill extends Ezb
             'rft.pages' => 'pages',
             'rft.place' => 'place',
             'rft.title' => 'title',
+            'rft.series' => 'series',
+            'rft.edition' => 'edition',
             'rft.atitle' => 'atitle',
             'rft.btitle' => 'title',            
             'rft.jtitle' => 'title',
@@ -81,10 +84,11 @@ class Ill extends Ezb
                 $newParams[$mapping[$key]] = $value;
             }
         }
-        if (isset($params['rft.series'])) {
-            $newParams['title'] = $params['rft.series'].': '
-                    .$newParams['title'];
-        }
+        // nicht gewünscht... 
+//        if (isset($params['rft.series'])) {
+//            $newParams['title'] = $params['rft.series'].': '
+//                    .$newParams['title'];
+//        }
         
         # UB Heidelbergs implementation differs from default. 
         switch ($newParams['genre']) {
@@ -94,7 +98,7 @@ class Ill extends Ezb
         $params = [];
         foreach (array_filter($newParams) as $param => $val) {
             $params[] = $param.'='.$val;
-        }         
+        }   
         return implode('&', $params);
     }    
 }
