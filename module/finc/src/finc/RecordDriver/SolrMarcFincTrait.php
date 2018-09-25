@@ -1369,6 +1369,7 @@ trait SolrMarcFincTrait
      * @return string|null
      * @access public
      */
+/* removed erroneous inheritance, this function is present and working in SolrDefaultFincTrait, DM
     public function getSourceID()
     {
         $source_ids = $this->getMarcRecord()->getFields('980');
@@ -1377,7 +1378,7 @@ trait SolrMarcFincTrait
         }
         return (string)$source_ids[0]->getSubfield('b')->getData();
     }
-
+*/
 
     /**
      * Get local classification of UDK.
