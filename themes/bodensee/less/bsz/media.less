@@ -35,16 +35,15 @@ Schriftgrößen verkleinern
     }
 }
 header {
-    @media (max-width: 500px) {
-        .navbar-form a .text {
-            display: none;
-        }        
+    // make search bar bigger on large screens
+    @media (min-width: @screen-lg-min) {
+        .navbar-form #searchForm_lookfor {
+            min-width: 500px;
+        }    
     }
 }
- // less padding on smaller screens
-@media (max-width: 400px) {
-    .nav.nav-tabs > li > a {
-        padding: 4px 6px !important;
-    }
+@media (max-width: 500px) {
+    .nav-tabs li:not(.active) .text {
+        display: none;
+    }        
 }
-
