@@ -510,7 +510,8 @@ table.collapse.in {
   display: none;
 
   &.SID48 {
-    background: url('../images/wiso-transparent-70x20.png') 0 0 no-repeat;
+    // #14061 adapt the path to get the wiso logo for sub-instances
+    background: url('../../finc/images/wiso-transparent-70x20.png') 0 0 no-repeat;
     display: inline-block;
     font-size: 100%; // important to render width and height correctly
     height: em(20px);
