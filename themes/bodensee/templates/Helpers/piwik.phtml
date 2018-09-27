@@ -1,8 +1,8 @@
 <script type="text/javascript">
     switch (Cookies.getItem('orderStatus')) {
-        case true: var orderStatus = 'successfull';
+        case "1": var orderStatus = 'successfull';
             break;
-        case false: var orderStatus = 'not successfull';
+        case "0": var orderStatus = 'not successfull';
             break;
         default: var orderStatus = 'no Order';
     }
