@@ -13,11 +13,12 @@
         <? endif; ?>
     </span>
     <span property="datePublished">
-    <? $pubDateSort = $this->driver->tryMethod('getPublishDateSort'); ?>
-    <? $pubDate = $field->getDate(); if (!empty($pubDateSort)): ?>
-        <?=$this->escapeHtml($pubDateSort)?>
-    <? else: ?>
-        <?=$this->escapeHtml($pubDate)?></span>
+        <? /* do not show solr publish date #13993 - GG */ ?>
+    <? /*$pubDateSort = $this->driver->tryMethod('getPublishDateSort');*/ ?>
+    <? $pubDate = $field->getDate(); if (!empty($pubDate)): ?>
+        <?=$this->escapeHtml($pubDate)?>
+    <? /*else: ?>
+        <?=$this->escapeHtml($pubDateSort)*/?></span>
     <? endif; ?>
     </span><br/>
     <? endforeach; ?>
