@@ -108,6 +108,11 @@
               'viewBookBag' => 'View Book Bag'
             ]
           );
+          $this->jsTranslations()->addStrings(
+            [
+                'ill_form_error' => 'ill_error_in_form'
+            ]
+          );
         }
         $this->headScript()->appendScript(
           'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'

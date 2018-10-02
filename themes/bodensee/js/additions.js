@@ -9,7 +9,7 @@ function showmore() {
         $(this).remove();
         e.preventDefault();
         return false;
-    })
+    });
 }
 
 function bootstrapTooltip() {
@@ -17,7 +17,7 @@ function bootstrapTooltip() {
       $('[data-toggle="tooltip"]').tooltip({
           delay: {
               'show': 500,
-              'hide': 100,
+              'hide': 100
           }
       });    
 //    }
@@ -64,6 +64,42 @@ function remoteModal() {
 }
 
 function illFormLogic() {
+    
+    if (!$("input[name='AusgabeOrt']:checked").val()) {
+        $('.place input').first().prop('checked', true);
+    }
+        
+    $('#form-ill').validator({
+        disable: false,
+        focus: true,
+        custom: {
+            costs: function($el) {
+                var costs = $el.val();
+                if((costs < 8 && costs > 0) || costs < 0 ) {
+                    return 'Costs must not be between 0 and 8. ';
+                }
+            }
+        }
+        
+    }).on('submit', function (e) {
+        var $errors = $(this).find('.has-error');
+        if ($errors.length > 0) {
+            // open panels with errors
+            $errors.parent().parent().collapse('show');
+            
+            $('#form-ill').prepend($('<div>', {
+                class: 'flash-message alert alert-danger',
+                text: VuFind.translate('ill_form_error')               
+            }));
+            
+        }
+        
+        if (!e.isDefaultPrevented()) {
+            // everything is validated, form to be submitted
+            $(this).find('[type=submit]').addClass('disabled')
+                    .parent().append('<i class="fa fa-spinner fa-spin"></i>');           
+        }
+    }); 
      //switch places when changing library
     $('input[name=Sigel]').change(function() {
         var attrId = $(this).attr('id').split('-');
@@ -73,55 +109,24 @@ function illFormLogic() {
             .prop('checked', false);
         // show the correct ones
         $('.library-places').find('#library-places-'+libid)
-            .removeClass('hidden').find('input').first().prop('checked', true);      
-        
-        
+            .removeClass('hidden').find('input').first().prop('checked', true);       
+      
     });
     // open/close panel according to radio button
     $('input[name=Bestellform]').change(function(e) {
-        if ($(this).attr('id') == 'ill-lend') {
-            $('#panel-paperdata .panel-collapse').collapse('hide');            
+        if ($(this).attr('id') === 'ill-lend') {
+            $('#panel-paperdata').find('.form-group.required')
+                    .toggleClass('show').find('input')
+                        .removeAttr('required')
+                        .attr('data-validate', 'false');
         } else {
-            $('#panel-paperdata .panel-collapse').collapse('show');          
-    
+            $('#panel-paperdata').find('.form-group.required')
+                    .toggleClass('show').find('input')
+                    .attr('required', 'true')
+                    .attr('data-validate', 'true');   
         }
-    });    
-    // switch radio button according to panel
-    $('#panel-paperdata').on('hidden.bs.collapse', function (e) {
-        $('#ill-lend').prop('checked', true);
-    })
-    $('#panel-paperdata').on('show.bs.collapse', function (e) {
-        $('#ill-copy').prop('checked', true);         
-    })
-    
-    
-    $('.form-ill').validator({
-        disable: false,
-        focus: true,
-        custom: {
-            costs: function($el) {
-                var costs = $el.val();
-                if((costs < 8 && costs > 0) || costs < 0 ) {
-                    return false;            
-                } else {
-                   return true;        
-                } 
-            }
-        },
-        errors: {
-            costs: 'Costs must not be between 0 and 8. ',
-        }
-    }).on('submit', function (e) {
-
-        if (!e.isDefaultPrevented()) {
-            // everything is validated, form to be submitted
-            $('#collapseFour').collapse('show');
-            $('#collapseThree').collapse('show');
-            $(this).find('[type=submit]').addClass('disabled')
-                    .parent().append('<i class="fa fa-spinner fa-spin"></i>');           
-        }
-            
-       
+         $('#form-ill').validator();
+        
     }); 
  
 }
@@ -267,6 +272,40 @@ function avoidEmptySearch() {
         $(this).prev().val('');
      });
  }
+ 
+ /**
+  * jQueryUI datepicker
+  * 
+  */ 
+ function datepicker() {
+    var $date = $('[type="date"]');  
+    if ($date.length > 0 && $date.prop('type') != 'date' ) {
+        $date.datepicker({
+            prevText: '&#x3c;zurück', prevStatus: '',
+            prevJumpText: '&#x3c;&#x3c;', prevJumpStatus: '',
+            nextText: 'Vor&#x3e;', nextStatus: '',
+            nextJumpText: '&#x3e;&#x3e;', nextJumpStatus: '',
+            currentText: 'heute', currentStatus: '',
+            todayText: 'heute', todayStatus: '',
+            clearText: '-', clearStatus: '',
+            closeText: 'schließen', closeStatus: '',
+            monthNames: ['Januar','Februar','März','April','Mai','Juni',
+            'Juli','August','September','Oktober','November','Dezember'],
+            monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun',
+            'Jul','Aug','Sep','Okt','Nov','Dez'],
+            dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+            dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+            dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+            showMonthAfterYear: false,
+            showOn: 'both',
+            dateFormat:'yy-mm-dd',
+            onSelect: function(dateText, datePicker) {
+                $(this).attr('value', dateText);
+             }
+        });
+    }    
+
+ }
 
 $(document).ready(function() {
   avoidEmptySearch();
@@ -279,8 +318,11 @@ $(document).ready(function() {
   duplicates();
   showmore();
   searchclear();
+  
   $('[data-toggle="popover"]').popover({
-      trigger: 'click focus',
+      trigger: 'click focus'
   });
+  
   openUrlTooltip();
 });
+

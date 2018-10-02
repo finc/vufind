@@ -91,7 +91,7 @@ form[name=feedback] {
     }
 }
 
-.form-ill {
+#form-ill {
     .panel-heading {
         cursor: pointer;
     }    
@@ -105,4 +105,8 @@ form[name=feedback] {
     cursor: pointer;
     color: @gray-light;
     pointer-events: initial;
+}
+
+.form-group.show.required label:after {
+    content: '*';
 }
