@@ -554,12 +554,25 @@ class SolrGvimarc extends SolrMarc
      *
      * @return array
      */
-    public function getSecondaryAuthors()
+        public function getSecondaryAuthors()
     {
         $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd']);
+        //$author2 = $this->getFieldArray('700', ['a']);
         return $author2;
     }
     
+    /**
+     * Get an Array of Author roles
+     * they need to be translated. 
+     *
+     * @return array
+     */
+    public function getSecondaryAuthorsLive()
+    {
+        $live_author2 = $this->getFieldArray('700', ['a', 'd']);
+        return $live_author2;
+    }
+
     /**
      * Get an Array of Author roles
      * they need to be translated. 
