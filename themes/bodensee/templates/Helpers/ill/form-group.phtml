@@ -1,20 +1,21 @@
 <? $labelSize = 3; ?>
 <? $inputSize = 9; ?>
 <? $id = rand(0, 10000)?>
-<div class="form-group form-group-sm">
-    <label class="control-label col-sm-<?=$labelSize?>" for="ill-<?=$id?>"><?=$this->transEsc($label)?><? if($required):?>*<? endif; ?></label>
+<div class="form-group form-group-sm <? if ($required):?>show required<? endif; ?>">
+    <label class="control-label col-sm-<?=$labelSize?>" for="ill-<?=$id?>"><?=$this->transEsc($label)?></label>
     <div class="col-sm-<?=$inputSize?>"> 
       <? $title = is_array($value) ? implode(',',$value) : $value?>
-      <input type="<?=$this->escapeHtmlAttr($type)?>" class="form-control" 
+      <input type="text" class="form-control" 
              id="ill-<?=$this->escapeHtmlAttr($id)?>" 
              value="<?=$this->string()->cleanEsc($value)?>" 
              name="<?=$this->escapeHTMLAttr($name)?>" 
+             data-validate="<?=$required ? true : false?>"
              placeholder="<?=$this->transEsc($placeholder)?>"
              <?=$this->illform($this->status, $this->driver)->maxlength($name)?>
-             <? if ($required):?>required=""<? endif; ?>
+             <? if ($required):?>required="true"<? endif; ?>
              <? if (!empty($error)):?>data-error="<?=$this->escapeHtml($error)?>"<? endif; ?>/>
              <? if (!empty($error)): ?>
-             <span class="help-block with-error"></span>
+             <span class="help-block with-error"></span>             
              <? endif; ?>
     </div>
 </div>

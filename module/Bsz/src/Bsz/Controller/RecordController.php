@@ -176,7 +176,7 @@ class RecordController extends \VuFind\Controller\RecordController
         $uri= $this->getRequest()->getUri();
         $cookie = new \Zend\Http\Header\SetCookie(
             'orderStatus', 
-            $success, 
+            $success ? 1 : 0, 
             time()+ 60 * 60 * 2, 
             '/',
             $uri->getHost() );
