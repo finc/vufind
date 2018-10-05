@@ -421,6 +421,17 @@ class SolrGvimarc extends SolrMarc
     }
     
     /**
+     * Get an Array of Author Name with Live Data
+     * 
+     * @return array
+     */
+    public function getPrimaryAuthorNoLive()
+    {
+        $nolive_author = trim($this->getFirstFieldValue('100', ['a']));
+        return $nolive_author;
+    }
+    
+    /**
      * returns all authors from 100 or 700 without life data
      * @return array
      */
@@ -452,7 +463,7 @@ class SolrGvimarc extends SolrMarc
         return $gndauthor;
     }
     
-       /**
+    /**
      * Get GND-ID from 700|0 with (DE-588)-prefix
      *
      * @return array
@@ -562,15 +573,15 @@ class SolrGvimarc extends SolrMarc
     }
     
     /**
-     * Get an Array of Author roles
+     * Get an Array of Author Names with Live Data
      * they need to be translated. 
      *
      * @return array
      */
-    public function getSecondaryAuthorsLive()
+    public function getSecondaryAuthorsNoLive()
     {
-        $live_author2 = $this->getFieldArray('700', ['a', 'd']);
-        return $live_author2;
+        $nolive_author2 = $this->getFieldArray('700', ['a']);
+        return $nolive_author2;
     }
 
     /**
