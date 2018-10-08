@@ -137,12 +137,17 @@ class Record extends \VuFind\View\Helper\Root\Record
     {
         // Try to build thumbnail:
         $thumb = $this->driver->tryMethod('getThumbnail', [$size]);
-
-        // No thumbnail?  Return false:
-        if (empty($thumb) || array_key_exists('issn', $thumb)) {
+       
+        if (empty($thumb)) {
             return false;
         }
-
+    
+        if (is_array($thumb)) {
+            if (array_key_exists('issn', $thumb)) {
+                return false;
+            }
+        }
+        
         // Array?  It's parameters to send to the cover generator:
         if (is_array($thumb)) {
             $urlHelper = $this->getView()->plugin('url');
