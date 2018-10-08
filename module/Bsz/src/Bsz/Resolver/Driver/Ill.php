@@ -54,6 +54,7 @@ class Ill extends Ezb
      */
     protected function downgradeOpenUrl($params)
     {
+        var_dump($params);
         $newParams = [];
         $mapping = [
             'rft_val_fmt' => false,
@@ -84,7 +85,12 @@ class Ill extends Ezb
             }
         }
         
-        # UB Heidelbergs implementation differs from default. 
+        // remove date info for journals because users must choose themselfes. 
+        if ($newParams['genre'] == 'journal') {
+            unset($newParams['date']);
+        }
+        
+        // UB Heidelbergs implementation differs from default. 
         switch ($newParams['genre']) {
             case 'book': $newParams['genre'] = 'bookitem';
                 break;

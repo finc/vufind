@@ -1136,11 +1136,14 @@ class SolrGvimarc extends SolrMarc
      */
     protected function getJournalOpenURLParams()
     {
+        $places = $this->getPlacesOfPublication();
         $params = $this->getDefaultOpenUrlParams();
+        
         $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
         $params['rft.issn'] = (string) $this->getCleanISSN();
         $params['rft.jtitle'] = $this->getTitle();
         $params['rft.genre'] = 'journal';
+        $params['rft.place'] = array_shift($places);
         // zdbid is allowed in pid zone only - it is moved there
         // in OpenURL helper
         $params['pid'] = 'zdbid='.$this->getZdbId();
