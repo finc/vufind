@@ -68,7 +68,7 @@
               $year=$this->driver->getContainerYear(); 
               $pages=$this->driver->getContainerPages(); 
             if ($this->driver->isArticle() && !empty($journalTitle)): ?>
-            <tr>
+                 <tr>
                 <th><?=$this->transEsc('Published in')?>: </th>
                 <td>
                        <?= $this->string()->cleanEsc($journalTitle)?><!--

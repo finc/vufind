@@ -1345,7 +1345,7 @@ class SolrGvimarc extends SolrMarc
     public function getContainerTitle()
     {
         $fields = [
-            773 => ['t'], //SWB, GBV
+            773 => ['a', 't'], //SWB, GBV
             490 => ['v'], // BVB
             772 => ['t'], // HEBIS,
             780 => ['t']
