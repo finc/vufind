@@ -30,6 +30,10 @@ use Bsz\FormatMapper,
  */
 class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
+    
+    use \VuFind\RecordDriver\IlsAwareTrait;
+    use \VuFind\RecordDriver\MarcReaderTrait;
+    use \VuFind\RecordDriver\MarcAdvancedTrait;
 
     const DELIMITER = ' ';
     // Multipart Levels
@@ -37,13 +41,13 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     const MULTIPART_COLLECTION = 'collection';
     const NO_MULTIPART = 'no_multipart';
     // Bibliographic Levels
-    const BIBLIO_MONO_COMPONENT = 'monographic_component_part';
-    const BIBLIO_SERIAL_COMPONENT = 'serial_component_part';
-    const BIBLIO_COLLECTION = 'collection';
-    const BIBLIO_SUBUNIT = 'subunit';
-    const BIBLIO_MONOGRAPH = 'monograph';
-    const BIBLIO_SERIAL = 'serial';
-    const BIBLIO_INTEGRATED = 'integrated';
+    const BIBLIO_MONO_COMPONENT = 'MonographPart';
+    const BIBLIO_SERIAL_COMPONENT = 'SerialPart';
+    const BIBLIO_COLLECTION = 'Collection';
+    const BIBLIO_SUBUNIT = 'Subunit';
+    const BIBLIO_MONOGRAPH = 'Monograph';
+    const BIBLIO_SERIAL = 'Serial';
+    const BIBLIO_INTEGRATED = 'Integrated';
     // Simple breakdown of above 
     const INDEPENDENT = 'independent';
     const COLLECTION = 'collection';
@@ -125,10 +129,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function getMultipartLevel()
     {
-
-        $leader = $this->getMarcRecord()->getLeader();
-        $multipartLevel = strtoupper($leader{19});        
-
+               $leader = $this->getMarcRecord()->getLeader();
+        $multipartLevel = strtoupper($leader{19});   
+        
         switch ($multipartLevel) {
             case 'A':
                 return static::MULTIPART_COLLECTION;
@@ -201,12 +204,16 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $part = [
             static::MULTIPART_PART,
             static::BIBLIO_SERIAL,
-            static::BIBLIO_MONO_COMPONENT
+            static::BIBLIO_MONO_COMPONENT,
                 
         ];
-        if (in_array($this->getBibliographicLevel(), $part) ||
-                in_array($this->getMultipartLevel(), $part)) {
-            return true;
+        $biblio = $this->getBibliographicLevel();
+        $multi = $this->getMultipartLevel();
+        
+        
+        if (in_array($biblio, $part) ||
+                in_array($multi, $part)) {
+            return true;            
         }
         return false;
     }
@@ -358,8 +365,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function isBook()
     {
-        $leader = null;
-        $leader_7 = '';
         $leader = $this->getMarcRecord()->getLeader();
         $leader_7 = strtoupper($leader{7});
         if ($leader_7 == 'M') {

@@ -845,9 +845,9 @@ class SolrGvimarc extends SolrMarc
      */
     public function getContainer()
     {
-        if (null === $this->container &&
+        if (count($this->container) == 0 &&
             $this->isPart()) {
-            $relId = $f773 = $this->getFieldArray(773, ['w']);
+            $relId = $this->getFieldArray(773, ['w']);
             $this->container = [];
             if (is_array($relId) && count($relId) > 0) {
                 foreach ($relId as $k => $id) {
@@ -863,7 +863,6 @@ class SolrGvimarc extends SolrMarc
 //                        strpos($_SERVER['REQUEST_URI'], 'Search') !== FALSE) {
 //                    $searchClassId = 'Interlending';
 //                }
-
                 $results = $this->runner->run($params, $searchClassId);
                 $this->container = $results->getResults();
             }
@@ -1098,7 +1097,7 @@ class SolrGvimarc extends SolrMarc
     {
         $params = $this->getDefaultOpenUrlParams();
         $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
-        $params['rft.genre'] = 'article';
+        $params['rft.genre'] = $this->isContainerMonography() ? 'bookitem' : 'article';
         $params['rft.issn'] = (string) $this->getCleanISSN();
         // an article may have also an ISBN:
         $params['rft.isbn'] = (string) $this->getCleanISBN();
