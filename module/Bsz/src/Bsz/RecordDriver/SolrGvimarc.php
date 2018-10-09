@@ -61,7 +61,6 @@ class SolrGvimarc extends SolrMarc
         parent::__construct($Mapper, $mainConfig, $recordConfig, $searchSettings);
         $this->mapper = $Mapper;
         $this->client = $Client;
-        var_dump($client);
     }
 
     /**
