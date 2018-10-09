@@ -568,7 +568,6 @@ class SolrGvimarc extends SolrMarc
         public function getSecondaryAuthors()
     {
         $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd']);
-        //$author2 = $this->getFieldArray('700', ['a']);
         return $author2;
     }
     
