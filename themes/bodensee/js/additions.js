@@ -206,15 +206,15 @@ function avoidEmptySearch() {
         
      });
      $('#searchForm').submit(function(e) {
-         if ($input.val().replace( /\W*/gi,"" ).length <= limit) {
+        if ($input.val().replace( /\s*/gi,"" ).length <= limit) {
              $input.attr('data-placement', 'bottom');
 
              $input.popover('show');
              return false;
-         } else {
+        } else {
              $input.popover('hide');
              return true;
-         }
+        }
      })
      $input.on('change keydown paste input', function(e) {
          if ($input.val().replace( /\W*/gi,"" ).length > limit) { 
