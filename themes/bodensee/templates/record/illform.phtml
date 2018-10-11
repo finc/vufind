@@ -7,6 +7,12 @@
   $collapse = 'panel-collapse collapse';
   // avoid notices when using free form
   $params = !isset($params) ? [] : $params;
+  $type = 'book';
+  if ($this->driver->isJournal()) { $type = 'journal';}
+  elseif ($this->driver->isContainerMonography()) { $type = 'article-book';}
+  elseif ($this->driver->isArticle()){$type = 'article';}
+  
+  
   
 ?>
 <div class="col-sm-12">    
@@ -14,7 +20,7 @@
     <noscript><p class="alert alert-danger"><?=$this->transEsc('Please enable JavaScript.')?></p></noscript>    
     <?=$this->flashmessages()?>
     <? if (!isset($success) || !$success): ?>
-    <form class="form-horizontal" id="form-ill" novalidate="true" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form" data-toggle="validator">
+    <form class="<?=$type?> form-horizontal" id="form-ill" novalidate="true" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form" data-toggle="validator">
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">   
             <? $content = $this->illForm($success, $this->driver)->renderBibliographicFields() ?>
