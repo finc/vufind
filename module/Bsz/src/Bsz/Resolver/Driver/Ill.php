@@ -67,6 +67,8 @@ class Ill extends Ezb
             'rft.pages' => 'pages',
             'rft.place' => 'place',
             'rft.title' => 'title',
+            'rft.series' => 'series',
+            'rft.edition' => 'edition',
             'rft.atitle' => 'atitle',
             'rft.btitle' => 'title',            
             'rft.jtitle' => 'title',
@@ -81,12 +83,13 @@ class Ill extends Ezb
                 $newParams[$mapping[$key]] = $value;
             }
         }
-        if (isset($params['rft.series'])) {
-            $newParams['title'] = $params['rft.series'].': '
-                    .$newParams['title'];
+        
+        // remove date info for journals because users must choose themselfes. 
+        if ($newParams['genre'] == 'journal') {
+            unset($newParams['date']);
         }
         
-        # UB Heidelbergs implementation differs from default. 
+        // UB Heidelbergs implementation differs from default. 
         switch ($newParams['genre']) {
             case 'book': $newParams['genre'] = 'bookitem';
                 break;
@@ -94,7 +97,7 @@ class Ill extends Ezb
         $params = [];
         foreach (array_filter($newParams) as $param => $val) {
             $params[] = $param.'='.$val;
-        }         
+        }   
         return implode('&', $params);
     }    
 }

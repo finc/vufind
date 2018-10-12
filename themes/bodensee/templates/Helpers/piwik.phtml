@@ -1,27 +1,34 @@
 <script type="text/javascript">
     switch (Cookies.getItem('orderStatus')) {
-        case true: var orderStatus = 'successfull';
+        case "1": var orderStatus = 'successfull';
             break;
-        case false: var orderStatus = 'not successfull';
+        case "0": var orderStatus = 'not successfull';
             break;
         default: var orderStatus = 'no Order';
     }
     window.piwikAsyncInit = function () {
         try {
+            <? if ($this->siteId > 0): ?>
             var piwikTracker = Piwik.getTracker("<?=$this->piwikUrl?>piwik.php", <?=$this->siteId?>);
             piwikTracker.setCustomVariable(1, "IllOrder", orderStatus, "visit");  
             piwikTracker.trackPageView();
+            <? endif; ?>          
             <? if ($this->globalSiteId > 0): ?>
             var piwik2 = Piwik.getTracker("<?=$this->piwikUrl?>piwik.php", 28);
-            piwik2.setCustomVariable(1, "IllOrder", orderStatus, "visit");                                
-            piwik2.trackPageView();
+            piwik2.setCustomVariable(1, "IllOrder", orderStatus, "visit");    
+                <? if ($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
+                piwik2.setCustomVariable(1, "sigel", '<?=$this->escapeHtml($this->client()->getSigel())?>', "visit");              
+                <? endif; ?>
+            piwik2.trackPageView();            
             <? endif; ?>
         } catch( err ) {}
     };
 </script>
 <script type="text/javascript" src="<?=$this->piwikUrl?>piwik.js"></script>
 <noscript>
+    <? if ($this->siteId > 0): ?>
     <p><img src="<?=$this->piwikUrl?>piwik.php?idsite=<?=$this->siteId?>" style="border:0;" alt="" /></p>
+    <? endif; ?>
     <? if ($this->globalSiteId > 0): ?>
     <p><img src="<?=$this->piwikUrl?>piwik.php?idsite=<?=$this->globalSiteId?>" style="border:0;" alt="" /></p>
     <? endif; ?>

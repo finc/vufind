@@ -47,6 +47,8 @@ class Library
     protected $adisurl;
     protected $idp;
     protected $regex;
+    protected $live;
+    protected $boss;
  
 
     public function exchangeArray($data)
@@ -55,6 +57,7 @@ class Library
         $this->isil = $data['isil'];
         $this->sigel = $data['sigel'];
         $this->live = (bool)$data['is_live'];
+        $this->boss = (bool)$data['is_boss'];
         $this->homepage = $data['homepage'];
         $this->isil_availability = $data['isil_availability'];
         $this->email = $data['email'];
@@ -164,6 +167,14 @@ class Library
     public function isLive() 
     {
         if (isset($this->live) && $this->live === true) {
+            return true;
+        }
+        return false;
+    }
+    
+    public function isBoss() 
+    {
+        if (isset($this->boss) && $this->boss === true) {
             return true;
         }
         return false;

@@ -1,20 +1,27 @@
 <? $labelSize = 6; ?>
 <? $inputSize = 6; ?>
+<? $disabled = ''; ?>
 <div class="form-group form-group-sm">    
     <div class=" form-group form-group-sm">
-        <? if ($this->illform($this->success, $this->driver)->isOpen('paper')): 
+        
+        <? if (isset($params['Bestellform'])):
+            $form = $params['Bestellform'];
+        elseif ($this->illform($this->success, $this->driver)->isOpen('paper')): 
             $form = 'Kopie';
         else: 
             $form = 'Leihen';
         endif; ?>
         <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
         <div class="col-sm-3 col-xs-1">
-            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?>/>  
+            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> <?=$disabled?>/>  
             <span for="ill-copy"><?=$this->transEsc('lend')?></span>
         </div>
         <div class="col-sm-3 col-xs-1">
             <input type="radio" id="ill-copy" name="Bestellform" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?>/>
             <span for="ill-copy"><?=$this->transEsc('paperdata')?></span>
+        </div>
+        <div class="col-sm-6 col-sm-offset-6">
+            <span class="help-block"><?=$this->transEsc('ill_help_copie_rent')?></span>            
         </div>
     </div>    
     <label class="control-label col-sm-<?=$labelSize?>"><?=$this->transEsc('Library')?>*</label>
@@ -72,7 +79,7 @@
             $date = new DateTime();
             $date->add(new DateInterval('P100D'));
         ?> 
-        <input type="date" class="" required="" id="ill-delivery_until" value="<?=isset($params['ErledFrist']) ? $params['ErledFrist'] : $date->format('Y-m-d')?>" name="ErledFrist"/>
+        <input type="date" class="form-control" required="" id="ill-delivery_until" value="<?=isset($params['ErledFrist']) ? $params['ErledFrist'] : $date->format('Y-m-d')?>" name="ErledFrist"/>
     </div>
 </div>
 <div class=" form-group form-group-sm">
@@ -96,7 +103,7 @@
 <div class=" form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-costs"><?=$this->transEsc('costs')?>*</label>
     <div class="col-sm-<?=$inputSize?>">
-        <input type="number" class="" id="ill-costs" required="" min="0" max="30" value="<?=isset($params['MaxKostenKopie']) ? $params['MaxKostenKopie'] : 8 ?>" name="MaxKostenKopie" data-costs="true" data-error="<?=$this->transEsc('ill_costs_error')?>"/>
+        <input type="number" class="form-control" id="ill-costs" required="" min="0" max="30" value="<?=isset($params['MaxKostenKopie']) ? $params['MaxKostenKopie'] : 8 ?>" name="MaxKostenKopie" data-costs="true" data-error="<?=$this->transEsc('ill_costs_error')?>"/>
         <span class="help-block with-errors"><?=$this->transEsc('ill_help_costs')?></span>
     </div>
 </div>

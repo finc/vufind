@@ -2,111 +2,132 @@
   $this->headLink()->appendStylesheet('EDS.css');
   $accessLevel = $this->driver->getAccessLevel();
   $restrictedView = empty($accessLevel) ? false : true;
-  $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'medium', $this->recordLink()->getUrl($this->driver));
+  $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'medium', $this->recordLink()->getUrl($this->driver));  
 ?>
-<?
-  $thumbnail = false;
-  $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
-  ob_start(); ?>
-  <div class="media-<?=$thumbnailAlignment ?> <?=$this->escapeHtml($coverDetails['size'])?>">
-    <? if ($coverDetails['cover']): ?>
-      <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="_record_link">
-        <img src="<?=$this->escapeHtmlAttr($coverDetails['cover'])?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
-      </a>
-    <? else: ?>
-      <span class="recordcover pt-icon pt-<?=$this->driver->getPubTypeId()?>"></span>
-      <div><?=$this->driver->getPubType()?></div>
-    <? endif; ?>
-  </div>
-<? $thumbnail = ob_get_contents(); ?>
-<? ob_end_clean(); ?>
-<input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
-<input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
-<div class="media<?=$this->driver->supportsAjaxStatus()?' ajaxItem':''?>">
-  <? if ($thumbnail && $thumbnailAlignment == 'left'): ?>
-    <?=$thumbnail ?>
-  <? endif; ?>
-  <div class="media-body">
-    <div class="result-body">
-      <? $items = $this->driver->getItems();
-        if (isset($items) && !empty($items)):
+<div class="source<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?> recordId<?=$this->driver->supportsAjaxStatus()?' ajaxItemId':''?> col-xs-12">
+    <div class="row">
+    <?
+      $thumbnail = false;
+      $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
+      ob_start(); 
+    ?>
+    <div class="col-sm-2 col-xs-3">
+      <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
+      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
+      <? if ($coverDetails['cover']): ?>
+          <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="_record_link">
+          <img src="<?=$this->escapeHtmlAttr($coverDetails['cover'])?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
+          </a>
+      <? else: ?>
+          <span class="recordcover pt-icon pt-<?=$this->driver->getPubTypeId()?>"></span>
+        <div class="small text-center"><?=$this->transEsc($this->driver->getPubType())?></div>
+      <? endif; ?>
+    </div>
+    <? $thumbnail = ob_get_contents(); ?>
+    <? ob_end_clean(); ?>        
+    
+    <? if ($thumbnail && $thumbnailAlignment == 'left'): ?>
+        <?=$thumbnail ?>
+    <? endif; ?>        
+      
+    <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
+    <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
+      
+    <div class="col-sm-7 col-xs-8 ">
+      <? $hiddenItems = ['PublrInfo'] ?> 
+      <?  $items  =  $this->driver->getItems();
+        if (isset($items) && !empty($items)) :
           foreach ($items as $item):
-            if (!empty($item)): ?>
+            if (!empty($item) && !in_array($item['Group'], $hiddenItems)): ?>              
               <div class="resultItemLine1">
-                <? if('Ti' == $item['Group']): ?>
-                  <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull _record_link"  data-view="<?=$this->params->getOptions()->getListViewOption()?>">
+                <?if('Ti' == $item['Group']): ?>
+                <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title _record_link" >
                   <?=$item['Data']?> </a>
-                <? else:?>
-                  <p>
-                    <strong><?=$this->transEsc($item['Label'])?>:</strong>
-                     <?=$this->driver->linkUrls($item['Data'])?>
-                  </p>
-                <? endif;?>
+                <?else:?>
+                <span class="<?=$item['Label']?>">
+               <?
+                
+                  if ($item['Label']!="Title" && $item['Label'] !== 'File Description' && $item['Label'] !== 'Availability' && $item['Label'] !== 'URL' && $item['Label'] != 'Access URL' && $item['Label'] !== 'Relation' ) {
+                    echo '<strong>'.$this->transEsc($item['Label']).': </strong>'.$this->driver->linkUrls($item['Data']);
+                  }
+                ?>
+                </span>
+                <?endif;?>
               </div>
             <? endif;
           endforeach;
         elseif ($restrictedView): ?>
           <div class="resultItemLine1">
-            <p>
-              <?=$this->transEsc('This result is not displayed to guests')?>
-              <br />
-              <a class="login" href="<?=$this->url('myresearch-userlogin')?>">
-                <strong><?=$this->transEsc('Login for full access')?></strong>
-              </a>
-            </p>
+          <p>
+              <?=$this->transEsc('This result is not displayed to guests')?>              
+          </p>
           </div>
         <? endif; ?>
-        <? if (!empty($this->driver->getDoi()) && !$this->client()->is('doi_in_customlink') && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable()): ?>
+     
+        
+      <? if (!empty($this->driver->getDoi()) && !$this->client()->is('doi_in_customlink') && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable()): ?>
       <div class="resulItemLine1"><span><strong>DOI:</strong></span>
-        <span><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank">https://doi.org/<?= $this->driver->getDoi(); ?></a></span>
+        <span><a href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank">https://doi.org/<?= $this->driver->getDoi(); ?></a></span>
       </div>
       <? endif; ?>
-      <div class="resultItemLine2 openurl">
-        <? $openUrl = $this->openUrl($this->driver, 'results');
-         $openUrlActive = $openUrl->isActive();
-         $html = $openUrl->renderTemplate();
-        ?>
-        <? if ($openUrlActive && strlen($html) > 0): ?>
-         <?=$html?>
+      
+      
+          
+      <? $customFTLinks = $this->driver->getFTCustomLinks(); 
+        if ( !empty($customFTLinks)  && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable() ): ?>
+        <div class="resulItemLine1">
+            
+                <? foreach ($customFTLinks as $customLink): ?>
+                    <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
+                        $mot = isset($customLink['MouseOverText'])? $customLink['MouseOverText'] : '';
+                        $icon = isset ($customLink['Icon']) ? str_replace('http:', 'https:', $customLink['Icon']) : '';
+                        $name = isset($customLink['Text']) ? $customLink['Text'] : '';
+                    ?>
+                    <strong><a href="<?=$this->driver->linkUrls($this->escapeHtmlAttr(str_replace('http://dx.doi.org', 'https://doi.org', $url)))?>" target="_blank" title="<?=$mot?>" class="custom-link">
+                        <? if ($icon): ?><img src="<?=$icon?>" /> <? endif; ?><?=$name?>
+                    </a></strong>
+                    <? if ($this->client()->is('only_first_customlink')): ?>
+                        <? break; ?>
+                    <? endif; ?>
+                <? endforeach; ?>
+        </div>
       <? endif; ?>
-      </div>
-
-      <div class="resultItemLine4 custom-links">   
-        <? $customLinks = array_merge($this->driver->getFTCustomLinks(), $this->driver->getCustomLinks());
-        if (!empty($customLinks)): ?>
-          <? foreach ($customLinks as $customLink): ?>
-          <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
-              $mot = isset($customLink['MouseOverText'])? $customLink['MouseOverText'] : '';
-              $icon = isset($customLink['Icon']) ? $customLink['Icon'] : '';
-              $name = isset($customLink['Text']) ? $customLink['Text'] : '';
-              // avoid the image being force-loaded over http which breaks a https connection
-              $icon = str_replace('http://', '//', $icon);
-              $url = str_replace('http://', '//', $url);
-          ?>
-          <? if (strpos($url, 'redi-bw.de') === false): ?>
-          <span>
-            <a href="<?=$this->escapeHtmlAttr($url)?>" title="<?=$this->escapeHtmlAttr($mot)?>" class="custom-link external <? if(!empty($icon)):?>hasicon<? endif; ?>">
-              <? if ($icon): ?><img src="<?=$this->escapeHtmlAttr($icon)?>" /> <? endif; ?><?=$this->escapeHtml($name)?>
-            </a>
-          </span>
-          <? endif; ?>
-          <? endforeach; ?>
-        <? endif; ?>
-      </div>
-
+        
       <? if ($this->driver->hasHTMLFullTextAvailable()): ?>
-        <a href="<?= $this->recordLink()->getUrl($this->driver, 'fulltext') ?>#html" class="icon html fulltext _record_link" target="_blank">
-          <?=$this->transEsc('HTML Full Text')?>
-        </a>
+      <strong><a href="<?= $this->recordLink()->getUrl($this->driver)?>#html" class="fulltext _record_link hasicon text-danger">
+            <i class="fa fa-file-text-o"></i><?=$this->transEsc('HTML Full Text')?>
+          </a></strong>
         &nbsp; &nbsp;
       <? endif; ?>
 
       <? if ($this->driver->hasPdfAvailable()): ?>
-        <a href="<?= $this->recordLink()->getUrl($this->driver) . '/PDF'; ?>" class="icon pdf fulltext" target="_blank">
-          <?=$this->transEsc('PDF Full Text')?>
-        </a>
+          <strong><a href="<?= $this->recordLink()->getUrl($this->driver).'/PDF'; ?>" class="fulltext external hasicon text-danger">
+            <i class="fa fa-file-pdf-o"></i><?=$this->transEsc('PDF Full Text')?>
+          </a></strong>
       <? endif; ?>
+      
+
+      <? $customLinks = $this->driver->getCustomLinks(); ?>
+      <? if ( !empty($customLinks) && $this->client()->is('show_other_customlinks') && empty($customFTLinks) && empty($this->driver->getDoi()) && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable() ): ?>
+        <div class="resultItemLine4 custom-links">
+            <? foreach ($customLinks as $customLink): ?>
+                <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
+                   $mot = isset($customLink['MouseOverText'])? $customLink['MouseOverText'] : '';
+                   $icon = isset ($customLink['Icon']) ? $customLink['Icon'] : '';
+                   $name = isset($customLink['Text']) ? $customLink['Text'] : '';?>
+                <span>
+                    <a href="<?=$this->escapeHtmlAttr(str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $url))?>" title="<?=$mot?>" class="external custom-link hasicon ">
+                        <? if ($icon): ?><img src="<?=str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $icon)?>" /><?=$name?> <? endif; ?>
+                    </a>
+                </span>
+                <? if ($this->client()->is('only_first_customlink')): ?>
+                    <? break; ?>
+                <? endif; ?>
+            <? endforeach; ?>
+        </div>      
+      <? endif; ?>   
     </div>
+          
     <div class="result-links hidden-print">
         <ul class="nav nav-pills nav-stacked">
       <? if ($this->cart()->isActiveInSearch() && $this->params->getOptions()->supportsCart() && $this->cart()->isActive()): ?>
@@ -129,23 +150,21 @@
             </div>
         </li>
       <? endif; ?>
-
+        
       <? /* Hierarchy tree link */ ?>
       <? $trees = $this->driver->tryMethod('getHierarchyTrees'); if (!empty($trees)): ?>
         <? foreach ($trees as $hierarchyID => $hierarchyTitle): ?>
           <div class="hierarchyTreeLink">
             <input type="hidden" value="<?=$this->escapeHtmlAttr($hierarchyID)?>" class="hiddenHierarchyId" />
-            <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
-            <a class="hierarchyTreeLinkText" data-lightbox href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>#tabnav" title="<?=$this->transEsc('hierarchy_tree')?>">
+            <i class="fa fa-fw fa-sitemap"></i>
+            <a class="hierarchyTreeLinkText modal-link" href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>#tabnav" title="<?=$this->transEsc('hierarchy_tree')?>">
               <?=$this->transEsc('hierarchy_view_context')?><? if (count($trees) > 1): ?>: <?=$this->escapeHtml($hierarchyTitle)?><? endif; ?>
             </a>
           </div>
         <? endforeach; ?>
       <? endif; ?>
-        </ul>
+        </ul>        
     </div>
   </div>
-  <? if ($thumbnail && $thumbnailAlignment == 'right'): ?>
-    <?=$thumbnail ?>
-  <? endif; ?>
 </div>
+

@@ -219,7 +219,7 @@ class Client extends \Zend\Config\Config
         if (!$this->isIsilSession()) {
             $sigel = $this->get('OpenURL')->get('sigel');
         } else if ($this->libraries instanceof \Bsz\Config\Libraries) {
-            $sigel = $this->libraries->getFirstActiveLibrary()->getSigel();
+            $sigel = $this->libraries->getFirstActive($this->getIsils())->getSigel();
         }
         return $sigel;
     }

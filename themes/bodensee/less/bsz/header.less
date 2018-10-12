@@ -30,18 +30,12 @@ header {
         margin-right: 0 !important;
     }
     #searchForm {
-        width: auto !important;
+        //width: auto !important;
         input[type=text]{
-            display: inline-block;
+            //display: inline-block;
             font-size: 1.2em;
         }
-        button[type=submit] {
-            font-size: 1.0em;
-            padding-top: 8px;
-            padding-bottom: 7px;
-            // avaoid small space above button
-            margin-top: -2px;
-        }
+     
         border: 0;
         padding-top: 0;
         padding-bottom: 0;
@@ -50,7 +44,6 @@ header {
             padding-right: 0;
         }
         @media (max-width: @grid-float-breakpoint-max) {
-            padding-left: 10px;
             padding-right: 0;
         }
 
@@ -59,11 +52,16 @@ header {
     .navbar-toggle {
         margin: 0 !important; 
         border: 0;
-        padding: 7px 11px;
+        padding: 4px 10px;
         i {
             font-size: @finger-friendly-size;
         }
                 
+    }
+    .navbar-form .input-group .input-group-btn {
+        // magic - this makes the search bar fill 100% width
+        width: 1% !important;
+        
     }
      
 
@@ -148,4 +146,8 @@ header .nav-tabs {
 
 .navbar .dropdown a {
     cursor: pointer;
+}
+
+.dropdown-header {
+  font-size: @font-size-base !important;
 }

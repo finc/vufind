@@ -140,7 +140,8 @@ class Libraries extends TableGateWay
         $select->where
                 ->and
                     ->equalTo('fk_country', (int)$id)
-                    ->equalTo('is_ill_active', 1);
+                    ->equalTo('is_ill_active', 1)
+                    ->equalTo('is_boss', 0);
 
         return $this->selectWith($select);
     }

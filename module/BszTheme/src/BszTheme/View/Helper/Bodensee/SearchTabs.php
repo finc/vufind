@@ -146,6 +146,8 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
                 break;
             case 'solr:filtered1': $icon = 'fa-book';
                 break;   
+            case 'solr:filtered2': $icon = 'fa-newspaper-o';
+                break;   
             case 'solr': $icon = 'fa-globe';
                 break;    
             case 'fis': $icon = 'fa-university';

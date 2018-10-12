@@ -68,6 +68,8 @@ class TestController extends \VuFind\Controller\AbstractBase {
     
     public function zflAction() {        
         
+        $date = new DateTime();
+        $date->add(new DateInterval('P100D'));
         
         $params = [
             'Verfasser' =>  '',
@@ -83,8 +85,8 @@ class TestController extends \VuFind\Controller\AbstractBase {
             'AufsatzTitel' =>  '',
             'Seitenangabe' =>  '',
             'Bestellform' =>  'Leihen',
-            'Sigel' =>  'Kon 4',
-            'ErledFrist' =>  '2018-08-11',
+            'Sigel' =>  'Mar 1',
+            'ErledFrist' => $date->format('Y-m-d'),
             'AndereAuflage' =>  'on',
             'MaxKostenKopie' =>  '8',
             'Bemerkung' =>  '',

@@ -68,7 +68,7 @@
               $year=$this->driver->getContainerYear(); 
               $pages=$this->driver->getContainerPages(); 
             if ($this->driver->isArticle() && !empty($journalTitle)): ?>
-            <tr>
+                 <tr>
                 <th><?=$this->transEsc('Published in')?>: </th>
                 <td>
                        <?= $this->string()->cleanEsc($journalTitle)?><!--
@@ -118,12 +118,13 @@
             </tr>
             <? endif; ?>
             <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
+            <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
             <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
             <? if (isset($authors['main']) && !empty($authors['main'])): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author">
-                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($authors['main'])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($authors['main'])?></a>
+                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($authors['main'])?></a>
                     <? if ($gnd_author != ''): ?>
                        (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_author?>" class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a>)
                     <? endif; ?>
@@ -141,6 +142,7 @@
             </tr>
             <? endif; ?>
             <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
+            <? $noLiveSecondaryAuthors = $this->driver->getSecondaryAuthorsNoLive(); ?>
             <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
             <? $role_au2 = $this->driver->getSecondaryAuthorsRole(); ?>
             <tr>
@@ -149,7 +151,7 @@
                     <? foreach ($authors['secondary'] as $k => $field): ?>
                      <?=($i++ == 0)?'':', '?>
                     <span property="contributor">
-                        <a class="author" href=<?=$this->url('search-results')?>?lookfor=<?=urlencode($field)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($field)?></a>
+                        <a class="author" href=<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLiveSecondaryAuthors[$k])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($field)?></a>
                     </span>
                     <? if (isset($gnd_au2[$k])): ?>
                     (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>, <?=$this->transEsc($role_au2[$k]);?><? endif; ?>
