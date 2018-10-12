@@ -256,6 +256,7 @@ class IllForm extends AbstractHelper
             ['Subtitle', 'Untertitel', $this->getText('subtitle')],
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers')],
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication')],
+            ['storage_retrieval_request_year', 'Jahrgang', '', '', true],
             ['ISSN', 'Issn', $this->getFromDriver('getCleanISSN')],
         ];
         return $this->renderFormFields($fields);        
@@ -291,8 +292,7 @@ class IllForm extends AbstractHelper
                 ['article author', 'AufsatzAutor', '', '', true],
                 ['article title', 'AufsatzTitel', '', '', true],
                 ['Issue', 'Heft', ''],
-                ['storage_retrieval_request_year', 'Jahrgang', '', '', true],
-                ['pages', 'Seitenangabe', '', '', true]
+                ['pages', 'Seitenangabe', '', '', true, 'ill_error_pages']
             ];              
         } elseif (isset($this->driver) && $this->driver->isArticle()) {
             $fields = [
@@ -300,13 +300,13 @@ class IllForm extends AbstractHelper
                 ['article title', 'AufsatzTitel', $this->getFromDriver('getTitle'), '', true],
                 ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true],
                 ['Issue', 'Heft', $this->getFromDriver('getContainerIssue')],
-                ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true],
+                ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ill_error_pages'],
             ];              
         } elseif (isset($this->driver) && $this->driver->isBook()) {
             $fields = [
                 ['article author', 'AufsatzAutor', ''],
                 ['article title', 'AufsatzTitel', ''],
-                ['pages', 'Seitenangabe', ''],
+                ['pages', 'Seitenangabe', '', '', false, 'ill_error_pages'],
             ];              
         } else {
             $fields = [
@@ -314,7 +314,7 @@ class IllForm extends AbstractHelper
                 ['article title', 'AufsatzTitel', ''],
                 ['Issue', 'Heft', '', 'ill_placeholder_article'],
                 ['storage_retrieval_request_volume', 'Jahrgang', '', 'ill_placeholder_article' ],
-                ['pages', 'Seitenangabe', ''],
+                ['pages', 'Seitenangabe', '', '', false, 'ill_error_pages'],
             ];  
             
         }
@@ -361,7 +361,7 @@ class IllForm extends AbstractHelper
             'label' => $params['label'], 
             'name' => $params['name'],
             'value' => $params['value'],
-            'required' => isset($params['required']) ? $params['required'] : false,
+            'required' => isset($params['required']) ? (bool)$params['required'] : false,
             'error' => $params['error'],
             'placeholder' => $params['placeholder'],
             'type' => $params['type'],

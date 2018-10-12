@@ -63,25 +63,43 @@ function remoteModal() {
     });
 }
 
+/**
+ * 
+ * main method for ill form
+ */
+
 function illFormLogic() {
     
     if (!$("input[name='AusgabeOrt']:checked").val()) {
         $('.place input').first().prop('checked', true);
     }
+    $('input[name=Bestellform]').change(function() {
+        changeRequiredCopy($(this)); 
+    });
         
     $('#form-ill').validator({
         disable: false,
         focus: true,
         custom: {
+            seitenangabe: function($el) {
+                return validateCopy($el);
+            },
+            bestellform: function($el) {
+                return validateCopy($el);
+            },
+            
             costs: function($el) {
                 var costs = $el.val();
                 if((costs < 8 && costs > 0) || costs < 0 ) {
                     return 'Costs must not be between 0 and 8. ';
                 }
-            }
+            },
+            
         }
         
     }).on('submit', function (e) {
+        changeRequiredCopy($('input[name=Bestellform]:checked'));
+        
         var $errors = $(this).find('.has-error');
         if ($errors.length > 0) {
             // open panels with errors
@@ -92,13 +110,12 @@ function illFormLogic() {
                 text: VuFind.translate('ill_form_error')               
             }));
             
-        }
-        
+        }        
         if (!e.isDefaultPrevented()) {
             // everything is validated, form to be submitted
             $(this).find('[type=submit]').addClass('disabled')
                     .parent().append('<i class="fa fa-spinner fa-spin"></i>');           
-        }
+        }        
     }); 
      //switch places when changing library
     $('input[name=Sigel]').change(function() {
@@ -112,23 +129,47 @@ function illFormLogic() {
             .removeClass('hidden').find('input').first().prop('checked', true);       
       
     });
-    // open/close panel according to radio button
-    $('input[name=Bestellform]').change(function(e) {
-        if ($(this).attr('id') === 'ill-lend') {
-            $('#panel-paperdata').find('.form-group.required')
-                    .toggleClass('show').find('input')
+ 
+}
+
+function validateCopy($el) {
+    // For copies, we must enter something in the copies sectio
+    if ($('input[name=Bestellform]:checked').val() === 'Kopie') {
+        
+        // we don't need this if there are required fields
+        var $required = $('#panel-paperdata').find('.form-group.required');
+        if ($required-length === 0) {
+            
+            // count sum of input lengths
+            var copyInputLength = 0;
+
+            $('#panel-paperdata input').each(function(k){
+                copyInputLength = copyInputLength + $(this).val().length;
+            });
+            if (copyInputLength === 0 ) {
+                $('#panel-paperdata .form-group').addClass('has-error');            
+                $('#panel-paperdata .panel-collapse').collapse('show');      
+                return $el.attr('data-error');
+            } 
+        }
+    }      
+//    
+}
+
+function changeRequiredCopy($el) {
+    var $required = $('#panel-paperdata').find('.form-group.required');
+    if ($required.length > 0) {
+        if ($el.attr('id') === 'ill-lend') {
+            $required.toggleClass('show').find('input')
                         .removeAttr('required')
                         .attr('data-validate', 'false');
         } else {
-            $('#panel-paperdata').find('.form-group.required')
-                    .toggleClass('show').find('input')
+            $required.toggleClass('show').find('input')
                     .attr('required', 'true')
                     .attr('data-validate', 'true');   
-        }
-         $('#form-ill').validator();
-        
-    }); 
- 
+        } 
+        $('#form-ill').validator('update');        
+    }
 }
 
 function externalLinks() {

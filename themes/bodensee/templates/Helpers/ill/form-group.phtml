@@ -10,12 +10,13 @@
              value="<?=$this->string()->cleanEsc($value)?>" 
              name="<?=$this->escapeHTMLAttr($name)?>" 
              data-validate="<?=$required ? true : false?>"
+             data-<?=strtolower($this->escapeHtmlAttr($name))?>=""
              placeholder="<?=$this->transEsc($placeholder)?>"
              <?=$this->illform($this->status, $this->driver)->maxlength($name)?>
              <? if ($required):?>required="true"<? endif; ?>
-             <? if (!empty($error)):?>data-error="<?=$this->escapeHtml($error)?>"<? endif; ?>/>
+             <? if (!empty($error)):?>data-error="<?=$this->transEsc($error)?>"<? endif; ?>/>
              <? if (!empty($error)): ?>
-             <span class="help-block with-error"></span>             
+             <span class="help-block with-error"><?=$this->transEsc($error)?></span>             
              <? endif; ?>
     </div>
 </div>
