@@ -74,7 +74,7 @@ function illFormLogic() {
         $('.place input').first().prop('checked', true);
     }
     $('input[name=Bestellform]').change(function() {
-        changeRequiredCopy(); 
+        changeRequiredCopy($(this)); 
     });
         
     $('#form-ill').validator({
@@ -98,7 +98,7 @@ function illFormLogic() {
         }
         
     }).on('submit', function (e) {
-        changeRequiredCopy();
+        changeRequiredCopy($('input[name=Bestellform]:checked'));
         
         var $errors = $(this).find('.has-error');
         if ($errors.length > 0) {
@@ -156,10 +156,10 @@ function validateCopy($el) {
 //    
 }
 
-function changeRequiredCopy() {
+function changeRequiredCopy($el) {
     var $required = $('#panel-paperdata').find('.form-group.required');
     if ($required.length > 0) {
-        if ($(this).attr('id') === 'ill-lend') {
+        if ($el.attr('id') === 'ill-lend') {
             $required.toggleClass('show').find('input')
                         .removeAttr('required')
                         .attr('data-validate', 'false');
