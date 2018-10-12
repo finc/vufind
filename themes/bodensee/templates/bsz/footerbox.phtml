@@ -30,9 +30,9 @@ endif;?>
             <li><a href="<?=$url?>" class="<?= $external ? 'external' : 'internal'?>" <?= $external ? 'target="boss"' : ''?>><?=$this->transEsc($translation)?></a></li>
         <? endforeach; ?>
         <? if ($boxNo == 3 && $this->client()->is('help_link')): ?>
-        <li><a class="internal help-link" href="<?=$this->url('help-home')?>?topic=search"><?=$this->transEsc('Help with Search Operators')?></a></li>
+        <li><a class="internal help-link" data-lightbox href="<?=$this->url('help-home')?>?topic=search"><?=$this->transEsc('Help with Search Operators')?></a></li>
         <? elseif($boxNo == 3 && $this->client()->is('help_link_advanced')): ?>
-        <li><a class="internal help-link" href="<?=$this->url('help-home')?>?topic=advsearch"><?=$this->transEsc('Help with Advanced Search')?></a></li>
+        <li><a class="internal help-link" data-lightbox href="<?=$this->url('help-home')?>?topic=advsearch"><?=$this->transEsc('Help with Advanced Search')?></a></li>
         <? endif; ?>
     </ul>
   <? endif; ?>
