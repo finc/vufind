@@ -256,6 +256,7 @@ class IllForm extends AbstractHelper
             ['Subtitle', 'Untertitel', $this->getText('subtitle')],
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers')],
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication')],
+            ['storage_retrieval_request_year', 'Jahrgang', '', '', true],
             ['ISSN', 'Issn', $this->getFromDriver('getCleanISSN')],
         ];
         return $this->renderFormFields($fields);        
@@ -291,7 +292,6 @@ class IllForm extends AbstractHelper
                 ['article author', 'AufsatzAutor', '', '', true],
                 ['article title', 'AufsatzTitel', '', '', true],
                 ['Issue', 'Heft', ''],
-                ['storage_retrieval_request_year', 'Jahrgang', '', '', true],
                 ['pages', 'Seitenangabe', '', '', true, 'ill_error_pages']
             ];              
         } elseif (isset($this->driver) && $this->driver->isArticle()) {
