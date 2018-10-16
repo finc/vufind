@@ -8,9 +8,13 @@
   // avoid notices when using free form
   $params = !isset($params) ? [] : $params;
   $type = 'book';
-  if ($this->driver->isJournal()) { $type = 'journal';}
-  elseif ($this->driver->isContainerMonography()) { $type = 'article-book';}
-  elseif ($this->driver->isArticle()){$type = 'article';}
+  if (isset($this->driver)) {
+    if ($this->driver->isJournal()) { $type = 'journal';}
+    elseif ($this->driver->isContainerMonography()) { $type = 'article-book';}
+    elseif ($this->driver->isArticle()){$type = 'article';}
+  } else {
+    $type = 'free';
+  }
   
   
   
