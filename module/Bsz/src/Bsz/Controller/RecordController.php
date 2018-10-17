@@ -476,8 +476,8 @@ class RecordController extends \VuFind\Controller\RecordController
         }
         $view = new ViewModel($params);
         $this->layout()->searchClassId = $view->searchClassId = $this->searchClassId;
-        $route = $this->params()->fromRoute();        
-        $this->driver = isset($route['id']) ? $this->loadRecord() : null;
+        $route = $this->params()->fromRoute();      
+        $view->driver = isset($route['id']) ? $this->loadRecord() : null;
         return $view;
     }
     
