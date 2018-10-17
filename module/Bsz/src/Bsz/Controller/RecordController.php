@@ -105,24 +105,26 @@ class RecordController extends \VuFind\Controller\RecordController
         if (count($isils) > 0) {
             return $this->processIsil();
         }
+        $params = $this->params()->fromPost();
         $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');
         // If Request does not have this param, we should not use collapsible 
         // panels
         $success = null;
-        $this->driver = $this->loadRecord();
+        $route = $this->params()->fromRoute();
+        
+        $this->driver = isset($route['id']) ? $this->loadRecord() : null;
         $this->baseUrl = $this->isTestMode() ? $config->get('baseurl_test') :
                 $config->get('baseurl_live');
         $this->baseUrlAuth = $this->isTestMode() ? $config->get('baseurl_auth_test') :
                 $config->get('baseurl_auth_live');
 
         $this->debug('BaseURL for ILL-Request: '.$this->baseUrl);
-        $params = $this->params()->fromPost();
         
         $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
         $client = $this->getServiceLocator()->get('Bsz\Client');
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
-            throw new \Bsz\Exception('You must select a library to continue');
             $this->FlashMessenger()->addErrorMessage('missing_isil');
+            throw new \Bsz\Exception('You must select a library to continue');
         } 
         $libraries = $this->getServiceLocator()->get('bsz\libraries');
         $first = $libraries->getFirstActive($client->getIsils());
@@ -458,5 +460,26 @@ class RecordController extends \VuFind\Controller\RecordController
   
         return $view;
     }
+    /**
+     * We override this method to get rid of the driver dependency (for the free form)
+     *
+     * @param array $params Parameters to pass to ViewModel constructor.
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    protected function createViewModel($params = null)
+    {
+        $layout = $this->params()
+            ->fromPost('layout', $this->params()->fromQuery('layout', false));
+        if ('lightbox' === $layout) {
+            $this->layout()->setTemplate('layout/lightbox');
+        }
+        $view = new ViewModel($params);
+        $this->layout()->searchClassId = $view->searchClassId = $this->searchClassId;
+        $route = $this->params()->fromRoute();        
+        $this->driver = isset($route['id']) ? $this->loadRecord() : null;
+        return $view;
+    }
+    
 
 }
