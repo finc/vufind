@@ -49,6 +49,12 @@ class Factory extends \VuFind\Controller\GenericFactory {
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }
+    public static function getTestController(ServiceManager $sm) 
+    {
+        return new TestController(
+            $sm->getServiceLocator()->get('Bsz\Config\Libraries')
+        );
+    }
     
    
 }

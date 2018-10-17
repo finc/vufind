@@ -20,6 +20,7 @@
 
 namespace Bsz\Controller;
 use Bsz\Debug;
+use Bsz\Config\Libraries;
 use Zend\Http\Client;
 
 /**
@@ -29,9 +30,12 @@ use Zend\Http\Client;
  */
 class TestController extends \VuFind\Controller\AbstractBase {
     
-    public function __construct() {
+    protected $libraries;
+    
+    public function __construct(Libraries $libraries) {
         
         error_reporting(E_ALL);
+        $this->libraries = $libraries;
 
     }    
    /**
@@ -68,8 +72,8 @@ class TestController extends \VuFind\Controller\AbstractBase {
     
     public function zflAction() {        
         
-        $date = new DateTime();
-        $date->add(new DateInterval('P100D'));
+        $date = new \DateTime();
+        $date->add(new \DateInterval('P100D'));
         
         $params = [
             'Verfasser' =>  '',
@@ -99,7 +103,7 @@ class TestController extends \VuFind\Controller\AbstractBase {
        
         $urlsToTest = [
             "https://fltest.bsz-bw.de/flcgi/pflauftrag.pl",
-            "https://zfls.bsz-bw.de/flcgi/pflauftrag.pl",
+            "https://zfl.bsz-bw.de/flcgi/pflauftrag.pl",
         ];
         foreach ($urlsToTest as $uri)
         {
@@ -121,6 +125,10 @@ class TestController extends \VuFind\Controller\AbstractBase {
 
     //avoid any templates being processed
     return $this->getResponse();
+        
+    }
+    
+    public function zflAuthAction() {
         
     }
 }
