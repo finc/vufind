@@ -74,7 +74,7 @@
 <? endif; ?>
 <div class="form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-delivery_until"><?=$this->transEsc('delivery_until')?>*</label>
-    <div class="col-sm-<?=$inputSize?>"> 
+    <div class="col-sm-<?=$inputSize?> col-md-2"> 
         <? 
             $date = new DateTime();
             $date->add(new DateInterval('P100D'));
@@ -103,7 +103,7 @@
 <div class=" form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-costs"><?=$this->transEsc('costs')?>*</label>
     <div class="col-sm-<?=$inputSize?>">
-        <input type="number" class="form-control" id="ill-costs" required="" min="0" max="30" value="<?=isset($params['MaxKostenKopie']) ? $params['MaxKostenKopie'] : 8 ?>" name="MaxKostenKopie" data-costs="true" data-error="<?=$this->transEsc('ill_costs_error')?>"/>
+        <input type="number" class="form-control" id="ill-costs" required="" min="0" max="30" value="<?=isset($params['MaxKostenKopie']) ? $params['MaxKostenKopie'] : 8 ?>" name="MaxKostenKopie" data-costs="true" data-error="<?=$this->transEsc('ill_costs_error')?>" style="max-width: 6em;"/>
         <span class="help-block with-errors"><?=$this->transEsc('ill_help_costs')?></span>
     </div>
 </div>
