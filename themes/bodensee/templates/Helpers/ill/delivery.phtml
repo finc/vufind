@@ -22,6 +22,7 @@
             <span class="help-block"><?=$this->transEsc('ill_help_copie_rent')?></span>            
         </div>
     </div>    
+    <div class="form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>"><?=$this->transEsc('Library')?>*</label>
     <div class="col-sm-<?=$inputSize ?>">  
         <? $libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>  
@@ -40,6 +41,7 @@
                     <? endif; ?>
             <? endforeach; ?>
         <? endif; ?>  
+        </div>
 </div>
 <? if($this->libraries()->hasActivePlaces($this->client()->getIsils())): ?>
 <div class="form-group form-group-sm library-places">    
