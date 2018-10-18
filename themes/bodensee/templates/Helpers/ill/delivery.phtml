@@ -1,9 +1,7 @@
 <? $labelSize = 6; ?>
 <? $inputSize = 6; ?>
 <? $disabled = ''; ?>
-<div class="form-group form-group-sm">    
-    <div class=" form-group form-group-sm">
-        
+<div class="form-group form-group-sm">            
         <? if (isset($params['Bestellform'])):
             $form = $params['Bestellform'];
         elseif ($this->illform($this->success, $this->driver)->isOpen('paper')): 
@@ -12,15 +10,15 @@
             $form = 'Leihen';
         endif; ?>
         <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
-        <div class="col-sm-3 col-xs-1">
+        <div class="col-sm-3 col-xs-2">
             <input type="radio" id="ill-lend" checked="checked" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> <?=$disabled?>/>  
             <span for="ill-copy"><?=$this->transEsc('lend')?></span>
         </div>
-        <div class="col-sm-3 col-xs-1">
+        <div class="col-sm-3 col-xs-2">
             <input type="radio" id="ill-copy" name="Bestellform" data-bestellform="" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?>/>
             <span for="ill-copy"><?=$this->transEsc('paperdata')?></span>
         </div>
-        <div class="col-sm-6 col-sm-offset-6">
+        <div class="col-sm-6 col-sm-offset-6 col-xs-8 col-xs-offset-4">
             <span class="help-block"><?=$this->transEsc('ill_help_copie_rent')?></span>            
         </div>
     </div>    
@@ -42,7 +40,6 @@
                     <? endif; ?>
             <? endforeach; ?>
         <? endif; ?>  
-    </div>    
 </div>
 <? if($this->libraries()->hasActivePlaces($this->client()->getIsils())): ?>
 <div class="form-group form-group-sm library-places">    
