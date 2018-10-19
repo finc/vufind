@@ -117,9 +117,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 $config->get('baseurl_live');
         $this->baseUrlAuth = $this->isTestMode() ? $config->get('baseurl_auth_test') :
                 $config->get('baseurl_auth_live');
-
-        $this->debug('BaseURL for ILL-Request: '.$this->baseUrl);
-        
+     
         $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
         $client = $this->getServiceLocator()->get('Bsz\Client');
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
@@ -157,9 +155,17 @@ class RecordController extends \VuFind\Controller\RecordController
                         ->setOptions(['timeout' => static::TIMEOUT])
                         ->setParameterPost($params)
                         ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
-                $this->debug('flauftrag.pl query string:');
-                $this->debug($client->getRequest()->toString());
                 $response = $client->send();
+                $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
+                        ->setUri($this->baseUrl . "/flcgi/pflauftrag.pl")
+                        ->setMethod('GET')
+                        ->setOptions(['timeout' => static::TIMEOUT])
+                        ->setParameterGet($params)
+                        ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
+                $this->debug('flauftrag.pl query string:');
+                $debug[] = $client->getRequest()->getUriString();
+                $debug[] = $client->getRequest()->getQuery()->toString();
+                $this->debug(implode('?', $debug));
                 
                 try {                    
                     $dom = new \Zend\Dom\Query($response->getBody());
@@ -322,12 +328,29 @@ class RecordController extends \VuFind\Controller\RecordController
                     ->setOptions(['timeout' => static::TIMEOUT])
                     ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
             $response = $client->send();
+            
+            // build GET query string for debugging
+            $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
+                ->setUri($this->baseUrlAuth . '/flcgi/endnutzer_auth.pl')
+                ->setMethod('GET')
+                ->setParameterGet([
+                    'sigel' => $params['Sigel'],
+                    'auth_typ' => $library->getAuth(),
+                    'user' => $params['BenutzerNummer'],
+                    'passwort' => $library->getAuth() == 'tan' ?
+                            $params['TAN'] : $params['Passwort'],
+                ])
+                ->setOptions(['timeout' => static::TIMEOUT])
+                ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
+            
+            $this->debug('endnutzer_auth.pl query string:');
+            $debug[] = $client->getRequest()->getUriString();
+            $debug[] = $client->getRequest()->getQuery()->toString();
+            $this->debug(implode('?', $debug));           
 
             try {
                 $xml = simplexml_load_string($response->getBody());
                 
-                $this->debug('endnutzer_auth.pl query string:');
-                $this->debug($client->getRequest()->toString());
 
             } catch (\Exception $ex) {
                 $this->logError($ex->getMessage());
