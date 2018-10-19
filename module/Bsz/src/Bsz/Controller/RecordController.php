@@ -174,10 +174,11 @@ class RecordController extends \VuFind\Controller\RecordController
 
                 } catch (\Exception $ex) {
                     $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
+                    $this->logError($params['Sigel'].': Error while parsing HTML response from ZFL server');
                 }
             } else { // wrong credentials
                 $this->FlashMessenger()->addErrorMessage('ill_request_error_blocked');
-                $this->logError('ILL request blocked. Checkauth failed');
+                $this->logError($params['Sigel'].': ILL request blocked. Checkauth failed');
                 $success = false;
             }
         }
@@ -349,11 +350,10 @@ class RecordController extends \VuFind\Controller\RecordController
             $this->debug(implode('?', $debug));           
 
             try {
-                $xml = simplexml_load_string($response->getBody());
-                
+                $xml = simplexml_load_string($response->getBody());                
 
             } catch (\Exception $ex) {
-                $this->logError($ex->getMessage());
+                $this->logError($params['Sigel'].': Error while parsing XML'.$ex->getMessage());
                 $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
             }
             $status = (isset($xml->status) && $xml->status == 'FLOK');            
@@ -378,25 +378,21 @@ class RecordController extends \VuFind\Controller\RecordController
             $this->FlashMessenger()->addSuccessMessage('ill_request_submit_ok');
             return true;
         } else {
-            // Three matches, the last is the correct message string. 
-            try {
-                $error_reporting = error_reporting();
-                error_reporting(0);
-                preg_match_all('/(Fehler \([a-zA-z]*\): )(.*)/', $html->textContent, $matches);
-                $msgText = end($matches);
-                $msgText = array_shift($msgText);
-                
-                if (!empty($msgText)) {
-                    $this->FlashMessenger()->addInfoMessage($msgText);                            
-                }
-                
-                if (empty($msgText)) {
-                    $this->debug($html);                    
-                }
-                error_reporting($error_reporting);
-            } catch (\Exception $ex) {
-                $this->FlashMessenger()->addErrorMessage('ill_request_submit_failure');
+            $error_reporting = error_reporting();
+            error_reporting(0);
+            $matches = [];
+            preg_match_all('/(Fehler \([a-zA-z]*\): )(.*)/', $html->textContent, $matches);
+            $lastmatch = end($matches);
+            $msgText = array_shift($lastmatch);
+
+            if (empty($msgText)) {
+                $this->debug('HTML response from ZFL server: '.$html);                    
             }
+
+            if (!empty($msgText)) {
+                $this->FlashMessenger()->addInfoMessage($msgText);                            
+            }
+            error_reporting($error_reporting);
             return false;
         }
     }
