@@ -1649,7 +1649,12 @@ trait SolrMarcFincTrait
         }
         foreach ($fields as $field) {
             if ($subfield = $field->getSubfield('a')) {
-                $retval[] = $subfield->getData();
+                $value = $subfield->getData();
+                if (preg_match('/(.*)\.\s*$/',$value,$matches)) {
+                    $retval[] = $matches[1];
+                } else {
+                    $retval[] = $value;
+                }
             }
         }
         return $retval;
