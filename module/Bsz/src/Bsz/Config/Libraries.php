@@ -102,7 +102,7 @@ class Libraries extends TableGateWay
      */
     public function getByIsil($isil) {
         $sql = new Sql($this->getAdapter());
-        $select = null;
+        $select = $sql->select();
         if (!empty($isil)) {
             $select = $sql->select()
               ->from('libraries')
