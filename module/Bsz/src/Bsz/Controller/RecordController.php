@@ -375,9 +375,12 @@ class RecordController extends \VuFind\Controller\RecordController
     public function parseResponse($html)
     {
         if (strpos($html->textContent, 'Bestell-Id') !== FALSE) {
+            // Order is successfull
             $this->FlashMessenger()->addSuccessMessage('ill_request_submit_ok');
             return true;
         } else {
+            // order not successfull - disable error reporting because 
+            // preg_match errors may occur.
             $error_reporting = error_reporting();
             error_reporting(0);
             $matches = [];
@@ -385,12 +388,14 @@ class RecordController extends \VuFind\Controller\RecordController
             $lastmatch = end($matches);
             $msgText = array_shift($lastmatch);
 
-            if (empty($msgText)) {
-                $this->debug('HTML response from ZFL server: '.$html);                    
+            if (empty($msgText)) {                
+                $this->debug('HTML response from ZFL server: '.$html);   
+                $this->logError('ILL error: could not parse error message out of HTML: '.$html);                
             }
 
             if (!empty($msgText)) {
-                $this->FlashMessenger()->addInfoMessage($msgText);                            
+                $this->FlashMessenger()->addInfoMessage($msgText);    
+                $this->logError('ILL error: message from ZFL: '.$msgText);
             }
             error_reporting($error_reporting);
             return false;
