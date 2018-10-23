@@ -8,7 +8,7 @@
         </th>
         <td property="title">
             <?if (is_array($data)): ?>
-                <a href="<?=$this->record($this->driver)->getLink('title', $data['title'])?>"><?=$this->escapeHtml($data['title'])?></a> &#x27E8;<?=$this->escapeHtml($data['lang'])?>&#x27E9;
+                <a href="<?=$this->record($this->driver)->getLink('title', $data['title'])?>"><?=$this->escapeHtml($data['title'])?></a><? if (isset($data['lang'])): ?> &#x27E8;<?=$this->escapeHtml($data['lang'])?>&#x27E9;<? endif;?>
             <? else: ?>
                 <a href="<?=$this->record($this->driver)->getLink('title', $data)?>"><?=$this->escapeHtml($data)?></a>
             <? endif; ?>
