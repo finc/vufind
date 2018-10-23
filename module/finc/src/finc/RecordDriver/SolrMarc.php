@@ -261,15 +261,7 @@ class SolrMarc extends SolrDefault
      */
     public function getGeneralNotes()
     {
-        $retval = [];
-        foreach ($this->getFieldArray('500') as $value) {
-            if (preg_match('/(.*)\.\s*$/',$value,$matches)) {
-                $retval[] = $matches[1];
-            } else {
-                $retval[] = $value;
-            }
-        }
-        return $retval;
+        return $this->getFieldArray('500');
     }
 
     /**

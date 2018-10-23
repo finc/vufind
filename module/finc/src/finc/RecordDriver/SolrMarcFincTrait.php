@@ -1649,15 +1649,24 @@ trait SolrMarcFincTrait
         }
         foreach ($fields as $field) {
             if ($subfield = $field->getSubfield('a')) {
-                $value = $subfield->getData();
-                if (preg_match('/(.*)\.\s*$/',$value,$matches)) {
-                    $retval[] = $matches[1];
-                } else {
-                    $retval[] = $value;
-                }
+                $retval[] = $subfield->getData();
             }
         }
         return $retval;
+    }
+
+    public function getAllNotes() {
+
+        $notes = array_merge(
+            (array) $this->getGeneralNotes(),
+            (array)$this->getAdditionalNotes()
+        );
+        foreach ($notes as &$note) {
+            if (preg_match('/(.*)\.\s*$/',$note,$matches)) {
+                $note = $matches[1];
+            }
+        }
+        return $notes;
     }
 
     /**
