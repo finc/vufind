@@ -102,17 +102,17 @@ class Libraries extends TableGateWay
      */
     public function getByIsil($isil) {
         $sql = new Sql($this->getAdapter());
-        $select = $sql->select();
+        $select = $sql->select()
+            ->from('libraries')
+            ->join('authentications', 'fk_auth = authentications.id', ['auth_name' => 'name'])
+            ->order('libraries.name')
+            ->order('isil')
+            ->limit(1);
         if (!empty($isil)) {
-            $select = $sql->select()
-              ->from('libraries')
-              ->join('authentications', 'fk_auth = authentications.id', ['auth_name' => 'name'])
-              ->order('libraries.name')
-              ->order('isil')
-              ->limit(1);
             $select->where->equalTo('isil', $isil);
+            return $this->selectWith($select)->current();
         }
-        return $this->selectWith($select)->current();
+        return null;
 
     }
     /**

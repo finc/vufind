@@ -116,8 +116,10 @@
         </tr>
         <? foreach ($localHoldings as $holding): ?>
             <tr>
-                <? $libraries = $this->libraries()->getByIsils([$holding['b']]) ?>
-                <? $library = $libraries->current() ?>
+                <?  $library = null;
+                    if (isset($holding['b'])): 
+                        $library = $this->libraries()->getByIsil($holding['b']);
+                    endif;?>
                 <td><strong>
                     <?= isset($holding['b']) ? $this->escapeHtml($holding['b']) : ''?>
                     </strong>
