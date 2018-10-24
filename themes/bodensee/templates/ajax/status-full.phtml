@@ -36,14 +36,29 @@
         <? endif; ?>
       </td>
       <td class="fullAvailability">
-        <i class="fa <?=$this->escapeHtmlAttr($icon)?> <?=$class?>"></i>
         <? if (isset($item['use_unknown_message']) && $item['use_unknown_message']): ?>
-          <span><?=$this->transEsc("status_unknown_message")?></span>
+         <span class="text-nowrap">
+             <i class="fa <?=$this->escapeHtmlAttr($icon)?> <?=$class?>"></i>
+             <?=$this->transEsc("status_unknown_message")?>
+         </span>
         <? elseif ($item['availability']): ?>
-        
-          <span class="text-success"><?=($item['reserve'] == 'Y') ? $this->transEsc("On Reserve") : $this->transEsc("Available")?></span>
+          <span class="text-success text-nowrap">
+            <i class="fa <?=$this->escapeHtmlAttr($icon)?> <?=$class?>"></i>
+            <?=($item['reserve'] == 'Y') ? $this->transEsc("On Reserve") : $this->transEsc("Available")?>
+          </span>
+        <? elseif ($item['status'] === "On loan"): ?>
+            <span class="text-danger text-nowrap">
+                <i class="fa <?=$this->escapeHtmlAttr($icon)?> <?=$class?>"></i>
+                <?=$this->transEsc("On loan")?>
+            </span>
+            <? if (isset($item['duedate']) && $item['duedate']): ?>
+                &ndash; <span class="small"><?=$this->transEsc("Due")?>: <?=$this->escapeHtml($item['duedate'])?></span>
+            <? endif; ?>            
         <? else: ?>
-          <span class="text-danger"><?=$this->escapeHtml($message)?></span>
+          <span class="text-danger text-nowrap">
+            <i class="fa <?=$this->escapeHtmlAttr($icon)?> <?=$class?>"></i>
+            <?=$this->escapeHtml($message)?>
+          </span>
         <? endif; ?>
       </td>
     </tr>
