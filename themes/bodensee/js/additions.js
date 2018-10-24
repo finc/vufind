@@ -79,15 +79,14 @@ function illFormLogic() {
         
     $('#form-ill').validator({
         disable: false,
-        focus: true,
+        focus: false,
         custom: {
             seitenangabe: function($el) {
                 return validateCopy($el);
             },
             bestellform: function($el) {
                 return validateCopy($el);
-            },
-            
+            },            
             costs: function($el) {
                 var costs = $el.val();
                 if((costs < 8 && costs > 0) || costs < 0 ) {
@@ -105,11 +104,12 @@ function illFormLogic() {
             // open panels with errors
             $errors.parent().parent().collapse('show');
             
-            $('#form-ill').prepend($('<div>', {
-                class: 'flash-message alert alert-danger',
-                text: VuFind.translate('ill_form_error')               
-            }));
-            
+            if ($('.flash-message').length == 0) {
+                $('#form-ill').prepend($('<div>', {
+                    class: 'flash-message alert alert-danger',
+                    text: VuFind.translate('ill_form_error')               
+                }));                
+            }            
         }        
         if (!e.isDefaultPrevented()) {
             // everything is validated, form to be submitted
