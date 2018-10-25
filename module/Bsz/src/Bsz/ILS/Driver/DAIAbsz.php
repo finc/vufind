@@ -295,7 +295,7 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
                 // get location
                 $result_item['location'] = $this->getItemLocation($item);
                 // get location link
-                $result_item['locationhref'] = $this->getItemLocationLink($item);
+                //$result_item['locationhref'] = $this->getItemLocationLink($item);
                 // status and availability will be calculated in own function
                 $result_item = $this->getItemStatus($item) + $result_item;
                 // add result_item to the result array
@@ -480,6 +480,19 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
             $location[] = $item['storage']['content'];
         }
         return implode(': ', $location);
+    }
+
+    /**
+     * Returns the value for "location" href in VuFind getStatus/getHolding array
+     *
+     * @param array $item Array with DAIA item data
+     *
+     * @return string
+     */
+    protected function getItemLocationLink($item)
+    {
+        return isset($item['storage']['href'])
+            ? $item['storage']['href'] : false;
     }
     
     /**

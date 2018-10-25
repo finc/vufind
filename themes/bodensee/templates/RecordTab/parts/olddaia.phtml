@@ -65,7 +65,7 @@
         <?=$this->escapeHtml($row['part'])?>
         </td>
         <? endif; ?>
-        <? if (isset($row['about']) && strlen($row['about']) > 0): ?>
+        <? if (isset($row['about'][0]) && strlen($row['about']) > 0): ?>
         <td>
         <?=$this->escapeHtml($row['about'])?>
         </td>        
