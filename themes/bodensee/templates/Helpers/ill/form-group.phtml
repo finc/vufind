@@ -1,7 +1,14 @@
 <? $labelSize = 3; ?>
 <? $inputSize = 9; ?>
 <? $id = rand(0, 10000)?>
-<div class="form-group form-group-sm <? if ($required):?>show required<? endif; ?>">
+<? $forceRequired = false; ?>
+
+<? // these fields get class required to be able to set them required in JS when switching to copies ?>
+<? $alwaysRequired = ['AufsatzAutor', 'AufsatzTitel'];
+if(in_array($name, $alwaysRequired)):
+    $forceRequired = true;
+endif ;?>
+<div class="form-group form-group-sm <? if ($required):?>show required<? endif; ?> <? if ($forceRequired):?>required<? endif; ?>">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-<?=$id?>"><?=$this->transEsc($label)?></label>
     <div class="col-sm-<?=$inputSize?>"> 
       <? $title = is_array($value) ? implode(',',$value) : $value?>
