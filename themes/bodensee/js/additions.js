@@ -157,19 +157,21 @@ function validateCopy($el) {
 }
 
 function changeRequiredCopy($el) {
-    var $required = $('#panel-paperdata').find('.form-group.required');
+    var $required = $('#panel-paperdata').find('.form-group');
+    console.log($required);
     if ($required.length > 0) {
         if ($el.attr('id') === 'ill-lend') {
-            $required.toggleClass('show').find('input')
+            $required.removeClass('required show').find('input')
                         .removeAttr('required')
                         .attr('data-validate', 'false');
         } else {
-            $required.toggleClass('show').find('input')
+            $required.addClass('required show').find('input')
                     .attr('required', 'true')
                     .attr('data-validate', 'true');   
-        } 
-        $('#form-ill').validator('update');        
+        }
+        $('#form-ill').validator('update');      
     }
+    
 }
 
 function externalLinks() {
