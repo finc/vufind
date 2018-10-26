@@ -70,9 +70,12 @@ function remoteModal() {
 
 function illFormLogic() {
     
+    // called at page load
+    changeRequiredCopy($("input[name='BestellForm']:checked")); 
     if (!$("input[name='AusgabeOrt']:checked").val()) {
         $('.place input').first().prop('checked', true);
     }
+    // called when changing the radios
     $('input[name=Bestellform]').change(function() {
         changeRequiredCopy($(this)); 
     });
@@ -97,6 +100,7 @@ function illFormLogic() {
         }
         
     }).on('submit', function (e) {
+        // called at submit
         changeRequiredCopy($('input[name=Bestellform]:checked'));
         
         var $errors = $(this).find('.has-error');
@@ -158,7 +162,6 @@ function validateCopy($el) {
 
 function changeRequiredCopy($el) {
     var $required = $('#panel-paperdata').find('.form-group');
-    console.log($required);
     if ($required.length > 0) {
         if ($el.attr('id') === 'ill-lend') {
             $required.removeClass('required show').find('input')
@@ -361,7 +364,7 @@ $(document).ready(function() {
   duplicates();
   showmore();
   searchclear();
-  
+    
   $('[data-toggle="popover"]').popover({
       trigger: 'click focus'
   });
