@@ -1,6 +1,8 @@
 <?
   $this->headTitle($this->translate('ill_request_title'));
-  $this->headScript()->appendFile("vendor/jquery-ui.min.js", null, ['async' => true]);   
+  $this->headScript()->appendFile("vendor/bootstrap-datepicker.js");   
+  $this->headScript()->appendFile("vendor/bootstrap-datepicker.".$this->layout()->userLang.".min.js");    
+  
 
   $this->layout()->breadcrumbs = '<li>' . $this->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
     . '<li class="active">' . $this->transEsc('ill_request_title') . '</li>';
