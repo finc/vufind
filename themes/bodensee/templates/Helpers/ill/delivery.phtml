@@ -77,10 +77,13 @@
         <? 
             $date = new DateTime();
             $date->add(new DateInterval('P100D'));
-        ?> 
-        <input type="date" class="form-control" required="" id="ill-delivery_until" value="<?=isset($params['ErledFrist']) ? $params['ErledFrist'] : $date->format('Y-m-d')?>" name="ErledFrist"/>
-    </div>
-</div>
+        ?>
+        <div class="input-group date" data-format="dd.mm.YYYY" data-language="<?=$this->layout()->userLang?>">
+            <input type="text" class="form-control datepicker" required="" id="ill-delivery_until" value="<?=isset($params['ErledFrist']) ? $params['ErledFrist'] : $date->format('d.m.Y')?>" name="ErledFrist"/>
+            <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+        </div>
+            </div>
+        </div>
 <div class=" form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('other_edition')?></label>
     <div class="col-sm-<?=$inputSize?> col-xs-1">

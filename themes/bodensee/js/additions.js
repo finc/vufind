@@ -324,32 +324,17 @@ function avoidEmptySearch() {
   * 
   */ 
  function datepicker() {
-    var $date = $('[type="date"]');  
-    if ($date.length > 0 && $date.prop('type') != 'date' ) {
-        $date.datepicker({
-            prevText: '&#x3c;zurück', prevStatus: '',
-            prevJumpText: '&#x3c;&#x3c;', prevJumpStatus: '',
-            nextText: 'Vor&#x3e;', nextStatus: '',
-            nextJumpText: '&#x3e;&#x3e;', nextJumpStatus: '',
-            currentText: 'heute', currentStatus: '',
-            todayText: 'heute', todayStatus: '',
-            clearText: '-', clearStatus: '',
-            closeText: 'schließen', closeStatus: '',
-            monthNames: ['Januar','Februar','März','April','Mai','Juni',
-            'Juli','August','September','Oktober','November','Dezember'],
-            monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun',
-            'Jul','Aug','Sep','Okt','Nov','Dez'],
-            dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
-            dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-            dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-            showMonthAfterYear: false,
-            showOn: 'both',
-            dateFormat:'yy-mm-dd',
-            onSelect: function(dateText, datePicker) {
-                $(this).attr('value', dateText);
-             }
-        });
-    }    
+    $('.datepicker').datepicker({
+        language: $('html').attr('lang'),
+        weekStart: 1,
+        format: 'dd.mm.yyyy',
+        allowInputToggle: true,
+    });
+    // workaround: Addon does not open the datepicker by default
+    $('.input-group.date .input-group-addon').click(function(){
+       $(this).parent().find('input.datepicker').datepicker('show'); 
+    });
+       
 
  }
 
