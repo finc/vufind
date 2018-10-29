@@ -329,6 +329,7 @@ function avoidEmptySearch() {
         weekStart: 1,
         format: 'dd.mm.yyyy',
         allowInputToggle: true,
+        orientation: 'bottom'
     });
     // workaround: Addon does not open the datepicker by default
     $('.input-group.date .input-group-addon').click(function(){
