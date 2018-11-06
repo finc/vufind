@@ -13,12 +13,14 @@ class Params extends \VuFind\Search\Solr\Params
 {
     
     protected $dedup;
+    protected $client;
     
     public function __construct($options, \VuFind\Config\PluginManager $configLoader,
-        HierarchicalFacetHelper $facetHelper = null, Dedup $dedup ) 
+        HierarchicalFacetHelper $facetHelper = null, Dedup $dedup = null, \Bsz\Config\Client $client = NULL ) 
     {
         parent::__construct($options, $configLoader);
         $this->dedup = $dedup;
+        $this->client = $client;
 
     }
         /**
@@ -38,6 +40,9 @@ class Params extends \VuFind\Search\Solr\Params
         foreach ($filterList as $field => $filter) {
             if ($orFacet = (substr($field, 0, 1) == '~')) {
                 $field = substr($field, 1);
+            }
+            if ($filter === '') {
+                continue;
             }
             foreach ($filter as $value) {
                 // Special case -- complex filter, that should be taken as-is:
@@ -184,22 +189,24 @@ class Params extends \VuFind\Search\Solr\Params
     }
     
     /**
-     * Get hidden filters grouped by field like normal filters.
+     * Get an array of hidden filters.
      *
      * @return array
      */
     public function getHiddenFilters()
     {
-        $hidden = parent::getHiddenFilters();
-//        $config = $this->configLoader->get('config');
-//        $isils_string = $config->get('Site')->get('isil');
-//        $isils = explode(',', $isils_string);
-//        foreach ($isils as $isil) {
-//            if (Array_key_exists('institution_id', $hidden) 
-//                && !in_array($isil, $hidden['institution_id'])) {                
-//                array_push($hidden['institution_id'], $isil);
-//            }
-//        }
+        $hidden = $this->hiddenFilters;
+        $or = [];
+        if (isset($this->Client) && count($this->Client->getIsils()) > 0
+            && !$this->client->isIsilSession()) {
+            foreach($this->Client->getIsils() as $isil) {
+                $or[] = 'institution_id:'.$isil;            
+                
+            }
+        }
+        if (count($or) > 0) {
+            $hidden[] = implode(' OR ',$or);            
+        }
         return $hidden;
     }
     

@@ -37,29 +37,6 @@ class Options extends \VuFind\Search\Solr\Options {
         parent::__construct($configLoader);
     }
     
-    /**
-     * Get an array of hidden filters.
-     *
-     * @return array
-     */
-    public function getHiddenFilters()
-    {
-        $hidden = $this->hiddenFilters;
-        $or = [];
-        if (isset($this->Client) && count($this->Client->getIsils()) > 0) {
-            foreach($this->Client->getIsils() as $isil) {
-                $or[] = 'institution_id:'.$isil;            
-                
-            }
-        }
-        if (isset($this->Client) && $this->Client->hasFisBildung()) {
-            $or[] = 'consortium:"FIS Bildung"';                        
-        }
-        $hidden[] = implode(' OR ',$or);
-        
-        return $hidden;
-    }
-
     public function getDefaultFilters() {
         $parent = parent::getDefaultFilters();
         return $parent;

@@ -28,20 +28,6 @@ use \Zend\ServiceManager\ServiceManager;
  */
 class Factory {
 
-    /**
-     * Factory for Interlending options object.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return Solr
-     */
-    public static function getFis(ServiceManager $sm)
-    {
-        $config = $sm->getServiceLocator()->get('VuFind\Config');
-        $Client = $sm->getServiceLocator()->get('Bsz\Client');
-        $options = new \Bsz\Search\Fis\Options($config, $Client);
-        return $options;
-    }
     
     /**
      * Return modified vrsion of Solr Options with Client object
