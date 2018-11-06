@@ -11,7 +11,7 @@ function showmore() {
         return false;
     });
 }
-
+    
 function bootstrapTooltip() {
 
       $('[data-toggle="tooltip"]').tooltip({
@@ -71,7 +71,7 @@ function remoteModal() {
 function illFormLogic() {
     
     // called at page load
-    changeRequiredCopy($("input[name='BestellForm']:checked")); 
+    changeRequiredCopy($("input[name='Bestellform']:checked")); 
     if (!$("input[name='AusgabeOrt']:checked").val()) {
         $('.place input').first().prop('checked', true);
     }
@@ -167,7 +167,7 @@ function changeRequiredCopy($el) {
             $required.removeClass('required show').find('input')
                         .removeAttr('required')
                         .attr('data-validate', 'false');
-        } else {
+        } else if($el.attr('id') === 'ill-copy') {
             $required.addClass('required show').find('input')
                     .attr('required', 'true')
                     .attr('data-validate', 'true');   
