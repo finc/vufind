@@ -2,6 +2,19 @@
  * showmore links
  * @returns {undefined}
  */
+
+// Volumes and Article Tab
+function moreChildren(id) {
+  $('.' + id).removeClass('hidden');
+  $('#more-' + id).addClass('hidden');
+  return false;
+}
+function lessChildren(id) {
+  $('.' + id).addClass('hidden');
+  $('#more-' + id).removeClass('hidden');
+  return false;
+  }  
+
 function showmore() {
     $('.showmore').click(function(e) {
         var id = $(this).attr('id').split('-')[1];
@@ -349,6 +362,7 @@ $(document).ready(function() {
   remoteModal();
   duplicates();
   showmore();
+  lessVolumes();
   searchclear();
     
   $('[data-toggle="popover"]').popover({
