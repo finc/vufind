@@ -25,10 +25,10 @@
         </tr>
         <? $count++ ?>  
     <? endforeach; ?>    
-    <? if ($count > 20): ?> 
+    <? if ($count > 20): ?>
         <tfoot>
             <tr><td>
-                <button class="btn btn-info btn-xs" data-toggle="collapse" data-target=".showmore-<?=$rand?>" aria-expanded="false">
+                <button class="btn btn-info btn-xs" data-target=".showmore-<?=$rand?>" aria-expanded="false">
                     <?=$this->transEsc('Showmore')?>
                 </button>    
             </td></tr>

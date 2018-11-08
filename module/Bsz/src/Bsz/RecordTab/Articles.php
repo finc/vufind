@@ -84,9 +84,11 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
                 ];                
                 
                 $filter = [];
-                foreach($this->isils as $isil) {
-                    $filter[] = '~institution_id:'.$isil;
-                }                    
+                if ($this->isFL() === FALSE) {
+                    foreach($this->isils as $isil) {
+                        $filter[] = '~institution_id:'.$isil;
+                    }   
+                }               
                 $filter[] = 'material_content_type:Article';
                 $params['filter'] = $filter; 
                 $results = $this->runner->run($params);                                        
@@ -97,6 +99,24 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
         }
         return $this->content;
     }
+
+    /**
+     * Check if we aure in an interlending TAB
+     **/
+    public function isFL() {
+        $last = '';
+        if (isset($_SESSION['Search']['last']) ){
+            $last = urldecode($_SESSION['Search']['last']);
+        }   
+        if (strpos($last, 'consortium=FL') === FALSE 
+            && strpos($last, 'consortium=ZDB') === FALSE
+        ) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+    
     
     /**
      * This Tab is Active for collections or parts of collections only. 

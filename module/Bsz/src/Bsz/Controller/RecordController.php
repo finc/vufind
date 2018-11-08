@@ -149,6 +149,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 
                 // send real order
                 $client = new \Zend\Http\Client();
+                $client->setEncType(\Zend\Http\Client::ENC_URLENCODED);
                 $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
                         ->setUri($this->baseUrl . "/flcgi/pflauftrag.pl")
                         ->setMethod('POST')
