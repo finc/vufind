@@ -294,10 +294,14 @@ class IllForm extends AbstractHelper
                 ['Issue', 'Heft', ''],
                 ['pages', 'Seitenangabe', '', '', true, 'ill_error_pages']
             ];              
+            if (isset($this->driver) && $this->driver->isContainerMonography()) {
+                $fields[] = ['storage_retrieval_request_volume', 'Jahrgang', '', 'ill_placeholder_article' ];
+            }
         } elseif (isset($this->driver) && $this->driver->isArticle()) {
             $fields = [
                 ['article author', 'AufsatzAutor', $this->getFromDriver('getPrimaryAuthor'), '', true],
                 ['article title', 'AufsatzTitel', $this->getFromDriver('getTitle'), '', true],
+                ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true],
                 ['Issue', 'Heft', $this->getFromDriver('getContainerIssue')],
                 ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ill_error_pages'],
             ];              
@@ -305,7 +309,7 @@ class IllForm extends AbstractHelper
             $fields = [
                 ['article author', 'AufsatzAutor', ''],
                 ['article title', 'AufsatzTitel', ''],
-                ['pages', 'Seitenangabe', '', '', false, 'ill_error_pages'],
+                ['pages', 'Seitenangabe', '', '', false, 'ill_error_pages'],                
             ];              
         } else {
             $fields = [
