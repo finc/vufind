@@ -298,6 +298,7 @@ class IllForm extends AbstractHelper
             $fields = [
                 ['article author', 'AufsatzAutor', $this->getFromDriver('getPrimaryAuthor'), '', true],
                 ['article title', 'AufsatzTitel', $this->getFromDriver('getTitle'), '', true],
+                ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true],
                 ['Issue', 'Heft', $this->getFromDriver('getContainerIssue')],
                 ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ill_error_pages'],
             ];              
