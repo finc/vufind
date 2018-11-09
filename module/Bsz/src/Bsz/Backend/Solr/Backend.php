@@ -35,6 +35,12 @@ class Backend extends \VuFindSearch\Backend\Solr\Backend {
         $params->set('start', $offset);
         $params->mergeWith($this->getQueryBuilder()->build($query));
         
+        // Search in Volumes and Articles Tab without grouping
+        // see limit param in Volumes.php and Articles.php
+        if ($limit === 1000) {
+                $params->set('group', 'false');
+        }
+        
         // Extended Search form without grouping
         // todo, was ist wenn andere facetten konfiguriert sind?
         if ($params->contains('facet.field', 'material_access') &&
