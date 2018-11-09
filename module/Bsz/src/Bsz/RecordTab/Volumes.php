@@ -78,7 +78,7 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
                     $relId[$k] = 'id_related:"'.$id.'"';                    
                 }
                 $params = [
-                    'sort' => 'publish_date_sort desc',
+                    'sort' => 'publish_date_sort desc, id desc',
                     'lookfor' => implode(' OR ', $relId),              
                     'limit'   => 1000,
                 ];

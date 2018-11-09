@@ -362,7 +362,6 @@ $(document).ready(function() {
   remoteModal();
   duplicates();
   showmore();
-  lessVolumes();
   searchclear();
     
   $('[data-toggle="popover"]').popover({

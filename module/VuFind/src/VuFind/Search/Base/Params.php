@@ -79,7 +79,7 @@ class Params
      *
      * @var int
      */
-    protected $limit = 20;
+    protected $limit = 10;
 
     /**
      * Search type (basic or advanced)
