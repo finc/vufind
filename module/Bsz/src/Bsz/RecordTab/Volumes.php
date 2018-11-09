@@ -102,15 +102,17 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
     }
     
     /**
-     * Check if we aure in an interlending TAB
+     * Check if we are in an interlending or ZDB-TAB 
      **/
     public function isFL() {
         $last = '';
         if (isset($_SESSION['Search']['last']) ){
             $last = urldecode($_SESSION['Search']['last']);
         }   
-        if (strpos($last, 'consortium=FL') === FALSE 
-            && strpos($last, 'consortium=ZDB') === FALSE
+        if (strpos($last, 'consortium:FL') !== FALSE 
+            || strpos($last, 'consortium:"FL') !== FALSE
+            || strpos($last, 'consortium:ZDB') !== FALSE                
+            || strpos($last, 'consortium:"ZDB"') !== FALSE
         ) {
             return TRUE;
         } else {
