@@ -109,7 +109,7 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
             $last = urldecode($_SESSION['Search']['last']);
         }   
         if (strpos($last, 'consortium:FL') !== FALSE 
-            || strpos($last, 'consortium:"FL') !== FALSE
+            || strpos($last, 'consortium:"FL"') !== FALSE
             || strpos($last, 'consortium:ZDB') !== FALSE                
             || strpos($last, 'consortium:"ZDB"') !== FALSE
         ) {
