@@ -59,6 +59,8 @@ trait SolrDefaultFincTrait
      */
 /*    public function isCollection()
     {
+        return $this->getRecordType() === 'dico';
+        /*
         // first check as always if we have a collection
         $isCollection = parent::isCollection();
 
@@ -70,6 +72,7 @@ trait SolrDefaultFincTrait
 
         // if we've come so far this record is no collection
         return false;
+        */
     }
 */
     /**
