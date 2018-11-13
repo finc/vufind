@@ -256,7 +256,7 @@ class IllForm extends AbstractHelper
             ['Subtitle', 'Untertitel', $this->getText('subtitle')],
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers')],
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication')],
-            ['storage_retrieval_request_year', 'Jahrgang', '', '', true],
+            ['storage_retrieval_request_year', 'Jahrgang', '', '', true, 'ill_error_year'],
             ['ISSN', 'Issn', $this->getFromDriver('getCleanISSN')],
         ];
         return $this->renderFormFields($fields);        

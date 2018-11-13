@@ -95,7 +95,7 @@ function appendValidator() {
                 return validateYear($el);
             },
             jahrgang: function($el) {
-                return validaTeYear($el);
+                return validateYear($el);
             }
         }
     });
@@ -132,7 +132,6 @@ function validateCopy($el) {
 }
 
 $(document).ready(function(){
-    var VuFind= VuFind();;
 
     appendValidator();
     changeRequiredCopy($("input[name='Bestellform']:checked"));  
