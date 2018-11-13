@@ -1,19 +1,14 @@
-/*
- * showmore links
- * @returns {undefined}
- */
-
-// Volumes and Article Tab
 function moreChildren(id) {
   $('.' + id).removeClass('hidden');
   $('#more-' + id).addClass('hidden');
   return false;
 }
+
 function lessChildren(id) {
   $('.' + id).addClass('hidden');
   $('#more-' + id).removeClass('hidden');
   return false;
-  }  
+}  
 
 function showmore() {
     $('.showmore').click(function(e) {
@@ -24,7 +19,7 @@ function showmore() {
         return false;
     });
 }
-    
+
 function bootstrapTooltip() {
 
       $('[data-toggle="tooltip"]').tooltip({
@@ -33,9 +28,11 @@ function bootstrapTooltip() {
               'hide': 100
           }
       });    
-//    }
 }
 
+/*
+* view covers in modal popup
+*/
 function modalPopup() {
     
     // prevent default cover placeholders from being clickable
@@ -46,14 +43,19 @@ function modalPopup() {
     }
     
     $('.modal-popup.cover').click(function(e) {        
-            var imgurl = $(this).attr('data-img-url');      
-            var $modal = $('#modal .modal-body');
-            var imghtml = '<div class="text-center"><img src="'+imgurl+'" alt="Large Preview" /></div>';
-            $('#modalTitle').remove();
-            $modal.empty().append(imghtml);
-            $('#modal').modal('show');
+        var imgurl = $(this).attr('data-img-url');      
+        var $modal = $('#modal .modal-body');
+        var imghtml = '<div class="text-center"><img src="'+imgurl+'" class="img-responsive center-block" alt="Large Preview" /></div>';
+        $('#modalTitle').remove();
+        $modal.empty().append(imghtml);
+        $('#modal').modal('show');
 });    
 }
+
+/*
+* Open a remote url inside a modal
+* take care of non https sites which break https on boss
+*/
 function remoteModal() {
     $('body').on('click', '.modal-remote', function(e) {
         e.preventDefault();
@@ -74,119 +76,6 @@ function remoteModal() {
         //This prevents the default Link behavior (open new tab)
         return false;
     });
-}
-
-/**
- * 
- * main method for ill form
- */
-
-function illFormLogic() {
-    
-    // called at page load
-    changeRequiredCopy($("input[name='Bestellform']:checked")); 
-    if (!$("input[name='AusgabeOrt']:checked").val()) {
-        $('.place input').first().prop('checked', true);
-    }
-    // called when changing the radios
-    $('input[name=Bestellform]').change(function() {
-        changeRequiredCopy($(this)); 
-    });
-        
-    $('#form-ill').validator({
-        disable: false,
-        focus: false,
-        custom: {
-            seitenangabe: function($el) {
-                return validateCopy($el);
-            },
-            bestellform: function($el) {
-                return validateCopy($el);
-            },            
-            costs: function($el) {
-                var costs = $el.val();
-                if((costs < 8 && costs > 0) || costs < 0 ) {
-                    return 'Costs must not be between 0 and 8. ';
-                }
-            }             
-        }
-    });
-    $('#form-ill').on('submit', function (e) {
-        // called at submit
-        changeRequiredCopy($('input[name=Bestellform]:checked'));
-        
-        var $errors = $(this).find('.has-error');
-        if ($errors.length > 0) {
-            // open panels with errors
-            $errors.parent().parent().collapse('show');
-            
-            if ($('.flash-message').length == 0) {
-                $('#form-ill').prepend($('<div>', {
-                    class: 'flash-message alert alert-danger',
-                    text: VuFind.translate('ill_form_error')               
-                }));                
-            }            
-        }        
-        if (!e.isDefaultPrevented()) {
-            // everything is validated, form to be submitted
-            $(this).find('[type=submit]').addClass('disabled')
-                    .parent().append('<i class="fa fa-spinner fa-spin"></i>');           
-        }        
-    }); 
-     //switch places when changing library
-    $('input[name=Sigel]').change(function() {
-        var attrId = $(this).attr('id').split('-');
-        var libid = attrId[2];
-        // Hide all radios
-        $('.library-places').find('.place').addClass('hidden').find('input')
-            .prop('checked', false);
-        // show the correct ones
-        $('.library-places').find('#library-places-'+libid)
-            .removeClass('hidden').find('input').first().prop('checked', true);       
-      
-    });
- 
-}
-
-function validateCopy($el) {
-    // For copies, we must enter something in the copies sectio
-    if ($('input[name=Bestellform]:checked').val() === 'Kopie') {
-        
-        // we don't need this if there are required fields
-        var $required = $('#panel-paperdata').find('.form-group.required');
-        if ($required-length === 0) {
-            
-            // count sum of input lengths
-            var copyInputLength = 0;
-
-            $('#panel-paperdata input').each(function(k){
-                copyInputLength = copyInputLength + $(this).val().length;
-            });
-            if (copyInputLength === 0 ) {
-                $('#panel-paperdata .form-group').addClass('has-error');            
-                $('#panel-paperdata .panel-collapse').collapse('show');      
-                return $el.attr('data-error');
-            } 
-        }
-    }      
-//    
-}
-
-function changeRequiredCopy($el) {
-    var $required = $('#panel-paperdata').find('.form-group');
-    if ($required.length > 0) {
-        if ($el.attr('id') === 'ill-lend') {
-            $required.removeClass('required show').find('input')
-                        .removeAttr('required')
-                        .attr('data-validate', 'false');
-        } else if($el.attr('id') === 'ill-copy') {
-            $required.addClass('required show').find('input')
-                    .attr('required', 'true')
-                    .attr('data-validate', 'true');   
-        }
-        $('#form-ill').validator('update');      
-    }
-    
 }
 
 function externalLinks() {
@@ -250,7 +139,7 @@ function avoidEmptySearch() {
      var limit = 2;
      
      $tabs.find('a').click(function(e) {
-        e.preventDefault()
+        e.preventDefault();
         var href = $(this).attr('href');
         var lookfor = $input.val();
         
@@ -273,15 +162,19 @@ function avoidEmptySearch() {
              $input.popover('hide');
              return true;
         }
-     })
+     });
      $input.on('change keydown paste input', function(e) {
          if ($input.val().replace( /\W*/gi,"" ).length > limit) { 
              $input.popover('hide');
          }
      });
 
- }
- function duplicates() {
+}
+
+/*
+* Duplicatea button
+*/
+function duplicates() {
     $('.duplicates-toggle').click(function(e){
        $(this).parent().toggleClass('active');
        $(this).children('i').toggleClass('fa-arrow-down');
@@ -305,7 +198,10 @@ function avoidEmptySearch() {
      });
  }
  
- function openUrlTooltip() {
+/*
+* Tooltips for OpenURL links
+*/ 
+function openUrlTooltip() {
      
     var htmlcontent = '<p style="text-align: left; margin-bottom: 0">';
     htmlcontent += '<img src="/themes/bodensee/images/jop_online.png" alt="JOP nline"/>&nbsp;'+ VuFind.translate('openurl_tooltip_left')+'<br/>';
@@ -332,10 +228,11 @@ function avoidEmptySearch() {
  }
  
  /**
-  * jQueryUI datepicker
+  * bootstrap datepicker
+  * depends on two js files -  you need to add then in the templates
   * 
   */ 
- function datepicker() {
+function datepicker() {
     $('.datepicker').datepicker({
         language: $('html').attr('lang'),
         weekStart: 1,
@@ -346,27 +243,28 @@ function avoidEmptySearch() {
     // workaround: Addon does not open the datepicker by default
     $('.input-group.date .input-group-addon').click(function(){
        $(this).parent().find('input.datepicker').datepicker('show'); 
-    });
-       
+    });      
 
- }
+}
+
+/*
+* this is executed after site is loaded
+* main loop
+*/
 
 $(document).ready(function() {
   avoidEmptySearch();
   externalLinks();
   bootstrapTooltip();
-//  sidebarOffcanvas();
   modalPopup();
   keyboardShortcuts();
   remoteModal();
   duplicates();
   showmore();
   searchclear();
-    
   $('[data-toggle="popover"]').popover({
       trigger: 'click focus'
   });
   
   openUrlTooltip();
 });
-

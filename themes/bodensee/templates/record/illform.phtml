@@ -2,7 +2,7 @@
   $this->headTitle($this->translate('ill_request_title'));
   $this->headScript()->appendFile("vendor/bootstrap-datepicker.js");   
   $this->headScript()->appendFile("vendor/bootstrap-datepicker.".$this->layout()->userLang.".min.js");    
-  
+  $this->headScript()->appendFile("ill.js");     
 
   $this->layout()->breadcrumbs = '<li>' . $this->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
     . '<li class="active">' . $this->transEsc('ill_request_title') . '</li>';
@@ -16,9 +16,7 @@
     elseif ($this->driver->isArticle()){$type = 'article';}
   } else {
     $type = 'free';
-  }
-  
-  
+  }  
   
 ?>
 <div class="col-sm-12">    
@@ -55,13 +53,9 @@
                 'title' => 'Benutzerdaten',
                 'open'  => $this->illform($success, $this->driver)->isOpen('login'),
                 'content' => $content,
-            ])?>       
-
-
+            ])?> 
             <br/>
-
-            <div class="form-group form-group-sm"> 
-                
+            <div class="form-group form-group-sm">                 
                 <div class="col-sm-1 col-xs-2">
                     <input type="checkbox" required="true" class="" id="agree-commercial-use" name="agree-commerial-use"/>
                 </div>
@@ -76,11 +70,5 @@
             </div>
         </div>
     </form> 
-    <script type="text/javascript">
-        $(document).ready(function(){
-            datepicker();
-            illFormLogic();
-        });
-    </script>
     <? endif; ?>
 </div>
