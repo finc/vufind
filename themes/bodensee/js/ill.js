@@ -5,19 +5,17 @@
 
 function illFormLogic() {
     
-    // called at page load
-    changeRequiredCopy($("input[name='Bestellform']:checked")); 
-    if (!$("input[name='AusgabeOrt']:checked").val()) {
-        $('.place input').first().prop('checked', true);
-    }
-    // called when changing the radios
     $('input[name=Bestellform]').change(function() {
         changeRequiredCopy($(this)); 
     });
-        
-    
+   
+    // set the first place to checked
+    if (!$("input[name='AusgabeOrt']:checked").val()) {
+        $('.place input').first().prop('checked', true);
+    }
+
+    // checks on submit 
     $('#form-ill').on('submit', function (e) {
-        // called at submit
         changeRequiredCopy($('input[name=Bestellform]:checked'));
         
         var $errors = $(this).find('.has-error');
@@ -25,7 +23,7 @@ function illFormLogic() {
             // open panels with errors
             $errors.parent().parent().collapse('show');
             
-            if ($('.flash-message').length == 0) {
+            if ($('.flash-message').length === 0) {
                 $('#form-ill').prepend($('<div>', {
                     class: 'flash-message alert alert-danger',
                     text: VuFind.translate('ill_form_error')               
@@ -52,31 +50,16 @@ function illFormLogic() {
     });
  
 }
-
-function validateCopy($el) {
-    // For copies, we must enter something in the copies sectio
-    if ($('input[name=Bestellform]:checked').val() === 'Kopie') {
-        
-        // we don't need this if there are required fields
-        var $required = $('#panel-paperdata').find('.form-group.required');
-        if ($required-length === 0) {
-            
-            // count sum of input lengths
-            var copyInputLength = 0;
-
-            $('#panel-paperdata input').each(function(k){
-                copyInputLength = copyInputLength + $(this).val().length;
-            });
-            if (copyInputLength === 0 ) {
-                $('#panel-paperdata .form-group').addClass('has-error');            
-                $('#panel-paperdata .panel-collapse').collapse('show');      
-                return $el.attr('data-error');
-            } 
-        }
-    }          
-}
+/*
+ * This method switched the required state of copy form fields
+ * it must be called at
+ * - document ready
+ * - change at the radios
+ * - before submit
+ */
 
 function changeRequiredCopy($el) {
+    
     var $required = $('#panel-paperdata').find('.form-group');
     if ($required.length > 0) {
         if ($el.attr('id') === 'ill-lend') {
@@ -125,8 +108,34 @@ function validateYear($el) {1
     }
 }
 
+function validateCopy($el) {
+    // For copies, we must enter something in the copies sectio
+    if ($('input[name=Bestellform]:checked').val() === 'Kopie') {
+        
+        // we don't need this if there are required fields
+        var $required = $('#panel-paperdata').find('.form-group.required');
+        if ($required-length === 0) {
+            
+            // count sum of input lengths
+            var copyInputLength = 0;
+
+            $('#panel-paperdata input').each(function(k){
+                copyInputLength = copyInputLength + $(this).val().length;
+            });
+            if (copyInputLength === 0 ) {
+                $('#panel-paperdata .form-group').addClass('has-error');            
+                $('#panel-paperdata .panel-collapse').collapse('show');      
+                return $el.attr('data-error');
+            } 
+        }
+    }          
+}
+
 $(document).ready(function(){
+    var VuFind= VuFind();;
+
+    appendValidator();
+    changeRequiredCopy($("input[name='Bestellform']:checked"));  
     datepicker();
     illFormLogic();
-    appendValidator();
 });
