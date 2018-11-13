@@ -108,11 +108,10 @@ function illFormLogic() {
                 if((costs < 8 && costs > 0) || costs < 0 ) {
                     return 'Costs must not be between 0 and 8. ';
                 }
-            },
-            
+            }             
         }
-        
-    }).on('submit', function (e) {
+    });
+    $('#form-ill').on('submit', function (e) {
         // called at submit
         changeRequiredCopy($('input[name=Bestellform]:checked'));
         
