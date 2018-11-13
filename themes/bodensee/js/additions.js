@@ -48,7 +48,7 @@ function modalPopup() {
     $('.modal-popup.cover').click(function(e) {        
             var imgurl = $(this).attr('data-img-url');      
             var $modal = $('#modal .modal-body');
-            var imghtml = '<div class="text-center"><img src="'+imgurl+'" alt="Large Preview" /></div>';
+            var imghtml = '<div class="text-center"><img class="img-responsive center-block" src="'+imgurl+'" alt="Large Preview" /></div>';
             $('#modalTitle').remove();
             $modal.empty().append(imghtml);
             $('#modal').modal('show');
