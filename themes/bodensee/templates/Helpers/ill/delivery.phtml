@@ -34,7 +34,7 @@
                     <? else: ?>
                         <div class="radio">
                             <label for="ill-library-<?=$libkey?>">
-                                <input required="" name="Sigel" id="ill-library-<?=$libkey?>" type="radio" value="<?=$this->escapeHtmlAttr($library->getSigel())?>" <?if($libkey == 0): ?>checked<?endif; ?>/>
+                                <input required="true" name="Sigel" id="ill-library-<?=$libkey?>" type="radio" value="<?=$this->escapeHtmlAttr($library->getSigel())?>" <?if($libkey == 0): ?>checked<?endif; ?>/>
                                 <?=$this->escapeHtml($library->getName())?>
                             </label>
                         </div>
@@ -79,7 +79,7 @@
             $date->add(new DateInterval('P100D'));
         ?>
         <div class="input-group date" data-format="dd.mm.YYYY" data-language="<?=$this->layout()->userLang?>">
-            <input type="text" class="form-control datepicker" required="" id="ill-delivery_until" value="<?=isset($params['ErledFrist']) ? $params['ErledFrist'] : $date->format('d.m.Y')?>" name="ErledFrist"/>
+            <input type="text" class="form-control datepicker" required="true" id="ill-delivery_until" value="<?=isset($params['ErledFrist']) ? $params['ErledFrist'] : $date->format('d.m.Y')?>" name="ErledFrist"/>
             <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
         </div>
             </div>
@@ -105,7 +105,7 @@
 <div class=" form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-costs"><?=$this->transEsc('costs')?>*</label>
     <div class="col-sm-<?=$inputSize?>">
-        <input type="number" class="form-control" id="ill-costs" required="" min="0" max="30" value="<?=isset($params['MaxKostenKopie']) ? $params['MaxKostenKopie'] : 8 ?>" name="MaxKostenKopie" data-costs="true" data-error="<?=$this->transEsc('ill_costs_error')?>" style="max-width: 6em;"/>
+        <input type="number" class="form-control" id="ill-costs" required="true" min="0" max="30" value="<?=isset($params['MaxKostenKopie']) ? $params['MaxKostenKopie'] : 8 ?>" name="MaxKostenKopie" data-costs="true" data-error="<?=$this->transEsc('ill_costs_error')?>" style="max-width: 6em;"/>
         <span class="help-block with-errors"><?=$this->transEsc('ill_help_costs')?></span>
     </div>
 </div>

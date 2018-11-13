@@ -15,24 +15,7 @@ function illFormLogic() {
         changeRequiredCopy($(this)); 
     });
         
-    $('#form-ill').validator({
-        disable: false,
-        focus: false,
-        custom: {
-            seitenangabe: function($el) {
-                return validateCopy($el);
-            },
-            bestellform: function($el) {
-                return validateCopy($el);
-            },            
-            costs: function($el) {
-                var costs = $el.val();
-                if((costs < 8 && costs > 0) || costs < 0 ) {
-                    return 'Costs must not be between 0 and 8. ';
-                }
-            }             
-        }
-    });
+    
     $('#form-ill').on('submit', function (e) {
         // called at submit
         changeRequiredCopy($('input[name=Bestellform]:checked'));
@@ -104,12 +87,46 @@ function changeRequiredCopy($el) {
             $required.addClass('required show').find('input')
                     .attr('required', 'true')
                     .attr('data-validate', 'true');   
-        }
-        $('#form-ill').validator('update');      
+        }         
     }    
+}
+
+function appendValidator() {
+    $('#form-ill').validator({
+        disable: false,
+        focus: false,
+        custom: {
+            seitenangabe: function($el) {
+                return validateCopy($el);
+            },
+            bestellform: function($el) {
+                return validateCopy($el);
+            },            
+            costs: function($el) {
+                var costs = $el.val();
+                if((costs < 8 && costs > 0) || costs < 0 ) {
+                    return VuFind.translate('ill_costs_error');
+                }
+            },
+            ejahr: function($el) {
+                return validateYear($el);
+            },
+            jahrgang: function($el) {
+                return validaTeYear($el);
+            }
+        }
+    });
+}
+
+function validateYear($el) {1
+    var year = $el.val();
+    if (!/^\d\d\d\d$/g.test(year)) {
+        return VuFind.translate('ill_error_year')
+    }
 }
 
 $(document).ready(function(){
     datepicker();
     illFormLogic();
+    appendValidator();
 });

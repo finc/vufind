@@ -24,7 +24,7 @@
     <noscript><p class="alert alert-danger"><?=$this->transEsc('Please enable JavaScript.')?></p></noscript>    
     <?=$this->flashmessages()?>
     <? if (!isset($success) || !$success): ?>
-    <form class="<?=$type?> form-horizontal" id="form-ill" novalidate="true" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form" data-toggle="validator">
+    <form class="<?=$type?> form-horizontal" id="form-ill" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form">
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">   
             <? $content = $this->illForm($success, $this->driver)->renderBibliographicFields() ?>
