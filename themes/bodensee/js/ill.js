@@ -5,8 +5,9 @@
 
 function illFormLogic() {
     
-    $('input[name=Bestellform]').change(function() {
+    $('input[name=Bestellform]').change(function() {        
         changeRequiredCopy($(this)); 
+        $('#form-ill').validator('update');
     });
    
     // set the first place to checked
@@ -16,6 +17,8 @@ function illFormLogic() {
 
     // checks on submit 
     $('#form-ill').on('submit', function (e) {
+        
+        $('#form-ill').validator('update');
         changeRequiredCopy($('input[name=Bestellform]:checked'));
         
         var $errors = $(this).find('.has-error');
