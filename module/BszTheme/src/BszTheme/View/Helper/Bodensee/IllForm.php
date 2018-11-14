@@ -302,7 +302,7 @@ class IllForm extends AbstractHelper
                 ['article author', 'AufsatzAutor', $this->getFromDriver('getPrimaryAuthor'), '', true],
                 ['article title', 'AufsatzTitel', $this->getFromDriver('getTitle'), '', true],
                 ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true, 'ill_error_year'],
-                ['Issue', 'Heft', $this->getFromDriver('getContainerIssue')],
+                ['Issue', 'Heft', $this->getFromDriver('getContainerIssue'), '', true],
                 ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ill_error_pages'],
             ];              
         } elseif (isset($this->driver) && $this->driver->isBook()) {
