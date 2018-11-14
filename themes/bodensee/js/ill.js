@@ -67,7 +67,8 @@ function changeRequiredCopy($actor) {
     var requiredCopy = ['AufsatzAutor', 'AufsatzTitel', 'Seitenangabe'];
     
     requiredCopy.forEach(function (name) {
-        var $required = $('input[name='+name+']');
+        // get the form group div surrounding the input
+        var $required = $('input[name='+name+']').parent().parent();
         if ($required.length > 0) {
                 if ($actor.attr('id') === 'ill-lend') {
                 $required.removeClass('required show').find('input')
