@@ -226,7 +226,7 @@ class IllForm extends AbstractHelper
         } 
         $fields = [
             ['Author', 'Verfasser', $author],
-            ['Title', 'Journal Title', $title,'', true],
+            ['Title', 'Titel', $title,'', true],
             ['Subtitle', 'Untertitel', $this->getFromDriver('getSubtitle', $container)],
             ['Edition', 'Auflage', $this->getFromDriver('getEditions', $container)],
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers', $container)],
