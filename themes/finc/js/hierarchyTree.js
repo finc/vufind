@@ -189,7 +189,7 @@ $(document).ready(function hierarchyTreeReady() {
       $("#hierarchyLoading").addClass('hide');
       var tree = $("#hierarchyTree").jstree(true);
       tree.select_node(htmlID);
-      tree._open_to(htmlID);
+      tree.open_all();
 
       if (!inLightbox && hierarchyContext === "Collection") {
         getRecord(recordID);
