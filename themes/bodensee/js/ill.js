@@ -59,23 +59,27 @@ function illFormLogic() {
  * - document ready
  * - change at the radios
  * - before submit
- * @param $el the element that was clicked (the radio)
+ * @param $actor the element that was clicked (the radio)
  */
 
-function changeRequiredCopy($el) {
+function changeRequiredCopy($actor) {
     
-    var $required = $('#panel-paperdata').find('.form-group');
-    if ($required.length > 0) {
-            if ($el.attr('id') === 'ill-lend') {
-            $required.removeClass('required show').find('input')
-                            .removeAttr('required')
-                            .attr('data-validate', 'false');
-            } else if($el.attr('id') === 'ill-copy') {
-            $required.addClass('required show').find('input')
-                        .attr('required', 'true')
-                        .attr('data-validate', 'true');   
-            }         
-    }    
+    var requiredCopy = ['AufsatzAutor', 'AufsatzTitel', 'Seitenangabe'];
+    
+    requiredCopy.forEach(function (name) {
+        var $required = $('input[name='+name+']');
+        if ($required.length > 0) {
+                if ($actor.attr('id') === 'ill-lend') {
+                $required.removeClass('required show').find('input')
+                                .removeAttr('required')
+                                .attr('data-validate', 'false');
+                } else if($actor.attr('id') === 'ill-copy') {
+                $required.addClass('required show').find('input')
+                            .attr('required', 'true')
+                            .attr('data-validate', 'true');   
+                }        
+        }    
+    });
 }
 
 function appendValidator() {

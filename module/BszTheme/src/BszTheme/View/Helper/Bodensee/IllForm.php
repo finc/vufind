@@ -273,6 +273,7 @@ class IllForm extends AbstractHelper
             ['Year of Publication', 'EJahr', '', '', true, 'ill_error_year'],
             ['Publication_Place', 'EOrt', ''],
             ['Tome', 'Band'],
+            ['storage_retrieval_request_year', 'Jahrgang'],
             ['ISSN', 'Issn', ''],
             ['ISBN', 'Isbn', ''],
         ];
@@ -302,7 +303,7 @@ class IllForm extends AbstractHelper
                 ['article author', 'AufsatzAutor', $this->getFromDriver('getPrimaryAuthor'), '', true],
                 ['article title', 'AufsatzTitel', $this->getFromDriver('getTitle'), '', true],
                 ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true, 'ill_error_year'],
-                ['Issue', 'Heft', $this->getFromDriver('getContainerIssue'), '', true],
+                ['Issue', 'Heft', $this->getFromDriver('getContainerIssue')],
                 ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ill_error_pages'],
             ];              
         } elseif (isset($this->driver) && $this->driver->isBook()) {
@@ -316,7 +317,6 @@ class IllForm extends AbstractHelper
                 ['article author', 'AufsatzAutor', ''],
                 ['article title', 'AufsatzTitel', ''],
                 ['Issue', 'Heft', '', 'ill_placeholder_article'],
-                ['storage_retrieval_request_volume', 'Jahrgang', '', 'ill_placeholder_article' , false, 'ill_error_year'],
                 ['pages', 'Seitenangabe', '', '', false, 'ill_error_pages'],
             ];  
             
