@@ -14,8 +14,8 @@
              data-<?=strtolower($this->escapeHtmlAttr($name))?>="true"
              placeholder="<?=$this->transEsc($placeholder)?>"
              <?=$this->illform($this->status, $this->driver)->maxlength($name)?>
-             <? if ($required):?>required="true"<? endif; ?>
-             <? if (!empty($error)):?>data-error="<?=$this->transEsc($error)?>"<? endif; ?>/>
+             <? if ($required):?> required="true"<? endif; ?>
+             <? if (!empty($error)):?> data-error="<?=$this->transEsc($error)?>"<? endif; ?>/>
              <span class="help-block with-errors">
              </span>             
     </div>

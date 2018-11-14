@@ -91,7 +91,7 @@ class IllForm extends AbstractHelper
             $article = $this->driver->tryMethod('isArticle');
             $ebook = $this->driver->tryMethod('isEBook');
             $journal = $this->driver->tryMethod('isJournal');
-            
+        
 
             if ($article || $journal) {
                 $opened = [
@@ -108,7 +108,7 @@ class IllForm extends AbstractHelper
                     'details' => false, 'paper' => false,
                     'delivery' => true, 'login' => true,
                 ];
-            }
+    }
         } else {
             // free ill form, no driver
             $opened = [
