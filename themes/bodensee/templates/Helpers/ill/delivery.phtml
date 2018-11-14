@@ -4,7 +4,7 @@
 <div class="form-group form-group-sm">            
         <? if (isset($params['Bestellform'])):
             $form = $params['Bestellform'];
-        elseif ($this->illform($this->success, $this->driver)->isOpen('paper')): 
+        elseif (isset($this->driver) && ($this->driver->isArticle() || $this->driver->isJournal())): 
             $form = 'Kopie';
         else: 
             $form = 'Leihen';
