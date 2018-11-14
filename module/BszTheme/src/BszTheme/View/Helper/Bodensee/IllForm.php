@@ -163,7 +163,8 @@ class IllForm extends AbstractHelper
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers')],
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication')],
             ['Year of Publication', 'EJahr', $this->getFromDriver('getPublicationDates'), '', true, 'ill_error_year'],
-            ['Tome', 'BandTitel', $this->getFromDriver('getVolume')],
+            ['VolumeTitle', 'BandTitel', $this->getFromDriver('getVolume')],
+            ['Volume', 'Band'],
             ['ISBN', 'Isbn', $this->getFromDriver('getCleanISBN')],
         ];
         return $this->renderFormFields($fields);
@@ -235,7 +236,8 @@ class IllForm extends AbstractHelper
             ['Publisher', 'Verlag', ''],
             ['Year of Publication', 'EJahr', '', '', true, 'ill_error_year'],
             ['Publication_Place', 'EOrt', ''],
-            ['Tome', 'Band'],
+            ['VolumeTitle', 'BandTitel'],
+            ['Volume', 'Band'],
             ['storage_retrieval_request_year', 'Jahrgang'],
             ['ISSN', 'Issn', ''],
             ['ISBN', 'Isbn', ''],
