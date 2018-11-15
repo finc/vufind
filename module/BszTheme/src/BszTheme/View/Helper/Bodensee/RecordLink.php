@@ -41,43 +41,8 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
     {
         parent::__construct($router);
         $this->config = $config;
-    }
-    
-    /**
-     * Returns Link for ILL portal
-     * @param \Bsz\RecordDriver\SolrMarc $driver
-     * @param $sigel
-     * @return type
-     */
-    public function getInterlendingUrl(\Bsz\RecordDriver\SolrMarc $driver, $sigel) {
-        if(!empty($sigel)) {
-            $url = \Bsz\Debug::isDev() ? 
-                'http://flportaltest.bsz-bw.de/servlet/locator?' :
-                'http://flportal.bsz-bw.de/servlet/locator?';   
-            $issns = $driver->getISSNs();
-            $isbns = $driver->getISBNs();
-            $params = [
-                'sid' => $driver->getNetwork(),
-                'title' => $driver->getShortTitle() . ' '.$driver->getSubtitle(),
-    //            'date' => array_shift($Driver->getPublicationDates()),
-                'callnumber' => $driver->getCallnumber(),
-                'sigel' => $sigel,
-
-            ];
-            if(count($issns) > 0) {
-                $params['issn'] = array_shift($issns);
-            }
-            elseif(count($isbns) > 0) {
-                $params['isbn'] = array_shift($isbns);
-            }
-            return \Bsz\UrlHelper::getUrl($url, $params);                    }
-        return '';
-        
-
-    }
-
-    
-    
+    }  
+       
     public function getCoverServiceUrls($driver) {
         $services = [];
         $sources = $this->config->get('CoverSources');      
