@@ -141,13 +141,14 @@ class Factory
         $adisUrl = null;
 
         $library = $libraries->getFirstActive($client->getIsils());  
-        if ($library instanceof \Bsz\Client\Library) {
+        if ($library instanceof \Bsz\Config\Library) {
             $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null;                 
         }        
           
         return new RecordLink(
             $sm->getServiceLocator()->get('VuFind\RecordRouter'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $adisUrl
         );
     }
     

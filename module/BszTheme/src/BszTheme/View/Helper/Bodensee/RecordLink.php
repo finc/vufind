@@ -40,6 +40,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
     public function __construct(\VuFind\Record\Router $router, \Zend\Config\Config $config, $baseUrl = null)
     {
         parent::__construct($router);
+        $this->baseUrl = $baseUrl;
         $this->config = $config;
     }  
        
