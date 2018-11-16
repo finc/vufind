@@ -689,13 +689,13 @@ LccBrowse:
       # Strip pre-existing trailing asterisks, then add a new one:
       #- [preg_replace, '/\*+$/', '']
       #- [append, "*"]
-  QueryFields:
-    callnumber-search:
-      - [callnumber_exact, 1000]
-      - [callnumber_fuzzy, ~]
-    dewey-search:
-      - [callnumber_exact, 1000]
-      - [callnumber_fuzzy, ~]
+  #QueryFields:
+    #callnumber-search:
+      #- [callnumber_exact, 1000]
+      #- [callnumber_fuzzy, ~]
+    #dewey-search:
+      #- [callnumber_exact, 1000]
+      #- [callnumber_fuzzy, ~]
 
 publisher:
   DismaxFields:
