@@ -106,7 +106,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @var int
      */
-    protected $ilsTestTimeout = 1;
+    protected $ilsTestTimeout = 90;
 
     /**
      * Flag to save online status.
@@ -222,7 +222,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
         // get ilsTestTimeout setting if set otherwise use default of 1 second
         $this->ilsTestTimeout = isset($this->config['General'])
             && isset($this->config['General']['ilsTestTimeout'])
-            ? $this->config['General']['ilsTestTimeout'] : 1;
+            ? $this->config['General']['ilsTestTimeout'] : 90;
 
     }
 
