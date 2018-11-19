@@ -15,7 +15,11 @@
              placeholder="<?=$this->transEsc($placeholder)?>"
              <?=$this->illform($this->status, $this->driver)->maxlength($name)?>
              <? if ($required):?> required="true"<? endif; ?>
-             <? if (!empty($error)):?> data-error="<?=$this->transEsc($error)?>"<? endif; ?>/>
+             <? if (!empty($error)):?> 
+                data-error="<?=$this->transEsc($error)?>"
+             <? else: ?>
+                data-error="<?=$this->transEsc('ill_form_error')?>"
+             <? endif; ?>/>
              <span class="help-block with-errors">
              </span>             
     </div>
