@@ -89,11 +89,6 @@ class Ill extends Ezb
             unset($newParams['date']);
         }
         
-        // UB Heidelbergs implementation differs from default. 
-        switch ($newParams['genre']) {
-            case 'book': $newParams['genre'] = 'bookitem';
-                break;
-        }
         $params = [];
         foreach (array_filter($newParams) as $param => $val) {
             $params[] = $param.'='.$val;
