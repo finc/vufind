@@ -8,7 +8,7 @@
       <? $title = is_array($value) ? implode(',',$value) : $value?>
       <input type="text" class="form-control" 
              id="ill-<?=$this->escapeHtmlAttr($id)?>" 
-             value="<?=$this->string()->cleanEsc($value)?>" 
+             value="<?= preg_replace('/|/','', $this->string()->cleanEsc($value));?>"
              name="<?=$this->escapeHTMLAttr($name)?>" 
              data-validate="<?=$required ? 'true' : 'false'?>"
              data-<?=strtolower($this->escapeHtmlAttr($name))?>="true"

@@ -13,13 +13,7 @@
   <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn)): ?>
   <? $contentDisplayed = true; ?>
     <tr>
-      <th>
-          <? if ($this->driver->isFisBildung()): ?>
-            <?=$this->transEsc('DocumentID')?>:
-          <? else: ?>
-            <?=$this->transEsc('PPN')?>:
-          <? endif; ?>
-      </th>
+      <th><?=$this->transEsc('PPN')?>:</th>
       <td>
         <?=$this->recordLink()->linkPPN($this->driver) ?>    
       </td>
