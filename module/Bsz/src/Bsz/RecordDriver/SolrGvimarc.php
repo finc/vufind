@@ -1059,7 +1059,8 @@ class SolrGvimarc extends SolrMarc
             $params['rft.series'] = is_array($series[0]) ?
                     $series[0]['name'] : $series[0];
         }
-        $params['rft.au'] = $this->getPrimaryAuthor();
+        $authors = $this->getAllAuthorsShort();
+        $params['rft.au'] = array_shift($authors);
         $publication = $this->getPublicationDetails();
         // we drop everything, except first entry
         $publication = array_shift($publication);
@@ -1113,8 +1114,9 @@ class SolrGvimarc extends SolrMarc
         unset($params['rft.title']);
         $params['rft.jtitle'] = $this->getContainerTitle();
         $params['rft.atitle'] = $this->getTitle();
-        $params['rft.au'] = $this->getPrimaryAuthor();
-
+        $authors = $this->getAllAuthorsShort();
+        $params['rft.au'] = array_shift($authors);
+        
         $params['rft.format'] = 'Article';
         $langs = $this->getLanguages();
         if (count($langs) > 0) {
