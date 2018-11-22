@@ -39,6 +39,7 @@ use Zend\ServiceManager\ServiceManager as ServiceManager;
 class RecordController extends \VuFind\Controller\RecordController 
     implements LoggerAwareInterface 
 {
+    use IsilTrait;
     use \VuFind\Controller\HoldsTrait;
     use \VuFind\Controller\ILLRequestsTrait;
     use \VuFind\Controller\StorageRetrievalRequestsTrait;
@@ -415,34 +416,6 @@ class RecordController extends \VuFind\Controller\RecordController
         return parent::getUniqueID();
     }
     
-    /**
-     * Redirect to saveIsil Action
-     * 
-     * @return redirect
-     */
-    public function processIsil() 
-    {
-        $isils = $this->params()->fromQuery('isil');
-        $uri = $this->getRequest()->getUri();
-        // remove isil from params - otherwise we get a redirection loop
-        $params = $this->params()->fromQuery();
-        unset($params['isil']);
-        
-        $referer = sprintf("%s://%s%s?%s", $uri->getScheme(), $uri->getHost(),
-            $uri->getPath(), http_build_query($params));
-        
-        $params = [                
-            'referer' => $referer,
-            'isil' => $isils,
-        ];           
-        /**
-         * TODO: Get this working with toRoute Redirect
-         */
-        return $this->redirect()->toUrl('/Bsz/saveIsil?'.
-                http_Build_query($params));
-
-        
-    }
     
     public function createViewModelWithoutRecord($params = null) 
     {
