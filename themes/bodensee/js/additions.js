@@ -1,3 +1,16 @@
+function   performMark() {
+    var input = $('#searchForm_lookfor');     
+    var lookfor = input.val().split(' ');
+    if (typeof lookfor !== 'undefined') {
+        $("a.title,a.author").mark(lookfor, {
+            "wildcards": "enabled",
+            "acrossElements": true,
+            "accuracy": "exactly"
+        });
+    }
+}
+
+
 function moreChildren(id) {
   $('.' + id).removeClass('hidden');
   $('#more-' + id).addClass('hidden');
@@ -265,6 +278,6 @@ $(document).ready(function() {
   $('[data-toggle="popover"]').popover({
       trigger: 'click focus'
   });
-  
+  performMark();
   openUrlTooltip();
 });
