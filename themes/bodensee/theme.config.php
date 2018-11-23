@@ -4,6 +4,7 @@ $config = [
       'favicon' => '/themes/bodensee/images/favicon/default.ico',
     'js' => [
         'additions.js',
+        'vendor/jquery.mark.min.js',
     ],     
     'helpers' => [
         'factories' => [

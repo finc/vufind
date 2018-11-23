@@ -1,3 +1,20 @@
+function   performMark() {
+    var input = $('#searchForm_lookfor');     
+    lookfor = input.val().split(' ');
+    if (typeof lookfor !== 'undefined') {
+        $('a.title,a.author,span[property]').mark(lookfor, {        
+            "wildcards": "enabled",
+            "accuracy": "partially",
+            "synonyms": {
+                "ss": "ß",
+                "ö": "oe",
+                "ü": "ue",
+                "ä": "ae"
+            }
+        });
+    }
+}
+
 function moreChildren(id) {
   $('.' + id).removeClass('hidden');
   $('#more-' + id).addClass('hidden');
@@ -265,6 +282,6 @@ $(document).ready(function() {
   $('[data-toggle="popover"]').popover({
       trigger: 'click focus'
   });
-  
+  performMark();
   openUrlTooltip();
 });
