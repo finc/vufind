@@ -1,14 +1,13 @@
 function   performMark() {
     var input = $('#searchForm_lookfor');     
-    var lookfor = input.val().split(' ');
+    lookfor = input.val().split(' ');
     if (typeof lookfor !== 'undefined') {
-        $('a.title,a.author').mark(lookfor, {
+        $('a.title,a.author,span[property]').mark(lookfor, {        
             "wildcards": "enabled",
-            "accuracy": "partially"
+            "accuracy": "partially",
         });
     }
 }
-
 
 function moreChildren(id) {
   $('.' + id).removeClass('hidden');
