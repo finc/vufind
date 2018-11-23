@@ -104,6 +104,8 @@ $basePath = '/Record/';
         <? else: ?>
             <? if ($this->driver->isFree()): ?>
                 <strong><?= $this->transEsc('not_available_for_ill_free') ?></strong>              
+            <? elseif ($this->driver->isCollection()): ?>
+                <strong><?= $this->transEsc('not_available_for_ill_collection') ?></strong>              
             <? else: ?>
                 <strong><?= $this->transEsc('not_available_for_ill') ?></strong>   
                 <? // Show link to SWB hit even if its not available ?>
