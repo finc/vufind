@@ -5,6 +5,12 @@ function   performMark() {
         $('a.title,a.author,span[property]').mark(lookfor, {        
             "wildcards": "enabled",
             "accuracy": "partially",
+            "synonyms": {
+                "ss": "ß",
+                "ö": "oe",
+                "ü": "ue",
+                "ä": "ae"
+            }
         });
     }
 }
