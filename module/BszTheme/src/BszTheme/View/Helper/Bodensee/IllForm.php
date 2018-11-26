@@ -79,44 +79,7 @@ class IllForm extends AbstractHelper
      */
     public function isOpen($panelName)
     {
-        $opened = [];
-        if ($this->status === static::STATUS_SENT_FAILURE ) {
-            // auth failed - open login panel only
-            $opened = [
-                'details' => true, 'paper' => false,
-                'delivery' => false, 'login' => true,
-            ];
-        } elseif ($this->status === static::STATUS_NOT_SENT && isset($this->driver)) {
-            // form not yet submitted - open panels according to content
-            $article = $this->driver->tryMethod('isArticle');
-            $ebook = $this->driver->tryMethod('isEBook');
-            $journal = $this->driver->tryMethod('isJournal');
-        
-
-            if ($article || $journal) {
-                $opened = [
-                    'details' => false, 'paper' => true,
-                    'delivery' => true, 'login' => true,
-                ];
-            } elseif ($ebook) {
-                $opened = [
-                    'details' => false, 'paper' => true,
-                    'delivery' => true, 'login' => true,
-                ];
-            } else {
-                $opened = [
-                    'details' => false, 'paper' => false,
-                    'delivery' => true, 'login' => true,
-                ];
-    }
-        } else {
-            // free ill form, no driver
-            $opened = [
-                'details' => true, 'paper' => true,
-                'delivery' => true, 'login' => true,
-            ];
-        }
-        return $opened[$panelName];
+        return true;
     }
 
     /**
@@ -200,7 +163,8 @@ class IllForm extends AbstractHelper
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers')],
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication')],
             ['Year of Publication', 'EJahr', $this->getFromDriver('getPublicationDates'), '', true, 'ill_error_year'],
-            ['Tome', 'BandTitel', $this->getFromDriver('getVolume')],
+            ['VolumeTitle', 'BandTitel', $this->getFromDriver('getVolume')],
+            ['Volume', 'Band'],
             ['ISBN', 'Isbn', $this->getFromDriver('getCleanISBN')],
         ];
         return $this->renderFormFields($fields);
@@ -233,6 +197,7 @@ class IllForm extends AbstractHelper
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication', $container)],
             // we must get year and issue from the actual driver object
             ['Year of Publication', 'EJahr', $this->getFromDriver('getPublicationDates'), '', true, 'ill_error_year'],
+            ['Issue', 'Heft', $this->getFromDriver('getContainerIssue')],
         ];
         if ($this->driver->isContainerMonography()) {
             array_push($fields, ['ISBN', 'Isbn', $this->getFromDriver('getCleanISBN', $container)]);
@@ -257,6 +222,7 @@ class IllForm extends AbstractHelper
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers')],
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication')],
             ['storage_retrieval_request_year', 'Jahrgang', '', '', true, 'ill_error_year'],
+            ['Issue', 'Heft'],
             ['ISSN', 'Issn', $this->getFromDriver('getCleanISSN')],
         ];
         return $this->renderFormFields($fields);        
@@ -272,7 +238,9 @@ class IllForm extends AbstractHelper
             ['Publisher', 'Verlag', ''],
             ['Year of Publication', 'EJahr', '', '', true, 'ill_error_year'],
             ['Publication_Place', 'EOrt', ''],
-            ['Tome', 'Band'],
+            ['VolumeTitle', 'BandTitel'],
+            ['Volume', 'Band'],
+            ['Issue', 'Heft'],
             ['storage_retrieval_request_year', 'Jahrgang'],
             ['ISSN', 'Issn', ''],
             ['ISBN', 'Isbn', ''],
@@ -292,7 +260,6 @@ class IllForm extends AbstractHelper
             $fields = [
                 ['article author', 'AufsatzAutor', '', '', true],
                 ['article title', 'AufsatzTitel', '', '', true],
-                ['Issue', 'Heft', ''],
                 ['pages', 'Seitenangabe', '', '', true, 'ill_error_pages']
             ];              
             if (isset($this->driver) && $this->driver->isContainerMonography()) {
@@ -303,7 +270,6 @@ class IllForm extends AbstractHelper
                 ['article author', 'AufsatzAutor', $this->getFromDriver('getPrimaryAuthor'), '', true],
                 ['article title', 'AufsatzTitel', $this->getFromDriver('getTitle'), '', true],
                 ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true, 'ill_error_year'],
-                ['Issue', 'Heft', $this->getFromDriver('getContainerIssue')],
                 ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ill_error_pages'],
             ];              
         } elseif (isset($this->driver) && $this->driver->isBook()) {
@@ -316,7 +282,6 @@ class IllForm extends AbstractHelper
             $fields = [
                 ['article author', 'AufsatzAutor', ''],
                 ['article title', 'AufsatzTitel', ''],
-                ['Issue', 'Heft', '', 'ill_placeholder_article'],
                 ['pages', 'Seitenangabe', '', '', false, 'ill_error_pages'],
             ];  
             
