@@ -62,5 +62,26 @@ class InterlibraryLoanLink extends AbstractHelper
         }
         return $url_default;
     }
+
+    public function getBossLink($driver) {
+        $url = "https://fernleihe.boss.bsz-bw.de/Search/Results?isil[]=DE-15&hiddenFilters[]=-consortium%3AFL";
+        $signifiers = [];
+        foreach (['issn', 'isbn'] as $signifier) {
+            $method = "get" . strtoupper($signifier) . "s";
+            $$signifier = $driver->$method();
+            if (!empty($$signifier)) {
+                $signifiers += $$signifier;
+            }
+        }
+        if (!empty($signifiers)) {
+            $url .= "&join=OR";
+            $i = 0;
+            while ($i < count($signifiers)) {
+                $url .= "&type$i"."[]=ISN&lookfor$i"."[]=".preg_filter('/[^0-9]/','',$signifiers[$i]);
+                $i++;
+            }
+        }
+        return $url;
+    }
 }
 
