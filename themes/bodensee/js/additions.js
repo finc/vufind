@@ -1,8 +1,9 @@
 function   performMark() {
-    var input = $('#searchForm_lookfor');     
-    lookfor = input.val().split(' ');
-    if (typeof lookfor !== 'undefined') {
-        $('a.title,a.author,span[property]').mark(lookfor, {        
+    var input = $('#searchForm_lookfor').val();     
+    if (typeof input !== 'undefined') {
+        lookfor = input.replace(/[\/\[\:;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
+        terms = lookfor.split(' ');
+        $('a.title,a.author,span[property]').mark(terms, {        
             "wildcards": "enabled",
             "accuracy": "partially",
             "synonyms": {
