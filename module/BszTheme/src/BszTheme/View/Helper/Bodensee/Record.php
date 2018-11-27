@@ -124,6 +124,26 @@ class Record extends \VuFind\View\Helper\Root\Record
                         'link-' . $type . '.phtml', ['lookfor' => $lookfor, 'searchClassId' => $searchClassId]
         );
     }
+    
+        /**
+     * 
+     *
+     * @param bool $openUrlActive Is there an active OpenURL on the page?
+     *
+     * @return array
+     */
+    public function getLinkDetails($openUrlActive = false)
+    {
+        $sources = parent::getLinkDetails($openUrlActive);
+        foreach ($sources as $k => $array) {
+            if (isset($array['desc']) && strlen($array['desc']) > 60 ) {
+                $array['desc'] = substr($array['desc'], 0, 60).'...';
+                $sources[$k] = $array;
+
+            }             
+        }
+        return $sources;
+    }
 
     /**
      * Generate a thumbnail URL (return false if unsupported).
