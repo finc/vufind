@@ -1,11 +1,11 @@
 <? $id = rand(0, 10000)?>
 <? $panelid = strtolower(str_replace(' ', '-', $title))?>
-<div class="panel panel-primary" id="panel-<?=$this->escapeHtmlAttr($panelid)?>">
-    <div class="panel-heading <?if(!$open): ?> collapsed <? endif; ?>" role="tab" id="heading-<?=$id?>" data-toggle="collapse" data-target="#collapse-<?=$id?>" aria-expand="<? if($open): ?>true<? else: ?>false<? endif; ?>">
+<div class="panel panel-primary <? if(!$open):?>hidden<? endif; ?>" id="panel-<?=$this->escapeHtmlAttr($panelid)?>">
+    <div class="panel-heading" role="tab" id="heading-<?=$id?>" data-toggle="collapse" data-target="#collapse-<?=$id?>" aria-expand="<? if($open): ?>true<? else: ?>false<? endif; ?>">
         <span class="fa fa-list"></span>
         <strong class="panel-title"><?=$this->transEsc($title)?></strong>
     </div>
-    <div id="collapse-<?=$id?>" class="panel panel-collapse collapse <?if($open): ?> in <? endif; ?>" role="tabpanel" aria-labelledby="heading-<?=$id?>">
+    <div id="collapse-<?=$id?>" class="panel panel-collapse" role="tabpanel" aria-labelledby="heading-<?=$id?>">
         <div class="panel-body">
             <?=$content?>
         </div>

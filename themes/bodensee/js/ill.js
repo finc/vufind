@@ -67,7 +67,7 @@ function changeRequiredCopy($actor) {
     if ($actor.attr('id') === 'ill-lend') {
         $('#panel-paperdata').hide('slow');
     } else {
-        $('#panel-paperdata').show('slow');
+        $('#panel-paperdata').removeClass('hidden').show('slow');
     }
 
     var requiredCopy = ['AufsatzAutor', 'AufsatzTitel', 'Seitenangabe'];
