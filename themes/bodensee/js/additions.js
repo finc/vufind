@@ -1,3 +1,21 @@
+function   performMark() {
+    var input = $('#searchForm_lookfor').val();     
+    if (typeof input !== 'undefined') {
+        lookfor = input.replace(/[\/\[\:;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
+        terms = lookfor.split(' ');
+        $('a.title,a.author,span[property]').mark(terms, {        
+            "wildcards": "enabled",
+            "accuracy": "partially",
+            "synonyms": {
+                "ss": "ß",
+                "ö": "oe",
+                "ü": "ue",
+                "ä": "ae"
+            }
+        });
+    }
+}
+
 function moreChildren(id) {
   $('.' + id).removeClass('hidden');
   $('#more-' + id).addClass('hidden');
@@ -265,6 +283,6 @@ $(document).ready(function() {
   $('[data-toggle="popover"]').popover({
       trigger: 'click focus'
   });
-  
+  performMark();
   openUrlTooltip();
 });
