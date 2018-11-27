@@ -1,44 +1,39 @@
 function   performMark() {
-    var input = $('#searchForm_lookfor').val();
+    var lookfor = '';
+    var input_simple = $('#searchForm_lookfor').val();
     var input_adv = $('span.adv_lookfor').text();
-    if (typeof input !== 'undefined' && input.trim() !== '') {
-        lookfor = input.replace(/[\/\[\:;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
-        terms = lookfor.split(' ');
-        $('a.title,a.author,span[property]').mark(terms, {        
-            "wildcards": "enabled",
-            "accuracy": "partially",
-            "synonyms": {
-                "ss": "ß",
-                "ö": "oe",
-                "ü": "ue",
-                "ä": "ae"
-            }
-        });
+    if (typeof input_simple !== 'undefined' && input_simple.trim() !== '') {
+        lookfor = input_simple;
     } else if (typeof input_adv !== 'undefined'  && input_adv.trim() !== '') {
-        lookfor = input_adv.replace(/[\/\[\:;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
-        terms = lookfor.split(' ');
-        $('a.title,a.author,span[property]').mark(terms, {        
-            "wildcards": "enabled",
-            "accuracy": "partially",
-            "exclude": [
-                "Alle",
-                "Felder",
-                "All",
-                "Fields",
-                "und",
-                "and",
-                "oder",
-                "or",
-            ],
-            "synonyms": {
-                "ss": "ß",
-                "ö": "oe",
-                "ü": "ue",
-                "ä": "ae"
-            }
-        });
-        
+        lookfor = input_adv;
+        var mapObj = {
+            "Alle Felder:":"", "All Fields:":"",
+            "Titel:":"", "Title:":"",
+            "Verfasser:":"", "Author:":"",
+            "Schlagwort:":"", "Subject:":"",
+            "Verlag:":"", "Publisher:":"",
+            "Serie:":"", "Series:":"",            
+            "UND":"", "AND":"",
+            "NICHT":"", "NOT":"",
+            "ODER":"", "OR":""
+        };
+        var re = new RegExp(Object.keys(mapObj).join("|"),"g");
+        lookfor = lookfor.replace(re, function(matched){
+            return mapObj[matched];
+        });        
     }
+    lookfor = lookfor.replace(/[\/\[;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
+    terms = lookfor.split(' ').filter(function(el) { return el; });
+    $('a.title,a.author,span[property]').mark(terms, {        
+        "wildcards": "enabled",
+        "accuracy": "partially",
+        "synonyms": {
+            "ss": "ß",
+            "ö": "oe",
+            "ü": "ue",
+            "ä": "ae"
+        }
+    });
 }
 
 function moreChildren(id) {
