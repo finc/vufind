@@ -1,6 +1,7 @@
 function   performMark() {
-    var input = $('#searchForm_lookfor').val();     
-    if (typeof input !== 'undefined') {
+    var input = $('#searchForm_lookfor').val();
+    var input_adv = $('span.adv_lookfor').text();
+    if (typeof input !== 'undefined' && input.trim() !== '') {
         lookfor = input.replace(/[\/\[\:;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
         terms = lookfor.split(' ');
         $('a.title,a.author,span[property]').mark(terms, {        
@@ -13,6 +14,30 @@ function   performMark() {
                 "ä": "ae"
             }
         });
+    } else if (typeof input_adv !== 'undefined'  && input_adv.trim() !== '') {
+        lookfor = input_adv.replace(/[\/\[\:;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
+        terms = lookfor.split(' ');
+        $('a.title,a.author,span[property]').mark(terms, {        
+            "wildcards": "enabled",
+            "accuracy": "partially",
+            "exclude": [
+                "Alle",
+                "Felder",
+                "All",
+                "Fields",
+                "und",
+                "and",
+                "oder",
+                "or",
+            ],
+            "synonyms": {
+                "ss": "ß",
+                "ö": "oe",
+                "ü": "ue",
+                "ä": "ae"
+            }
+        });
+        
     }
 }
 
