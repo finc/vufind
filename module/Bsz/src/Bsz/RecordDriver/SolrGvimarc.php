@@ -1362,6 +1362,7 @@ class SolrGvimarc extends SolrMarc
         $fields = [
             936 => ['e'],
             953 => ['e'],
+            773 => ['g']
         ];
         $issue = $this->getFieldsArray($fields);
         if (count($issue) > 0 && !empty($issue[0])) {
@@ -1415,7 +1416,7 @@ class SolrGvimarc extends SolrMarc
             } else {
                 unset($years[$k]);
             }
-        }
+        }        
         return array_shift($years);
     }
 
