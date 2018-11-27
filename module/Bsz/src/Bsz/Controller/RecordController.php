@@ -47,6 +47,8 @@ class RecordController extends \VuFind\Controller\RecordController
     
     const TIMEOUT = 30;
     
+    protected $orderId = 0;
+    
         /**
      * Constructor
      *
@@ -193,13 +195,13 @@ class RecordController extends \VuFind\Controller\RecordController
             $uri->getHost() );
             $header = $this->getResponse()->getHeaders();
             $header->addHeader($cookie);
-
         $view = $this->createViewModel([
                     'driver' => $this->driver,
                     'success' => $success,
                     'test' => $this->isTestMode(),
                     'params' => $params,
                     'submitDisabled' => $submitDisabled,
+                    'orderId' => $this->orderId
                 ])->setTemplate('record/illform');
         return $view;
     }
@@ -376,7 +378,11 @@ class RecordController extends \VuFind\Controller\RecordController
      */
     public function parseResponse($html)
     {
-        if (strpos($html->textContent, 'Bestell-Id') !== FALSE) {
+
+        // should return 0 if no match and false if an error occurs
+        // so if it matches is returns 1 which is casted to true
+        if ((bool)preg_match('/Bestell-Id:\s*(\d*)/', $html->textContent, $id) === true ) {
+            $this->orderId = $id[1];
             // Order is successfull
             $this->FlashMessenger()->addSuccessMessage('ill_request_submit_ok');
             return true;

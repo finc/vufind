@@ -23,6 +23,10 @@
     <h2><?=$this->illform($success, $this->driver)->getText('headline')?></h2>
     <noscript><p class="alert alert-danger"><?=$this->transEsc('Please enable JavaScript.')?></p></noscript>    
     <?=$this->flashmessages()?>
+    <? if ($success && !empty($this->orderId) && $this->orderId > 0):?>
+    <p><?=$this->transEsc('ill_request_submit_ok_text')?><strong><?=$this->escapeHtml($this->orderId)?></strong></p>
+    <p><?=$this->transEsc('ill_request_submit_ok_text_2')?></p>
+    <? endif; ?>
     <? if (!isset($success) || !$success): ?>
     <form class="<?=$type?> form-horizontal" id="form-ill" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form">
 
