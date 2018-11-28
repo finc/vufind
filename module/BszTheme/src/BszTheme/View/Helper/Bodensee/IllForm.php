@@ -77,9 +77,21 @@ class IllForm extends AbstractHelper
      * @param string $this->status
      * @return boolean
      */
-    public function isOpen($panelName)
+    public function isVisibleCopies()
     {
-        return true;
+        $return = falsE;
+        if ($this->status === static::STATUS_NOT_SENT && isset($this->driver)) {
+            // form not yet submitted - open panels according to content
+            $article = $this->driver->tryMethod('isArticle');
+            $ebook = $this->driver->tryMethod('isEBook');
+            $journal = $this->driver->tryMethod('isJournal');
+            
+            if ($article || $journal || $ebook) {
+                $return =  true;
+            }
+      
+        } 
+        return $return;
     }
 
     /**
