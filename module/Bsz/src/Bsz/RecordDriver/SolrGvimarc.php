@@ -94,7 +94,8 @@ class SolrGvimarc extends SolrMarc
                     foreach ($subfields as $subfield) {
                         // Numeric subfields are for control purposes and should not
                         // be displayed:
-                        if (!is_numeric($subfield->getCode())) {
+                        if (!is_numeric($subfield->getCode())
+                                && $subfield->getCode() == "a") {
                             $current[] = $subfield->getData();
                         }
                     }
@@ -341,6 +342,16 @@ class SolrGvimarc extends SolrMarc
     {
         //lccn = 010a, first
         return $this->getFirstFieldValue('010', ['a']);
+    }
+
+    /**
+     * Get a note about languages and text
+     *
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->getFirstFieldValue('546', ['a']);
     }
 
     /**
