@@ -7,11 +7,12 @@
         }
     }
 ?>
-<? $subjects = $this->driver->getAllSWDSubjectHeadings(); if (!empty($subjects)): ?>
+      
+<? $subjects = $this->driver->getAllSubjectHeadings(); if (!empty($subjects)): ?>
 
 <? $rand = rand(0, 9999)?> 
   <tr>
-    <th><?if(!$this->driver->isFisBildung()):?><?endif;?><?=$this->transEsc('SWDSubjects')?>: </th>
+    <th><?if(!$this->driver->isFisBildung()):?><?endif;?><?=$this->transEsc('Subjects')?>: </th>
     <td id="showmore-items-<?=$rand?>">
     <? $count = 0 ?>
       <? foreach ($subjects as $field): ?>      
