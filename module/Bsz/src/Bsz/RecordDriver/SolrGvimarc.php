@@ -122,7 +122,7 @@ class SolrGvimarc extends SolrMarc
     {
         // These are the fields that may contain subject headings:
         $fields = ['600', '610', '611', '630', '648', '650', '651', '655',
-            '656', '689', '936'];
+            '656', '689'];
         $headings = $this->getSubjectHeadings($fields);
         return $headings;
 //        if(array_key_exists('subject_all', $this->fields)) {
