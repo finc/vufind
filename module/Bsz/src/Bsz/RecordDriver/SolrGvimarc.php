@@ -660,7 +660,7 @@ class SolrGvimarc extends SolrMarc
                 $this->getFieldArray('800', ['a', 'b', 'c', 'd', 'f', 'p', 'q', 't']),
                 $this->getFieldArray('830', ['a', 'p']));
         if (count($series) == 0) {
-            $series = $this->getFieldArray('490', ['a']);
+            $series = $this->getFieldArray('490', ['a', 'v']);
         }
         return $series;
     }
