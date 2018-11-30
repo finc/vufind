@@ -97,18 +97,19 @@ class SolrGvimarc extends SolrMarc
                         if (!is_numeric($subfield->getCode())
                                 && $subfield->getCode() == "a") {
                             $current[] = $subfield->getData();
+                            array_push($retval, $subfield->getData());
                         }
                     }
                     // If we found at least one chunk, add a heading to our result:
-                    if (!empty($current)) {
-                        $retval[] = $current;
-                    }
+//                    if (!empty($current)) {
+//                        $retval[] = $current;
+//                    }
                 }
             }
         }
 
         // Send back everything we collected:
-        return $retval;
+        return array_unique($retval);
     }
 
     /**
