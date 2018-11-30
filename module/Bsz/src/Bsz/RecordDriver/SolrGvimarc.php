@@ -85,8 +85,6 @@ class SolrGvimarc extends SolrMarc
 
             // If we got here, we found results -- let's loop through them.
             foreach ($results as $result) {
-                // Start an array for holding the chunks of the current heading:
-                $current = array();
 
                 // Get all the chunks and collect them together:
                 $subfields = $result->getSubfields();
@@ -96,19 +94,15 @@ class SolrGvimarc extends SolrMarc
                         // be displayed:
                         if (!is_numeric($subfield->getCode())
                                 && $subfield->getCode() == "a") {
-                            $current[] = $subfield->getData();
+                            array_push($retval, $subfield->getData());
                         }
-                    }
-                    // If we found at least one chunk, add a heading to our result:
-                    if (!empty($current)) {
-                        $retval[] = $current;
                     }
                 }
             }
         }
 
         // Send back everything we collected:
-        return $retval;
+        return array_unique($retval);
     }
 
     /**
