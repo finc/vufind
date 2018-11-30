@@ -608,9 +608,9 @@ class SolrGvimarc extends SolrMarc
     
     public function getCorporateAuthors() {
         $corporate = array_merge(
-            $this->getFieldArray('110', ['a', 'b']),// corporate
+            $this->getFieldArray('110', ['a', 'b', 'g']),// corporate
             $this->getFieldArray('111', ['a', 'b']),// Meeting
-            $this->getFieldArray('710', ['a', 'b']),// corporate
+            preg_replace("/g\:/", "", $this->getFieldArray('710', ['a', 'b', '9'])),// corporate
             $this->getFieldArray('711', ['a', 'b']) // Meeting
         );
         return $corporate;
@@ -949,7 +949,7 @@ class SolrGvimarc extends SolrMarc
     public function getCorporateAuthor()
     {
         // Try 110 first -- if none found, try 710 next.
-        $corpAuthors = array_merge($this->getFieldArray('110', array('a', 'b', '9'), true), $this->getFieldArray('710', array('a', 'b', 'g'), true));
+        $corpAuthors = array_merge($this->getFieldArray('110', array('a', 'b', 'g', '9'), true), $this->getFieldArray('710', array('a', 'b', 'g'), true));
         return empty($corpAuthors) ? null : $corpAuthors[0];
     }
 
@@ -1304,10 +1304,10 @@ class SolrGvimarc extends SolrMarc
     public function getVolume()
     {
         $fields = [
-            245 => ['n'],
+            245 => ['n', 'p'],
             490 => ['v']
         ];
-        $volumes = $this->getFieldsArray($fields);
+        $volumes = preg_replace("/\/$/", "", $this->getFieldsArray($fields));
         return array_shift($volumes);
     }
 
