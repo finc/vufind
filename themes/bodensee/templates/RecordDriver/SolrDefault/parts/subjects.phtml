@@ -8,17 +8,18 @@
     }
 ?>
       
-<? $subjects = $this->driver->getAllSubjectHeadings(); if (!empty($subjects)): ?>
+<? $subjects = $this->driver->getAllSubjectHeadings();?>
+<? if (!empty($subjects)): ?>
 
 <? $rand = rand(0, 9999)?> 
   <tr>
     <th><?if(!$this->driver->isFisBildung()):?><?endif;?><?=$this->transEsc('Subjects')?>: </th>
     <td id="showmore-items-<?=$rand?>">
-    <? $count = 0 ?>
+      <? $count = 0 ?>
       <? foreach ($subjects as $field): ?>      
-      <span class="subjectLine" property="keywords">
-        <? $subject = ''; ?>
-        <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
+        <span class="subjectLine" property="keywords">
+         <? $subject = ''; ?>
+         <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
               <? $subject = trim($subject . ' ' . $subfield); ?>              
@@ -26,12 +27,13 @@
                  href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
               <? $count++ ?>
             <? endforeach; ?>
-        <? else: ?>                
-            <? foreach ($field as $subfield): ?>
-            <a class="searchicon showmore-item <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
-              <? $count++ ?>
+          <? else: ?>
+                <?  $field = explode('--', $field); ?>
+                <? foreach ($field as $subfield): ?>
+                <a class="searchicon showmore-item <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
+                <? $count++ ?>
             <? endforeach; ?>
-        <? endif; ?>
+          <? endif; ?>
       </span>
       <? endforeach; ?>
       <? if($count >=5): ?>
@@ -41,7 +43,9 @@
   </tr>
   <? unset($subjects)?>
   <? endif; ?>
-      <? $notations = $this->driver->tryMethod('getRVKNotations'); 
+  
+  
+  <? $notations = $this->driver->tryMethod('getRVKNotations'); 
   if(!empty($notations)): ?>
   <? $contentDisplayed = true; ?>
   <tr>
