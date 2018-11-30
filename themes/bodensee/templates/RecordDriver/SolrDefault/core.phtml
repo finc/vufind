@@ -61,6 +61,15 @@
                 <? endforeach; ?></td>
             </tr>
             <? endif; ?>      
+
+            <? $volume = $this->driver->getVolume(); ?>
+            <? if (!empty($volume)): ?>
+                <tr>
+                  <th><?=$this->transEsc('Volume/Issue')?>: </th>
+                  <td><?=$this->escapeHTML($volume)?></td>
+                </tr>
+            <? endif; ?> 
+
             <?=$this->render('RecordDriver/SolrDefault/parts/series.phtml')?>
             <? $journalTitle = $this->driver->getContainerTitle(); 
               $issue=$this->driver->getContainerIssue(); 
@@ -77,7 +86,7 @@
                 </td>
             </tr>
             <? endif; ?>
-      
+            
             <? $journalIssue = $this->driver->getContainerIssue(); 
                $journalYear= $this->driver->getContainerYear(); 
                if (!empty($journalIssue) && !empty($journalYear)): ?>
@@ -91,13 +100,6 @@
                 </td>
             </tr>
             <? endif; ?>      
-            <? $volume = $this->driver->getVolume(); ?>
-            <? if (!empty($volume)): ?>
-                <tr>
-                  <th><?=$this->transEsc('Volume/Issue')?>: </th>
-                  <td><?=$this->escapeHTML($volume)?></td>
-                </tr>
-            <? endif; ?> 
             <? $nextTitles = $this->driver->getNewerTitles(); $prevTitles = $this->driver->getPreviousTitles(); ?>
             <? if (!empty($nextTitles)): ?>
             <tr>
