@@ -85,8 +85,6 @@ class SolrGvimarc extends SolrMarc
 
             // If we got here, we found results -- let's loop through them.
             foreach ($results as $result) {
-                // Start an array for holding the chunks of the current heading:
-                $current = array();
 
                 // Get all the chunks and collect them together:
                 $subfields = $result->getSubfields();
@@ -94,20 +92,17 @@ class SolrGvimarc extends SolrMarc
                     foreach ($subfields as $subfield) {
                         // Numeric subfields are for control purposes and should not
                         // be displayed:
-                        if (!is_numeric($subfield->getCode())) {
-                            $current[] = $subfield->getData();
+                        if (!is_numeric($subfield->getCode())
+                                && $subfield->getCode() == "a") {
+                            array_push($retval, $subfield->getData());
                         }
-                    }
-                    // If we found at least one chunk, add a heading to our result:
-                    if (!empty($current)) {
-                        $retval[] = $current;
                     }
                 }
             }
         }
 
         // Send back everything we collected:
-        return $retval;
+        return array_unique($retval);
     }
 
     /**
@@ -121,7 +116,7 @@ class SolrGvimarc extends SolrMarc
     {
         // These are the fields that may contain subject headings:
         $fields = ['600', '610', '611', '630', '648', '650', '651', '655',
-            '656', '689', '936'];
+            '656', '689'];
         $headings = $this->getSubjectHeadings($fields);
         return $headings;
 //        if(array_key_exists('subject_all', $this->fields)) {
@@ -341,6 +336,16 @@ class SolrGvimarc extends SolrMarc
     {
         //lccn = 010a, first
         return $this->getFirstFieldValue('010', ['a']);
+    }
+
+    /**
+     * Get a note about languages and text
+     *
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->getFirstFieldValue('546', ['a']);
     }
 
     /**
@@ -597,9 +602,9 @@ class SolrGvimarc extends SolrMarc
     
     public function getCorporateAuthors() {
         $corporate = array_merge(
-            $this->getFieldArray('110', ['a', 'b']),// corporate
+            $this->getFieldArray('110', ['a', 'b', 'g']),// corporate
             $this->getFieldArray('111', ['a', 'b']),// Meeting
-            $this->getFieldArray('710', ['a', 'b']),// corporate
+            preg_replace("/g\:/", "", $this->getFieldArray('710', ['a', 'b', '9'])),// corporate
             $this->getFieldArray('711', ['a', 'b']) // Meeting
         );
         return $corporate;
@@ -649,7 +654,7 @@ class SolrGvimarc extends SolrMarc
                 $this->getFieldArray('800', ['a', 'b', 'c', 'd', 'f', 'p', 'q', 't']),
                 $this->getFieldArray('830', ['a', 'p']));
         if (count($series) == 0) {
-            $series = $this->getFieldArray('490', ['a']);
+            $series = $this->getFieldArray('490', ['a', 'v']);
         }
         return $series;
     }
@@ -938,7 +943,7 @@ class SolrGvimarc extends SolrMarc
     public function getCorporateAuthor()
     {
         // Try 110 first -- if none found, try 710 next.
-        $corpAuthors = array_merge($this->getFieldArray('110', array('a', 'b', '9'), true), $this->getFieldArray('710', array('a', 'b', 'g'), true));
+        $corpAuthors = array_merge($this->getFieldArray('110', array('a', 'b', 'g', '9'), true), $this->getFieldArray('710', array('a', 'b', 'g'), true));
         return empty($corpAuthors) ? null : $corpAuthors[0];
     }
 
@@ -1293,10 +1298,10 @@ class SolrGvimarc extends SolrMarc
     public function getVolume()
     {
         $fields = [
-            245 => ['n'],
+            245 => ['n', 'p'],
             490 => ['v']
         ];
-        $volumes = $this->getFieldsArray($fields);
+        $volumes = preg_replace("/\/$/", "", $this->getFieldsArray($fields));
         return array_shift($volumes);
     }
 

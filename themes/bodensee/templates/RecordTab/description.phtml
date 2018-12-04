@@ -30,6 +30,15 @@
       </td>
     </tr>
   <? endif; ?>
+  <? $note = $this->driver->tryMethod('getNote');
+     if(!empty($note)):          
+     $contentDisplayed = true;
+  ?>
+    <tr>
+        <th><?=$this->transEsc('Note')?></th>
+        <td><?=$this->escapeHtml($note)?></td>          
+    </tr>
+  <? endif; ?>  
     <? $parallel = $this->driver->tryMethod('getRelatedEditions'); if (count($parallel)): ?>
     <? $contentDisplyed = true ?> 
     <tr>
