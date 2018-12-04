@@ -18,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 namespace Bsz\Controller;
-use Zend\View\Model\JsonModel;
 use \Zend\Json\Json;
 /**
  * Holding Actions
@@ -32,7 +31,7 @@ class HoldingController extends \VuFind\Controller\AbstractBase {
      * @var \Bsz\Holding
      */
     protected $holding;
-    
+      
     public function __construct() {
     }
     
