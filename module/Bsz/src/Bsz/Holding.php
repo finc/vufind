@@ -179,39 +179,39 @@ class Holding {
      */
     public function query() 
     {
-        $params1 = $params2 = '';
-        $tmp = [];
+        $orString = '';
+        $and = [];
+        $params = [];
         if (isset($this->network)) {
-            $params1 = 'consortium:' . $this->network;
+            $params['filter'] = 'consortium:' . $this->network;
         }        
         if (!empty($this->title)) {
-            $tmp[] = 'title:"'.$this->title.'"';
+            $and[] = 'title:"'.$this->title.'"';
         }
         if (!empty($this->author)) {
-            $tmp[] = 'author:"'.$this->author.'"';
+            $and[] = 'author:"'.$this->author.'"';
         }
         if (!empty($this->year)) {
-            $tmp[] = 'publish_date:'.$this->year;
+            $and[] = 'publish_date:'.$this->year;
         }
         if (!empty($this->zdbId)) {
-            $tmp[] = 'zdb_id:'.$this->zdbId;
+            $and[] = 'zdb_id:'.$this->zdbId;
         }
                 
         if (count($this->isxns) > 0) {
-            $isxns = [];
+            $or = [];
             foreach($this->isxns as $isxn) {
                 if(strlen($isxn) <= 9) {
-                    $isxns[] = 'issn:' . $isxn;
+                    $or[] = 'issn:' . $isxn;
                 } elseif (strlen($isxn) > 9) {
-                    $isxns[] = 'isbn:' . $isxn;
+                    $or[] = 'isbn:' . $isxn;
                 }
             }
-            $params2 = implode(' OR ',$isxns);
-            $tmp[] = count($params2) > 1 ? '(' . $params2 . ')' : $params2;
+            $orString = implode(' OR ',$or);
+            // add braces to orString if there are ands set
+            $and[] = count($and) > 0 ? '(' . $orString . ')' : $orString;
         }
-        $params['lookfor'] = implode(' AND ', $tmp);
-        //Network is added as filter
-        $params['filter'] = $params1;
+        $params['lookfor'] = implode(' AND ', $and);        
 
         $results = $this->runner->run($params, 'Solr');
         $results instanceof \Bsz\Search\Solr\Results;
