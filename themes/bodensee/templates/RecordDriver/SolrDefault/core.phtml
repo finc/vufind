@@ -122,6 +122,7 @@
             <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
             <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
             <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
+            <? $role_author = $this->driver->getPrimaryAuthorRole(); ?>
             <? if (isset($authors['main']) && !empty($authors['main'])): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
@@ -156,7 +157,8 @@
                         <a class="author" href=<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLiveSecondaryAuthors[$k])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($field)?></a>
                     </span>
                     <? if (isset($gnd_au2[$k])): ?>
-                    (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>, <?=$this->transEsc($role_au2[$k]);?><? endif; ?>
+                    (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>, <?=$this->transEsc('rdarole_'.$role_au2[$k]);?><? endif; ?>
+                        
                     <? endforeach; ?>
                     </td>
             </tr>
