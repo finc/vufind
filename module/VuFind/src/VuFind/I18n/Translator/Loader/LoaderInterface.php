@@ -14,5 +14,5 @@ interface LoaderInterface
      * @param string $file
      * @return \Generator|TextDomain[]
      */
-    public function load(string $file): \Generator;
+    public function load(string $locale, string $textDomain, string ...$files): \Generator;
 }

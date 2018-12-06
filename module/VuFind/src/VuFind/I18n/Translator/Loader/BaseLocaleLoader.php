@@ -2,35 +2,24 @@
 
 namespace VuFind\I18n\Translator\Loader;
 
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerAwareTrait;
 use Zend\I18n\Translator\TextDomain;
-use Zend\Uri\Uri;
 
-class BaseLocaleLoader implements LoaderInterface
+class BaseLocaleLoader implements MessageLoaderInterface, EventManagerAwareInterface
 {
-    /**
-     * @var LoaderInterface
-     */
-    protected $loader;
-
-    public function __construct(LoaderInterface $loader)
-    {
-        $this->loader = $loader;
-    }
+    use EventManagerAwareTrait;
 
     /**
      * @param string $file
      * @return \Generator|TextDomain[]
      */
-    public function load(string $file): \Generator
+    public function __invoke(string $locale, string $textDomain): \Generator
     {
-        $uri = new Uri($file);
-        if ('messages' !== $uri->getScheme()) {
-            return;
-        }
 
-        if ($locale = $this->getBaseLocale($uri->getHost())) {
-            $file = $uri->setHost($locale)->toString();
-            yield from $this->loader->load($file);
+        if ($locale = $this->getBaseLocale($locale)) {
+            $event = new MessageLoaderEvent($locale, $textDomain);
+            yield from $this->getEventManager()->triggerEvent($event);
         }
     }
 

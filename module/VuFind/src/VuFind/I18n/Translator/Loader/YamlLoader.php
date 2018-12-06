@@ -3,43 +3,43 @@
 namespace VuFind\I18n\Translator\Loader;
 
 use Symfony\Component\Yaml\Yaml as Parser;
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerAwareTrait;
 use Zend\I18n\Translator\TextDomain;
-use Zend\Uri\Uri;
 
-class YamlLoader implements LoaderInterface
+class YamlLoader implements FileLoaderInterface, EventManagerAwareInterface
 {
-    /**
-     * @var LoaderInterface
-     */
-    protected $loader;
+    use EventManagerAwareTrait;
 
-    public function __construct(LoaderInterface $loader)
+    public function __invoke(string $file): \Generator
     {
-        $this->loader = $loader;
-    }
-
-    /**
-     * @param string $file
-     * @return \Generator|TextDomain[]
-     */
-    public function load(string $file): \Generator
-    {
-        if (!$this->canLoad($uri = new Uri($file))) {
+        if (!$this->canLoad($file)) {
             return;
         }
-        $data = new TextDomain(Parser::parseFile($file) ?? []);
 
-        foreach ($data['$extends'] ?? [] as $parent) {
-            $parentUri = Uri::merge($uri, trim($parent));
-            yield from $this->loader->load((string)$parentUri);
+        yield $file => $data = new TextDomain(Parser::parseFile($file) ?? []);
+
+
+        if ($extendedFiles = $data['@extends'] ?? []) {
+            yield from $this->getEventManager()
+                ->triggerEvent(new ExtendedFilesLoaderEvent($file, $extendedFiles));
         }
-
-        yield $file => $data;
+        // TODO: put logic into ExtendedFilesLoader
+//        foreach ($data['@extends'] ?? [] as $extendedFile) {
+//            $files = $this->getEventManager()
+//                ->triggerEvent(new FileLoaderEvent($extendedFile));
+//            foreach ($files as $loadedFile => $data) {
+//                if ($file === $loadedFile) {
+//                    // throw
+//                }
+//                yield $loadedFile => $data;
+//            }
+//        }
     }
 
-    protected function canLoad(Uri $uri): bool
+
+    protected function canLoad(string $file): bool
     {
-        $extension = pathinfo($uri->getPath(), PATHINFO_EXTENSION);
-        return in_array($extension, ['yml', 'yaml']);
+        return in_array(pathinfo($file, PATHINFO_EXTENSION), ['yml', 'yaml']);
     }
 }
