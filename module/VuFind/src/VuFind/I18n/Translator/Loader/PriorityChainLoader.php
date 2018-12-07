@@ -11,33 +11,37 @@ class PriorityChainLoader implements LoaderInterface
     /**
      * @var FilterChain
      */
-    protected $filterChain;
+    protected $chain;
 
     public function __construct()
     {
-        $this->filterChain = new FilterChain();
+        $this->chain = new FilterChain();
     }
 
-
-    public function attach(LoaderInterface $loader, int $prio)
+    public function attach(callable $callback, array $opts, int $prio)
     {
-        $this->filterChain->attach($this->toCallback($loader), $prio);
+        return $this->chain->attach($this->adjust($callback, $opts), $prio);
     }
 
     /**
-     * @param string $file
+     * @param string $locale
+     * @param string $textDomain
      * @return \Generator|TextDomain[]
      */
-    public function load(string $file): \Generator
+    public function load(string $locale, string $textDomain): \Generator
     {
-        yield from $this->filterChain->run($this, compact('file'));
+        $task = 'messages';
+        $args = compact('task', 'locale', 'textDomain');
+        yield from $this->chain->run($this->chain, $args);
     }
 
-    protected function toCallback(LoaderInterface $loader): \Closure
+    protected function adjust(callable $callback, array $opts): \Closure
     {
-        return function ($self, array $argv, FilterIterator $tail) use ($loader) : \Generator {
-            yield from $loader->load(current($argv));
-            yield from $tail->next($self, $argv, $tail) ?? [];
+        return function (FilterChain $chain, array $args, FilterIterator $rest) use ($callback, $opts) {
+            yield from call_user_func($callback, $args, $opts, function ($args) use ($chain) {
+                yield from $chain->run($chain, $args);
+            });
+            yield from $rest->next($chain, $args, $rest) ?? [];
         };
     }
 }

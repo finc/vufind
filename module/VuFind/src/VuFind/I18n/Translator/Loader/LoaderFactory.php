@@ -19,12 +19,12 @@ class LoaderFactory implements FactoryInterface
 
     protected function create(ContainerInterface $container): LoaderInterface
     {
-        $chainLoader = new PriorityChainLoader();
-        $loaderManager = $container->get(PluginManager::class);
+        $loader = new PriorityChainLoader();
+        $callbackManager = $container->get(CallbackManager::class);
         foreach ($container->get(LoaderConfig::class) as $config) {
-            $loader = $loaderManager->build($config['type'], $config['args'] ?? []);
-            $chainLoader->attach($loader, $config['prio'] ?? 0);
+            $callback = $callbackManager->get($config['type']);
+            $loader->attach($callback, $config['opts'] ?? [], $config['prio'] ?? 0);
         }
-        return $chainLoader;
+        return $loader;
     }
 }

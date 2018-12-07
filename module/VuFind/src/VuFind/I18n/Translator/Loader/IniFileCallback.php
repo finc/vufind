@@ -3,52 +3,27 @@
 namespace VuFind\I18n\Translator\Loader;
 
 use Zend\I18n\Translator\TextDomain;
-use Zend\Uri\Uri;
 
-class ExtendedIniLoader implements LoaderInterface
+class IniFileCallback implements CallbackInterface
 {
-    /**
-     * @var \ArrayObject|TextDomain[]
-     */
-    protected $cache;
-
-    /**
-     * @var LoaderInterface
-     */
-    protected $loader;
-
-    public function __construct(LoaderInterface $loader)
+    public function __invoke(array $args, array $opts, \Closure $run): \Generator
     {
-        $this->loader = $loader;
-        $this->cache = new \ArrayObject();
+        if ($this->canHandleArgs($args)) {
+            yield $file = $args['file'] => $data = $this->getTextDomain($file);
+
+            $args['task'] = 'parents';
+            $args['parents'] = is_string($extends = $data['@extends'] ?? null)
+                ? array_map('trim', explode(',', $extends)) : [];
+
+            yield from $run($args);
+        }
     }
 
-    /**
-     * @param string $file
-     * @return \Generator|TextDomain[]
-     */
-    public function load(string $file): \Generator
+    protected function canHandleArgs(array $args): bool
     {
-        if (!$this->canLoad($uri = new Uri($file))) {
-            return;
-        }
-
-        $data = $this->cache[$file] ?? ($this->cache[$file] = $this->getTextDomain($file));
-
-        if ($parents = $data['@extends'] ?? null) {
-            foreach (explode(',', $parents) as $parent) {
-                $parentUri = Uri::merge($uri, trim($parent));
-                yield from $this->loader->load((string)$parentUri);
-            }
-        }
-
-        yield $file => $data;
-    }
-
-    protected function canLoad(Uri $uri): bool
-    {
-        return pathinfo($uri->getPath(), PATHINFO_EXTENSION) === 'ini'
-            && static::class === ($uri->getQueryAsArray()['loader'] ?? static::class);
+        return $args['task'] === 'file'
+            && pathinfo($args['file'], PATHINFO_EXTENSION) === 'ini'
+            && ($args['callback'] ?? static::class) === static::class;
     }
 
     /**

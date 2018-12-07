@@ -6,7 +6,6 @@ use Interop\Container\ContainerInterface;
 use VuFind\Cache\Manager;
 use VuFind\I18n\Locale\LocaleSettings as LocaleSettings;
 use VuFind\I18n\Translator\Loader\LoaderInterface;
-use VuFind\I18n\Translator\Loader\PluginManager;
 use Zend\Cache\Storage\StorageInterface;
 use Zend\EventManager\EventInterface;
 use Zend\I18n\Translator\TextDomain;
@@ -43,8 +42,7 @@ class TranslatorFactory implements DelegatorFactoryInterface
         /** @var LocaleSettings $localeSettings */
         $localeSettings = $container->get(LocaleSettings::class);
         $this->fallbackLocales = $localeSettings->getFallbackLocales();
-
-        $this->loader = $container->get(PluginManager::class)->get(LoaderInterface::class);
+        $this->loader = $container->get(LoaderInterface::class);
 
         /** @var Translator $translator */
         $translator = $this->translator = call_user_func($callback);
@@ -62,19 +60,18 @@ class TranslatorFactory implements DelegatorFactoryInterface
     }
 
 
-    public function loadMessages(EventInterface $event)
+    public function loadMessages(EventInterface $event): TextDomain
     {
-        $result = new TextDomain();
         $locale = $event->getParam('locale');
         $textDomain = $event->getParam('text_domain');
-        $loadedFiles = $this->loader->load("messages://$locale/$textDomain");
-        foreach ($loadedFiles as $file => $data) {
+
+        foreach ($this->loader->load($locale, $textDomain) as $file => $data) {
             $files[] = $file;
             $store[$file] = $data;
-            $result->merge($data);
+            $result = (new TextDomain())->merge($data)->merge($result ?? new TextDomain());
         }
 
-        if (!$data && $textDomain === 'default') {
+        if (!isset($result) && $textDomain === 'default') {
             throw new TranslatorRuntimeException("Locale $locale could not be loaded!");
         }
 

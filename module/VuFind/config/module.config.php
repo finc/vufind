@@ -354,7 +354,8 @@ $config = [
             'VuFind\Hierarchy\TreeRenderer\PluginManager' => 'VuFind\ServiceManager\AbstractPluginManagerFactory',
             'VuFind\I18n\Locale\LocaleSettings' => 'VuFind\I18n\Locale\LocaleSettingsFactory',
             'VuFind\I18n\Translator\Loader\LoaderConfig' => 'VuFind\I18n\Translator\Loader\LoaderConfigFactory',
-            'VuFind\I18n\Translator\Loader\PluginManager' => 'VuFind\ServiceManager\AbstractPluginManagerFactory',
+            'VuFind\I18n\Translator\Loader\LoaderInterface' => 'VuFind\I18n\Translator\Loader\LoaderFactory',
+            'VuFind\I18n\Translator\Loader\CallbackManager' => 'VuFind\I18n\Translator\Loader\CallbackManagerFactory',
             'VuFind\ILS\Connection' => 'VuFind\ILS\ConnectionFactory',
             'VuFind\ILS\Driver\PluginManager' => 'VuFind\ServiceManager\AbstractPluginManagerFactory',
             'VuFind\ILS\Logic\Holds' => 'VuFind\ILS\Logic\LogicFactory',
@@ -543,7 +544,6 @@ $config = [
             'search_params' => [ /* See VuFind\Search\Params\PluginManager for defaults */],
             'search_results' => [ /* See VuFind\Search\Results\PluginManager for defaults */],
             'session' => [ /* see VuFind\Session\PluginManager for defaults */],
-            'i18n_translator_loader' => [ /* see VuFind\I18n\Translattor\Loader\PluginManager for defaults */],
         ],
         // This section behaves just like recorddriver_tabs below, but is used for
         // the collection module instead of the standard record view.
@@ -667,31 +667,31 @@ $config = [
             ],
         ],
         'translator_loader' => [
-            'base' => [
-                'prio' => 10000000,
-                'type' => 'VuFind\I18n\Translator\Loader\BaseLocaleLoader',
+            'local' => [
+                'type' => 'VuFind\I18n\Translator\Loader\DirectoryCallback',
+                'opts' => [
+                    'dir' => LOCAL_OVERRIDE_DIR . '/languages',
+                    'ext' => 'yaml,ini'
+                ]
             ],
             'core' => [
-                'prio' => 9000000,
-                'type' => 'VuFind\I18n\Translator\Loader\DirectoryLoader',
-                'args' => [
+                'type' => 'VuFind\I18n\Translator\Loader\DirectoryCallback',
+                'opts' => [
                     'dir' => APPLICATION_PATH . '/languages',
                     'ext' => 'ini'
                 ]
             ],
-            'local' => [
-                'prio' => 8000000,
-                'type' => 'VuFind\I18n\Translator\Loader\DirectoryLoader',
-                'args' => [
-                    'dir' => LOCAL_OVERRIDE_DIR . '/languages',
-                    'ext' => 'ini,yaml'
-                ]
+            'parents' => [
+                'type' => 'VuFind\I18n\Translator\Loader\ParentFilesCallback',
             ],
-            'xini' => [
-                'type' => 'VuFind\I18n\Translator\Loader\ExtendedIniLoader',
+            'ini' => [
+                'type' => 'VuFind\I18n\Translator\Loader\IniFileCallback',
             ],
             'yaml' => [
-                'type' => 'VuFind\I18n\Translator\Loader\YamlLoader',
+                'type' => 'VuFind\I18n\Translator\Loader\YamlFileCallback',
+            ],
+            'base' => [
+                'type' => 'VuFind\I18n\Translator\Loader\BaseLocaleCallback',
             ],
         ]
     ],
