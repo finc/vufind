@@ -77,7 +77,7 @@ class InterlibraryLoanLink extends AbstractHelper
             $url .= "&join=OR";
             $i = 0;
             while ($i < count($signifiers)) {
-                $url .= "&type$i"."[]=ISN&lookfor$i"."[]=".preg_filter('/[^0-9]/','',$signifiers[$i]);
+                $url .= "&type$i"."[]=ISN&lookfor$i"."[]=".preg_replace('/[^0-9]/','',$signifiers[$i]);
                 $i++;
             }
         }
