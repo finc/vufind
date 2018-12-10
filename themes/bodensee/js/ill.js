@@ -37,7 +37,7 @@ function illFormLogic() {
         if (!e.isDefaultPrevented()) {
             
             // clear the paper data fields if borrowing an item
-            if ($('input[name=Bestellform]').val() === 'Leihen') {
+            if ($('input[name=Bestellform]:checked').val() === 'Leihen') {
                 $('#panel-paperdata').find('input').val("");
             }
             
