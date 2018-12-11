@@ -252,8 +252,8 @@ class RecordController extends \VuFind\Controller\RecordController
     public function isTestMode()
     {
         $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
-        $libraries = $libraries->getActive($client->getIsils());
+        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+                ->getActive($client->getIsils());
         $test = true;
         foreach ($libraries as $library) {
             if ($library->isLive()) {
@@ -270,9 +270,9 @@ class RecordController extends \VuFind\Controller\RecordController
     public function getCustomUrl()
     {
         $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
-        $libraries = $libraries->getActive($client->getIsils());
-        $custom = '';
+        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+                ->getActive($client->getIsils());
+
         foreach ($libraries as $library) {
             if ($library->hasCustomUrl()) {
                 return $library->getCustomUrl();
@@ -289,8 +289,8 @@ class RecordController extends \VuFind\Controller\RecordController
     public function getLibraryBySigel($sigel)
     {
         $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
-        $libraries = $libraries->getActive($client->getIsils());
+        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+                ->getActive($client->getIsils());
 
         foreach ($libraries as $library) {
             if ($library->getSigel() == $sigel) {
@@ -443,8 +443,8 @@ class RecordController extends \VuFind\Controller\RecordController
      */
     public function homeAction()
     {
-        $isils = $this->params()->fromQuery('isil');
-        if (count($isils) > 0) {
+        $isilsParam = $this->params()->fromQuery('isil');
+        if (count($isilsParam) > 0) {
             return $this->processIsil();
         }
         $view = parent::homeAction();

@@ -26,23 +26,12 @@ use Zend\Session\Container;
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class BszController extends \VuFind\Controller\AbstractBase {
-   
-    public function __construct() {
-        // you need this constructor even if it's empty
-        // error_reporting(E_ALL);
-    }    
-    
     
     /**
      * Write isil into Session 
      */
-    public function saveIsilAction() {
-        
-        $sl = $this->getServiceLocator();
-        $client = $sl->get('Bsz\Client');
-        // $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('Bsz\Libraries');  
-        
+    public function saveIsilAction() {        
+      
         $isilsRoute = explode(',', $this->params()->fromRoute('isil'));       
         $isilsGet = (array)$this->params()->fromQuery('isil');
         $isils = array_merge($isilsRoute, $isilsGet);
@@ -59,7 +48,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
             throw new \Bsz\Exception('parameter isil missing');
         }
         if (count($isils) > 0) {
-            $container = new \Zend\Session\Container(
+            $container = new Container(
                 'fernleihe', $this->getServiceLocator()->get('VuFind\SessionManager')
             );
             $container->offsetSet('isil', $isils);     
@@ -89,30 +78,13 @@ class BszController extends \VuFind\Controller\AbstractBase {
         } else {
             return $this->forwardTo('search', 'home');            
         }
-        //Forward back to home action
     }
-    
-    /*
-     * Curls an url and returns html
-     */
-    public function curlAction() {
-        $url = $this->params()->fromPost('url');
-        $config = [
-            'adapter' => 'Zend\Http\Client\Adapter\Curl',
-            'curloptions' => [
-                CURLOPT_FOLLOWLOCATION => true,
-            ],
-        ];
-        $Client = new Zend\Http\Client($url, $config);
-        return $this->getResponse();
-    }
-    
    
     /**
      * Show Privacy information
      */
     public function privacyAction() {
-
+        // no code needed her, just do the default.
     }
     
     /**
@@ -127,7 +99,6 @@ class BszController extends \VuFind\Controller\AbstractBase {
     
     public function dedupAction() {
         
-        $config = $this->getServiceLocator()->get('VuFind/Config')->get('config')->get('Index');
         $params = [];
         $dedup = $this->getServiceLocator()->get('Bsz/Config/Dedup');
        
@@ -141,8 +112,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
         } else {
             // Load default values from session or config
             $params = $dedup->getCurrentSettings();       
-        }
-        
+        }        
         
         $view = $this->createViewModel();
         $view->setVariables($params);
