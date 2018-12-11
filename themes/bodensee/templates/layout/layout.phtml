@@ -25,10 +25,13 @@
       );
     ?>
     <?$this->headMeta()->appendProperty('og:type', 'website')?>
+    <?$this->headMeta()->appendProperty('og:title',$this->headTitle()->renderTitle())?>
+    <?$this->headMeta()->appendProperty('og:name', 'BOSS: BSZ One Stop Search')?>
+    
     <? if ($this->client()->isisilSession()): ?>
-    <?$this->headMeta()->appendProperty('og:image', $this->imageLink('logo/default.png'))?>
+    <?$this->headMeta()->appendProperty('og:image', $this->serverUrl().$this->imageLink('logo/default.png'))?>
     <? else: ?>
-    <?$this->headMeta()->appendProperty('og:image', '/themes/bodensee/images/'.$this->clientAsset()->getLogo())?>
+    <?$this->headMeta()->appendProperty('og:image', $this->serverUrl().$this->imageLink($this->clientAsset()->getLogo()))?>
     <? endif;?>
     <?=$this->headMeta()?>
     
