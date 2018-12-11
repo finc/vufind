@@ -7,9 +7,10 @@
     <meta name="robots" content="noindex, nofollow" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <?$this->headMeta()->appendName('author', 'Bibliotheksservice-Zentrum Baden Württemberg (BSZ)')?>
-    <?$this->headMeta()->appendName('keywords', 'boss3, boss, bsz, bibliothek, bücher, zeitschriften')?>
+    <?$this->headMeta()->appendName('keywords', 'boss3, boss, bsz, bibliothek, bücher, zeitschriften, aufsätze')?>
     <?$this->headMeta()->appendName('applcation-name', 'BSZ One Step Search (BOSS) v3')?>
-    <?=$this->headMeta()?>
+    
+    
     <? $this->headTitle()->setPostfix(' - '.$this->client()->getTitle());?>
     <?=$this->headTitle()?>
     <?
@@ -23,6 +24,14 @@
         ]
       );
     ?>
+    <?$this->headMeta()->appendProperty('og:type', 'website')?>
+    <? if ($this->client()->isisilSession()): ?>
+    <?$this->headMeta()->appendProperty('og:image', $this->imageLink('logo/default.png'))?>
+    <? else: ?>
+    <?$this->headMeta()->appendProperty('og:image', '/themes/bodensee/images/'.$this->clientAsset()->getLogo())?>
+    <? endif;?>
+    <?=$this->headMeta()?>
+    
     <!-- RTL styling -->
     <? if ($this->layout()->rtl) {
       $this->headLink()->appendStylesheet('vendor/bootstrap-rtl.min.css');

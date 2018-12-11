@@ -42,6 +42,11 @@ class Factory extends \VuFind\Controller\GenericFactory {
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }
+    /**
+     * 
+     * @param ServiceManager $sm
+     * @return \Bsz\Controller\SearchController
+     */
     public static function getSearchController(ServiceManager $sm)
     {
         return new SearchController(
@@ -49,11 +54,25 @@ class Factory extends \VuFind\Controller\GenericFactory {
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }
+    /**
+     * 
+     * @param ServiceManager $sm
+     * @return \Bsz\Controller\TestController
+     */
     public static function getTestController(ServiceManager $sm) 
     {
         return new TestController(
             $sm->getServiceLocator()->get('Bsz\Config\Libraries')
         );
+    }
+    /**
+     * 
+     * @param ServiceManager $sm
+     * @return \Bsz\Controller\BszController
+     */
+    public static function getBszController(ServiceManager $sm)
+    {
+        return new BszController($sm->getServiceLocator());
     }
     
    

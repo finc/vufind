@@ -218,7 +218,6 @@ class Record extends \VuFind\View\Helper\Root\Record
     public function isAvailableForInterlending()
     {
         // items marked as free
-        $f856 = $this->driver->getFieldsArray([856 => 'z']);
         $ppn = $this->driver->getPPN();
         if (($this->driver->getNetWork() == 'HEBIS' && preg_match('/^8/', $ppn))
                 || $this->driver->isFree()) {
