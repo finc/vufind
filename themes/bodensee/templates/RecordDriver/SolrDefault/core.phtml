@@ -122,7 +122,6 @@
             <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
             <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
             <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
-            <? $role_author = $this->driver->getPrimaryAuthorRole(); ?>
             <? if (isset($authors['main']) && !empty($authors['main'])): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>

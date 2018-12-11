@@ -20,6 +20,7 @@ function illFormLogic() {
 
         $('#form-ill').validator('update');
         changeRequiredCopy($('input[name=Bestellform]:checked'));
+        
 
         var $errors = $(this).find('.has-error');
         if ($errors.length > 0) {
@@ -34,6 +35,12 @@ function illFormLogic() {
             }
         }
         if (!e.isDefaultPrevented()) {
+            
+            // clear the paper data fields if borrowing an item
+            if ($('input[name=Bestellform]:checked').val() === 'Leihen') {
+                $('#panel-paperdata').find('input').val("");
+            }
+            
             // everything is validated, form to be submitted
             $(this).find('[type=submit]').addClass('disabled')
                     .parent().append('<i class="fa fa-spinner fa-spin"></i>');
