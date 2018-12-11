@@ -9,8 +9,8 @@
     <?$this->headMeta()->appendName('author', 'Bibliotheksservice-Zentrum Baden Württemberg (BSZ)')?>
     <?$this->headMeta()->appendName('keywords', 'boss3, boss, bsz, bibliothek, bücher, zeitschriften, aufsätze')?>
     <?$this->headMeta()->appendName('applcation-name', 'BSZ One Step Search (BOSS) v3')?>
-    
-    
+
+
     <? $this->headTitle()->setPostfix(' - '.$this->client()->getTitle());?>
     <?=$this->headTitle()?>
     <?
@@ -27,19 +27,21 @@
     <?$this->headMeta()->appendProperty('og:type', 'website')?>
     <?$this->headMeta()->appendProperty('og:title',$this->headTitle()->renderTitle())?>
     <?$this->headMeta()->appendProperty('og:name', 'BOSS: BSZ One Stop Search')?>
-    
+    <?$this->headMeta()->appendProperty('og:url', $this->serverUrl(true))?>
+    <?$this->headMeta()->appendProperty('og:description', $this->transEsc('homepage_text'))?>
+
     <? if ($this->client()->isisilSession()): ?>
     <?$this->headMeta()->appendProperty('og:image', $this->serverUrl().$this->imageLink('logo/default.png'))?>
     <? else: ?>
     <?$this->headMeta()->appendProperty('og:image', $this->serverUrl().$this->imageLink($this->clientAsset()->getLogo()))?>
     <? endif;?>
     <?=$this->headMeta()?>
-    
+
     <!-- RTL styling -->
     <? if ($this->layout()->rtl) {
       $this->headLink()->appendStylesheet('vendor/bootstrap-rtl.min.css');
     } ?>
-    <?=$this->headLink()?>    
+    <?=$this->headLink()?>
     <?=$this->headStyle()?>
     <?
       if (!isset($this->renderingError)) {
@@ -164,16 +166,16 @@ JS;
     ?>
     <header class="hidden-print">
       <div class="navbar navbar-default navbar-fixed-top">
-          <div class="container">              
+          <div class="container">
         <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
-            <?=$this->render('header.phtml')?>              
+            <?=$this->render('header.phtml')?>
           </div>
       </div>
-      
-    </header>      
+
+    </header>
     <main role="main" class="main">
-        <nav class="container breadcrumbs">  
-            <div class="row">                
+        <nav class="container breadcrumbs">
+            <div class="row">
                 <? if((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
                   && !empty($this->layout()->breadcrumbs)
                   && $this->layout()->breadcrumbs !== false
@@ -198,14 +200,14 @@ JS;
                   </ul>
                 <? endif; ?>
             </div>
-        </nav>        
+        </nav>
         <div class="container">
             <div class="row">
                 <?=$this->layout()->content ?>
-                
-            </div>  
+
+            </div>
         </div>
-    </main>   
+    </main>
     <footer class="hidden-print">
       <div class="container">
         <?=$this->render('footer.phtml')?>
