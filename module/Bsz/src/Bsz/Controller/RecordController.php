@@ -396,6 +396,10 @@ class RecordController extends \VuFind\Controller\RecordController
             $lastmatch = end($matches);
             $msgTextMultiline = array_shift($lastmatch);
             $msgText = str_replace("\n", ', ', $msgTextMultiline);
+            $msgText = strip_tags($msgText);
+            if (mb_strlen($msgText) > 500) {
+                $msgText = mb_substr($msgText, 0, 500);
+            }
 
             if (empty($msgText)) {                
                 $this->debug('HTML response from ZFL server: '.$html);   
