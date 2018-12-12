@@ -173,7 +173,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 
                 try {                    
                     $dom = new \Zend\Dom\Query($response->getBody());
-                    $message = $dom->queryXPath('ergebnis')->getDocument();
+                    $message = $dom->queryXPath('ergebnis/text()')->getDocument();
                     $success = $this->parseResponse($message);    
 
                 } catch (\Exception $ex) {
@@ -252,8 +252,8 @@ class RecordController extends \VuFind\Controller\RecordController
     public function isTestMode()
     {
         $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
-        $libraries = $libraries->getActive($client->getIsils());
+        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+                ->getActive($client->getIsils());
         $test = true;
         foreach ($libraries as $library) {
             if ($library->isLive()) {
@@ -270,9 +270,9 @@ class RecordController extends \VuFind\Controller\RecordController
     public function getCustomUrl()
     {
         $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
-        $libraries = $libraries->getActive($client->getIsils());
-        $custom = '';
+        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+                ->getActive($client->getIsils());
+
         foreach ($libraries as $library) {
             if ($library->hasCustomUrl()) {
                 return $library->getCustomUrl();
@@ -289,8 +289,8 @@ class RecordController extends \VuFind\Controller\RecordController
     public function getLibraryBySigel($sigel)
     {
         $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
-        $libraries = $libraries->getActive($client->getIsils());
+        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+                ->getActive($client->getIsils());
 
         foreach ($libraries as $library) {
             if ($library->getSigel() == $sigel) {
@@ -392,9 +392,14 @@ class RecordController extends \VuFind\Controller\RecordController
             $error_reporting = error_reporting();
             error_reporting(0);
             $matches = [];
-            preg_match_all('/(Fehler \([a-zA-z]*\): )(.*)/', $html->textContent, $matches);
+            preg_match_all('/(Fehler \([a-zA-z]*\): )(.*)/s', $html->textContent, $matches);
             $lastmatch = end($matches);
-            $msgText = array_shift($lastmatch);
+            $msgTextMultiline = array_shift($lastmatch);
+            $msgText = str_replace("\n", ', ', $msgTextMultiline);
+            $msgText = strip_tags($msgText);
+            if (mb_strlen($msgText) > 500) {
+                $msgText = mb_substr($msgText, 0, 500);
+            }
 
             if (empty($msgText)) {                
                 $this->debug('HTML response from ZFL server: '.$html);   
@@ -443,8 +448,8 @@ class RecordController extends \VuFind\Controller\RecordController
      */
     public function homeAction()
     {
-        $isils = $this->params()->fromQuery('isil');
-        if (count($isils) > 0) {
+        $isilsParam = $this->params()->fromQuery('isil');
+        if (count($isilsParam) > 0) {
             return $this->processIsil();
         }
         $view = parent::homeAction();
