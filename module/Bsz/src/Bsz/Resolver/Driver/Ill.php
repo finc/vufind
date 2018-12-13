@@ -55,6 +55,7 @@ class Ill extends Ezb
     protected function downgradeOpenUrl($params)
     {
         $newParams = [];
+        var_dump($params);
         $mapping = [
             'rft_val_fmt' => false,
             'rft.genre' => 'genre',
