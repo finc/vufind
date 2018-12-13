@@ -55,6 +55,7 @@ class Ill extends Ezb
     protected function downgradeOpenUrl($params)
     {
         $newParams = [];
+        var_dump($params);
         $mapping = [
             'rft_val_fmt' => false,
             'rft.genre' => 'genre',
@@ -65,6 +66,7 @@ class Ill extends Ezb
             'rft.spage' => 'spage',
             'rft.epage' => 'epage',
             'rft.pages' => 'pages',
+            'rft.pub' => 'pub',
             'rft.place' => 'place',
             'rft.title' => 'title',
             'rft.series' => 'series',
@@ -89,10 +91,10 @@ class Ill extends Ezb
             unset($newParams['date']);
         }
         
-        $params = [];
+        $return = [];
         foreach (array_filter($newParams) as $param => $val) {
-            $params[] = $param.'='.$val;
+            $return[] = $param.'='.$val;
         }   
-        return implode('&', $params);
+        return implode('&', $return);
     }    
 }
