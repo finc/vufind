@@ -21,7 +21,7 @@ trait IsilTrait
         $uri = $this->getRequest()->getUri();
         // remove isil from params - otherwise we get a redirection loop
         $paramsOld = $this->params()->fromQuery();
-        unset($params['isil']);
+        unset($paramsOld['isil']);
 
         $referer = sprintf("%s://%s%s?%s", $uri->getScheme(), $uri->getHost(),
             $uri->getPath(), http_build_query($paramsOld));
