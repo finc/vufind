@@ -173,7 +173,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 
                 try {                    
                     $dom = new \Zend\Dom\Query($response->getBody());
-                    $message = $dom->queryXPath('ergebnis')->getDocument();
+                    $message = $dom->queryXPath('ergebnis/text()')->getDocument();
                     $success = $this->parseResponse($message);    
 
                 } catch (\Exception $ex) {
@@ -393,9 +393,14 @@ class RecordController extends \VuFind\Controller\RecordController
             $error_reporting = error_reporting();
             error_reporting(0);
             $matches = [];
-            preg_match_all('/(Fehler \([a-zA-z]*\): )(.*)/', $html->textContent, $matches);
+            preg_match_all('/(Fehler \([a-zA-z]*\): )(.*)/s', $html->textContent, $matches);
             $lastmatch = end($matches);
-            $msgText = array_shift($lastmatch);
+            $msgTextMultiline = array_shift($lastmatch);
+            $msgText = str_replace("\n", ', ', $msgTextMultiline);
+            $msgText = strip_tags($msgText);
+            if (mb_strlen($msgText) > 500) {
+                $msgText = mb_substr($msgText, 0, 500);
+            }
 
             if (empty($msgText)) {                
                 $this->debug('HTML response from ZFL server: '.$html);   
