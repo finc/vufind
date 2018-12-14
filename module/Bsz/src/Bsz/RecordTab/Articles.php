@@ -91,7 +91,7 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
                 }               
                 $filter[] = 'material_content_type:Article';
                 $params['filter'] = $filter; 
-                $results = $this->runner->run($params);                                        
+                $results = $this->runner->run($params);   
                 
                 $results instanceof \VuFind\Search\Solr\Results;
                 $this->content = $results->getResults();
@@ -126,10 +126,7 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
     public function isActive() {
         //getContents to determine active state
         $this->getContent();
-        if(($this->driver->isJournal() || $this->driver->isNewsPaper()
-                || $this->driver->isMonographicSerial()
-                || $this->driver->isJournal() || $this->driver->isArticle()) 
-                && !empty($this->content)) {
+        if(!empty($this->content)) {
             
             return true;
         }
