@@ -1,50 +1,95 @@
 <?
   $this->layout()->searchbox = $this->context($this)->renderInContext(
       'search/searchbox.phtml', ['frame' => true]);
+
+    // Set default value if necessary:
+    if (!isset($this->searchClassId)) {
+        $this->searchClassId = 'Solr';
+    }
+
+    // Load search actions and settings (if any):
+    $options = $this->searchOptions($this->searchClassId);
+    $handlers = $this->searchbox()->getHandlers(
+        $this->searchClassId,
+        isset($this->searchIndex) ? $this->searchIndex : null
+    );
+    $handlerCount = count($handlers);
+    $basicSearch = $this->searchbox()->combinedHandlersActive() ? 'combined-searchbox' : $options->getSearchAction();
+    $searchHome = $options->getSearchHomeAction();
+    $advSearch = $options->getAdvancedSearchAction();
+    $lastSort = $this->searchMemory()->getLastSort($this->searchClassId);
+    $lastLimit = $this->searchMemory()->getLastLimit($this->searchClassId);
+    $ignoreHiddenFilterMemory = isset($this->ignoreHiddenFilterMemory) && $this->ignoreHiddenFilterMemory;
+    $ignoreHiddenFiltersInRequest = isset($this->ignoreHiddenFiltersInRequest) && $this->ignoreHiddenFiltersInRequest;
+    $hiddenFilters = $this->searchTabs()->getHiddenFilters($this->searchClassId, $ignoreHiddenFilterMemory, $ignoreHiddenFiltersInRequest);
+    if (empty($hiddenFilters) && !$ignoreHiddenFilterMemory) {
+        $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
+        if (empty($hiddenFilters)) {
+            $hiddenFilters = $this->searchTabs()->getHiddenFilters($this->searchClassId);
+        }
+    }
+    $hiddenFilterParams = $this->searchTabs()->getCurrentHiddenFilterParams($this->searchClassId, $ignoreHiddenFilterMemory, '?');
+    $disabled = '';
+    if ($this->client()->isIsilSession() && !$this->client()->hasIsilSession()) {  
+        $disabled = 'disabled';
+    }
 ?>
 <?=$this->doctype('HTML5')?>
-<html>    
-    <head>      
-        <?=$this->headTitle($this->transEsc('Search'))?>  
+<html>
+    <head>
+        <?=$this->headTitle($this->transEsc('Search'))?>
         <?$this->headThemeResources()?>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <meta name="robots" content="noindex, nofollow" />    
+        <meta name="robots" content="noindex, nofollow" />
         <?=$this->headLink()?>
-        <? 
+        <?
           // Remove unnecessary scripts
-//          $this->headScript()->offsetUnset(2);
+          // we need jquery and bootstrap here
           $this->headScript()->offsetUnset(3);
           $this->headScript()->offsetUnset(4);
           $this->headScript()->offsetUnset(5);
           $this->headScript()->offsetUnset(6);
-          
+          $this->headScript()->offsetUnset(8);
+          $this->headScript()->offsetUnset(7);
+//          $this->headScript()->offsetUnset(9); // additions
+          $this->headScript()->offsetUnset(10); // mark
+
         ?>
         <?=$this->headScript()?>
     </head>
-    <body class="frame">
-        <header>
-            <?=$this->layout()->searchbox ?>                
+    <body class="frame" data-url="<?=$this->serverUrl()?>">
+        <header class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12"> 
+                    <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="get" action="<?=$this->url($basicSearch)?>" name="searchForm" autocomplete="off" target="_blank">
+                    <? $placeholder = $this->searchbox()->getPlaceholderText(isset($tabConfig['selected']['id']) ? $tabConfig['selected']['id'] : null); ?>
+                    <div class="input-group has-feedback">
+                        <input <?=$disabled?> id="searchForm_lookfor" class="searchForm_lookfor form-control search-query<? if($this->searchbox()->autocompleteEnabled($this->searchClassId)):?> autocomplete searcher:<?=$this->escapeHtmlAttr($this->searchClassId) ?><? endif ?>" type="text" name="lookfor" value="<? if($this->searchType == 'basic'): echo $this->escapeHtmlAttr($this->lookfor);endif; ?>"<? if ($placeholder): ?> placeholder="<?=$this->transEsc($placeholder) ?>"<? endif ?> title="<?=$this->transEsc('empty_search')?>" data-content="<?=$this->transEsc('empty_search_text')?>" autocomplete="on"/>
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-info <?=$disabled?>"><i class="fa fa-search" aria-hidden="true"></i></button>            
+                        </div>
+                        <div class="input-group-btn">
+                            <? if ($advSearch): ?>
+                            <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="btn btn-primary <?=$disabled?>" rel="nofollow" target="_blank"><i class='fa fa-search-plus'></i>
+                                <span class="text hidden-xs"><?=$this->transEsc("Advanced")?></a>
+                            <? endif; ?>            
+                        </div>
+                    </div>
+                    <input type="hidden" name="type" value="<? if(array_key_exists(0, $handlers) && array_key_exists('value', $handlers[0])): ?><?=$this->escapeHtmlAttr($handlers[0]['value'])?><? endif; ?>" />
+
+                </div>
+            </div>
+
         </header>
         <script type="text/javascript">
             // disable tab links here
             $(document).ready(function(){
-                $('#searchForm').attr('target', '_blank');
-                $('.nav-tabs li a').click(function() {
-                    $('.nav-tabs li').removeClass('active');
-                    $(this).parent().addClass('active');
-                    var path = $(this).attr('href');
-                    if (path-length == 0 ) {
-                        path = '/Search/Results';
-                    } else if (path.indexOf('EDS') >= 0) {
-                        path = path.replace('Home', 'Search');                        
-                    } else {
-                        path = path.replace('Home', 'Results');                                                
-                    }                    
-                    $('#searchForm').attr('action', path);
-                    return false;
-                });
+                $('#searchForm,.btn-primary').attr('target', '_blank');
+
+                
+
             });
         </script>
-    </body>    
+    </body>
 </html>
