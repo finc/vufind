@@ -638,27 +638,7 @@ class SolrGvimarc extends SolrMarc
     }
 
 
-    /**
-     * Get an array of all series names containing the record.  Array entries may
-     * be either the name string, or an associative array with 'name' and 'number'
-     * keys.
-     *
-     * @return array
-     */
-    public function getSeries()
-    {
-        //series = 440ap:800abcdfpqt:830ap
-        //series2 = 490a
-        $series = array_merge(
-                $this->getFieldArray('440', ['a', 'p']),
-                $this->getFieldArray('800', ['a', 'b', 'c', 'd', 'f', 'p', 'q', 't']),
-                $this->getFieldArray('830', ['a', 'p']));
-        if (count($series) == 0) {
-            $series = $this->getFieldArray('490', ['a', 'v']);
-        }
-        return $series;
-    }
-
+    
     /**
      * Get the short (pre-subtitle) title of the record.
      *
