@@ -226,7 +226,7 @@ if (!empty($holdingTitleHold)): ?>
 
 <? /* finc-specific: nxt 3 lines - #7841@56988450 - CK */ ?>
 <? if ($holdingsEmpty && $this->driver->tryMethod('getLocalOrderInformation') == 'e'): ?>
-  <h3><?=$this->transEsc("This item has already been ordered and will be available shortly")?></h3>
+  <h3><?=$this->transEsc("title_ordered_by_library")?></h3>
 <? endif; ?>
 
 <? /* finc-specific - external access - #9245 - CK */ ?>

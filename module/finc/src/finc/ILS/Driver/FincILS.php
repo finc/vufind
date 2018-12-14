@@ -1381,7 +1381,12 @@ class FincILS extends PAIA implements LoggerAwareInterface
             list($methodName, $methodReturn) = explode(':', $value);
             // if we have one mismatch we can already stop as this record does
             // not qualify for querying the ILS
-            if (!in_array($methodReturn, (array) $this->_getRecord($id)->tryMethod($methodName))) {
+            if ($methodReturn === ""){
+                if (!is_null($this->_getRecord($id)->tryMethod($methodName))) {
+                    return false;
+                }
+            }
+            elseif (!in_array($methodReturn, (array) $this->_getRecord($id)->tryMethod($methodName))) {
                 return false;
             }
         }
