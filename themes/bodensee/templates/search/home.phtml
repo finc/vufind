@@ -62,8 +62,8 @@ JS;
           <?=$this->clientAsset()->getLogoHtml()?>
       </div>      
   </div>
-  <div class="row">   
-      <div class="col-md-12">          
+  <div class="row form-group">   
+      <div class="col-sm-12">          
           <? if(($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>          
             <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>         
           <? elseif($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
@@ -80,12 +80,15 @@ JS;
               <?=$this->partial('bsz/illdropdown.phtml')?></a>
           <? endif; ?>
           <? // Set Maintenance hints with SetEnv MAINTENANCE_MODE "..." in httpd-vufind.conf ?>
-          <?=$this->flashmessages()?>
         </div>
   </div>
-  <? if($this->client()->is('list_of_clients')): ?>
-    <?//=$this->render('bsz/listofclients.phtml')?>
-  <? endif; ?>
+  <div class="row">
+      <div class="col-sm-12">
+          <?=$this->flashmessages()?>          
+      </div>
+  </div>
+    
+
 
   <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $ilsStatusScript, 'SET'); ?>
   
