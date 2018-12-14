@@ -303,6 +303,8 @@ $(document).ready(function() {
   $('[data-toggle="popover"]').popover({
       trigger: 'click focus'
   });
-  performMark();
+  if ($.isFunction('mark')) {
+    performMark();      
+  }
   openUrlTooltip();
 });

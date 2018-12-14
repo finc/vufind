@@ -43,15 +43,18 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="robots" content="noindex, nofollow" />
         <?=$this->headLink()?>
+        <script type="text/javascript">
+            var VuFind;
+        </script>
         <?
           // Remove unnecessary scripts
-          // we need jquery and bootstrap here
+          // we need jquery, bootstrap, common and additions here
           $this->headScript()->offsetUnset(3);
           $this->headScript()->offsetUnset(4);
           $this->headScript()->offsetUnset(5);
           $this->headScript()->offsetUnset(6);
           $this->headScript()->offsetUnset(8);
-          $this->headScript()->offsetUnset(7);
+//          $this->headScript()->offsetUnset(7);
 //          $this->headScript()->offsetUnset(9); // additions
           $this->headScript()->offsetUnset(10); // mark
 
@@ -82,14 +85,5 @@
             </div>
 
         </header>
-        <script type="text/javascript">
-            // disable tab links here
-            $(document).ready(function(){
-                $('#searchForm,.btn-primary').attr('target', '_blank');
-
-                
-
-            });
-        </script>
     </body>
 </html>
