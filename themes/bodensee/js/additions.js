@@ -182,7 +182,8 @@ function avoidEmptySearch() {
         var lookfor = $input.val();
         
         if (lookfor.length === 0) {
-            href = href.replace('Results', 'Home');             
+            href = href.replace('Results', 'Home');   
+            href = href.replace('/EDS/Search', '/EDS/Home');
         } else {
             href = href.replace('Home', 'Results')+'&lookfor='+lookfor;     
         }
