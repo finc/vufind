@@ -76,7 +76,7 @@ class Ill extends Ezb
             'rft.au' => 'aulast',
             'rft.date' => 'date',
             'rft.format' => false,
-            'pid' => 'false', //pid is removed here, because this historic core is added  in OpenUrl VIEW Helper
+            'pid' => false, //pid is removed here, because this historic core is added  in OpenUrl VIEW Helper
             'sid' => 'sid',
         ];
         foreach ($params as $key => $value) {
