@@ -4,7 +4,6 @@
     <? $checkILLRequest = (isset($row['checkILLRequest']) && $row['checkILLRequest']); ?>
     <? if (isset($row['barcode']) && $row['barcode'] != "" && !$this->driver->isEBook()): ?>
       <tr vocab="http://schema.org/" typeof="Offer">
-       
 
         <th><?=$row['callnumber']?></th>
         <td>
@@ -65,9 +64,9 @@
         <?=$this->escapeHtml($row['part'])?>
         </td>
         <? endif; ?>
-        <? if (isset($row['about'][0]) && strlen($row['about']) > 0): ?>
+        <? if (isset($row['about']['content']) && strlen($row['about']['content']) > 0): ?>
         <td>
-        <?=$this->escapeHtml($row['about'])?>
+        <?=$this->escapeHtml($row['about']['content'])?>
         </td>        
         <? endif; ?>
       </tr>
