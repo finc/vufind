@@ -89,9 +89,8 @@ class Shibboleth extends ServerParam
     public function getPermissions($options)
     {
         $this->debug('getPermissions: idpServerParam = ' . $this->idpServerParam);
-        if ($this->request->getServer()->get($this->idpServerParam) === null) {
+        if ($this->request->getServer()->get($this->idpServerParam) === null) {            
             $this->logWarning('getPermissions: Shibboleth server params missing');
-
             return [];
         }
 
