@@ -92,6 +92,13 @@
 </table>
 <? endforeach; ?>
 <? endif; ?>
+  
+<? /* One Recall/Holds-Button for all items */ ?>
+<? if ($this->client()->is('only_one_holds_button')): ?>
+    <? if (isset($row['link']) && ($recallButtonCounter > 0)): ?>
+        <a href="<?=$row['link']?>" class="btn btn-primary recallholdButtonLink <? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external "><?=$this->transEsc('recall/hold')?></a>
+    <? endif; ?>
+<? endif; ?>  
 
 <? $history = $this->driver->getRealTimeHistory(); ?>
 <? if (is_array($history) && !empty($history)): ?>

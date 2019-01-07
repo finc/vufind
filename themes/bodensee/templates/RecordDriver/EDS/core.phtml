@@ -96,12 +96,10 @@
             </a>
           </td>
         </tr>
-        <? endif; ?>
-        
+        <? endif; ?>        
     <? $customFTLinks = $this->driver->getFTCustomLinks(); ?>
     <? if (!empty($customFTLinks) && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable() ): ?>
-      <? foreach ($customFTLinks as $customLink): ?>
-        <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
+      <? foreach ($customFTLinks as $customLink): ?>        <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
           $mot = isset($customLink['MouseOverText'])? $customLink['MouseOverText'] : '';
           $icon = isset ($customLink['Icon']) ? $customLink['Icon'] : '';
           $name = isset($customLink['Text']) ? $customLink['Text'] : '';
@@ -139,7 +137,14 @@
         <? endif; ?>        
       <? endforeach; ?>
     <? endif; ?>   
-    </table>
+    <? if (!empty($this->driver->getDoi()) && !$this->client()->is('doi_in_customlink') && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable()): ?>
+        <tr>
+            <th>DOI:</th>
+            <td><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank">https://doi.org/<?= $this->driver->getDoi(); ?></a></td>
+        </tr>
+      </div>
+      <? endif; ?>
+    </table>    
     <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
   </div>
 </div>
