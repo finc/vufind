@@ -64,6 +64,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
     const SCOPE_READ_ITEMS = 'read_items';
     const SCOPE_WRITE_ITEMS = 'write_items';
     const SCOPE_CHANGE_PASSWORD = 'change_password';
+    const SCOPE_READ_NOTIFICATIOS = 'read_notifications';
 
     protected $last_error = null;
 
@@ -706,6 +707,52 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             );
         }
         return [];
+    }
+
+    /**
+     * PAIA support method for PAIA core method 'notifications'
+     *
+     * @param array $patron Array with patron information
+     *
+     * @return array|mixed Array of system notifications for the patron
+     * @throws \Exception
+     * @throws ILSException You are not entitled to read notifications
+     */
+    protected function paiaGetSystemMessages($patron)
+    {
+        // check if user has appropriate scope
+        if (!$this->paiaCheckScope(self::SCOPE_READ_NOTIFICATIOS)) {
+            throw new ILSException('You are not entitled to read notifications.');
+        }
+
+        try {
+            $response = $this->paiaGetAsArray(
+                'core/'.$patron['cat_username'].'/notifications'
+            );
+        } catch (\Exception $e) {
+            // all error handling is done in paiaHandleErrors so pass on the excpetion
+            throw $e;
+        }
+        foreach ($response as &$message) {
+            //Fernleihmedium erhalten.[Barcode]7016265550[Titel: *]König von Deutschland
+            if (preg_match('/\[Barcode\](\w\d*)/',$message['about'],$matches)) {
+                $message['barcode'] = $matches[1];
+            }
+            if (preg_match('/\[Titel(.*)\](.+)/',$message['about'],$matches)) {
+                $message['title'] = $matches[2];
+            }
+            $message['message'] = $message['about'];
+            //2017-08-10T16:59:00+02:00
+            $date = date_create_from_format(\DATE_RFC3339,$message['date']);
+            if ($date !== FALSE) {
+                $message['datetime'] = $date->format('d.m.Y H:i');
+            } else {
+                //$errs = date_get_last_errors();
+                $message['datetime'] = $message['date'];
+            }
+        }
+
+        return $response;
     }
 
     /**
