@@ -49,8 +49,8 @@
           $this->headScript()->offsetUnset(5);
           $this->headScript()->offsetUnset(6);
           $this->headScript()->offsetUnset(8);
-//          $this->headScript()->offsetUnset(7);
-//          $this->headScript()->offsetUnset(9); // additions
+////          $this->headScript()->offsetUnset(7);
+////          $this->headScript()->offsetUnset(9); // additions
           $this->headScript()->offsetUnset(10); // mark
 
         ?>
@@ -60,8 +60,8 @@
         <header class="container-fluid">
             <div class="row">
                 <div class="col-sm-12"> 
-                    <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="get" action="<?=$this->url($basicSearch)?>" name="searchForm" autocomplete="off" target="_blank">
                     <?= $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
+                    <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="get" action="<?=$this->url($basicSearch)?>" name="searchForm" autocomplete="off" target="_blank">
                     <? $placeholder = $this->searchbox()->getPlaceholderText(isset($tabConfig['selected']['id']) ? $tabConfig['selected']['id'] : null); ?>
                     <div class="input-group has-feedback">
                         <input <?=$disabled?> id="searchForm_lookfor" class="searchForm_lookfor form-control search-query<? if($this->searchbox()->autocompleteEnabled($this->searchClassId)):?> autocomplete searcher:<?=$this->escapeHtmlAttr($this->searchClassId) ?><? endif ?>" type="text" name="lookfor" value="<? if($this->searchType == 'basic'): echo $this->escapeHtmlAttr($this->lookfor);endif; ?>"<? if ($placeholder): ?> placeholder="<?=$this->transEsc($placeholder) ?>"<? endif ?> title="<?=$this->transEsc('empty_search')?>" data-content="<?=$this->transEsc('empty_search_text')?>" autocomplete="on"/>
@@ -117,7 +117,26 @@
                     </form>
                 </div>
             </div>
-
         </header>
+        <script type="text/javascript">
+            // disable tab links here
+            $(document).ready(function(){
+                $('#searchForm').attr('target', '_blank');
+                $('.nav-tabs li a').click(function() {
+                    $('.nav-tabs li').removeClass('active');
+                    $(this).parent().addClass('active');
+                    var path = $(this).attr('href');
+                    if (path-length == 0 ) {
+                        path = '/Search/Results';
+                    } else if (path.indexOf('EDS') >= 0) {
+                        path = path.replace('Home', 'Search');                        
+                    } else {
+                        path = path.replace('Home', 'Results');                                                
+                    }                    
+                    $('#searchForm').attr('action', path);
+                    return false;
+                });
+            });
+        </script>        
     </body>
 </html>
