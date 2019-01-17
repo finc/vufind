@@ -45,7 +45,7 @@
  <? $recallButtonCounter = 0 ?>
 <? if (isset($holdings['holdings'])): ?>
 <? foreach ($holdings['holdings'] as $holding): ?>
-<h3>
+<h4>
     
   <? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
   <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
@@ -53,7 +53,7 @@
   <? else: ?>
     <?=$locationText?>
   <? endif; ?>
-</h3>
+</h4>
 <table class="table table-striped" summary="<?=$this->transEsc('holdings_details_from', ['%%location%%' => $this->transEsc($holding['location'])]) ?>">
   <? foreach ($holding['items'] as $row): ?>
 
