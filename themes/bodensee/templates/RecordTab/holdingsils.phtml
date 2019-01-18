@@ -67,8 +67,10 @@
     ?>
     <? if ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIA'): //start of new/adis DAIA code ?>
         <?=$this->render('RecordTab/parts/adisdaia.phtml', ['row' => $row, 'driver' => $this->driver, 'recallButtonCounter' => $recallButtonCounter])?>
-    <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIAbsz'): // start of old DAIA code ?>    
-        <?=$this->render('RecordTab/parts/olddaia.phtml', ['row' => $row, 'driver' => $this->driver])?> 
+<!--    <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIAbsz'): // start of old DAIA code ?>    
+        <?=$this->render('RecordTab/parts/olddaia.phtml', ['row' => $row, 'driver' => $this->driver])?> -->
+<!--    <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\NoILS'): // NoILS ?>    
+        <?=$this->render('RecordTab/parts/noils.phtml', ['row' => $row, 'driver' => $this->driver, 'tab' => $this->tab, 'holding' => $holding])?>
     <? else: ?>
         <?=$this->render('RecordTab/parts/vufind.phtml', [
             'row' => $row, 
