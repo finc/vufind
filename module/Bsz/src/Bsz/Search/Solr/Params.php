@@ -176,10 +176,8 @@ class Params extends \VuFind\Search\Solr\Params
             $backendParams->add('sort', $this->normalizeSort($sort));
         }
 
-        // Highlighting -- on by default, but we should disable if necessary:
-        if (!$this->getOptions()->highlightEnabled()) {
-            $backendParams->add('hl', 'false');
-        }
+        // Highlighting disabled
+        $backendParams->add('hl', 'false');
 
         // Pivot facets for visual results
 
