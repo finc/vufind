@@ -5,7 +5,7 @@
     <? if (isset($row['barcode']) && $row['barcode'] != "" && !$this->driver->isEBook()): ?>
       <tr vocab="http://schema.org/" typeof="Offer">
 
-        <th><?=$row['callnumber']?></th>
+        <td class="indent"><?=$row['callnumber']?></td>
         <td>
           <? if ($row['reserve'] == "Y"): ?>
             <link property="availability" href="http://schema.org/InStoreOnly" />
