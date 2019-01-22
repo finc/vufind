@@ -13,7 +13,15 @@ $config = [
             'VuFind\Export' => 'finc\Service\Factory::getExport',
             'VuFind\SessionManager' => 'finc\Session\ManagerFactory',
             'VuFind\CookieManager' => 'finc\Service\Factory::getCookieManager'
-        ]
+        ],
+        'invokables' => [
+            'mungerinjectionfactory' => 'finc\Service\MungerInjectionFactory'
+        ],
+        'delegators' => [
+            'VuFind\Search' => [
+                'mungerinjectionfactory'
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
