@@ -44,20 +44,24 @@
  <?// removed online access as this is listed in main section ?>
  <? $recallButtonCounter = 0 ?>
 <? if (isset($holdings['holdings'])): ?>
+<table class="table table-striped">
+    <colgroup>
+        <col style="width:50%">
+        <col style="width:50%">
+    </colgroup
 <? foreach ($holdings['holdings'] as $holding): ?>
-<h4>
+    <tr>
+        <th colspan="3">
+            <? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
+            <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
+              <a href="<?=$holding['locationhref']?>" target="_blank"><?=$locationText?></a>
+            <? else: ?>
+              <?=$locationText?>
+            <? endif; ?>                   
+        </th>
+    </tr>
     
-  <? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
-  <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
-    <a href="<?=$holding['locationhref']?>" target="_blank"><?=$locationText?></a>
-  <? else: ?>
-    <?=$locationText?>
-  <? endif; ?>
-</h4>
-<table class="table table-striped" summary="<?=$this->transEsc('holdings_details_from', ['%%location%%' => $this->transEsc($holding['location'])]) ?>">
   <? foreach ($holding['items'] as $row): ?>
-
-    <? /* One Recall/Holds-Button for all items */ ?>
     <? if ($row['status'] != 'For reference' && 
            $row['status'] != 'Lost' && 
            $row['status'] != 'Missing' && 
@@ -67,32 +71,15 @@
     ?>
     <? if ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIA'): //start of new/adis DAIA code ?>
         <?=$this->render('RecordTab/parts/adisdaia.phtml', ['row' => $row, 'driver' => $this->driver, 'recallButtonCounter' => $recallButtonCounter])?>
-<!--    <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIAbsz'): // start of old DAIA code ?>    
+    <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIAbsz'): // start of old DAIA code ?>    
         <?=$this->render('RecordTab/parts/olddaia.phtml', ['row' => $row, 'driver' => $this->driver])?> -->
-<!--    <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\NoILS'): // NoILS ?>    
+    <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\NoILS'): // NoILS ?>    
         <?=$this->render('RecordTab/parts/noils.phtml', ['row' => $row, 'driver' => $this->driver, 'tab' => $this->tab, 'holding' => $holding])?>
-    <? else: ?>
-        <?=$this->render('RecordTab/parts/vufind.phtml', [
-            'row' => $row, 
-            'driver' => $this->driver, 
-            'tab' => $this->tab,
-            'holding' => $holding
-                ])?> 
     <? endif; // End of old DAIA code ?>
     
   <? endforeach; ?>
-  <? if (!empty($holding['purchase_history'])): ?>
-    <tr>
-      <th><?=$this->transEsc("Most Recent Received Issues")?>:</th>
-      <td>
-        <? foreach ($holding['purchase_history'] as $current): ?>
-          <?=$this->escapeHtml($current['issue'])?><br/>
-        <? endforeach; ?>
-      </td>
-    </tr>
-  <? endif; ?>
-</table>
 <? endforeach; ?>
+</table>
 <? endif; ?>
   
 <? /* One Recall/Holds-Button for all items */ ?>
@@ -101,58 +88,3 @@
         <a href="<?=$row['link']?>" class="btn btn-primary recallholdButtonLink <? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external "><?=$this->transEsc('recall/hold')?></a>
     <? endif; ?>
 <? endif; ?>  
-
-<? $history = $this->driver->getRealTimeHistory(); ?>
-<? if (is_array($history) && !empty($history)): ?>
-<h3><?=$this->transEsc("Most Recent Received Issues")?></h3>
-<table class="table table-striped">
-  <? foreach ($history as $row): ?>
-    <tr><td><?=$this->escapeHtml($row['issue'])?></td></tr>
-  <? endforeach; ?>
-</table>
-<? endif; ?>
-
-<? if (isset($holdings['holdings']) && count($holdings['holdings']) == 0): ?>
-    <? // Holdings from field 924 ?>
-    <? $localHoldings = $this->driver->getLocalHoldings(); if (count($localHoldings) > 0): ?>
-    <table class="table table-striped">
-        <tr>
-            <th class="col-sm-1 col-xs-2"><?=$this->transEsc('ISIL')?></th>        
-            <th class="col-lg-4"><?=$this->transEsc('Library')?></th>        
-            <th><?=$this->transEsc('Signatur')?></th>
-            <th><?=$this->transEsc('Location')?></th>
-            <? if ($this->driver->isJournal() || $this->driver->isSerial()): ?><th><?=$this->transEsc('Collection')?></th><? endif; ?>
-        </tr>
-        <? foreach ($localHoldings as $holding): ?>
-            <tr>
-                <?  $library = null;
-                    if (isset($holding['b'])): 
-                        $library = $this->libraries()->getByIsil($holding['b']);
-                    endif;?>
-                <td><strong>
-                    <?= isset($holding['b']) ? $this->escapeHtml($holding['b']) : ''?>
-                    </strong>
-                </td>
-                <td><?= isset($library) ? $this->escapeHtmlAttr((string)$library) : ''?></td>
-                <td><?=isset($holding['g']) ? $this->escapeHtml($holding['g']) : ''?></td>
-                <td><?=isset($holding['h']) ? $this->escapeHtml($holding['h']) : ''?></td>
-                <td>
-                    <? if (isset($holding['z'])):?>
-                        <?=$this->escapeHtml($holding['z'])?> 
-                    <? endif; ?>
-                    <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial()) ): ?>
-                        <? if (isset($holding['z'])):?><br/><? endif; 
-                        $adis = isset($library) ? $library->getaDisUrl() : null; ?>         
-                        <?=$this->recordLink()->linkPPN($this->driver, $adis)?>
-                        <? endif; ?>
-                </td>
-            </tr>
-            
-        <? endforeach; ?>
-    </table>
-    <? else: ?>
-    <p class="text-danger"><?=$this->transEsc('No holdings available')?></p>
-    <? endif; ?>
-
-
-<? endif; ?>
