@@ -1,20 +1,21 @@
+<dl class="dl-horizontal">
 <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
-<tr>
-  <td class="indent"><?=$this->transEsc("Call Number")?>: </td>
-  <td>
-    <? foreach ($callNos as $callNo): ?>
+<dt><?=$this->transEsc("Call Number")?>:</dt>
+    
+<dd><? foreach ($callNos as $callNo): ?>
       <? if ($this->callnumberHandler): ?>
         <a href="<?=$this->url('alphabrowse-home') ?>?source=<?=$this->escapeHtmlAttr($this->callnumberHandler) ?>&amp;from=<?=$this->escapeHtmlAttr($callNo) ?>"><?=$this->escapeHtml($callNo)?></a>
       <? else: ?>
         <?=$this->escapeHtml($callNo)?>
       <? endif; ?>
       <br />
-    <? endforeach; ?>
-  </td>
-</tr>
+    <? endforeach; ?>    
+</dd>   
 
 <? endif; ?>
-<tr>
-    <td class="indent">&nbsp;<?=$this->transEsc('Fernleihindikator')?></td>
-    <td><?=$this->transEsc($row['availability'])?></td>
-</tr>
+<? if (!empty($row['availability'])): ?>
+    <dt><?=$this->transEsc('Fernleihindikator')?>:</dt>
+    <dd><?=$this->transEsc($row['availability'])?></dd>
+<? endif; ?>
+
+</dl> 

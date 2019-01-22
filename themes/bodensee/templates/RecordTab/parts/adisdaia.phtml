@@ -16,19 +16,20 @@
         
     $isStorageReadingroom = strpos($row['location'],'Lesesaal');
 ?>
-<tr>
-    <td class="indent">        
-    <? if (isset($row['callnumber']) && $row['callnumber'] != 'Unknown'): ?>
-        <?=$this->escapeHtml($row['callnumber'])?>
-    <? endif; ?>
-    </td>
+<dl class="dl-horizontal">
+    <? if (!empty($row['callnumber']) && $row['callnumber'] != 'Unknown'): ?>
+    <dt><?=$this->transEsc("Call Number")?>:</dt>   
+    <dd><?=$this->escapeHtml($row['callnumber'])?></dd>
+    <? endif; ?>    
+
     <? if (is_array($row['message'])): ?>
-        <td class="<?=$this->escapeHtmlAttr($class)?>">
+        <dt><?=$this->transEsc('live_status')?>:</dt>
+        <dd class="<?=$this->escapeHtmlAttr($class)?>">
             <i class="fa <?=$this->escapeHtmlAttr($icon)?>"></i>
             <?=$this->escapeHtml($message)?>            
-        </td>
+        </dd>
     <? endif; ?>
-    <td>
+    <dd>
         <? if($status == 'on loan' && !empty($duedate)): ?>
             <?=$this->transEsc('Due')?> <?=$this->escapeHtml($duedate)?>
             <? if ( !empty($row['link']) && !$this->client()->is('only_one_holds_button') ): ?>
@@ -45,7 +46,6 @@
                 &ndash; <a href="<?=$row['link']?>" class="<? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external"><?=$this->transEsc('Place a Hold')?></a>
             <? endif; ?>            
         <? endif; ?>
-    </td>
-    
-</tr>
+    </dd>
+</dl>
 

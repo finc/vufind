@@ -44,23 +44,15 @@
  <?// removed online access as this is listed in main section ?>
  <? $recallButtonCounter = 0 ?>
 <? if (isset($holdings['holdings'])): ?>
-<table class="table table-striped">
-    <colgroup>
-        <col style="width:50%">
-        <col style="width:25%">
-        <col style="width:25%">
-    </colgroup
 <? foreach ($holdings['holdings'] as $holding): ?>
-    <tr>
-        <th colspan="3">
-            <? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
+    <h4><? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
             <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
               <a href="<?=$holding['locationhref']?>" target="_blank"><?=$locationText?></a>
             <? else: ?>
               <?=$locationText?>
-            <? endif; ?>                   
-        </th>
-    </tr>
+            <? endif; ?>      
+    </h4>
+
     
   <? foreach ($holding['items'] as $row): ?>
     <? if ($row['status'] != 'For reference' && 
@@ -80,7 +72,6 @@
     
   <? endforeach; ?>
 <? endforeach; ?>
-</table>
 <? endif; ?>
   
 <? /* One Recall/Holds-Button for all items */ ?>
