@@ -1,0 +1,27 @@
+<!-- finc: recordtab - staffviewmarc -->
+<?
+    // Set page title.
+    $this->headTitle($this->translate('Staff View') . ': ' . $this->driver->getBreadcrumb());
+?>
+<?=\VuFind\XSLT\Processor::process('record-marc.xsl', $this->driver->getXML('marc21'))?>
+<? /* the following introduced in 9934*/ ?>
+<? if ($openURL = $this->driver->getOpenUrl()): ?>
+    <tr>
+        <th><?=$this->escapeHtml('openURL')?></th>
+        <td>
+            <?=$this->escapeHtml($openURL)?><br />
+        </td>
+    </tr>
+<? endif; ?>
+<?  $fields = $this->driver->getRawData();
+if (!empty($fields)): ?>
+    <table class="citation table table-striped">
+        <caption><?=$this->translate('SOLR')?></caption>
+        <?  ksort($fields);
+        foreach($fields as $key => $values): ?>
+            <? if ($key === 'fullrecord') continue;?>
+            <tr><th><?=$this->escapeHtml($key)?></th><td><?= $this->escapeHtml(is_array($values) ? implode(', ',$values) : $values)?></td></tr>
+        <? endforeach ?>
+    </table>
+<? endif; ?>
+<!-- finc: recordtab - staffviewmarc - END -->
