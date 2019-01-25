@@ -57,13 +57,15 @@ class MungerInjectionFactory implements DelegatorFactoryInterface {
                 }
             );
         }
-        $shards = $searchConfig->IndexShards->toArray();
-        if ($excludedShards = $searchConfig->ShardPreferences->on_user_search_only) {
-            $shards = array_diff_key($shards, array_flip(explode(',', $excludedShards)));
-        }
-        if (!empty($shards)) {
-            $this->shards_to_register = $shards;
-            $e->attach('VuFind\Search', 'pre', [$this, 'registerShards']);
+        if (!empty($searchConfig->IndexShards)) {
+            $shards = $searchConfig->IndexShards->toArray();
+            if ($excludedShards = $searchConfig->ShardPreferences->on_user_search_only) {
+                $shards = array_diff_key($shards, array_flip(explode(',', $excludedShards)));
+            }
+            if (!empty($shards)) {
+                $this->shards_to_register = $shards;
+                $e->attach('VuFind\Search', 'pre', [$this, 'registerShards']);
+            }
         }
         return $instance;
     }
