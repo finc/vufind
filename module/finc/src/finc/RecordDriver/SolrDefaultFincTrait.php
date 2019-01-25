@@ -57,7 +57,7 @@ trait SolrDefaultFincTrait
      *
      * @return bool
      */
-/*    public function isCollection()
+    public function isCollection()
     {
         return $this->getRecordType() === 'dico';
         /*
@@ -74,7 +74,7 @@ trait SolrDefaultFincTrait
         return false;
         */
     }
-*/
+
     /**
      * Get all call numbers associated with the record (empty string if none).
      *
