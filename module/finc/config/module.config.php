@@ -64,7 +64,8 @@ $config = [
                     'solrai' => 'finc\RecordDriver\Factory::getSolrAI',
                     'solris' => 'finc\RecordDriver\Factory::getSolrIS',
                     'solrlido' => 'finc\RecordDriver\Factory::getSolrLido',
-                    'solrlidondl' => 'finc\RecordDriver\Factory::getSolrLidoNdl'
+                    'solrlidondl' => 'finc\RecordDriver\Factory::getSolrLidoNdl',
+                    'solrdico' => 'finc\RecordDriver\Factory::getSolrDico'
                 ],
             ],
             'recordtab' => [
@@ -155,6 +156,14 @@ $config = [
                     'Details' => 'StaffViewArray',
                 ],
                 'defaultTab' => null,
+            ],
+            'finc\RecordDriver\SolrDico' => [
+                'tabs' => [
+                    'CollectionList' => 'CollectionList',
+                    'HierarchyTree' => 'HierarchyTree',
+                    'Details' => 'StaffViewArray',
+                ],
+                'defaultTab' => 'CollectionList',
             ],
         ],
     ],

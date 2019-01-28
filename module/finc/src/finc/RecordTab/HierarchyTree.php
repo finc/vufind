@@ -64,8 +64,8 @@ class HierarchyTree extends \VuFind\RecordTab\HierarchyTree
 
     public function getDescription()
     {
-        if ($this->driver->isCollection()) return parent::getDescription();
-        else return 'From same Collection';
+        if ($this->driver->isCollection()) return 'collection_hierarchy_tree_tab';
+        else return 'hierarchy_tree';
     }
 
     /**

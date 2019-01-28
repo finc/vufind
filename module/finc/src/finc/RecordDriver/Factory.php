@@ -241,4 +241,13 @@ class Factory
             $sm->getServiceLocator()->get('VuFind\DateConverter')
         );
     }
+
+    public static function getSolrDico(ServiceManager $sm)
+    {
+        return new SolrDico(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,//$sm->getServiceLocator()->get('VuFind\Config')->get('SolrDico'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+        );
+    }
 }
