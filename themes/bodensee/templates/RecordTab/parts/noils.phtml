@@ -1,7 +1,7 @@
 <dl class="dl-horizontal">
 <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
-<dt><?=$this->transEsc("Call Number")?>:</dt>
-    
+<dt><?=$this->transEsc("Call Number")?>:</dt>    
+
 <dd><? foreach ($callNos as $callNo): ?>
       <? if ($this->callnumberHandler): ?>
         <a href="<?=$this->url('alphabrowse-home') ?>?source=<?=$this->escapeHtmlAttr($this->callnumberHandler) ?>&amp;from=<?=$this->escapeHtmlAttr($callNo) ?>"><?=$this->escapeHtml($callNo)?></a>
