@@ -16,6 +16,7 @@
         
     $isStorageReadingroom = strpos($row['location'],'Lesesaal');
 ?>
+
 <dl class="dl-horizontal">
     <? if (!empty($row['callnumber']) && $row['callnumber'] != 'Unknown'): ?>
     <dt><?=$this->transEsc("Call Number")?>:</dt>   

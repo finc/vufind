@@ -11,11 +11,22 @@
       <br />
     <? endforeach; ?>    
 </dd>   
-
 <? endif; ?>
 <? if (!empty($row['availability'])): ?>
-    <dt><?=$this->transEsc('Fernleihindikator')?>:</dt>
+    <dt><?=$this->transEsc('ill_indicator')?>:</dt>
     <dd><?=$this->transEsc($row['availability'])?></dd>
 <? endif; ?>
-
+<? if (!empty($row['notes'])): ?>
+    <dt><?=$this->transEsc('Note')?>:</dt>
+    <dd><?=$this->transEsc($row['notes'])?></dd>
+<? endif; ?>
+<? if (!empty($row['link']) && strpos($row['link'], 'http') === 0): ?>
+    <dt><?=$this->transEsc('Link')?>:</dt>
+    <dd><a href="<?=$row['link']?>" class="external"><?=$this->transEsc('Local Online Access')?></a></dd>
+<? endif; ?>
+<? if (!empty($row['status'])): ?>
+    <dt><?=$this->transEsc('Bestandsangaben')?>:</dt>
+    <dd><?=$this->escapeHtml($row['status'])?></dd>
+<? endif; ?>
+    
 </dl> 
