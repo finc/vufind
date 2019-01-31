@@ -19,9 +19,13 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
      */    
     protected $libraries;
     
-    public function __construct(\VuFind\Record\Loader $loader, Libraries $libraries) 
+    
+    protected $isils;
+    
+    public function __construct(\VuFind\Record\Loader $loader, Libraries $libraries, $isils) 
     {
         $this->libraries = $libraries;
+        $this->isils = $isils;
         parent::__construct($loader);
     }
     
@@ -91,12 +95,17 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
     {
         $parent = parent::getFormattedMarcDetails($recordDriver, $configSection);
         foreach ($parent as $k => $item) {
-            $isil = $item['location'];
-            $library = $this->libraries->getByIsil($isil);
-            if (isset($library)) {
-                $parent[$k]['location'] = $library->getName();
-                $parent[$k]['locationhref'] = $library->getHomepage();               
-            }
+            $currentIsil = $item['location'];
+            if (in_array($currentIsil, $this->isils)) {
+                $library = $this->libraries->getByIsil($currentIsil);
+                if (isset($library)) {
+                    $parent[$k]['location'] = $library->getName();
+                    $parent[$k]['locationhref'] = $library->getHomepage();              
+                }                
+            } else {
+                unset($parent[$k]);
+            } 
+                
        }
 
        return $parent;
