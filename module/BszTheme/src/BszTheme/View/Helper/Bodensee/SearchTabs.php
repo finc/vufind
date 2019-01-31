@@ -15,7 +15,7 @@ use Zend\View\Helper\Url;
  */
 class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
 {
-    public function isILL($searchClassId) {
+    public function isILL($searchClassId = 'Solr') {
         $hiddenFilterStr = urldecode($this->getCurrentHiddenFilterParams($searchClassId));
         if (strpos($hiddenFilterStr, 'consortium:FL') !== FALSE || 
                 strpos($hiddenFilterStr, 'consortium:ZDB') !== FALSE) {
