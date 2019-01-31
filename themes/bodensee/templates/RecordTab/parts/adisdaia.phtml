@@ -17,7 +17,7 @@
     $isStorageReadingroom = strpos($row['location'],'Lesesaal');
 ?>
 <tr>
-    <td>        
+    <td class="indent">        
     <? if (isset($row['callnumber']) && $row['callnumber'] != 'Unknown'): ?>
         <?=$this->escapeHtml($row['callnumber'])?>
     <? endif; ?>
