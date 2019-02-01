@@ -50,7 +50,7 @@
         <div class="input-group-btn">
             <? if ($advSearch): ?>
             <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="btn btn-primary <?=$disabled?>" rel="nofollow"><i class='fa fa-search-plus'></i>
-                <span class="text hidden-xs"><?=$this->transEsc("Advanced")?></a>
+                <span class="text hidden-xs"><?=$this->transEsc("Advanced")?></span></a>
             <? endif; ?>            
         </div>
     </div>
