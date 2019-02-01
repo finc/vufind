@@ -5,7 +5,7 @@
     <th><?=$this->transEsc('Status')?></th>
   </tr>
   <? $count = 0; foreach ($this->statusItems as $item): ?>
-    <? if (++$count == 5) break; // Show no more than 5 items ?>
+    <? if ($count++ == 5) break; // Show no more than 5 items ?>
         <? $class = 'text-success';
         $icon = 'fa-check';
         if ($item['availability'] == false) {
