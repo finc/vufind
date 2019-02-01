@@ -177,6 +177,7 @@ class RecordController extends \VuFind\Controller\RecordController
                     $success = $this->parseResponse($message);    
 
                 } catch (\Exception $ex) {
+                    var_dump($ex);
                     $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
                     $this->logError($params['Sigel'].': Error while parsing HTML response from ZFL server');
                 }
