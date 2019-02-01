@@ -68,5 +68,38 @@ class Factory {
             $config->Content->europeanaAPI
         );
     }        
+
+
+    /**
+     * Factory for RSSFeed module
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return WorldCatTerms
+     */
+    public static function getRSSFeedResults(ServiceManager $sm)
+    {
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('searches');
+        return new RSSFeedResults(
+            //$config->StartpageNews->RSSFeed
+            $config->SideRecommendations
+        );
+    }      
+
+    /**
+     * Factory for News Feed on Startpag
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return WorldCatTerms
+     */
+    public static function getStartpageNews(ServiceManager $sm)
+    {
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('searches');
+        return new RSSFeedResults(
+            $config->StartpageNews->RSSFeed
+            //$config->SideRecommendations
+        );
+    }     
     
 }
