@@ -145,6 +145,24 @@ class Client extends \Zend\Config\Config
     }
 
     /**
+     * Konfiguriert den linken NewsFeed der Startseite
+     * @param string 
+     * @return string
+     */
+    public function getRSSFeed()
+    {
+        $feed = null;
+        $section = $this->get('StartpageNews');
+        if ($section !== null) {
+            $feed = $section->get('RSSFeed');
+        }            
+        return $feed;
+    }
+
+            
+
+    
+    /**
      * Returns status of setting
      * @param string $key from config.ini, section BSZSettings
      * @return boolean
@@ -324,7 +342,7 @@ class Client extends \Zend\Config\Config
     }
 
     /**
-     * Returnsx a list of all clients with title and url
+     * Returns a list of all clients with title and url
      * @return array
      */
     public function getAllClients()

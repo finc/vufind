@@ -69,7 +69,11 @@ $config = [
                 'factories' => [
                     'sidefacets' => 'Bsz\Recommend\Factory::getSideFacets',
                     'searchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
-                    
+                    'rssfeedresults' => 'Bsz\Recommend\Factory::getRSSFeedResults',
+                    'startpagenews' => 'Bsz\Recommend\Factory::getStartpageNews',
+                ],
+                'invokables' => [
+                    'rssfeedresultsdeferred' => 'Bsz\Recommend\RSSFeedResultsDeferred',                                        
                 ],
             ],            
             'recorddriver'  => [
