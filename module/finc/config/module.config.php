@@ -85,6 +85,21 @@ $config = [
                     'redi' => 'finc\Resolver\Driver\Factory::getRedi'
                 ],
             ],
+            'hierarchy_treedataformatter' => [
+                'invokables' => [
+                    'json' => 'finc\Hierarchy\TreeDataFormatter\NoCollections',
+                ],
+            ],
+            'hierarchy_treedatasource' => [
+                'factories' => [
+                    'solr' => 'finc\Hierarchy\TreeDataSource\Factory::getSolr',
+                ],
+            ],
+            'hierarchy_treerenderer' => [
+                'factories' => [
+                    'jstree' => 'finc\Hierarchy\TreeRenderer\Factory::getJSTree'
+                ],
+            ],
         ],
         'recorddriver_tabs' => [
             'finc\RecordDriver\SolrDefault' => [
