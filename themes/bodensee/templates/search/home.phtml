@@ -84,7 +84,10 @@ JS;
   </div>
   <div class="row">
       <div class="col-sm-12">
-          <?=$this->flashmessages()?>          
+          <?=$this->flashmessages()?>         
+          <? if ($this->client()->is('wlb_special_home')): ?>
+                    <?= $this->render('bsz/wlb/'.$this->layout()->userLang.'.phtml')?>
+          <? endif; ?>          
       </div>
   </div>
   
