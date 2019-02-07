@@ -212,29 +212,27 @@ function avoidEmptySearch() {
 }
 
 function avoidAdvEmptySearch() {
-     var $tabs = $('#advSearchForm .nav-tabs');
-     var $input = $('.adv-term-input');
-          
-     // limit to stop search
-     var limit = 2;
 
-     $('#advSearchForm').submit(function(e) {
-        var $search0 = $('#search0_0');
-        var $search1 = $('#search0_1');
-        var $input0 =$search0.find('input');
-        var $input1 =$search1.find('input');
-        var $val = $input0.val();
-        var $val_r = $val.replace( /\s*/gi,"" );
-        var $val_r_length = $val_r.length;
-        if ($val_r_length <= limit) {
-            $input0.attr('data-placement', 'bottom'); 
-            $input0.popover('show'); // doesn't work
-            return false;
-        } else {
-            $input0.popover('hide');
-            return true;
+    var $submit = $('#advSearchForm .btn-success');
+    var limit = 2;
+
+    $('#advSearchForm').submit(function(e) {
+        var val = '';
+        // unable to access visible inputs only
+        for (var i = 0; i<4; i++) {            
+            var $input = $('#search_lookfor0_'+i);
+            if ($input.length === 1) {
+                val += $input.val().replace( /\s*/gi,"" );
+            }
         }
-     });
+        
+        if (val.length <= limit ) {
+            $submit.popover('show');
+            return false;
+        }
+        $submit.popover('hide');
+        return true;
+    });
 }
 /*
 * Duplicatea button
@@ -319,7 +317,7 @@ function datepicker() {
 
 $(document).ready(function() {
   avoidEmptySearch();
-  //avoidAdvEmptySearch();
+  avoidAdvEmptySearch();
   externalLinks();
   bootstrapTooltip();
   modalPopup();
