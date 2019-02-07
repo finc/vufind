@@ -213,43 +213,28 @@ function avoidEmptySearch() {
 
 function avoidAdvEmptySearch() {
      var $tabs = $('#advSearchForm .nav-tabs');
-     var $input = $('class=adv-term-input]');
-     //
+     var $input = $('.adv-term-input');
+          
      // limit to stop search
      var limit = 2;
-     
-     $tabs.find('a').click(function(e) {
-        e.preventDefault();
-        var href = $(this).attr('href');
-        var lookfor = $input.val();
-        
-        if (lookfor.length === 0) {
-            href = href.replace('Results', 'Home');   
-            href = href.replace('/EDS/Search', '/EDS/Home');
-        } else {
-            href = href.replace('Home', 'Results')+'&lookfor='+lookfor;     
-        }
-        // this is like clicking the manipulated link
-        window.location.href = href;    
-        
-     });
+
      $('#advSearchForm').submit(function(e) {
-        if ($input.val().replace( /\s*/gi,"" ).length <= limit) {
-             $input.attr('data-placement', 'bottom');
-
-             $input.popover('show');
-             return false;
+        var $search0 = $('#search0_0');
+        var $search1 = $('#search0_1');
+        var $input0 =$search0.find('input');
+        var $input1 =$search1.find('input');
+        var $val = $input0.val();
+        var $val_r = $val.replace( /\s*/gi,"" );
+        var $val_r_length = $val_r.length;
+        if ($val_r_length <= limit) {
+            $input0.attr('data-placement', 'bottom'); 
+            $input0.popover('show'); // doesn't work
+            return false;
         } else {
-             $input.popover('hide');
-             return true;
+            $input0.popover('hide');
+            return true;
         }
      });
-     $input.on('change keydown paste input', function(e) {
-         if ($input.val().replace( /\W*/gi,"" ).length > limit) { 
-             $input.popover('hide');
-         }
-     });
-
 }
 /*
 * Duplicatea button
@@ -334,7 +319,7 @@ function datepicker() {
 
 $(document).ready(function() {
   avoidEmptySearch();
-  avoidAdvEmptySearch();
+  //avoidAdvEmptySearch();
   externalLinks();
   bootstrapTooltip();
   modalPopup();
