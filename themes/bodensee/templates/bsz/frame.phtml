@@ -128,6 +128,7 @@
                 var $input = $('#searchForm_lookfor');     
                 var $form = $('#searchForm');
                 var basicSearchUrl = '<?=$this->url($basicSearch).$hiddenFilterParams?>';
+                var $advanced = $('form .btn-primary');
                 
                 // limit to stop search
                 var limit = 2;
@@ -144,10 +145,15 @@
                     if (typeof path === undefined || path-length === 0 ) {
                         path = basicSearchUrl;
                     } else if (path.indexOf('EDS') >= 0) {
+                        var href = '<?=$this->url($advSearch)?>'.replace('Search', 'EDS');
+                        $advanced.attr('href', href);
                         path = path.replace('Home', 'Search');                        
                     } else {
+                        var href = '<?=$this->url($advSearch)?>';
+                        $advanced.attr('href', href);
                         path = path.replace('Home', 'Results');                                                
                     }                    
+                    
                     $form.attr('action', path);
                     return false;
                 });

@@ -1,5 +1,5 @@
 <?= $this->record($this->driver)->getFisLink()?>
-<? if($this->client()->isIsilSession()
+<? if( $this->searchTabs()->isILL()
         && !$this->driver->tryMethod('isFisBildung')
         && strlen($this->driver->getNetwork()) > 0): ?>
         <div class="ill-source">                
