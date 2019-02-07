@@ -13,17 +13,18 @@
             <th class="col-sm-1 col-xs-2"><?=$this->transEsc('ISIL')?></th>        
             <th><?=$this->transEsc('Library')?></th>        
             <th><?=$this->transEsc('Signatur')?></th>
+            <th><?=$this->transEsc('ill_indicator')?></th>
             <? if ($this->driver->isJournal()): ?><th><?=$this->transEsc('Collection')?></th><? endif; ?>
 
         </tr>        
     </thead>
     <tbody>
         <? foreach ($content as $result): ?>
-
         <tr>
             <td><?=isset($result['b']) ? $this->escapeHtml($result['b']) : ''?></td>
             <td><?=isset($result['name']) ? $this->escapeHtml($result['name']) : ''?></td>
             <td><?=isset($result['g']) ? $this->escapeHtml($result['g']) : ''?></td>
+            <td><?=$this->transEsc($result['ill_status'])?></td>
             <? if ($this->driver->isJournal()): ?><td><?=isset($result['z']) ? $this->escapeHtml($result['z']) : ''?></td><? endif; ?>
 
         </tr>

@@ -1,20 +1,32 @@
+<dl class="dl-horizontal">
 <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
-<tr>
-  <td class="indent"><?=$this->transEsc("Call Number")?>: </td>
-  <td>
-    <? foreach ($callNos as $callNo): ?>
+<dt><?=$this->transEsc("Call Number")?>:</dt>    
+
+<dd><? foreach ($callNos as $callNo): ?>
       <? if ($this->callnumberHandler): ?>
         <a href="<?=$this->url('alphabrowse-home') ?>?source=<?=$this->escapeHtmlAttr($this->callnumberHandler) ?>&amp;from=<?=$this->escapeHtmlAttr($callNo) ?>"><?=$this->escapeHtml($callNo)?></a>
       <? else: ?>
         <?=$this->escapeHtml($callNo)?>
       <? endif; ?>
       <br />
-    <? endforeach; ?>
-  </td>
-</tr>
-
+    <? endforeach; ?>    
+</dd>   
 <? endif; ?>
-<tr>
-    <td class="indent">&nbsp;<?=$this->transEsc('Fernleihindikator')?></td>
-    <td><?=$this->transEsc($row['availability'])?></td>
-</tr>
+<? if (!empty($row['availability'])): ?>
+    <dt><?=$this->transEsc('ill_indicator')?>:</dt>
+    <dd><?=$this->transEsc($row['availability'])?></dd>
+<? endif; ?>
+<? if (!empty($row['notes'])): ?>
+    <dt><?=$this->transEsc('Note')?>:</dt>
+    <dd><?=$this->transEsc($row['notes'])?></dd>
+<? endif; ?>
+<? if (!empty($row['link']) && strpos($row['link'], 'http') === 0): ?>
+    <dt><?=$this->transEsc('Link')?>:</dt>
+    <dd><a href="<?=$row['link']?>" class="external"><?=$this->transEsc('Local Online Access')?></a></dd>
+<? endif; ?>
+<? if (!empty($row['status'])): ?>
+    <dt><?=$this->transEsc('Bestandsangaben')?>:</dt>
+    <dd><?=$this->escapeHtml($row['status'])?></dd>
+<? endif; ?>
+    
+</dl> 

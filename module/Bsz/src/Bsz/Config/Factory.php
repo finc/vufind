@@ -47,11 +47,12 @@ class Factory
     {
         $vufindconf = $sm->get('VuFind\Config')->get('config')->toArray();
         $bszconf = $sm->get('VuFind\Config')->get('bsz')->toArray();
+        $searchconf = $sm->get('VuFind\Config')->get('searches')->toArray();
         $container = new \Zend\Session\Container(
             'fernleihe', $sm->get('VuFind\SessionManager')
         );
         
-        $client = new Client(array_merge($vufindconf, $bszconf), true);
+        $client = new Client(array_merge($vufindconf, $bszconf, $searchconf), true);
         $client->appendContainer($container);
         if ($client->isIsilSession()) {
             $libraries = $sm->get('bsz\libraries');

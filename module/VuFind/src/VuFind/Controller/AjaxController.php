@@ -135,6 +135,49 @@ class AjaxController extends AbstractBase
         $response->setContent($recommend($module));
         return $response;
     }
+    
+    /**
+     * Load a recommendation module via AJAX.
+     *
+     * @return \Zend\Http\Response
+     */
+    public function newsAction()
+    {
+        $this->disableSessionWrites();  // avoid session write timing bug
+        // Process recommendations -- for now, we assume Solr-based search objects,
+        // since deferred recommendations work best for modules that don't care about
+        // the details of the search objects anyway:
+        $rm = $this->serviceLocator->get('VuFind\RecommendPluginManager');
+        $module = $rm->get($this->params()->fromQuery('mod'));
+        $module->setConfig($this->params()->fromQuery('params'));
+        $results = $this->getResultsManager()->get('Solr');
+        $params = $results->getParams();
+        $module->init($params, $this->getRequest()->getQuery());
+        $module->process($results);
+
+        
+        
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
+        
+        // Set headers:
+        $headers->addHeaderLine('Content-type', 'text/html');
+        $seconds = (60 * 10); // 10 min
+        $headers->addHeaderLine(
+            'Cache-Control', "maxage=" . $seconds
+        );
+        $headers->addHeaderLine(
+            'Pragma', 'public'
+        );
+        $headers->addHeaderLine(
+            'Expires', gmdate('D, d M Y H:i:s', time() + $seconds) . ' GMT'
+        );
+
+        // Render recommendations:
+        $recommend = $this->getViewRenderer()->plugin('recommend');
+        $response->setContent($recommend($module));
+        return $response;
+    }    
 
     /**
      * Support method for getItemStatuses() -- filter suppressed locations from the

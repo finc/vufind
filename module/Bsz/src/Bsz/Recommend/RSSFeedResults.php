@@ -1,6 +1,6 @@
 <?php
 /**
- * EuropeanaResults Recommendations Module
+ * RSS Feed Recommendations Module
  *
  * PHP version 5
  *
@@ -26,33 +26,28 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:recommendation_modules Wiki
  */
-namespace VuFind\Recommend;
+namespace Bsz\Recommend;
+
 use Zend\Feed\Reader\Reader as FeedReader;
 
 /**
- * EuropeanaResults Recommendations Module
+ * RSS Feed  Recommendations Module
  *
- * This class provides recommendations by using the Europeana API.
+ * This class provides recommendations by using the RSS Feeds API.
  *
  * @category VuFind
  * @package  Recommendations
- * @author   Lutz Biedinger <lutz.biedinger@gmail.com>
+ * @author   Stefan Winkler <stefan.winkler@bsz-bw.de
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:recommendation_modules Wiki
  */
-class EuropeanaResults implements RecommendInterface,
+class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
     \VuFindHttp\HttpServiceAwareInterface, \Zend\Log\LoggerAwareInterface
 {
     use \VuFind\Log\LoggerAwareTrait;
     use \VuFindHttp\HttpServiceAwareTrait;
 
-    /**
-     * Request parameter for searching
-     *
-     * @var string
-     */
-    protected $requestParam;
 
     /**
      * Result limit
@@ -62,7 +57,7 @@ class EuropeanaResults implements RecommendInterface,
     protected $limit;
 
     /**
-     * Europeana base URL
+     * RSS base URL
      *
      * @var string
      */
@@ -74,13 +69,6 @@ class EuropeanaResults implements RecommendInterface,
      * @var string
      */
     protected $targetUrl;
-
-    /**
-     * Providers to exclude
-     *
-     * @var array
-     */
-    protected $excludeProviders;
 
     /**
      * Site to search
@@ -101,14 +89,7 @@ class EuropeanaResults implements RecommendInterface,
      *
      * @var string
      */
-    protected $key;
-
-    /**
-     * Search string
-     *
-     * @var string
-     */
-    protected $lookfor;
+    protected $feed;
 
     /**
      * Search results
@@ -118,13 +99,13 @@ class EuropeanaResults implements RecommendInterface,
     protected $results;
 
     /**
-     * Constructor
-     *
-     * @param string $key API key
+     * [StartpageNews] in searches.ini
+     * 
+     * @param string $feed 
      */
-    public function __construct($key)
+    public function __construct($feed)
     {
-        $this->key = $key;
+        $this->feed = $feed;
     }
 
     /**
@@ -136,48 +117,25 @@ class EuropeanaResults implements RecommendInterface,
      */
     public function setConfig($settings)
     {
+        // We have two possible configs in searches.ini:
+        // 
+        // [StartpageNews]
+        // RSSFeed=[url]:[limit]
+        // 
+        // [SideRecommendations]
+        // AllFields[]=RSSFeedResultsDeferred:[url]:[limit]        
+        
+        if ($settings === null) {
+            $settings = $this->feed;
+        }
+        
         // Parse out parameters:
         $params = explode(':', $settings);
         $this->baseUrl = (isset($params[0]) && !empty($params[0]))
-            ? $params[0] : 'api.europeana.eu/api/v2/opensearch.rss';
-        $this->requestParam = (isset($params[1]) && !empty($params[1]))
-            ? $params[1] : 'searchTerms';
-        $this->limit = isset($params[2]) && is_numeric($params[2])
-                        && $params[2] > 0 ? intval($params[2]) : 5;
-        $this->excludeProviders = (isset($params[3]) && !empty($params[3]))
-            ? $params[3] : [];
-        //make array
-        if (!empty($this->excludeProviders)) {
-            $this->excludeProviders = explode(',', $this->excludeProviders);
-        }
-        $this->searchSite = "Europeana.eu";
-    }
-
-    /**
-     * Build the url which will be send to retrieve the RSS results
-     *
-     * @param string $targetUrl        Base URL
-     * @param string $requestParam     Parameter name to add
-     * @param array  $excludeProviders An array of providers to exclude when
-     * getting results.
-     *
-     * @return string The url to be sent
-     */
-    protected function getURL($targetUrl, $requestParam, $excludeProviders)
-    {
-        // build url
-        $url = $targetUrl . "?" . $requestParam . "=" . $this->lookfor;
-        // add providers to ignore
-        foreach ($excludeProviders as $provider) {
-            $provider = trim($provider);
-            if (!empty($provider)) {
-                $url .= urlencode(' NOT europeana_dataProvider:"' . $provider . '"');
-            }
-        }
-        $url .= '&wskey=' . urlencode($this->key);
-
-        // return complete url
-        return $url;
+            ? $params[0] : 'www.bsz-bw.de/rss/v';
+        $this->limit = isset($params[1]) && is_numeric($params[1])
+                        && $params[1] > 0 ? intval($params[1]) : 5;
+        $this->searchSite = "SWB-News";
     }
 
     /**
@@ -194,17 +152,8 @@ class EuropeanaResults implements RecommendInterface,
      */
     public function init($params, $request)
     {
-        // Collect the best possible search term(s):
-        $this->lookfor =  $request->get('lookfor', '');
-        if (empty($this->lookfor) && is_object($params)) {
-            $this->lookfor = $params->getQuery()->getAllTerms();
-        }
-        $this->lookfor = urlencode(trim($this->lookfor));
-        $this->sitePath = 'http://www.europeana.eu/portal/search.html?query=' .
-            $this->lookfor;
-        $this->targetUrl = $this->getURL(
-            'http://' . $this->baseUrl, $this->requestParam, $this->excludeProviders
-        );
+        $this->sitePath = 'https://www.bsz-bw.de/index.html';
+        $this->targetUrl = 'http://' . $this->baseUrl;
     }
 
     /**
@@ -261,3 +210,4 @@ class EuropeanaResults implements RecommendInterface,
         return $this->results;
     }
 }
+
