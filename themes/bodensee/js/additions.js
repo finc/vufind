@@ -216,12 +216,10 @@ function checkAdvSearch() {
     var $submit = $('#advSearchForm .btn-success');
     var limit = 2;
     selector = '.adv-term-input.no-empty-search';
-    $submit.tooltip('enable');
     $('#advSearchForm').on('submit', function(e) {                
         if (inputLength(selector) <= limit ) {
             return false;
         }
-        $submit.tooltip('disable');
         return true;
     });
 }

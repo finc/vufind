@@ -146,8 +146,11 @@
           <?=$this->extraAdvancedControls ?>
         </div>
         <div class="adv-submit">
+            <div class="help-block">
+                <strong><?=$this->transEsc('empty_search_text')?></strong>
+            </div>
             <button class="clear-btn btn" type="button"><i class="fa fa-times text-danger"></i> <span class="text-danger"><?= $this->transEsc('Clear')?><span></button>
-            <button data-title="<?=$this->transEsc('empty_search')?> - <?=$this->transEsc('empty_search_text')?>" data-placement="right" class="btn btn-success" type="submit"/><i class="fa fa-search"></i> <?= $this->transEsc('Find')?></button>
+            <button class="btn btn-success" type="submit"/><i class="fa fa-search"></i> <?= $this->transEsc('Find')?></button>
         </div>
       <? endif; ?>
     </div>
