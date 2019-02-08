@@ -284,7 +284,7 @@ class FormatMapper {
         }
         if(in_array('SoundRecording', $formats) && in_array('MusicRecording', $formats)) {return ['Musik']; }
         elseif(in_array('SheetMusic', $formats) && in_array('Book', $formats)) {return ['MusicalScore']; }
-        elseif(in_array('Map', $formats) && in_array('Book', $formats)) {return ['Atlas']; }
+        elseif(in_array('Map', $formats) && in_array('Book', $formats)) {return ['mapmaterial']; }
         elseif(in_array('Platter', $formats) && in_array('SoundRecording', $formats)) {return ['Platter']; }
         elseif(in_array('E-Journal', $formats) && in_array('E-Book', $formats)) {return ['E-Book']; }
         elseif(in_array('E-Journal on Disc', $formats) && in_array('Journal', $formats)) {return ['E-Journal']; }
