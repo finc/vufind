@@ -88,6 +88,7 @@ $config = [
                     'solrgvimarcde604' => 'Bsz\RecordDriver\Factory::getSolrGvimarcde604',
                     'solrgvimarcde605' => 'Bsz\RecordDriver\Factory::getSolrGvimarcde605',
                     'solrgvimarcde101' => 'Bsz\RecordDriver\Factory::getSolrGvimarcde101',
+                    'solrgvimarcde627' => 'Bsz\RecordDriver\Factory::getSolrGvimarcde627',
 //                    'solrdlrmarc' => 'Bsz\RecordDriver\Factory::getSolrDlrMarc',
 //                    'solrntrsoai' => 'Bsz\RecordDriver\Factory::getSolrNtrsoai',                 
 //                    'solrfismarc' => 'Bsz\RecordDriver\Factory::getSolrFisMarc',                    
