@@ -6,6 +6,8 @@
             $form = $params['Bestellform'];
         elseif (isset($this->driver) && ($this->driver->isArticle() || $this->driver->isJournal())): 
             $form = 'Kopie';
+        elseif (!isset($this->driver)):
+            $form = 'Kopie';
         else: 
             $form = 'Leihen';
         endif; ?>
