@@ -212,10 +212,8 @@ function avoidEmptySearch() {
 }
 
 function checkAdvSearch() {
-
-    var $submit = $('#advSearchForm .btn-success');
     var limit = 2;
-    selector = '.adv-term-input.no-empty-search';
+    var selector = '.adv-term-input.no-empty-search';
     if ($(selector).length === 0) return true;
     $('#advSearchForm').on('submit', function(e) {                
         if (inputLength(selector) <= limit ) {
