@@ -211,29 +211,28 @@ function avoidEmptySearch() {
 
 }
 
-function avoidAdvEmptySearch() {
+function checkAdvSearch() {
 
     var $submit = $('#advSearchForm .btn-success');
     var limit = 2;
-
-    $('#advSearchForm').submit(function(e) {
-        var val = '';
-        // unable to access visible inputs only
-        for (var i = 0; i<4; i++) {            
-            var $input = $('#search_lookfor0_'+i);
-            if ($input.length === 1) {
-                val += $input.val().replace( /\s*/gi,"" );
-            }
-        }
-        
-        if (val.length <= limit ) {
-            $submit.popover('show');
+    selector = '.adv-term-input.no-empty-search';
+    $submit.tooltip('enable');
+    $('#advSearchForm').on('submit', function(e) {                
+        if (inputLength(selector) <= limit ) {
             return false;
         }
-        $submit.popover('hide');
+        $submit.tooltip('disable');
         return true;
     });
 }
+
+function inputLength(selector) {
+    var val = '';
+    $(selector).each(function() {
+        val += $(this).val().replace( /\s*/gi,"" );        
+    });
+    return val.length;
+ }
 /*
 * Duplicatea button
 */
@@ -317,7 +316,6 @@ function datepicker() {
 
 $(document).ready(function() {
   avoidEmptySearch();
-  avoidAdvEmptySearch();
   externalLinks();
   bootstrapTooltip();
   modalPopup();
@@ -333,4 +331,5 @@ $(document).ready(function() {
     performMark();      
   }
   openUrlTooltip();
+  checkAdvSearch();
 });
