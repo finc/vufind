@@ -1639,6 +1639,41 @@ class SolrGvimarc extends SolrMarc
         }
         return $return;
     }
+    
+         /**
+     * Get Status/Holdings Information from the internally stored MARC Record
+     * (support method used by the NoILS driver).
+     *
+     * @param array $field The MARC Field to retrieve
+     * @param array $data  A keyed array of data to retrieve from subfields
+     *
+     * @return array
+     */
+    public function getFormattedMarcDetails($field, $data)
+    {
+        $parent = parent::getFormattedMarcDetails($field, $data);
+        $return = [];
+        foreach ($parent as $k => $item) {
+            $ill_status = '';
+            switch ($item['availability']) {
+                case 'a': $ill_status = 'ill_status_a';
+                     break;
+                case 'b': $ill_status = 'ill_status_b';
+                     break;
+                case 'c': $ill_status = 'ill_status_c';
+                     break;
+                case 'd': $ill_status = 'ill_status_d';
+                     break;
+                case 'e': $ill_status = 'ill_status_e';
+                     break;
+                default: $ill_status = 'ill_status_d';
+            }
+            $item['availability'] = $ill_status;
+            $return[] = $item;
+            
+        }
+        return $return;
+    }
 
 
 }
