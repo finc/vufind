@@ -1,10 +1,8 @@
 <?= $this->record($this->driver)->getFisLink()?>
-<? if( $this->searchTabs()->isILL()
-        && !$this->driver->tryMethod('isFisBildung')
-        && strlen($this->driver->getNetwork()) > 0): ?>
+<? if( $this->searchTabs()->isILL() && strlen($this->driver->getNetwork()) > 0): ?>
         <div class="ill-source">                
             <strong><?=$this->transEsc('Network')?>:</strong>
-            <span class="test"><?=$this->driver->getNetwork() ?></span> 
+            <span><?=$this->driver->getNetwork() ?></span> 
         </div>          
 <? endif; ?>      
 <? if (!$this->driver->isSubRecord()): ?>
