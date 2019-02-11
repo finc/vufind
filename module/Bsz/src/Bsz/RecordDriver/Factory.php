@@ -201,6 +201,24 @@ class Factory extends \VuFind\RecordDriver\Factory {
     }
 
     /**
+     * Factory for K10plus record driver
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarc
+     */
+    public static function getSolrGviMarcde627(ServiceManager $sm)
+    {
+        $driver = new SolrGvimarcde101($sm->getServiceLocator()->get('bsz\mapper'), 
+            $sm->getServiceLocator()->get('bsz\client'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
+        );
+        return Factory::attach($driver, $sm);
+    }
+    
+    /**
      * Factory for SolrMarc record driver.
      *
      * @param ServiceManager $sm Service manager.

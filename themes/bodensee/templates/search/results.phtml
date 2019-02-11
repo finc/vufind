@@ -35,7 +35,7 @@
     
   }
   if($advSearch !== false) {
-      $this->layout()->breadcrumbs .= '<li><a href="'.$this->url($advSearch).'?edit='.$this->escapeHtmlAttr($this->results->getSearchId()).'"><i class="fa fa-edit"></i><span class="text">'.$this->transEsc("Edit this Advanced Search").'</span></a></li>';
+      $this->layout()->breadcrumbs .= '<li>&nbsp;&ndash;&nbsp;<a href="'.$this->url($advSearch).'?edit='.$this->escapeHtmlAttr($this->results->getSearchId()).'"><i class="fa fa-edit"></i><span class="text">'.$this->transEsc("Edit this Advanced Search").'</span></a></li>';
   }
 
   // Enable cart if appropriate:
