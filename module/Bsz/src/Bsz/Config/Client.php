@@ -323,7 +323,9 @@ class Client extends \Zend\Config\Config
             'DE-603' => 'HEBIS',
             'DE-604' => 'BVB',
             'DE-605' => 'HBZ',
+            'DE-627' => 'K10Plus',
             'DE-101' => 'DNB', //Deutsche Nationalbibliothek
+            
         ];
     }
 
