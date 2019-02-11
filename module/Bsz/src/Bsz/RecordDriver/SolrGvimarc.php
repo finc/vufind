@@ -1307,16 +1307,7 @@ class SolrGvimarc extends SolrMarc
         return $details;
     }
 
-    /**
-     * is this Record a FIS record
-     * @return boolean
-     */
-    public function isFisBildung()
-    {
-        return false;
-    }
-
-    /**
+   /**
      * Is this a DLR-Koha record
      * @return boolean
      */

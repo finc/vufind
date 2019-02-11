@@ -1,4 +1,3 @@
-<?= $this->record($this->driver)->getFisLink()?>
 <? if( $this->searchTabs()->isILL() && strlen($this->driver->getNetwork()) > 0): ?>
         <div class="ill-source">                
             <strong><?=$this->transEsc('Network')?>:</strong>

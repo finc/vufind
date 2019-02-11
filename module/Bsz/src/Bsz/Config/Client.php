@@ -304,9 +304,7 @@ class Client extends \Zend\Config\Config
         $networks = $this->getNetworks();
         if (array_key_exists($isil, $networks)) {
             return $networks[$isil];
-        } else {
-            return 'FIS Bildung';
-        }
+        } 
     }
 
     /**
@@ -327,20 +325,6 @@ class Client extends \Zend\Config\Config
             'DE-101' => 'DNB', //Deutsche Nationalbibliothek
             
         ];
-    }
-
-    /**
-     * Is FIS Bildung activated on this view
-     * @return boolean
-     */
-    public function hasFisBildung()
-    {
-        $setting = $this->get('FIS')->get('enabled');
-        if (!empty($setting)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
