@@ -1,6 +1,5 @@
 <div class="col-sm-12">    
     <h1><?=$this->transEsc('An error has occurred')?></h1>
-    <h2><?=$this->transEsc($this->message)?></h2>
 
     <? if ($this->showInstallLink): ?>
       <h3><a href="<?=$this->url('install-home')?>"><?=$this->transEsc('auto_configure_title', [], 'Auto Configure')?></a></h3>
@@ -10,11 +9,21 @@
     <? endif; ?>
 
     <? if (isset($this->display_exceptions) && $this->display_exceptions): ?>
+
+      <h3>
+        <b><?=$this->transEsc('ErrorMessage')?>:</b> <?=$this->escapeHtml($this->exception->getMessage())?>
+      </h3>
+      
+      <h4><?=$this->transEsc('Please try again later')?>...</h4>
+
+    <? endif ?>
+
+<? /*
+    <? if (isset($this->display_exceptions) && $this->display_exceptions): ?>
       <h3><?=$this->transEsc('Exception')?>:</h3>
       <p>
         <b><?=$this->transEsc('Message')?>:</b> <?=$this->escapeHtml($this->exception->getMessage())?>
       </p>
-
       <h3><?=$this->transEsc('Backtrace')?>:</h3>
       <pre><?=$this->exception->getTraceAsString()?>
       </pre>
@@ -28,10 +37,12 @@
             <? $e = $e->getPrevious(); ?>
         <? endwhile; ?>
       <? endif; ?>
-
+      
       <? if (isset($this->request)): ?>
         <h3><?=$this->transEsc('error_page_parameter_list_heading')?>:</h3>
         <pre><?=$this->escapeHtml(var_export($this->request->getParams(), true))?></pre>
       <? endif; ?>
     <? endif ?>
+*/ ?>
+ 
 </div>
