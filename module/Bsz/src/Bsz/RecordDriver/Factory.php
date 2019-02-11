@@ -209,7 +209,7 @@ class Factory extends \VuFind\RecordDriver\Factory {
      */
     public static function getSolrGviMarcde627(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde101($sm->getServiceLocator()->get('bsz\mapper'), 
+        $driver = new SolrGvimarcde627($sm->getServiceLocator()->get('bsz\mapper'), 
             $sm->getServiceLocator()->get('bsz\client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
