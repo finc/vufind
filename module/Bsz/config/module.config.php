@@ -40,7 +40,7 @@ $config = [
                 
             ]        
         ],
-    ], 
+    ],    
     'service_manager' => [
         'factories' => [
             'bsz\config\client'     => 'Bsz\Config\Factory::getClient', 
@@ -63,6 +63,10 @@ $config = [
             'bsz\libraries' => 'bsz\config\libraries'
         ],
     ],
+    'view_manager' => [
+        'display_exceptions'       => APPLICATION_ENV == 'development' || APPILCATION_ENV=='production',
+    ],
+    
     'vufind' => [
         'plugin_managers' => [  
             'recommend' => [

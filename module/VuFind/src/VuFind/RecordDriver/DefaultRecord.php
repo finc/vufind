@@ -1422,7 +1422,7 @@ class DefaultRecord extends AbstractBase
     public function getUniqueID()
     {
         if (!isset($this->fields['id'])) {
-            throw new \Exception('ID not set!');
+            throw new \Exception('No Record found!');
         }
         return $this->fields['id'];
     }

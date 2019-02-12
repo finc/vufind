@@ -116,6 +116,9 @@ class Params extends \VuFind\Search\Solr\Params
         // search those shards that answer, accept partial results
         $backendParams->add('shards.tolerant', 'true');
         
+        // maximum search time in ms
+        $backendParams->add('timeAllowed', '4000');
+
         // defaultOperator=AND was removed in schema.xml
         $backendParams->add('q.op', "AND");
 
