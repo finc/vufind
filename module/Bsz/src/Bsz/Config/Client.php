@@ -97,16 +97,13 @@ class Client extends \Zend\Config\Config
             $links[] = '/Search/Advanced';
         } else if($boxNo == 1 && $this->isIsilSession() && $this->hasIsilSession()) {
             $library = $this->libraries->getFirstActive($this->getIsils());
-            // freeForm must not be available from footer
-//            if (isset($library)) {
-//                $links[] =  $library->hasCustomUrl() ? $library->getCustomUrl() 
-//                    : '/InterlendingRecord/Freeform';                   
-//            }
-     
             if (isset($library) && $library->getHomepage() !== null) {
                 $links[] = isset($library) ? $library->getHomepage() : '';                
             }
-            
+            if (isset($library)) {
+                $links[] =  $library->hasCustomUrl() ? $library->getCustomUrl() 
+                    : '/Record/Freeform';                   
+            }
         } else if ($boxNo == 3) {
             $links[] = '/Bsz/Privacy';
         }        
