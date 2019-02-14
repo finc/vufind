@@ -424,10 +424,10 @@ class SolrGvimarc extends SolrMarc
         return $author;
 
     }
-    
+
     /**
      * Get an Array of Author Name with Live Data
-     * 
+     *
      * @return array
      */
     public function getPrimaryAuthorNoLive()
@@ -435,12 +435,12 @@ class SolrGvimarc extends SolrMarc
         $nolive_author = trim($this->getFirstFieldValue('100', ['a']));
         return $nolive_author;
     }
-    
+
     /**
      * returns all authors from 100 or 700 without life data
      * @return array
      */
-    public function getAllAuthorsShort() 
+    public function getAllAuthorsShort()
     {
         $authors = array_merge(
             $this->getFieldArray('100', ['a', 'b']),
@@ -467,7 +467,7 @@ class SolrGvimarc extends SolrMarc
         }
         return $gndauthor;
     }
-    
+
     /**
      * Get GND-ID from 700|0 with (DE-588)-prefix
      *
@@ -478,10 +478,10 @@ class SolrGvimarc extends SolrMarc
         $gndauthor = [];
 
         $candidates = $this->getFieldArray('700', ['0'], false);
-        
+
         foreach ($candidates as $item) {
             if (strpos($item, '(DE-588)') !== FALSE) {
-                $gndauthor[] = $item;                
+                $gndauthor[] = $item;
             }
         }
         return $gndauthor;
@@ -575,10 +575,10 @@ class SolrGvimarc extends SolrMarc
         $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd']);
         return $author2;
     }
-    
+
     /**
      * Get an Array of Author Names with Live Data
-     * they need to be translated. 
+     * they need to be translated.
      *
      * @return array
      */
@@ -590,7 +590,7 @@ class SolrGvimarc extends SolrMarc
 
     /**
      * Get an Array of Author roles
-     * they need to be translated. 
+     * they need to be translated.
      *
      * @return array
      */
@@ -599,7 +599,7 @@ class SolrGvimarc extends SolrMarc
         $author2 = $this->getFieldArray('700', ['4']);
         return $author2;
     }
-    
+
     public function getCorporateAuthors() {
         $corporate = array_merge(
             $this->getFieldArray('110', ['a', 'b', 'g']),// corporate
@@ -638,7 +638,7 @@ class SolrGvimarc extends SolrMarc
     }
 
 
-    
+
     /**
      * Get the short (pre-subtitle) title of the record.
      *
@@ -854,7 +854,7 @@ class SolrGvimarc extends SolrMarc
         }
         return $this->container;
     }
-    
+
     public function getContainerId() {
         $fields = [
             773 => ['w'],
@@ -949,16 +949,16 @@ class SolrGvimarc extends SolrMarc
 
 
     /**
-     * 
+     *
      * @return string
      */
     public function getGroupField()
-    {   
+    {
         $retval = '';
         if (isset($_SESSION['dedup']['group_field'])) {
             $conf = $_SESSION['dedup']['group_field'];
         } else {
-            $conf = $this->client->get('Index')->get('group.field');            
+            $conf = $this->client->get('Index')->get('group.field');
         }
         if (is_string($conf) && isset($this->fields[$conf])) {
             if (is_array($this->fields[$conf])) {
@@ -966,10 +966,10 @@ class SolrGvimarc extends SolrMarc
             } else {
                 $retval = $this->fields[$conf];
             }
-            
+
         }
         return $retval;
-      
+
     }
 
     public function getBreadcrumb()
@@ -1101,7 +1101,7 @@ class SolrGvimarc extends SolrMarc
         $params['rft.atitle'] = $this->getTitle();
         $authors = $this->getAllAuthorsShort();
         $params['rft.au'] = array_shift($authors);
-        
+
         $params['rft.format'] = 'Article';
         $langs = $this->getLanguages();
         if (count($langs) > 0) {
@@ -1124,7 +1124,7 @@ class SolrGvimarc extends SolrMarc
         $places = $this->getPlacesOfPublication();
         $params = $this->getDefaultOpenUrlParams();
         $publishers = $this->getPublishers();
-        
+
         $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
         $params['rft.issn'] = (string) $this->getCleanISSN();
         $params['rft.jtitle'] = $this->getTitle();
@@ -1286,6 +1286,20 @@ class SolrGvimarc extends SolrMarc
         $volumes = preg_replace("/\/$/", "", $this->getFieldsArray($fields));
         return array_shift($volumes);
     }
+    
+        /**
+     * Returns Volume number
+     * @return String
+     */
+    public function getVolumeNumber()
+    {
+        $fields = [
+            245 => ['n'],
+            490 => ['v']
+          ];
+        $volumes = preg_replace("/[\/,]$/", "", $this->getFieldsArray($fields));
+        return array_shift($volumes);
+    }
 
     /**
      * return EAN Code
@@ -1396,7 +1410,7 @@ class SolrGvimarc extends SolrMarc
             } else {
                 unset($years[$k]);
             }
-        }        
+        }
         return array_shift($years);
     }
 
@@ -1586,25 +1600,25 @@ class SolrGvimarc extends SolrMarc
      *
      * @return boolean
      */
-    
-    public function isSubRecord() 
+
+    public function isSubRecord()
     {
         return isset($this->fields['_isSubRecord']) ? $this->fields['_isSubRecord'] : false;
     }
-    
-    public function getSubRecords() 
+
+    public function getSubRecords()
     {
         return isset($this->fields['_subRecords']) ? $this->fields['_subRecords'] : null;
     }
-    
-    public function hasSubRecords() 
+
+    public function hasSubRecords()
     {
         if (null !== ($collection = $this->getSubRecords())) {
             return 0 < $collection->count();
         }
         return false;
-    }    
-    
+    }
+
          /**
      * Get Status/Holdings Information from the internally stored MARC Record
      * (support method used by the NoILS driver).
@@ -1635,9 +1649,9 @@ class SolrGvimarc extends SolrMarc
             }
             $item['availability'] = $ill_status;
             $return[] = $item;
-            
+
         }
         return $return;
     }
-    
+
 }
