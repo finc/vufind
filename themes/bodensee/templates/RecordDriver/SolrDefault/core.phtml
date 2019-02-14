@@ -99,7 +99,8 @@
                   <? endif ; ?>
                 </td>
             </tr>
-            <? endif; ?>      
+            <? endif; ?>     
+            
             <? $nextTitles = $this->driver->getNewerTitles(); $prevTitles = $this->driver->getPreviousTitles(); ?>
             <? if (!empty($nextTitles)): ?>
             <tr>
@@ -109,6 +110,7 @@
                   <? endforeach; ?></td>
             </tr>
             <? endif; ?>
+            
             <? if (!empty($prevTitles)): ?>
             <tr>
                 <th><?=$this->transEsc('Previous Title')?>: </th>
@@ -119,6 +121,7 @@
                 </td>
             </tr>
             <? endif; ?>
+            
             <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
             <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
             <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
@@ -133,6 +136,7 @@
                 </td>
             </tr>
             <? endif; ?>
+            
             <? if (isset($authors['corporate']) && !empty($authors['corporate'])): ?>
             <tr>
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
@@ -143,6 +147,7 @@
                 </td>
             </tr>
             <? endif; ?>
+            
             <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
             <? $noLiveSecondaryAuthors = $this->driver->getSecondaryAuthorsNoLive(); ?>
             <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
@@ -150,18 +155,22 @@
             <tr>
                 <th><?=$this->transEsc('Other Authors')?>: </th>
                 <td><? $i = 0;?>
+                    <span>
                     <? foreach ($authors['secondary'] as $k => $field): ?>
-                     <?=($i++ == 0)?'':', '?>
-                    <span property="contributor">
-                        <a class="author" href=<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLiveSecondaryAuthors[$k])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($field)?></a>
-                    </span>
-                    <? if (isset($gnd_au2[$k])): ?>
-                    (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>, <?=$this->transEsc('rdarole_'.$role_au2[$k]);?><? endif; ?>
-                        
+                        <?=($i++ == 0)?'':', '?>
+                        <span property="contributor">
+                            <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLiveSecondaryAuthors[$k])?>&amp;type=Author<?= $hiddenFilterString ?>">
+                                <?=$this->escapeHtml($field)?>
+                            </a>
+                        </span>
+                        <? if (isset($gnd_au2[$k])): ?>
+                            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>; <?=$this->transEsc('CreatorRoles::'.$role_au2[$k]);?><? endif; ?>
                     <? endforeach; ?>
-                    </td>
+                    </span>
+                </td>
             </tr>
             <? endif; ?>
+
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
             <tr>
                 <th><?=$this->transEsc('Format')?>: </th>
@@ -170,6 +179,16 @@
                     <? endforeach; ?></td>
             </tr>
             <? endif; ?>  
+
+            <? $scale = $this->driver->getScale(); if (!empty($scale)): ?>
+            <tr>
+                <th><?=$this->transEsc('Scale')?>: </th>
+                <td>
+                    <?=$this->escapeHtml($scale)?><br/>
+                </td>
+            </tr>
+            <? endif; ?>    
+            
             <? $physical = $this->driver->getPhysicalDescriptions(); if (!empty($physical)): ?>
             <? $contentDisplayed = true; ?>
             <tr>
@@ -179,6 +198,7 @@
                   <? endforeach; ?></td>
             </tr>
             <? endif; ?>           
+
             <?  
                $isbn = $this->driver->getCleanISBN(); 
                $issn = $this->driver->getCleanISSN();
@@ -201,7 +221,8 @@
                 <td><? foreach ($langs as $lang): ?><? if($count > 0):?>; <?endif;?><?= $this->transEsc($lang)?><? $count++?><? endforeach; ?>
                 </td>
             </tr>
-            <? endif; ?>     
+            <? endif; ?> 
+            
             <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
             <tr>
                 <th><?=$this->transEsc('Published')?>: </th>
@@ -223,12 +244,14 @@
                 </td>
             </tr>
             <? endif; ?>
+            
             <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
             <tr>
                 <th><?=$this->transEsc('Edition')?>: </th>
                 <td property="bookEdition"><?=$this->escapeHtml($edition)?></td>
             </tr>
             <? endif; ?>
+            
             <? $childRecordCount = $this->driver->tryMethod('getChildRecordCount'); if ($childRecordCount): ?>
             <tr>
                 <th><?=$this->transEsc('child_records')?>: </th>

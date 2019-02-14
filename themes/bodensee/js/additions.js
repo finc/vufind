@@ -193,7 +193,7 @@ function avoidEmptySearch() {
         
      });
      $('#searchForm').submit(function(e) {
-        if ($input.val().replace( /\s*/gi,"" ).length <= limit) {
+        if ($input.val().replace( /[\*\s]/gi,"" ).length <= limit) {
              $input.attr('data-placement', 'bottom');
 
              $input.popover('show');
@@ -226,7 +226,7 @@ function checkAdvSearch() {
 function inputLength(selector) {
     var val = '';
     $(selector).each(function() {
-        val += $(this).val().replace( /\s*/gi,"" );        
+        val += $(this).val().replace( /[\*\s]/gi,"" );        
     });
     return val.length;
  }

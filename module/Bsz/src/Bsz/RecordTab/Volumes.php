@@ -89,7 +89,8 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
                         $filter[] = '~institution_id:'.$isil;
                     }   
                 }
-                $filter[] = 'material_content_type:Book';
+                $filter[] = '~material_content_type:Book';
+                $filter[] = '~material_content_type:"Musical Score"';
                 $params['filter'] = $filter;
                               
                 $results = $this->runner->run($params); 

@@ -40,8 +40,14 @@ class HoldingsILS extends \VuFind\RecordTab\HoldingsILS
      */
     public function isActive()
     {        
-        if ($this->catalog && $this->catalog->hasHoldings($this->driver->getUniqueID())) {
-            return true;
+        $id = $this->driver->getUniqueID();
+        if ($this->catalog) {
+            // try DAIA only in case of SWB or K10plus prefix
+            if(strpos($id, '(DE-576)') !== false OR strpos($id, '(DE-627)') !== false) {   
+                if ($this->catalog->hasHoldings($id)) {
+                    return true;
+                }
+            }
         } elseif ($this->driver->tryMethod('hasLocalHoldings')) {
             return true;
         }

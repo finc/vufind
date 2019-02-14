@@ -1505,6 +1505,14 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
+     *  Scale of a map
+     */
+    public function getScale() {
+        $scale = $this->getFieldArray("034", ['b']);
+        return array_shift($scale);
+    }
+    
+    /**
      * Get ZDB ID if available
      *
      * @return string
