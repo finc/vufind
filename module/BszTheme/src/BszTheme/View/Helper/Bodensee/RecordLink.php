@@ -71,7 +71,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
         // if the record is available at the first ISIL, either link an external
         // url or use the baseUrl (which is normally the aDIS URL of the current
         // library).
-        // // otherwise use the network OPAC urls, which can be found in BSZ.ini
+        // otherwise use the network OPAC urls, which can be found in BSZ.ini
 
         if ($driver->getNetwork() == 'SWB' && $recordHelper->isAtFirstIsil()) {
             $url = str_replace('<PPN>', $ppn, $url);
