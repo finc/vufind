@@ -36,64 +36,59 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
      * @var string
      */
     protected $baseUrl;
-    
+
     public function __construct(\VuFind\Record\Router $router, \Zend\Config\Config $config, $baseUrl = null)
     {
         parent::__construct($router);
         $this->baseUrl = $baseUrl;
         $this->config = $config;
-    }  
-       
+    }
+
     public function getCoverServiceUrls($driver) {
         $services = [];
-        $sources = $this->config->get('CoverSources');      
-                       
+        $sources = $this->config->get('CoverSources');
+
         foreach($sources as $source => $url) {
-            $isxn = strlen($driver->getCleanISSN()) > 0 ? 
+            $isxn = strlen($driver->getCleanISSN()) > 0 ?
                     $driver->getCleanISSN() : $driver->getCleanISBN();
             if(strlen($isxn) > 0) {
-                $services[$source] = sprintf($url, $isxn);                
+                $services[$source] = sprintf($url, $isxn);
             }
         }
         return $services;
     }
-    
-    public function linkPPN(\Bsz\RecordDriver\SolrMarc $driver, $url = '') 
+
+    public function linkPPN(\Bsz\RecordDriver\SolrMarc $driver, $url = '')
     {
-        $id = $driver->getuniqueId();
+        $id = $driver->getUniqueId();
         $pos = strpos($id, ')');
         $ppn = substr($id, $pos + 1);
-        $recordHelper = $this->getView()->plugin('record');        
-        $link = '';
-        if ($driver->getNetwork() == 'SWB' && $recordHelper->isAtFirstIsil()) {
-            if (!empty($url) ) {
-                $link = str_replace('<PPN>', $ppn, $url);
-            } elseif (!empty($this->baseUrl)) {
-                // $link aDIS URL from config
-                $link = str_replace('<PPN>', $ppn, $this->baseUrl);
-            }
-            return $this->getView()->render('Helpers/ppn.phtml', ['ppn' => $ppn, 'link' => $link, 'label' => 'To library OPAC' ]); 
-        } else {
-            // show link to Verbundsystem
-            switch ($driver->getNetwork()) {
+        $recordHelper = $this->getView()->plugin('record');
+        $label = '';
+        $url = empty($url) ? $this->baseUrl : $url;
 
-                case 'ZDB': $link = sprintf('http://zdb-opac.de/DB=1.1/PRS=HOL/CMD?ACT=SRCHA&IKT=12&TRM=%s', $ppn);
-                    break;
-                case 'HEBIS': $link = sprintf('http://cbsopac.rz.uni-frankfurt.de/DB=2.1/PRS=HOL/CMD?ACT=SRCHA&IKT=12&TRM=%s', $ppn);
-                    break;
-                case 'GBV': $link = sprintf('http://gso.gbv.de/DB=2.1/PRS=HOL/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM=%s', $ppn);
-                    break;
-                case 'HBZ': $link = sprintf('http://193.30.112.134/F?func=find-b&request=%s&find_code=IDN&l_base=HBZ01', $ppn);
-                    break;
-                case 'KOBV': $link = sprintf('http://portal.kobv.de/uid.do?query=%s&index=internal&plv=2', $ppn);
-                    break;
-                case 'BVB': $link = str_replace('<<id>>', $ppn, 'https://opacplus.bib-bvb.de/TouchPoint_touchpoint/start.do?Query=205=%22<<id>>%22&Language=De&SearchProfile=');
-                    break;
-                case 'SWB': $link = sprintf('http://swb.bsz-bw.de/DB=2.1/PPNSET?PPN=%s&PRS=HOL&HILN=888&INDEXSET=1', $ppn);
-                    break;
-                default: $link = '';            
-            }            
+
+        // if the record is available at the first ISIL, either link an external
+        // url or use the baseUrl (which is normally the aDIS URL of the current
+        // library).
+        // // otherwise use the network OPAC urls, which can be found in BSZ.ini
+
+        if ($driver->getNetwork() == 'SWB' && $recordHelper->isAtFirstIsil()) {
+            $url = str_replace('<PPN>', $ppn, $url);
+            $label = 'To library OPAC';
+        } else {
+            $label = 'To network OPAC';
+            $opacList = $this->config->get('OPAC')->toArray();
+            $network = $driver->getNetwork();
+            if (array_key_exists($network, $opacList)) {
+                $url = $opacList[$network];
+                $url = str_replace('%PPN%', $ppn, $url);
+            }
         }
-        return $this->getView()->render('Helpers/ppn.phtml', ['ppn' => $ppn, 'link' => $link, 'label' => 'redi_link_text']);        
-    }    
+        return $this->getView()->render('Helpers/ppn.phtml', [
+            'ppn' => $ppn,
+            'link' => $url,
+            'label' => $label
+        ]);
+    }
 }
