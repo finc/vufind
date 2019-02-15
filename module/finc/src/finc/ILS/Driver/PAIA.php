@@ -65,8 +65,11 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
     const SCOPE_WRITE_ITEMS = 'write_items';
     const SCOPE_CHANGE_PASSWORD = 'change_password';
     const SCOPE_READ_NOTIFICATIOS = 'read_notifications';
+    const SCOPE_DELETE_NOTIFICATIONS = 'delete_notifications';
 
     protected $last_error = null;
+
+    protected $notificationsPrefix;
 
     /**
      * Constructor
@@ -79,6 +82,14 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
     ) {
         parent::__construct($converter, $sessionManager);
         $this->sessionManager = $sessionManager;
+    }
+
+    public function init()
+    {
+        parent::init();
+        if (isset($this->config['PAIA']['paiaNotificationsPrefix'])) {
+            $this->notificationsPrefix = $this->config['PAIA']['paiaNotificationsPrefix'];
+        }
     }
 
     /**
@@ -709,6 +720,21 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
         return [];
     }
 
+    private function notificationsCacheKey($patron) {
+        return $patron['cat_username'].'_notifications';
+    }
+
+    private function getPaiaNotificationsId($messageId) {
+        if (
+            isset($this->notificationsPrefix)
+            &&
+            strpos($messageId,$this->notificationsPrefix) === 0
+        ) {
+            return substr($messageId,strlen($this->notificationsPrefix));
+        }
+        return $messageId;
+    }
+
     /**
      * PAIA support method for PAIA core method 'notifications'
      *
@@ -725,6 +751,11 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             throw new ILSException('You are not entitled to read notifications.');
         }
 
+        if ($this->paiaCacheEnabled) {
+            $response = $this->getCachedData($this->notificationsCacheKey($patron));
+            if (!empty($response)) return $response;
+        }
+
         try {
             $response = $this->paiaGetAsArray(
                 'core/'.$patron['cat_username'].'/notifications'
@@ -733,6 +764,7 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
             // all error handling is done in paiaHandleErrors so pass on the excpetion
             throw $e;
         }
+        //$response = array_slice($response,0,20);
         foreach ($response as &$message) {
             //Fernleihmedium erhalten.[Barcode]7016265550[Titel: *]König von Deutschland
             if (preg_match('/\[Barcode\](\w\d*)/',$message['about'],$matches)) {
@@ -750,9 +782,62 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
                 //$errs = date_get_last_errors();
                 $message['datetime'] = $message['date'];
             }
+            $message['messageid'] = $message['item'];
+        }
+
+        if ($this->paiaCacheEnabled) {
+            $this->putCachedData($this->notificationsCacheKey($patron),$response);
         }
 
         return $response;
+    }
+
+    /**
+     * PAIA support method for PAIA core method DELETE 'notifications'
+     *
+     * @param array $patron Array with patron information
+     *
+     * @return array|mixed Array of system notifications for the patron
+     * @throws \Exception
+     * @throws ILSException You are not entitled to read notifications
+     */
+    protected function paiaRemoveSystemMessage($patron, $messageId, $keepCache = FALSE)
+    {
+        // check if user has appropriate scope
+        if (!$this->paiaCheckScope(self::SCOPE_DELETE_NOTIFICATIONS)) {
+            throw new ILSException('You are not entitled to delete notifications.');
+        }
+
+        try {
+            $response = $this->paiaDeleteRequest(
+                'core/'.$patron['cat_username'].'/notifications/'.$this->getPaiaNotificationsId($messageId)
+            );
+        } catch (\Exception $e) {
+            // all error handling is done in paiaHandleErrors so pass on the excpetion
+            throw $e;
+        }
+
+        if (!$keepCache && $this->paiaCacheEnabled) {
+            $this->removeCachedData($this->notificationsCacheKey($patron));
+        }
+
+        return $response;
+    }
+
+    protected function paiaRemoveSystemMessages($patron,array $messageIds) {
+
+        foreach ($messageIds as $messageId) {
+            if (!$this->paiaRemoveSystemMessage($patron,$messageId,TRUE))
+            {
+                return FALSE;
+            }
+        }
+
+        if ($this->paiaCacheEnabled) {
+            $this->removeCachedData($this->notificationsCacheKey($patron));
+        }
+
+        return TRUE;
     }
 
     /**
@@ -1320,5 +1405,49 @@ class PAIA extends \VuFind\ILS\Driver\PAIA
 
     public function getLastError() {
         return $this->last_error;
+    }
+
+    /**
+     * DELETE data on foreign host
+     *
+     * @param string $file         DELETE target URL
+     * @param string $access_token PAIA access token for current session
+     *
+     * @return bool|string
+     * @throws ILSException
+     */
+    protected function paiaDeleteRequest($file, $access_token = null)
+    {
+        if (is_null($access_token)) {
+            $access_token = $this->getSession()->access_token;
+        }
+
+        $http_headers = [
+            'Authorization' => 'Bearer ' . $access_token,
+            'Content-type' => 'application/json; charset=UTF-8',
+        ];
+
+        try {
+            $client = $this->httpService->createClient(
+                $this->paiaURL . $file,
+                \Zend\Http\Request::METHOD_DELETE,
+                $this->paiaTimeout
+            );
+            $client->setHeaders($http_headers);
+            $result = $client->send();
+        } catch (\Exception $e) {
+            throw new ILSException($e->getMessage());
+        }
+
+        if (!$result->isSuccess()) {
+            // log error for debugging
+            $this->debug(
+                'HTTP status ' . $result->getStatusCode() .
+                ' received'
+            );
+            return FALSE;
+        }
+        // return TRUE on success
+        return TRUE;
     }
 }
