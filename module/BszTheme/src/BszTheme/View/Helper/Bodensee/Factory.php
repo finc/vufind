@@ -147,7 +147,7 @@ class Factory
           
         return new RecordLink(
             $sm->getServiceLocator()->get('VuFind\RecordRouter'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('bsz'),
             $adisUrl
         );
     }
