@@ -396,12 +396,12 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     public function getStatus($id)
     {
-        if ($this->_hasILSData($id)) {
+        if ($this->hasILSData($id)) {
             return $this->_replaceILSId(
                 parent::getStatus($this->_getILSRecordId($id)), $id
             );
         } else {
-            return $this->_getStaticStatus($id);
+            return $this->getStaticStatus($id);
         }
     }
 
@@ -424,8 +424,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
         $retval = [];
 
         foreach ($ids as $num => $id) {
-            if (!$this->_hasILSData($id)) {
-                $retval[] = $this->_getStaticStatus($id);
+            if (!$this->hasILSData($id)) {
+                $retval[] = $this->getStaticStatus($id);
                 unset($ids[$num]);
             }
         }
@@ -1321,7 +1321,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @return array
      */
-    private function _getStaticStatus($id)
+    protected function getStaticStatus($id)
     {
         if (!$this->auth) {
             $this->debug('Authorization service missing for checking availability ' .
@@ -1374,7 +1374,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @return bool
      */
-    private function _hasILSData($id)
+    protected function hasILSData($id)
     {
         $retVal = [];
         foreach ($this->config['General']['queryIls'] as $value) {
