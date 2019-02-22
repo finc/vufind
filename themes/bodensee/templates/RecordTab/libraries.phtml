@@ -24,7 +24,7 @@
             <td><?=isset($result['b']) ? $this->escapeHtml($result['b']) : ''?></td>
             <td><?=isset($result['name']) ? $this->escapeHtml($result['name']) : ''?></td>
             <td><?=isset($result['g']) ? $this->escapeHtml($result['g']) : ''?></td>
-            <td><?=$this->transEsc($result['ill_status'])?></td>
+            <td><?isset($result['ill_status']) ? $this->transEsc($result['ill_status']): 'oops' ?></td>
             <? if ($this->driver->isJournal()): ?><td><?=isset($result['z']) ? $this->escapeHtml($result['z']) : ''?></td><? endif; ?>
 
         </tr>
