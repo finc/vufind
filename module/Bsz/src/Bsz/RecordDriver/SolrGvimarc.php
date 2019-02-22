@@ -820,6 +820,21 @@ class SolrGvimarc extends SolrMarc
         return $urls;
     }
 
+    /**
+     * Returns consortium
+     * @return array
+     * @throws \Bsz\Exception
+     */
+    public function getConsortium()
+    {
+
+        $consortium = $this->getFieldArray(924, ['c'], true);
+        $consortium_unique = array_unique($consortium);
+        $string = implode(", ",$consortium_unique);
+        return preg_replace('/BSZ/', 'SWB', $string);
+        
+    }
+       
     /* No Hierrachy functions yet */
 
     /**
