@@ -3,7 +3,12 @@
             <strong><?=$this->transEsc('Network')?>:</strong>
             <span><?=$this->driver->getNetwork() ?></span> 
         </div>          
-<? endif; ?>      
+<? elseif( strlen($this->driver->getConsortium()) > 0): ?>
+        <div class="ill-source">                
+            <strong><?=$this->transEsc('Network')?>:</strong>
+            <span><?=$this->driver->getConsortium() ?></span> 
+        </div>          
+<? endif; ?>
 <? if (!$this->driver->isSubRecord()): ?>
     <div class="callnumAndLocation ajax-availability hidden">
     <? if ($this->driver->supportsAjaxStatus()): ?>
