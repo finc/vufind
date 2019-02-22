@@ -31,7 +31,7 @@ $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink
 $(document).ready(function () {
   // show response email checkbox ReportErrors
   $('input#reporterrors_email').on('keyup change', function () {
-    var emailcheck = /^[^0-9][a-zA-Z0-9_-]+([.][a-zA-Z0-9_-]+)*[@][a-zA-Z0-9_-]+([.][a-zA-Z0-9_-]+)*[.][a-zA-Z]{2,}$/;
+    var emailcheck = /^[a-zA-Z0-9_-]+([.][a-zA-Z0-9_-]+)*[@][a-zA-Z0-9_-]+([.][a-zA-Z0-9_-]+)*[.][a-zA-Z]{2,}$/;
     if (($(this).val().length > 0) && emailcheck.test($(this).val())) {
       $('div#replyCheckbox').removeClass('hidden');
     } else {
