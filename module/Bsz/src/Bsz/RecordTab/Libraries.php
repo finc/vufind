@@ -59,7 +59,7 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
      */
     public function isActive()
     {
-        if ($this->driver->getNetwork() == 'SWB') {
+        if ($this->driver->getNetwork() == 'SWB' || $this->driver->getNetwork() == 'K10plus' ) {
             $this->f924 = $this->driver->getField924();
             if (count($this->f924) > 0) {
                 return true;                

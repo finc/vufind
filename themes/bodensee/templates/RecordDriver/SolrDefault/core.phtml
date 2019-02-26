@@ -301,6 +301,13 @@
           <td><?=$html?></td>                
       </tr>
       <? endif; ?>
+      
+      <? if( strlen($this->driver->getConsortium()) > 0): ?>
+        <tr>
+            <th><?=$this->transEsc('Network')?>:</th>
+            <td><?=$this->driver->getConsortium() ?></td> 
+        </tr>          
+      <? endif; ?> 
 
       
       <? if ($this->usertags()->getMode() !== 'disabled'): ?>

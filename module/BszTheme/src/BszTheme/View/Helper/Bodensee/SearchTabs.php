@@ -24,6 +24,14 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return false;
     }
     
+    public function isK10plus($searchClassId = 'Solr') {
+        $hiddenFilterStr = urldecode($this->getCurrentHiddenFilterParams($searchClassId));
+        if (strpos($hiddenFilterStr, 'consortium:K10plus')) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Create information representing a selected tab.
      *
