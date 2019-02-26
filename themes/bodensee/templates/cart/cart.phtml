@@ -8,11 +8,11 @@
 <div class="col-sm-12">    
     <h2><?=$this->transEsc('Book Bag') ?></h2>
     <?=$this->flashmessages()?>
-    <form class="" action="<?=$this->url('cart-processor')?>" method="post"  name="cartForm" data-lightbox-onsubmit="cartFormHandler">
+<form class="form-inline" action="<?=$this->url('cart-processor')?>" method="post"  name="cartForm" data-lightbox-onsubmit="cartFormHandler">
       <input type="hidden" id="dropdown_value"/>
       <? if (!$this->cart()->isEmpty()): ?>
         <div class="cart-controls clearfix">
-          <div class="checkbox fliprow ">
+      <div class="checkbox pull-left flip">
             <label>
               <input type="checkbox" name="selectAll" class="checkbox-select-all"/>
               <?=$this->transEsc('select_page')?>&nbsp;
