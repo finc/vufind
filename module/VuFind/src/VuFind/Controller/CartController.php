@@ -485,6 +485,9 @@ class CartController extends AbstractBase
         } else {
             $target = $this->url()->fromRoute('myresearch-home');
         }
-        return $this->redirect()->toUrl($target);
+        $view = $this->createViewModel();
+        $view->setTemplate('cart/cart');
+        return $view;
+        //return $this->redirect()->toUrl($target);
     }
 }
