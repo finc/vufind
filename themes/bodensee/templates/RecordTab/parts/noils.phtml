@@ -12,6 +12,10 @@
     <? endforeach; ?>    
 </dd>   
 <? endif; ?>
+<? if (!empty($row['storage'])): ?>
+    <dt><?=$this->transEsc('storage')?>:</dt>
+    <dd><?=$this->escapeHtml($row['storage'])?></dd>
+<? endif; ?>        
 <? if (!empty($row['availability'])): ?>
     <dt><?=$this->transEsc('ill_indicator')?>:</dt>
     <dd><?=$this->transEsc($row['availability'])?></dd>
@@ -28,5 +32,4 @@
     <dt><?=$this->transEsc('Bestandsangaben')?>:</dt>
     <dd><?=$this->escapeHtml($row['status'])?></dd>
 <? endif; ?>
-    
 </dl> 

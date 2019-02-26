@@ -1202,7 +1202,7 @@ class SolrGvimarc extends SolrMarc
         $libraries = $this->getFieldArray(924, ['b']);
         return $libraries;
     }
-
+   
     /**
      * Return system requirements
      */
@@ -1625,9 +1625,9 @@ class SolrGvimarc extends SolrMarc
             return 0 < $collection->count();
         }
         return false;
-    }
-
-         /**
+    }    
+    
+    /**
      * Get Status/Holdings Information from the internally stored MARC Record
      * (support method used by the NoILS driver).
      *
