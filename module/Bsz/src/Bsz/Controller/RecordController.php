@@ -150,6 +150,12 @@ class RecordController extends \VuFind\Controller\RecordController
                 // remove password from TAN field
                 unset($params['Passwort']);
                 
+                // free form uses a Jahr field which must be copies into Jahrgang und EJahr
+                if (isset($params['Jahr'])) {
+                    $params['EJahr'] =  $params['Jahr'];
+                    $params['Jahrgang'] = $params['Jahr'];                    
+                }
+                
                 $response = $this->doRequest($this->baseUrl . "/flcgi/pflauftrag.pl", $params);               
                 
                 try {                    

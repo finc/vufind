@@ -248,12 +248,11 @@ class IllForm extends AbstractHelper
             ['Author', 'Verfasser'],
             ['Edition', 'Auflage'],            
             ['Publisher', 'Verlag', ''],
-            ['Year of Publication', 'EJahr', '', '', true, 'ill_error_year'],
+            ['Year/Volume', 'Jahr', '', '', true, 'ill_error_year'],
             ['Publication_Place', 'EOrt', ''],
             ['VolumeTitle', 'BandTitel'],
             ['Volume', 'Band'],
             ['Issue', 'Heft'],
-            ['storage_retrieval_request_year', 'Jahrgang'],
             ['ISSN', 'Issn', ''],
             ['ISBN', 'Isbn', ''],
         ];

@@ -117,7 +117,10 @@ function appendValidator() {
             },
             jahrgang: function($el) {
                 return validateYear($el);
-            }
+            },
+            jahr: function($el) {
+                return validateYear($el);
+            },
         }
     });
 }
