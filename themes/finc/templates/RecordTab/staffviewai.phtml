@@ -1,19 +1,37 @@
-<!-- finc: recordtab - staffviewarray -->
+<!-- finc: recordtab - staffviewai -->
 <?
 // Set page title.
 $this->headTitle($this->translate('Staff View') . ': ' . $this->driver->getBreadcrumb());
 ?>
 <table class="citation table table-striped">
-  <? foreach ($this->driver->getAIRecord() as $field => $values): ?>
-    <tr>
-      <th><?=$this->escapeHtml($field)?></th>
-      <td>
-        <? if (!is_array($values)) { $values = array($values); } ?>
-        <? foreach ($values as $value): ?>
-          <?=$this->escapeHtml(is_array($value) ? print_r($value, true) : $value)?><br />
-        <? endforeach; ?>
-      </td>
-    </tr>
-  <? endforeach; ?>
+    <? foreach ($this->driver->getAIRecord() as $field => $values): ?>
+      <tr>
+        <th><?=$this->escapeHtml($field)?></th>
+        <td>
+            <? if (!is_array($values)) { $values = array($values); } ?>
+            <? foreach ($values as $value): ?>
+                <?=$this->escapeHtml(is_array($value) ? print_r($value, true) : $value)?><br />
+            <? endforeach; ?>
+        </td>
+      </tr>
+    <? endforeach; ?>
+    <? /* the following introduced in 9934*/ ?>
+    <? if ($openURL = $this->driver->getOpenUrl()): ?>
+      <tr>
+        <th><?=$this->escapeHtml('openURL')?></th>
+        <td>
+            <?=$this->escapeHtml($openURL)?><br />
+        </td>
+      </tr>
+    <? endif; ?>
+    <?  $fields = $this->driver->getRawData();
+    if (!empty($fields)): ?>
+      <tr><th><?=$this->translate('SOLR')?></th><td></td></tr>
+        <?  ksort($fields);
+        foreach($fields as $key => $values): ?>
+            <? if ($key === 'fullrecord') continue;?>
+          <tr><th><?=$this->escapeHtml($key)?></th><td><?= $this->escapeHtml(is_array($values) ? implode(', ',$values) : $values)?></td></tr>
+        <? endforeach ?>
+    <? endif; ?>
 </table>
-<!-- finc: recordtab - staffviewarray - END -->
+<!-- finc: recordtab - staffviewai - END -->

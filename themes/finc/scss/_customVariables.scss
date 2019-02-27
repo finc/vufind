@@ -185,6 +185,9 @@ $sidebar-item-padding: .75em 1em !default;
 //// Table cell padding - adjust in themes to avoid content jumps when switching tabs
 // $table-cell-padding: 5px !default;
 
+// JS Tree
+// left padding on JSTree child icon elements
+$jstree-li-left-padding: 1.5em !default;
 
 //// MODAL dimensions
 $modal-lg: 900px !default;

@@ -1,0 +1,12 @@
+<!-- finc: RecordDriver - solrDefault - data-transEscCommaSepLang -->
+<?if (!empty($data)): ?>
+    <? if(is_array($data)): ?>
+        <? /* finc: add schema tags for language #13850 - VE */ ?>
+        <span property="inLanguage">
+            <?=implode('</span>, <span property="inLanguage">', array_map(array($this, 'transEsc'), $data)); ?>
+        </span>
+    <? else: ?>
+        <?= $this->transEsc($data) ?>
+    <? endif; ?>
+<? endif; ?>
+<!-- finc: RecordDriver - solrDefault - data-transEscCommaSepLang - END -->

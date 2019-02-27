@@ -59,6 +59,8 @@ trait SolrDefaultFincTrait
      */
     public function isCollection()
     {
+        return $this->getRecordType() === 'dico';
+        /*
         // first check as always if we have a collection
         $isCollection = parent::isCollection();
 
@@ -70,6 +72,7 @@ trait SolrDefaultFincTrait
 
         // if we've come so far this record is no collection
         return false;
+        */
     }
 
     /**
@@ -290,6 +293,24 @@ trait SolrDefaultFincTrait
         $params['rft.edition'] = $this->getEdition();
         $params['rft.isbn'] = (string)$this->getCleanISBN();
         return $params;
+    }
+
+    public function getSetMultiPart() {
+
+        $ids = $this->getHierarchyParentID();
+        if (empty($ids)) return [];
+        $titles = $this->getHierarchyParentTitle();
+        $result = [];
+        if (count($ids) === count($titles)) {
+            foreach ($ids as $key => $id) {
+                $result[] = [
+                    'text' => $titles[$key],
+                    'id' => $id,
+                    'identifier' => 'Set Multipart'
+                ];
+            }
+        }
+        return $result;
     }
 
     /**
@@ -640,6 +661,15 @@ trait SolrDefaultFincTrait
                 self::getSecondaryAuthorsOrig()
             )
         ];
+
+        $all_empty = TRUE;
+        foreach ($authors as $type => $values) {
+            if (!empty($values)) {
+                $all_empty = FALSE;
+                break;
+            }
+        }
+        if ($all_empty) return [];
 
         // deduplicate
         $dedup = function (&$array1, &$array2) {

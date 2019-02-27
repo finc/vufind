@@ -476,7 +476,7 @@ class Record extends \VuFind\View\Helper\Root\Record
         foreach ($this->driver->tryMethod('getAdditionals') as $add) {
             if (isset($add['identifier']) && in_array($add['identifier'],$online_keys)) {
                 if (isset($add['id'])) {
-                    $link = $recordLinkHelper->getRecordLink($add['id'], 'id');
+                    $link = $recordLinkHelper->getTabUrl($add['id'], 'Holdings');
                     if (!empty($link)) {
                         $add['link'] = $link;
                         $onlineEditions[] = $add;

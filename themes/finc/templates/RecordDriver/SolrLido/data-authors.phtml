@@ -14,10 +14,12 @@ $formattedAuthors = [];
 <? if (!empty($data[$type])): ?>
     <? foreach ($data[$type] as $author => $roles): ?>
         <? ob_start(); ?>
-        <span class="author-data" property="<?=$this->escapeHtml($schemaLabel)?>">
+        <span class="author-data" property="<?=$this->escapeHtml($schemaLabel)?>" typeof="Person">
+    <span property="name">
         <a href="<?=$this->record($this->driver)->getLink('author', $author)?>">
           <?=$this->escapeHtml($author)?>
         </a>
+    </span>
             <?
             // Display additional data using the appropriate translation prefix
             // (for example, to render author roles correctly):
@@ -28,7 +30,7 @@ $formattedAuthors = [];
                     // deprecated due to more flexible solution at core
                     // to-do: revision of indexing and finc specific treatment
                     // of roles in RecordDriver
-                    if (count($roles) > 0 && $name == 'roles') {
+                    if (count($roles) > 0 && $name == 'role') {
                         echo $formatProperty($roles, $name, $prefix);
                     }
                 }

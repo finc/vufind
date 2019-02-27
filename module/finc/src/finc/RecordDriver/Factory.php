@@ -140,7 +140,7 @@ class Factory
         return new SolrAI(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('SolrAI'),
-            null
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
         );
     }
 
@@ -239,6 +239,15 @@ class Factory
             null,
             $sm->getServiceLocator()->get('VuFind\Config')->get('searches'),
             $sm->getServiceLocator()->get('VuFind\DateConverter')
+        );
+    }
+
+    public static function getSolrDico(ServiceManager $sm)
+    {
+        return new SolrDico(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,//$sm->getServiceLocator()->get('VuFind\Config')->get('SolrDico'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
         );
     }
 }

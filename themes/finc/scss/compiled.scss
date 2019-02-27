@@ -83,6 +83,11 @@ body {
   @media (min-width: $screen-md-min) {
     padding-top: $navbar-height;
   }
+
+  //// for print
+  @media print {
+    padding-top: 0;
+  }
 }
 
 // Collapse/Hide empty containers -- DO NOT INCLUDE span (dropdown carets are empty spans) NOR DIV (slider track handles)
@@ -157,13 +162,15 @@ h3 {
 }
 
 // Remove top borders (_tables.scss)
-thead,
-tbody,
-tfoot {
-  > tr {
-    > th,
-    > td {
-      border-top: 0;
+.table {
+  thead,
+  tbody,
+  tfoot {
+    > tr {
+      > th,
+      > td {
+        border-top: 0;
+      }
     }
   }
 }
@@ -247,6 +254,19 @@ legend {
 }
 
 //// label {}
+
+.text-success,
+.text-danger {
+  padding: .5em;
+}
+
+.text-success {
+  background-color: $brand-success;
+}
+
+.text-danger {
+  background-color: $brand-danger;
+}
 
 //// Required symbol
 
@@ -495,7 +515,8 @@ table.collapse.in {
   display: none;
 
   &.SID48 {
-    background: url('../images/wiso-transparent-70x20.png') 0 0 no-repeat;
+    // #14061 adapt the path to get the wiso logo for sub-instances
+    background: url('../../finc/images/wiso-transparent-70x20.png') 0 0 no-repeat;
     display: inline-block;
     font-size: 100%; // important to render width and height correctly
     height: em(20px);
@@ -1393,6 +1414,35 @@ footer {
   }
 }
 
+//// access-icon in resultlist
+.result {
+  .media-left {
+    min-width: 16%;
+    text-align: center;
+
+    //// remove left padding for print
+    @media print {
+      padding-left: 0;
+    }
+
+  }
+}
+
+.access-icon {
+  color: $brand-primary;
+  text-align: center;
+
+  i {
+    font-size: 4.5em;
+    width: 100%;
+  }
+
+  span {
+    font-size: .8em;
+    width: 100%;
+  }
+}
+
 //// Remaining radiusses - The labels.scss uses no variable and format extends it!
 //// Therefore it will be necessary to overwite here in compiled.scss!!, Fixme when done more elegantly in BS
 //// Also, the display settings aren't very useful (no variables either)
@@ -1419,7 +1469,7 @@ footer {
       // hide last and first page buttons
       &.first,
       &.last,
-        // select 7th to 11th child
+      // select 7th to 11th child
       &:nth-child(n+10):nth-child(-n+13) {
         display: none;
       }
@@ -1473,46 +1523,92 @@ footer {
 }
 
 ////// Hierarchy tree
-#hierarchyTree {
-  margin-top: 1em;
+#treeSelector {
+  border-bottom: $border-default-styles;
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+
+  .item {
+    margin-right: 2em;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
 }
 
-.jstree-anchor + .jstree-children {
-  margin-left: 18px;
-  margin-top: 7.5px;
-  padding-left: 0;
-  // 2nd level link, align in one vertical line
-  .jstree-anchor {
-    margin-left: 0;
+
+#hierarchyTreeHolder {
+  border-right: 0;
+}
+
+#hierarchyTree {
+  ul.jstree-container-ul {
     padding-left: 0;
   }
-}
 
-/////// prevent tree LIs from overspilling on small!
-.hierarchy-tree .jstree-anchor {
-  hyphens: auto;
-  white-space: normal;
-}
+  /////// Make dropdown-icon wider
+  .jstree-closed > .jstree-ocl::before,
+  .jstree-open > .jstree-ocl::before {
+    font-size: 150%;
+    margin-left: 0;
+    margin-top: -5px;
+    min-width: 18px;// do not translate into em
+  }
 
-// Current item
-.hierarchy-tree .jstree-clicked {
-  //background-color: $color-action;
-  padding-bottom: .25em;
-  padding-right: .5em;
-  padding-top: .5em;
-  &:hover,
-  &:focus {
-    color: $brand-secondary;
+  li.jstree-facet,
+  li.jstree-node {
+    line-height: 1.75;
+    list-style: none;
+    padding-left: $jstree-li-left-padding;
+  }
+
+  li li:before {
+    // FontAwesome Unicode fa-file-o
+    content: "\f016";
+    font-family: FontAwesome;
+    display: inline-block;
+    // same as padding-left set on li, above
+    margin-left: -$jstree-li-left-padding;
+    //same as padding-left set on li, above
+    width: $jstree-li-left-padding;
+  }
+
+  // Align child elements under open/close toggle
+  .jstree-children {
+    margin-top: .75em;
+    padding-left: 0;
+  }
+
+  // prevent tree LIs from overspilling on small!
+  .jstree-anchor {
+    hyphens: auto;
+    padding-left: 0;
+    white-space: normal;
+  }
+
+  // Current item
+  .jstree-clicked {
+    padding-bottom: .25em;
+    padding-right: .5em;
+    padding-top: .3em;
+
+    &:hover,
+    &:focus {
+      color: $brand-secondary;
+    }
   }
 }
 
-/////// Make dropdown-icon wider
-.hierarchy-tree .jstree-closed > .jstree-ocl::before,
-.hierarchy-tree .jstree-open > .jstree-ocl::before {
-  font-size: 150%;
-  margin-top: -5px;
-  min-width: 30px; // do not translate into em
+.hierarchy-tree .jstree-ocl::before,
+.jstree-facet .jstree-ocl::before {
+  float: left;
+  margin-left: 0;
+  padding: 0;
+  width: 0;
 }
+
+
 
 ////// Hierarchy tree - END
 
@@ -1615,8 +1711,8 @@ footer {
     }
   }
 }
-//// Sources List - END
 
+//// Sources List - END
 
 // MAIN CONTENT - END
 
@@ -1647,7 +1743,6 @@ footer {
   padding: $sidebar-item-padding;
 }
 
-
 .facet-group .facetOR.active {
   // Style active facets to get proper left padding
   .text {
@@ -1660,9 +1755,9 @@ footer {
 .sidebar.right {
   .facet-group .facet,
   .facet-group .title,
-.facet-group .collapse,
-.facet-group .collapsing,
-.facet-group > .facet {
+  .facet-group .collapse,
+  .facet-group .collapsing,
+  .facet-group > .facet {
     @include right-border-on-sidebar($border-right-width);
   }
 }

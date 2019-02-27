@@ -1,0 +1,7 @@
+<? if (!empty($data)): ?>
+    <? if (isset($data['g'])) {
+        $dissertationMisc = $data['g'];
+        unset($data['g']);
+    } ?>
+    <?=implode(', ', array_map([$this, 'escapeHtml'], $data)); ?><? if (isset($dissertationMisc)): ?> (<?=$dissertationMisc?>)<? endif;?>
+<? endif; ?>

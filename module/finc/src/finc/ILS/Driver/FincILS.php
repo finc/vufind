@@ -106,7 +106,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @var int
      */
-    protected $ilsTestTimeout = 1;
+    protected $ilsTestTimeout = 90;
 
     /**
      * Flag to save online status.
@@ -222,7 +222,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
         // get ilsTestTimeout setting if set otherwise use default of 1 second
         $this->ilsTestTimeout = isset($this->config['General'])
             && isset($this->config['General']['ilsTestTimeout'])
-            ? $this->config['General']['ilsTestTimeout'] : 1;
+            ? $this->config['General']['ilsTestTimeout'] : 90;
 
     }
 
@@ -396,12 +396,12 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     public function getStatus($id)
     {
-        if ($this->_hasILSData($id)) {
+        if ($this->hasILSData($id)) {
             return $this->_replaceILSId(
                 parent::getStatus($this->_getILSRecordId($id)), $id
             );
         } else {
-            return $this->_getStaticStatus($id);
+            return $this->getStaticStatus($id);
         }
     }
 
@@ -424,8 +424,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
         $retval = [];
 
         foreach ($ids as $num => $id) {
-            if (!$this->_hasILSData($id)) {
-                $retval[] = $this->_getStaticStatus($id);
+            if (!$this->hasILSData($id)) {
+                $retval[] = $this->getStaticStatus($id);
                 unset($ids[$num]);
             }
         }
@@ -466,7 +466,13 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     protected function getItemBarcode($item)
     {
-        if (isset($item['id']) && preg_match("/^".$this->daiaIdPrefix."([A-Za-z0-9]+):([A-Za-z0-9]+)$/", $item['id'], $matches)) {
+        if (isset($item['id'])
+            && preg_match(
+                "/^" . $this->daiaIdPrefix . "([A-Za-z0-9]+):([^:]+)$/",
+                $item['id'],
+                $matches
+            )
+        ) {
             return array_pop($matches);
         }
         return parent::getItemBarcode($item);
@@ -611,6 +617,8 @@ class FincILS extends PAIA implements LoggerAwareInterface
                     ? $this->convertDate($patron['expires']) : null,
                 'statuscode' => isset($patron['status'])
                     ? $patron['status'] : null,
+                'note' => isset($patron['note'])
+                    ? $patron['note'] : null,
                 'canWrite'   => in_array(self::SCOPE_WRITE_ITEMS, $this->getSession()->scope),
                 // fincILS and PAIA specific custom values
                 'email'      => !empty($patron['email'])
@@ -961,6 +969,26 @@ class FincILS extends PAIA implements LoggerAwareInterface
     }
 
     /**
+     * Refresh Login
+     *
+     * Refresh by removing time to expire and constraint authenticating via
+     * paiaLogin by patronLogin.
+     *
+     * @param string $username The patron's username
+     * @param string $password The patron's login password
+     *
+     * @return mixed Associative array of patron info on successful login,
+     * null on unsuccessful login.
+     * @access public
+     */
+    public function refreshLogin($username, $password)
+    {
+        $session = $this->getSession();
+        $session->expires = 0;
+        return $this->patronLogin($username, $password);
+    }
+
+    /**
      * PAIA helper function to map session data to return value of patronLogin()
      *
      * @param array  $details  Patron details returned by patronLogin
@@ -1239,9 +1267,9 @@ class FincILS extends PAIA implements LoggerAwareInterface
      */
     public function getFinesTotal($patron) {
         $fines = $this->getMyFines($patron);
-        $total = 0;
+        $total = 0.0;
         foreach ($fines as $fee) {
-            $total += (int) $fee['amount'];
+            $total += (float) $fee['amount'];
         }
         return $total / 100;
     }
@@ -1293,7 +1321,7 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @return array
      */
-    private function _getStaticStatus($id)
+    protected function getStaticStatus($id)
     {
         if (!$this->auth) {
             $this->debug('Authorization service missing for checking availability ' .
@@ -1346,14 +1374,19 @@ class FincILS extends PAIA implements LoggerAwareInterface
      *
      * @return bool
      */
-    private function _hasILSData($id)
+    protected function hasILSData($id)
     {
         $retVal = [];
         foreach ($this->config['General']['queryIls'] as $value) {
             list($methodName, $methodReturn) = explode(':', $value);
             // if we have one mismatch we can already stop as this record does
             // not qualify for querying the ILS
-            if (!in_array($methodReturn, (array) $this->_getRecord($id)->tryMethod($methodName))) {
+            if ($methodReturn === ""){
+                if (!is_null($this->_getRecord($id)->tryMethod($methodName))) {
+                    return false;
+                }
+            }
+            elseif (!in_array($methodReturn, (array) $this->_getRecord($id)->tryMethod($methodName))) {
                 return false;
             }
         }

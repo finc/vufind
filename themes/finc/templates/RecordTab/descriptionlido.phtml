@@ -6,6 +6,10 @@ $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBrea
 $formatter = $this->recordDataFormatter();
 $mainFields = $formatter->getData($driver, $formatter->getDefaults('description-lido'));
 ?>
+<? /*
+ This next table originally in table "Display Main Details" in solrDefault - core templates, compare with core and with description.phtml! CK
+ /* finc: remove schema tag here but keep in core,*/
+?>
 <table class="table table-striped">
   <? /* Table summary not supported in html 5, finc-specific solution, CK */ ?>
   <caption class="sr-only"><?= $this->transEsc('Description') ?></caption>

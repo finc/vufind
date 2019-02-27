@@ -111,7 +111,7 @@ trait LiberoDingTrait
      * @return boolean    Returns true if a connection exists
      * @throws \Exception Throws ILSException
      */
-    public function checkLiberoDingConnection ()
+    public function checkLiberoDingConnection()
     {
         $http_header['User-Agent']
             = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)';
@@ -147,6 +147,48 @@ trait LiberoDingTrait
         $details = json_decode($result->getBody(), true);
 
         return !($details['liberoPing']["soTimeout"] || $details['liberoPing']["connectionTimeout"]);
+    }
+
+    /**
+     * Balance (pay all) fines of user at account
+     *
+     * @param array $patron Patron object
+     * @param int   $amount Paid fees in eurocent
+     *
+     * @return boolean True if passed, false if ILS request fails
+     * @access public
+     * @throws ILSException
+     */
+    public function balanceFinesOfUser($patron, $amount)
+    {
+        $params                 = $this->_getLiberoDingRequestParams();
+        $params['memberCode']   = $patron['cat_username'];
+        $params['password']     = $patron['cat_password'];
+        $params['amount']       = $amount;
+
+        try {
+            $result = $this->httpService->get(
+                $this->getWebScraperUrl() .'payAnyFee.jsp',
+                $params,
+                null,
+                $this->_getLiberoDingRequestHeaders()
+            );
+        } catch (\Exception $e) {
+            throw new ILSException($e->getMessage());
+        }
+
+        if (!$result->isSuccess()) {
+            // log error for debugging
+            $this->debug(
+                'HTTP status ' . $result->getStatusCode() .
+                ' received'
+            );
+            return false;
+        }
+        // reload PAIA session by paia login again
+        $this->refreshLogin($patron['cat_username'], $patron['cat_password']);
+
+        return $this->_getLiberoDingResultBool($result);
     }
 
     /**

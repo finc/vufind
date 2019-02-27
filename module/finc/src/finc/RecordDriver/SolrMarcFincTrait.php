@@ -45,6 +45,7 @@ trait SolrMarcFincTrait
      * Returns true if the record supports real-time AJAX status lookups.
      *
      * @return bool
+     * @access public
      */
     public function supportsAjaxStatus()
     {
@@ -52,34 +53,11 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Do we have an attached ILS connection and (finc specific) do we want ILS support
-     * for the records source_id and access_facet-value?
+     * Returns whether the current record is a RDA record (contains string 'rda'
+     * in 040$e)
      *
      * @return bool
-     */
-    /*protected function hasILS()
-    {
-        // put all ILS supported source_id in here
-        $ilsSourceIds = ['0'];
-
-        // put all ILS supported access_facet values in here
-        $accessFacetValues = ['Local Holdings'];
-
-        if (in_array($this->getSourceID(), $ilsSourceIds)
-            && in_array($this->getAccessFacet(), $accessFacetValues)
-        ) {
-            return parent::hasILS();
-        }
-
-        // ILS connection for this source_id not supported
-        return false;
-    }*/
-
-    /**
-     * Returns whether the current record is a RDA record (contains string 'rda' in
-     * 040$e)
-     *
-     * @return bool
+     * @access public
      */
     public function isRDA()
     {
@@ -181,11 +159,9 @@ trait SolrMarcFincTrait
 
     /**
      * Checks if the record is an EBL record (as defined in config.ini section
-     * [Ebl]->product_sigel)
+     * [Ebl]->product_sigel). Refs #8055 #9634
      *
      * @return bool
-     * @link   https://intern.finc.info/issues/8055
-     * @link   https://intern.finc.info/issues/9634
      */
     private function _isEBLRecord()
     {
@@ -218,6 +194,7 @@ trait SolrMarcFincTrait
      * LocalMarcFieldOfLibrary $m
      *
      * @return null|string
+     * @access public
      */
     public function getLocalOrderInformation()
     {
@@ -237,13 +214,13 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Return the local callnumber.
+     * Return the local callnumber. Refs #2639
      *
      * @todo Optimization by removing of prefixed isils
      *
      * @return array   Return fields.
-     * @deprecated (https://intern.finc.info/issues/6324)
-     * @link   https://intern.finc.info/issues/2639
+     * @access public
+     * @deprecated (Cmp. refs #6324)
      */
     public function getLocalCallnumber()
     {
@@ -271,11 +248,11 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Get local callnumbers of a special library.
+     * Get local callnumbers of a special library. Refs #6324
      *
      * @return array
      * @access protected
-     * @deprecated (https://intern.finc.info/issues/6324)
+     * @deprecated (Cmp. refs #6324)
      */
     protected function getLocalCallnumbersByLibrary()
     {
@@ -314,24 +291,21 @@ trait SolrMarcFincTrait
      */
     protected function getLocalGivenCallnumber()
     {
-        $retval = [];
-        $arrSignatur = $this->getFieldArray($this->getLocalMarcFieldOfLibrary(), ['i']);
-
-        foreach ($arrSignatur as $signatur) {
-            foreach ($this->isil as $code) {
-                if (0 < preg_match('/^\('.$code.'\)/', $signatur)) {
-                    $retval[] = preg_replace('/^\('.$code.'\)/', '', $signatur);
-                }
-            }
+        if (null != $this->getLocalMarcFieldOfLibrary()) {
+            return $this->getFieldArray(
+                $this->getLocalMarcFieldOfLibrary(),
+                ['i']
+            );
         }
-        return $retval;
+        return [];
     }
 
     /**
      * Get an array of supplements and special issue entry.
      *
-     * @link   http://www.loc.gov/marc/bibliographic/bd770.html
      * @return array
+     * @access public
+     * @link   http://www.loc.gov/marc/bibliographic/bd770.html
      */
     public function getSupplements()
     {
@@ -371,10 +345,10 @@ trait SolrMarcFincTrait
 
     /**
      * Special method to extracting the index of German prints of the marc21
-     * field 024 indicator 8 subfield a
+     * field 024 indicator 8 subfield $a. Refs #1442
      *
      * @return array
-     * @link   https://intern.finc.info/fincproject/issues/1442
+     * @access public
      */
     public function getIndexOfGermanPrints()
     {
@@ -405,6 +379,7 @@ trait SolrMarcFincTrait
      * of the Petrucci music library subfield 590b
      *
      * @return array
+     * @access public
      */
     public function getInstrumentation()
     {
@@ -412,11 +387,10 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Get the ISSN from a record.
+     * Get the ISSN from a record. Refs #969
      *
      * @return array
-     * @access protected
-     * @link   https://intern.finc.info/fincproject/issues/969 description
+     * @access public
      */
     public function getISSNs()
     {
@@ -424,10 +398,10 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Get the ISSN from a the parallel title of a record.
+     * Get the ISSN from a the parallel title of a record. Refs #969
      *
      * @return array
-     * @link   https://intern.finc.info/fincproject/issues/969 description
+     * @access public
      */
     public function getISSNsParallelTitles()
     {
@@ -501,8 +475,11 @@ trait SolrMarcFincTrait
      *
      * @return array
      */
-    protected function getLinkedFieldArray($field, $subfields = null, $concat = true,
-                                           $separator = ' '
+    protected function getLinkedFieldArray(
+        $field,
+        $subfields = null,
+        $concat = true,
+        $separator = ' '
     ) {
         // Default to subfield a if nothing is specified.
         if (!is_array($subfields)) {
@@ -658,6 +635,7 @@ trait SolrMarcFincTrait
      * subfield t and (if present) subfield r.
      *
      * @return array
+     * @access public
      */
     public function getWorkPartTitleDetails()
     {
@@ -700,6 +678,7 @@ trait SolrMarcFincTrait
      * from MARC field 700.
      *
      * @return array
+     * @access public
      */
     public function getWorkTitleDetails()
     {
@@ -796,18 +775,15 @@ trait SolrMarcFincTrait
     /**
      * Get an array of information about Journal holdings realised for the
      * special needs of University library of Chemnitz. MAB fields 720.
+     * Refs #328
      *
      * @return array
-     * @link   https://intern.finc.info/fincproject/issues/338
+     * @access public
      */
     public function getJournalHoldings()
     {
         $retval = [];
         $match = [];
-
-        // Get ID and connect to catalog
-        //$catalog = ConnectionManager::connectToCatalog();
-        //$terms = $catalog->getConfig('OrderJournalTerms');
 
         $fields = $this->getMarcRecord()->getFields('971');
         if (!$fields) {
@@ -816,18 +792,15 @@ trait SolrMarcFincTrait
 
         $key = 0;
         foreach ($fields as $field) {
-            /*if ($subfield = $field->getSubfield('j')) {
-               preg_match('/\(.*\)(.*)/', $subfield->getData(), $match);
-               $retval[$key]['callnumber'] = trim($match[1]);
-            }*/
             if ($subfield = $field->getSubfield('k')) {
-                preg_match('/(.*)##(.*)##(.*)/', trim($subfield->getData()), $match);
+                preg_match(
+                    '/(.*)##(.*)##(.*)/',
+                    trim($subfield->getData()),
+                    $match
+                );
                 $retval[$key]['callnumber'] = trim($match[1]);
                 $retval[$key]['holdings'] = trim($match[2]);
                 $retval[$key]['footnote'] = trim($match[3]);
-                // deprecated check if a certain wording exist
-                // $retval[$key]['is_holdable'] = (in_array(trim($match[3]), $terms['terms'])) ? 1 : 0;
-                // if subfield k exists so make journal holdable
                 $retval[$key]['is_holdable'] = 1;
 
                 if (count($this->getBarcode()) == 1) {
@@ -836,14 +809,13 @@ trait SolrMarcFincTrait
                 } else {
                     $barcode = '';
                 }
-                // deprecated check if a certain wording exist
-                // $retval[$key]['link'] = (in_array(trim($match[3]), $terms['terms'])) ? '/Record/' . $this->getUniqueID() .'/HoldJournalCHE?callnumber=' . urlencode($retval[$key]['callnumber']) .'&barcode=' . $barcode  : '';
-                // if subfield k exists so make journal holdable
-                $retval[$key]['link'] = '/Record/' . $this->getUniqueID() .'/HoldJournalCHE?callnumber=' . urlencode($retval[$key]['callnumber']) .'&barcode=' . $barcode;
-                //var_dump($retval[$key]['is_holdable'], $terms);
+                $retval[$key]['link'] =
+                    '/Record/' . $this->getUniqueID()
+                    .'/HoldJournalCHE?callnumber='
+                    . urlencode($retval[$key]['callnumber'])
+                    .'&barcode=' . $barcode;
                 $key++;
             }
-
         }
         return $retval;
     }
@@ -851,16 +823,18 @@ trait SolrMarcFincTrait
     /**
      * Return a local access number for call number.
      * Marc field depends on library e.g. 975 for WHZ.
-     * Seems to be very extraordinary special case.
+     * Seems to be very extraordinary special case. Refs #1302
      *
      * @return array
      * @access protected
-     * @link   https://intern.finc.info/issues/1302
      */
     protected function getLocalAccessNumber()
     {
         if (null != $this->getLocalMarcFieldOfLibrary()) {
-            return $this->getFieldArray($this->getLocalMarcFieldOfLibrary(), ['o']);
+            return $this->getFieldArray(
+                $this->getLocalMarcFieldOfLibrary(),
+                ['o']
+            );
         }
         return [];
     }
@@ -868,10 +842,10 @@ trait SolrMarcFincTrait
      /**
      * Return a local access number for call number.
      * Marc field depends on library e.g. 986 for GfzK.
-     * Seems to be very extraordinary special case.
+     * Seems to be very extraordinary special case. Refs #7924
      *
      * @return array
-     * @link   https://intern.finc.info/issues/7924
+     * @access public
      */
     public function getLocalSubject()
     {
@@ -892,11 +866,10 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Get all local class subjects. First realization for HGB.
+     * Get all local class subjects. First realization for HGB. Refs #2626
      *
      * @return array
      * @access protected
-     * @link   https://intern.finc.info/issues/2626
      */
     protected function getLocalClassSubjects()
     {
@@ -914,19 +887,6 @@ trait SolrMarcFincTrait
             } // end if subfield a
             if ($line->getSubfield('9')) {
                 $array[$key]['data'] = $line->getSubfield('9')->getData();
-                /*  $tmp = $line->getSubfield('9')->getData();
-                $tmpArray = array();
-                $data = explode(',', $tmp);
-                if(is_array($data) && (count($data) > 0)) {
-                    foreach ($data as $value) {
-                        $tmpArray[] = $value;
-                    }
-                }
-                if(count($tmpArray) > 0) {
-                    $array[$key]['data'] = $tmpArray;
-                } else {
-                    $array[$key]['data'] = $data;
-                }*/
             }
         } // end foreach
         return $array;
@@ -939,6 +899,7 @@ trait SolrMarcFincTrait
      * 972 for TUBAF
      *
      * @return array
+     * @access public
      */
     public function getLocalFormat()
     {
@@ -958,10 +919,10 @@ trait SolrMarcFincTrait
 
     /**
      * Returns lazily the library specific Marc field configured by CustomIndex
-     * settings in config.ini
+     * settings in config.ini. Refs 7063
      *
      * @return mixed
-     * @link https://intern.finc.info/issues/7063
+     * @access protected
      */
     protected function getLocalMarcFieldOfLibrary()
     {
@@ -992,10 +953,10 @@ trait SolrMarcFincTrait
     /**
      * Return a local notice via an consortial defined field with subfield $k.
      * Marc field depends on library e.g. 970 for HMT or 972 for TUBAF.
+     * Refs #1308
      *
      * @return array
      * @access protected
-     * @link   https://intern.finc.info/fincproject/issues/1308
      */
     protected function getLocalNotice()
     {
@@ -1007,10 +968,10 @@ trait SolrMarcFincTrait
 
      /**
      * Return a local signature via an consortial defined field with subfield $f.
-     * Marc field depends on library e.g. 986 for GFZK
+     * Marc field depends on library e.g. 986 for GFZK. Refs #8146
      *
      * @return array
-     * @link   https://intern.finc.info/fincproject/issues/8146
+     * @access public
      */
     public function getLocalSignature()
     {
@@ -1030,10 +991,28 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Return a stock specification via a consortial defined field of
+     * subfield $h. Marc field depends on library e.g. 972 for TUF.
+     *
+     * @return array
+     * @access protected
+     */
+    protected function getLocalStockSpecification()
+    {
+        if (null != $this->getLocalMarcFieldOfLibrary()) {
+            return $this->getFieldArray(
+                $this->getLocalMarcFieldOfLibrary(),
+                ['h']
+            );
+        }
+        return [];
+    }
+
+    /**
      * Get an array of musical heading based on a swb field
      * at the marc field.
      *
-     * @return mixed        null if there's no field or array with results
+     * @return mixed    null if there's no field or array with results
      * @access public
      */
     public function getMusicHeading()
@@ -1059,7 +1038,7 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Get an array of successing titles for the record. Opposite method to
+     * Get an array of succeeding titles for the record. Opposite method to
      * getting previous title of marc field 780.
      *
      * @return array
@@ -1115,13 +1094,13 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Returns the contens of MARC 787 as an array using 787$i as associative key and
-     * having the array value with the key 'text' containing the contents of
-     * 787 $a{t} and the key 'link' containing a PPN to the mentioned record in
-     * 787 $a{t}.
+     * Returns the contens of MARC 787 as an array using 787$i as associative
+     * key and having the array value with the key 'text' containing the
+     * contents of 787 $a{t} and the key 'link' containing a PPN to the
+     * mentioned record in 787 $a{t}.
      *
      * @return array|null
-     * @link https://intern.finc.info/issues/8510
+     * @access public
      */
     public function getOtherRelationshipEntry()
     {
@@ -1211,6 +1190,7 @@ trait SolrMarcFincTrait
      * of the Petrucci music library subfield 590a
      *
      * @return array
+     * @access public
      */
     public function getPieceStyle()
     {
@@ -1218,14 +1198,13 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Get specific marc information about parallel editions. Unflexible solution
-     * for HMT only implemented.
+     * Get specific marc information about parallel editions. Unflexible
+     * solution for HMT only implemented.
      *
      * @todo More flexible implementation
      *
      * @return array
      * @access protected
-     * @link   https://intern.finc.info/issues/4327
      */
     protected function getParallelEditions()
     {
@@ -1317,6 +1296,7 @@ trait SolrMarcFincTrait
      * @todo pass prices by euro currency
      *
      * @return string
+     * @access public
      */
     public function getPrice()
     {
@@ -1345,6 +1325,7 @@ trait SolrMarcFincTrait
      * Get the provenience of a title.
      *
      * @return array
+     * @access public
      */
     public function getProvenience()
     {
@@ -1375,7 +1356,6 @@ trait SolrMarcFincTrait
      * @return array
      * @access protected
      * @link   http://www.loc.gov/marc/bibliographic/bd830.html
-     * @link   https://intern.finc.info/fincproject/issues/457
      */
     protected function getSeriesWithVolume()
     {
@@ -1389,6 +1369,7 @@ trait SolrMarcFincTrait
      * @return string|null
      * @access public
      */
+/* removed erroneous inheritance, this function is present and working in SolrDefaultFincTrait, DM
     public function getSourceID()
     {
         $source_ids = $this->getMarcRecord()->getFields('980');
@@ -1397,23 +1378,23 @@ trait SolrMarcFincTrait
         }
         return (string)$source_ids[0]->getSubfield('b')->getData();
     }
-
+*/
 
     /**
      * Get local classification of UDK.
      *
-     * @todo Check if method is used by other institution than HTWK.
-     *
      * @return array
      * @access protected
-     * @link   https://intern.finc.info/fincproject/issues/1135
+     * @deprecated Seems to be only for HTWK in use formerly?
      */
     protected function getUDKs()
     {
         $array = [];
         if (null != $this->getLocalMarcFieldOfLibrary()) {
 
-            $udk = $this->getMarcRecord()->getFields($this->getLocalMarcFieldOfLibrary());
+            $udk = $this->getMarcRecord()->getFields(
+                $this->getLocalMarcFieldOfLibrary()
+            );
             // if not return void value
             if (!$udk) {
                 return $array;
@@ -1483,10 +1464,10 @@ trait SolrMarcFincTrait
 
     /**
      * Get specific marc information about additional items. Unflexible solution
-     * for UBL only implemented.
+     * for UBL only implemented. Refs. #1315
      *
      * @return array
-     * @link   https://intern.finc.info/fincproject/issues/1315
+     * @access public
      */
     public function getAdditionals()
     {
@@ -1534,7 +1515,7 @@ trait SolrMarcFincTrait
                                         $array[$i]['record_id']
                                             = $matches[2] . $matches[3];
                                         if (null != ($sid = $this->getSourceID())) {
-                                            $array[$key]['source_id'] = $sid;
+                                            $array[$i]['source_id'] = $sid;
                                         }
                                     }
                                 }
@@ -1551,10 +1532,111 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * Returns notes and additional information stored in Marc 546a
+     * Get specific marc information about containing items. Unflexible solution
+     * for UBL only implemented.
+     *
+     * @return array
+     * @link   https://intern.finc.info/fincproject/issues/1315
+     */
+    public function getSetMultiPart()
+    {
+        $array = [];
+        $fields = [
+            '773' => ['a'=>['',''], 't'=>[': ',''], 'g'=>[' ; ','']],
+            '490' => ['a'=>['','']],
+            '800' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''] ,'g'=>[' ; ','']],
+            '810' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''] ,'g'=>[' ; ','']],
+            '811' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''] ,'g'=>[' ; ','']],
+            '830' => ['a'=>['',''], 'v'=>[' ; ','']]
+        ];
+        $i = 0;
+
+        foreach ($fields as $field => $subfields) {
+            $related = $this->getMarcRecord()->getFields($field);
+            // if no entry stop
+            if ($related) {
+                // loop through all found fields
+                foreach ($related as $key => $line) {
+                    // first lets look for identifiers - identifiers are vital as
+                    // those are used to identify the text in the frontend (e.g. as
+                    // table headers)
+                    // so, proceed only if we have an identifier
+
+                    // lets collect the text
+                    // https://intern.finc.info/issues/6896#note-7
+                    $text = [];
+                    foreach ($subfields as $subfield => list($l_delim,$r_delim)) {
+                        $val = $line->getSubfield($subfield);
+                        if ($field == '773' && $subfield == 'a') {
+                            if ($line->getIndicator(1) == 1) {
+                                $field245 = $this->getMarcRecord()->getField('245');
+                                if ($sub245a = $field245->getSubfield('a')) {
+                                    $text[] = $sub245a->getData();
+                                }
+                                unset($subfields['t']);
+                            } elseif (empty($val)) {
+                                continue;
+                            } else {
+                                $text[] = $l_delim.$val->getData().$r_delim;
+                            }
+                        } else {
+                            if (empty($val)) continue;
+                            if ($field == '490') {
+                                if ($line->getIndicator(1) == 0) {
+                                    $text[] = $l_delim.$val->getData().$r_delim;
+                                }
+                            } elseif ($subfield == 'v' && in_array($field, ['800', '810', '811'])) {
+                                if (!empty($val)) {
+                                    $text[] = $l_delim.$val->getData().$r_delim;
+                                    // do not use the next (and last) subfield $g,
+                                    // if $v is already set
+                                    break;
+                                }
+                            } else {
+                                $text[] = $l_delim.$val->getData().$r_delim;
+                            }
+                        }
+                    }
+
+                    // we can have text without links but no links without text, so
+                    // only proceed if we actually have a value for the text
+                    if (count($text) > 0) {
+                        $array[$i] = [
+                            'text'       => implode('', $text),
+                            'identifier' => ($line->getSubfield('i'))
+                                ? $line->getSubfield('i')->getData() : 'Set Multipart'
+                        ];
+
+                        // finally we can try to use given PPNs (from the BSZ) to
+                        // link the record
+                        if ($linkFields = $line->getSubfields('w')) {
+                            foreach ($linkFields as $current) {
+                                $text = $current->getData();
+                                // Extract parenthetical prefixes:
+                                if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
+                                    $array[$i]['record_id']
+                                        = $matches[2] . $matches[3];
+                                    if (null != ($sid = $this->getSourceID())) {
+                                        $array[$i]['source_id'] = $sid;
+                                    }
+                                }
+                            }
+                        }
+                        // at least we found some identifier and text so increment
+                        $i++;
+                    }
+                }
+            }
+        }
+        return $this->addFincIDToRecord($array);
+    }
+
+    /**
+     * Returns notes and additional information stored in Marc 546$a.
+     * Refs. #8509
      *
      * @return array|null
-     * @link https://intern.finc.info/issues/8509
+     * @access public
      */
     public function getAdditionalNotes()
     {
@@ -1573,11 +1655,26 @@ trait SolrMarcFincTrait
         return $retval;
     }
 
+    public function getAllNotes() {
+
+        $notes = array_merge(
+            (array) $this->getGeneralNotes(),
+            (array)$this->getAdditionalNotes()
+        );
+        foreach ($notes as &$note) {
+            if (preg_match('/(.*)\.\s*$/',$note,$matches)) {
+                $note = $matches[1];
+            }
+        }
+        return $notes;
+    }
+
     /**
      * Marc specific implementation for retrieving hierarchy parent id(s).
+     * Refs #8369
      *
      * @return array
-     * @link https://intern.finc.info/issues/8369
+     * @access public
      */
     public function getHierarchyParentID()
     {
@@ -1643,9 +1740,10 @@ trait SolrMarcFincTrait
 
     /**
      * Marc specific implementation for compiling hierarchy parent titles.
+     * Refs #8369
      *
      * @return array
-     * @link https://intern.finc.info/issues/8369
+     * @access public
      */
     public function getHierarchyParentTitle()
     {
@@ -1728,6 +1826,7 @@ trait SolrMarcFincTrait
      * the bsz heading subjects chains.
      *
      * @return array
+     * @access public
      */
     public function getAllSubjectHeadingsExtended()
     {
@@ -1767,6 +1866,7 @@ trait SolrMarcFincTrait
      * @param boolean $extended If dynamic index extension activated
      *
      * @return array
+     * @access public
      */
     public function getAllSubjectHeadings($extended = false)
     {
@@ -1841,11 +1941,13 @@ trait SolrMarcFincTrait
      * Check if Topics exists. Realized for instance of UBL only.
      *
      * @return boolean      True if topics exist.
+     * @access public
      */
     public function hasTopics()
     {
         $rvk = $this->getRvkWithMetadata();
-        return (parent::hasTopics()
+        return (
+            parent::hasTopics()
             || (is_array($rvk) && count($rvk) > 0)
         );
     }
@@ -1855,10 +1957,14 @@ trait SolrMarcFincTrait
      * for UBL only implemented.
      *
      * @return array
+     * @access public
      */
     public function getTopics()
     {
-        return array_merge($this->getAllSubjectHeadings(), $this->getAllSubjectHeadingsExtended());
+        return array_merge(
+            $this->getAllSubjectHeadings(),
+            $this->getAllSubjectHeadingsExtended()
+        );
     }
 
     /**
@@ -1925,6 +2031,34 @@ trait SolrMarcFincTrait
     }
 
     /**
+     * Get Cartographic Mathematical Data
+     *
+     * @return array    Return multidimensional array with key of 'coordinates'
+     *                  and 'scale'
+     * @access public
+     */
+    public function getCartographicData() {
+
+        // internal vars
+        $retVal = [];
+        $i = 0;
+        // map of subfield to returning value key
+        $mapper = ['a' => 'scale', 'c' => 'coordinates'];
+
+        $fields = $this->getMarcRecord()->getFields('255');
+        foreach($fields as $f) {
+            foreach ($mapper as $subfield => $key) {
+                $sub = $f->getSubField($subfield);
+                if ($sub) {
+                    $retVal[$i][$key] = $sub->getData();
+                }
+            }
+            $i++;
+        }
+        return $retVal;
+    }
+
+    /**
      * Get an array of content notes.
      *
      * @return array
@@ -1939,6 +2073,7 @@ trait SolrMarcFincTrait
      * Get dissertation notes for the record.
      *
      * @return array $retVal
+     * @access public
      */
     public function getDissertationNote()
     {
@@ -1960,10 +2095,12 @@ trait SolrMarcFincTrait
     /**
      * Get id of related items
      *
+     * @params boolean $allow_multiple_results
+     *
      * @return string|array
      * @access protected
      */
-    protected function getRelatedItems($allow_multiple_results=FALSE)
+    protected function getRelatedItems($allow_multiple_results = false)
     {
         if ($allow_multiple_results) {
             return $this->getFieldArray('776', ['z']);
@@ -1972,16 +2109,28 @@ trait SolrMarcFincTrait
         }
     }
 
-    protected function getRelatedRecords($limit,$backend_id='Solr')
+    /**
+     * Get related records via search index
+     *
+     * @params int      $limit
+     * @params string   $backend_id     Search engine
+     *
+     * @return array
+     * @access protected
+     */
+    protected function getRelatedRecords($limit, $backend_id = 'Solr')
     {
 
-        $related = $this->getRelatedItems(TRUE);
+        $related = $this->getRelatedItems(true);
 
         if (empty($related)) return [];
 
-        $query = new Query('isbn' . ':' . implode(' OR ',$related) . ' AND NOT id:' . $this->getUniqueID());
+        $query = new Query(
+            'isbn' . ':' . implode(' OR ',$related)
+            . ' AND NOT id:' . $this->getUniqueID()
+        );
 
-        $result = $this->searchService->search($backend_id, $query,0,$limit);
+        $result = $this->searchService->search($backend_id, $query, 0, $limit);
         $return['first_results'] = $result->getRecords();
         if ($result->getTotal() > $limit) {
             $return['more_query'] = $query->getString();
@@ -1989,11 +2138,11 @@ trait SolrMarcFincTrait
         return $return;
     }
 
-        /**
-     * Get RVK classification number with metadata from Marc records.
+    /**
+     * Get RVK classification number with metadata from Marc records. Refs #599
      *
      * @return array
-     * @link https://intern.finc.info/fincproject/issues/599
+     * @access public
      */
     public function getRvkWithMetadata()
     {
@@ -2028,6 +2177,7 @@ trait SolrMarcFincTrait
      * Get an array of citations and references notes.
      *
      * @return array
+     * @access public
      */
     public function getReferenceNotes()
     {
@@ -2038,6 +2188,7 @@ trait SolrMarcFincTrait
      * Get the publishers number and source of the record.
      *
      * @return array
+     * @access public
      */
     public function getPublisherNumber()
     {
@@ -2048,6 +2199,7 @@ trait SolrMarcFincTrait
      * Get the musical key of a piece (Marc 384).
      *
      * @return array
+     * @access public
      */
     public function getMusicalKey()
     {
@@ -2055,8 +2207,11 @@ trait SolrMarcFincTrait
     }
 
     /**
-     * @deprecated Remove when Bibliotheca support ends
+     * Get Mediennummer (media number) identifier for Bibliotheca ILS
+     *
      * @returns items internal Bibliotheca-ID called "Mediennummer"
+     * @deprecated Remove when Bibliotheca support ends
+     * @access public
      */
     public function getMediennummer() {
         // loop through all existing LocalMarcFieldOfLibrary
@@ -2068,11 +2223,36 @@ trait SolrMarcFincTrait
                 $field = $field->getSubfield('a');
                 if ($field) {
                     $matches = [];
-                    if (preg_match('/\w+$/',$field->getData(),$matches)) {
+                    if (preg_match('/\w+$/', $field->getData(), $matches)) {
                         return $matches[0];
                     }
                 }
             }
         }
+    }
+
+    public function getTitleUniform() {
+
+        $retval = [];
+        foreach (array('130','240') as $pos => $field_name) {
+            if ($field = $this->getMarcRecord()->getField($field_name)) {
+                if ($field_name === '240') {
+                    if ($field->getIndicator('1') === '0') {
+                        //"Not printed or displayed"
+                        continue;
+                    }
+                }
+                foreach (array(
+                    'title' => 'a',
+                    'lang' => 'g'
+                         ) as $key => $sub_name) {
+                    if ($line = $field->getSubfield($sub_name)) {
+                        $retval[$key] = $line->getData();
+                    }
+                }
+                return $retval;
+            }
+        }
+        return $retval;
     }
 }
