@@ -150,26 +150,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 // remove password from TAN field
                 unset($params['Passwort']);
                 
-                // send real order
-                $client = new \Zend\Http\Client();
-                $client->setEncType(\Zend\Http\Client::ENC_URLENCODED);
-                $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
-                        ->setUri($this->baseUrl . "/flcgi/pflauftrag.pl")
-                        ->setMethod('POST')
-                        ->setOptions(['timeout' => static::TIMEOUT])
-                        ->setParameterPost($params)
-                        ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
-                $response = $client->send();
-                $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
-                        ->setUri($this->baseUrl . "/flcgi/pflauftrag.pl")
-                        ->setMethod('GET')
-                        ->setOptions(['timeout' => static::TIMEOUT])
-                        ->setParameterGet($params)
-                        ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
-                $this->debug('flauftrag.pl query string:');
-                $debug[] = $client->getRequest()->getUriString();
-                $debug[] = $client->getRequest()->getQuery()->toString();
-                $this->debug(implode('?', $debug));
+                $response = $this->doRequest($this->baseUrl . "/flcgi/pflauftrag.pl", $params);               
                 
                 try {                    
                     $dom = new \Zend\Dom\Query($response->getBody());
@@ -177,7 +158,6 @@ class RecordController extends \VuFind\Controller\RecordController
                     $success = $this->parseResponse($message);    
 
                 } catch (\Exception $ex) {
-                    var_dump($ex);
                     $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
                     $this->logError($params['Sigel'].': Error while parsing HTML response from ZFL server');
                 }
@@ -320,40 +300,16 @@ class RecordController extends \VuFind\Controller\RecordController
             if ($authManager->loginEnabled() && $authManager->isLoggedIn()) {
                 return true;
             }
-            $client = new \Zend\Http\Client();
-            $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
-                    ->setUri($this->baseUrlAuth . '/flcgi/endnutzer_auth.pl')
-                    ->setMethod('POST')
-                    ->setParameterPost([
-                        'sigel' => $params['Sigel'],
-                        'auth_typ' => $library->getAuth(),
-                        'user' => $params['BenutzerNummer'],
-                        'passwort' => $library->getAuth() == 'tan' ?
-                                $params['TAN'] : $params['Passwort'],
-                    ])
-                    ->setOptions(['timeout' => static::TIMEOUT])
-                    ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
-            $response = $client->send();
+            $authParams = [
+                'sigel' => $params['Sigel'],
+                'auth_typ' => $library->getAuth(),
+                'user' => $params['BenutzerNummer'],
+                'passwort' => $library->getAuth() == 'tan' ?
+                        $params['TAN'] : $params['Passwort'],
+            ];
             
-            // build GET query string for debugging
-            $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
-                ->setUri($this->baseUrlAuth . '/flcgi/endnutzer_auth.pl')
-                ->setMethod('GET')
-                ->setParameterGet([
-                    'sigel' => $params['Sigel'],
-                    'auth_typ' => $library->getAuth(),
-                    'user' => $params['BenutzerNummer'],
-                    'passwort' => $library->getAuth() == 'tan' ?
-                            $params['TAN'] : $params['Passwort'],
-                ])
-                ->setOptions(['timeout' => static::TIMEOUT])
-                ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
+            $response = $this->doRequest($this->baseUrlAuth . '/flcgi/endnutzer_auth.pl', $authParams);   
             
-            $this->debug('endnutzer_auth.pl query string:');
-            $debug[] = $client->getRequest()->getUriString();
-            $debug[] = $client->getRequest()->getQuery()->toString();
-            $this->debug(implode('?', $debug));           
-
             try {
                 $xml = simplexml_load_string($response->getBody());                
 
@@ -489,6 +445,34 @@ class RecordController extends \VuFind\Controller\RecordController
         $route = $this->params()->fromRoute();      
         $view->driver = isset($route['id']) ? $this->loadRecord() : null;
         return $view;
+    }
+    
+    private function doRequest($url, $params) 
+    {
+        $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');
+         // send real order
+        $client = new \Zend\Http\Client();
+        $client->setEncType(\Zend\Http\Client::ENC_URLENCODED);
+        $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
+                ->setUri($url)
+                ->setMethod('POST')
+                ->setOptions(['timeout' => static::TIMEOUT])
+                ->setParameterPost($params)
+                ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
+        $response = $client->send();
+        
+        // create GET request for better logging - this request is never sent! 
+        $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
+                ->setUri($url)
+                ->setMethod('GET')
+                ->setParameterGet($params)
+                ->setAuth($config->get('basic_auth_user'), str_rot13($config->get('basic_auth_pw')));
+        $this->debug('ZFL query string:');
+        $debug[] = $client->getRequest()->getUriString();
+        $debug[] = $client->getRequest()->getQuery()->toString();
+        $this->debug(implode('?', $debug));
+        
+        return $response;
     }
     
 
