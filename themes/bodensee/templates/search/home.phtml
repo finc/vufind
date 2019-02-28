@@ -74,10 +74,7 @@ JS;
           <p><?=$this->translate('ill_select_library')?></p>
           <? endif; ?>
           <? if ($this->client()->isIsilSession()): ?>
-              <a class="dropdown-toggle btn <?=$this->client()->hasIsilSession() ? 'btn-info' : 'btn-primary' ?> btn-sm" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="<?=implode(', ', $this->client()->getIsils())?>">    
-                <span class="caret"></span>        <?=$this->transEsc('Bibliothek')?>
-              </a>
-              <?=$this->partial('bsz/illdropdown.phtml')?></a>
+              <?=$this->partial('bsz/illdropdown.phtml')?>
           <? endif; ?>
           <? // Set Maintenance hints with SetEnv MAINTENANCE_MODE "..." in httpd-vufind.conf ?>
         </div>

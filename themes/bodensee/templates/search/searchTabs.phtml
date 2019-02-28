@@ -1,5 +1,5 @@
 <? if (count($searchTabs) > 0): ?>
-  <ul class="nav nav-tabs" role="navigation">
+  <ul class="nav nav-tabs" role="menu">
     <? foreach ($searchTabs as $tab): ?>
         <? if ($this->permission()->allowDisplay($tab['permission'])): ?>
           <li<?=$tab['selected'] ? ' class="active"' : ''?> role="none presentation">
