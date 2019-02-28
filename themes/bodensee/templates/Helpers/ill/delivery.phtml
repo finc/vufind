@@ -82,7 +82,7 @@
         ?>
         <div class="input-group date" data-format="dd.mm.YYYY" data-language="<?=$this->layout()->userLang?>">
             <input type="text" class="form-control datepicker" required="true" id="ill-delivery_until" value="<?=isset($params['ErledFrist']) ? $params['ErledFrist'] : $date->format('d.m.Y')?>" name="ErledFrist"/>
-            <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+            <div class="input-group-addon"><i class="fa fa-calendar"></i><span class="sr-only"><?=$this->transEsc('Choose Date')?></span></div>
         </div>
             </div>
         </div>
