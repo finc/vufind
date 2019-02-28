@@ -1,8 +1,8 @@
 <? if (count($searchTabs) > 0): ?>
-  <ul class="nav nav-tabs">
+  <ul class="nav nav-tabs" role="navigation">
     <? foreach ($searchTabs as $tab): ?>
         <? if ($this->permission()->allowDisplay($tab['permission'])): ?>
-          <li<?=$tab['selected'] ? ' class="active"' : ''?>>
+          <li<?=$tab['selected'] ? ' class="active"' : ''?> role="none presentation">
             <a <?=$tab['selected'] ? '' : 'href="' . $this->escapeHtmlAttr($tab['url']) . '"' ?>>
                 <i class="fa <?=$this->escapeHTMLAttr($tab['icon'])?>"></i>
                 <span class="text"><?=$this->transEsc($tab['label']); ?></span></a>

@@ -16,7 +16,7 @@
         <ul class="nav navbar-nav navbar-right flip">
           <? if ($this->client()->isIsilSession()): ?>
             <li class="dropdown">
-                <a class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="<?=implode(', ', $this->client()->getIsils())?>">    
+                <a class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="<?=implode(', ', $this->client()->getIsils())?>" role="navigation">    
                     <span class="caret"></span>
                     <?=$this->transEsc('Bibliothek')?>
                 </a>
@@ -89,7 +89,8 @@
             </li>
           <? endif; ?>
           <li class="home">
-              <a class="lang-<?=$this->layout()->userLang ?>" href="<?=$this->url('home')?>"><i class="fa fa-home"></i></a>  
+              <a class="lang-<?=$this->layout()->userLang ?>" href="<?=$this->url('home')?>"><i class="fa fa-home"></i><span class="sr-only"><?=$this->transEsc('Home')?></span>
+              </a>  
           </li>
         </ul>
       </nav>
