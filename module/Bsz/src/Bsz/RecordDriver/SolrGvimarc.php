@@ -1523,7 +1523,10 @@ class SolrGvimarc extends SolrMarc
      *  Scale of a map
      */
     public function getScale() {
-        $scale = $this->getFieldArray("034", ['b']);
+        $scale = $this->getFieldArray("255", ['a']);
+        if (empty($scale)) {
+            $scale = $this->getFieldArray("034", ['b']);
+        }
         return array_shift($scale);
     }
     
