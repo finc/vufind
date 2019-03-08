@@ -12,7 +12,6 @@
     <? endforeach; ?>    
 </dd>   
 <? endif; ?>
-
 <? if (!empty($row['number'])): ?>
     <dt><?=$this->transEsc('Local IDN')?>:</dt>
     <dd><?=$this->escapeHtml($row['number'])?></dd>
@@ -36,8 +35,10 @@
 <? if (!empty($row['status'])): ?>
     <dt><?=$this->transEsc('Bestandsangaben')?>:</dt>
     <dd><?=$this->escapeHtml($row['status'])?></dd>
+<? endif; ?>
+</dl> 
+<? if (!empty($row['status'])): ?>
     <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial())): ?>
         <?=$this->recordLink()->linkPPNButton($this->driver) ?>
     <? endif; ?>
 <? endif; ?>
-</dl> 
