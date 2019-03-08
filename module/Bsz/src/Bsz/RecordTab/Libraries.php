@@ -54,7 +54,7 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
     }
     
     /**
-     * This tab is active is record's network is SWB and there exists entries from fiels 924
+     * This tab is active if record's network is SWB or K10plus and there exists entries from fiedls 924
      * @return boolean
      */
     public function isActive()

@@ -94,4 +94,42 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
             'label' => $label
         ]);
     }
+
+    public function linkPPNButton(\Bsz\RecordDriver\SolrMarc $driver, $url = '')
+    {
+        $id = $driver->getUniqueId();
+        $pos = strpos($id, ')');
+        $ppn = substr($id, $pos + 1);
+        $recordHelper = $this->getView()->plugin('record');
+        $label = '';
+        $url = empty($url) ? $this->baseUrl : $url;
+
+
+        // if the record is available at the first ISIL, either link an external
+        // url or use the baseUrl (which is normally the aDIS URL of the current
+        // library).
+        // otherwise use the network OPAC urls, which can be found in BSZ.ini
+
+        if ($driver->getNetwork() == 'SWB' && $recordHelper->isAtFirstIsil()) {
+            // deprecated but still in the database
+            $url = str_replace('<PPN>', $ppn, $url);
+            // new syntax
+            $url = str_replace('%PPN%', $ppn, $url);
+            $label = 'To library OPAC';
+        } else {
+            $label = 'To network OPAC';
+            $opacList = $this->config->get('OPAC')->toArray();
+            $network = $driver->getNetwork();
+            if (array_key_exists($network, $opacList)) {
+                $url = $opacList[$network];
+                $url = str_replace('%PPN%', $ppn, $url);
+            }
+        }
+        return $this->getView()->render('Helpers/ppnButton.phtml', [
+            'ppn' => $ppn,
+            'link' => $url,
+            'label' => $label
+        ]);
+    }
+    
 }
