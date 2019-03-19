@@ -16,7 +16,7 @@
   $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
   if ($cover): ?>
     <? if ($coverDetails['html'] !== ''): ?> 
-        <div class="medie-right <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
+        <div class="media-right <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
             <?=$cover ?>
         </div>    
     <? endif; ?>
