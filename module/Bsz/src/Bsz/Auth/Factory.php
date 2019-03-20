@@ -66,7 +66,8 @@ class Factory
     public static function getShibboleth(ServiceManager $sm)
     {
         return new Shibboleth(
-            $sm->getServiceLocator()->get('VuFind\SessionManager')
+            $sm->getServiceLocator()->get('VuFind\SessionManager'),
+            $sm->getServiceLocator()->get('Bsz\Config\Libraries')
         );
     }
     
