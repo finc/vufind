@@ -165,6 +165,22 @@ class Libraries extends TableGateWay
                     ->equalTo('is_ill_active', 1);
         return $this->selectWith($select);
     }
+    
+    public function getByIdPDomain($domain) 
+    {
+        $sql = new Sql($this->getAdapter());
+        $select = $sql->select()
+                ->from('libraries')
+                ->join('authentications', 'fk_auth = authentications.id', ['auth_name' => 'name'])
+                ->order('libraries.name');
+        $select->where
+                ->and
+                    ->equalTo('is_ill_active', 1)
+                    ->or
+                        ->like('shibboleth_idp', '%'.$domain.'%')
+                        ->like('homepage', '%'.$domain.'%');
+        return $this->selectWith($select)->current();;
+    }
 
     /**
      * Does any active library have places

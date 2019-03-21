@@ -53,6 +53,7 @@ $config = [
             // override the factory, to make filters dynamic
             'VuFind\SearchTabsHelper' => 'Bsz\Service\Factory::getSearchTabsHelper',
             'VuFind\AuthManager' => 'Bsz\Auth\Factory::getManager',
+            'VuFind\AuthManager' => 'Bsz\Auth\Factory::getManager',
         ],
         'invokables' => [
             'bsz\mapper'     => 'Bsz\FormatMapper',
@@ -69,6 +70,11 @@ $config = [
     
     'vufind' => [
         'plugin_managers' => [  
+            'auth' => [
+                'factories' => [
+                   'shibboleth' => 'Bsz\Auth\Factory::getShibboleth'
+                ]
+            ],
             'recommend' => [
                 'factories' => [
                     'sidefacets' => 'Bsz\Recommend\Factory::getSideFacets',

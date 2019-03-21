@@ -26,10 +26,8 @@
  * @link     https://vufind.org/wiki/development Wiki
  */
 namespace VuFind\View\Helper\Root;
-
 use VuFind\Cover\Router as CoverRouter;
-use Zend\View\Exception\RuntimeException;
-use Zend\View\Helper\AbstractHelper;
+use Zend\View\Exception\RuntimeException, Zend\View\Helper\AbstractHelper;
 
 /**
  * Record driver view helper
@@ -105,7 +103,7 @@ class Record extends AbstractHelper
     public function renderTemplate($name, $context = null)
     {
         // Set default context if none provided:
-        if (null === $context) {
+        if (is_null($context)) {
             $context = ['driver' => $this->driver];
         }
 
@@ -494,13 +492,10 @@ class Record extends AbstractHelper
                     break;
                 }
             }
-            if ($context == 'core') {
-                $details['html'] = $this->contextHelper->renderInContext(
-                    'record/covercore.phtml', $details );                
-            } else {
-                $details['html'] = $this->contextHelper->renderInContext(
-                    'record/cover.phtml', $details);
-            }
+
+            $details['html'] = $this->contextHelper->renderInContext(
+                'record/cover.phtml', $details
+            );
         }
         return $details;
     }
@@ -565,9 +560,9 @@ class Record extends AbstractHelper
             return false;
         }
 
-        switch ($context) {
-        case "core":
-        case "results":
+        switch($context) {
+        case "core" :
+        case "results" :
             $key = 'showIn' . ucwords(strtolower($context));
             break;
         default:
