@@ -2,6 +2,7 @@
 
 namespace Bsz\RecordDriver;
 
+
 /**
  * SolrMarc implementation for K10plus records
  *
@@ -9,6 +10,19 @@ namespace Bsz\RecordDriver;
  */
 class SolrGvimarcde627 extends SolrGvimarc
 {
-    public function getNetwork() {return 'K10plus';}
+    /*
+     * return string "DE-576" or "DE-601"
+     * prefer DE-576 if possible
+     */
+    public function getNetwork() {
+        
+        $consortium = parent::getConsortium();
+        
+        if (strpos($consortium, "SWB") !== false) {
+            return "SWB";
+        } else {
+            return "GBV";
+        }        
+    }
 }
 
