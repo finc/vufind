@@ -44,6 +44,29 @@ class ShibController extends \VuFind\Controller\AbstractBase
     public function wayfAction() {
         // Store the referer, so the user can return to this site after login
         $this->setFollowupUrlToReferer();
+        
+        $libraries = $this->getServiceLocator()->get('Bsz\Config\Libraries');
+        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
+        $isils = $client->getIsils();
+        $library = $libraries->getByIsil($client->getIsils());
+        
+        if ($library->getAuth() === 'shibboleth') {
+            return $this->redirect()->toRoute(
+                    'shib-redirect',
+                    [   
+                        'controller' => 'Shib',
+                        'action' => 'Redirect',
+                    ],
+                    [
+                        'query' => [
+                            'isil' => array_shift($isils)                        
+                        ]
+                    ]
+            );
+        }
+        
+        
+        
     }
     
     /**
