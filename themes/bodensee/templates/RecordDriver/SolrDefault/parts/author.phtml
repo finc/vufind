@@ -2,7 +2,7 @@
 <? $containerId = $this->driver->getContainerId();  
    $summDate = $this->driver->getPublicationDates();   
    $journalTitle = $this->driver->getContainerTitle();    
-   $link = isset($containerId) ? '/Record/'.$containerId : $this->record($this->driver)->getLink('journaltitle', str_replace(array('{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'), '', $journalTitle));
+   $link = isset($containerId) ? '/Record/'.$containerId : $this->record($this->driver)->getLink('journaltitle', str_replace(['{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'], '', $journalTitle));
 ?>  
 <? if($this->driver->isCollection()): ?>
     <? $summDate = $this->driver->getPublicationDates(); if (!empty($summDate) && isset($summDate[0])): ?>
@@ -48,14 +48,18 @@
         <br/>
     <? endif; ?>
     <? if (!empty($summAuthors['secondary'])): ?>
+        
         <? $noLiveSecondaryAuthors = $this->driver->getSecondaryAuthorsNoLive(); ?>
         <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
         <? $role_au2 = $this->driver->getSecondaryAuthorsRole(); ?>
         <strong><? if (!empty($summAuthors['main'])): echo $this->transEsc('and'); else: echo $this->transEsc('by'); endif; ?></strong>
-        <? foreach($summAuthors['secondary'] as $k =>  $au2):?>        
-            <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLiveSecondaryAuthors[$k])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($au2)?></a>
-            <? if (isset($gnd_au2[$k])): ?>
-            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>, <?=$this->transEsc('CreatorRoles::'.$role_au2[$k]);?><? endif; ?>
+        <? foreach($summAuthors['secondary'] as $k =>  $au2):?>
+            <? if (isset($noLiveSecondaryAuthors[$k])): ?>
+                <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLiveSecondaryAuthors[$k])?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($au2)?></a>
+                <? if (isset($gnd_au2[$k])): ?>
+                    (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>, <?=$this->transEsc('CreatorRoles::'.$role_au2[$k]);?>
+                <? endif; ?>
+            <? endif; ?>
         <?endforeach; ?>
         <br/>
     <? endif; ?>
@@ -96,7 +100,7 @@
     <? foreach ($summInCollection as $collId => $collText): ?>
         <div>
             <b><?=$this->transEsc("in_collection_label")?></b>
-            <a class="ckText" href="<?=$this->url('collection', array('id' => $collId))?>?recordID=<?=urlencode($this->driver->getUniqueID())?>">
+            <a class="ckText" href="<?=$this->url('collection', ['id' => $collId])?>?recordID=<?=urlencode($this->driver->getUniqueID())?>">
             <?=$this->escapeHtml($collText)?>
             </a>
         </div>
