@@ -32,6 +32,14 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return false;
     }
 
+    public function isZDB($searchClassId = 'Solr') {
+        $hiddenFilterStr = urldecode($this->getCurrentHiddenFilterParams($searchClassId));
+        if (strpos($hiddenFilterStr, 'consortium:ZDB') !== FALSE) {
+            return true;
+        }
+        return false;
+    }    
+    
     /**
      * Create information representing a selected tab.
      *
