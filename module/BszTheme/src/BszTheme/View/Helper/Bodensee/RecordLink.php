@@ -20,6 +20,8 @@
 
 namespace BszTheme\View\Helper\Bodensee;
 
+use \Bsz\RecordDriver\SolrMarc;
+
 /**
  * Extension of Root RecordLink Helper
  *
@@ -58,15 +60,15 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
         return $services;
     }
 
-    public function linkPPN(\Bsz\RecordDriver\SolrMarc $driver, $url = '')
+    public function linkPPN(SolrMarc $driver, $url = '')
     {
-        $props = $this->determineProperties($driver, $url = '');
+        $props = $this->determineProperties($driver, $url);
         return $this->getView()->render('Helpers/ppn.phtml', $props);
     }
 
-    public function linkPPNButton(\Bsz\RecordDriver\SolrMarc $driver, $url = '')
+    public function linkPPNButton(SolrMarc $driver, $url = '')
     {
-        $props = $this->determineProperties($driver, $url = '');
+        $props = $this->determineProperties($driver, $url);
         return $this->getView()->render('Helpers/ppnButton.phtml', $props);
     }
     
@@ -76,7 +78,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
      * @param type $url
      * @return array
      */
-    private function determineProperties(Bsz\RecordDriver\SolrMarc $driver, $url = '')
+    private function determineProperties(SolrMarc $driver, $url = '')
     {
         $id = $driver->getUniqueId();
         $pos = strpos($id, ')');
@@ -106,7 +108,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
             }
         }
         return [
-            'url' => $url,
+            'link' => $url,
             'ppn' => $ppn,
             'label' => $label
         ];
