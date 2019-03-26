@@ -806,9 +806,11 @@ class SolrGvimarc extends SolrMarc
             }
             $url['url'] = $sf->getData();
 
-            if (($sf = $f->getSubField('3'))) {
+            if (($sf = $f->getSubField('3')) && strlen($sf->getData()) > 2) {
                 $url['desc'] = $sf->getData();
             } elseif (($sf = $f->getSubField('y'))) {
+                $url['desc'] = $sf->getData();                
+            } elseif (($sf = $f->getSubField('n'))) {
                 $url['desc'] = $sf->getData();
             } elseif ($ind1 == 4 && ($ind2 == 1 || $ind2 == 0)) {
                 $url['desc'] = 'Online Access';
