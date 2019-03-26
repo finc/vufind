@@ -41,6 +41,11 @@ class Backend extends \VuFindSearch\Backend\Solr\Backend {
                 $params->set('group', 'false');
         }
         
+        // Only group in ILL-TAB, 
+        if (!$params->contains('fq', '-consortium:"FL"')) {
+            $params->set('group', 'false');
+        }
+        
         // Extended Search form without grouping
         // todo, was ist wenn andere facetten konfiguriert sind?
         if ($params->contains('facet.field', 'material_access') &&
