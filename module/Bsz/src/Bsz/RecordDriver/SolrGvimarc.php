@@ -833,8 +833,9 @@ class SolrGvimarc extends SolrMarc
         $consortium = $this->getFieldArray(924, ['c'], true);
         $consortium_unique = array_unique($consortium);
         $string = implode(", ",$consortium_unique);
-        return preg_replace('/BSZ/', 'SWB', $string);
-        
+        $string = preg_replace('/BSZ/', 'SWB', $string);
+        $string = preg_replace('/HES/', 'HEBIS', $string);
+        return $string;        
     }
        
     /* No Hierrachy functions yet */
