@@ -8,7 +8,7 @@
     }
 ?>
 <div class="row" vocab="http://schema.org/" resource="#record">    
-    <div class="col-xs-12 col-sm-3 pull-right">
+    <div class="col-xs-4 col-sm-3 col-xs-offset-4 col-sm-offset-0 pull-right-sm" >
 <?
   $coverDetails = $this->record($this->driver)->getCoverDetails('core', 'medium', '#');
   $cover = $coverDetails['html'];
@@ -16,9 +16,8 @@
   $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
   if ($cover): ?>
     <? if ($coverDetails['html'] !== ''): ?> 
-        <div class="media-right <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
+
             <?=$cover ?>
-        </div>    
     <? endif; ?>
   <? else: ?>
     <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">     
