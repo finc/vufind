@@ -274,11 +274,6 @@
     </tr>
   <? endif; ?>
     
-  <? if( $this->searchTabs()->isILL() && strlen($this->driver->getNetwork()) > 0): ?>
-    <th><?=$this->transEsc('Network')?>:</th>
-    <td><?=$this->driver->getNetwork() ?></td>
-  <? endif; ?>   
-
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
