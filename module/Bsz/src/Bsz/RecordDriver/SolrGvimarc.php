@@ -1541,12 +1541,16 @@ class SolrGvimarc extends SolrMarc
     public function getZdbId()
     {
         $zdb = '';
+        $substr = '';
+        $matches = [];
         $consortial = $this->getConsortialIDs();
         foreach ($consortial as $id) {
-            if (($pos = strpos($id, 'ZDB')) !== FALSE) {
-                $zdb = substr($id, $pos+3);
+            $substr = preg_match('/\(DE-\d{3}\)ZDB(.*)/', $id, $matches);
+            if (!empty($matches) && $matches[1] !== '') {
+                $zdb = $matches[1];
             }
         }
+        
         // Pull ZDB ID out of recurring field 016
         foreach ($this->getMarcRecord()->getFields('016') as $field) {
             $isil = $data = '';
