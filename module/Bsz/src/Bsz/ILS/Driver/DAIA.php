@@ -263,10 +263,6 @@ class DAIA extends DAIAbsz
             foreach ($daiaArray['item'] as $item) {
                 // E books do not have valid items set
                 if (isset($item['id']) && $item['id'] == 'E-Book') {
-                    // we don't have items,so we use this trick to show holdings
-                    $result_item['ilslink']
-                        = (isset($item['href']) ? $item['href'] : $doc_href);
-                    $result[] = $result_item;
                     continue;
                 }
                 $result_item = [];
@@ -297,11 +293,6 @@ class DAIA extends DAIAbsz
                 // add result_item to the result array
                 $result[] = $result_item;
             } // end iteration on item
-        } else {
-            // we don't have items,so we use this trick to show holdings
-            $result_item['ilslink']
-                    = (isset($item['href']) ? $item['href'] : $doc_href);
-            $result[] = $result_item;
         }
         return $result;
     }
@@ -412,127 +403,4 @@ class DAIA extends DAIAbsz
             $this->debug('No ContentTypes for response defined. Accepting any.');
         }
     }
-
-    /**
-     * Generate a DAIA URI necessary for the query
-     *
-     * @param string $id Id of the record whose DAIA document should be queried
-     *
-     * @return string     URI of the DAIA document
-     *
-     * @see http://gbv.github.io/daia/daia.html#query-parameters
-     */
-    protected function generateURI($id)
-    {
-        return $this->daiaIdPrefix . $id;
-    }
-
-    /**
-     * Combine several ids to DAIA Query API conform URIs
-     *
-     * @param array $ids Array of ids which shall be converted into URIs and
-     *                  combined for querying multiple DAIA documents.
-     *
-     * @return string   Combined URIs (delimited by "|")
-     *
-     * @see http://gbv.github.io/daia/daia.html#query-parameters
-     */
-    protected function generateMultiURIs($ids)
-    {
-        $multiURI = '';
-        foreach ($ids as $id) {
-            $multiURI .= $this->generateURI($id) . '|';
-        }
-        return rtrim($multiURI, '|');
-    }
-
-    /**
-     * Parse a DAIA document depending on its type.
-     *
-     * Parse a DAIA document depending on its type and return a VuFind
-     * compatible array of status information.
-     * Supported types are:
-     *      - array (for JSON results)
-     *
-     * @param string $id      Record Id corresponding to the DAIA document
-     * @param mixed  $daiaDoc The DAIA document, only array is supported
-     *
-     * @return array An array with status information for the record
-     * @throws ILSException
-     */
-    protected function parseDaiaDoc($id, $daiaDoc)
-    {
-        if (is_array($daiaDoc)) {
-            return $this->parseDaiaArray($id, $daiaDoc);
-        } else {
-            throw new ILSException(
-                'Unsupported document type (did not match Array or DOMNode).'
-            );
-        }
-    }
-
-    /**
-     * Extract a DAIA document identified by an id
-     *
-     * This method loops through all the existing DAIA document-elements in
-     * the given DAIA response and returns the first document whose id matches
-     * the given id.
-     *
-     * @param string $id           Record Id of the DAIA document in question.
-     * @param string $daiaResponse Raw response from DAIA request.
-     *
-     * @return Array|DOMNode|null   The DAIA document identified by id and
-     *                                  type depending on daiaResponseFormat.
-     * @throws ILSException
-     */
-    protected function extractDaiaDoc($id, $daiaResponse)
-    {
-        $docs = [];
-        if ($this->daiaResponseFormat == 'xml') {
-            try {
-                $docs = $this->convertDaiaXmlToJson($daiaResponse);
-            } catch (\Exception $e) {
-                throw new ILSException($e->getMessage());
-            }
-        } elseif ($this->daiaResponseFormat == 'json') {
-            $docs = json_decode($daiaResponse, true);
-        }
-
-        if (count($docs)) {
-            // check for error messages and write those to log
-            if (isset($docs['message'])) {
-                $this->logMessages($docs['message'], 'document');
-            }
-
-            // do DAIA documents exist?
-            if (isset($docs['document']) && $this->multiQuery) {
-                // now loop through the found DAIA documents
-                foreach ($docs['document'] as $doc) {
-                    // DAIA documents should use URIs as value for id
-                    if (isset($doc['id'])
-                        && $doc['id'] == $this->generateURI($id)
-                    ) {
-                        // we've found the document element with the matching URI
-                        // if the document has an item, then we return it
-                        if (isset($doc['item'])) {
-                            return $doc;
-                        }
-                    }
-                }
-            } elseif (isset($docs['document'])) {
-                // since a document exists but multiQuery is disabled, the first
-                // document is returned if it contains an item
-                $doc = array_shift($docs['document']);
-                // hack to show holdings for journals
-                //if (isset($doc['item'])) {
-                    return $doc;
-                //}
-            }
-            // no (id matching) document element found
-            return null;
-        } else {
-            throw new ILSException('Unsupported document format.');
-        }
-    }
-
 }

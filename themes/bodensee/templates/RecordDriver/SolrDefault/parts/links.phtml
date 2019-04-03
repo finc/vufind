@@ -1,9 +1,4 @@
-<? if( $this->searchTabs()->isILL() && strlen($this->driver->getNetwork()) > 0): ?>
-        <div class="ill-source">                
-            <strong><?=$this->transEsc('Network')?>:</strong>
-            <span><?=$this->driver->getNetwork() ?></span> 
-        </div>          
-<? elseif( strlen($this->driver->getConsortium()) > 0): ?>
+<? if( $this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
         <div class="ill-source">                
             <strong><?=$this->transEsc('Network')?>:</strong>
             <span><?=$this->driver->getConsortium() ?></span> 
