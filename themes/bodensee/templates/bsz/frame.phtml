@@ -60,7 +60,7 @@
         <header class="container-fluid">
             <div class="row">
                 <div class="col-sm-12"> 
-                    <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="POST" action="<?=$this->url($basicSearch)?>" name="searchForm" autocomplete="off" target="_blank">
+                    <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="GET" action="<?=$this->url($basicSearch)?>" name="searchForm" autocomplete="off" target="_blank">
                     <?= $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
                     <? $placeholder = $this->searchbox()->getPlaceholderText(isset($tabConfig['selected']['id']) ? $tabConfig['selected']['id'] : null); ?>
                     <div class="input-group has-feedback">

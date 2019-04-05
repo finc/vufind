@@ -39,7 +39,7 @@
      <? if (!empty($tabs)): ?></div><? endif; ?>
   </div>
 <? else: ?>
-  <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="get" action="<?=$this->url($basicSearch)?>" name="searchForm" autocomplete="off">
+  <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="GET" action="<?=$this->url($basicSearch)?>" name="searchForm" autocomplete="off">
     <?= $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
     <? $placeholder = $this->searchbox()->getPlaceholderText(isset($tabConfig['selected']['id']) ? $tabConfig['selected']['id'] : null); ?>
     <div class="input-group">
