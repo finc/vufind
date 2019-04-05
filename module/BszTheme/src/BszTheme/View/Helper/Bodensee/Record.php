@@ -309,7 +309,7 @@ class Record extends \VuFind\View\Helper\Root\Record
                     foreach ($holding as $entry) {                        
                         if (isset($entry['isil']) && in_array($entry['isil'], $this->localIsils)) {
                             // save PPN
-                            $this->ppns[] = '(DE-576)'.$ppn;
+                            $this->ppns[] = '(DE-627)'.$ppn;
                             $this->libraries[] = $entry['isil'];                                        
                         }  
 
@@ -319,7 +319,7 @@ class Record extends \VuFind\View\Helper\Root\Record
             // if no locally available ppn found, just take the first one
             if (count($this->ppns) < 1 && isset($result['holdings'])) {
                 reset($result['holdings']);
-                $this->ppns[] = '(DE-576)'.key($result['holdings']);
+                $this->ppns[] = '(DE-627)'.key($result['holdings']);
             }
 
         }     
