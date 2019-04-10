@@ -36,6 +36,9 @@ class Debug  {
         $status = false;
         
         $allowedIps = [];
+        // VPN
+        $allowedIps[] = '192.168.5.*';     
+        
         $allowedIps[] = '193.197.29.*';    
         $allowedIps[] = '193.197.31.*';    
         $allowedIps[] = '10.250.6.*';
