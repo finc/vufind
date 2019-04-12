@@ -878,7 +878,9 @@ class SolrGvimarc extends SolrMarc
             773 => ['w'],
         ];
         $array = $this->getFieldsArray($fields);
-        return array_shift($array);
+        $string = array_shift($array);
+        $pos = strpos($string, ' ');
+        return substr($string, 0, $pos);
     }
 
     /**
