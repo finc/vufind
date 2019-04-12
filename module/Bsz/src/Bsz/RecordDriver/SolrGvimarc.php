@@ -1678,6 +1678,14 @@ class SolrGvimarc extends SolrMarc
                      break;
                 case 'e': $ill_status = 'ill_status_e';
                      break;
+                case 'n':
+                case 'N':
+                     $ill_status = 'ill_status_N';
+                     break;
+                case 'l':
+                case 'L':                     
+                     $ill_status = 'ill_status_L';
+                     break;                 
                 default: $ill_status = 'ill_status_d';
             }
             $item['availability'] = $ill_status;
