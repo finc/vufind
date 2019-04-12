@@ -879,8 +879,14 @@ class SolrGvimarc extends SolrMarc
         ];
         $array = $this->getFieldsArray($fields);
         $string = array_shift($array);
-        $pos = strpos($string, ' ');
-        return substr($string, 0, $pos);
+        $ids = explode(' ', $string);
+        foreach ($ids as $id) {
+            // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
+            if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
+                return $id;
+            }
+        }
+
     }
 
     /**
