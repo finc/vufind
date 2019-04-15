@@ -2,7 +2,6 @@
     // Set page title.
     $this->headTitle($this->translate('Libraries') . ': ' . $this->driver->getBreadcrumb());
     $content = $this->tab->getContent();        
-
 ?>
 
 <? if(isset($content) && count($content) > 0): ?>
@@ -24,9 +23,8 @@
             <td><?=isset($result['b']) ? $this->escapeHtml($result['b']) : ''?></td>
             <td><?=isset($result['name']) ? $this->escapeHtml($result['name']) : ''?></td>
             <td><?=isset($result['g']) ? $this->escapeHtml($result['g']) : ''?></td>
-            <td><?isset($result['ill_status']) ? $this->transEsc($result['ill_status']): 'oops' ?></td>
+            <td><?=isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></td>
             <? if ($this->driver->isJournal()): ?><td><?=isset($result['z']) ? $this->escapeHtml($result['z']) : ''?></td><? endif; ?>
-
         </tr>
         <? endforeach; ?>        
     </tbody>
