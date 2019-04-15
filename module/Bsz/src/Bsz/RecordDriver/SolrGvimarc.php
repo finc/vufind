@@ -878,14 +878,17 @@ class SolrGvimarc extends SolrMarc
             773 => ['w'],
         ];
         $array = $this->getFieldsArray($fields);
-        $string = array_shift($array);
-        $ids = explode(' ', $string);
-        foreach ($ids as $id) {
-            // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
-            if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
-                return $id;
+        foreach ($array as $subfields) {
+            $ids = explode(' ', $subfields);
+            foreach ($ids as $id) {
+                // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
+                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
+                    return $id;
+                }
             }
+            
         }
+        return '';
 
     }
 
@@ -1255,9 +1258,16 @@ class SolrGvimarc extends SolrMarc
     public function getIdsRelated()
     {
         $ids = [];
-        $f773 = $this->getFieldArray(773, ['w'], false);
-        foreach ($f773 as $w) {
-            $ids[] = $w;
+        $f773 = $this->getFieldArray(773, ['w']);
+        foreach ($f773 as $subfields) {
+            $ids = explode(' ', $subfields);
+            foreach ($ids as $id) {
+                // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
+                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
+                    $ids[] = $id;
+                }
+            }
+            
         }
         $ids[] = $this->getUniqueId();
         return array_unique($ids);
