@@ -850,7 +850,9 @@ class SolrGvimarc extends SolrMarc
         foreach ($consortium as $k => $con) {
             if (array_key_exists(strtoupper($con), $mapping)) {
                 $consortium[$k] = $mapping[$con];
-            } 
+            } else {
+                unset($consortium[$k]);
+            }
         }
         $consortium_unique = array_unique($consortium);
 
