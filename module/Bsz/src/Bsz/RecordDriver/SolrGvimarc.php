@@ -831,10 +831,30 @@ class SolrGvimarc extends SolrMarc
     {
 
         $consortium = $this->getFieldArray(924, ['c'], true);
+        
+        // map Leihverkehrsregion into Verbund
+        $mapping = [
+            'BAW' => 'SWB',
+            'BAY' => 'BVB',
+            'BER' => 'KOBV',
+            'HAM' => 'GBV',
+            'HES' => 'HEBIS',
+            'NIE' => 'GBV',
+            'NRW' => 'HBZ',
+            'SAA' => 'GBV',
+            'SAX' => 'SWB',
+            'THU' => 'GBV',
+            'BSZ' => 'SWB'
+        ];
+        
+        foreach ($consortium as $k => $con) {
+            if (array_key_exists(strtoupper($con), $mapping)) {
+                $consortium[$k] = $mapping[$con];
+            } 
+        }
         $consortium_unique = array_unique($consortium);
+
         $string = implode(", ",$consortium_unique);
-        $string = preg_replace('/BSZ/', 'SWB', $string);
-        $string = preg_replace('/HES/', 'HEBIS', $string);
         return $string;        
     }
        
