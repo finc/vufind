@@ -54,17 +54,15 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
     }
     
     /**
-     * This tab is active if record's network is SWB or K10plus and there exists entries from fiedls 924
+     * Tab ios shown if there is at least one 924 in MARC. 
      * @return boolean
      */
     public function isActive()
     {
-        if ($this->driver->getNetwork() == 'SWB' || $this->driver->getNetwork() == 'K10plus' ) {
-            $this->f924 = $this->driver->getField924();
-            if (count($this->f924) > 0) {
-                return true;                
-            }            
-        } 
+        $this->f924 = $this->driver->getField924();
+        if (count($this->f924) > 0) {
+            return true;                
+        }            
         return false;        
     }
     
