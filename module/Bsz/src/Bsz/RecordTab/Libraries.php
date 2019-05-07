@@ -70,8 +70,8 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
     {
         $libraries = $this->libraries->getByIsils(array_keys($this->f924));
         foreach ($libraries as $library) {
-            $this->f924[$library->getIsil()]['name'] = $library->getName();    
-        
+            $this->f924[$library->getIsil()]['name'] = $library->getName();
+            $this->f924[$library->getIsil()]['homepage'] = $library->getHomepage();            
         }
         return $this->f924;        
     }
