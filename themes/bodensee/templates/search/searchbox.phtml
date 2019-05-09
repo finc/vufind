@@ -47,12 +47,14 @@
         <div class="input-group-btn">
             <button type="submit" class="btn btn-info <?=$disabled?>"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only"><?=$this->transEsc('Search')?></span></button>            
         </div>
-        <div class="input-group-btn">
-            <? if ($advSearch): ?>
-            <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="btn btn-primary <?=$disabled?>" rel="nofollow"><i class='fa fa-search-plus'></i>
-                <span class="text hidden-xs"><?=$this->transEsc("Advanced")?></span></a>
-            <? endif; ?>            
-        </div>
+        <? if (!isset($frame) && $advSearch && $this->client()->is('advanced_search_button')): ?>
+            <div class="input-group-btn">            
+                <? if ($advSearch): ?>
+                    <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="btn btn-primary <?=$disabled?>" rel="nofollow"><i class='fa fa-search-plus'></i>
+                        <span class="text hidden-xs"><?=$this->transEsc("Advanced")?></span></a>
+                <? endif; ?>            
+            </div>
+        <? endif; ?>                    
     </div>
     <input type="hidden" name="type" value="<? if(array_key_exists(0, $handlers) && array_key_exists('value', $handlers[0])): ?><?=$this->escapeHtmlAttr($handlers[0]['value'])?><? endif; ?>" />
 
