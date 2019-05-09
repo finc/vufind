@@ -77,7 +77,12 @@ function changeRequiredCopy($actor) {
         $('#panel-paperdata').removeClass('hidden').show('slow');
     }
 
-    var requiredCopy = ['AufsatzAutor', 'AufsatzTitel', 'Seitenangabe'];
+    var requiredCopy = [
+        'AufsatzAutor', 
+        'AufsatzTitel', 
+        'Seitenangabe'
+    ];
+    
     requiredCopy.forEach(function (name) {
         // get the form group div surrounding the input
         var $required = $('input[name='+name+']').parent().parent();
@@ -157,8 +162,8 @@ function validateCopy($el) {
 
 $(document).ready(function(){
 
-    appendValidator();
     changeRequiredCopy($("input[name='Bestellform']:checked"));
+    appendValidator();
     datepicker();
     illFormLogic();
 });
