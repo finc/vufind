@@ -831,10 +831,32 @@ class SolrGvimarc extends SolrMarc
     {
 
         $consortium = $this->getFieldArray(924, ['c'], true);
+        
+        // map Leihverkehrsregion into Verbund
+        $mapping = [
+            'BAW' => 'SWB',
+            'BAY' => 'BVB',
+            'BER' => 'KOBV',
+            'HAM' => 'GBV',
+            'HES' => 'HEBIS',
+            'NIE' => 'GBV',
+            'NRW' => 'HBZ',
+            'SAA' => 'GBV',
+            'SAX' => 'SWB',
+            'THU' => 'GBV',
+            'BSZ' => 'SWB'
+        ];
+        
+        foreach ($consortium as $k => $con) {
+            if (array_key_exists(strtoupper($con), $mapping)) {
+                $consortium[$k] = $mapping[$con];
+            } else {
+                unset($consortium[$k]);
+            }
+        }
         $consortium_unique = array_unique($consortium);
+
         $string = implode(", ",$consortium_unique);
-        $string = preg_replace('/BSZ/', 'SWB', $string);
-        $string = preg_replace('/HES/', 'HEBIS', $string);
         return $string;        
     }
        
@@ -878,14 +900,17 @@ class SolrGvimarc extends SolrMarc
             773 => ['w'],
         ];
         $array = $this->getFieldsArray($fields);
-        $string = array_shift($array);
-        $ids = explode(' ', $string);
-        foreach ($ids as $id) {
-            // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
-            if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
-                return $id;
+        foreach ($array as $subfields) {
+            $ids = explode(' ', $subfields);
+            foreach ($ids as $id) {
+                // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
+                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
+                    return $id;
+                }
             }
+            
         }
+        return '';
 
     }
 
@@ -1255,9 +1280,16 @@ class SolrGvimarc extends SolrMarc
     public function getIdsRelated()
     {
         $ids = [];
-        $f773 = $this->getFieldArray(773, ['w'], false);
-        foreach ($f773 as $w) {
-            $ids[] = $w;
+        $f773 = $this->getFieldArray(773, ['w']);
+        foreach ($f773 as $subfields) {
+            $ids = explode(' ', $subfields);
+            foreach ($ids as $id) {
+                // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
+                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
+                    $ids[] = $id;
+                }
+            }
+            
         }
         $ids[] = $this->getUniqueId();
         return array_unique($ids);
@@ -1687,6 +1719,14 @@ class SolrGvimarc extends SolrMarc
                      break;
                 case 'e': $ill_status = 'ill_status_e';
                      break;
+                case 'n':
+                case 'N':
+                     $ill_status = 'ill_status_N';
+                     break;
+                case 'l':
+                case 'L':                     
+                     $ill_status = 'ill_status_L';
+                     break;                 
                 default: $ill_status = 'ill_status_d';
             }
             $item['availability'] = $ill_status;
