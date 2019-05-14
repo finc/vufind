@@ -49,7 +49,7 @@
   if(!empty($notations)): ?>
   <? $contentDisplayed = true; ?>
   <tr>
-      <th>RVK-<?=$this->transEsc('Notation')?>:</th>
+      <th><span class="text-nowrap">RVK-<?=$this->transEsc('Notation')?>:</span></th>
       <? if(is_array($notations)): ?>
       <td>
           <? foreach ($notations as $shortcut => $description): ?>
@@ -70,6 +70,42 @@
   <? endif; ?>
   </tr>
   <? endif; ?>
+  
+  <? $fivclassification = $this->driver->tryMethod('getFIVClassification'); 
+  if(!empty($fivclassification)): ?>
+  <? $contentDisplayed = true; ?>
+  <tr>
+      <th><span class="text-nowrap"><?=$this->transEsc('FIVClassification')?>:</span></th>
+      <? if(is_array($fivclassification)): ?>
+      <td>
+          <? foreach ($fivclassification as $notation): ?>
+            <span class="notationLine">
+                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('fivclassification', $notation, $this->searchClassId)?><?=$hiddenFilterString?>" class="searchicon" title="<?=$this->transEsc($notation)?>" ><?=$notation?></a>
+            </span>
+          <? endforeach; ?>
+      </td>
+  <? endif; ?>
+  </tr>
+  <? endif; ?>  
+  
+  <? $dficlassification = $this->driver->tryMethod('getDFIClassification'); 
+  if(!empty($dficlassification)): ?>
+  <? $contentDisplayed = true; ?>
+  <tr>
+      <th><span class="text-nowrap"><?=$this->transEsc('DFIClassification')?>:</span></th>
+      <? if(is_array($fivclassification)): ?>
+      <td>
+          <? foreach ($dficlassification as $notation): ?>
+            <span class="notationLine">
+                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('dficlassification', $notation, $this->searchClassId)?><?=$hiddenFilterString?>" class="searchicon" title="<?=$this->transEsc($notation)?>" ><?=$notation?></a>
+            </span>
+          <? endforeach; ?>
+      </td>
+  <? endif; ?>
+  </tr>
+  <? endif; ?>  
+      
+      
 <? $subjects = $this->driver->getAllRVKSubjectHeadings(); if (!empty($subjects)): ?>
   <tr>
     <th><?=$this->transEsc('RVKSubjects')?>: </th>
