@@ -403,4 +403,26 @@ class DAIA extends DAIAbsz
             $this->debug('No ContentTypes for response defined. Accepting any.');
         }
     }
+    
+        /**
+     * Needed to hide holdings tab if empty
+     * @param string $id
+     * @return boolean
+     */
+    public function hasHoldings($id) 
+    {
+        // we can't query DAIA without an ISIL. 
+        if (empty($this->isil)) {
+            return false;
+        }
+        $holdings = $this->getHolding($id);
+
+        if (count($holdings) > 0) {
+            return true;
+        } else {
+            throw new ILSException('no holdings');
+        }
+        return false;
+    }
+
 }
