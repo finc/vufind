@@ -147,6 +147,44 @@ class SolrGvimarc extends SolrMarc
         return $swdchain;
     }
 
+    
+    
+    /**
+     * Get an array with DFI classification
+     * @returns array
+     */
+    public function getDFIClassification()
+    {
+        $classificationList = [];
+        foreach ($this->getMarcRecord()->getFields('084') as $field) {
+            $suba = $field->getSubField('a');
+            $sub2 = $field->getSubfield('2')->getData();
+            if ($suba && strtolower($sub2) == 'dfi') {
+                $classificationList[] = $suba->getData();
+            }
+        }
+        return array_unique($classificationList);
+    }
+
+    
+    /**
+     * Get an array with FIV classification
+     * @returns array
+     */
+    public function getFIVClassification()
+    {
+        $classificationList = [];
+        foreach ($this->getMarcRecord()->getFields('084') as $field) {
+            $suba = $field->getSubField('a');
+            $sub2 = $field->getSubfield('2')->getData();
+            if ($suba && strtolower($sub2) == 'fiv') {
+                $classificationList[] = $suba->getData();
+            }
+        }
+        return array_unique($classificationList);
+    }
+
+    
     /**
      * Get all subjects associated with this item. They are unique.
      *
