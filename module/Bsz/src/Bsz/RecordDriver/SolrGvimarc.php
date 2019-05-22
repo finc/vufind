@@ -867,29 +867,15 @@ class SolrGvimarc extends SolrMarc
      */
     public function getConsortium()
     {
-
-        $consortium = $this->getFieldArray(924, ['c'], true);
-        
-        // map Leihverkehrsregion into Verbund
-        $mapping = [
-            'BAW' => 'SWB',
-            'BAY' => 'BVB',
-            'BER' => 'KOBV',
-            'HAM' => 'GBV',
-            'HES' => 'HEBIS',
-            'NIE' => 'GBV',
-            'NRW' => 'HBZ',
-            'SAA' => 'GBV',
-            'SAX' => 'SWB',
-            'THU' => 'GBV',
-            'BSZ' => 'SWB'
-        ];
+        // determine network based on two different sources
+        $consortium1 = $this->getFieldArray(924, ['c'], true);
+        $consortium2 = $this->fields['consortium']; 
+        $consortium = array_merge($consortium1, $consortium2);
         
         foreach ($consortium as $k => $con) {
-            if (array_key_exists(strtoupper($con), $mapping)) {
-                $consortium[$k] = $mapping[$con];
-            } else {
-                unset($consortium[$k]);
+            $mapped = $this->client->mapNetwork($con);
+            if (!empty($mapped)) {
+                $consortium[$k] = $mapped;
             }
         }
         $consortium_unique = array_unique($consortium);
