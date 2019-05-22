@@ -869,7 +869,6 @@ class SolrGvimarc extends SolrMarc
     {
 
         $consortium = $this->getFieldArray(924, ['c'], true);
-        
         // map Leihverkehrsregion into Verbund
         $mapping = [
             'BAW' => 'SWB',
@@ -888,6 +887,8 @@ class SolrGvimarc extends SolrMarc
         foreach ($consortium as $k => $con) {
             if (array_key_exists(strtoupper($con), $mapping)) {
                 $consortium[$k] = $mapping[$con];
+            } elseif (in_array($con, $mapping)) {
+                // do nothing, everyting is ok!
             } else {
                 unset($consortium[$k]);
             }
