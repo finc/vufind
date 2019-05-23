@@ -69,7 +69,15 @@ JS;
           <? elseif($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
             <h2><?=$this->escapeHTML((string)$library)?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>          
           <? endif; ?>
-          <p><?=$this->transEsc('homepage_text')?></p>   
+          
+          <? if (strpos($this->translate('homepage_text'), '<') !== FALSE): ?>
+            <p><?=$this->translate('homepage_text')?></p>
+          <? else: ?>
+            <p><?=$this->transEsc('homepage_text')?></p>
+          <? endif; ?>
+            
+          
+          
           <? if($this->client()->isIsilSession() && !$this->client()->hasIsilSession()): ?>
           <p><?=$this->translate('ill_select_library')?></p>
           <? endif; ?>

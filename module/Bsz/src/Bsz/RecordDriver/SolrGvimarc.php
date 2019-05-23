@@ -1576,7 +1576,7 @@ class SolrGvimarc extends SolrMarc
             $isils[$k] = preg_quote($isil, '/');
         }
         $pattern = implode('|', $isils);
-        $pattern = '/'.str_replace('\*', '.*', $pattern).'/' ;
+        $pattern = '/^'.str_replace('\*', '.*', $pattern).'$/' ;
 
         foreach ($f924 as $fields) {
             if (isset($fields['b']) && preg_match($pattern, $fields['b'])) {
