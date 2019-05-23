@@ -8,7 +8,7 @@
   <? elseif (isset($this->link) && $this->link == '#'): ?>
     <a href="#" class="modal-popup cover" data-toggle="modal" data-img-url="<?=$this->escapeHtmlAttr($cover); ?>">
   <? endif; ?>
-  <img <? if ($linkPreview): ?>data-linkpreview="true" <? endif; ?>class="img-responsive hidden-print <?=$icon?>" src="<?=$this->escapeHtmlAttr($cover); ?>"/>
+  <img loading="lazy" <? if ($linkPreview): ?>data-linkpreview="true" <? endif; ?>class="img-responsive hidden-print <?=$icon?>" src="<?=$this->escapeHtmlAttr($cover); ?>"/>
   <? if ($this->link): ?>
     </a>
   <? endif; ?>
