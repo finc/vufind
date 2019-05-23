@@ -293,15 +293,20 @@ class Client extends \Zend\Config\Config
 
     /**
      * returns german library network shourcut
-     * @param  string $isil
+     * @param  string $input
      * @return string
      */
-    public function mapNetwork($isil)
+    public function mapNetwork($input)
     {
+        $result = '';
         $networks = $this->getNetworks();
-        if (array_key_exists($isil, $networks)) {
-            return $networks[$isil];
-        } 
+        if (array_key_exists($input, $networks)) {
+            $result = $networks[$input];
+        } elseif (in_array($input, $networks )) {
+            // input is already a mapped network name
+            $result = $input;
+        }
+        return $result;
     }
 
     /**
@@ -319,8 +324,18 @@ class Client extends \Zend\Config\Config
             'DE-604' => 'BVB',
             'DE-605' => 'HBZ',
             'DE-627' => 'K10Plus',
-            'DE-101' => 'DNB', //Deutsche Nationalbibliothek
-            
+            'DE-101' => 'DNB',
+            'BAW' => 'SWB',
+            'BAY' => 'BVB',
+            'BER' => 'KOBV',
+            'HAM' => 'GBV',
+            'HES' => 'HEBIS',
+            'NIE' => 'GBV',
+            'NRW' => 'HBZ',
+            'SAA' => 'GBV',
+            'SAX' => 'SWB',
+            'THU' => 'GBV',
+            'BSZ' => 'SWB',
         ];
     }
 
