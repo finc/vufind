@@ -316,15 +316,6 @@ class Client extends \Zend\Config\Config
     public static function getNetworks()
     {
         return [
-            'DE-576' => 'SWB',
-            'DE-600' => 'ZDB',
-            'DE-601' => 'GBV',
-            'DE-602' => 'KOBV',
-            'DE-603' => 'HEBIS',
-            'DE-604' => 'BVB',
-            'DE-605' => 'HBZ',
-            'DE-627' => 'K10Plus',
-            'DE-101' => 'DNB',
             'BAW' => 'SWB',
             'BAY' => 'BVB',
             'BER' => 'KOBV',
@@ -336,6 +327,18 @@ class Client extends \Zend\Config\Config
             'SAX' => 'SWB',
             'THU' => 'GBV',
             'BSZ' => 'SWB',
+            // Attention: 
+            // Holdings.php uses array flip. The isils must be at the bottom! 
+            // Otherwise, holdings won't search correct
+            'DE-576' => 'SWB',
+            'DE-600' => 'ZDB',
+            'DE-601' => 'GBV',
+            'DE-602' => 'KOBV',
+            'DE-603' => 'HEBIS',
+            'DE-604' => 'BVB',
+            'DE-605' => 'HBZ',
+            'DE-627' => 'K10Plus',
+            'DE-101' => 'DNB',
         ];
     }
 
