@@ -369,20 +369,7 @@ class Client extends \Zend\Config\Config
             
         return $configs;
     }
-    
-    /**
-     * This method adds a possibility to filter interlending results
-     * @return array
-     */
-    public function getIsilInterlending() {
-        if (null !== $this->get('Site')->get('isil_interlending')) {
-            return explode(',', $this->get('Site')->get('isil_interlending'));
-        } else {
-            return [];
-        }
-        
-    }
-    
+       
     /**
      * Reads BOSS2 version number from global config
      * @return string
