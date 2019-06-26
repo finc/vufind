@@ -45,9 +45,7 @@ class HoldingsILS extends \VuFind\RecordTab\HoldingsILS
             if ($this->catalog->hasHoldings($id)) {
                 return true;
             }
-        } elseif ($this->driver->tryMethod('hasLocalHoldings')) {
-            return true;
-        }
+        } 
         return false;
     }
     
