@@ -187,22 +187,24 @@ class Record extends \VuFind\View\Helper\Root\Record
      */
     public function isAtCurrentLibrary($webservice = false)
     {
-        $status = false;        
+        $status = false;     
+        $network = $this->driver->getNetwork();
+        
         if (count($this->ppns) == 0) {
             // if we have local holdings, item can't be ordered
             if ($this->hasLocalHoldings()) {
                 $status = true;
-            } elseif ($webservice && $this->driver->getNetwork() == 'SWB'
+            } elseif ($webservice && $network == 'SWB'
                  && $this->hasParallelEditions()
             ) {
                 $status = true;
-            } elseif ($webservice && $this->driver->getNetwork() !== 'SWB'
+            } elseif ($webservice && $network !== 'SWB'
                 && $this->queryWebservice()
             ) {
                 $status = true;
             }            
         } 
-        if ($this->hasLocalHoldings() && $this->driver->getNetwork() == 'ZDB') {
+        if ($this->hasLocalHoldings() && $network == 'ZDB') {
             $this->queryWebservice();
         }
         // we dont't want to do the query twice, so we save the status
