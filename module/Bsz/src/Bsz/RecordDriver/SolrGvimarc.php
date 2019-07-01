@@ -876,6 +876,7 @@ class SolrGvimarc extends SolrMarc
             $mapped = $this->client->mapNetwork($con);
             if (!empty($mapped)) {
                 $consortium[$k] = $mapped;
+
             }
         }
         $consortium_unique = array_unique($consortium);
