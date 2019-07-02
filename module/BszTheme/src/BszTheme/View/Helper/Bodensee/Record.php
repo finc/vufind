@@ -226,7 +226,7 @@ class Record extends \VuFind\View\Helper\Root\Record
             // HEBIS items with 8 at the first position are freely available
             return false;
         } elseif ($this->driver->isFree()) {
-            return true;
+            return false;
         } elseif ($this->driver->isArticle() 
             // printed journals, articles, newspapers - show hint
             || $this->driver->isJournal()
