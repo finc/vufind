@@ -219,46 +219,36 @@ class Record extends \VuFind\View\Helper\Root\Record
      */
     public function isAvailableForInterlending()
     {
-        // HEBIS items with 8 at the first position are freely available
         $ppn = $this->driver->getPPN();
-        if (($this->driver->getNetWork() == 'HEBIS' && preg_match('/^8/', $ppn))
-                || $this->driver->isFree()) {
+        $network = $this->driver->getNetwork();
+        // first, the special cases
+        if (($network == 'HEBIS' && preg_match('/^8/', $ppn))) {
+            // HEBIS items with 8 at the first position are freely available
             return false;
-        }
-        // printed journals, articles, newspapers - show hint
-        if ($this->driver->isArticle() 
+        } elseif ($this->driver->isFree()) {
+            return true;
+        } elseif ($this->driver->isArticle() 
+            // printed journals, articles, newspapers - show hint
             || $this->driver->isJournal()
             || $this->driver->isNewspaper()
         ) {
             return true;
-        } 
-        // eBooks - check ill indicator, except GBV eBooks. 
-        else if ($this->driver->isEBook()) {
-            
-            if ($this->driver->getNetwork() == 'GBV') {
-                // GBV EBooks can't be ordered
-                return false;
-            } else {
-                // all networks should have 924 now, so, we check ill indicator 
-                $f924 = $this->driver->tryMethod('getField924');
-                foreach ($f924 as $field) {
-                    if (isset($field['d']) && 
-                        ($field['d'] == 'e' || $field['d'] == 'b'
-                        // k is deprecated but might still be used
-                        || $field['d'] == 'k') ) {
-                        return true;
-                    }
-                } 
-            }      
+        } else if ($this->driver->isEBook() && $network == 'GBV') {
+            // GBV eBooks are not available
+            return false; 
+        } else {
+            // all other formats - check ill indicator
+            return $this->checkIllIndicator();
         }
-        // Books - always available, serials and Collections are excluded 
-        // because of Gesamtaufnahmen. 
-        else if (!$this->isAtCurrentLibrary(true)
+        
+        // if we arrived here, item is not available at current library, is no
+        // serial and no collection, it is available
+
+        if (!$this->isAtCurrentLibrary(true)
                 && !$this->driver->isSerial() 
                 && !$this->driver->isCollection()) {
             return true;
         }
-        return false;
     }
 
     /**
@@ -444,6 +434,25 @@ class Record extends \VuFind\View\Helper\Root\Record
     public function getSubRecord() {
 
         return $this->renderTemplate('result-list.phtml');
+    }
+    
+    /**
+     * Check the ILL indicator
+     * 
+     * @return boolean
+     */
+    protected function checkIllIndicator() {
+        // all networks should have 924 now, so, we check ill indicator 
+        $f924 = $this->driver->tryMethod('getField924');
+        foreach ($f924 as $field) {
+            if (isset($field['d']) && 
+                (strtolower($field['d']) == 'e' || strtolower($field['d']) == 'b'
+                // k is deprecated but might still be used
+                || strtolower($field['d']) == 'k') ) {
+                return true;
+            }
+        } 
+        return false;
     }
 
     
