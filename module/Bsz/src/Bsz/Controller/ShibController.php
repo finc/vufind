@@ -50,7 +50,7 @@ class ShibController extends \VuFind\Controller\AbstractBase
         $isils = $client->getIsils();
         $library = $libraries->getByIsil($client->getIsils());
         
-        if ($library->getAuth() === 'shibboleth') {
+        if (isset($library) && $library->getAuth() === 'shibboleth') {
             return $this->redirect()->toRoute(
                     'shib-redirect',
                     [   
@@ -63,9 +63,9 @@ class ShibController extends \VuFind\Controller\AbstractBase
                         ]
                     ]
             );
-        }
-        
-        
+        } else {
+            throw new Exception('Accessed WAYF for non Shibboleth library');
+        }    
         
     }
     
