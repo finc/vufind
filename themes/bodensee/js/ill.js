@@ -26,6 +26,7 @@ function illFormLogic() {
         if ($errors.length > 0) {
             // open panels with errors
             $errors.parent().parent().collapse('show');
+            window.scrollTo(0, 0);
 
             if ($('.flash-message').length === 0) {
                 $('#form-ill').prepend($('<div>', {
