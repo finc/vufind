@@ -64,7 +64,7 @@ class ShibController extends \VuFind\Controller\AbstractBase
                     ]
             );
         } else {
-            throw new Exception('Accessed WAYF for non Shibboleth library');
+            throw new \Bsz\Exception('Accessed WAYF for non Shibboleth library');
         }    
         
     }
