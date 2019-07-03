@@ -1,25 +1,27 @@
-[![Build Status](https://travis-ci.org/vufind-org/vufind.svg?branch=master)](https://travis-ci.org/vufind-org/vufind)
-VuFind
-======
+[![Build Sta# BOSS - Repository
 
-Introduction
-------------
-VuFind is an open source discovery environment for searching a collection of
-records.  To learn more, visit https://vufind.org.
+## Konfiguration
+
+Die Konfiguration ist ausgelagert und befindet sich in ein einem [eigenen Repository](https://git.bsz-bw.de/verbund/boss-config). Um sie zu benutzen muss man im Wurzelverzeichnis zwei Symlinks `config` und `local` zu den jeweiligen Ordnern in o.g. Repository setzen. 
+
+## Fehlersuche
+
+### Log-Dateien
+
+* `/var/log/vufind.log` bzw. `/var/log/fernleihe.log` bei der Fernleihe-Sicht. Hier landen Fehlermeldungen von VuFind. 
+* `/var/log/apache2/boss_error.log` hier landen Fehlermeldungen des Webservers. 
+* `/var/log/shibboleth/*` hier landen alle Fehlermeldungen von Shibboleth. 
+
+### Bekannte Fehler
+
+#### Weiße Seite
+
+Das kann verschiedene Ursachen haben. Am wahrscheinlichsten ist eine PHP-Fehlermeldung, die jedoch nicht ausgegeben wird. Dann wird man meist in den oderen beiden Log-Dateien fündig.
+
+Es ham schon mal vor, dass das Zend Framework nicht mehr gefunden wurde. Entsprechende Fehler standen im `vufind.log`. Es half im Wurzelverzeichnis `composer install` auszuführen. 
+
+#### Falsche Konfiguration wird geladen
+
+BOSS funktioniert, aber die Konfiguration passt nicht zur Domain. Falsche Logos und Bilder. Das liegt daran, dass der entsprechende VHOST nicht aktiviert ist und kein Default-VHOST existiert. Dann macht einfach der erste VHOST. Daher sollte man imemr einen Default-VHOST konfigurieren. 
 
 
-Installation
-------------
-See our [online installation documentation](https://vufind.org/wiki/installation) for step-by-step instructions for installing from packaged releases to popular platforms.
-
-VuFind's [packaged releases](http://vufind-org.github.io/vufind/downloads.html) have all dependencies included. If you are installing directly from a Git checkout, you will need to load these dependencies manually using the [Composer](https://getcomposer.org) tool by running `composer install` from the VuFind home directory.
-
-
-Documentation and Support
--------------------------
-The VuFind community maintains a detailed [wiki](http://vufind.org/wiki) containing information on using and customizing the software. The VuFind website also lists [sources of community and commercial support](http://vufind-org.github.io/vufind/support.html).
-
-
-Contributing
-------------
-See our [developers handbook](https://vufind.org/wiki/development) for more information.
