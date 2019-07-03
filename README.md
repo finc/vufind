@@ -16,7 +16,7 @@ Die Konfiguration ist ausgelagert und befindet sich in ein einem [eigenen Reposi
 
 #### Weiße Seite
 
-Das kann verschiedene Ursachen haben. Am wahrscheinlichsten ist eine PHP-Fehlermeldung, die jedoch nicht ausgegeben wird. Dann wird man meist in den oderen beiden Log-Dateien fündig.
+Das kann verschiedene Ursachen haben. Am wahrscheinlichsten ist eine PHP-Fehlermeldung, die jedoch nicht ausgegeben wird. Dann wird man meist in den oberen beiden Log-Dateien fündig.
 
 Es ham schon mal vor, dass das Zend Framework nicht mehr gefunden wurde. Entsprechende Fehler standen im `vufind.log`. Es half im Wurzelverzeichnis `composer install` auszuführen. 
 
