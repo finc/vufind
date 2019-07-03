@@ -1,5 +1,7 @@
 # BOSS - Repository
 
+BOSS ist ein Recherchesystem auf Basis von [VuFind](http://vufind.org) welches als Haupt-Index den [GVI](http://gvi.bsz-bw.de/solr/#/) benutzt.
+
 ## Konfiguration
 
 Die Konfiguration ist ausgelagert und befindet sich in ein einem [eigenen Repository](https://git.bsz-bw.de/verbund/boss-config). Um sie zu benutzen muss man im Wurzelverzeichnis zwei Symlinks `config` und `local` zu den jeweiligen Ordnern in o.g. Repository setzen. 
