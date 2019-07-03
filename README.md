@@ -1,4 +1,4 @@
-[![Build Sta# BOSS - Repository
+# BOSS - Repository
 
 ## Konfiguration
 
