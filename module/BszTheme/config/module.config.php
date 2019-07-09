@@ -8,4 +8,4 @@ $config = [
         ]
     ]
 ];
-return $config;pull vufind master   
+return $config;
