@@ -59,7 +59,7 @@ class Module extends \VuFindTheme\Module
     {
         return [
             'factories' => [
-                'Client' =>         'BszTheme\View\Helper\Factory::getClient',
+                'client' =>         'BszTheme\View\Helper\Factory::getClient',
                 'ClientAsset' =>    'BszTheme\View\Helper\Factory::getClientAsset',
                 'IllForm' =>        'BszTheme\View\Helper\Bodensee\Factory::getIllForm',
                 //'openurl' =>        'BszTheme\View\Helper\Bodensee\Factory::getOpenUrl',

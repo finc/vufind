@@ -34,7 +34,7 @@ class Factory {
      */
     public static function getClient(ServiceManager $sm) 
     {        
-        $client = $sm->getServiceLocator()->get('bsz\client');
+        $client = $sm->getServiceLocator()->get('bsz\config\client');
         return new Client($client);
     }
     
