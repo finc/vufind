@@ -9,13 +9,12 @@ $config = [
     'helpers' => [
         'factories' => [
             'layoutclass' => 'BszTheme\View\Helper\Bodensee\Factory::getLayoutClass',
-            'openurl' => 'BszTheme\View\Helper\Bodensee\Factory::getOpenUrl',
-            'record' => 'BszTheme\View\Helper\Bodensee\Factory::getRecord',
-            'recordLink' => 'BszTheme\View\Helper\Bodensee\Factory::getRecordLink',
+            'VuFind\View\Helper\Root\OpenUrl' => 'BszTheme\View\Helper\Bodensee\Factory::getOpenUrl',
+            'VuFind\View\Helper\Root\Record' => 'BszTheme\View\Helper\Bodensee\Factory::getRecord',
+            'VuFind\View\Helper\Root\RecordLink' => 'BszTheme\View\Helper\Bodensee\Factory::getRecordLink',
             'getLastSearchLink' => 'BszTheme\View\Helper\Bodensee\Factory::getGetLastSearchLink',
-            'piwik' => 'BszTheme\View\Helper\Bodensee\Factory::getPiwik',
-            // this factory in Bodensee does not yet work so I've linked it to Vufind
-            'searchTabs' => 'BszTheme\View\Helper\Bodensee\Factory::getSearchTabs',
+            'VuFind\View\Helper\Root\Piwik' => 'BszTheme\View\Helper\Bodensee\Factory::getPiwik',
+            'VuFind\View\Helper\Root\SearchTabs' => 'BszTheme\View\Helper\Bodensee\Factory::getSearchTabs',
         ],
     ]
 ];
