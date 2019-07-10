@@ -33,21 +33,7 @@ class Module extends \VuFindTheme\Module
      */
     public function getServiceConfig()
     {
-        return [
-            'factories' => [
-                'VuFindTheme\MixinGenerator' =>
-                    'VuFindTheme\Module::getMixinGenerator',
-                'VuFindTheme\ThemeCompiler' =>
-                    'VuFindTheme\Module::getThemeCompiler',
-                'VuFindTheme\ThemeGenerator' =>
-                    'VuFindTheme\Module::getThemeGenerator',
-                'VuFindTheme\ThemeInfo' => 'BszTheme\Factory::getThemeInfo',
-            ],
-            'invokables' => [
-                'VuFindTheme\Mobile' => 'VuFindTheme\Mobile',
-                'VuFindTheme\ResourceContainer' => 'VuFindTheme\ResourceContainer',
-            ],
-        ];
+
     }  
     
         /**
@@ -60,10 +46,9 @@ class Module extends \VuFindTheme\Module
         return [
             'factories' => [
                 'client' =>         'BszTheme\View\Helper\Factory::getClient',
-                'ClientAsset' =>    'BszTheme\View\Helper\Factory::getClientAsset',
+                'clientAsset' =>    'BszTheme\View\Helper\Factory::getClientAsset',
                 'IllForm' =>        'BszTheme\View\Helper\Bodensee\Factory::getIllForm',
-                //'openurl' =>        'BszTheme\View\Helper\Bodensee\Factory::getOpenUrl',
-                'Libraries' =>      'BszTheme\View\Helper\Factory::getLibraries',
+                'libraries' =>      'BszTheme\View\Helper\Factory::getLibraries',
             ],
             'invokables' => [
                 'mapper'        => 'BszTheme\View\Helper\FormatMapper',
