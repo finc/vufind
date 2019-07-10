@@ -4,7 +4,7 @@
     <span class="caret"></span><?=$this->transEsc('Bibliothek')?>
 </a>
     <ul class="dropdown-menu column-2" aria-labelledby="libraryselector-<?=$rand?>" role="menu">
-        <li role="presentation" class="dropdown-header"><?=$this->escapeHTML('Baden-Württemberg')?></li>
+        <li role="presentation" class="dropdown-header"><?=$this->escapeHtml('Baden-Württemberg')?></li>
         <? foreach ($this->libraries()->getByCountryId(\Bsz\Config\Libraries::ID_BAWUE) as $library): ?>
         <? $isil = $library->getIsil();
            $url = $this->url('saveisil',['isil' => $isil] )?>
@@ -12,7 +12,7 @@
             <a role="menuitem" href="<?=$this->escapeHtmlAttr($url)?>"><?=$this->escapeHtml($this->truncate($library->getName(), $truncate))?></a>
         </li>
         <? endforeach; ?>
-        <li role="none presentation" class="dropdown-header"><?=$this->escapeHTML('Saarland')?></li>
+        <li role="none presentation" class="dropdown-header"><?=$this->escapeHtml('Saarland')?></li>
         <? foreach ($this->libraries()->getByCountryId(\Bsz\Config\Libraries::ID_SAARLAND) as $library): ?>
             <? $isil = $library->getIsil();
             $url = $this->url('saveisil',['isil' => $isil] )?>
@@ -20,7 +20,7 @@
                 <a role="menuitem" href="<?=$this->escapeHtmlAttr($url)?>"><?=$this->escapeHtml($this->truncate($library->getName(), $truncate))?></a>
             </li>
         <? endforeach; ?>
-        <li role="none presentation" class="dropdown-header"><?=$this->escapeHTML('Sachsen')?></li>
+        <li role="none presentation" class="dropdown-header"><?=$this->escapeHtml('Sachsen')?></li>
         <? foreach ($this->libraries()->getByCountryId(\Bsz\Config\Libraries::ID_SACHSEN) as $library): ?>
             <?  $isil = $library->getIsil();
                 $url = $this->url('saveisil',['isil' => $isil] )?>
