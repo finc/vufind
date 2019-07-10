@@ -72,7 +72,7 @@ class Factory
     {
         # fetch mysql connection info out config
         $config = $sm->get('VuFind\Config')->get('config');
-        $adapterfactory = $sm->get(\VuFind\DbAdapterFactory::class);
+        $adapterfactory = $sm->get('\VuFind\DbAdapterFactory');
         $database = $config->get('Database');
         $library = $database->get('db_libraries');
         $adapter = $adapterfactory->getAdapterFromConnectionString($library);
