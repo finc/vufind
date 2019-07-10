@@ -9,7 +9,7 @@
       <input type="text" class="form-control" 
              id="ill-<?=$this->escapeHtmlAttr($id)?>" 
              value="<?= preg_replace('/|/','', $this->string()->cleanEsc($value));?>"
-             name="<?=$this->escapeHTMLAttr($name)?>" 
+             name="<?=$this->escapeHtmlAttr($name)?>" 
              data-validate="<?=$required ? 'true' : 'false'?>"
              data-<?=strtolower($this->escapeHtmlAttr($name))?>="true"
              placeholder="<?=$this->transEsc($placeholder)?>"
