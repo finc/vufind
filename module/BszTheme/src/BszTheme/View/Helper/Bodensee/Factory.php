@@ -196,7 +196,8 @@ class Factory
     {
         return new SearchTabs(
             $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager'),
-            $sm->get('url'), $sm->getServiceLocator()->get('VuFind\SearchTabsHelper')
+            $sm->get('ViewHelperManager')->get('url'),
+            $sm->getServiceLocator()->get('VuFind\SearchTabsHelper')
         );
     }
     
