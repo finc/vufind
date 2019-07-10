@@ -24,7 +24,7 @@ use Zend\ServiceManager\ServiceManager;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory extends \VuFind\RecordDriver\Factory {
+class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      /**
      * Factory for EDS record driver.
      *
