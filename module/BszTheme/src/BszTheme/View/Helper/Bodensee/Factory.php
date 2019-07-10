@@ -102,7 +102,7 @@ class Factory
         $resolverPluginManager = $sm->getServiceLocator()
             ->get('VuFind\ResolverDriverPluginManager');        
         return new OpenUrl(
-            $sm->get('context'),
+            $sm->get('ViewHelperManager')->get('context'),
             $openUrlRules,
             $resolverPluginManager,
             isset($config->OpenURL) ? $config->OpenURL : null,
