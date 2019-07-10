@@ -20,7 +20,7 @@
 
 namespace Bsz\Config;
 
-use Zend\Session\Container;
+use \Zend\Session\Container;
 
 /**
  * Client class extends VuFinds configuration to fit our needs. 

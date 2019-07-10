@@ -60,7 +60,7 @@ $config = [
             'bsz\library'    => 'Bsz\Config\Library',
         ],
         'aliases' => [
-            'bsz\client'    => 'Bsz\config\Client',
+            'bsz\client'    => 'bsz\config\client',
             'bsz\libraries' => 'bsz\config\libraries'
         ],
     ],

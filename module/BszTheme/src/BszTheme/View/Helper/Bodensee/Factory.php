@@ -91,7 +91,7 @@ class Factory
     public static function getOpenUrl(ServiceManager $sm)
     {
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        $client = $sm->getServiceLocator()->get('Bsz\Client');
+        $client = $sm->getServiceLocator()->get('bsz\client');
         $isils = $client->getIsils();
         $openUrlRules = json_decode(
             file_get_contents(
@@ -121,7 +121,7 @@ class Factory
     {
         return new Record(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            $sm->getServiceLocator()->get('Bsz\Client'),
+            $sm->getServiceLocator()->get('bsz\client'),
             $sm->getserviceLocator()->get('bsz\holding')
         );
     }
