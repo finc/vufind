@@ -33,7 +33,11 @@ class Module extends \VuFindTheme\Module
      */
     public function getServiceConfig()
     {
-
+        return [
+            'factories' => [
+                ThemeInfo::class => 'Factory::getThemeInfosss',
+            ],
+        ];
     }  
     
         /**
