@@ -16,8 +16,8 @@ class Factory
      * @param ServiceManager $sm
      * @return \BszTheme\ThemeInfo
      */
-    public static function getThemeInfo(ServiceManager $sm) {
-        
+    public static function getThemeInfo(ServiceManager $sm) 
+    {
         $host = $sm->get('Request')->getHeaders()->get('host')->getFieldValue();
         $parts = explode('.', $host);
         $tag = isset($parts[0]) ? $parts[0] : 'swb';     
