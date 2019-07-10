@@ -59,7 +59,7 @@ class RecordController extends \VuFind\Controller\RecordController
     {
         parent::__construct($sm, $config);
         // Don't know how this can be dont using Traits, eg. at the DAIA class. 
-        $this->logger = $sm->get('vufind\logger');
+        $this->logger = $sm->get(\VuFind\Log\Logger::class);
     }
     
      /**
