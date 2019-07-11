@@ -267,7 +267,6 @@ class Client extends \Zend\Config\Config
             return true;
         } else {
             return false;
-        }
     }
 
     /**
