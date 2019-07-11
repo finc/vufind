@@ -37,7 +37,7 @@ class Factory {
     public static function getSolr(ServiceManager $sm)
     {
         $config = $sm->getServiceLocator()->get('VuFind\Config');
-        $Client = $sm->getServiceLocator()->get('bsz\client');
+        $Client = $sm->getServiceLocator()->get('Bsz\Config\Client');
         $options = new \Bsz\Search\Solr\Options($config, $Client);
         return $options;
     }

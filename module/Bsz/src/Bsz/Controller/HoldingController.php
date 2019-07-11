@@ -84,7 +84,7 @@ class HoldingController extends \VuFind\Controller\AbstractBase {
      */
     protected function checkNetwork($network) 
     {
-        $client = $this->getServiceLocator()->get('Bsz\Client');
+        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
         $networks = $client->getNetworks();
         if (in_array($network, $networks)) {
             return array_flip($networks)[$network];

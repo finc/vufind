@@ -38,7 +38,7 @@ class Factory
 
     public static function getDAIAbsz(ServiceManager $sm)
     {
-        $client = $sm->getServiceLocator()->get('bsz\client');
+        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
         // if we are on ILL portal
         $baseUrl = '';
         $isils = $client->getIsils();
