@@ -62,7 +62,7 @@ class Module
     {
         return [
             'factories' => [
-                ThemeInfo::class => \Bsz\ThemeInfoFactory::class,
+                \VuFindTheme\ThemeInfo::class => "\BszTheme\ThemeInfoFactory::getThemeInfo",
             ],
         ];
     }  
