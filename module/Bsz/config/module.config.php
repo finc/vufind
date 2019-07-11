@@ -43,7 +43,7 @@ $config = [
     ],    
     'service_manager' => [
         'factories' => [
-            'bsz\config\client'     => 'Bsz\Config\Factory::getClient', 
+            \Bsz\Config\Client::class     => 'Bsz\Config\Factory::getClient', 
             'bsz\config\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
             'bsz\config\dedup'  => 'Bsz\Config\Factory::getDedup',  
             'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',            
@@ -60,7 +60,7 @@ $config = [
             'bsz\library'    => 'Bsz\Config\Library',
         ],
         'aliases' => [
-            'bsz\client'    => 'bsz\config\client',
+            'bsz\client'    => \Bsz\Config\Client::class,
             'bsz\libraries' => 'bsz\config\libraries'
         ],
     ],

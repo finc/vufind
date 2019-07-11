@@ -34,13 +34,13 @@ class Factory {
      */
     public static function getClient(ServiceManager $sm) 
     {        
-        $client = $sm->getServiceLocator()->get('bsz\config\client');
+        $client = $sm->getServiceLocator()->get(\Bsz\Config\Client::class);
         return new Client($client);
     }
     
     public static function getClientAsset(ServiceManager $sm) 
     {
-        $client = $sm->getServiceLocator()->get('bsz\config\client');
+        $client = $sm->getServiceLocator()->get(\Bsz\Config\Client::class);
         
         $website = $client->getWebsite();
         
