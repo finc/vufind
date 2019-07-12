@@ -303,7 +303,7 @@ class Record extends AbstractClassBasedTemplateRenderer
     public function getTitleHtml($maxLength = 180)
     {
         $highlightedTitle = $this->driver->tryMethod('getHighlightedTitle');
-        $title = trim($this->driver->tryMethod('getTitle'));
+        $title = trim($this->driver->tryMethod('getTitle')[0]);
         if (!empty($highlightedTitle)) {
             $highlight = $this->getView()->plugin('highlight');
             $addEllipsis = $this->getView()->plugin('addEllipsis');

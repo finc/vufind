@@ -1,8 +1,8 @@
 <div>
-<? $containerId = $this->driver->getContainerId();  
+<? //$containerId = $this->driver->getContainerId();  
    $summDate = $this->driver->getPublicationDates();   
    $journalTitle = $this->driver->getContainerTitle();    
-   $link = isset($containerId) ? $this->recordLink()->getUrl($containerId) : $this->record($this->driver)->getLink('journaltitle', str_replace(['{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'], '', $journalTitle));
+   //$link = isset($containerId) ? $this->recordLink()->getUrl($containerId) : $this->record($this->driver)->getLink('journaltitle', str_replace(['{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'], '', $journalTitle));
 ?>  
 <? if($this->driver->isCollection()): ?>
     <? $summDate = $this->driver->getPublicationDates(); if (!empty($summDate) && isset($summDate[0])): ?>
@@ -10,9 +10,9 @@
         <? $summAuthors = $this->driver->getDeduplicatedAuthors()?> 
         <?=count($summDate) > 0? ' (' . $this->escapeHtml($summDate[0]) . ')' : ''?>               
     <? endif; ?>
-    <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>            
+    <? // $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>            
     <? if (!empty($summAuthors)): ?>
-    <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
+    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
     <? if (!empty($summAuthors['main'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
         <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
@@ -37,8 +37,8 @@
     <? endif; ?>
 <? else: ?>
     <? $summAuthors = $this->driver->getDeduplicatedAuthors(); if (!empty($summAuthors)): ?>
-    <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
-    <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
+    <? // $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
+    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
     <? if (!empty($summAuthors['main'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
         <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
@@ -49,9 +49,9 @@
     <? endif; ?>
     <? if (!empty($summAuthors['secondary'])): ?>
         
-        <? $noLiveSecondaryAuthors = $this->driver->getSecondaryAuthorsNoLive(); ?>
-        <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
-        <? $role_au2 = $this->driver->getSecondaryAuthorsRole(); ?>
+        <? // $noLiveSecondaryAuthors = $this->driver->getSecondaryAuthorsNoLive(); ?>
+        <? // $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
+        <? // $role_au2 = $this->driver->getSecondaryAuthorsRole(); ?>
         <strong><? if (!empty($summAuthors['main'])): echo $this->transEsc('and'); else: echo $this->transEsc('by'); endif; ?></strong>
         <? foreach($summAuthors['secondary'] as $k =>  $au2):?>
             <? if (isset($noLiveSecondaryAuthors[$k])): ?>

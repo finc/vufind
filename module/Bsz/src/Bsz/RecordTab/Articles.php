@@ -91,10 +91,10 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
                 }               
                 $filter[] = 'material_content_type:Article';
                 $params['filter'] = $filter; 
-                $results = $this->runner->run($params);   
+                //$results = $this->runner->run($params);   
                 
-                $results instanceof \VuFind\Search\Solr\Results;
-                $this->content = $results->getResults();
+                //$results instanceof \VuFind\Search\Solr\Results;
+                //$this->content = $results->getResults();
             }   
         }
         return $this->content;

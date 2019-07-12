@@ -41,7 +41,7 @@
         ?>
         <h3 property="name">
         <?=$this->escapeHtml($title)?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
-        <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
+        <?=//$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
         </h3>
 
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>

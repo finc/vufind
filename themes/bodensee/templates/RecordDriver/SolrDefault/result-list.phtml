@@ -1,9 +1,9 @@
 <?php 
     
-    $hasSubRecords = $this->driver->hasSubRecords();
-    $subRecords = $this->driver->getSubRecords();
-    $subRecordsCount = count($subRecords);
-    $isSubRecord = $this->driver->isSubRecord();
+    //$hasSubRecords = $this->driver->hasSubRecords();
+    //$subRecords = $this->driver->getSubRecords();
+    //$subRecordsCount = count($subRecords);
+    //$isSubRecord = $this->driver->isSubRecord();
     $uniqueId = $this->driver->getUniqueId();
 
     $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
@@ -41,7 +41,7 @@
   <div class="media-body">
     <div class="result-body">
       <div>
-        <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
+        <?/**=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])**/?>  
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
           <?=$this->record($this->driver)->getTitleHtml()?>
         </a>
@@ -197,7 +197,7 @@
                               
                             </div>
                             <div class="col-xs-8 col-sm-10">    
-                                <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $sub])?>  
+                                <?/**=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $sub])**/?>  
                                 
                                 <a class="title" href="<?=$this->recordLink()->getUrl($sub)?>">
                                     <?=$this->record($sub)->getTitleHtml()?>
