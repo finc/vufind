@@ -69,7 +69,7 @@ class GetLastSearchLink extends AbstractHelper
      */
     public function __invoke($link, $prefix = '', $suffix = '', $html = true)
     {
-        $last = $this->memory->retrieve();
+        $last = $this->memory->retrieveSearch();
         if (!empty($last)) {
             if (!$html) {
                 return $last;
@@ -78,6 +78,7 @@ class GetLastSearchLink extends AbstractHelper
             return $prefix . '<a href="' . $escaper($last) . '">' . $link . '</a>'
                 . $suffix;
         }
-        return '';
+        return '';        
     }
+
 }
