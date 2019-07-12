@@ -40,7 +40,11 @@
            $subtitle = $this->driver->getTitleSection();
         ?>
         <h3 property="name">
-        <?=$this->escapeHtml($title)?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
+        <? if (is_array($title)): ?>    
+            <?=$this->escapeHtml($title[0])?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
+        <? else: ?>
+            <?=$this->escapeHtml($title)?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
+        <? endif; ?>
         <?/**=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])**/?>  
         </h3>
 
@@ -52,7 +56,7 @@
         <? endif; ?>
         <?/* Display Main Details */?>
         <table class="table table-striped">        
-            <? $container = $this->driver->getContainer(); if (count($container) > 0 ) : ?>
+            <? /** $container = $this->driver->getContainer(); if (count($container) > 0 ) : ?>
             <tr>
                 <th><?=$this->transEsc('collective_editions')?>:</th>
                 <td><? foreach($container as $cont): ?>
@@ -98,7 +102,7 @@
                   <? endif ; ?>
                 </td>
             </tr>
-            <? endif; ?>     
+            <? endif; **/?>     
             
             <? $nextTitles = $this->driver->getNewerTitles(); $prevTitles = $this->driver->getPreviousTitles(); ?>
             <? if (!empty($nextTitles)): ?>
@@ -122,8 +126,8 @@
             <? endif; ?>
             
             <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
-            <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
-            <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
+            <? // $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
+            <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
             <? if (isset($authors['main']) && !empty($authors['main'])): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
@@ -147,7 +151,7 @@
             </tr>
             <? endif; ?>
             
-            <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
+            <? /**if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
             <? $noLiveSecondaryAuthors = $this->driver->getSecondaryAuthorsNoLive(); ?>
             <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
             <? $role_au2 = $this->driver->getSecondaryAuthorsRole(); ?>
@@ -168,7 +172,7 @@
                     </span>
                 </td>
             </tr>
-            <? endif; ?>
+            <? endif; **/?>
 
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
             <tr>
@@ -179,14 +183,14 @@
             </tr>
             <? endif; ?>  
 
-            <? $scale = $this->driver->getScale(); if (!empty($scale)): ?>
+            <? /** $scale = $this->driver->getScale(); if (!empty($scale)): ?>
             <tr>
                 <th><?=$this->transEsc('Scale')?>: </th>
                 <td>
                     <?=$this->escapeHtml($scale)?><br/>
                 </td>
             </tr>
-            <? endif; ?>    
+            <? endif; **/?>    
             
             <? $physical = $this->driver->getPhysicalDescriptions(); if (!empty($physical)): ?>
             <? $contentDisplayed = true; ?>
@@ -267,7 +271,7 @@
             ?>
 
             <? // Show local urls or SWB-links but not both ?>
-            <? $localUrls = $this->driver->getLocalUrls()?>     
+            <? /** $localUrls = $this->driver->getLocalUrls()?>     
             <? if (!empty($localUrls[0]['url'])): ?>
                 <tr>
                     <th><?=$this->transEsc('Local Online Access')?>: </th>
@@ -292,7 +296,7 @@
                           <? endforeach; ?></td>
                     </tr>
                 <? endif; ?>
-            <? endif; ?>
+            <? endif; **/?>
       <? $html = $openUrl->renderTemplate() ?>
       <? if ($openUrlActive && strlen($html) > 0): ?>
       <tr>
@@ -301,12 +305,12 @@
       </tr>
       <? endif; ?>
       
-      <? if( strlen($this->driver->getConsortium()) > 0): ?>
+      <? /**if( strlen($this->driver->getConsortium()) > 0): ?>
         <tr>
             <th><?=$this->transEsc('Network')?>:</th>
             <td><?=$this->driver->getConsortium() ?></td> 
         </tr>          
-      <? endif; ?> 
+      <? endif; **/?> 
 
       
       <? if ($this->usertags()->getMode() !== 'disabled'): ?>
