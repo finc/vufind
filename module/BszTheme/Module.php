@@ -27,8 +27,6 @@
  */
 namespace BszTheme;
 
-use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\Mvc\MvcEvent;
 
 /**
  * Bsz theme adaption
