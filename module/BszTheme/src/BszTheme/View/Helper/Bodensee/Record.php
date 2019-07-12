@@ -455,5 +455,33 @@ class Record extends \VuFind\View\Helper\Root\Record
         return false;
     }
 
-    
+    /**
+     * Get HTML to render a title.
+     *
+     * @param int $maxLength Maximum length of non-highlighted title.
+     *
+     * @return string
+     */
+    public function getTitleHtml($maxLength = 180)
+    {
+        $highlightedTitle = $this->driver->tryMethod('getHighlightedTitle');
+        if (is_array($this->driver->tryMethod('getTitle'))) {
+            $title = trim($this->driver->tryMethod('getTitle')[0]);
+        } else {
+            $title = trim($this->driver->tryMethod('getTitle'));
+        }
+            
+        if (!empty($highlightedTitle)) {
+            $highlight = $this->getView()->plugin('highlight');
+            $addEllipsis = $this->getView()->plugin('addEllipsis');
+            return $highlight($addEllipsis($highlightedTitle, $title));
+        }
+        if (!empty($title)) {
+            $escapeHtml = $this->getView()->plugin('escapeHtml');
+            $truncate = $this->getView()->plugin('truncate');
+            return $escapeHtml($truncate($title, $maxLength));
+        }
+        $transEsc = $this->getView()->plugin('transEsc');
+        return $transEsc('Title not available');
+    }    
 }
