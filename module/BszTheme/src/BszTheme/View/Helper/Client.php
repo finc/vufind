@@ -21,7 +21,9 @@
 
 namespace BszTheme\View\Helper;
 use Zend\View\Helper\AbstractHelper,
-    Zend\View\Renderer\RendererInterface as Renderer;
+    Zend\View\Renderer\RendererInterface as Renderer,
+    Bsz\Config\Client as ConfigClient;
+
 
 
 /**
@@ -33,7 +35,7 @@ class Client extends AbstractHelper
 {
     protected $_Client;
     
-    public function __construct(\Bsz\Config\Client $Client)
+    public function __construct(ConfigClient $Client)
     {
         $this->_Client = $Client;
     }

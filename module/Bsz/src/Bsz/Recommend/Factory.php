@@ -43,7 +43,7 @@ class Factory {
      */
     public static function getSideFacets(ServiceManager $sm)
     {
-        $client = $sm->getServiceLocator()->get('bsz\client');
+        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
         $isil = $client->isIsilSession() && $client->hasIsilSession() ? $client->getIsils() : null;
        
         return new SideFacets(

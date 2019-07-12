@@ -109,7 +109,7 @@ class RecordController extends \VuFind\Controller\RecordController
             return $this->processIsil();
         }
         $params = $this->params()->fromPost();
-        $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');
+        $config = $this->getServiceLocator()->get('Bsz\Config\Client')->get('ILL');
         // If Request does not have this param, we should not use collapsible 
         // panels
         $success = null;
@@ -122,7 +122,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 $config->get('baseurl_auth_live');
      
         $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
-        $client = $this->getServiceLocator()->get('Bsz\Client');
+        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
             $this->FlashMessenger()->addErrorMessage('missing_isil');
             throw new \Bsz\Exception('You must select a library to continue');
@@ -196,7 +196,7 @@ class RecordController extends \VuFind\Controller\RecordController
     public function freeFormAction() {
         // if one accesses this form with a library that uses custom form, 
         // redirect. 
-        $client = $this->getServiceLocator()->get('Bsz\Client');
+        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
                 $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
         $isils = $this->params()->fromQuery('isil');
         
@@ -238,7 +238,7 @@ class RecordController extends \VuFind\Controller\RecordController
      */
     public function isTestMode()
     {
-        $client = $this->getServiceLocator()->get('Bsz\Client');
+        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
         $libraries = $this->getServiceLocator()->get('bsz\libraries')
                 ->getActive($client->getIsils());
         $test = true;
@@ -256,7 +256,7 @@ class RecordController extends \VuFind\Controller\RecordController
      */
     public function getCustomUrl()
     {
-        $client = $this->getServiceLocator()->get('Bsz\Client');
+        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
         $libraries = $this->getServiceLocator()->get('bsz\libraries')
                 ->getActive($client->getIsils());
 
@@ -275,7 +275,7 @@ class RecordController extends \VuFind\Controller\RecordController
      */
     public function getLibraryBySigel($sigel)
     {
-        $client = $this->getServiceLocator()->get('Bsz\Client');
+        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
         $libraries = $this->getServiceLocator()->get('bsz\libraries')
                 ->getActive($client->getIsils());
 
@@ -297,7 +297,7 @@ class RecordController extends \VuFind\Controller\RecordController
     public function checkAuth($params)
     {
         $library = $this->getLibraryBySigel($params['Sigel']);
-        $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');     
+        $config = $this->getServiceLocator()->get('Bsz\Config\Client')->get('ILL');     
         $status = false;
 
         if (isset($library)) {
@@ -420,7 +420,7 @@ class RecordController extends \VuFind\Controller\RecordController
         $view->customUrl = strlen($this->getCustomUrl()) > 0 ? $this->getcustomUrl() : false;
 
         $view->authMethod = '';
-        $client = $this->getServiceLocator()->get('bsz\client');
+        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
         $isils = $client->getIsils();
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
             $this->FlashMessenger()->addErrorMessage('missing_isil');
@@ -455,7 +455,7 @@ class RecordController extends \VuFind\Controller\RecordController
     
     private function doRequest($url, $params) 
     {
-        $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');
+        $config = $this->getServiceLocator()->get('Bsz\Config\Client')->get('ILL');
          // send real order
         $client = new \Zend\Http\Client();
         $client->setEncType(\Zend\Http\Client::ENC_URLENCODED);

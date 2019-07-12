@@ -47,7 +47,7 @@ class Factory {
         if (strpos($last, 'consortium=FL') === FALSE 
             && strpos($last, 'consortium=ZDB') === FALSE
         ) {
-            $client = $sm->getServiceLocator()->get('bsz\client');
+            $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
             $isils = $client->getIsils();
         }
 

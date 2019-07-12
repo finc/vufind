@@ -262,12 +262,7 @@ class Client extends \Zend\Config\Config
      */
     public function isIsilSession()
     {
-        $setting = (bool)$this->get('Switches')->get('isil_session');
-        if ($setting) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool)$this->get('Switches')->get('isil_session');
     }
 
     /**
