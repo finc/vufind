@@ -83,7 +83,7 @@ class Factory
     {
         $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
         $isils = $client->getIsilAvailability();
-        $libraries = $sm->getServiceLocator()->get('bsz\config\libraries');
+        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
         return new NoILS($sm->getServiceLocator()->get('VuFind\RecordLoader'), $libraries, $isils);
     }
 

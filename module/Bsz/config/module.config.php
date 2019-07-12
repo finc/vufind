@@ -43,25 +43,21 @@ $config = [
     ],    
     'service_manager' => [
         'factories' => [
-            \Bsz\Config\Client::class     => 'Bsz\Config\Factory::getClient', 
-            'bsz\config\libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
-            'bsz\config\dedup'  => 'Bsz\Config\Factory::getDedup',  
+            'Bsz\Config\Client'     => 'Bsz\Config\Factory::getClient', 
+            'Bsz\Config\Libraries'  => 'Bsz\Config\Factory::getLibrariesTable',  
+            'Bsz\Config\Dedup'  => 'Bsz\Config\Factory::getDedup',  
             'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',            
             'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',            
-            'bsz\holding'    => 'Bsz\Factory::getHolding',
-            'bsz\parser\openurl' => 'Bsz\Parser\Factory::getOpenUrlParser',
+            'Bsz\Holding'    => 'Bsz\Factory::getHolding',
+            'Bsz\Parser\OpenUrl' => 'Bsz\Parser\Factory::getOpenUrlParser',
             // override the factory, to make filters dynamic
             'VuFind\SearchTabsHelper' => 'Bsz\Service\Factory::getSearchTabsHelper',
             'VuFind\AuthManager' => 'Bsz\Auth\Factory::getManager',
             'VuFind\AuthManager' => 'Bsz\Auth\Factory::getManager',
         ],
         'invokables' => [
-            'bsz\mapper'     => 'Bsz\FormatMapper',
-            'bsz\library'    => 'Bsz\Config\Library',
-        ],
-        'aliases' => [
-            'bsz\client'    => \Bsz\Config\Client::class,
-            'bsz\libraries' => 'bsz\config\libraries'
+            'Bsz\Mapper'     => 'Bsz\FormatMapper',
+            'Bsz\Config\Library'    => 'Bsz\Config\Library',
         ],
     ],
     'view_manager' => [

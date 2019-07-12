@@ -122,7 +122,7 @@ class Factory
         return new Record(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             $sm->getServiceLocator()->get(\Bsz\Config\Client::class),
-            $sm->getserviceLocator()->get('bsz\holding')
+            $sm->getserviceLocator()->get('Bsz\Holding')
         );
     }
     /**
@@ -137,7 +137,7 @@ class Factory
     public static function getRecordLink(ServiceManager $sm)
     {
         $client = $sm->getServiceLocator()->get(\Bsz\Config\Client::class);
-        $libraries = $sm->getServiceLocator()->get('bsz\config\libraries');      
+        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');      
         $adisUrl = null;
 
         $library = $libraries->getFirstActive($client->getIsils());  

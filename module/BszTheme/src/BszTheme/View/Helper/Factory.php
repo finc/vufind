@@ -48,7 +48,7 @@ class Factory {
         $parts = explode('.', $host);
         $tag = isset($parts[0]) ? $parts[0] : 'swb';     
         $library = null;
-        $libraries = $sm->getServiceLocator()->get('bsz\config\libraries');
+        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
         if ($libraries instanceof  \Bsz\Config\Libraries) {
             if ($client->isIsilSession() && $client->hasIsilSession()) {     
                 $isils = $client->getIsils();
@@ -65,7 +65,7 @@ class Factory {
      */
     public static function getLibraries(ServiceManager $sm) 
     {
-        $libraries = $sm->getServiceLocator()->get('bsz\libraries');
+        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
         return new Libraries($libraries);
     }
 //    

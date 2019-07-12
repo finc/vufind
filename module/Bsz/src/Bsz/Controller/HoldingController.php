@@ -44,7 +44,7 @@ class HoldingController extends \VuFind\Controller\AbstractBase {
         $title = $this->params()->fromQuery('title');
         $author = $this->params()->fromQuery('author');
         
-        $this->holding = $this->getServiceLocator()->get('bsz\holding');
+        $this->holding = $this->getServiceLocator()->get('Bsz\Holding');
         $response = $this->getResponse();
         $response instanceof \Zend\Http\PhpEnvironment\Response;
         $response->getHeaders()->addHeaderLine('content-type', 'application/json');
