@@ -8,7 +8,7 @@ $config = [
     ],     
     'helpers' => [
         'factories' => [
-            'layoutclass' => 'BszTheme\View\Helper\Bodensee\Factory::getLayoutClass',
+            'VuFind\View\Helper\Bootstrap3\LayoutClass' => 'BszTheme\View\Helper\Bodensee\Factory::getLayoutClass',
             'VuFind\View\Helper\Root\OpenUrl' => 'BszTheme\View\Helper\Bodensee\Factory::getOpenUrl',
             'VuFind\View\Helper\Root\Record' => 'BszTheme\View\Helper\Bodensee\Factory::getRecord',
             'VuFind\View\Helper\Root\RecordLink' => 'BszTheme\View\Helper\Bodensee\Factory::getRecordLink',
