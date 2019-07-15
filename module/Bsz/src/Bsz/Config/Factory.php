@@ -55,7 +55,7 @@ class Factory
         $client = new Client(array_merge($vufindconf, $bszconf, $searchconf), true);
         $client->appendContainer($container);
         if ($client->isIsilSession()) {
-            $libraries = $sm->get('bsz\libraries');
+            $libraries = $sm->get('Bsz\Config\Libraries');
             $request = $sm->get('Request');
             $client->setLibraries($libraries);
             $client->setRequest($request);
