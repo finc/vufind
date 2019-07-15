@@ -44,7 +44,7 @@ class Factory
         $isils = $client->getIsils();
 
         if ($client->isIsilSession() && $client->hasIsilSession()) {            
-            $libraries = $sm->getServiceLocator()->get('Bsz\libraries');
+            $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
             $active = $libraries->getFirstActive($isils);
             $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
         }
@@ -64,7 +64,7 @@ class Factory
         $isils = $client->getIsils();
 
         if ($client->isIsilSession() && $client->hasIsilSession()) {            
-            $libraries = $sm->getServiceLocator()->get('Bsz\libraries');
+            $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
             $active = $libraries->getFirstActive($isils);
             $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
         }    
