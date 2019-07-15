@@ -28,7 +28,8 @@ class SolrGvimarc extends SolrMarc
 {
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
-    use \VuFind\RecordDriver\MarcAdvancedTrait;
+    use \VuFind\RecordDriver\MarcAdvancedTrait;    
+    use SubrecordTrait;
 
     /**
      *
@@ -119,12 +120,6 @@ class SolrGvimarc extends SolrMarc
             '656', '689'];
         $headings = $this->getSubjectHeadings($fields);
         return $headings;
-//        if(array_key_exists('subject_all', $this->fields)) {
-//            return $this->fields['subject_all'];
-//        }
-//        else {
-//            return array();
-//        }
     }
 
     
@@ -1665,30 +1660,7 @@ class SolrGvimarc extends SolrMarc
         return false;
     }
 
-    /**
-     * Dedup Functions
-     *
-     * @return boolean
-     */
-
-    public function isSubRecord()
-    {
-        return isset($this->fields['_isSubRecord']) ? $this->fields['_isSubRecord'] : false;
-    }
-
-    public function getSubRecords()
-    {
-        return isset($this->fields['_subRecords']) ? $this->fields['_subRecords'] : null;
-    }
-
-    public function hasSubRecords()
-    {
-        if (null !== ($collection = $this->getSubRecords())) {
-            return 0 < $collection->count();
-        }
-        return false;
-    }    
-    
+  
     /**
      * Get Status/Holdings Information from the internally stored MARC Record
      * (support method used by the NoILS driver).
