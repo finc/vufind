@@ -93,7 +93,7 @@ class Factory {
     public static function getLibraries(ServiceManager $sm)
     {
         $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
-        $client = $sm->getServiceLocator()->get('bsz/client');
+        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
         return new Libraries($libraries, !$client->is('disable_library_tab'));
     }
     /**
@@ -104,7 +104,7 @@ class Factory {
      */
     public static function getDescription(ServiceManager $sm)
     {
-        $client = $sm->getServiceLocator()->get('bsz/client');
+        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
         return new Description(!$client->is('disable_description_tab'));
     }
         /**

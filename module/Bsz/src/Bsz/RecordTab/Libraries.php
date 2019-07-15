@@ -24,7 +24,9 @@
  * THE SOFTWARE.
  */
 
-namespace Bsz\RecordTab    ;
+namespace Bsz\RecordTab;
+
+use Bsz\Config\Libraries;
 
 
 /**
@@ -36,13 +38,13 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
 {
     /**
      *
-     * @var \Bsz\Config\Libraries
+     * @var Bsz\Config\Libraries
      */
     protected $libraries;
     protected $f924;
     protected $visible;
     
-    public function __construct(\Bsz\Config\Libraries $libraries, $visible = true) 
+    public function __construct(Libraries $libraries, $visible = true) 
     {       
         $this->libraries = $libraries;    
         $this->visible = (bool)$visible;
