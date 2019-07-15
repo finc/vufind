@@ -15,7 +15,7 @@ $config = [
             'VuFind\Controller\EdsrecordController' => 'Bsz\Controller\Factory::getEdsrecordController',
             'Bsz\Controller\HoldingController' =>   \Bsz\Controller\Factory::class,
             'Bsz\Controller\ShibController' =>      \Bsz\Controller\Factory::class,
-            'Bsz\Controller\BszController' =>       Bsz\Controller\Factory::class,
+            'Bsz\Controller\BszController' =>       \Bsz\Controller\Factory::class,
             'Bsz\Controller\TestController' =>      \Bsz\Controller\Factory::class,
         ],
         'aliases' => [
