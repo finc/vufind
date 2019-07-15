@@ -7,9 +7,9 @@ $config = [
         'invokables' => [
             'VuFind\Controller\CartController' => 'Bsz\Controller\CartController',
             'Bsz\Controller\HoldingController' => 'Bsz\Controller\HoldingController',
-            'Bsz\Controller\ShibController' => 'Bsz\Controller\ShibController',
         ],
         'factories' => [
+            'Bsz\Controller\ShibController' => 'Bsz\Controller\Factory::getShibController',
             'VuFind\Controller\AjaxController' => 'Bsz\Controller\Factory::getAjaxController',
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
             'VuFind\Controller\SearchController' => 'Bsz\Controller\Factory::getSearchController',

@@ -52,7 +52,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
     {
         static $hideHoldings = false;
         if ($hideHoldings === false) {
-            $logic = $this->getServiceLocator()->get('VuFind\ILSHoldLogic');
+            $logic = $this->serviceLocator->get('VuFind\ILSHoldLogic');
             $hideHoldings = $logic->getSuppressedLocations();
         }
         $hideHoldings[] = '';

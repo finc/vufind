@@ -49,7 +49,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
         }
         if (count($isils) > 0) {
             $container = new Container(
-                'fernleihe', $this->getServiceLocator()->get('VuFind\SessionManager')
+                'fernleihe', $this->serviceLocator->get('VuFind\SessionManager')
             );
             $container->offsetSet('isil', $isils);     
             $uri= $this->getRequest()->getUri();
@@ -100,7 +100,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
     public function dedupAction() {
         
         $params = [];
-        $dedup = $this->getServiceLocator()->get('Bsz/Config/Dedup');
+        $dedup = $this->serviceLocator->get('Bsz/Config/Dedup');
        
         $post = $this->params()->fromPost();     
         

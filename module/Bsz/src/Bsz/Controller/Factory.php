@@ -28,6 +28,10 @@ use Zend\ServiceManager\ServiceManager;
  */
 
 class Factory {
+    
+    public static function __invoke() {
+        die(__CLASS__ . '::' . __METHOD__);
+    }
 
      /**
      * Construct the RecordController.
@@ -74,6 +78,16 @@ class Factory {
     public static function getBszController(ServiceManager $sm)
     {
         return new BszController($sm->getServiceLocator());
+    }
+    
+        /**
+     * 
+     * @param ServiceManager $sm
+     * @return \Bsz\Controller\BszController
+     */
+    public static function getShibController(ServiceManager $sm)
+    {
+        return new ShibController($sm->getServiceLocator());
     }
     
    
