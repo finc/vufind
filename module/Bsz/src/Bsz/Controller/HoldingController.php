@@ -26,15 +26,6 @@ use \Zend\Json\Json;
  */
 class HoldingController extends \VuFind\Controller\AbstractBase {
     
-    /**
-     *
-     * @var \Bsz\Holding
-     */
-    protected $holding;
-      
-    public function __construct() {
-    }
-    
     public function queryAction() {
 
         $isxns =    (array)$this->params()->fromQuery('isxn');

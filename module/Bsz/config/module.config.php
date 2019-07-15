@@ -1,22 +1,22 @@
 <?php
-namespace Bsz\Module\Configuration;
-
+namespace Bsz\Module\Config;
 
 $config = [
+
     'controllers' => [
         'invokables' => [
             'VuFind\Controller\CartController' => 'Bsz\Controller\CartController',
-            'Bsz\Controller\HoldingController' => 'Bsz\Controller\HoldingController',
         ],
         'factories' => [
-            'Bsz\Controller\ShibController' => 'Bsz\Controller\Factory::getShibController',
             'VuFind\Controller\AjaxController' => 'Bsz\Controller\Factory::getAjaxController',
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
             'VuFind\Controller\SearchController' => 'Bsz\Controller\Factory::getSearchController',
             'VuFind\Controller\MyResearchController' => 'Bsz\Controller\Factory::getMyResearchController',
             'VuFind\Controller\EdsrecordController' => 'Bsz\Controller\Factory::getEdsrecordController',
-            'Bsz\Controller\BszController' => 'Bsz\Controller\Factory::getBszController',
-            'Bsz\Controller\TestController' => 'Bsz\Controller\Factory::getTestController',
+            'Bsz\Controller\HoldingController' =>   \Bsz\Controller\Factory::class,
+            'Bsz\Controller\ShibController' =>      \Bsz\Controller\Factory::class,
+            'Bsz\Controller\BszController' =>       Bsz\Controller\Factory::class,
+            'Bsz\Controller\TestController' =>      \Bsz\Controller\Factory::class,
         ],
         'aliases' => [
             'Bsz' => 'Bsz\Controller\BszController',
