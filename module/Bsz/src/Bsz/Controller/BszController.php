@@ -107,7 +107,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
         // store form date in session and cookie
         if (isset($post['submit_dedup_form'])) {
             $params = $dedup->store($post);
-            $this->FlashMessenger()->addSuccessMessage('dedup_settings_success');
+            $this->flashMessenger()->addSuccessMessage('dedup_settings_success');
             
         } else {
             // Load default values from session or config

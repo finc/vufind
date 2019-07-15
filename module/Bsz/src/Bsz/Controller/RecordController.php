@@ -124,7 +124,7 @@ class RecordController extends \VuFind\Controller\RecordController
         $authManager = $this->serviceLocator->get('VuFind\AuthManager');
         $client = $this->serviceLocator->get('Bsz\Config\Client');
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
-            $this->FlashMessenger()->addErrorMessage('missing_isil');
+            $this->flashMessenger()->addErrorMessage('missing_isil');
             throw new \Bsz\Exception('You must select a library to continue');
         } 
         $libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
@@ -134,7 +134,7 @@ class RecordController extends \VuFind\Controller\RecordController
         if (isset($first) && $authManager->loginEnabled() 
                 && !$authManager->isLoggedIn()
                 && $first->getAuth() == 'shibboleth') {
-            $this->FlashMessenger()->addErrorMessage('You must be logged in first');
+            $this->flashMessenger()->addErrorMessage('You must be logged in first');
             $submitDisabled = true;
         }
 
@@ -164,11 +164,11 @@ class RecordController extends \VuFind\Controller\RecordController
                     $success = $this->parseResponse($message);    
 
                 } catch (\Exception $ex) {
-                    $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
+                    $this->flashMessenger()->addErrorMessage('ill_request_error_technical');
                     $this->logError($params['Sigel'].': Error while parsing HTML response from ZFL server');
                 }
             } else { // wrong credentials
-                $this->FlashMessenger()->addErrorMessage('ill_request_error_blocked');
+                $this->flashMessenger()->addErrorMessage('ill_request_error_blocked');
                 $this->logError($params['Sigel'].': ILL request blocked. Checkauth failed');
                 $success = false;
             }
@@ -205,7 +205,7 @@ class RecordController extends \VuFind\Controller\RecordController
         }
         
         if ($client->isIsilSession() && !$client->hasIsilSession() && count($isils) == 0) {
-            $this->FlashMessenger()->addErrorMessage('missing_isil');
+            $this->flashMessenger()->addErrorMessage('missing_isil');
             throw new \Bsz\Exception('You must select a library to continue');
         }
         $libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
@@ -217,7 +217,7 @@ class RecordController extends \VuFind\Controller\RecordController
         if ($first !== null && $authManager->loginEnabled() 
                 && !$authManager->isLoggedIn()
                 && $first->getAuth() == 'shibboleth') {
-            $this->FlashMessenger()->addErrorMessage('You must be logged in first');
+            $this->flashMessenger()->addErrorMessage('You must be logged in first');
             $submitDisabled = true;
         }      
         
@@ -321,11 +321,11 @@ class RecordController extends \VuFind\Controller\RecordController
 
             } catch (\Exception $ex) {
                 $this->logError($params['Sigel'].': Error while parsing XML'.$ex->getMessage());
-                $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
+                $this->flashMessenger()->addErrorMessage('ill_request_error_technical');
             }
             $status = (isset($xml->status) && $xml->status == 'FLOK');            
         } else {
-            $this->FlashMessenger()->addErrorMessage('ill_request_error_blocked');
+            $this->flashMessenger()->addErrorMessage('ill_request_error_blocked');
             $this->logError('ILL request blocked. Sigel not found ');
             $status = false;
         }
@@ -347,7 +347,7 @@ class RecordController extends \VuFind\Controller\RecordController
         if ((bool)preg_match('/Bestell-Id:\s*(\d*)/', $html->textContent, $id) === true ) {
             $this->orderId = $id[1];
             // Order is successfull
-            $this->FlashMessenger()->addSuccessMessage('ill_request_submit_ok');
+            $this->flashMessenger()->addSuccessMessage('ill_request_submit_ok');
             return true;
         } else {
             // order not successfull - disable error reporting because 
@@ -370,7 +370,7 @@ class RecordController extends \VuFind\Controller\RecordController
             }
 
             if (!empty($msgText)) {
-                $this->FlashMessenger()->addInfoMessage($msgText);    
+                $this->flashMessenger()->addInfoMessage($msgText);    
                 $this->logError('ILL error: message from ZFL: '.$msgText);
             }
             error_reporting($error_reporting);
@@ -423,7 +423,7 @@ class RecordController extends \VuFind\Controller\RecordController
         $client = $this->serviceLocator->get('Bsz\Config\Client');
         $isils = $client->getIsils();
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
-            $this->FlashMessenger()->addErrorMessage('missing_isil');
+            $this->flashMessenger()->addErrorMessage('missing_isil');
         } else if (count($isils) > 0) {
             $isil = array_shift($isils);
             $library = $this->serviceLocator->get('Bsz\Config\Libraries')->getByIsil($isil);
