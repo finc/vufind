@@ -43,7 +43,7 @@ class TestController extends \VuFind\Controller\AbstractBase {
      */
     public function recordAction() {
         
-        $runner = $this->getServiceLocator()->get('VuFind\SearchRunner');
+        $runner = $this->serviceLocator->get('VuFind\SearchRunner');
         $ppn = $this->params()->fromQuery('ppn');
         if (!empty($ppn)) {
             $params['lookfor'] = 'id:'.str_replace(['(', ')'], ['\(', '\)'], $ppn);

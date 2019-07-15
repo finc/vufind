@@ -1,25 +1,29 @@
 <?php
-namespace Bsz\Module\Configuration;
-
+namespace Bsz\Module\Config;
 
 $config = [
+
     'controllers' => [
         'invokables' => [
-            'holding' => 'Bsz\Controller\HoldingController',
-            //'test' => 'Bsz\Controller\TestController',
-            'cart' => 'Bsz\Controller\CartController',
-            'fprivacy' => 'Bsz\Controller\BszController',
-            'shib' => 'Bsz\Controller\ShibController',
+            'VuFind\Controller\CartController' => 'Bsz\Controller\CartController',
         ],
         'factories' => [
             'VuFind\Controller\AjaxController' => 'Bsz\Controller\Factory::getAjaxController',
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
-            'test' => 'Bsz\Controller\Factory::getTestController',
             'VuFind\Controller\SearchController' => 'Bsz\Controller\Factory::getSearchController',
             'VuFind\Controller\MyResearchController' => 'Bsz\Controller\Factory::getMyResearchController',
             'VuFind\Controller\EdsrecordController' => 'Bsz\Controller\Factory::getEdsrecordController',
-            'bsz' => 'Bsz\Controller\Factory::getBszController',
+            'Bsz\Controller\HoldingController' =>   \Bsz\Controller\Factory::class,
+            'Bsz\Controller\ShibController' =>      \Bsz\Controller\Factory::class,
+            'Bsz\Controller\BszController' =>       \Bsz\Controller\Factory::class,
+            'Bsz\Controller\TestController' =>      \Bsz\Controller\Factory::class,
         ],
+        'aliases' => [
+            'Bsz' => 'Bsz\Controller\BszController',
+            'Test' => 'Bsz\Controller\TestController',
+            'Shib' => 'Bsz\Controller\ShibController',
+            'Holding' => 'Bsz\Controller\HoldingController',
+        ]
     ],
     'router' => [
         'routes' => [

@@ -19,7 +19,10 @@
  */
 
 namespace Bsz\Controller;
-use Zend\ServiceManager\ServiceManager;
+
+use Zend\ServiceManager\ServiceManager,
+    Interop\Container\ContainerInterface,
+    Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Factory for all controllers which needs params
@@ -27,7 +30,30 @@ use Zend\ServiceManager\ServiceManager;
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 
-class Factory {
+class Factory implements FactoryInterface {
+    
+    /**
+     * Create an object
+     *
+     * @param ContainerInterface $container     Service manager
+     * @param string             $requestedName Service being created
+     * @param null|array         $options       Extra options (optional)
+     *
+     * @return object
+     *
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     * creating a service.
+     * @throws ContainerException if any other error occurs
+     */
+    public function __invoke(ContainerInterface $container, $requestedName,
+        array $options = null
+    ) {
+        if (!empty($options)) {
+            throw new \Exception('Unexpected options sent to factory.');
+        }
+        return new $requestedName($container);
+    }
 
      /**
      * Construct the RecordController.
@@ -54,28 +80,7 @@ class Factory {
             $sm->getServiceLocator(),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
-    }
-    /**
-     * 
-     * @param ServiceManager $sm
-     * @return \Bsz\Controller\TestController
-     */
-    public static function getTestController(ServiceManager $sm) 
-    {
-        return new TestController(
-            $sm->getServiceLocator()->get('Bsz\Config\Libraries')
-        );
-    }
-    /**
-     * 
-     * @param ServiceManager $sm
-     * @return \Bsz\Controller\BszController
-     */
-    public static function getBszController(ServiceManager $sm)
-    {
-        return new BszController($sm->getServiceLocator());
-    }
-    
+    }  
    
 }
 

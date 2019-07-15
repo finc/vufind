@@ -26,15 +26,6 @@ use \Zend\Json\Json;
  */
 class HoldingController extends \VuFind\Controller\AbstractBase {
     
-    /**
-     *
-     * @var \Bsz\Holding
-     */
-    protected $holding;
-      
-    public function __construct() {
-    }
-    
     public function queryAction() {
 
         $isxns =    (array)$this->params()->fromQuery('isxn');
@@ -44,7 +35,7 @@ class HoldingController extends \VuFind\Controller\AbstractBase {
         $title = $this->params()->fromQuery('title');
         $author = $this->params()->fromQuery('author');
         
-        $this->holding = $this->getServiceLocator()->get('Bsz\Holding');
+        $this->holding = $this->serviceLocator->get('Bsz\Holding');
         $response = $this->getResponse();
         $response instanceof \Zend\Http\PhpEnvironment\Response;
         $response->getHeaders()->addHeaderLine('content-type', 'application/json');
@@ -84,7 +75,7 @@ class HoldingController extends \VuFind\Controller\AbstractBase {
      */
     protected function checkNetwork($network) 
     {
-        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
+        $client = $this->serviceLocator->get('Bsz\Config\Client');
         $networks = $client->getNetworks();
         if (in_array($network, $networks)) {
             return array_flip($networks)[$network];
