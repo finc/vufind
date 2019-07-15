@@ -35,7 +35,7 @@ class Factory {
      * @return Bsz\Bsz\Holding
      */
     public static function getHolding(ServiceManager $sm) {        
-        return new Bsz\Holding($sm->get('VuFind\SearchRunner'));
+        return new Holding($sm->get('VuFind\SearchRunner'));
     }   
     
 }
