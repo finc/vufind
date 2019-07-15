@@ -127,7 +127,7 @@ class RecordController extends \VuFind\Controller\RecordController
             $this->FlashMessenger()->addErrorMessage('missing_isil');
             throw new \Bsz\Exception('You must select a library to continue');
         } 
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
+        $libraries = $this->getServiceLocator()->get('Bsz\Config\Libraries');
         $first = $libraries->getFirstActive($client->getIsils());
         $submitDisabled = false;
         
@@ -208,7 +208,7 @@ class RecordController extends \VuFind\Controller\RecordController
             $this->FlashMessenger()->addErrorMessage('missing_isil');
             throw new \Bsz\Exception('You must select a library to continue');
         }
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
+        $libraries = $this->getServiceLocator()->get('Bsz\Config\Libraries');
         $first = $libraries->getFirstActive($client->getIsils());
         if ($first !== null && $first->hasCustomUrl()) {
             return $this->redirect()->toUrl($first->getCustomUrl());
@@ -239,7 +239,7 @@ class RecordController extends \VuFind\Controller\RecordController
     public function isTestMode()
     {
         $client = $this->getServiceLocator()->get('Bsz\Config\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+        $libraries = $this->getServiceLocator()->get('Bsz\Config\Libraries')
                 ->getActive($client->getIsils());
         $test = true;
         foreach ($libraries as $library) {
@@ -257,7 +257,7 @@ class RecordController extends \VuFind\Controller\RecordController
     public function getCustomUrl()
     {
         $client = $this->getServiceLocator()->get('Bsz\Config\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+        $libraries = $this->getServiceLocator()->get('Bsz\Config\Libraries')
                 ->getActive($client->getIsils());
 
         foreach ($libraries as $library) {
@@ -276,7 +276,7 @@ class RecordController extends \VuFind\Controller\RecordController
     public function getLibraryBySigel($sigel)
     {
         $client = $this->getServiceLocator()->get('Bsz\Config\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+        $libraries = $this->getServiceLocator()->get('Bsz\Config\Libraries')
                 ->getActive($client->getIsils());
 
         foreach ($libraries as $library) {
@@ -426,7 +426,7 @@ class RecordController extends \VuFind\Controller\RecordController
             $this->FlashMessenger()->addErrorMessage('missing_isil');
         } else if (count($isils) > 0) {
             $isil = array_shift($isils);
-            $library = $this->getServiceLocator()->get('bsz\libraries')->getByIsil($isil);
+            $library = $this->getServiceLocator()->get('Bsz\Config\Libraries')->getByIsil($isil);
             $view->authMethod = $library->getAuth();
         } 
   

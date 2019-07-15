@@ -74,7 +74,7 @@ class Factory {
         if (strpos($last, 'consortium=FL') === FALSE 
             && strpos($last, 'consortium=ZDB') === FALSE
         ) {
-            $client = $sm->getServiceLocator()->get('bsz\client');
+            $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
             $isils = $client->getIsils();
         }
         
@@ -92,7 +92,7 @@ class Factory {
      */
     public static function getLibraries(ServiceManager $sm)
     {
-        $libraries = $sm->getServiceLocator()->get('bsz\libraries');
+        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
         $client = $sm->getServiceLocator()->get('bsz/client');
         return new Libraries($libraries, !$client->is('disable_library_tab'));
     }
