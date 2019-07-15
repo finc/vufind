@@ -85,7 +85,7 @@ class ShibController extends \VuFind\Controller\AbstractBase
         // build actual url
         try {
             $isil = $this->params()->fromQuery('isil');
-            $libraries = $this->getServiceLocator()->get('bsz\libraries');
+            $libraries = $this->getServiceLocator()->get('Bsz\Config\Libraries');
             $library = $libraries->getByIsil($isil);
             $idp = $library->getIdp();
 
