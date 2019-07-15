@@ -72,7 +72,7 @@ class Holding {
     
     /**
      * 
-     * @param \Bsz\client $client
+     * @param Bsz\Config\Client $client
      */
     public function __construct(Runner $runner) 
     {
