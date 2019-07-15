@@ -4,9 +4,6 @@ namespace Bsz\Module\Config;
 $config = [
 
     'controllers' => [
-        'invokables' => [
-            'VuFind\Controller\CartController' => 'Bsz\Controller\CartController',
-        ],
         'factories' => [
             'VuFind\Controller\AjaxController' => 'Bsz\Controller\Factory::getAjaxController',
             'VuFind\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
