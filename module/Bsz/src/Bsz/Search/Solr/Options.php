@@ -27,7 +27,7 @@ class Options extends \VuFind\Search\Solr\Options {
     
     /**
      *
-     * @var Bsz\Client;
+     * @var Bsz\Config\Client;
      */
     protected $Client;
  
