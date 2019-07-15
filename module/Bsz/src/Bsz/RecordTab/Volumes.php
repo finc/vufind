@@ -93,10 +93,10 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
                 $filter[] = '~material_content_type:"Musical Score"';
                 $params['filter'] = $filter;
                               
-                //$results = $this->runner->run($params); 
+                $results = $this->runner->run($params); 
                 
-                //$results instanceof \Bsz\Search\Solr\Results;
-                //$this->content = $results->getResults();
+                $results instanceof \Bsz\Search\Solr\Results;
+                $this->content = $results->getResults();
             }   
         }
         return $this->content;
