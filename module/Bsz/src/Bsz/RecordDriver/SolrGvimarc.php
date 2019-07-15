@@ -127,26 +127,6 @@ class SolrGvimarc extends SolrMarc
 //        }
     }
 
-    /**
-     * Get SWD subjects.     *
-     * @return array
-     */
-    public function getAllSWDSubjectHeadings()
-    {
-        $swdchain = [];
-        foreach ($this->getMarcRecord()->getFields('689') as $field) {
-            $ind1 = $field->getIndicator(1);
-            $ind2 = $field->getIndicator(2);
-            if (is_numeric($ind1) && is_numeric($ind2)) {
-                $field = $field->getSubField('a');
-                if ($field) {
-                    $swdchain[$ind1][] = $field->getData();
-                }
-            }
-        }
-        return $swdchain;
-    }
-
     
     
     /**
@@ -269,15 +249,6 @@ class SolrGvimarc extends SolrMarc
         return $this->getFirstFieldValue('250', ['a']);
     }
 
-    /**
-     * Get a string representing the last date that the record was indexed.
-     *
-     * @return string
-     */
-    public function getLastIndexed()
-    {
-        return isset($this->fields['last_indexed']) ? $this->fields['last_indexed'] : '';
-    }
 
     /**
      * Get the institutions holding the record.
