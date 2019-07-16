@@ -194,7 +194,6 @@ class Factory
      */
     public static function getSearchTabs(ServiceManager $sm)
     {
-        die(__CLASS__ . '::' . __METHOD__);
         return new SearchTabs(
             $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager'),
             $sm->get('ViewHelperManager')->get('url'),
