@@ -126,8 +126,8 @@
             <? endif; ?>
             
             <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
-            <? // $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
-            <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
+            <? // $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_NOLIVE); ?>
+            <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_GND)); ?>
             <? if (isset($authors['main']) && !empty($authors['main'])): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>

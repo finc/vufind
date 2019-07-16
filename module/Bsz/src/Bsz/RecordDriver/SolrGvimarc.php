@@ -29,7 +29,9 @@ class SolrGvimarc extends SolrMarc
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
     use \VuFind\RecordDriver\MarcAdvancedTrait;    
-    use SubrecordTrait;
+    use SubrecordTrait;  
+
+    
 
     /**
      *
@@ -412,32 +414,42 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
-     * Get the main author of the record.
+     * Get main author info
+     * 
+     * @param string $info Determine which piece of information you need
      *
      * @return string
      */
-    public function getPrimaryAuthor()
+    public function getPrimaryAuthor($info = null)
     {
-        $author = trim($this->getFirstFieldValue('100', ['a']));
-        $titles = trim($this->getFirstFieldValue('100', ['c']));
-        $dates = trim($this->getFirstFieldValue('100', ['d']));
+        if (empty($info)) {            
+            
+            $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
+            $tmp[] = trim($this->getFirstFieldValue('100', ['c']));
+            $tmp[] = trim($this->getFirstFieldValue('100', ['d']));   
+            
+        } elseif ($info === static::AUTHOR_GND) {
+            
+            $candidates = $this->getFieldArray('100', ['0'], false);
+            foreach ($candidates as $item) {
+                if (strpos($item, '(DE-588)') !== FALSE) {
+                    $tmp[] = $item;
+                    break;
+                }
+            }
+            
+        } elseif ($info === static::AUTHOR_LIVE) {
+            
+            $tmp[] = trim($this->getFirstFieldValue('100', ['d'])); 
+            
+        } elseif ($info === static::AUTHOR_NOLIVE) {
+            
+            $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
+            $tmp[] = trim($this->getFirstFieldValue('100', ['c']));
+        }        
+        
+        return implode(', ', array_filter($tmp));
 
-        if (!empty($titles)) {$author .= ', ' . $titles;}
-        if (!empty($dates)) {$author .= ', ' . $dates;}
-
-        return $author;
-
-    }
-
-    /**
-     * Get an Array of Author Name with Live Data
-     *
-     * @return array
-     */
-    public function getPrimaryAuthorNoLive()
-    {
-        $nolive_author = trim($this->getFirstFieldValue('100', ['a']));
-        return $nolive_author;
     }
 
     /**
@@ -451,25 +463,6 @@ class SolrGvimarc extends SolrMarc
             $this->getFieldArray('700', ['a', 'b'])
         );
         return array_unique($authors);
-    }
-
-    /**
-     * Get GND-ID from 100|0 with (DE-588)-prefix
-     *
-     * @return string
-     */
-    public function getPrimaryAuthorGND()
-    {
-        $gndauthor = '';
-
-        $candidates = $this->getFieldArray('100', ['0'], false);
-        foreach ($candidates as $item) {
-            if (strpos($item, '(DE-588)') !== FALSE) {
-                $gndauthor = $item;
-                break;
-            }
-        }
-        return $gndauthor;
     }
 
     /**
