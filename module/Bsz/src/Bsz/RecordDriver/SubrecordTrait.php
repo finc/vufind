@@ -13,7 +13,7 @@ namespace Bsz\RecordDriver;
  *
  * @author amzar
  */
-class SubrecordTrait {
+trait SubrecordTrait {
 
     /**
      * Dedup Functions
