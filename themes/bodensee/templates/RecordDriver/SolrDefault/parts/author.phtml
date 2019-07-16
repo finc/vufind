@@ -10,9 +10,9 @@
         <? $summAuthors = $this->driver->getDeduplicatedAuthors()?> 
         <?=count($summDate) > 0? ' (' . $this->escapeHtml($summDate[0]) . ')' : ''?>               
     <? endif; ?>
-    <? // $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>            
+    <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_NOLIVE) ?>            
     <? if (!empty($summAuthors)): ?>
-    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
+    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_GND)); ?>
     <? if (!empty($summAuthors['main'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
         <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
@@ -37,8 +37,8 @@
     <? endif; ?>
 <? else: ?>
     <? $summAuthors = $this->driver->getDeduplicatedAuthors(); if (!empty($summAuthors)): ?>
-    <? // $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
-    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
+    <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_NOLIVE) ?>   
+    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_GND)); ?>
     <? if (!empty($summAuthors['main'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
         <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>

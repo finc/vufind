@@ -52,6 +52,10 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     const INDEPENDENT = 'independent';
     const COLLECTION = 'collection';
     const PART = 'part';
+    
+    const AUTHOR_GND = 'gnd';
+    const AUTHOR_LIVE = 'live';
+    const AUTHOR_NOLIVE = 'nolive';
 
     /**
      *

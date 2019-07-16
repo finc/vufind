@@ -28,7 +28,10 @@ class SolrGvimarc extends SolrMarc
 {
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
-    use \VuFind\RecordDriver\MarcAdvancedTrait;
+    use \VuFind\RecordDriver\MarcAdvancedTrait;    
+    use SubrecordTrait;  
+
+    
 
     /**
      *
@@ -119,32 +122,6 @@ class SolrGvimarc extends SolrMarc
             '656', '689'];
         $headings = $this->getSubjectHeadings($fields);
         return $headings;
-//        if(array_key_exists('subject_all', $this->fields)) {
-//            return $this->fields['subject_all'];
-//        }
-//        else {
-//            return array();
-//        }
-    }
-
-    /**
-     * Get SWD subjects.     *
-     * @return array
-     */
-    public function getAllSWDSubjectHeadings()
-    {
-        $swdchain = [];
-        foreach ($this->getMarcRecord()->getFields('689') as $field) {
-            $ind1 = $field->getIndicator(1);
-            $ind2 = $field->getIndicator(2);
-            if (is_numeric($ind1) && is_numeric($ind2)) {
-                $field = $field->getSubField('a');
-                if ($field) {
-                    $swdchain[$ind1][] = $field->getData();
-                }
-            }
-        }
-        return $swdchain;
     }
 
     
@@ -269,15 +246,6 @@ class SolrGvimarc extends SolrMarc
         return $this->getFirstFieldValue('250', ['a']);
     }
 
-    /**
-     * Get a string representing the last date that the record was indexed.
-     *
-     * @return string
-     */
-    public function getLastIndexed()
-    {
-        return isset($this->fields['last_indexed']) ? $this->fields['last_indexed'] : '';
-    }
 
     /**
      * Get the institutions holding the record.
@@ -446,32 +414,42 @@ class SolrGvimarc extends SolrMarc
     }
 
     /**
-     * Get the main author of the record.
+     * Get main author info
+     * 
+     * @param string $info Determine which piece of information you need
      *
      * @return string
      */
-    public function getPrimaryAuthor()
+    public function getPrimaryAuthor($info = null)
     {
-        $author = trim($this->getFirstFieldValue('100', ['a']));
-        $titles = trim($this->getFirstFieldValue('100', ['c']));
-        $dates = trim($this->getFirstFieldValue('100', ['d']));
+        if (empty($info)) {            
+            
+            $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
+            $tmp[] = trim($this->getFirstFieldValue('100', ['c']));
+            $tmp[] = trim($this->getFirstFieldValue('100', ['d']));   
+            
+        } elseif ($info === static::AUTHOR_GND) {
+            
+            $candidates = $this->getFieldArray('100', ['0'], false);
+            foreach ($candidates as $item) {
+                if (strpos($item, '(DE-588)') !== FALSE) {
+                    $tmp[] = $item;
+                    break;
+                }
+            }
+            
+        } elseif ($info === static::AUTHOR_LIVE) {
+            
+            $tmp[] = trim($this->getFirstFieldValue('100', ['d'])); 
+            
+        } elseif ($info === static::AUTHOR_NOLIVE) {
+            
+            $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
+            $tmp[] = trim($this->getFirstFieldValue('100', ['c']));
+        }        
+        
+        return implode(', ', array_filter($tmp));
 
-        if (!empty($titles)) {$author .= ', ' . $titles;}
-        if (!empty($dates)) {$author .= ', ' . $dates;}
-
-        return $author;
-
-    }
-
-    /**
-     * Get an Array of Author Name with Live Data
-     *
-     * @return array
-     */
-    public function getPrimaryAuthorNoLive()
-    {
-        $nolive_author = trim($this->getFirstFieldValue('100', ['a']));
-        return $nolive_author;
     }
 
     /**
@@ -485,25 +463,6 @@ class SolrGvimarc extends SolrMarc
             $this->getFieldArray('700', ['a', 'b'])
         );
         return array_unique($authors);
-    }
-
-    /**
-     * Get GND-ID from 100|0 with (DE-588)-prefix
-     *
-     * @return string
-     */
-    public function getPrimaryAuthorGND()
-    {
-        $gndauthor = '';
-
-        $candidates = $this->getFieldArray('100', ['0'], false);
-        foreach ($candidates as $item) {
-            if (strpos($item, '(DE-588)') !== FALSE) {
-                $gndauthor = $item;
-                break;
-            }
-        }
-        return $gndauthor;
     }
 
     /**
@@ -1694,30 +1653,7 @@ class SolrGvimarc extends SolrMarc
         return false;
     }
 
-    /**
-     * Dedup Functions
-     *
-     * @return boolean
-     */
-
-    public function isSubRecord()
-    {
-        return isset($this->fields['_isSubRecord']) ? $this->fields['_isSubRecord'] : false;
-    }
-
-    public function getSubRecords()
-    {
-        return isset($this->fields['_subRecords']) ? $this->fields['_subRecords'] : null;
-    }
-
-    public function hasSubRecords()
-    {
-        if (null !== ($collection = $this->getSubRecords())) {
-            return 0 < $collection->count();
-        }
-        return false;
-    }    
-    
+  
     /**
      * Get Status/Holdings Information from the internally stored MARC Record
      * (support method used by the NoILS driver).
