@@ -14,6 +14,7 @@ $config = [
             'VuFind\View\Helper\Root\RecordLink' => 'BszTheme\View\Helper\Bodensee\Factory::getRecordLink',
             'VuFind\View\Helper\Root\Piwik' => 'BszTheme\View\Helper\Bodensee\Factory::getPiwik',
             'VuFind\View\Helper\Root\SearchTabs' => 'BszTheme\View\Helper\Bodensee\Factory::getSearchTabs',
+            'VuFind\View\Helper\Root\SearchMemory' => 'BszTheme\View\Helper\Bodensee\Factory::getSearchMemory',
         ],
     ]
 ];

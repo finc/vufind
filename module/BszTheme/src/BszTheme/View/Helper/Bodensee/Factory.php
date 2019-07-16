@@ -159,9 +159,9 @@ class Factory
      *
      * @return GetLastSearchLink
      */
-    public static function getGetLastSearchLink(ServiceManager $sm)
+    public static function getSearchMemory(ServiceManager $sm)
     {
-        return new GetLastSearchLink(
+        return new SearchMemory(
             $sm->getServiceLocator()->get('VuFind\Search\Memory')
         );
     }
