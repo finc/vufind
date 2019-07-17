@@ -31,9 +31,13 @@ class PluginManager extends \VuFind\RecordDriver\PluginManager {
             $data['record_format'] ?? $data['recordtype'] ?? $defaultKeySuffix
         );
         $recordType = $this->has($key) ? $key : $keyPrefix . $defaultKeySuffix;
+        
+        if (strpos($recordType, 'Gvi') === FALSE) {
+            $recordType = 'SolrFindexMarc';
+        }         
 
         // Build the object:
-        $driver = $this->get($recordType);
+        $driver = $this->get($recordType);        
         $driver->setRawData($data);
         return $driver;
     }

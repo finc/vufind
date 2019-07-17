@@ -259,6 +259,25 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
         $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
         return $driver;
     }
+    
+        /**
+     * Factory for SolrMarc record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrMarc
+     */
+    public static function getSolrFindexMarc(ServiceManager $sm)
+    {
+        $driver = new SolrFindexMarc($sm->getServiceLocator()->get('Bsz\Mapper'), 
+            $sm->getServiceLocator()->get('Bsz\Config\Client'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+        );
+        return Factory::attach($driver, $sm);
+    }
+    
 
 }
 

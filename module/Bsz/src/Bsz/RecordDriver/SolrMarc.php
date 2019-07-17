@@ -62,6 +62,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      * @var FormatMapper 
      */
     protected $mapper;
+    
+    /**
+     *
+     * @var array
+     */
+    protected $formats;
 
     /**
      *

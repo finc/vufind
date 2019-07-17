@@ -92,6 +92,7 @@ $config = [
                 'factories' => [
                     'solrdefault' => 'Bsz\RecordDriver\Factory::getSolrDefault',
                     'solrgvimarc' => 'Bsz\RecordDriver\Factory::getSolrGviMarc'    ,                
+                    'solrfindexmarc' => 'Bsz\RecordDriver\Factory::getSolrFindexMarc'    ,                
                     'solrgvimarcde576' => 'Bsz\RecordDriver\Factory::getSolrGvimarcde576',
                     'solrgvimarcde600' => 'Bsz\RecordDriver\Factory::getSolrGvimarcde600',
                     'solrgvimarcde601' => 'Bsz\RecordDriver\Factory::getSolrGvimarcde601',

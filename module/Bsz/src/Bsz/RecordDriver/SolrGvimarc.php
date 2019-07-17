@@ -51,11 +51,6 @@ class SolrGvimarc extends SolrMarc
      */
     protected $container = [];
 
-    /**
-     *
-     * @var array
-     */
-    protected $formats;
 
     public function __construct(FormatMapper $Mapper, \Bsz\Config\Client $Client,
             $mainConfig = null, $recordConfig = null, $searchSettings = null)
