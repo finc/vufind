@@ -7,7 +7,7 @@ namespace Bsz\RecordDriver;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGvimarcde101 extends SolrGvimarc
+class SolrGviMarcDE101 extends SolrGviMarc
 {
     public function getNetwork() {
         return 'DNB';

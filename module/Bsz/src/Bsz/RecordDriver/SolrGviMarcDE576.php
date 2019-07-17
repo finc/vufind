@@ -7,7 +7,7 @@ namespace Bsz\RecordDriver;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGvimarcde576 extends SolrGvimarc
+class SolrGviMarcDE576 extends SolrGviMarc
 {
     public function getNetwork() {return 'SWB';}
 

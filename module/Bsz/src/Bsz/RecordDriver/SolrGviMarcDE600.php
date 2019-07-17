@@ -7,7 +7,7 @@ namespace Bsz\RecordDriver;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGvimarcde600 extends SolrGvimarc
+class SolrGviMarcDE600 extends SolrGviMarc
 {
     public function getNetwork() {return 'ZDB';}
 }

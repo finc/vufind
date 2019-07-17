@@ -8,7 +8,7 @@ namespace Bsz\RecordDriver;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGvimarcde627 extends SolrGvimarc
+class SolrGviMarcDE627 extends SolrGviMarc
 {
     /*
      * return string "DE-576" or "DE-601"

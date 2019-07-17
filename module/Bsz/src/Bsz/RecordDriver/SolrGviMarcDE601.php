@@ -3,22 +3,24 @@
 namespace Bsz\RecordDriver;
 
 /**
- * SolrMarc implementation for HEBIS records
+ * SolrMarc implementation for GBV records
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGvimarcde603 extends SolrGvimarc
+class SolrGviMarcDE601 extends SolrGviMarc
 {
-    public function getNetwork() {return 'HEBIS';}
+    public function getNetwork() {return 'GBV';}
     
-    /**
+        /**
      * For rticles: get container title
      * 
      * @return type
      */
     public function getContainerTitle()
     {
-        $fields = [772 => ['t']];
+        $fields = [
+            773 => ['a', 't'],
+        ];
         $array = $this->getFieldsArray($fields);
         $title = array_shift($array);
         return str_replace('In: ', '', $title);

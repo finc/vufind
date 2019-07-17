@@ -48,7 +48,7 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      */
     public static function getSolrGviMarc(ServiceManager $sm)
     {
-        $driver = new SolrGvimarc($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarc($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
@@ -63,9 +63,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      *
      * @return SolrMarc
      */
-    public static function getSolrGvimarcde576(ServiceManager $sm)
+    public static function getSolrGviMarcDE576(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde576($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarcDE576($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
@@ -81,9 +81,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      *
      * @return SolrMarc
      */
-    public static function getSolrGviMarcde600(ServiceManager $sm)
+    public static function getSolrGviMarcDE600(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde600($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarcDE600($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
@@ -99,9 +99,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      *
      * @return SolrMarc
      */
-    public static function getSolrGviMarcde601(ServiceManager $sm)
+    public static function getSolrGviMarcDE601(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde601($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarcDE601($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
@@ -117,9 +117,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      *
      * @return SolrMarc
      */
-    public static function getSolrGviMarcde602(ServiceManager $sm)
+    public static function getSolrGviMarcDE602(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde602($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarcDE602($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
@@ -135,9 +135,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      *
      * @return SolrMarc
      */
-    public static function getSolrGviMarcde603(ServiceManager $sm)
+    public static function getSolrGviMarcDE603(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde603($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarcDE603($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
@@ -153,9 +153,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      *
      * @return SolrMarc
      */
-    public static function getSolrGviMarcde604(ServiceManager $sm)
+    public static function getSolrGviMarcDE604(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde604($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarcDE604($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
@@ -171,9 +171,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      *
      * @return SolrMarc
      */
-    public static function getSolrGviMarcde605(ServiceManager $sm)
+    public static function getSolrGviMarcDE605(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde605($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarcDE605($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
@@ -189,9 +189,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      *
      * @return SolrMarc
      */
-    public static function getSolrGviMarcde101(ServiceManager $sm)
+    public static function getSolrGviMarcDE101(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde101($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarcDE101($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
@@ -207,9 +207,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      *
      * @return SolrMarc
      */
-    public static function getSolrGviMarcde627(ServiceManager $sm)
+    public static function getSolrGviMarcDE627(ServiceManager $sm)
     {
-        $driver = new SolrGvimarcde627($sm->getServiceLocator()->get('Bsz\Mapper'), 
+        $driver = new SolrGviMarcDE627($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,

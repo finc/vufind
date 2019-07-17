@@ -51,7 +51,7 @@ class TestController extends \VuFind\Controller\AbstractBase {
 
             // now, we can do something with our record
             foreach ($results->getResults() as $record) {
-                $record instanceof \Bsz\RecordDriver\SolrGvimarc;
+                $record instanceof \Bsz\RecordDriver\SolrGviMarc;
                 var_dump($record->getTitle());
             }            
         } else {
