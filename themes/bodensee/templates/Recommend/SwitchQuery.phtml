@@ -10,7 +10,7 @@
       <li><?=$this->transEsc('switchquery_typos')?></li>
       <li><?=$this->transEsc('switchquery_other')?></li>
     </ul>
-    <? if ($this->searchtabs()->isILL($this->searchClassId)): ?> 
+    <? if ($this->searchTabs()->isILL($this->searchClassId)): ?> 
         <?
             $library = $this->libraries()->getFirstActive($this->client()->getIsils());
             $url = $this->url('record-freeform');
