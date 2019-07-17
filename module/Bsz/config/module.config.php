@@ -62,6 +62,7 @@ $config = [
             'VuFind\RecordDriver\PluginManager' => 'Bsz\RecordDriver\PluginManagerFactory',
         ],
         'invokables' => [
+            'Bsz\RecordDriver\Definition' => 'Bsz\RecordDriver\Definition',
             'Bsz\Mapper'     => 'Bsz\FormatMapper',
             'Bsz\Config\Library'    => 'Bsz\Config\Library',
         ],

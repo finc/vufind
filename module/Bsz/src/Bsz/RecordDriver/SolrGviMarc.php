@@ -24,7 +24,7 @@ use Bsz\FormatMapper;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGviMarc extends SolrMarc
+class SolrGviMarc extends SolrMarc implements Definition
 {
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;

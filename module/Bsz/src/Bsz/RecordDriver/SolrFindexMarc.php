@@ -16,7 +16,7 @@ use Bsz\FormatMapper,
  *
  * @author amzar
  */
-class SolrFindexMarc extends SolrMarc {
+class SolrFindexMarc extends SolrMarc implements Definition {
     
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;

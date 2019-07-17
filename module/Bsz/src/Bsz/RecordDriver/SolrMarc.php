@@ -23,39 +23,20 @@ namespace Bsz\RecordDriver;
 use Bsz\FormatMapper,
     VuFindCode\ISBN;
 
+
 /**
  * Description of SolrMarc
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrMarc extends \VuFind\RecordDriver\SolrMarc
+class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
 {
     
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
     use \VuFind\RecordDriver\MarcAdvancedTrait;
 
-    const DELIMITER = ' ';
-    // Multipart Levels
-    const MULTIPART_PART = 'part';
-    const MULTIPART_COLLECTION = 'collection';
-    const NO_MULTIPART = 'no_multipart';
-    // Bibliographic Levels
-    const BIBLIO_MONO_COMPONENT = 'MonographPart';
-    const BIBLIO_SERIAL_COMPONENT = 'SerialPart';
-    const BIBLIO_COLLECTION = 'Collection';
-    const BIBLIO_SUBUNIT = 'Subunit';
-    const BIBLIO_MONOGRAPH = 'Monograph';
-    const BIBLIO_SERIAL = 'Serial';
-    const BIBLIO_INTEGRATED = 'Integrated';
-    // Simple breakdown of above 
-    const INDEPENDENT = 'independent';
-    const COLLECTION = 'collection';
-    const PART = 'part';
     
-    const AUTHOR_GND = 'gnd';
-    const AUTHOR_LIVE = 'live';
-    const AUTHOR_NOLIVE = 'nolive';
 
     /**
      *
