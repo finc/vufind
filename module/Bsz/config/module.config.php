@@ -59,6 +59,7 @@ $config = [
             'VuFind\SearchTabsHelper' => 'Bsz\Service\Factory::getSearchTabsHelper',
             'VuFind\AuthManager' => 'Bsz\Auth\Factory::getManager',
             'VuFind\AuthManager' => 'Bsz\Auth\Factory::getManager',
+            'VuFind\RecordDriver\PluginManager' => 'Bsz\RecordDriver\PluginManagerFactory',
         ],
         'invokables' => [
             'Bsz\Mapper'     => 'Bsz\FormatMapper',
