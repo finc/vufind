@@ -37,4 +37,26 @@ interface Definition {
     const AUTHOR_LIVE = 'live';
     const AUTHOR_NOLIVE = 'nolive';
     
+    public function getCallNumber() : string;
+    public function getPPN() : string;
+    public function getISBNs() : array;
+    public function getISSNs() : array;
+    public function getCleanISBN() : string;
+    public function getCleanISSN() : string;
+    public function getLanguages() : array;
+    public function getPrimaryAuthor(string $info) : string;
+    public function getPublishers() : array;
+    public function getTitle() : string;
+    public function getShortTitle() : string;
+    public function getSubTitle() : string;
+    #public function getSubTitle() : string|bool ;
+    public function getURLs() : array;
+    
+    
+    
+    
+    
+    
+    
+    
 }

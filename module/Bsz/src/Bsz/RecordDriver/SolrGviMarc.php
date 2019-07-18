@@ -214,7 +214,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return string
      */
-    public function getCallNumber()
+    public function getCallNumber() : string
     {
         return $this->getPPN();
     }
@@ -257,7 +257,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return array
      */
-    public function getISBNs()
+    public function getISBNs() : array
     {
         //isbn = 020az:773z
         $isbn = array_merge(
@@ -272,7 +272,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return array
      */
-    public function getISSNs()
+    public function getISSNs() : array
     {
         // issn = 022a:440x:490x:730x:773x:776x:780x:785x
         $issn = array_merge(
@@ -294,7 +294,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return mixed
      */
-    public function getCleanISSN()
+    public function getCleanISSN() : string
     {
         $issns = $this->getISSNs();
         if (empty($issns)) {
@@ -316,7 +316,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return array
      */
-    public function getLanguages()
+    public function getLanguages() : array
     {
         $languages = [];
         $fields = $this->getMarcRecord()->getFields('041');
@@ -392,7 +392,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return string
      */
-    public function getPPN()
+    public function getPPN() : string
     {
         return $this->getMarcRecord()->getField('001')->getData();
     }
@@ -415,7 +415,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return string
      */
-    public function getPrimaryAuthor($info = null)
+    public function getPrimaryAuthor(string $info = null) : string
     {
         if (empty($info)) {            
             
@@ -504,7 +504,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return array
      */
-    public function getPublishers()
+    public function getPublishers() : array 
     {
         $fields = [
             260 => 'b',
@@ -636,7 +636,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return string
      */
-    public function getShortTitle()
+    public function getShortTitle() : string
     {
         $shortTitle = $this->getFirstFieldValue('245', array('a'), false);
 
@@ -656,7 +656,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return string
      */
-    public function getSubtitle()
+    public function getSubtitle() : string
     {
         $subTitle = $this->getFirstFieldValue('245', array('b'), false);
 
@@ -724,7 +724,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle() : string
     {
         $tmp = [
             $this->getShortTitle(),
@@ -780,7 +780,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return array
      */
-    public function getURLs()
+    public function getURLs() : array
     {
         //url = 856u:555u
 

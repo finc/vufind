@@ -29,7 +29,7 @@ use Bsz\FormatMapper,
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
+class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
     
     use \VuFind\RecordDriver\IlsAwareTrait;
@@ -516,7 +516,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
      *
      * @return mixed
      */
-    public function getCleanISBN()
+    public function getCleanISBN() : string
     {
 
         // Get all the ISBNs and initialize the return value:

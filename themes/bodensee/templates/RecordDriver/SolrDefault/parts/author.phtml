@@ -1,8 +1,10 @@
 <div>
+<? use \Bsz\RecordDriver\Definition as Def; ?>
+
 <? //$containerId = $this->driver->getContainerId();  
    $summDate = $this->driver->getPublicationDates();   
    $journalTitle = $this->driver->getContainerTitle();    
-   //$link = isset($containerId) ? $this->recordLink()->getUrl($containerId) : $this->record($this->driver)->getLink('journaltitle', str_replace(['{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'], '', $journalTitle));
+   $link = isset($containerId) ? $this->recordLink()->getUrl($containerId) : $this->record($this->driver)->getLink('journaltitle', str_replace(['{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'], '', $journalTitle));
 ?>  
 <? if($this->driver->isCollection()): ?>
     <? $summDate = $this->driver->getPublicationDates(); if (!empty($summDate) && isset($summDate[0])): ?>
@@ -10,9 +12,9 @@
         <? $summAuthors = $this->driver->getDeduplicatedAuthors()?> 
         <?=count($summDate) > 0? ' (' . $this->escapeHtml($summDate[0]) . ')' : ''?>               
     <? endif; ?>
-    <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_NOLIVE) ?>            
+    <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(Def::AUTHOR_NOLIVE) ?>            
     <? if (!empty($summAuthors)): ?>
-    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_GND)); ?>
+    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(Def::AUTHOR_GND)); ?>
     <? if (!empty($summAuthors['main'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
         <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
@@ -37,8 +39,8 @@
     <? endif; ?>
 <? else: ?>
     <? $summAuthors = $this->driver->getDeduplicatedAuthors(); if (!empty($summAuthors)): ?>
-    <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_NOLIVE) ?>   
-    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_GND)); ?>
+    <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(Def::AUTHOR_NOLIVE) ?>   
+    <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(Def::AUTHOR_GND)); ?>
     <? if (!empty($summAuthors['main'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
         <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($summAuthors['main'])?></a>
