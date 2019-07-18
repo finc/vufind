@@ -21,6 +21,7 @@
 namespace BszTheme\View\Helper\Bodensee;
 
 use \Bsz\RecordDriver\SolrMarc;
+use Bsz\RecordDriver\Definition as Def;
 
 /**
  * Extension of Root RecordLink Helper
@@ -113,6 +114,34 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
             'label' => $label
         ];
         
+    }
+    
+    /**
+     * This method renders the author names well formated as HTML
+     * 
+     * @param SolrMarc $driver
+     * @param int $number 1 to number of authors
+     * 
+     * @return string
+     */
+    public function linkAuthor(SolrMarc $driver, int $number) : string 
+    {
+        $params = [];
+        if ($number == 1) {
+            $params = [
+                'gnd' => $driver->getPrimaryAuthor(Def::AUTHOR_GND),
+                'name' => $driver->getPrimaryAuthor(Def::AUTHOR_NAME),
+                'live' => $driver->getPrimaryAuthor(Def::AUTHOR_LIVE),                
+            ];
+        } else {
+            $number--;
+            $params = [
+                'gnd' => $driver->getSecondaryAuthor(Def::AUTHOR_GND, $number),
+                'name' => $driver->getSecondaryAuthor(Def::AUTHOR_NAME, $number),
+                'live' => $driver->getSecondaryAuthor(Def::AUTHOR_LIVE, $number),                
+            ];
+        }
+        return $this->getView()->render('Helpers/singleauthor.phtml', $params);
     }
     
 }
