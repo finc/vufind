@@ -24,4 +24,6 @@ nbproject
 /config
 /local
 /nbproject/private/
+nbproject/
+
 *.css.map
