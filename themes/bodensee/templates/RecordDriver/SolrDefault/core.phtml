@@ -1,3 +1,5 @@
+<? use \Bsz\RecordDriver\Definition as Def; ?>
+
 <? 
     $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
     $hiddenFilterString = '';
@@ -126,8 +128,8 @@
             <? endif; ?>
             
             <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
-            <? // $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_NOLIVE); ?>
-            <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(\Bsz\RecordDriver\SolrMarc::AUTHOR_GND)); ?>
+            <? // $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(Def::AUTHOR_NOLIVE); ?>
+            <? // $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(Def::AUTHOR_GND)); ?>
             <? if (isset($authors['main']) && !empty($authors['main'])): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
