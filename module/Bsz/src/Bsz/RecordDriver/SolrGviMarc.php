@@ -417,6 +417,8 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getPrimaryAuthor(string $info = null) : string
     {
+        $tmp = [];
+        
         if (empty($info)) {            
             
             $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
@@ -437,7 +439,7 @@ class SolrGviMarc extends SolrMarc implements Definition
             
             $tmp[] = trim($this->getFirstFieldValue('100', ['d'])); 
             
-        } elseif ($info === static::AUTHOR_NOLIVE) {
+        } elseif ($info === static::AUTHOR_NAME) {
             
             $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
             $tmp[] = trim($this->getFirstFieldValue('100', ['c']));
@@ -563,6 +565,18 @@ class SolrGviMarc extends SolrMarc implements Definition
      * @return array
      */
         public function getSecondaryAuthors()
+    {
+        $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd']);
+        return $author2;
+    }
+     /**
+     * Get an array of all secondary authors (complementing getPrimaryAuthor()).
+     *
+     * @param int $id
+     * 
+     * @return array
+     */
+    public function getSecondaryAuthor(string $info, int $id)
     {
         $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd']);
         return $author2;

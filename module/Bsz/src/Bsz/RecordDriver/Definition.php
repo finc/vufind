@@ -35,7 +35,8 @@ interface Definition {
     
     const AUTHOR_GND = 'gnd';
     const AUTHOR_LIVE = 'live';
-    const AUTHOR_NOLIVE = 'nolive';
+    const AUTHOR_NOLIVE = 'nolive'; // deprecated, will be removed
+    const AUTHOR_NAME = 'name';
     
     public function getCallNumber() : string;
     public function getPPN() : string;
