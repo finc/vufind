@@ -512,38 +512,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     }
 
     /**
-     * Returns ISBN as string. ISBN-13 preferred
-     *
-     * @return mixed
-     */
-    public function getCleanISBN() : string
-    {
-
-        // Get all the ISBNs and initialize the return value:
-        $isbns = $this->getISBNs();
-        $isbn10 = false;
-
-        // Loop through the ISBNs:
-        foreach ($isbns as $isbn) {
-            // Strip off any unwanted notes:
-            if ($pos = strpos($isbn, ' ')) {
-                $isbn = substr($isbn, 0, $pos);
-            }
-
-            // If we find an ISBN-10, return it immediately; otherwise, if we find
-            // an ISBN-13, save it if it is the first one encountered.
-            $isbnObj = new ISBN($isbn);
-            if ($isbn13 = $isbnObj->get13()) {
-                return $isbn13;
-            }
-            if (!$isbn10) {
-                $isbn10 = $isbnObj->get10();
-            }
-        }
-        return $isbn10;
-    }
-
-    /**
      * Get access to the raw File_MARC object.
      *
      * @return \File_MARCBASE
@@ -679,6 +647,213 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         
         return $params;
     }
+    
+    /**
+     * Get the call number associated with the record (empty string if none).
+     *
+     * @return string
+     */
+    public function getCallNumber() : string
+    {
+        return $this->getPPN();
+    }
+    
+    /**
+     * Get PPN of Record
+     *
+     * @return string
+     */
+    
+    public function getPPN() : string
+    {
+        return $this->getMarcRecord()->getField('001')->getData();
+    }
+    
+        /**
+     * Returns ISBN as string. ISBN-13 preferred
+     *
+     * @return mixed
+     */
+    public function getCleanISBN() : string
+    {
+
+        // Get all the ISBNs and initialize the return value:
+        $isbns = $this->getISBNs();
+        $isbn10 = false;
+
+        // Loop through the ISBNs:
+        foreach ($isbns as $isbn) {
+            // Strip off any unwanted notes:
+            if ($pos = strpos($isbn, ' ')) {
+                $isbn = substr($isbn, 0, $pos);
+            }
+
+            // If we find an ISBN-10, return it immediately; otherwise, if we find
+            // an ISBN-13, save it if it is the first one encountered.
+            $isbnObj = new ISBN($isbn);
+            if ($isbn13 = $isbnObj->get13()) {
+                return $isbn13;
+            }
+            if (!$isbn10) {
+                $isbn10 = $isbnObj->get10();
+            }
+        }
+        return $isbn10;
+    }
+    
+    /**
+     * Get just the base portion of the first listed ISSN (or false if no ISSNs).
+     *
+     * @return mixed
+     */
+    public function getCleanISSN() : string
+    {
+        $issns = $this->getISSNs();
+        if (empty($issns)) {
+            return false;
+        }
+        $issn = $issns[0];
+        if ($pos = strpos($issn, ' ')) {
+            $issn = substr($issn, 0, $pos);
+        }
+        // ISSN without dash are treatened as invalid be JOP
+        if (strpos($issn, '-') === false) {
+            $issn = substr($issn, 0, 4).'-'.substr($issn, 4, 4);
+        }
+        return $issn;
+    }
+    
+    /**
+     * Get an array of all the languages associated with the record.
+     *
+     * @return array
+     */
+    public function getLanguages() : array
+    {
+        $languages = [];
+        $fields = $this->getMarcRecord()->getFields('041');
+        foreach ($fields as $field) {
+                foreach ($field->getSubFields('a') as $sf) {
+                    $languages[] = $sf->getData();
+                }
+        }
+        return $languages;
+    }
+    
+    /**
+     * Get main author info
+     * 
+     * @param string $info Determine which piece of information you need
+     *
+     * @return string
+     */
+    public function getPrimaryAuthor(string $info = null) : string
+    {
+        $tmp = [];
+        
+        if (empty($info)) {            
+            
+            $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
+            $tmp[] = trim($this->getFirstFieldValue('100', ['c']));
+            $tmp[] = trim($this->getFirstFieldValue('100', ['d']));   
+            
+        } elseif ($info === static::AUTHOR_GND) {
+            
+            $candidates = $this->getFieldArray('100', ['0'], false);
+            foreach ($candidates as $item) {
+                if (strpos($item, '(DE-588)') !== FALSE) {
+                    $tmp[] = $item;
+                    break;
+                }
+            }
+            
+        } elseif ($info === static::AUTHOR_LIVE) {
+            
+            $tmp[] = trim($this->getFirstFieldValue('100', ['d'])); 
+            
+        } elseif ($info === static::AUTHOR_NAME) {
+            
+            $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
+            $tmp[] = trim($this->getFirstFieldValue('100', ['c']));
+        }        
+        
+        return implode(', ', array_filter($tmp));
+
+    }
+    
+
+    /**
+     * Get the publishers of the record.
+     *
+     * @return array
+     */
+    public function getPublishers() : array 
+    {
+        $fields = [
+            260 => 'b',
+            264 => 'b',
+        ];
+        return $this->getFieldsArray($fields);
+    }
+    
+     /**
+     * Get the full title of the record.
+     *
+     * @return string
+     */
+    public function getTitle() : string
+    {
+        $tmp = [
+            $this->getShortTitle(),
+            ' : ',
+            $this->getSubtitle(),
+        ];
+        $title = implode(' ', $tmp);
+        return $this->cleanString($title);
+    }
+    
+    /**
+     * Get the short (pre-subtitle) title of the record.
+     *
+     * @return string
+     */
+    public function getShortTitle() : string
+    {
+        $shortTitle = $this->getFirstFieldValue('245', array('a'), false);
+
+        // Sortierzeichen weg
+        if (strpos($shortTitle, '@') !== false) {
+            $occurrence = strpos($shortTitle, '@');
+            $shortTitle = substr_replace($shortTitle, '', $occurrence, 1);
+        }
+        // remove all non printable chars - they max look ugly in <title> tags
+//        $shortTitle = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $shortTitle);
+
+        return $this->cleanString($shortTitle);
+    }
+    
+        /**
+     * Get the subtitle of the record.
+     *
+     * @return string
+     */
+    public function getSubtitle() : string
+    {
+        $subTitle = $this->getFirstFieldValue('245', array('b'), false);
+
+        // Sortierzeichen weg
+        if (strpos($subTitle, '@') !== false) {
+            $occurrence = strpos($subTitle, '@');
+            $subTitle = substr_replace($subTitle, '', $occurrence, 1);
+        }
+
+        return $this->cleanString($subTitle);
+    }
+    
+    
+    
+    
+
        
 
 }
