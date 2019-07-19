@@ -32,37 +32,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     use SubrecordTrait;  
     use HelperTrait;
     use ContainerTrait;
-
     
-
-    /**
-     *
-     * @var FormatMapper
-     */
-    protected $mapper;
-
-    /**
-     *
-     * @var Bsz\Config\Client
-     */
-    protected $client;
-
-    /**
-     *
-     * @var array
-     */
-    protected $container = [];
-
-
-    public function __construct(FormatMapper $Mapper, \Bsz\Config\Client $Client,
-            $mainConfig = null, $recordConfig = null, $searchSettings = null)
-    {
-//        parent::__construct($mainConfig, $recordConfig, $searchSettings);
-        parent::__construct($Mapper, $mainConfig, $recordConfig, $searchSettings);
-        $this->mapper = $Mapper;
-        $this->client = $Client;
-    }
-
     /**
      * Get subject headings associated with this record.  Each heading is
      * returned as an array of chunks, increasing from least specific to most
@@ -674,7 +644,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $consortium = array_merge($consortium1, $consortium2);
         
         foreach ($consortium as $k => $con) {
-            $mapped = $this->client->mapNetwork($con);
+            $mapped = $this->mainConfig->mapNetwork($con);
             if (!empty($mapped)) {
                 $consortium[$k] = $mapped;
 
@@ -731,7 +701,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         if (isset($_SESSION['dedup']['group_field'])) {
             $conf = $_SESSION['dedup']['group_field'];
         } else {
-            $conf = $this->client->get('Index')->get('group.field');
+            $conf = $this->mainConfig->get('Index')->get('group.field');
         }
         if (is_string($conf) && isset($this->fields[$conf])) {
             if (is_array($this->fields[$conf])) {
@@ -753,7 +723,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getRealTimeHoldings()
     {
-        if ($this->client->isIsilSession() && !$this->client->hasIsilSession()) {
+        if ($this->mainConfig->isIsilSession() && !$this->mainConfig->hasIsilSession()) {
             return [];
         } else {
             return $this->hasILS() ? $this->holdLogic->getHoldings(
@@ -772,7 +742,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         if ($this->getNetwork() != 'SWB') {
             return false;
         }
-        if ($this->client->isIsilSession() && !$this->client->hasIsilSession()) {
+        if ($this->mainConfig->isIsilSession() && !$this->mainConfig->hasIsilSession()) {
             return false;
         }
 
@@ -1093,7 +1063,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $localUrls = [];
         $field = '924'; // Bestandangaben, SWB only
         // take only the first ISIL from config
-        $isilsconfig = $this->client->getIsils();
+        $isilsconfig = $this->mainConfig->getIsils();
         $isilcurrent = '';
         $addedurls = [];
 
@@ -1101,7 +1071,7 @@ class SolrGviMarc extends SolrMarc implements Definition
 
         foreach ($holdings as $holding) {
             $isilcurrent = isset($holding['b']) ? $holding['b'] : null;
-            $isils = $this->client->getIsils();
+            $isils = $this->mainConfig->getIsils();
             // we assume the first isil in config.ini is the most important one
             $firstIsil = array_shift($isils);
 
@@ -1142,7 +1112,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         $holdings = [];
         $f924 = $this->getField924(false,true);
-        $isils = $this->client->getIsilAvailability();
+        $isils = $this->mainConfig->getIsilAvailability();
 
         // Building a regex pattern
         foreach ($isils as $k => $isil) {

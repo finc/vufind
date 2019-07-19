@@ -50,7 +50,6 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
     {
         $driver = new SolrGviMarc($sm->getServiceLocator()->get('Bsz\Mapper'), 
             $sm->getServiceLocator()->get('Bsz\Config\Client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             null,
             $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
         );

@@ -25,7 +25,7 @@ use Bsz\FormatMapper,
 
 
 /**
- * Description of SolrMarc
+ * This is the base BSZ SolrMarc class 
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
@@ -36,31 +36,26 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     use \VuFind\RecordDriver\MarcReaderTrait;
     use \VuFind\RecordDriver\MarcAdvancedTrait;
 
-    
-
-    /**
-     *
-     * @var FormatMapper 
-     */
     protected $mapper;
+    protected $formats;
+    protected $runner;
+    protected $container = [];
     
     /**
-     *
-     * @var array
+     * 
+     * @param FormatMapper $mapper
+     * @param \Bsz\Config\Client $mainConfig
+     * @param type $recordConfig
+     * @param type $searchSettings
      */
-    protected $formats;
 
-    /**
-     *
-     * @var \VuFind\SearchRunner
-     */
-    protected $runner;
-
-    public function __construct(FormatMapper $Mapper, $mainConfig = null, $recordConfig = null, $searchSettings = null)
+    public function __construct(FormatMapper $mapper, 
+            \Bsz\Config\Client $mainConfig = null, 
+            $recordConfig = null,
+            $searchSettings = null)
     {
-
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
-        $this->mapper = $Mapper;
+        $this->mapper = $mapper;
     }
 
     /**
