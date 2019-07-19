@@ -31,6 +31,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     use \VuFind\RecordDriver\MarcAdvancedTrait;    
     use SubrecordTrait;  
     use HelperTrait;
+    use ContainerTrait;
 
     
 
@@ -685,111 +686,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $string;        
     }
        
-    /* No Hierrachy functions yet */
-
-    /**
-     * As out fiels 773 does not contain any further title information we need
-     * to query solr again
-     *
-     * @return array
-     */
-    public function getContainer()
-    {
-        if (count($this->container) == 0 &&
-            $this->isPart()) {
-            $relId = $this->getFieldArray(773, ['w']);
-            $this->container = [];
-            if (is_array($relId) && count($relId) > 0) {
-                foreach ($relId as $k => $id) {
-                    $relId[$k] = 'id:"' . $id . '"';
-                }
-                $params = [
-                    'lookfor' => implode(' OR ', $relId),
-                ];
-                // QnD
-                // We need the searchClassId here to get proper filters
-                $searchClassId = 'Solr';
-//                if (isset($_SERVER['REQUEST_URI']) &&
-//                        strpos($_SERVER['REQUEST_URI'], 'Search') !== FALSE) {
-//                    $searchClassId = 'Interlending';
-//                }
-                $results = $this->runner->run($params, $searchClassId);
-                $this->container = $results->getResults();
-            }
-        }
-        return $this->container;
-    }
-
-    public function getContainerId() {
-        $fields = [
-            773 => ['w'],
-        ];
-        $array = $this->getFieldsArray($fields);
-        foreach ($array as $subfields) {
-            $ids = explode(' ', $subfields);
-            foreach ($ids as $id) {
-                // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
-                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
-                    return $id;
-                }
-            }
-            
-        }
-        return '';
-
-    }
-
-    /**
-     * Returns ISXN of containing item. ISBN is preferred, if set.
-     * @return string
-     */
-    public function getContainerIsxn() {
-         $fields = [
-            773 => ['z'],
-            773 => ['x'],
-        ];
-        $array = $this->getFieldsArray($fields);
-        return array_shift($array);
-    }
-
-    /**
-     * Returns ISXN of containing item. ISBN is preferred, if set.
-     * @return string
-     */
-    public function getContainerRelParts() {
-         $fields = [
-            773 => ['g'],
-        ];
-        $array = $this->getFieldsArray($fields);
-        return array_shift($array);
-    }
-
-    /**
-     * This function is used to distinguish between articles from journals
-     * and articles from books.
-     * @return boolean
-     */
-    public function isContainerMonography()
-    {
-        // this is applicable only if item is a part of another item
-        if ($this->isPart()) {
-
-            $isxn = $this->getContainerIsxn();
-            // isbn set
-            if (strlen($isxn) > 9) {
-                return true;
-            } elseif(empty($isxn)) {
-                $containers = $this->getContainer();
-
-                if (is_array($containers)) {
-                    $container = array_shift($containers);
-                    return isset($container) ? $container->isBook() : false;
-                }
-            }
-        }
-        return false;
-    }
-
+  
 
     /**
      * Get the main corporate author (if any) for the record.
@@ -1191,98 +1088,6 @@ class SolrGviMarc extends SolrMarc implements Definition
     public function isDlrKoha()
     {
         return false;
-    }
-
-    /**
-     * For rticles: get container title
-     * @return type
-     */
-    public function getContainerTitle()
-    {
-        $fields = [
-            773 => ['a', 't'], //SWB, GBV
-            490 => ['v'], // BVB
-            772 => ['t'], // HEBIS,
-            780 => ['t']
-        ];
-        $array = $this->getFieldsArray($fields);
-        $title = array_shift($array);
-        return str_replace('In: ', '', $title);
-    }
-
-    /**
-     * Get the Container issue from different fields
-     * @return string
-     */
-    public function getContainerIssue()
-    {
-        $fields = [
-            936 => ['e'],
-            953 => ['e'],
-            773 => ['g']
-        ];
-        $issue = $this->getFieldsArray($fields);
-        if (count($issue) > 0 && !empty($issue[0])) {
-            $string = array_shift($issue);
-            return str_replace(' ', '/', $string);
-        }
-        return '';
-    }
-
-    /**
-     * Get container pages from different fields
-     * @return string
-     */
-    public function getContainerPages()
-    {
-        $fields = [
-            936 => ['h'],
-            953 => ['h'],
-            773 => ['t'] // bad data, mixed into title field
-        ];
-        $pages = $this->getFieldsArray($fields);
-        foreach ($pages as $k => $page) {
-            preg_match('/\d+ *-? *\d*/', $page, $tmp);
-            if (isset($tmp[0]) && $tmp[0] != '-') {
-                $pages[$k] = $tmp[0];
-            } else {
-                unset($pages[$k]);
-            }
-        }
-        return array_shift($pages);
-    }
-
-    /**
-     * get container year from different fields
-     * @return string
-     */
-    public function getContainerYear()
-    {
-        $fields = [
-            260 => ['c'],
-            936 => ['j'],
-            363 => ['i'],
-            773 => ['t', 'd']
-        ];
-
-        $years = $this->getFieldsArray($fields);
-        foreach ($years as $k => $year) {
-            preg_match('/\d{4}/', $year, $tmp);
-            if (isset($tmp[0])) {
-                $years[$k] = $tmp[0];
-            } else {
-                unset($years[$k]);
-            }
-        }
-        return array_shift($years);
-    }
-
-    /**
-     * This method returns dirty data, don't use it except for ILL!
-     */
-    public function getContainerRaw() {
-        $f773g = $this->getFieldArray(773, ['g']);
-        return array_shift($f773g);
     }
 
     /**
