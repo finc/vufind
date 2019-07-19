@@ -23,7 +23,14 @@ class SolrFindexMarc extends SolrMarc implements Definition {
     use \VuFind\RecordDriver\MarcAdvancedTrait;
     use HelperTrait;
     
-    
+    /**
+     * Returns German library network shortcut.
+     * @return string
+     */
+    public function getNetwork()
+    {
+        // TODO
+    }
     /**
      * Get an array of all ISBNs associated with the record (may be empty).
      *

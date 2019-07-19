@@ -932,18 +932,6 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $holdings;
     }
 
-    /**@deprecated use specialized record_type classes
-     * Returns German library network shortcut.
-     * @return string
-     */
-    public function getNetwork()
-    {
-        $raw = trim($this->getUniqueID());
-        preg_match('/\((.*?)\)/', $raw, $matches);
-        $isil = $matches[1];
-        return $this->client->mapNetwork($isil);
-    }
-
     /**
      * Returns either Isil or Library name
      * @return array
