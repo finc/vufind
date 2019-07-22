@@ -76,8 +76,8 @@ $config = [
             ],
             'recommend' => [
                 'factories' => [
-                    'sidefacets' => 'Bsz\Recommend\Factory::getSideFacets',
-                    'searchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
+                    'VuFind\Recommend\SideFacets' => 'Bsz\Recommend\Factory::getSideFacets',
+                    'earchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
                     'rssfeedresults' => 'Bsz\Recommend\Factory::getRSSFeedResults',
                     'startpagenews' => 'Bsz\Recommend\Factory::getStartpageNews',
                 ],
@@ -145,10 +145,9 @@ $config = [
                 ]
             ],
             'resolver_driver' => [
-                'abstract_factories' => ['VuFind\Resolver\Driver\PluginFactory'],
                 'factories' => [
-                    'ezb' => 'Bsz\Resolver\Driver\Factory::getEzb',
-                    'redi' => 'Bsz\Resolver\Driver\Factory::getRedi',
+                    'VuFind\Resolver\Driver\Ezb' => 'Bsz\Resolver\Driver\Factory::getEzb',
+                    'VuFind\Resolver\Driver\Redi' => 'Bsz\Resolver\Driver\Factory::getRedi',
                     'ill' => 'Bsz\Resolver\Driver\Factory::getIll',
                 ],
             ]
