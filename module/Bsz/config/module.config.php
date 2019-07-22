@@ -77,7 +77,7 @@ $config = [
             'recommend' => [
                 'factories' => [
                     'VuFind\Recommend\SideFacets' => 'Bsz\Recommend\Factory::getSideFacets',
-                    'earchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
+                    'searchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
                     'rssfeedresults' => 'Bsz\Recommend\Factory::getRSSFeedResults',
                     'startpagenews' => 'Bsz\Recommend\Factory::getStartpageNews',
                 ],
