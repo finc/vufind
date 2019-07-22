@@ -36,58 +36,15 @@ use Interop\Container\ContainerInterface,
  */
 class Factory implements FactoryInterface
 {
-
-    public static function getDAIAbsz(ContainerInterface $container)
-    {
-        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
-        // if we are on ILL portal
-        $baseUrl = '';
-        $isils = $client->getIsils();
-
-        if ($client->isIsilSession() && $client->hasIsilSession()) {            
-            $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
-            $active = $libraries->getFirstActive($isils);
-            $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
-        }
-        
-
-
-        $converter = $container->getServiceLocator()->get('VuFind\DateConverter');
-        return new DAIAbsz($converter, $isils, $baseUrl);
-    }
-    
-    
-    public static function getDAIA(ContainerInterface $container)
-    {
-        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
-        // if we are on ILL portal
-        $baseUrl = '';
-        $isils = $client->getIsils();
-
-        if ($client->isIsilSession() && $client->hasIsilSession()) {            
-            $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
-            $active = $libraries->getFirstActive($isils);
-            $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
-        }    
-
-        $converter = $container->getServiceLocator()->get('VuFind\DateConverter');
-        return new DAIA($converter, $isils, $baseUrl);
-    }
-        /**
-     * Factory for NoILS driver.
-     *
-     * @param ContainerInterface $container Service manager.
-     *
-     * @return NoILS
+  
+    /**
+     * 
+     * @param ContainerInterface $container
+     * @param string $requestedName
+     * @param array $options
+     * @return \Bsz\ILS\Driver\requestedName
+     * @throws \Exception
      */
-    public static function getNoILS(ContainerInterface $container)
-    {
-        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
-        $isils = $client->getIsilAvailability();
-        $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
-        return new NoILS($container->getServiceLocator()->get('VuFind\RecordLoader'), $libraries, $isils);
-    }
-    
     public function __invoke(ContainerInterface $container, $requestedName, 
         ?array $options = null
     ) {
