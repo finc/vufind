@@ -140,8 +140,8 @@ $config = [
             'ils_driver' => [
                 'factories' => [
                     'daiabsz' => 'Bsz\ILS\Driver\Factory::getDAIAbsz',
-                    'daia' => 'Bsz\ILS\Driver\Factory::getDAIA',
-                    'noils' => 'Bsz\ILS\Driver\Factory::getNoILS',
+                    \VuFind\ILS\Driver\DAIA::class => 'Bsz\ILS\Driver\Factory',
+                    \VuFind\ILS\Driver\NoILS::class => 'Bsz\ILS\Driver\Factory::getNoILS',
                 ]
             ],
             'resolver_driver' => [

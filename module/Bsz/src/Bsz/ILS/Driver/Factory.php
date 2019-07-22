@@ -26,65 +26,87 @@
 
 namespace Bsz\ILS\Driver;
 
-use Zend\ServiceManager\ServiceManager;
+use Interop\Container\ContainerInterface,
+    Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Description of Factory
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory
+class Factory implements FactoryInterface
 {
 
-    public static function getDAIAbsz(ServiceManager $sm)
+    public static function getDAIAbsz(ContainerInterface $container)
     {
-        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
         // if we are on ILL portal
         $baseUrl = '';
         $isils = $client->getIsils();
 
         if ($client->isIsilSession() && $client->hasIsilSession()) {            
-            $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
+            $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
             $active = $libraries->getFirstActive($isils);
             $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
         }
         
 
 
-        $converter = $sm->getServiceLocator()->get('VuFind\DateConverter');
+        $converter = $container->getServiceLocator()->get('VuFind\DateConverter');
         return new DAIAbsz($converter, $isils, $baseUrl);
     }
     
     
-    public static function getDAIA(ServiceManager $sm)
+    public static function getDAIA(ContainerInterface $container)
     {
-        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
         // if we are on ILL portal
         $baseUrl = '';
         $isils = $client->getIsils();
 
         if ($client->isIsilSession() && $client->hasIsilSession()) {            
-            $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
+            $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
             $active = $libraries->getFirstActive($isils);
             $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
         }    
 
-        $converter = $sm->getServiceLocator()->get('VuFind\DateConverter');
+        $converter = $container->getServiceLocator()->get('VuFind\DateConverter');
         return new DAIA($converter, $isils, $baseUrl);
     }
         /**
      * Factory for NoILS driver.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return NoILS
      */
-    public static function getNoILS(ServiceManager $sm)
+    public static function getNoILS(ContainerInterface $container)
     {
-        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
         $isils = $client->getIsilAvailability();
-        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
-        return new NoILS($sm->getServiceLocator()->get('VuFind\RecordLoader'), $libraries, $isils);
+        $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
+        return new NoILS($container->getServiceLocator()->get('VuFind\RecordLoader'), $libraries, $isils);
+    }
+    
+    public function __invoke(ContainerInterface $container, $requestedName, 
+        ?array $options = null
+    ) {
+        if (!empty($options)) {
+            throw new \Exception('Unexpected options sent to factory.');
+        }
+                $client = $container->getServiceLocator()->get('Bsz\Config\Client');
+        // if we are on ILL portal
+        $baseUrl = '';
+        $isils = $client->getIsils();
+
+        if ($client->isIsilSession() && $client->hasIsilSession()) {            
+            $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
+            $active = $libraries->getFirstActive($isils);
+            $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
+        }  
+        $converter = $container->getServiceLocator()->get('VuFind\DateConverter');
+        return new $requestedName($converter, $isils, $baseUrl);
+        
     }
 
     
