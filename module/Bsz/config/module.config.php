@@ -137,13 +137,9 @@ $config = [
             ],
             'search_backend' => [
                 'factories' => [
-                    'Bsz\Backend\Solr\Backend' => 'Bsz\Search\Factory\SolrDefaultBackendFactory',
-                    'Bsz\Backend\EDS\Backend' => 'Bsz\Search\Factory\EdsBackendFactory',
+                    'Solr' => 'Bsz\Search\Factory\SolrDefaultBackendFactory',
+                    'EDS' => 'Bsz\Search\Factory\EdsBackendFactory',
                 ],
-                'aliases' => [
-                    'VuFindSearch\Backend\Solr\Backend' => 'Bsz\Backend\Solr\Backend',
-                    'VuFindSearch\Backend\EDS\Backend' => 'Bsz\Backend\EDS\Backend',
-                ]
             ],
             'search_results' => [
                 'abstract_factories' => ['Bsz\Search\Results\PluginFactory'],
