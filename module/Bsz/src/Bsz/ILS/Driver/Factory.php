@@ -36,36 +36,33 @@ use Interop\Container\ContainerInterface,
  */
 class Factory implements FactoryInterface
 {
-  
+
     /**
-     * 
+     *
      * @param ContainerInterface $container
      * @param string $requestedName
      * @param array $options
      * @return \Bsz\ILS\Driver\requestedName
      * @throws \Exception
      */
-    public function __invoke(ContainerInterface $container, $requestedName, 
+    public function __invoke(ContainerInterface $container, $requestedName,
         ?array $options = null
     ) {
         if (!empty($options)) {
             throw new \Exception('Unexpected options sent to factory.');
         }
-                $client = $container->getServiceLocator()->get('Bsz\Config\Client');
+        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
         // if we are on ILL portal
         $baseUrl = '';
         $isils = $client->getIsils();
 
-        if ($client->isIsilSession() && $client->hasIsilSession()) {            
+        if ($client->isIsilSession() && $client->hasIsilSession()) {
             $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
             $active = $libraries->getFirstActive($isils);
             $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
-        }  
+        }
         $converter = $container->getServiceLocator()->get('VuFind\DateConverter');
         return new $requestedName($converter, $isils, $baseUrl);
-        
+
     }
-
-    
-
 }
