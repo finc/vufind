@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 namespace Bsz\Auth;
 
@@ -41,9 +41,9 @@ class Manager extends \VuFind\Auth\Manager
      */
     public function __construct(Config $config, UserTable $userTable,
         SessionManager $sessionManager, PluginManager $pm,
-        CookieManager $cookieManager, Library $library = null
+        CookieManager $cookieManager, Csrf $csrf, Library $library = null
     ) {
-        parent::__construct($config, $userTable, $sessionManager, $pm, $cookieManager);
+        parent::__construct($config, $userTable, $sessionManager, $pm, $cookieManager, $csrf);
         $this->library = $library;
     }
     /**
