@@ -34,7 +34,7 @@ use Interop\Container\ContainerInterface,
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory implements FactoryInterface
+class DAIAFactory implements FactoryInterface
 {
 
     /**

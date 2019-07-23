@@ -165,9 +165,9 @@ $config = [
             ],
             'ils_driver' => [
                 'factories' => [
-                    'Bsz\ILS\Driver\DAIAbsz' => 'Bsz\ILS\Driver\Factory',
-                    'Bsz\ILS\Driver\DAIA' => 'Bsz\ILS\Driver\Factory',
-                    'Bsz\ILS\Driver\NoILS' => 'Bsz\ILS\Driver\Factory',
+                    'Bsz\ILS\Driver\DAIAbsz' => 'Bsz\ILS\Driver\DAIAFactory',
+                    'Bsz\ILS\Driver\DAIA' => 'Bsz\ILS\Driver\DAIAFactory',
+                    'Bsz\ILS\Driver\NoILS' => 'Bsz\ILS\Driver\NoILSFactory',
                 ],
                 'aliases' => [
                     'VuFind\ILS\Driver\DAIA' => 'Bsz\ILS\Driver\DAIA',
