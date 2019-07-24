@@ -87,6 +87,7 @@
         </div>
       <? endif; ?>
 
+      <div class="callnumAndLocation ajax-availability hidden"></div>
       <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
       <div>
         <strong><?=$this->transEsc('Edition')?>: </strong>
