@@ -19,14 +19,15 @@
 namespace Bsz\RecordDriver;
 
 use Interop\Container\ContainerInterface,
-    Zend\ServiceManager\Factory\DelegatorFactoryInterface;
+    \VuFind\RecordDriver\SolrDefaultFactory;
 
 /**
  * BSZ RecordDriverFactory
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
+class Factory extends SolrDefaultFactory {
+    
      /**
      * Factory for EDS record driver.
      *
@@ -65,9 +66,7 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
         }
 
         $requestedName = $requestedName;
-        
-//        $ilsBackends = $this->getIlsBackends($container);
-        
+             
         $driver = new $requestedName(
             $container->get('Bsz\Mapper'), 
             $container->get('Bsz\Config\Client'),
@@ -82,8 +81,7 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
         
         $driver->attachSearchService($container->get('VuFind\Search'));
         $driver->attachSearchRunner($container->get('VuFind\SearchRunner'));
-        //$driver->setIlsBackends($ilsBackends);
-        return $driver;
+       return $driver;
     }
     
 

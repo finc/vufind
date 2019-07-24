@@ -130,7 +130,21 @@ $config = [
                     'VuFind\RecordDriver\SolrMarc'  => 'Bsz\RecordDriver\SolrMarc',
                     'VuFind\RecordDriver\EDS'       => 'Bsz\RecordDriver\EDS',
                 ],
-                
+                'delegators' => [
+                    'Bsz\RecordDriver\SolrMarc'        => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarc'      => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrFindexMarc'   => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE627'=> [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarcDE101' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarcDE576' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarcDE600' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarcDE601' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarcDE602' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarcDE603' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarcDE604' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarcDE605' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriverSolrGviMarcDE627' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                ]
             ],
             'recordtab' => [
                 'factories' => [
