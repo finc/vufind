@@ -1,7 +1,8 @@
 <?php
 
 namespace Bsz\Service;
-use Zend\ServiceManager\ServiceManager;
+
+use Interop\Container\ContainerInterface;
 
 
 /**
@@ -14,13 +15,13 @@ class Factory
         /**
      * Construct the SearchTabs helper.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return \VuFind\Search\SearchTabsHelper
      */
-    public static function getSearchTabsHelper(ServiceManager $sm)
+    public static function getSearchTabsHelper(ContainerInterface $container)
     {
-        $config = $sm->get('VuFind\Config')->get('config');
+        $config = $container->get('VuFind\Config')->get('config');
         $tabConfig = isset($config->SearchTabs)
             ? $config->SearchTabs->toArray() : [];
         $filterConfig = isset($config->SearchTabsFilters)
@@ -42,9 +43,9 @@ class Factory
         $permissionConfig = isset($config->SearchTabsPermissions)
             ? $config->SearchTabsPermissions->toArray() : [];
         return new \VuFind\Search\SearchTabsHelper(
-            $sm->get('VuFind\SearchResultsPluginManager'),
+            $container->get('VuFind\SearchResultsPluginManager'),
             $tabConfig, $filterConfig,
-            $sm->get('Application')->getRequest(), $permissionConfig
+            $container->get('Application')->getRequest(), $permissionConfig
         );
     }
     

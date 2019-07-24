@@ -25,7 +25,8 @@
  */
 
 namespace Bsz\Recommend;
-use Zend\ServiceManager\ServiceManager;
+
+use Interop\Container\ContainerInterface;
 use Bsz\Recommend\SideFacets as SideFacets;
 
 /**
@@ -37,18 +38,18 @@ class Factory {
         /**
      * Factory for SideFacets module.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return SideFacets
      */
-    public static function getSideFacets(ServiceManager $sm)
+    public static function getSideFacets(ContainerInterface $container)
     {
-        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+        $client = $container->get('Bsz\Config\Client');
         $isil = $client->isIsilSession() && $client->hasIsilSession() ? $client->getIsils() : null;
        
         return new SideFacets(
-            $sm->getServiceLocator()->get('VuFind\Config'),
-            $sm->getServiceLocator()->get('VuFind\HierarchicalFacetHelper'),
+            $container->get('VuFind\Config'),
+            $container->get('VuFind\HierarchicalFacetHelper'),
             $isil
         );
     }
@@ -57,13 +58,13 @@ class Factory {
     /**
      * Factory for SearchButtons module.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return WorldCatTerms
      */
-    public static function getSearchButtons(ServiceManager $sm)
+    public static function getSearchButtons(ContainerInterface $container)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $container->get('VuFind\Config')->get('config');
         return new SearchButtons(
             $config->Content->europeanaAPI
         );
@@ -73,13 +74,13 @@ class Factory {
     /**
      * Factory for RSSFeed module
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return WorldCatTerms
      */
-    public static function getRSSFeedResults(ServiceManager $sm)
+    public static function getRSSFeedResults(ContainerInterface $container)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('searches');
+        $config = $container->get('VuFind\Config')->get('searches');
         return new RSSFeedResults(
             //$config->StartpageNews->RSSFeed
             $config->SideRecommendations
@@ -89,13 +90,13 @@ class Factory {
     /**
      * Factory for News Feed on Startpag
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return WorldCatTerms
      */
-    public static function getStartpageNews(ServiceManager $sm)
+    public static function getStartpageNews(ContainerInterface $container)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('searches');
+        $config = $container->get('VuFind\Config')->get('searches');
         return new RSSFeedResults(
             $config->StartpageNews->RSSFeed
             //$config->SideRecommendations

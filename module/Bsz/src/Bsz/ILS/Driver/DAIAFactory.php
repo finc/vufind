@@ -51,17 +51,17 @@ class DAIAFactory implements FactoryInterface
         if (!empty($options)) {
             throw new \Exception('Unexpected options sent to factory.');
         }
-        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
+        $client = $container->get('Bsz\Config\Client');
         // if we are on ILL portal
         $baseUrl = '';
         $isils = $client->getIsils();
 
         if ($client->isIsilSession() && $client->hasIsilSession()) {
-            $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
+            $libraries = $container->get('Bsz\Config\Libraries');
             $active = $libraries->getFirstActive($isils);
             $baseUrl = isset($active) ? $active->getUrlDAIA() : '';
         }
-        $converter = $container->getServiceLocator()->get('VuFind\DateConverter');
+        $converter = $container->get('VuFind\DateConverter');
         return new $requestedName($converter, $isils, $baseUrl);
 
     }

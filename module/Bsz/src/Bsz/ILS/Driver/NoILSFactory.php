@@ -61,11 +61,11 @@ class NoILSFactory implements FactoryInterface
         if (!empty($options)) {
             throw new \Exception('Unexpected options passed to factory.');
         }
-        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
-        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
+        $client = $container->get('Bsz\Config\Client');
+        $client = $container->get('Bsz\Config\Client');
         $isils = $client->getIsilAvailability();
         $isils = $client->getIsilAvailability();
-        $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');
+        $libraries = $container->get('Bsz\Config\Libraries');
         return new $requestedName(
             $container->get(\VuFind\Record\Loader::class), 
             $libraries, 

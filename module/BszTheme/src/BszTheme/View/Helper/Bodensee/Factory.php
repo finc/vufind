@@ -53,7 +53,7 @@ class Factory
      */
     public static function getFlashmessages(ContainerInterface$container)
     {
-        $messenger = $container->getServiceLocator()->get('ControllerPluginManager')
+        $messenger = $container->get('ControllerPluginManager')
             ->get('FlashMessenger');
         return new Flashmessages($messenger);
     }
@@ -67,7 +67,7 @@ class Factory
      */
     public static function getLayoutClass(ContainerInterface$container)
     {
-        $config = $container->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $container->get('VuFind\Config')->get('config');
         $left = !isset($config->Site->sidebarOnLeft)
             ? false : $config->Site->sidebarOnLeft;
         $mirror = !isset($config->Site->mirrorSidebarInRTL)
@@ -77,7 +77,7 @@ class Factory
         // The right-to-left setting is injected into the layout by the Bootstrapper;
         // pull it back out here to avoid duplicate effort, then use it to apply
         // the mirror setting appropriately.
-        $layout = $container->getServiceLocator()->get('ViewManager')->getViewModel();
+        $layout = $container->get('ViewManager')->getViewModel();
         if ($layout->rtl && !$mirror) {
             $left = !$left;
         }
@@ -92,8 +92,8 @@ class Factory
      */
     public static function getOpenUrl(ContainerInterface$container)
     {
-        $config = $container->getServiceLocator()->get('VuFind\Config')->get('config');
-        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
+        $config = $container->get('VuFind\Config')->get('config');
+        $client = $container->get('Bsz\Config\Client');
         $isils = $client->getIsils();
         $openUrlRules = json_decode(
             file_get_contents(
@@ -101,8 +101,8 @@ class Factory
             ),
             true
         );
-        $resolverPluginManager = $container->getServiceLocator()
-            ->get('VuFind\ResolverDriverPluginManager');        
+        $resolverPluginManager = 
+            $container->get('VuFind\ResolverDriverPluginManager');        
         return new OpenUrl(
             $container->get('ViewHelperManager')->get('context'),
             $openUrlRules,
@@ -122,9 +122,9 @@ class Factory
     public static function getRecord(ContainerInterface$container)
     {
         return new Record(
-            $container->getServiceLocator()->get('VuFind\Config')->get('config'),
-            $container->getServiceLocator()->get(\Bsz\Config\Client::class),
-            $container->getserviceLocator()->get('Bsz\Holding')
+            $container->get('VuFind\Config')->get('config'),
+            $container->get(\Bsz\Config\Client::class),
+            $container->get('Bsz\Holding')
         );
     }
     /**
@@ -138,8 +138,8 @@ class Factory
      */
     public static function getRecordLink(ContainerInterface$container)
     {
-        $client = $container->getServiceLocator()->get(\Bsz\Config\Client::class);
-        $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');      
+        $client = $container->get(\Bsz\Config\Client::class);
+        $libraries = $container->get('Bsz\Config\Libraries');      
         $adisUrl = null;
 
         $library = $libraries->getFirstActive($client->getIsils());  
@@ -148,8 +148,8 @@ class Factory
         }        
           
         return new RecordLink(
-            $container->getServiceLocator()->get('VuFind\RecordRouter'),
-            $container->getServiceLocator()->get('VuFind\Config')->get('bsz'),
+            $container->get('VuFind\RecordRouter'),
+            $container->get('VuFind\Config')->get('bsz'),
             $adisUrl
         );
     }
@@ -177,7 +177,7 @@ class Factory
      */
     public static function getPiwik(ContainerInterface$container)
     {
-        $config = $container->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $container->get('VuFind\Config')->get('config');
         $url = isset($config->Piwik->url) ? $config->Piwik->url : false;
         $siteId = isset($config->Piwik->site_id) ? $config->Piwik->site_id : 1;
         $globalSiteId = isset($config->Piwik->site_id_global) ? $config->Piwik->site_id_global : 0;
@@ -210,12 +210,12 @@ class Factory
      */
     public static function getIllForm(ContainerInterface$container) 
     {
-        $request = $container->getServiceLocator()->get('request');
+        $request = $container->get('request');
         // params from form submission
         $params = $request->getPost()->toArray();
         // params from open url
         $openUrlParams = $request->getQuery()->toArray();
-        $parser = $container->getServiceLocator()->get('bsz\parser\openurl');            
+        $parser = $container->get('bsz\parser\openurl');            
         $parser->setParams($openUrlParams);
         // mapped openURL params
         $formParams = $parser->map2Form();
