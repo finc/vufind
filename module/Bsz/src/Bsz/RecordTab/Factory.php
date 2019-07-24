@@ -47,12 +47,12 @@ class Factory {
         if (strpos($last, 'consortium=FL') === FALSE 
             && strpos($last, 'consortium=ZDB') === FALSE
         ) {
-            $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+            $client = $sm->get('Bsz\Config\Client');
             $isils = $client->getIsils();
         }
 
 
-        $volumes = new Volumes($sm->getServiceLocator()->get('VuFind\SearchRunner'), $isils);
+        $volumes = new Volumes($sm->get('VuFind\SearchRunner'), $isils);
 
         
         return $volumes;
@@ -74,11 +74,11 @@ class Factory {
         if (strpos($last, 'consortium=FL') === FALSE 
             && strpos($last, 'consortium=ZDB') === FALSE
         ) {
-            $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+            $client = $sm->get('Bsz\Config\Client');
             $isils = $client->getIsils();
         }
         
-        $articles = new Articles($sm->getServiceLocator()->get('VuFind\SearchRunner'), $isils);
+        $articles = new Articles($sm->get('VuFind\SearchRunner'), $isils);
         $request = new \Zend\Http\PhpEnvironment\Request();
         $url = strtolower($request->getUriString());
         return $articles;
@@ -92,8 +92,8 @@ class Factory {
      */
     public static function getLibraries(ServiceManager $sm)
     {
-        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
-        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+        $libraries = $sm->get('Bsz\Config\Libraries');
+        $client = $sm->get('Bsz\Config\Client');
         return new Libraries($libraries, !$client->is('disable_library_tab'));
     }
     /**
@@ -104,7 +104,7 @@ class Factory {
      */
     public static function getDescription(ServiceManager $sm)
     {
-        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+        $client = $sm->get('Bsz\Config\Client');
         return new Description(!$client->is('disable_description_tab'));
     }
         /**
@@ -119,10 +119,10 @@ class Factory {
         // If VuFind is configured to suppress the holdings tab when the
         // ILS driver specifies no holdings, we need to pass in a connection
         // object:
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $sm->get('VuFind\Config')->get('config');
         if (isset($config->Site->hideHoldingsTabWhenEmpty) && $config->Site->hideHoldingsTabWhenEmpty
         ) {
-            $catalog = $sm->getServiceLocator()->get('VuFind\ILSConnection');
+            $catalog = $sm->get('VuFind\ILSConnection');
         } else {
             $catalog = false;
         }

@@ -30,15 +30,15 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
      /**
      * Factory for EDS record driver.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return EDS
      */
-    public static function getEDS(ServiceManager $sm)
+    public static function getEDS(ContainerInterface $container)
     {
-        $eds = $sm->getServiceLocator()->get('VuFind\Config')->get('EDS');
-        return new EDS($sm->getServiceLocator()->get('Bsz\Mapper'), 
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'), $eds, $eds
+        $eds = $container->get('VuFind\Config')->get('EDS');
+        return new EDS($container->get('Bsz\Mapper'), 
+            $container->get('VuFind\Config')->get('config'), $eds, $eds
         );
     }
 
@@ -67,18 +67,19 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
         $requestedName = 'Bsz\RecordDriver\\'.$requestedName;
         
         $driver = new $requestedName(
-            $container->getServiceLocator()->get('Bsz\Mapper'), 
-            $container->getServiceLocator()->get('Bsz\Config\Client'),
+            $container->get('Bsz\Mapper'), 
+            $container->get('Bsz\Config\Client'),
             null,
-            $container->getServiceLocator()->get('VuFind\Config')->get('searches')
+            $container->get('VuFind\Config')->get('searches')
         );
         $driver->attachILS(
-            $container->getServiceLocator()->get('VuFind\ILSConnection'),
-            $container->getServiceLocator()->get('VuFind\ILSHoldLogic'),
-            $container->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+            $container->get(\VuFind\ILS\Connection::class),
+            $container->get(\VuFind\ILS\Logic\Holds::class),
+            $container->get(\VuFind\ILS\Logic\TitleHolds::class)
         );
-        $driver->attachSearchService($container->getServiceLocator()->get('VuFind\Search'));
-        $driver->attachSearchRunner($container->getServiceLocator()->get('VuFind\SearchRunner'));
+        
+        $driver->attachSearchService($container->get('VuFind\Search'));
+        $driver->attachSearchRunner($container->get('VuFind\SearchRunner'));
         return $driver;
     }
     

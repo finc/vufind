@@ -64,8 +64,8 @@ class Factory implements FactoryInterface {
     public static function getRecordController(ContainerInterface $container)
     {
         return new RecordController(
-            $container->getServiceLocator(),
-            $container->getServiceLocator()->get('VuFind\Config')->get('config')
+            $container,
+            $container->get('VuFind\Config')->get('config')
         );
     }
     /**
@@ -76,8 +76,8 @@ class Factory implements FactoryInterface {
     public static function getSearchController(ContainerInterface $container)
     {
         return new SearchController(
-            $container->getServiceLocator(),
-            $container->getServiceLocator()->get('VuFind\Config')->get('config')
+            $container,
+            $container->get('VuFind\Config')->get('config')
         );
     }  
    

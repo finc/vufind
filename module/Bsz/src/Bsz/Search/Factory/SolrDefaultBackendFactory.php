@@ -52,7 +52,6 @@ class SolrDefaultBackendFactory extends AbstractSolrBackendFactory {
 
         $factory = new RecordCollectionFactory(array($manager, 'getSolrRecord'));
         $backend->setRecordCollectionFactory($factory);
-
         return $backend;
     }
 }
