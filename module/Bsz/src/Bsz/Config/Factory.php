@@ -26,10 +26,8 @@
 
 namespace Bsz\Config;
 
-use Zend\ServiceManager\ServiceManager,
-    Zend\Db\ResultSet\ResultSet,
-    \Zend\Db\TableGateway\TableGateway;
-
+use Interop\Container\ContainerInterface,
+    Zend\Db\ResultSet\ResultSet;
 /**
  * Description of Factory
  *
@@ -40,23 +38,23 @@ class Factory
 
     /**
      * 
-     * @param ServiceManager $sm
+     * @param ContainerInterface $container
      * @return \Bsz\Config\Client
      */
-    public static function getClient(ServiceManager $sm)
+    public static function getClient(ContainerInterface $container)
     {
-        $vufindconf = $sm->get('VuFind\Config')->get('config')->toArray();
-        $bszconf = $sm->get('VuFind\Config')->get('bsz')->toArray();
-        $searchconf = $sm->get('VuFind\Config')->get('searches')->toArray();
+        $vufindconf = $container->get('VuFind\Config')->get('config')->toArray();
+        $bszconf = $container->get('VuFind\Config')->get('bsz')->toArray();
+        $searchconf = $container->get('VuFind\Config')->get('searches')->toArray();
         $container = new \Zend\Session\Container(
-            'fernleihe', $sm->get('VuFind\SessionManager')
+            'fernleihe', $container->get('VuFind\SessionManager')
         );
         
         $client = new Client(array_merge($vufindconf, $bszconf, $searchconf), true);
         $client->appendContainer($container);
         if ($client->isIsilSession()) {
-            $libraries = $sm->get('Bsz\Config\Libraries');
-            $request = $sm->get('Request');
+            $libraries = $container->get('Bsz\Config\Libraries');
+            $request = $container->get('Request');
             $client->setLibraries($libraries);
             $client->setRequest($request);
         }
@@ -65,14 +63,14 @@ class Factory
 
     /**
      * 
-     * @param ServiceManager $sm
+     * @param ContainerInterface $container
      * @return \Bsz\LibrariesTable
      */
-    public static function getLibrariesTable(ServiceManager $sm)
+    public static function getLibrariesTable(ContainerInterface $container)
     {
         # fetch mysql connection info out config
-        $config = $sm->get('VuFind\Config')->get('config');
-        $adapterfactory = $sm->get('VuFind\DbAdapterFactory');
+        $config = $container->get('VuFind\Config')->get('config');
+        $adapterfactory = $container->get('VuFind\DbAdapterFactory');
         $database = $config->get('Database');
         $library = $database->get('db_libraries');
         $adapter = $adapterfactory->getAdapterFromConnectionString($library);
@@ -81,14 +79,14 @@ class Factory
         return $librariesTable;
     }  
     
-    public static function getDedup(ServiceManager $sm) 
+    public static function getDedup(ContainerInterface $container) 
     {
-        $config = $sm->get('VuFind\Config')->get('config')->get('Index');
+        $config = $container->get('VuFind\Config')->get('config')->get('Index');
         $container = new \Zend\Session\Container(
-            'dedup', $sm->get('VuFind\SessionManager')
+            'dedup', $container->get('VuFind\SessionManager')
         );
-        $response = $sm->get('Response');
-        $cookie = $sm->get('Request')->getCookie();
+        $response = $container->get('Response');
+        $cookie = $container->get('Request')->getCookie();
         return new Dedup($config, $container, $response, $cookie);
     }
     

@@ -19,7 +19,8 @@
  */
 
 namespace BszTheme\View\Helper;
-use Zend\ServiceManager\ServiceManager;
+use Interop\Container\ContainerInterface,
+    Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Description of Factory
@@ -29,26 +30,26 @@ use Zend\ServiceManager\ServiceManager;
 class Factory {
      /**
      * Get Client View Helper
-     * @param ServiceManager $sm
+     * @param ContainerInterface $container
      * @return \Bsz\View\Helper\Client
      */
-    public static function getClient(ServiceManager $sm) 
+    public static function getClient(ContainerInterface $container) 
     {        
-        $client = $sm->getServiceLocator()->get(\Bsz\Config\Client::class);
+        $client = $container->get(\Bsz\Config\Client::class);
         return new Client($client);
     }
     
-    public static function getClientAsset(ServiceManager $sm) 
+    public static function getClientAsset(ContainerInterface $container) 
     {
-        $client = $sm->getServiceLocator()->get(\Bsz\Config\Client::class);
+        $client = $container->get(\Bsz\Config\Client::class);
         
         $website = $client->getWebsite();
         
-        $host = $sm->getServiceLocator()->get('Request')->getHeaders()->get('host')->getFieldValue();
+        $host = $container->get('Request')->getHeaders()->get('host')->getFieldValue();
         $parts = explode('.', $host);
         $tag = isset($parts[0]) ? $parts[0] : 'swb';     
         $library = null;
-        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
+        $libraries = $container->get('Bsz\Config\Libraries');
         if ($libraries instanceof  \Bsz\Config\Libraries) {
             if ($client->isIsilSession() && $client->hasIsilSession()) {     
                 $isils = $client->getIsils();
@@ -60,12 +61,12 @@ class Factory {
     }
     /**
      * Get Interlending View Helper
-     * @param ServiceManager $sm
+     * @param ContainerInterface $container
      * @return \Bsz\View\Helper\Bsz\View\Helper\Interlending
      */
-    public static function getLibraries(ServiceManager $sm) 
+    public static function getLibraries(ContainerInterface $container) 
     {
-        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');
+        $libraries = $container->get('Bsz\Config\Libraries');
         return new Libraries($libraries);
     }
 //    

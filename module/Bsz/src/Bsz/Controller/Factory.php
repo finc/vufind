@@ -20,8 +20,7 @@
 
 namespace Bsz\Controller;
 
-use Zend\ServiceManager\ServiceManager,
-    Interop\Container\ContainerInterface,
+use Interop\Container\ContainerInterface,
     Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
@@ -58,27 +57,27 @@ class Factory implements FactoryInterface {
      /**
      * Construct the RecordController.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return RecordController
      */
-    public static function getRecordController(ServiceManager $sm)
+    public static function getRecordController(ContainerInterface $container)
     {
         return new RecordController(
-            $sm->getServiceLocator(),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+            $container->getServiceLocator(),
+            $container->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }
     /**
      * 
-     * @param ServiceManager $sm
+     * @param ContainerInterface $container
      * @return \Bsz\Controller\SearchController
      */
-    public static function getSearchController(ServiceManager $sm)
+    public static function getSearchController(ContainerInterface $container)
     {
         return new SearchController(
-            $sm->getServiceLocator(),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+            $container->getServiceLocator(),
+            $container->getServiceLocator()->get('VuFind\Config')->get('config')
         );
     }  
    

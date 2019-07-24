@@ -26,7 +26,9 @@
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
 namespace BszTheme\View\Helper\Bodensee;
-use Zend\ServiceManager\ServiceManager;
+
+use Interop\Container\ContainerInterface,
+    Zend\ServiceManager\Factory\FactoryInterface;
 
 
 /**
@@ -40,18 +42,18 @@ use Zend\ServiceManager\ServiceManager;
  *
  * @codeCoverageIgnore
  */
-class Factory 
+class Factory
 {
     /**
      * Construct the Flashmessages helper.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface$container Service manager.
      *
      * @return Flashmessages
      */
-    public static function getFlashmessages(ServiceManager $sm)
+    public static function getFlashmessages(ContainerInterface$container)
     {
-        $messenger = $sm->getServiceLocator()->get('ControllerPluginManager')
+        $messenger = $container->getServiceLocator()->get('ControllerPluginManager')
             ->get('FlashMessenger');
         return new Flashmessages($messenger);
     }
@@ -59,13 +61,13 @@ class Factory
     /**
      * Construct the LayoutClass helper.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface$container Service manager.
      *
      * @return LayoutClass
      */
-    public static function getLayoutClass(ServiceManager $sm)
+    public static function getLayoutClass(ContainerInterface$container)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $container->getServiceLocator()->get('VuFind\Config')->get('config');
         $left = !isset($config->Site->sidebarOnLeft)
             ? false : $config->Site->sidebarOnLeft;
         $mirror = !isset($config->Site->mirrorSidebarInRTL)
@@ -75,7 +77,7 @@ class Factory
         // The right-to-left setting is injected into the layout by the Bootstrapper;
         // pull it back out here to avoid duplicate effort, then use it to apply
         // the mirror setting appropriately.
-        $layout = $sm->getServiceLocator()->get('ViewManager')->getViewModel();
+        $layout = $container->getServiceLocator()->get('ViewManager')->getViewModel();
         if ($layout->rtl && !$mirror) {
             $left = !$left;
         }
@@ -84,14 +86,14 @@ class Factory
     /**
      * Construct the OpenUrl helper.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface$container Service manager.
      *
      * @return OpenUrl
      */
-    public static function getOpenUrl(ServiceManager $sm)
+    public static function getOpenUrl(ContainerInterface$container)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        $client = $sm->getServiceLocator()->get('Bsz\Config\Client');
+        $config = $container->getServiceLocator()->get('VuFind\Config')->get('config');
+        $client = $container->getServiceLocator()->get('Bsz\Config\Client');
         $isils = $client->getIsils();
         $openUrlRules = json_decode(
             file_get_contents(
@@ -99,10 +101,10 @@ class Factory
             ),
             true
         );
-        $resolverPluginManager = $sm->getServiceLocator()
+        $resolverPluginManager = $container->getServiceLocator()
             ->get('VuFind\ResolverDriverPluginManager');        
         return new OpenUrl(
-            $sm->get('ViewHelperManager')->get('context'),
+            $container->get('ViewHelperManager')->get('context'),
             $openUrlRules,
             $resolverPluginManager,
             isset($config->OpenURL) ? $config->OpenURL : null,
@@ -113,31 +115,31 @@ class Factory
     /**
      * Construct the Record helper.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface$container Service manager.
      *
      * @return Record
      */
-    public static function getRecord(ServiceManager $sm)
+    public static function getRecord(ContainerInterface$container)
     {
         return new Record(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            $sm->getServiceLocator()->get(\Bsz\Config\Client::class),
-            $sm->getserviceLocator()->get('Bsz\Holding')
+            $container->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $container->getServiceLocator()->get(\Bsz\Config\Client::class),
+            $container->getserviceLocator()->get('Bsz\Holding')
         );
     }
     /**
      * Construct the RecordLink helper.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface$container Service manager.
      * 
      * @throws \Bsz\Exception
      *
      * @return Record
      */
-    public static function getRecordLink(ServiceManager $sm)
+    public static function getRecordLink(ContainerInterface$container)
     {
-        $client = $sm->getServiceLocator()->get(\Bsz\Config\Client::class);
-        $libraries = $sm->getServiceLocator()->get('Bsz\Config\Libraries');      
+        $client = $container->getServiceLocator()->get(\Bsz\Config\Client::class);
+        $libraries = $container->getServiceLocator()->get('Bsz\Config\Libraries');      
         $adisUrl = null;
 
         $library = $libraries->getFirstActive($client->getIsils());  
@@ -146,8 +148,8 @@ class Factory
         }        
           
         return new RecordLink(
-            $sm->getServiceLocator()->get('VuFind\RecordRouter'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('bsz'),
+            $container->getServiceLocator()->get('VuFind\RecordRouter'),
+            $container->getServiceLocator()->get('VuFind\Config')->get('bsz'),
             $adisUrl
         );
     }
@@ -155,27 +157,27 @@ class Factory
     /**
      * Construct the GetLastSearchLink helper.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface$container Service manager.
      *
      * @return GetLastSearchLink
      */
-    public static function getSearchMemory(ServiceManager $sm)
+    public static function getSearchMemory(ContainerInterface$container)
     {
         return new SearchMemory(
-            $sm->getServiceLocator()->get('VuFind\Search\Memory')
+            $container->get('VuFind\Search\Memory')
         );
     }
     
         /**
      * Construct the Piwik helper.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface$container Service manager.
      *
      * @return Piwik
      */
-    public static function getPiwik(ServiceManager $sm)
+    public static function getPiwik(ContainerInterface$container)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $config = $container->getServiceLocator()->get('VuFind\Config')->get('config');
         $url = isset($config->Piwik->url) ? $config->Piwik->url : false;
         $siteId = isset($config->Piwik->site_id) ? $config->Piwik->site_id : 1;
         $globalSiteId = isset($config->Piwik->site_id_global) ? $config->Piwik->site_id_global : 0;
@@ -188,32 +190,32 @@ class Factory
             /**
      * Construct the SearchTabs helper.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface$container Service manager.
      *
      * @return SearchTabs
      */
-    public static function getSearchTabs(ServiceManager $sm)
+    public static function getSearchTabs(ContainerInterface$container)
     {
         return new SearchTabs(
-            $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager'),
-            $sm->get('ViewHelperManager')->get('url'),
-            $sm->getServiceLocator()->get('VuFind\SearchTabsHelper')
+            $container->get('VuFind\SearchResultsPluginManager'),
+            $container->get('ViewHelperManager')->get('url'),
+            $container->get('VuFind\SearchTabsHelper')
         );
     }
     
 
     /**
-     * @param ServiceManager $sm
+     * @param ContainerInterface$container
      * @return \BszTheme\View\Helper\Bodensee\IllForm
      */
-    public static function getIllForm(ServiceManager $sm) 
+    public static function getIllForm(ContainerInterface$container) 
     {
-        $request = $sm->getServiceLocator()->get('request');
+        $request = $container->getServiceLocator()->get('request');
         // params from form submission
         $params = $request->getPost()->toArray();
         // params from open url
         $openUrlParams = $request->getQuery()->toArray();
-        $parser = $sm->getServiceLocator()->get('bsz\parser\openurl');            
+        $parser = $container->getServiceLocator()->get('bsz\parser\openurl');            
         $parser->setParams($openUrlParams);
         // mapped openURL params
         $formParams = $parser->map2Form();
