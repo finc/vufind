@@ -726,6 +726,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         if ($this->mainConfig->isIsilSession() && !$this->mainConfig->hasIsilSession()) {
             return [];
         } else {
+            var_dump($this->hasILS());
             return $this->hasILS() ? $this->holdLogic->getHoldings(
                             $this->getUniqueID(), $this->getConsortialIDs()
                     ) : [];

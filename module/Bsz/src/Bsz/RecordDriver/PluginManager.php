@@ -13,8 +13,9 @@ namespace Bsz\RecordDriver;
  *
  * @author amzar
  */
-class PluginManager extends \VuFind\RecordDriver\PluginManager {
-
+class PluginManager extends \VuFind\RecordDriver\PluginManager 
+{
+    
     /**
      * Convenience method to retrieve a populated Solr record driver.
      *
@@ -31,7 +32,7 @@ class PluginManager extends \VuFind\RecordDriver\PluginManager {
             $data['record_format'] ?? $data['recordtype'] ?? $defaultKeySuffix
         );
         $recordType = $this->has($key) ? $key : $keyPrefix . $defaultKeySuffix;
-        
+            
         if (strpos($recordType, 'Gvi') === FALSE) {
             $recordType = 'SolrFindexMarc';
         }         

@@ -18,8 +18,8 @@
  */
 namespace Bsz\RecordDriver;
 
-use Zend\ServiceManager\ServiceManager, 
-    Interop\Container\ContainerInterface;
+use Interop\Container\ContainerInterface,
+    Zend\ServiceManager\Factory\DelegatorFactoryInterface;
 
 /**
  * BSZ RecordDriverFactory
@@ -64,7 +64,9 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
             throw new \Exception('Unexpected options sent to factory.');
         }
 
-        $requestedName = 'Bsz\RecordDriver\\'.$requestedName;
+        $requestedName = $requestedName;
+        
+//        $ilsBackends = $this->getIlsBackends($container);
         
         $driver = new $requestedName(
             $container->get('Bsz\Mapper'), 
@@ -80,6 +82,7 @@ class Factory extends \VuFind\RecordDriver\SolrDefaultFactory {
         
         $driver->attachSearchService($container->get('VuFind\Search'));
         $driver->attachSearchRunner($container->get('VuFind\SearchRunner'));
+        //$driver->setIlsBackends($ilsBackends);
         return $driver;
     }
     
