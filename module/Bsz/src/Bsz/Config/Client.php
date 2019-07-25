@@ -92,7 +92,7 @@ class Client extends \Zend\Config\Config
     public function getFooterLinks($boxNo) {
         $boxName = 'box'.(int)$boxNo;
         $links = $this->get('FooterLinks')->get($boxName);
-        if ($boxNo == 2 && count($links) == 0) {
+        if ($boxNo == 2 && !$links) {
             $links[] = '/Search/History';
             $links[] = '/Search/Advanced';
         } else if($boxNo == 1 && $this->isIsilSession() && $this->hasIsilSession()) {
