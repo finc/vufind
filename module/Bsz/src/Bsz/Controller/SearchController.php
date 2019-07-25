@@ -30,7 +30,7 @@ class SearchController extends \VuFind\Controller\SearchController
     {
         //$dedup = $this->serviceLocator->get('Bsz/Config/Dedup');
         $isils = $this->params()->fromQuery('isil');
-        if (count($isils) > 0) {
+        if ($isils) {
             return $this->processIsil();
         }
         $view = Parent::resultsAction();
