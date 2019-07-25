@@ -412,7 +412,7 @@ class RecordController extends \VuFind\Controller\RecordController
     public function homeAction()
     {
         $isilsParam = $this->params()->fromQuery('isil');
-        if (count($isilsParam) > 0) {
+        if ($isilsParam) {
             return $this->processIsil();
         }
         $view = parent::homeAction();
