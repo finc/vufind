@@ -8,7 +8,7 @@ endif;?>
   <div class="<?=$colwidth?>">
     <div class="well">          
     <p><strong><?=$heading?></strong></p>
-    <? if (count($links) > 0): ?>
+    <? if ($links): ?>
     <ul>
         <? foreach ($links as $k => $link): ?>
             <? $external = false;
