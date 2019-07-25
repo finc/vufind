@@ -39,7 +39,7 @@
         <td><?=$this->escapeHtml($note)?></td>          
     </tr>
   <? endif; ?>  
-    <? $parallel = $this->driver->tryMethod('getRelatedEditions'); if (count($parallel)): ?>
+    <? $parallel = $this->driver->tryMethod('getRelatedEditions'); if ($parallel): ?>
     <? $contentDisplyed = true ?> 
     <tr>
         <th><?=$this->transEsc('Related Items')?>:</th>
