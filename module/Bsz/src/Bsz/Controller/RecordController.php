@@ -105,7 +105,7 @@ class RecordController extends \VuFind\Controller\RecordController
     public function ILLFormAction()
     {
         $isils = $this->params()->fromQuery('isil');
-        if (count($isils) > 0) {
+        if ($isils) {
             return $this->processIsil();
         }
         $params = $this->params()->fromPost();
