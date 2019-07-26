@@ -75,7 +75,7 @@ $config = [
         ]
     ],
     'view_manager' => [
-        'display_exceptions'       => APPLICATION_ENV == 'development' || APPILCATION_ENV=='production',
+        'display_exceptions'       => APPLICATION_ENV == 'development' || APPLICATION_ENV=='production',
     ],
 
     'vufind' => [
