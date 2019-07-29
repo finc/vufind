@@ -93,6 +93,9 @@ JS;
           <? if ($this->client()->is('wlb_special_home')): ?>
                     <?= $this->render('bsz/wlb/'.$this->layout()->userLang.'.phtml')?>
           <? endif; ?>          
+          <? if ($this->client()->is('k10plusdiscovery_special_home')): ?>
+                    <?= $this->render('bsz/k10plusdiscovery/'.$this->layout()->userLang.'.phtml')?>
+          <? endif; ?>             
       </div>
   </div>
   
