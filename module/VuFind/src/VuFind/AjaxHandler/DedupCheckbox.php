@@ -49,7 +49,7 @@ use Zend\View\Renderer\RendererInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  */
-class DeduCheckbox extends AbstractBase implements TranslatorAwareInterface
+class DedupCheckbox extends AbstractBase implements TranslatorAwareInterface
 {
     use \VuFind\I18n\Translator\TranslatorAwareTrait;
 
@@ -100,67 +100,10 @@ class DeduCheckbox extends AbstractBase implements TranslatorAwareInterface
      */
     public function handleRequest(Params $params)
     {
-        $this->disableSessionWrites();  // avoid session write timing bug
-        $openUrl = $params->fromQuery('openurl', '');
-        $searchClassId = $params->fromQuery('searchClassId', '');
-
-        $resolverType = isset($this->config->OpenURL->resolver)
-            ? $this->config->OpenURL->resolver : 'generic';
-        if (!$this->pluginManager->has($resolverType)) {
-            return $this->formatResponse(
-                $this->translate("Could not load driver for $resolverType"),
-                self::STATUS_HTTP_ERROR
-            );
-        }
-        $resolver = new Connection($this->pluginManager->get($resolverType));
-        if (isset($this->config->OpenURL->resolver_cache)) {
-            $resolver->enableCache($this->config->OpenURL->resolver_cache);
-        }
-        $result = $resolver->fetchLinks($openUrl);
-
-        // Sort the returned links into categories based on service type:
-        $electronic = $print = $services = [];
-        foreach ($result as $link) {
-            switch ($link['service_type'] ?? '') {
-            case 'getHolding':
-                $print[] = $link;
-                break;
-            case 'getWebService':
-                $services[] = $link;
-                break;
-            case 'getDOI':
-                // Special case -- modify DOI text for special display:
-                $link['title'] = $this->translate('Get full text');
-                $link['coverage'] = '';
-            case 'getFullTxt':
-            default:
-                $electronic[] = $link;
-                break;
-            }
-        }
-
-        // Get the OpenURL base:
-        if (isset($this->config->OpenURL->url)) {
-            // Trim off any parameters (for legacy compatibility -- default config
-            // used to include extraneous parameters):
-            list($base) = explode('?', $this->config->OpenURL->url);
-        } else {
-            $base = false;
-        }
-
-        $moreOptionsLink = $resolver->supportsMoreOptionsLink()
-            ? $resolver->getResolverUrl($openUrl) : '';
-
-        // Render the links using the view:
-        $view = [
-            'openUrlBase' => $base, 'openUrl' => $openUrl, 'print' => $print,
-            'electronic' => $electronic, 'services' => $services,
-            'searchClassId' => $searchClassId,
-            'moreOptionsLink' => $moreOptionsLink
-        ];
-        $html = $this->renderer->render('ajax/resolverLinks.phtml', $view);
-
-        // output HTML encoded in JSON object
-        return $this->formatResponse(compact('html'));
+        // $status = $this->params()->fromPost('status');
+        $status = $status == 'true' ? true : false;
+        $dedup = $this->get('Bsz/Config/Dedup');
+        $dedup->store(['group' => $status]); 
+        return $this->output([], self::STATUS_OK);    
     }
 }
