@@ -73,6 +73,7 @@ class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
         'relaisOrder' => RelaisOrder::class,
         'systemStatus' => SystemStatus::class,
         'tagRecord' => TagRecord::class,
+        'dedupCheckbox' => DedupCheckbox::class,
     ];
 
     /**
@@ -112,6 +113,7 @@ class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
         RelaisOrder::class => AbstractRelaisActionFactory::class,
         SystemStatus::class => SystemStatusFactory::class,
         TagRecord::class => TagRecordFactory::class,
+        DedupCheckbox::class => DedupCheckboxFactory::class,
     ];
 
     /**
