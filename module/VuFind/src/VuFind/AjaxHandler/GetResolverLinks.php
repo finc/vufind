@@ -99,7 +99,7 @@ class GetResolverLinks extends AbstractBase implements TranslatorAwareInterface
      * @return array [response data, HTTP status code]
      */
     public function handleRequest(Params $params)
-    {
+    {      
         $this->disableSessionWrites();  // avoid session write timing bug
         $openUrl = $params->fromQuery('openurl', '');
         $searchClassId = $params->fromQuery('searchClassId', '');
