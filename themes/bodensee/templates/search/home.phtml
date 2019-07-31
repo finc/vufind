@@ -52,13 +52,13 @@ JS;
               <img class="img-responsive" src="<?=$this->imageLink('logo/default.png')?>" alt="BSZ Logo" />
           </div>
       <? else: ?>
-          <div class="col-md-9 col-xs-6  hidden-sm hidden-xs">
+          <div class="col-md-8 col-xs-5  hidden-sm hidden-xs">
               <? if ($this->imageLink($this->clientAsset()->getHeader())): ?>
               <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" class="img-responsive" alt="Aufmacherbild" />
               <? endif; ?>
           </div>
       <? endif; ?>
-      <div class="col-xs-5 col-sm-3 pull-right">
+      <div class="col-xs-6 col-sm-4 pull-right">
           <?=$this->clientAsset()->getLogoHtml()?>
       </div>      
   </div>
