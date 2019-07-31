@@ -184,10 +184,10 @@ $config = [
             'search_params'  => [
                 'abstract_factories' => ['Bsz\Search\Params\PluginFactory'],
                 'factories' => [
-                    'Bsz\Search\Params\Solr' => 'Bsz\Search\Params\Factory::getSolr'
+                    'Bsz\Search\Solr\Params' => 'Bsz\Search\Params\Factory::getSolr'
                 ],
                 'aliases' => [
-                    'VuFind\Search\Params\Solr' => 'Bsz\Seaqrch\Params\Solr'
+                    'VuFind\Search\Solr\Params' => 'Bsz\Search\Solr\Params'
                 ]
             ],
             'ils_driver' => [

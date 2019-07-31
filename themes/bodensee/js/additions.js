@@ -251,7 +251,7 @@ function duplicates() {
            data: { 'status': status },
            success: function() {
                // reload the page 
-               //location.reload();
+               location.reload();
            }
    
   })
