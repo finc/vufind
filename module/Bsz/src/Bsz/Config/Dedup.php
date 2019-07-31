@@ -1,7 +1,7 @@
 <?php
 
 namespace Bsz\Config;
-use Zend\Session\Container;
+use Zend\Session\Container as SessionContainer;
 
 /**
  * Class for setting dedup options
@@ -19,7 +19,8 @@ class Dedup
     protected $response;
     protected $cookiedata;
     
-    public function __construct($config, Container $container, $response, $cookiedata)
+    public function __construct($config, SessionContainer $container,
+            $response, $cookiedata)
     {
         $this->config = $config;
         $this->container = $container;

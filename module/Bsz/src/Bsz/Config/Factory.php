@@ -82,12 +82,12 @@ class Factory
     public static function getDedup(ContainerInterface $container) 
     {
         $config = $container->get('VuFind\Config')->get('config')->get('Index');
-        $container = new \Zend\Session\Container(
+        $sesscontainer = new \Zend\Session\Container(
             'dedup', $container->get('VuFind\SessionManager')
         );
         $response = $container->get('Response');
         $cookie = $container->get('Request')->getCookie();
-        return new Dedup($config, $container, $response, $cookie);
+        return new Dedup($config, $sesscontainer, $response, $cookie);
     }
     
 }

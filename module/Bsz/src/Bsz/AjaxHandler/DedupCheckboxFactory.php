@@ -69,7 +69,8 @@ class DedupCheckboxFactory
             $container->get(\VuFind\Session\Settings::class),
             $container->get(\VuFind\Resolver\Driver\PluginManager::class),
             $container->get('ViewRenderer'),
-            $container->get(\VuFind\Config\PluginManager::class)->get('config')
+            $container->get(\VuFind\Config\PluginManager::class)->get('config'),
+            $container->get('Bsz\Config\Dedup')
         );
     }
 }
