@@ -26,7 +26,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  */
-namespace VuFind\AjaxHandler;
+namespace Bsz\AjaxHandler;
 
 use VuFind\I18n\Translator\TranslatorAwareInterface;
 use VuFind\Resolver\Connection;
@@ -49,7 +49,7 @@ use Zend\View\Renderer\RendererInterface;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  */
-class DedupCheckbox extends AbstractBase implements TranslatorAwareInterface
+class DedupCheckbox extends \VuFind\AjaxHandler\AbstractBase implements TranslatorAwareInterface
 {
     use \VuFind\I18n\Translator\TranslatorAwareTrait;
 
@@ -102,7 +102,7 @@ class DedupCheckbox extends AbstractBase implements TranslatorAwareInterface
     {
         // $status = $this->params()->fromPost('status');
         $status = $status == 'true' ? true : false;
-        $dedup = $this->get('Bsz/Config/Dedup');
+        $dedup = $this->pluginManager->get('Bsz\AjaxHandler\dedupCheckbox');
         $dedup->store(['group' => $status]); 
         return $this->output([], self::STATUS_OK);    
     }

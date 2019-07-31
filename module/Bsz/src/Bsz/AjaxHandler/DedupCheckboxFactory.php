@@ -25,7 +25,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development Wiki
  */
-namespace VuFind\AjaxHandler;
+namespace Bsz\AjaxHandler;
 
 use Interop\Container\ContainerInterface;
 

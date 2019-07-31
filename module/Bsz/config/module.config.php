@@ -202,6 +202,14 @@ $config = [
                 ]
 
             ],
+            'ajax_handler' => [
+                'factories' => [
+                     Bsz\AjaxHandler\DedupCheckbox::class => Bsz\AjaxHandler\DedupCheckboxFactory::class,
+                ],
+                'aliases' => [
+                    'Bsz\AjaxHandler\dedupCheckbox' => Bsz\AjaxHandler\DedupCheckbox::class,
+                ],                
+            ],            
             'resolver_driver' => [
                 'factories' => [
                     'Bsz\Resolver\Driver\Ezb' => 'Bsz\Resolver\Driver\Factory::getEzb',
@@ -212,7 +220,8 @@ $config = [
                     'VuFind\Resolver\Driver\Redi' => 'Bsz\Resolver\Driver\Redi',
                     'VuFind\Resolver\Driver\Ezb'  => 'Bsz\Resolver\Driver\Ezb',
                 ]
-            ]
+            ],
+
         ],
         'recorddriver_tabs' => [
             'Bsz\RecordDriver\SolrMarc' => [
