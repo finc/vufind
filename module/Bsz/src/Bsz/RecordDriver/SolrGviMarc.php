@@ -103,11 +103,11 @@ class SolrGviMarc extends SolrMarc implements Definition
         foreach ($this->getMarcRecord()->getFields('084') as $field) {
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield('2');
-            if ($sub2) {
+            if ($suba && $sub2) {
                 $sub2data = $field->getSubfield('2')->getData();
-            }
-            if ($suba && strtolower($sub2) == 'dfi') {
-                $classificationList[] = $suba->getData();
+                if (strtolower($sub2data) == 'dfi') {
+                    $classificationList[] = $suba->getData();
+                }
             }
         }
         return array_unique($classificationList);
@@ -124,11 +124,11 @@ class SolrGviMarc extends SolrMarc implements Definition
         foreach ($this->getMarcRecord()->getFields('084') as $field) {
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield('2');
-            if ($sub2) {
+            if ($suba && $sub2) {
                 $sub2data = $field->getSubfield('2')->getData();
-            }
-            if ($suba && strtolower($sub2) == 'fiv') {
-                $classificationList[] = $suba->getData();
+                if (strtolower($sub2data) == 'fiv') {
+                    $classificationList[] = $suba->getData();
+                }
             }
         }
         return array_unique($classificationList);
@@ -166,15 +166,15 @@ class SolrGviMarc extends SolrMarc implements Definition
         foreach ($this->getMarcRecord()->getFields('084') as $field) {
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield('2');
-            if ($sub2) {
+            if ($suba && $sub2) {
                 $sub2data = $field->getSubfield('2')->getData();
-            }
-            if ($suba && strtolower($sub2) == 'rvk') {
-                $title = [];
-                foreach ($field->getSubFields('k') as $item) {
-                    $title[] = htmlentities($item->getData());
+                if (strtolower($sub2data) == 'rvk') {
+                    $title = [];
+                    foreach ($field->getSubFields('k') as $item) {
+                        $title[] = htmlentities($item->getData());
+                    }
+                    $notationList[$suba->getData()] = $title;
                 }
-                $notationList[$suba->getData()] = $title;
             }
         }
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
