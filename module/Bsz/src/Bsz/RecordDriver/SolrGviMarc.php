@@ -102,7 +102,10 @@ class SolrGviMarc extends SolrMarc implements Definition
         $classificationList = [];
         foreach ($this->getMarcRecord()->getFields('084') as $field) {
             $suba = $field->getSubField('a');
-            $sub2 = $field->getSubfield('2')->getData();
+            $sub2 = $field->getSubfield('2');
+            if ($sub2) {
+                $sub2data = $field->getSubfield('2')->getData();
+            }
             if ($suba && strtolower($sub2) == 'dfi') {
                 $classificationList[] = $suba->getData();
             }
@@ -120,7 +123,10 @@ class SolrGviMarc extends SolrMarc implements Definition
         $classificationList = [];
         foreach ($this->getMarcRecord()->getFields('084') as $field) {
             $suba = $field->getSubField('a');
-            $sub2 = $field->getSubfield('2')->getData();
+            $sub2 = $field->getSubfield('2');
+            if ($sub2) {
+                $sub2data = $field->getSubfield('2')->getData();
+            }
             if ($suba && strtolower($sub2) == 'fiv') {
                 $classificationList[] = $suba->getData();
             }
@@ -160,6 +166,9 @@ class SolrGviMarc extends SolrMarc implements Definition
         foreach ($this->getMarcRecord()->getFields('084') as $field) {
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield('2');
+            if ($sub2) {
+                $sub2data = $field->getSubfield('2')->getData();
+            }
             if ($suba && strtolower($sub2) == 'rvk') {
                 $title = [];
                 foreach ($field->getSubFields('k') as $item) {
