@@ -29,12 +29,12 @@
 namespace Bsz\AjaxHandler;
 
 use VuFind\I18n\Translator\TranslatorAwareInterface;
-use VuFind\Resolver\Connection;
 use VuFind\Resolver\Driver\PluginManager as ResolverManager;
 use VuFind\Session\Settings as SessionSettings;
 use Zend\Config\Config;
 use Zend\Mvc\Controller\Plugin\Params;
 use Zend\View\Renderer\RendererInterface;
+use Bsz\Config\Dedup;
 
 /**
  * "Get Resolver Links" AJAX handler
@@ -83,12 +83,13 @@ class DedupCheckbox extends \VuFind\AjaxHandler\AbstractBase implements Translat
      * @param Config            $config   Top-level VuFind configuration (config.ini)
      */
     public function __construct(SessionSettings $ss, ResolverManager $pm,
-        RendererInterface $renderer, Config $config
+        RendererInterface $renderer, Config $config, Dedup $dedup
     ) {
         $this->sessionSettings = $ss;
         $this->pluginManager = $pm;
         $this->renderer = $renderer;
         $this->config = $config;
+        $this->dedup = $dedup;
     }
 
     /**
@@ -100,10 +101,9 @@ class DedupCheckbox extends \VuFind\AjaxHandler\AbstractBase implements Translat
      */
     public function handleRequest(Params $params)
     {
-        // $status = $this->params()->fromPost('status');
+        $status = $params->fromPost('status');
         $status = $status == 'true' ? true : false;
-        $dedup = $this->pluginManager->get('Bsz\AjaxHandler\dedupCheckbox');
-        $dedup->store(['group' => $status]); 
-        return $this->output([], self::STATUS_OK);    
+        $this->dedup->store(['group' => $status]); 
+        return $this->formatResponse([], 200);    
     }
 }

@@ -39,6 +39,7 @@ use \VuFind\Exception\Auth as AuthException;
  */
 class AjaxController extends \VuFind\Controller\AjaxController
 {
+    use \VuFind\Controller\AjaxResponseTrait;
    
     /**
      * Support method for getItemStatuses() -- filter suppressed locations from the

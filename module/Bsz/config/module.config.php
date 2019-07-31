@@ -202,13 +202,13 @@ $config = [
                 ]
 
             ],
-            'ajax_handler' => [
+            'ajaxhandler' => [
                 'factories' => [
-                     Bsz\AjaxHandler\DedupCheckbox::class => Bsz\AjaxHandler\DedupCheckboxFactory::class,
+                     'Bsz\AjaxHandler\DedupCheckbox' => 'Bsz\AjaxHandler\DedupCheckboxFactory',
                 ],
                 'aliases' => [
-                    'Bsz\AjaxHandler\dedupCheckbox' => Bsz\AjaxHandler\DedupCheckbox::class,
-                ],                
+                    'dedupCheckbox' => 'Bsz\AjaxHandler\DedupCheckbox'
+                ]
             ],            
             'resolver_driver' => [
                 'factories' => [
