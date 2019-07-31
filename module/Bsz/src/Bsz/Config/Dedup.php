@@ -45,12 +45,11 @@ class Dedup
     
     public function store($post)
     {
-        $params = $this->getCurrentSettings();
-        
-        if (isset($post['group'])) {
+        $params = $this->getCurrentSettings();  
+        if (array_key_exists('group', $post)) {
             $cookie = new \Zend\Http\Header\SetCookie(
                     'group', 
-                    $post['group'], 
+                    (int)$post['group'], 
                     time() + 14 * 24* 60 * 60, 
                     '/');
             $header = $this->response->getHeaders();

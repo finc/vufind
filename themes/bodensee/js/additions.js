@@ -243,6 +243,7 @@ function duplicates() {
     // handle checkbox to enable/disable grouping
     $('#dedup-checkbox').change(function(e) {
         var status = this.checked;
+        console.log(status);
         $.ajax({
            dataType: 'json',
            method: 'POST',
@@ -250,9 +251,9 @@ function duplicates() {
            data: { 'status': status },
            success: function() {
                // reload the page 
-               location.reload();
+               //location.reload();
            }
-    
+   
   })
      });
  }

@@ -73,6 +73,12 @@ class DedupCheckbox extends \VuFind\AjaxHandler\AbstractBase implements Translat
      * @var Config
      */
     protected $config;
+    
+    /**
+     *
+     * @var Bsz\Config\Dedup
+     */
+    protected $dedup;
 
     /**
      * Constructor
@@ -81,6 +87,7 @@ class DedupCheckbox extends \VuFind\AjaxHandler\AbstractBase implements Translat
      * @param ResolverManager   $pm       Resolver driver plugin manager
      * @param RendererInterface $renderer View renderer
      * @param Config            $config   Top-level VuFind configuration (config.ini)
+     * @param Bsz\Config\Dedup  $dedup
      */
     public function __construct(SessionSettings $ss, ResolverManager $pm,
         RendererInterface $renderer, Config $config, Dedup $dedup
