@@ -1,9 +1,11 @@
-<?php 
-    
-    //$hasSubRecords = $this->driver->hasSubRecords();
-    //$subRecords = $this->driver->getSubRecords();
-    //$subRecordsCount = count($subRecords);
-    //$isSubRecord = $this->driver->isSubRecord();
+<?php     
+    $hasSubRecords = $this->driver->hasSubRecords();
+    $subRecords = $this->driver->getSubRecords();
+    $subRecordsCount = 0;
+    if ($subRecords) {
+        $subRecordsCount = sizeof($subRecords);
+    }
+    $isSubRecord = $this->driver->isSubRecord();
     $uniqueId = $this->driver->getUniqueId();
 
     $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
@@ -139,7 +141,7 @@
                 
     
             <? endif; ?>
-            <? if (isset($hasSubRecords)): ?>
+            <? if ($hasSubRecords): ?>
               <?php 
                 $rand = rand(1, 10000);
                 $pgid = 'accordion-'.$rand;
@@ -163,14 +165,16 @@
   <? if ($thumbnail && $thumbnailAlignment == 'right'): ?>
     <?=$thumbnail ?>
   <? endif; ?>
-  
-<? if (isset($hasSubRecords)): ?>
+<? if ($hasSubRecords): ?>
 <div class="row">
     <div class="col-xs-11 col-xs-offset-1">
         <div class="panel-group duplicates collapse" id="<?=$pgid?>">
-            <?php foreach ($subRecords as $count => $sub): ?>      
+            <?php $count = 0; ?>
+            <? if (is_array($subRecords) || is_object($subRecords)): ?>
+            <?php foreach ($subRecords as $key => $sub): ?>      
             <div class="panel panel-default">
-                <?php 
+                <?php
+                    $count++;
                     $dates = $sub->getPublicationDates();
                     $date = array_shift($dates);
                     $edition = $sub->getEdition();
@@ -180,7 +184,7 @@
                         $this->escapeHtml($edition)
                     ];
                 ?>
-                <? if (count($header) > 0 && $this->client()->is('show_dup_panel_headings')): ?>
+                <? if ($header && $this->client()->is('show_dup_panel_headings')): ?>
                 <div class="panel-heading" data-toggle="collapse" data-parent="" href="#<?=$pid.$count?>">
                     <strong><?=implode(' &ndash; ', array_filter($header))?></strong>
                 </div>
@@ -192,7 +196,6 @@
                                 <?php
                                   $subCoverDetails = $this->record($sub)->getCoverDetails('result-list', 'small', $this->recordLink()->getUrl($this->driver));
                                   $subCover = $subCoverDetails['html'];                            
-                                
                                 ?>
                                 <?=$subCover?>
                               
@@ -232,6 +235,7 @@
                 </div> <!-- end colllappsible part -->
             </div> <!-- end panel -->
            <?php endforeach; ?>
+           <? endif; ?>
         </div> <!-- end panel group -->        
     </div> <!--end column -->
 </div><!--end row -->
