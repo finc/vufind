@@ -157,32 +157,13 @@ $config = [
                     'VuFind\RecordTab\HoldingsILS' => 'Bsz\RecordTab\HoldingsILS',
                 ]
             ],
-            'search_options' => [
-                'abstract_factories' => ['Bsz\Search\Options\PluginFactory'],
-                'factories' => [
-                    'Bsz\Search\Options\Solr' => 'Bsz\Search\Options\Factory::getSolr'
-                ],
-                'aliases' => [
-                    'VuFind\Search\Options\Solr' => 'Bsz\Seaqrch\Options\Solr'
-                ]
-            ],
             'search_backend' => [
                 'factories' => [
                     'Solr' => 'Bsz\Search\Factory\SolrDefaultBackendFactory',
                     'EDS' => 'Bsz\Search\Factory\EdsBackendFactory',
                 ],
             ],
-            'search_results' => [
-                'abstract_factories' => ['Bsz\Search\Results\PluginFactory'],
-                'factories' => [
-                    'Bsz\Search\Results\Solr' => 'Bsz\Search\Results\Factory::getSolr',
-                ],
-                'aliases' => [
-                    'VuFind\Search\Results\Solr' => 'Bsz\Seaqrch\Results\Solr'
-                ]
-            ],
             'search_params'  => [
-                'abstract_factories' => ['Bsz\Search\Params\PluginFactory'],
                 'factories' => [
                     'Bsz\Search\Solr\Params' => 'Bsz\Search\Params\Factory::getSolr'
                 ],
