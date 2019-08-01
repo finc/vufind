@@ -13,10 +13,10 @@
 
 <? $rand = rand(0, 9999)?> 
   <tr>
-    <th><?=$this->transEsc('Subjects')?>: </th>
+    <th><?=$this->transEsc('Subjects')?>:</th>
     <td id="showmore-items-<?=$rand?>">
       <? $count = 0 ?>
-      <? foreach ($subjects as $field): ?>    
+      <? foreach ($subjects as $field): ?>     
         <span class="subjectLine" property="keywords">
          <? $subject = ''; ?>
          <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
@@ -29,9 +29,12 @@
             <? endforeach; ?>
           <? elseif (is_array($field) && count($field) > 1): ?>
                 <? foreach ($field as $subfield): ?>
-                <a class="searchicon showmore-item <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
-                <? $count++ ?>
-            <? endforeach; ?>
+                    <a class="searchicon showmore-item <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
+                    <? $count++ ?>
+                <? endforeach; ?>
+          <? else: ?>
+            <a class="searchicon showmore-item <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" href="<?=$this->record($this->driver)->getLink('subject', $field, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($field))?></a>            
+            <? $count++ ?>
           <? endif; ?>
       </span>
       <? endforeach; ?>
