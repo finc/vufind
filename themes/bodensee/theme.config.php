@@ -15,6 +15,7 @@ $config = [
             'Bsz\View\Helper\Root\Piwik' => 'BszTheme\View\Helper\Bodensee\Factory::getPiwik',
             'Bsz\View\Helper\Root\SearchTabs' => 'BszTheme\View\Helper\Bodensee\Factory::getSearchTabs',
             'Bsz\View\Helper\Root\SearchMemory' => 'BszTheme\View\Helper\Bodensee\Factory::getSearchMemory',
+            'illform' => 'BszTheme\View\Helper\Bodensee\Factory::getIllForm',
         ],
         'aliases' => [
             'VuFind\View\Helper\Bootstrap3\LayoutClass' => 'Bsz\View\Helper\Bootstrap3\LayoutClass',

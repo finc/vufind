@@ -215,7 +215,7 @@ class Factory
         $params = $request->getPost()->toArray();
         // params from open url
         $openUrlParams = $request->getQuery()->toArray();
-        $parser = $container->get('bsz\parser\openurl');            
+        $parser = $container->get('Bsz\Parser\OpenUrl');            
         $parser->setParams($openUrlParams);
         // mapped openURL params
         $formParams = $parser->map2Form();

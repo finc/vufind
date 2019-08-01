@@ -31,13 +31,13 @@
     <form class="<?=$type?> form-horizontal" id="form-ill" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form">
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">   
-            <? $content = $this->illForm($success, $this->driver)->renderBibliographicFields() ?>
+            <? $content = $this->illform($success, $this->driver)->renderBibliographicFields() ?>
             <?= $this->partial('Helpers/ill/panel.phtml', [
                 'title' => 'Bibliographic Details',
                 'open'  => true,
                 'content' => $content,
             ])?>
-            <? $content = '<p><strong>'.$this->illForm($success, $this->driver)->getText('hint').'</strong></p>';
+            <? $content = '<p><strong>'.$this->illform($success, $this->driver)->getText('hint').'</strong></p>';
                 $content .= $this->illform($success, $this->driver)->renderCopies();
             ?>
             <?= $this->partial('Helpers/ill/panel.phtml', [

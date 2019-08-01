@@ -200,7 +200,7 @@ class RecordController extends \VuFind\Controller\RecordController
                 $authManager = $this->serviceLocator->get('VuFind\AuthManager');
         $isils = $this->params()->fromQuery('isil');
         
-        if (count($isils) > 0) {
+        if ($isils) {
             return $this->processIsil();
         }
         
