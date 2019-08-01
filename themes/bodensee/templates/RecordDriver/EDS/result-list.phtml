@@ -4,7 +4,7 @@
   $restrictedView = empty($accessLevel) ? false : true;
   $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'medium', $this->recordLink()->getUrl($this->driver));  
 ?>
-<div class="source<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?> recordId<?=$this->driver->supportsAjaxStatus()?' ajaxItemId':''?> col-xs-12">
+<div class="sourceEDS recordId<?=$this->driver->supportsAjaxStatus()?' ajaxItemId':''?> col-xs-12">
     <div class="row">
     <?
       $thumbnail = false;
