@@ -239,7 +239,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
     protected function dedupCheckboxAjax() {
         $status = $this->params()->fromPost('status');
         $status = $status == 'true' ? true : false;
-        $dedup = $this->serviceLocator->get('Bsz/Config/Dedup');
+        $dedup = $this->serviceLocator->get('Bsz\Config\Dedup');
         $dedup->store(['group' => $status]); 
         return $this->output([], self::STATUS_OK);
     }

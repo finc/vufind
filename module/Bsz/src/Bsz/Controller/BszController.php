@@ -100,7 +100,7 @@ class BszController extends \VuFind\Controller\AbstractBase {
     public function dedupAction() {
         
         $params = [];
-        $dedup = $this->serviceLocator->get('Bsz/Config/Dedup');
+        $dedup = $this->serviceLocator->get('Bsz\Config\Dedup');
        
         $post = $this->params()->fromPost();     
         
