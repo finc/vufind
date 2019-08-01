@@ -28,13 +28,13 @@ class SearchController extends \VuFind\Controller\SearchController
     
     public function resultsAction()
     {
-        //$dedup = $this->serviceLocator->get('Bsz/Config/Dedup');
+        $dedup = $this->serviceLocator->get('Bsz\Config\Dedup');
         $isils = $this->params()->fromQuery('isil');
         if ($isils) {
             return $this->processIsil();
         }
         $view = Parent::resultsAction();
-        //$view->dedup = $dedup->isActive();
+        $view->dedup = $dedup->isActive();
         return $view;
     }    
 }
