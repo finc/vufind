@@ -178,6 +178,7 @@ $config = [
                     'Bsz\ILS\Driver\NoILS' => 'Bsz\ILS\Driver\NoILSFactory',
                 ],
                 'aliases' => [
+                    'DAIAbsz' => 'Bsz\ILS\Driver\DAIAbsz',
                     'VuFind\ILS\Driver\DAIA' => 'Bsz\ILS\Driver\DAIA',
                     'VuFind\ILS\Driver\NoILS' => 'Bsz\ILS\Driver\NoILS',
                 ]
