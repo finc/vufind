@@ -103,9 +103,9 @@
         <?=$this->recommend($current)?>
       <? endforeach; ?>
       <? foreach ($this->results->getRecommendations('noresults') as $current): ?>
-      <? if (!in_array($current, $top)): ?>
-        <?=$this->recommend($current)?>
-      <? endif; ?>
+        <? if (!in_array($current, $top)): ?>
+            <?=$this->recommend($current)?>
+        <? endif; ?>
       <? endforeach; ?>
     <? else: ?>
     <form id="search-cart-form" method="post" name="bulkActionForm" action="<?=$this->url('cart-searchresultsbulk')?>" data-lightbox data-lightbox-onsubmit="bulkFormHandler">

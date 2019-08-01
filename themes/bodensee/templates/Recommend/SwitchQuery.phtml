@@ -5,7 +5,7 @@
     <ul>
       <? foreach ($suggestions as $desc => $query): ?>
         <li><?=$this->transEsc($desc)?>: <a href="<?=$this->recommend->getResults()->getUrlQuery()->setSearchTerms($query)?>"><?=$this->escapeHtml($query)?></a>.</li>
-      <? endforeach; ?>
+      <? endforeach; ?>        
       <li><?=$this->transEsc('switchquery_removewords')?></li>
       <li><?=$this->transEsc('switchquery_typos')?></li>
       <li><?=$this->transEsc('switchquery_other')?></li>
@@ -18,12 +18,11 @@
             if (isset($library) && $library->hasCustomUrl()) {
                 $url =  $library->getCustomUrl();
                 $external = true;
-                
             }
-                    
         ?>
         <p><?=$this->transEsc('switchquery_ill')?>
-            &nbsp;<a class="<?=$external ? 'external' : 'internal' ?>" href="<?=$url?>"><?=$this->transEsc('ill_request_free_form')?></a>    <? endif; ?>
+            &nbsp;<a class="<?=$external ? 'external' : 'internal' ?>" href="<?=$url?>"><?=$this->transEsc('ill_request_free_form')?></a>    
         </p>
+    <? endif; ?>
   </div>
 <? endif; ?>
