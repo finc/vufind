@@ -21,36 +21,8 @@ class SolrFindexMarc extends SolrMarc implements Definition {
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
     use \VuFind\RecordDriver\MarcAdvancedTrait;
-    use SubrecordTrait;
     use HelperTrait;
     
-    /**
-     * Returns consortium
-     * @return array
-     * @throws \Bsz\Exception
-     */
-    public function getConsortium()
-    {
-        // determine network 
-        // GVK = GBV
-        // SWB = SWB
-        // ÖVK = GBV
-        
-        $consortium = \VuFind\RecordDriver\DefaultRecord::getCollections();
-        
-        foreach ($consortium as $k => $con) {
-            $mapped = $this->mainConfig->mapNetwork($con);
-            if (!empty($mapped)) {
-                $consortium[$k] = $mapped;
-
-            }
-        }
-        $consortium_unique = array_unique($consortium);
-
-        $string = implode(", ",$consortium_unique);
-        return $string;        
-    }
-
     /**
      * Returns German library network shortcut.
      * @return string

@@ -1356,7 +1356,7 @@ class DefaultRecord extends AbstractBase
         // Unsupported by default:
         return [];
     }
-    
+
     /**
      * Get an associative array (id => title) of collections containing this record.
      *
@@ -1496,17 +1496,6 @@ class DefaultRecord extends AbstractBase
         return ['APA', 'Chicago', 'MLA'];
     }
 
-    /**
-     * Get an associative array (id => title) of collections containing this record.
-     *
-     * @return array
-     */
-    public function getCollections()
-    {
-        return isset($this->fields['collection'])
-            ? (array)$this->fields['collection'] : [];
-    }    
-    
     /**
      * Get the title of the item that contains this record (i.e. MARC 773s of a
      * journal).
