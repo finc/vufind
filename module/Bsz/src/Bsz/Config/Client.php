@@ -322,6 +322,9 @@ class Client extends \Zend\Config\Config
             'SAX' => 'SWB',
             'THU' => 'GBV',
             'BSZ' => 'SWB',
+            'ÖVK' => 'GBV',
+            'GVK' => 'GBV',
+            'SWB' => 'SWB',
             // Attention: 
             // Holdings.php uses array flip. The isils must be at the bottom! 
             // Otherwise, holdings won't search correct
