@@ -80,7 +80,10 @@ $config = [
         'plugin_managers' => [
             'auth' => [
                 'factories' => [
-                   'shibboleth' => 'Bsz\Auth\Factory::getShibboleth'
+                   'Bsz\Auth\Shibboleth' => 'Bsz\Auth\Factory::getShibboleth'
+                ], 
+                'aliases' => [
+                    'VuFind\Auth\Shibboleth' => 'Bsz\Auth\Shibboleth'
                 ]
             ],
             'recommend' => [
