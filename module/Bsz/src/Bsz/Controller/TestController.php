@@ -45,7 +45,11 @@ class TestController extends \VuFind\Controller\AbstractBase {
             // now, we can do something with our record
             foreach ($results->getResults() as $record) {
                 $record instanceof \Bsz\RecordDriver\SolrMarc;
-                var_dump($record->getDeduplicatedAuthors());
+                $authors = $record->getDeduplicatedAuthors(['role', 'gnd', 'live']);
+                var_dump($authors['primary']);
+                var_dump($authors['secondary']);
+                var_dump($authors['corporate']);
+                
             }            
         } else {
             echo 'Param PPN is mandatory';

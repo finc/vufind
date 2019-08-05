@@ -45,7 +45,6 @@ interface Definition {
     public function getCleanISBN() : string;
     public function getCleanISSN() : string;
     public function getLanguages() : array;
-    public function getPrimaryAuthor(string $info) : string;
     public function getPublishers() : array;
     public function getTitle() : string;
     public function getShortTitle() : string;

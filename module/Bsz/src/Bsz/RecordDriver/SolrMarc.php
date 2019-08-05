@@ -22,7 +22,7 @@ namespace Bsz\RecordDriver;
 
 use Bsz\FormatMapper,
     VuFindCode\ISBN;
-
+    
 
 /**
  * This is the base BSZ SolrMarc class 
@@ -735,48 +735,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         return $languages;
     }
     
-    /**
-     * Get main author info
-     * 
-     * @param string $info Determine which piece of information you need
-     *
-     * @return string
-     */
-    public function getPrimaryAuthor(string $info = null) : string
-    {
-        $tmp = [];
-        
-        if (empty($info)) {            
-            
-            $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
-            $tmp[] = trim($this->getFirstFieldValue('100', ['c']));
-            $tmp[] = trim($this->getFirstFieldValue('100', ['d']));   
-            
-        } elseif ($info === static::AUTHOR_GND) {
-            
-            $candidates = $this->getFieldArray('100', ['0'], false);
-            foreach ($candidates as $item) {
-                if (strpos($item, '(DE-588)') !== FALSE) {
-                    $tmp[] = $item;
-                    break;
-                }
-            }
-            
-        } elseif ($info === static::AUTHOR_LIVE) {
-            
-            $tmp[] = trim($this->getFirstFieldValue('100', ['d'])); 
-            
-        } elseif ($info === static::AUTHOR_NAME) {
-            
-            $tmp[] = trim($this->getFirstFieldValue('100', ['a']));
-            $tmp[] = trim($this->getFirstFieldValue('100', ['c']));
-        }        
-        
-        return implode(', ', array_filter($tmp));
-
-    }
-    
-
     /**
      * Get the publishers of the record.
      *
