@@ -436,7 +436,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd']);
         return $author2;
-    }
+    }    
      /**
      * Get an array of all secondary authors (complementing getPrimaryAuthor()).
      *

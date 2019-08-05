@@ -128,13 +128,13 @@
             <? endif; ?>
             
             <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
-            <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(Def::AUTHOR_NOLIVE); ?>
+            <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(Def::AUTHOR_NAME); ?>
             <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(Def::AUTHOR_GND)); ?>
-            <? if (isset($authors['main']) && !empty($authors['main'])): ?>
+            <? if (isset($authors) && !empty($authors)): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author">
-                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($authors['main'])?></a>
+                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($noLivePrimaryAuthor)?></a>
                     <? if ($gnd_author != ''): ?>
                        (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_author?>" class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a>)
                     <? endif; ?>
