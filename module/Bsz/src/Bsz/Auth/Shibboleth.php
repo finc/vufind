@@ -42,7 +42,6 @@ class Shibboleth extends \VuFind\Auth\Shibboleth
             try  {
                 $domain = preg_replace('/.+@/', '', $user->username);
                 $library = $this->libraries->getByIdPDomain($domain);
-                var_dump($user->username); die();
                 if (isset($library)) {
                     $user->home_library = $library->getIsil();            
                     $user->save();                    
