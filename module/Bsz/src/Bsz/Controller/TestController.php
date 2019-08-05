@@ -30,14 +30,7 @@ use Zend\Http\Client;
  */
 class TestController extends \VuFind\Controller\AbstractBase {
     
-    protected $libraries;
-    
-    public function __construct(Libraries $libraries) {
-        
-        error_reporting(E_ALL);
-        $this->libraries = $libraries;
-
-    }    
+ 
    /**
      * Action to simply test some methods
      */
@@ -47,12 +40,12 @@ class TestController extends \VuFind\Controller\AbstractBase {
         $ppn = $this->params()->fromQuery('ppn');
         if (!empty($ppn)) {
             $params['lookfor'] = 'id:'.str_replace(['(', ')'], ['\(', '\)'], $ppn);
-            $results = $runner->run($params, 'Interlending');
+            $results = $runner->run($params, 'Solr');
 
             // now, we can do something with our record
             foreach ($results->getResults() as $record) {
-                $record instanceof \Bsz\RecordDriver\SolrGviMarc;
-                var_dump($record->getTitle());
+                $record instanceof \Bsz\RecordDriver\SolrMarc;
+                var_dump($record->getDeduplicatedAuthors());
             }            
         } else {
             echo 'Param PPN is mandatory';
