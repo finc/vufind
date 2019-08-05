@@ -32,6 +32,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     use SubrecordTrait;  
     use HelperTrait;
     use ContainerTrait;
+    use MarcAuthorTrait;
     
     /**
      * Get subject headings associated with this record.  Each heading is
@@ -344,24 +345,6 @@ class SolrGviMarc extends SolrMarc implements Definition
         return array_unique($authors);
     }
 
-    /**
-     * Get GND-ID from 700|0 with (DE-588)-prefix
-     *
-     * @return array
-     */
-    public function getSecondaryAuthorGND()
-    {
-        $gndauthor = [];
-
-        $candidates = $this->getFieldArray('700', ['0'], false);
-
-        foreach ($candidates as $item) {
-            if (strpos($item, '(DE-588)') !== FALSE) {
-                $gndauthor[] = $item;
-            }
-        }
-        return $gndauthor;
-    }
 
 
     /**
@@ -369,6 +352,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return array
      */
+    
     public function getPlacesOfPublication()
     {
         $fields = [
@@ -425,90 +409,6 @@ class SolrGviMarc extends SolrMarc implements Definition
         }
         return $return;
 
-    }
-
-    /**
-     * Get an array of all secondary authors (complementing getPrimaryAuthor()).
-     *
-     * @return array
-     */
-        public function getSecondaryAuthors()
-    {
-        $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd']);
-        return $author2;
-    }    
-     /**
-     * Get an array of all secondary authors (complementing getPrimaryAuthor()).
-     *
-     * @param int $id
-     * 
-     * @return array
-     */
-    public function getSecondaryAuthor(string $info, int $id)
-    {
-        $author2 = $this->getFieldArray('700', ['a', 'b', 'c', 'd']);
-        return $author2;
-    }
-
-    /**
-     * Get an Array of Author Names with Live Data
-     * they need to be translated.
-     *
-     * @return array
-     */
-    public function getSecondaryAuthorsNoLive()
-    {
-        $nolive_author2 = $this->getFieldArray('700', ['a']);
-        return $nolive_author2;
-    }
-
-    /**
-     * Get an Array of Author roles
-     * they need to be translated.
-     *
-     * @return array
-     */
-    public function getSecondaryAuthorsRole()
-    {
-        $author2 = $this->getFieldArray('700', ['4']);
-        return $author2;
-    }
-
-    public function getCorporateAuthors() {
-        $corporate = array_merge(
-            $this->getFieldArray('110', ['a', 'b', 'g']),// corporate
-            $this->getFieldArray('111', ['a', 'b']),// Meeting
-            preg_replace("/g\:/", "", $this->getFieldArray('710', ['a', 'b', '9'])),// corporate
-            $this->getFieldArray('711', ['a', 'b']) // Meeting
-        );
-        return $corporate;
-    }
-
-    /**
-     * Return an array of primary and secondary authors
-     * @return array
-     */
-    public function getDeduplicatedAuthors($dataFields = ['role'])
-    {
-        $authors = [];
-        $authors['main'] = $this->getPrimaryAuthor();
-
-        $corporate = [];
-        $secondary = [];
-        foreach (array_unique($this->getSecondaryAuthors()) as $a) {
-            if (strpos($authors['main'], $a) === FALSE ) {
-                array_push($secondary, $a);
-            }
-        }
-        $authors['secondary'] = array_unique($secondary);
-        foreach (array_unique($this->getCorporateAuthors()) as $c) {
-            if (strpos($authors['main'], $c) === FALSE) {
-                array_push($corporate, $c);
-            }
-        }
-        $authors['corporate'] = array_unique($corporate);
-
-        return $authors;
     }
 
     /**
