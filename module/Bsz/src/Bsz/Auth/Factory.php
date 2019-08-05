@@ -2,7 +2,7 @@
 
 namespace Bsz\Auth;
 
-use Zend\ServiceManager\ServiceManager;
+use Interop\Container\ContainerInterface;
 
 
 /**
@@ -19,12 +19,12 @@ class Factory
      *
      * @return Manager
      */
-    public static function getManager(ServiceManager $sm)
+    public static function getManager(ContainerInterface $container)
     {
         // Set up configuration:
-        $config = $sm->get('VuFind\Config')->get('config');
-        $client = $sm->get('Bsz\Config\Client');
-        $libraries = $sm->get('Bsz\Config\Libraries');
+        $config = $container->get('VuFind\Config')->get('config');
+        $client = $container->get('Bsz\Config\Client');
+        $libraries = $container->get('Bsz\Config\Libraries');
         $library = null;
         if ($client->isIsilSession()) {
             $library = $libraries->getFirstActive($client->getIsils());            
@@ -32,7 +32,7 @@ class Factory
         try {
             // Check if the catalog wants to hide the login link, and override
             // the configuration if necessary.
-            $catalog = $sm->get('VuFind\ILSConnection');
+            $catalog = $container->get('VuFind\ILSConnection');
             if ($catalog->loginIsHidden()) {
                 $config = new \Zend\Config\Config($config->toArray(), true);
                 $config->Authentication->hideLogin = true;
@@ -46,11 +46,11 @@ class Factory
         }
 
         // Load remaining dependencies:
-        $userTable = $sm->get('VuFind\DbTablePluginManager')->get('user');
-        $sessionManager = $sm->get('VuFind\SessionManager');
-        $pm = $sm->get('VuFind\AuthPluginManager');
-        $cookies = $sm->get('VuFind\CookieManager');
-        $csrf = $sm->get(\VuFind\Validator\Csrf::class);
+        $userTable = $container->get('VuFind\DbTablePluginManager')->get('user');
+        $sessionManager = $container->get('VuFind\SessionManager');
+        $pm = $container->get('VuFind\AuthPluginManager');
+        $cookies = $container->get('VuFind\CookieManager');
+        $csrf = $container->get(\VuFind\Validator\Csrf::class);
 
         // Build the object and make sure account credentials haven't expired:
         $manager = new Manager($config, $userTable, $sessionManager, $pm, $cookies, $csrf, $library);
@@ -64,11 +64,11 @@ class Factory
      *
      * @return Shibboleth
      */
-    public static function getShibboleth(ServiceManager $sm)
+    public static function getShibboleth(ContainerInterface $container)
     {
         return new Shibboleth(
-            $sm->getServiceLocator()->get('VuFind\SessionManager'),
-            $sm->getServiceLocator()->get('Bsz\Config\Libraries')
+            $container->get('VuFind\SessionManager'),
+            $container->get('Bsz\Config\Libraries')
         );
     }
     
