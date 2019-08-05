@@ -6,7 +6,6 @@ $config = [
     'controllers' => [
         'factories' => [
             'Bsz\Controller\SearchController' => \Bsz\Controller\Factory::class,
-            'Bsz\Controller\AjaxController' => \Bsz\Controller\AjaxControllerFactory::class,
             'Bsz\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
             'Bsz\Controller\EdsrecordController' => \Bsz\Controller\Factory::class,
             'Bsz\Controller\MyResearchController' => \Bsz\Controller\Factory::class,
@@ -23,7 +22,6 @@ $config = [
             'Test' => 'Bsz\Controller\TestController',
             // overwriting
             'VuFind\Controller\SearchController'    => 'Bsz\Controller\SearchController',
-            'VuFind\Controller\AjaxController'      => 'Bsz\Controller\AjaxController',
             'VuFind\Controller\RecordController'    => 'Bsz\Controller\RecordController',
             'VuFind\Controller\EdsrecordController'    => 'Bsz\Controller\EdsrecordController',
             'VuFind\Controller\MyResearchController'   => 'Bsz\Controller\MyResearchController'
