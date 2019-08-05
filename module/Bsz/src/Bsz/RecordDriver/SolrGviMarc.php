@@ -332,20 +332,6 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $this->getFieldArray('780', ['a', 's', 't']);
     }
 
-    /**
-     * returns all authors from 100 or 700 without life data
-     * @return array
-     */
-    public function getAllAuthorsShort()
-    {
-        $authors = array_merge(
-            $this->getFieldArray('100', ['a', 'b']),
-            $this->getFieldArray('700', ['a', 'b'])
-        );
-        return array_unique($authors);
-    }
-
-
 
     /**
      * Get the item's place of publication.
