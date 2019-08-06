@@ -23,6 +23,7 @@ class SolrFindexMarc extends SolrMarc implements Definition {
     use \VuFind\RecordDriver\MarcAdvancedTrait;
     use SubrecordTrait;
     use HelperTrait;
+    use ContainerTrait;
     
     /**
      * Returns consortium
