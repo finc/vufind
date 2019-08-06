@@ -101,7 +101,7 @@ trait MarcAuthorTrait
     }
     public function getSecondaryAuthorsRoles() : array
     {
-        $secondary = $this->getFirstFieldValue('100', ['4']);
+        $secondary = $this->getFirstFieldValue('700', ['4']);
         $array = strpos($secondary, ' ') > 1 ? explode(' ', $secondary) : [$secondary];        
         return array_unique($array);
     }
@@ -119,6 +119,16 @@ trait MarcAuthorTrait
             $this->getFieldArray('111', ['a', 'b']),
             $this->getFieldArray('710', ['a', 'b']),
             $this->getFieldArray('711', ['a', 'b'])
+        );
+    }
+    
+    public function getCorporateAuthorsRoles() : array
+    {
+        return array_merge(
+            $this->getFieldArray('110', ['4']),
+            $this->getFieldArray('111', ['4']),
+            $this->getFieldArray('710', ['4']),
+            $this->getFieldArray('711', ['4'])
         );
     }
     

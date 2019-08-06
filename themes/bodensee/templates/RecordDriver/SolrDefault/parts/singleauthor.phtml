@@ -3,12 +3,9 @@
     $live = isset($info['live'][0]) ? $info['live'][0] : null;
     $role = isset($info['role'][0]) ? $info['role'][0] : null;
     $hiddenFilterString = isset($hiddenFilterString) ? $hiddenFilterString : '';
-
 ?>
 <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($name)?>&amp;type=Author<<?=$hiddenFilterString?>"><?=$this->transEsc($this->name)?><?if (isset($live)):?>, <?=$this->escapeHtml($live)?><? endif; ?></a>
 <? if (!empty($gnd)): ?>
     (<a data-placement="right" data-toggle="tooltip" title="<?=$this->escapeHtml($gnd)?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?=$this->escapeHtml($gnd)?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$this->escapeHtml($gnd)?></span>)
 <? endif; ?>
-<? if (!empty($role)): ?>
-    , <?=$this->transEsc('CreatorRoles::'.$role)?>
-<? endif; ?>    
+<? if (!empty($role)): ?>, <?=$this->transEsc('CreatorRoles::'.$role)?><? endif; ?>    
