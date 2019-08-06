@@ -1,6 +1,4 @@
 <div>
-<? use \Bsz\RecordDriver\Definition as Def; ?>
-
 <? //$containerId = $this->driver->getContainerId();  
    $summDate = $this->driver->getPublicationDates();   
    $journalTitle = $this->driver->getContainerTitle();    
@@ -39,16 +37,13 @@
     <? endif; ?>
     <? endif; ?>
 <? else: ?>
-hier!
-    <? $summAuthors = $this->driver->getDeduplicatedAuthors(); if (!empty($summAuthors)): ?>
-    <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(Def::AUTHOR_NAME) ?>   
-    <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(Def::AUTHOR_GND)); ?>
-    <? if (!empty($noLivePrimaryAuthor)): ?>
+    <? $summAuthors = $this->driver->getDeduplicatedAuthors(['role', 'gnd', 'live']); if (!empty($summAuthors)): ?>
+    
+    <? if (!empty($summAuthors['primary'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
-        <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($noLivePrimaryAuthor)?></a>
-        <? if (!empty($gnd_author)): ?>
-            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_author?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_author?></span>)
-        <? endif; ?>
+        <? foreach ($summAuthors['primary'] as $name => $info): ?>
+            <?=$this->render('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+        <? endforeach; ?>
         <br/>
     <? endif; ?>
     <? if (!empty($summAuthors['secondary'])): ?>
