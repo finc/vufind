@@ -56,7 +56,7 @@
         <? endif; ?>
         <?/* Display Main Details */?>
         <table class="table table-striped">        
-            <? /** $container = $this->driver->getContainer(); if (count($container) > 0 ) : ?>
+            <? $container = $this->driver->tryMethod('getContainer'); if (count($container) > 0 ) : ?>
             <tr>
                 <th><?=$this->transEsc('collective_editions')?>:</th>
                 <td><? foreach($container as $cont): ?>
@@ -65,7 +65,7 @@
             </tr>
             <? endif; ?>      
 
-            <? $volume = $this->driver->getVolume(); ?>
+            <? $volume = $this->driver->tryMethod('getVolume'); ?>
             <? if (!empty($volume)): ?>
                 <tr>
                   <th><?=$this->transEsc('Volume/Issue')?>: </th>
@@ -102,7 +102,7 @@
                   <? endif ; ?>
                 </td>
             </tr>
-            <? endif; **/?>     
+            <? endif;?>     
             
             <? $nextTitles = $this->driver->getNewerTitles(); $prevTitles = $this->driver->getPreviousTitles(); ?>
             <? if (!empty($nextTitles)): ?>
@@ -170,14 +170,14 @@
             </tr>
             <? endif; ?>  
 
-            <? /** $scale = $this->driver->getScale(); if (!empty($scale)): ?>
+            <? $scale = $this->driver->tryMethod('getScale'); if (!empty($scale)): ?>
             <tr>
                 <th><?=$this->transEsc('Scale')?>: </th>
                 <td>
                     <?=$this->escapeHtml($scale)?><br/>
                 </td>
             </tr>
-            <? endif; **/?>    
+            <? endif; ?>    
             
             <? $physical = $this->driver->getPhysicalDescriptions(); if (!empty($physical)): ?>
             <? $contentDisplayed = true; ?>
@@ -258,7 +258,7 @@
             ?>
 
             <? // Show local urls or SWB-links but not both ?>
-            <? /** $localUrls = $this->driver->getLocalUrls()?>     
+            <? $localUrls = $this->driver->tryMethod('getLocalUrls')?>     
             <? if (!empty($localUrls[0]['url'])): ?>
                 <tr>
                     <th><?=$this->transEsc('Local Online Access')?>: </th>
@@ -283,7 +283,7 @@
                           <? endforeach; ?></td>
                     </tr>
                 <? endif; ?>
-            <? endif; **/?>
+            <? endif; ?>
       <? $html = $openUrl->renderTemplate() ?>
       <? if ($openUrlActive && strlen($html) > 0): ?>
       <tr>
@@ -292,12 +292,12 @@
       </tr>
       <? endif; ?>
       
-      <? /**if( strlen($this->driver->getConsortium()) > 0): ?>
+      <? if( strlen($this->driver->getConsortium()) > 0): ?>
         <tr>
             <th><?=$this->transEsc('Network')?>:</th>
             <td><?=$this->driver->getConsortium() ?></td> 
         </tr>          
-      <? endif; **/?> 
+      <? endif; ?> 
 
       
       <? if ($this->usertags()->getMode() !== 'disabled'): ?>
