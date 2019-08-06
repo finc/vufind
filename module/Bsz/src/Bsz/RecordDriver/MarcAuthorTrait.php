@@ -81,7 +81,8 @@ trait MarcAuthorTrait
     public function getPrimaryAuthorsRoles() : array
     {
         $primary = $this->getFirstFieldValue('100', ['4']);
-        return empty($primary) ? [] : [$primary];
+        $array = strpos($primary, ' ') > 1 ? explode(' ', $primary) : [$primary];        
+        return array_unique($array);
     }
     public function getPrimaryAuthorsGnds() : array
     {
@@ -93,20 +94,21 @@ trait MarcAuthorTrait
     {
         return $this->getFieldArray('700', ['a', 'b']);
     }
-        public function getSecondaryAuthorsLives() : array
+    public function getSecondaryAuthorsLives() : array
     {
-        $primary = $this->getFirstFieldValue('700', ['d']);
-        return empty($primary) ? [] : [$primary];
+        $secondary = $this->getFirstFieldValue('700', ['d']);
+        return empty($secondary) ? [] : [$secondary];
     }
     public function getSecondaryAuthorsRoles() : array
     {
-        $primary = $this->getFirstFieldValue('700', ['4']);
-        return empty($primary) ? [] : [$primary];
+        $secondary = $this->getFirstFieldValue('100', ['4']);
+        $array = strpos($secondary, ' ') > 1 ? explode(' ', $secondary) : [$secondary];        
+        return array_unique($array);
     }
     public function getSecondaryAuthorsGnds() : array
     {
-        $primary = $this->getFirstFieldValue('700', ['0']);
-        preg_match('/\(DE-588\)([0-9a-z]*)/i', $primary, $matches);
+        $secondary = $this->getFirstFieldValue('700', ['0']);
+        preg_match('/\(DE-588\)([0-9a-z]*)/i', $secondary, $matches);
         return empty($matches[1]) ? [] : [$matches[1]];
     } 
     

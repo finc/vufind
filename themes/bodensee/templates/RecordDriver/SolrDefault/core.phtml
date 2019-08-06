@@ -1,5 +1,3 @@
-<? use \Bsz\RecordDriver\Definition as Def; ?>
-
 <? 
     $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
     $hiddenFilterString = '';
@@ -127,17 +125,15 @@
             </tr>
             <? endif; ?>
             
-            <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
-            <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(Def::AUTHOR_NAME); ?>
-            <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(Def::AUTHOR_GND)); ?>
+            <? $authors = $this->driver->getDeduplicatedAuthors(['role', 'gnd', 'live']); ?>
+
             <? if (isset($authors) && !empty($authors)): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author">
-                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($noLivePrimaryAuthor)?></a>
-                    <? if ($gnd_author != ''): ?>
-                       (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_author?>" class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a>)
-                    <? endif; ?>
+                    <? foreach ($authors['primary'] as $name => $info): ?>
+                        <?=$this->render('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                    <? endforeach; ?>
                 </td>
             </tr>
             <? endif; ?>
@@ -146,35 +142,23 @@
             <tr>
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
                 <td property="creator">
-                <? foreach ($authors['corporate'] as $corp): ?>
-                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($corp)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($corp)?></a><br/>
+                <? foreach ($authors['corporate'] as $name => $info): ?>
+                    <?=$this->render('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
                 <? endforeach; ?>
                 </td>
             </tr>
-            <? endif; ?>
-            
-            <? /**if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
-            <? $noLiveSecondaryAuthors = $this->driver->getSecondaryAuthorsNoLive(); ?>
-            <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
-            <? $role_au2 = $this->driver->getSecondaryAuthorsRole(); ?>
+            <? endif; ?>            
+            <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
             <tr>
                 <th><?=$this->transEsc('Other Authors')?>: </th>
-                <td><? $i = 0;?>
-                    <span>
-                    <? foreach ($authors['secondary'] as $k => $field): ?>
-                        <?=($i++ == 0)?'':', '?>
-                        <span property="contributor">
-                            <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLiveSecondaryAuthors[$k])?>&amp;type=Author<?= $hiddenFilterString ?>">
-                                <?=$this->escapeHtml($field)?>
-                            </a>
-                        </span>
-                        <? if (isset($gnd_au2[$k])): ?>
-                            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>; <?=$this->transEsc('CreatorRoles::'.$role_au2[$k]);?><? endif; ?>
+                <td>
+                    <? foreach ($authors['secondary'] as $name => $info): ?>
+                        <?=$this->render('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                        <br/>
                     <? endforeach; ?>
-                    </span>
                 </td>
             </tr>
-            <? endif; **/?>
+            <? endif;?>
 
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
             <tr>
