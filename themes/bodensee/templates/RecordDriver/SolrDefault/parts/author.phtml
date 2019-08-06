@@ -39,7 +39,6 @@
     <? endif; ?>
     <? endif; ?>
 <? else: ?>
-hier!
     <? $summAuthors = $this->driver->getDeduplicatedAuthors(); if (!empty($summAuthors)): ?>
     <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthor(Def::AUTHOR_NAME) ?>   
     <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthor(Def::AUTHOR_GND)); ?>

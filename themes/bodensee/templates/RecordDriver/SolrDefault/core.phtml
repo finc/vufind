@@ -147,7 +147,7 @@
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
                 <td property="creator">
                 <? foreach ($authors['corporate'] as $corp): ?>
-                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($corp)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($corp)?></a><br/>
+                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=$corp?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$corp?></a><br/>
                 <? endforeach; ?>
                 </td>
             </tr>
