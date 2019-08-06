@@ -125,10 +125,10 @@ trait MarcAuthorTrait
     public function getCorporateAuthorsRoles() : array
     {
         return array_merge(
-            $this->getFieldArray('110', ['4']),
-            $this->getFieldArray('111', ['4']),
-            $this->getFieldArray('710', ['4']),
-            $this->getFieldArray('711', ['4'])
+            $this->getMarcFieldsAuthor('110', ['4']),
+            $this->getMarcFieldsAuthor('111', ['4']),
+            $this->getMarcFieldsAuthor('710', ['4']),
+            $this->getMarcFieldsAuthor('711', ['4'])
         );
     }
     
@@ -149,16 +149,15 @@ trait MarcAuthorTrait
             $field instanceof \File_MARC_Data_Field;
 
             $content = [];
+            
             foreach ($field->getSubfields() as $subfield) {
                 $subfield instanceof \File_MARC_Subfield;
                 if (in_array($subfield->getCode(), $subfields)) {
                     $content[] = $subfield->getData();
                 }                 
             }
-            if (!empty($content)) {
-                // throw repeated subfields away!
-                $result[] = array_shift($content);
-            }
+            // throw repeated subfields away! They are too difficult to process
+            $result[] = array_shift($content);
                  
         }
         return $result;

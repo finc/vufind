@@ -127,7 +127,7 @@
             
             <? $authors = $this->driver->getDeduplicatedAuthors(['role', 'gnd', 'live']); ?>
 
-            <? if (isset($authors) && !empty($authors)): ?>
+            <? if (isset($authors['primary']) && !empty($authors['primary'])): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author">
@@ -144,6 +144,7 @@
                 <td property="creator">
                 <? foreach ($authors['corporate'] as $name => $info): ?>
                     <?=$this->render('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                    <br/>
                 <? endforeach; ?>
                 </td>
             </tr>
