@@ -450,6 +450,10 @@ class Record extends \VuFind\View\Helper\Root\Record
                 // k is deprecated but might still be used
                 || strtolower($field['d']) == 'k') ) {
                 return true;
+            } else {
+                // records with at least one 924 with NO indicator field d 
+                // are available 
+                return true;
             }
         } 
         return false;
