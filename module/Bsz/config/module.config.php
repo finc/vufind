@@ -73,7 +73,7 @@ $config = [
         ]
     ],
     'view_manager' => [
-        'display_exceptions'       => APPLICATION_ENV == 'development' || APPLICATION_ENV=='production',
+        'display_exceptions'       => APPLICATION_ENV == 'development',
     ],
 
     'vufind' => [
@@ -113,8 +113,7 @@ $config = [
                     'Bsz\RecordDriver\SolrGviMarcDE627' => 'Bsz\RecordDriver\Factory',
                     'Bsz\RecordDriver\EDS'              => 'Bsz\RecordDriver\Factory::getEDS',
                 ],
-                'aliases' => [
-                    
+                'aliases' => [                    
                     'SolrGviMarc'      =>  'Bsz\RecordDriver\SolrGviMarc',
                     'SolrFindexMarc'   =>  'Bsz\RecordDriver\SolrFindexMarc',
                     'SolrGviMarcDE101' =>  'Bsz\RecordDriver\SolrGviMarcDE101',
@@ -126,7 +125,7 @@ $config = [
                     'SolrGviMarcDE604' =>  'Bsz\RecordDriver\SolrGviMarcDE604',
                     'SolrGviMarcDE605' =>  'Bsz\RecordDriver\SolrGviMarcDE605',
                     'SolrGviMarcDE627' =>  'Bsz\RecordDriver\SolrGviMarcDE627',
-                    'EDS' =>  'Bsz\RecordDriver\EDS',
+                    'EDS'              =>  'Bsz\RecordDriver\EDS',
                     
                     'VuFind\RecordDriver\SolrMarc'  => 'Bsz\RecordDriver\SolrMarc',
                     'VuFind\RecordDriver\EDS'       => 'Bsz\RecordDriver\EDS',
