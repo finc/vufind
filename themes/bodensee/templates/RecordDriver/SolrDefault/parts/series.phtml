@@ -18,14 +18,14 @@
        name.  We should account for both cases to maximize compatibility. */?>
     <? if (is_array($field)): ?>
       <? if (!empty($field['name'])): ?>
-        <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field['name'], $this->overrideRecordLink)?><?=$hiddenFilterString?>"><?=$this->escapeHtml($field['name'])?></a>
+        <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field['name'])?><?=$hiddenFilterString?>"><?=$this->escapeHtml($field['name'])?></a>
         <? if (!empty($field['number'])): ?>
           <?=$this->escapeHtml($field['number'])?>
         <? endif; ?>
         <br/>
       <? endif; ?>
     <? else: ?>
-      <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field, $this->overrideRecordLink)?><?=$hiddenFilterString?>"><?=$this->escapeHtml($field)?></a><br/>
+      <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field)?><?=$hiddenFilterString?>"><?=$this->escapeHtml($field)?></a><br/>
     <? endif; ?>
   <? endforeach; ?>
 </td>

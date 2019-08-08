@@ -115,13 +115,10 @@ class Record extends \VuFind\View\Helper\Root\Record
      *
      * @return string
      */
-    public function getLink($type, $lookfor, $searchClassId = 'Search')
+    public function getLink($type, $lookfor)
     {
-        if ($searchClassId == 'Solr' || $searchClassId == null) {
-            $searchClassId = 'Search';
-        }
         return $this->renderTemplate(
-                        'link-' . $type . '.phtml', ['lookfor' => $lookfor, 'searchClassId' => $searchClassId]
+            'link-' . $type . '.phtml', ['lookfor' => $lookfor, 'searchClassId' => $searchClassId]
         );
     }
     
