@@ -118,7 +118,7 @@ class Record extends \VuFind\View\Helper\Root\Record
     public function getLink($type, $lookfor)
     {
         return $this->renderTemplate(
-            'link-' . $type . '.phtml', ['lookfor' => $lookfor, 'searchClassId' => $searchClassId]
+            'link-' . $type . '.phtml', ['lookfor' => $lookfor]
         );
     }
     
