@@ -99,6 +99,10 @@ trait MarcAuthorTrait
     public function getSecondaryAuthorsGnds() : array
     {
         $secondary = $this->getMarcFieldsAuthor('700', ['0']);
+        foreach ($secondary as &$value) {
+            $value = preg_replace('/\(.*\)/', '', $value);
+        }
+        unset($value);
         return $secondary;
     } 
     
