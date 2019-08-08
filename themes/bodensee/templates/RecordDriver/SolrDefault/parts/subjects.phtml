@@ -108,7 +108,7 @@
   <? endif; ?>  
       
       
-<? /**$subjects = $this->driver->getAllRVKSubjectHeadings(); if (!empty($subjects)): ?>
+<? $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings'); if (!empty($subjects)): ?>
   <tr>
     <th><?=$this->transEsc('RVKSubjects')?>: </th>
     <td>
@@ -139,7 +139,7 @@
       </div>
     </td>
   </tr>
-  <? endif; **/?>
+  <? endif; ?>
 
 
   
