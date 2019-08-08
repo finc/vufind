@@ -673,5 +673,4 @@ $config['router']['routes']['home'] = [
         ]
     ]
 ];
-
 return $config;

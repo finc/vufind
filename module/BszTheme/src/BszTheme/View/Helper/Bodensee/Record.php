@@ -107,20 +107,6 @@ class Record extends \VuFind\View\Helper\Root\Record
         );
     }
 
-    /**
-     * Render the link of the specified type.
-     *
-     * @param string $type    Link type
-     * @param string $lookfor String to search for at link
-     *
-     * @return string
-     */
-    public function getLink($type, $lookfor)
-    {
-        return $this->renderTemplate(
-            'link-' . $type . '.phtml', ['lookfor' => $lookfor]
-        );
-    }
     
         /**
      * 
