@@ -206,15 +206,6 @@
                                         'driver' => $sub,
                                         'hiddenFilterString' => $hiddenFilterString                                            
                                         ])?>
-                                <?php $openUrl = $this->openUrl($sub, 'results');
-                                  $openUrlActive = null;
-                                 $openUrlActive = $openUrl->isActive();            
-                                 echo $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
-                                   'driver' => $sub,
-                                   'openUrl' => $openUrl,
-                                   'openUrlActive' => $openUrlActive,
-                                   'hiddenFilterString' => $hiddenFilterString                                            
-                                 ])?>
                                 <? if (!empty($edition)): ?>
                                     <div>                                    
                                     <strong><?=$this->transEsc('Edition')?>: </strong>
