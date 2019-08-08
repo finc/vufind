@@ -60,7 +60,7 @@
             <tr>
                 <th><?=$this->transEsc('collective_editions')?>:</th>
                 <td><? foreach($container as $cont): ?>
-                    <a class="internal" href="<?=$this->RecordLink()->getUrl($cont)?>"><?=$this->string()->cleanEsc($cont->getTitle())?></a><br/>
+                    <a class="internal" href="<?=$this->recordLink()->getUrl($cont)?>"><?=$this->string()->cleanEsc($cont->getTitle())?></a><br/>
                 <? endforeach; ?></td>
             </tr>
             <? endif; ?>      
