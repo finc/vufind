@@ -29,7 +29,7 @@
             <strong><?=$this->transEsc('and')?></strong>
         <? else: ?> 
             <strong><?=$this->transEsc('by')?></strong>
-        <?endif?>        
+        <?endif?>
         <? foreach ($summAuthors['secondary'] as $name => $info): ?>
             <?=$this->render('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
         <? endforeach; ?>
