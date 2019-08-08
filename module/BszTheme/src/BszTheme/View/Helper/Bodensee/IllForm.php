@@ -235,6 +235,7 @@ class IllForm extends AbstractHelper
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication')],
             ['storage_retrieval_request_year', 'Jahrgang', '', '', true, 'ill_error_year'],
             ['Issue', 'Heft'],
+            ['Volume', 'Band'],
             ['ISSN', 'Issn', $this->getFromDriver('getCleanISSN')],
         ];
         return $this->renderFormFields($fields);        
