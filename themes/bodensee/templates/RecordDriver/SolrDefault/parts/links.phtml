@@ -67,7 +67,11 @@ $localUrls = $this->driver->getLocalUrls(); ?>
    //     themes/bodensee/Helpers/openurl.phtml
    //     openurl.js
 ?>
-<? if ($openUrlActive): ?>
-    <?=$openUrl->renderTemplate() ?>
+<? if (!$this->driver->isSubRecord()): ?>
+    <? if ($openUrlActive): ?>
+        <?= $openUrl->renderTemplate() ?>
+    <? endif; ?>  
 <? endif; ?>  
 <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()) . '"></span>':''?>
+
+
