@@ -56,6 +56,10 @@ trait MarcAuthorTrait
     public function getPrimaryAuthorsGnds() : array
     {
         $primary = $this->getMarcFieldsAuthor('100', ['0']);
+        foreach ($primary as &$value) {
+            $value = preg_replace('/\(.*\)/', '', $value);
+        }
+        unset($value);
         return $primary;
     }    
     
