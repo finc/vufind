@@ -205,65 +205,6 @@ $config = [
             ],
 
         ],
-        'recorddriver_tabs' => [
-            'Bsz\RecordDriver\SolrMarc' => [
-                'tabs' => [
-                    'Holdings' => 'HoldingsILS',
-                    'Volumes' => 'Volumes',
-                    'articles' => 'articles',
-                    'Description' => 'Description',
-                    'TOC' => 'TOC',
-                    'UserComments' => 'UserComments',
-                    'Reviews' => 'Reviews',
-                    'Excerpt' => 'Excerpt',
-                    'Preview' => 'preview',
-                    'HierarchyTree' => 'HierarchyTree',
-                    'Map' => 'Map',
-                    'Libraries' => 'Libraries',
-//                    'Similar' => 'SimilarItemsCarcousel',
-                    'Details' => 'StaffViewMARC',
-
-                ],
-                'defaultTab' => 'Holdings',
-            ],
-            'Bsz\RecordDriver\SolrNtrsoai' => [
-                'tabs' => [
-                    'Holdings' => 'HoldingsILS',
-//                    'Volumes' => 'Volumes',
-                    'Description' => 'Description',
-                    'TOC' => 'TOC',
-                    'UserComments' => 'UserComments',
-                    'Reviews' => 'Reviews',
-                    'Excerpt' => 'Excerpt',
-                    'Preview' => 'preview',
-                    'HierarchyTree' => 'HierarchyTree',
-                    'Map' => 'Map',
-//                    'Similar' => 'SimilarItemsCarcousel',
-                    'Details' => 'StaffViewArray',
-
-                ],
-                'defaultTab' => 'Volumes',
-            ],
-            'Bsz\RecordDriver\SolrDlrmarc' => [
-                'tabs' => [
-                    'Holdings' => 'HoldingsILS',
-                    'Volumes' => 'Volumes',
-                    'Description' => 'Description',
-                    'TOC' => 'TOC',
-                    'UserComments' => 'UserComments',
-                    'Reviews' => 'Reviews',
-                    'Excerpt' => 'Excerpt',
-                    'Preview' => 'preview',
-                    'HierarchyTree' => 'HierarchyTree',
-                    'Map' => 'Map',
-//                    'Similar' => 'SimilarItemsCarcousel',
-                    'Details' => 'StaffViewMARC',
-
-                ],
-                'defaultTab' => 'Volumes',
-            ],
-
-        ],
     ]
 
 ];
