@@ -548,7 +548,8 @@ class SolrGviMarc extends SolrMarc implements Definition
     public function getConsortium()
     {
         // determine network based on two different sources
-        $consortium1 = $this->getFieldArray(924, ['c'], true);
+        $consortium1 = $this->getFirstFieldValue(924, ['c']);
+        $consortium1 = explode(' ', $consortium1);
         $consortium2 = $this->fields['consortium']; 
         $consortium = array_merge($consortium1, $consortium2);
         
