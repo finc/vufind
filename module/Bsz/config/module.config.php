@@ -155,6 +155,9 @@ $config = [
                 ],
                 'aliases' => [
                     'VuFind\RecordTab\HoldingsILS' => 'Bsz\RecordTab\HoldingsILS',
+                    'Articles' => 'Bsz\RecordTab\Articles',
+                    'Volumes' => 'Bsz\RecordTab\Volumes',
+                    'Libraries' => 'Bsz\RecordTab\Libraries',
                 ]
             ],
             'search_backend' => [
