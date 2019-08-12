@@ -36,7 +36,7 @@ if (!is_array($urls)):
     $urls = [];
 endif;
 
-//$localUrls = $this->driver->getLocalUrls(); ?>            
+$localUrls = $this->driver->tryMethod('getLocalUrls'); ?>            
 <? // Show local Urls ?>
 <? if (!empty($localUrls[0]['url'])): ?>
     <div>
