@@ -96,9 +96,13 @@
         <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>          
       </div>      
       <? endif; ?>
-      <? $openUrl = $this->openUrl($this->driver, 'results');
-        $openUrlActive = $openUrl->isActive();            
-        echo $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
+      <? if( $this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
+        <div class="ill-source">                
+            <strong><?=$this->transEsc('Network')?>:</strong>
+            <span><?=$this->driver->getConsortium() ?></span> 
+        </div>          
+      <? endif; ?>       
+        <? echo $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
             'driver' => $this->driver,
             'hiddenFilterString' => $hiddenFilterString                                            
         ])?>            
@@ -212,6 +216,16 @@
                                         <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>          
                                     </div>      
                                 <? endif; ?>
+                                <? if( $this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
+                                    <div class="ill-source">                
+                                        <strong><?=$this->transEsc('Network')?>:</strong>
+                                        <span><?=$this->driver->getConsortium() ?></span> 
+                                    </div>          
+                                <? endif; ?>
+                                <? echo $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
+                                    'driver' => $sub,
+                                    'hiddenFilterString' => $hiddenFilterString                                            
+                                ])?>  
                                 <div class="result-formats">
                                     <?=$this->record($sub)->getFormatList() ?>            
                                 </div>
