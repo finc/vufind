@@ -57,8 +57,9 @@ $config = [
             'Bsz\Holding'    => 'Bsz\Factory::getHolding',
             'Bsz\Parser\OpenUrl' => 'Bsz\Parser\Factory::getOpenUrlParser',
             'Bsz\SearchTabsHelper' => 'Bsz\Service\Factory::getSearchTabsHelper',
-            'Bsz\AuthManager' => 'Bsz\Auth\Factory::getManager',
+            'Bsz\Auth\Manager' => 'Bsz\Auth\Factory::getManager',
             'Bsz\RecordDriver\PluginManager' => 'Bsz\RecordDriver\PluginManagerFactory',
+            
         ],
         'invokables' => [
             'Bsz\RecordDriver\Definition' => 'Bsz\RecordDriver\Definition',
@@ -67,7 +68,7 @@ $config = [
         ],
         'aliases' => [
             'VuFind\SearchTabsHelper'   => 'Bsz\SearchTabsHelper',
-            'VuFind\AuthManager'           => 'Bsz\AuthManager',
+            'VuFind\Auth\Manager'           => 'Bsz\Auth\Manager',
             'VuFind\RecordDriver\PluginManager' => 'Bsz\RecordDriver\PluginManager'
 
         ]
