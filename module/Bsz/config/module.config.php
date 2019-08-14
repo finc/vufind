@@ -89,14 +89,17 @@ $config = [
             ],
             'recommend' => [
                 'factories' => [
-                    'VuFind\Recommend\SideFacets' => 'Bsz\Recommend\Factory::getSideFacets',
-                    'searchbuttons' => 'Bsz\Recommend\Factory::getSearchButtons',
-                    'rssfeedresults' => 'Bsz\Recommend\Factory::getRSSFeedResults',
-                    'startpagenews' => 'Bsz\Recommend\Factory::getStartpageNews',
+                    'Bsz\Recommend\SideFacets' => 'Bsz\Recommend\Factory::getSideFacets',
+                    'Bsz\Recommend\SearchButtons' => 'Bsz\Recommend\Factory::getSearchButtons',
+                    'Bsz\Recommend\RSSFeedResults' => 'Bsz\Recommend\Factory::getRSSFeedResults',
+                    'Bsz\Recommend\StartPageNews' => 'Bsz\Recommend\Factory::getStartpageNews',
                 ],
                 'invokables' => [
-                    'rssfeedresultsdeferred' => 'Bsz\Recommend\RSSFeedResultsDeferred',
+                   // 'rssfeedresultsdeferred' => 'Bsz\Recommend\RSSFeedResultsDeferred',
                 ],
+                'aliases' => [
+                    'VuFind\Recommend\SideFacets' => 'Bsz\Recommend\SideFacets' 
+                ]
             ],
             'recorddriver'  => [
                 'factories' => [
@@ -126,7 +129,6 @@ $config = [
                     'SolrGviMarcDE604' =>  'Bsz\RecordDriver\SolrGviMarcDE604',
                     'SolrGviMarcDE605' =>  'Bsz\RecordDriver\SolrGviMarcDE605',
                     'SolrGviMarcDE627' =>  'Bsz\RecordDriver\SolrGviMarcDE627',
-                    'EDS'              =>  'Bsz\RecordDriver\EDS',
                     
                     'VuFind\RecordDriver\SolrMarc'  => 'Bsz\RecordDriver\SolrMarc',
                     'VuFind\RecordDriver\EDS'       => 'Bsz\RecordDriver\EDS',
