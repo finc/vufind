@@ -82,8 +82,7 @@ class Factory {
     {
         $config = $container->get('VuFind\Config')->get('searches');
         return new RSSFeedResults(
-            //$config->StartpageNews->RSSFeed
-            $config->SideRecommendations
+            $config->get('StartpageNews')->get('RSSFeed')
         );
     }      
 
@@ -98,8 +97,7 @@ class Factory {
     {
         $config = $container->get('VuFind\Config')->get('searches');
         return new RSSFeedResults(
-            $config->StartpageNews->RSSFeed
-            //$config->SideRecommendations
+            $config->get('StartpageNews')->get('RSSFeed')
         );
     }     
     

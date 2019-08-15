@@ -102,7 +102,7 @@ JS;
     <? if ($this->client()->getRSSFeed() !== null): ?>
         <div id="RSSFeedResultsDeferred" class="col-sm-6">
             <p><?=$this->transEsc("Loading")?>... <img src="<?=$this->imageLink('ajax_loading.gif')?>" /></p>
-            <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, "var url = VuFind.path + '/AJAX/News?mod=StartpageNews';$('#RSSFeedResultsDeferred').load(url);", 'SET')?>        </div>    
+            <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, "var url = VuFind.path + '/AJAX/Recommend?mod=StartPageNews';$('#RSSFeedResultsDeferred').load(url);", 'SET')?>        </div>    
     <? endif; ?>
     
     

@@ -98,7 +98,8 @@ $config = [
                    // 'rssfeedresultsdeferred' => 'Bsz\Recommend\RSSFeedResultsDeferred',
                 ],
                 'aliases' => [
-                    'VuFind\Recommend\SideFacets' => 'Bsz\Recommend\SideFacets' 
+                    'VuFind\Recommend\SideFacets' => 'Bsz\Recommend\SideFacets',
+                    'StartPageNews' => 'Bsz\Recommend\StartPageNews'
                 ]
             ],
             'recorddriver'  => [
