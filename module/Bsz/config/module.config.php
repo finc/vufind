@@ -94,11 +94,15 @@ $config = [
                     'Bsz\Recommend\RSSFeedResults' => 'Bsz\Recommend\Factory::getRSSFeedResults',
                     'Bsz\Recommend\StartPageNews' => 'Bsz\Recommend\Factory::getStartpageNews',
                 ],
+                'invokables' => [
+                    'Bsz\Recommend\RSSFeedResultsDeferred' => 'Bsz\Recommend\RSSFeedResultsDeferred',
+                ],
                 'aliases' => [
                     'VuFind\Recommend\SideFacets' => 'Bsz\Recommend\SideFacets',
                     'StartPageNews' => 'Bsz\Recommend\StartPageNews',
                     'SearchButtons' => 'Bsz\Recommend\SearchButtons',
                     'RSSFeedResults' => 'Bsz\Recommend\RSSFeedResults',
+                    'RSSFeedResultsDeferred' => 'Bsz\Recommend\RSSFeedResultsDeferred',
                 ]
             ],
             'recorddriver'  => [
