@@ -12,6 +12,10 @@ mark {
 //    #gradient.vertical(darken(#fff, 5%); #fff; 15%; 90%);
 //}
 
+.nav-tabs > li {
+    margin-bottom: 2px;
+}
+
 .nav-tabs > li:not(.active) > a {
     background-color: darken(@brand-primary, 10%);    
     color: #000
@@ -58,10 +62,10 @@ mark {
     border-top: 2px solid #59c7eb;
 }
 
-.nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li:not(.active) > a:hover {
-    border-top: 2px solid #59c7eb;
-    border-left: 2px solid #59c7eb;
-    border-right: 2px solid #59c7eb;
-    border-bottom: 2px solid #fff;
+.nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li:not(.active) > a:hover,  .nav-tabs > li:not(.active) > a {
+    border-top: 3px solid #59c7eb;
+    border-left: 3px solid #59c7eb;
+    border-right: 3px solid #59c7eb;
+    border-bottom: 3px solid #fff;
     z-index: 3;
 }
