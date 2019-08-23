@@ -19,13 +19,14 @@
  */
 
 namespace Bsz\Controller;
-use Zend\Session\Container;
+use Zend\Session\Container as SessionContainer;
 /**
  * Für statische Seiten etc. 
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class BszController extends \VuFind\Controller\AbstractBase {
+    
     
     /**
      * Write isil into Session 
@@ -48,10 +49,11 @@ class BszController extends \VuFind\Controller\AbstractBase {
             throw new \Bsz\Exception('parameter isil missing');
         }
         if (count($isils) > 0) {
-            $container = new Container(
-                'fernleihe', $this->serviceLocator->get('VuFind\SessionManager')
+            $session = new SessionContainer(
+                'fernleihe',
+                $this->serviceLocator->get(\Zend\Session\SessionManager::class)
             );
-            $container->offsetSet('isil', $isils);     
+            $session->offsetSet('isil', $isils);     
             $uri= $this->getRequest()->getUri();
             $cookie = new \Zend\Http\Header\SetCookie(
                     'isil', 

@@ -57,7 +57,7 @@ class Libraries extends TableGateWay
             $select->where->
                     and
                     ->equalTo('is_ill_active', 1)
-                    ->in('isil', $isils);            
+                    ->in('isil', $isils);    
 
             $results = $this->selectWith($select);
 
@@ -245,5 +245,26 @@ class Libraries extends TableGateWay
         }
         return true;
     }
+    /**
+     * Returns all active ill libraries that matches the given name
+     * 
+     * @param string $name
+     * @return array
+     */
+    public function getActiveByName($name) {
+        
+        $sql = new Sql($this->getAdapter());
+        $select = $sql->select()
+            ->from('libraries')
+            ->order('libraries.name')
+            ->order('name')
+            ->limit(20);
+        $select->where->
+                and
+                ->equalTo('is_ill_active', 1)
+                ->like('libraries.name', '%'.$name.'%');
 
+        $results = $this->selectWith($select);        
+        return $results;
+    }
 }

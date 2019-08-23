@@ -243,7 +243,6 @@ function duplicates() {
     // handle checkbox to enable/disable grouping
     $('#dedup-checkbox').change(function(e) {
         var status = this.checked;
-        console.log(status);
         $.ajax({
            dataType: 'json',
            method: 'POST',
@@ -251,7 +250,7 @@ function duplicates() {
            data: { 'status': status },
            success: function() {
                // reload the page 
-               location.reload();
+               window.location.reload(true);
            }
    
   })
@@ -307,27 +306,77 @@ function datepicker() {
 
 }
 
+function typeaheadLibraries() {    
+    var baseurl = VuFind.path + '/AJAX/JSON?method=';
+    $('.typeahead').typeahead({
+        items: 'all',        
+        source: function (val, process) {
+            return $.ajax({
+                url: baseurl+'librariesTypeahead&q='+val,
+                method: "GET",
+                dataType: 'json',  
+                success: function(data) {
+                    return process(data.data);
+                }
+            });
+
+        },
+        afterSelect: function(item) {   
+            $.ajax({
+                url: baseurl + 'saveIsil&isil='+item.id,
+                method: 'GET',
+                dataType: 'json',
+                success: function() {
+                    window.location = VuFind.path;        
+                }
+            });
+        }
+
+    });    
+    
+}
+
+function librarySelect() {
+    $('.library-selector a').click(function(e) {
+        var isil = $(this).attr('data-isil');
+        $.ajax({
+                url:   VuFind.path + '/AJAX/JSON?method=saveIsil&isil='+isil,
+                method: 'GET',
+                dataType: 'json',                
+                success: function() {
+                    window.location = VuFind.path;            
+                }
+        });
+        e.preventDefault();
+        
+    });
+}
+
 /*
 * this is executed after site is loaded
 * main loop
 */
 
 $(document).ready(function() {
-  avoidEmptySearch();
-  externalLinks();
-  bootstrapTooltip();
-  modalPopup();
-  keyboardShortcuts();
-  remoteModal();
-  duplicates();
-  showmore();
-  searchclear();
-  $('[data-toggle="popover"]').popover({
-      trigger: 'click focus'
-  });
-  if ($.fn.mark) {
-    performMark();      
-  }
-  openUrlTooltip();
-  checkAdvSearch();
+    avoidEmptySearch();
+    externalLinks();
+    bootstrapTooltip();
+    modalPopup();
+    if ($.fn.typeahead) {
+        typeaheadLibraries();      
+    }
+    librarySelect();
+    keyboardShortcuts();
+    remoteModal();
+    duplicates();
+    showmore();
+    searchclear();
+    $('[data-toggle="popover"]').popover({
+        trigger: 'click focus'
+    });
+    if ($.fn.mark) {
+        performMark();      
+    }
+    openUrlTooltip();
+    checkAdvSearch();
 });

@@ -196,10 +196,15 @@ $config = [
             ],
             'ajaxhandler' => [
                 'factories' => [
-                     'Bsz\AjaxHandler\DedupCheckbox' => 'Bsz\AjaxHandler\DedupCheckboxFactory',
+                     'Bsz\AjaxHandler\DedupCheckbox' =>      'Bsz\AjaxHandler\Factory::getDedupCheckbox',
+                     'Bsz\AjaxHandler\SaveIsil' =>           'Bsz\AjaxHandler\Factory::getSaveIsil',
+                     'Bsz\AjaxHandler\LibrariesTypeahead' => 'Bsz\AjaxHandler\Factory::getLibrariesTypeahead',
+                    
                 ],
                 'aliases' => [
-                    'dedupCheckbox' => 'Bsz\AjaxHandler\DedupCheckbox'
+                    'dedupCheckbox' => 'Bsz\AjaxHandler\DedupCheckbox',
+                    'saveIsil' => 'Bsz\AjaxHandler\SaveIsil',
+                    'librariesTypeahead' => 'Bsz\AjaxHandler\LibrariesTypeahead'
                 ]
             ],            
             'resolver_driver' => [
