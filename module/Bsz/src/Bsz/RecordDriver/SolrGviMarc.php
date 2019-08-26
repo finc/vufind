@@ -554,10 +554,13 @@ class SolrGviMarc extends SolrMarc implements Definition
         $consortium = array_merge($consortium1, $consortium2);
         
         foreach ($consortium as $k => $con) {
-            $mapped = $this->mainConfig->mapNetwork($con);
-            if (!empty($mapped)) {
-                $consortium[$k] = $mapped;
-
+            if (!empty($con)) {
+                $mapped = $this->mainConfig->mapNetwork($con);
+                if (!empty($mapped)) {
+                    $consortium[$k] = $mapped;
+                }                
+            } else {
+                unset($consortium[$k]);
             }
         }
         $consortium_unique = array_unique($consortium);
