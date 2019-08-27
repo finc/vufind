@@ -1,4 +1,4 @@
-<?
+<?php
     // Set default value if necessary:
     if (!isset($this->searchClassId)) {
         $this->searchClassId = 'Solr';
@@ -7,8 +7,7 @@
     // Load search actions and settings (if any):
     $options = $this->searchOptions($this->searchClassId);
     $handlers = $this->searchbox()->getHandlers(
-        $this->searchClassId,
-        isset($this->searchIndex) ? $this->searchIndex : null
+        $this->searchClassId, $this->searchIndex ?? null
     );
     $handlerCount = count($handlers);
     $basicSearch = $this->searchbox()->combinedHandlersActive() ? 'combined-searchbox' : $options->getSearchAction();
@@ -16,8 +15,8 @@
     $advSearch = $options->getAdvancedSearchAction();
     $lastSort = $this->searchMemory()->getLastSort($this->searchClassId);
     $lastLimit = $this->searchMemory()->getLastLimit($this->searchClassId);
-    $ignoreHiddenFilterMemory = isset($this->ignoreHiddenFilterMemory) && $this->ignoreHiddenFilterMemory;
-    $ignoreHiddenFiltersInRequest = isset($this->ignoreHiddenFiltersInRequest) && $this->ignoreHiddenFiltersInRequest;
+    $ignoreHiddenFilterMemory = $this->ignoreHiddenFilterMemory ?? false;
+    $ignoreHiddenFiltersInRequest = $this->ignoreHiddenFiltersInRequest ?? false;
     $hiddenFilters = $this->searchTabs()->getHiddenFilters($this->searchClassId, $ignoreHiddenFilterMemory, $ignoreHiddenFiltersInRequest);
     if (empty($hiddenFilters) && !$ignoreHiddenFilterMemory) {
         $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
@@ -26,6 +25,16 @@
         }
     }
     $hiddenFilterParams = $this->searchTabs()->getCurrentHiddenFilterParams($this->searchClassId, $ignoreHiddenFilterMemory, '?');
+
+    if (!isset($this->filterList) || !isset($this->checkboxFilters)) {
+        $params = $this->searchMemory()->getLastSearchParams($this->searchClassId);
+        $filterList = $params->getFilterList(true);
+        $checkboxFilters = $params->getCheckboxFacets();
+    } else {
+        $filterList = is_array($this->filterList) ? $this->filterList : [];
+        $checkboxFilters = is_array($this->checkboxFilters) ? $this->checkboxFilters : [];
+    }
+    $filterDetails = $this->searchbox()->getFilterDetails($filterList, $checkboxFilters);
     $disabled = '';
     if ($this->client()->isIsilSession() && !$this->client()->hasIsilSession()) {  
         $disabled = 'disabled';
