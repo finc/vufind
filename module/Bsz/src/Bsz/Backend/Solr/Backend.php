@@ -62,7 +62,7 @@ class Backend extends \VuFindSearch\Backend\Solr\Backend {
                 $params->set('group.field', 'test_matchkey_2');
             }        
             if ($params->contains('group.limit', '')) {
-                $params->set('group.limit', '20');
+                $params->set('group.limit', '10');
             }
             // ngroups have massive performance penalty!
             $params->set('group.ngroups', 'false'); 
