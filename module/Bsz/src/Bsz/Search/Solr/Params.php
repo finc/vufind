@@ -13,6 +13,7 @@ class Params extends \VuFind\Search\Solr\Params
 {
     
     protected $dedup;
+    protected $limit = 10;
     protected $client;
     
     public function __construct($options, \VuFind\Config\PluginManager $configLoader,
