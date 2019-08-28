@@ -852,20 +852,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getIdsRelated()
     {
-        $ids = [];
-        $f773 = $this->getFieldArray(773, ['w']);
-        foreach ($f773 as $subfields) {
-            $ids = explode(' ', $subfields);
-            foreach ($ids as $id) {
-                // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
-                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
-                    $ids[] = $id;
-                }
-            }
-            
-        }
-        $ids[] = $this->getUniqueId();
-        return array_unique($ids);
+        return getContainerIds();
     }
 
     public function getRelatedEditions()

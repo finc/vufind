@@ -25,7 +25,8 @@ trait ContainerTrait {
     {
         if (count($this->container) == 0 &&
             $this->isPart()) {
-            $relId = $this->getFieldArray(773, ['w']);
+            $relId = $this->getContainerIds();
+
             $this->container = [];
             if (is_array($relId) && count($relId) > 0) {
                 foreach ($relId as $k => $id) {
@@ -34,37 +35,42 @@ trait ContainerTrait {
                 $params = [
                     'lookfor' => implode(' OR ', $relId),
                 ];
-                // QnD
-                // We need the searchClassId here to get proper filters
-                $searchClassId = 'Solr';
-//                if (isset($_SERVER['REQUEST_URI']) &&
-//                        strpos($_SERVER['REQUEST_URI'], 'Search') !== FALSE) {
-//                    $searchClassId = 'Interlending';
-//                }
-                $results = $this->runner->run($params, $searchClassId);
+                $results = $this->runner->run($params, 'Solr');
                 $this->container = $results->getResults();
             }
         }
         return $this->container;
     }
 
-    public function getContainerId() {
+    /**
+     * 
+     * @return array
+     */
+    public function getContainerIds() {
         $fields = [
             773 => ['w'],
         ];
+        $ids = [];
         $array = $this->getFieldsArray($fields);
         foreach ($array as $subfields) {
             $ids = explode(' ', $subfields);
             foreach ($ids as $id) {
                 // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
                 if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
-                    return $id;
+                    $ids[] = $id;
                 }
-            }
-            
+            }            
         }
-        return '';
-
+        return array_unique($ids);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getContainerId() {
+        $ids = $this->getContainerIds();
+        return array_shift($ids);
     }
 
     /**
