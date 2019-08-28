@@ -852,7 +852,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getIdsRelated()
     {
-        return getContainerIds();
+        return $this->getContainerIds();
     }
 
     public function getRelatedEditions()

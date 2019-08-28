@@ -80,7 +80,7 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
                 $params = [
                     'sort' => 'publish_date_sort desc, id desc',
                     'lookfor' => implode(' OR ', $relId),                                      
-                    'limit' => 1000
+                    'limit' => 500
                 ];                
                 
                 $filter = [];
