@@ -306,6 +306,10 @@ function datepicker() {
 
 }
 
+/**
+ * Typeahead selection of libraries in home page of ill portal. 
+ *
+ */
 function typeaheadLibraries() {    
     var baseurl = VuFind.path + '/AJAX/JSON?method=';
     $('.typeahead').typeahead({
@@ -336,22 +340,6 @@ function typeaheadLibraries() {
     
 }
 
-function librarySelect() {
-    $('.library-selector a').click(function(e) {
-        var isil = $(this).attr('data-isil');
-        $.ajax({
-                url:   VuFind.path + '/AJAX/JSON?method=saveIsil&isil='+isil,
-                method: 'GET',
-                dataType: 'json',                
-                success: function() {
-                    window.location = VuFind.path;            
-                }
-        });
-        e.preventDefault();
-        
-    });
-}
-
 /*
 * this is executed after site is loaded
 * main loop
@@ -365,7 +353,6 @@ $(document).ready(function() {
     if ($.fn.typeahead) {
         typeaheadLibraries();      
     }
-    librarySelect();
     keyboardShortcuts();
     remoteModal();
     duplicates();
