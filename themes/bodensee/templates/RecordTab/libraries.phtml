@@ -23,9 +23,7 @@
             <td>
                 <? if (isset($result['b']) && trim($result['b']) != ''): ?>
                     <span class="text-nowrap">
-                    <a href=" https://sigel.staatsbibliothek-berlin.de/nc/suche/?isil=<?=trim($result['b'])?>" class="external">
-                        <?=$this->escapeHtml($result['b'])?>
-                    </a>
+                    <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::Sigelstelle')?>" href=" https://sigel.staatsbibliothek-berlin.e/nc/suche/?isil=<?=trim($result['b'])?>" class="external"><?=$this->escapeHtml($result['b'])?></a>
                     </span>
                 <? else: ?>
                     <?=isset($result['b']) ? $this->escapeHtml($result['b']) : ''?>
@@ -33,15 +31,13 @@
             </td>
             <td>
                 <? if (isset($result['homepage']) && isset($result['name']) && trim($result['homepage']) != ''): ?>
-                    <a href="<?=$result['homepage']?>" class="external">
-                        <?=$this->escapeHtml($result['name'])?>
-                    </a>
+                    <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::library_homepage')?>" href="""<?=$result['homepage']?>" class="external"><?=$this->escapeHtml($result['name'])?></a>
                 <? else: ?>
                     <?=isset($result['name']) ? $this->escapeHtml($result['name']) : ''?>
                 <? endif; ?>
             </td>
             <td><?=isset($result['g']) ? $this->escapeHtml($result['g']) : ''?></td>
-            <td><?=isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></td>
+            <td><? if (isset($result['ill_icon'])): ?><i class="fa <?=$result['ill_icon']?>"></i> <? endif; ?><?=isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></td>
             <? if ($this->driver->isJournal()): ?><td><?=isset($result['z']) ? $this->escapeHtml($result['z']) : ''?></td><? endif; ?>
         </tr>
         <? endforeach; ?>        
@@ -52,6 +48,7 @@
        $('.tablesorter').tablesorter({
            sortList : [[0,0]]
        }); 
+       bootstrapTooltip();
     });
 </script>
 <? else: ?>
