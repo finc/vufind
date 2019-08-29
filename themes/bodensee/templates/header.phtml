@@ -81,8 +81,10 @@
           <? endif; ?>
           <li class="home">
               <a class="lang-<?=$this->layout()->userLang ?>" href="<?=$this->url('home')?>"><i class="fa fa-home"></i><span class="sr-only"><?=$this->transEsc('Home')?></span>
-          <? if ($this->client()->isIsilSession()): ?>
+          <? if ($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
           <?=$this->escapeHtml($this->client())?>
+          <? elseif (!$this->client()->hasIsilSession()): ?>
+          <?=$this->transEsc('ILL::button_choose_library')?>
           <? endif; ?>                  
               </a>  
           </li>
