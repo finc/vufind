@@ -18,17 +18,26 @@ mark {
     margin-bottom: 2px;
 }
 
-.nav-tabs > li:not(.active) > a {
-    background-color: #f1f2f1;    
-    color: #000
-}
+.nav-tabs, .navbar-nav {
+    li:not(.active) > a {
+        background-color: #f1f2f1;    
+        color: #788287 !important;
+    }
+    li a:hover {
+        color: #303436 !important;
+    }
+    li.active > a, 
+    li.active > a:focus, 
+    li.active > a:hover {
+        color: #303436;
+        background-color: white;
+        .text {
+            text-transform: uppercase;        
+        }
+    }
+    
+} 
 
-.nav-tabs > li.active > a, 
-.nav-tabs > li.active > a:focus, 
-.nav-tabs > li.active > a:hover {
-    color: #000;
-    background-color: white;
-}
 
 .btn-primary {
   .button-variant(#000; @btn-primary-bg; @btn-primary-border);
@@ -74,4 +83,36 @@ mark {
 
 .h2, h2 {
     color: #a0c814;
+}
+h3, .h3 {
+    color: #5f676b;
+}
+
+footer {
+    .graybg {
+       background-color:  #5f676b;
+    }
+    .well {
+        p, li, a, a:hover {
+            color: white  !important;
+        }
+        h4, h5 {
+            color: white  !important;
+            text-transform: uppercase;
+
+        }        
+    }    
+}
+
+.facet-group {
+    .title {
+        border-left: 0;
+        border-right: 0;
+        border-top: 0;
+        border-bottom: 1px solid #e4e6e7;
+        color: #788287;
+        font-weight: normal !important;
+        font-size: 16px;
+        
+    }
 }
