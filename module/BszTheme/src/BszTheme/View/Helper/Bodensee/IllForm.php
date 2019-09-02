@@ -148,7 +148,9 @@ class IllForm extends AbstractHelper
             } else if ($this->driver->isJournal() 
                     || $this->driver->isNewspaper()) {
                 return $this->renderBibliographicFieldsJournal();            
-            } if ($this->driver->isBook() || $this->driver->isEBook()) {
+            } if ($this->driver->isBook() || $this->driver->isEBook()
+                   || $this->driver->isMonographicSerial()
+            ) {
                 return $this->renderBibliographicFieldsBook();
             }            
         } else {

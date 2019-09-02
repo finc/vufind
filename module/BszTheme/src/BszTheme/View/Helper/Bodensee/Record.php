@@ -218,7 +218,9 @@ class Record extends \VuFind\View\Helper\Root\Record
             return true;
         } else if ($this->driver->isEBook() && $network == 'GBV') {
             // GBV eBooks are not available
-            return false; 
+            return false;             
+        } elseif ($this->driver->isMonographicSerial()) {
+            return false;
         } else {
             // all other formats - check ill indicator
             return $this->checkIllIndicator();
