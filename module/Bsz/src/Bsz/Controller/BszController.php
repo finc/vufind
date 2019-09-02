@@ -122,6 +122,17 @@ class BszController extends \VuFind\Controller\AbstractBase {
         return $view;
         
     }
+    
+    
+    public function libraryAction() {
+        
+        $client = $this->serviceLocator->get(\Bsz\Config\Client::class);
+        $libraries = $this->serviceLocator->get(\Bsz\Config\Libraries::class);
+        $library = $libraries->getFirstActive($client->getIsils());
+        $homepage = $library->getHomepage();
+        return $this->redirect()->toUrl($homepage);
+       
+    }
    
 }
 

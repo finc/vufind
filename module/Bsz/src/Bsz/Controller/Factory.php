@@ -81,7 +81,7 @@ class Factory implements FactoryInterface {
         );
     }  
     
-        /**
+    /**
      * 
      * @param ContainerInterface $container
      * @return \Bsz\Controller\TestController
@@ -92,7 +92,7 @@ class Factory implements FactoryInterface {
             $container,
             $container->get('Bsz\Config\Libraries')
         );
-    }  
+    } 
+    
+} 
    
-}
-

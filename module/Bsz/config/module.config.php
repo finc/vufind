@@ -225,7 +225,7 @@ $config = [
 ];
 $staticRoutes = [
     'Test/Record', 'Test/phpinfo', 'Test/zfl',
-    'Bsz/index', 'Bsz/curl',
+    'Bsz/index', 'Bsz/library',
     'Record/Freeform',
     'Holding/Query',
     'Bsz/Privacy',
