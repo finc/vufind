@@ -248,17 +248,19 @@ class Libraries extends TableGateWay
     /**
      * Returns all active ill libraries that matches the given name
      * 
-     * @param string $name
+     * @param string    $name
+     * @param int       $limit
+     * 
      * @return array
      */
-    public function getActiveByName($name) {
+    public function getActiveByName($name, $limit = 15) {
         
         $sql = new Sql($this->getAdapter());
         $select = $sql->select()
             ->from('libraries')
             ->order('libraries.name')
             ->order('name')
-            ->limit(20);
+            ->limit($limit);
         $select->where->
                 and
                 ->equalTo('is_ill_active', 1)
