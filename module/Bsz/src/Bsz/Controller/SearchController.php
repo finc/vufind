@@ -23,6 +23,9 @@ class SearchController extends \VuFind\Controller\SearchController
         if ($msg != '') {
             $this->FlashMessenger()->addWarningMessage($msg);
         }
+        $request = $this->getRequest();
+        $referer = $request->getHeader('referer');
+        $view->referer = $referer;
         return $view;
     }
     
