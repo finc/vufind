@@ -23,22 +23,22 @@
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
               <? $subject = trim($subject . ' ' . $subfield); ?>              
-              <a class="showmore-item searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>" 
+              <a class="showmore-item searchicon <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>" 
                  href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
               <? $count++ ?>
             <? endforeach; ?>
           <? elseif (is_array($field) && count($field) > 1): ?>
                 <? foreach ($field as $subfield): ?>
-                    <a class="searchicon showmore-item <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
+                    <a class="searchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
                     <? $count++ ?>
                 <? endforeach; ?>
           <? else: ?>
-            <a class="searchicon showmore-item <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" href="<?=$this->record($this->driver)->getLink('subject', $field, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($field))?></a>            
+            <a class="searchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" href="<?=$this->record($this->driver)->getLink('subject', $field, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($field))?></a>            
             <? $count++ ?>
           <? endif; ?>
       </span>
       <? endforeach; ?>
-      <? if($count >=5): ?>
+      <? if($count > 5): ?>
       <a href="#" class="showmore" id="showmore-<?=$rand?>">[<?=$this->transEsc('Showmore')?>...]</a>
       <?endif; ?>
     </td>

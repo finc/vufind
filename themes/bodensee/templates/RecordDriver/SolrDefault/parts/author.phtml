@@ -38,35 +38,29 @@
     
 
 
-<? if (!empty($journalTitle) && ($this->driver->isJournal() || $this->driver->isArticle())): ?>
-    <?/* TODO: handle highlighting more elegantly here */ ?>
-    <strong><?=$this->transEsc('Published in') . '</strong> <a href="' . $link. '">' . $this->highlight($journalTitle) . '</a>';?>
-    <?=count($summDate) > 0? ' (' . $this->escapeHtml($summDate[0]) . ')' : ''?>
-<? else: ?>
-    <?=!empty($summAuthor) ? '<br />' : ''?>
-    <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
-    <? $count = 0 ?>
-    <strong><?=$this->transEsc('Published')?>: </strong> 
-    <? if (!empty($publications[0])): ?>
-        <? foreach ($publications as $field): ?>                        
-            <? if($count > 0):?>; <?endif;?>
-                <span property="publisher" typeof="Organization">
-                <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
-                <span property="location"><?=$this->escapeHtml($pubPlace)?></span>
-            <? endif; ?>
-            <? $pubName = $field->getName(); if (!empty($pubName)): ?>
-                <span property="name"><?=$this->escapeHtml($pubName)?></span>
-            <? endif; ?>
-            </span>
-            <? $pubDate = $field->getDate(); if (!empty($pubDate)): ?>
-                <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
-            <? endif; ?>
-            <? $count++ ?>
-        <? endforeach; ?>
-    <? else: ?>
-        <? if (!empty($summDate) && isset($summDate[0])): ?>
-            <?= $this->escapeHtml($summDate[0])?>
+<?=!empty($summAuthor) ? '<br />' : ''?>
+<? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
+<? $count = 0 ?>
+<strong><?=$this->transEsc('Published')?>: </strong> 
+<? if (!empty($publications[0])): ?>
+    <? foreach ($publications as $field): ?>                        
+        <? if($count > 0):?>; <?endif;?>
+            <span property="publisher" typeof="Organization">
+            <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
+            <span property="location"><?=$this->escapeHtml($pubPlace)?></span>
         <? endif; ?>
+        <? $pubName = $field->getName(); if (!empty($pubName)): ?>
+            <span property="name"><?=$this->escapeHtml($pubName)?></span>
+        <? endif; ?>
+        </span>
+        <? $pubDate = $field->getDate(); if (!empty($pubDate)): ?>
+            <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
+        <? endif; ?>
+        <? $count++ ?>
+    <? endforeach; ?>
+<? else: ?>
+    <? if (!empty($summDate) && isset($summDate[0])): ?>
+        <?= $this->escapeHtml($summDate[0])?>
     <? endif; ?>
 <? endif; ?>
 <? endif; ?>
