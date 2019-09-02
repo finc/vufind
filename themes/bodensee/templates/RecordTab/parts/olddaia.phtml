@@ -16,19 +16,19 @@
     <? else: ?>
             <? if ($row['availability']): ?>
               <? /* Begin Available Items (Holds) */ ?>
-               <dd class="text-success"><?=$this->transEsc("Available")?><link property="availability" href="http://schema.org/InStock" /></dd>
-              <? if (isset($row['link']) && $row['link']): ?>
-                <a class="hasicon <?=$check ? 'checkRequest ' : ''?>inlineblock <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?>  external hasicon" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>"></a>
-              <? endif; ?>
+                <dd class="text-success"><?=$this->transEsc("Available")?><link property="availability" href="http://schema.org/InStock" /></dd>
+                <dd>
+              <?// output of link removed because there were no link text - see history ?>
               <? if (isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
                 <a class="hasicon <?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?> external hasicon placeStorageRetrievalRequest" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
               <? endif; ?>
               <? if (isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
-                <a class="hasicon <?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?> external hasicon placeILLRequest" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
+                <a class="hasicon <?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?> external placeILLRequest" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
               <? endif; ?>
               <? if ($this->client()->is('always_place_hold')): ?>
                 <a class="<?=$check ? 'checkRequest' : ''?> <? if(!$this->client()->is('koha_link')): ?>modal-link modal-remote<? endif; ?> external hasicon inlineblock " data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
-              <? endif; ?>              
+              <? endif; ?> 
+               </dd>
             <? else: ?>
               <? /* Begin Unavailable Items (Recalls) */ ?>
               <dd class="text-danger"><?=$this->transEsc($row['status'])?>
