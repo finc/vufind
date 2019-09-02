@@ -45,6 +45,25 @@ class ClientAsset extends AbstractHelper
     public function getHeader() {
         return 'header/'.$this->tag.'.jpg';
     }
+
+
+    /**
+     * 
+     * @return string
+     */
+    public function getSmallLogo() {
+        $filename = '';
+        if ($this->library === null) {
+            $filename = 'logo/'.$this->tag.'-small.png';            
+        } else if ($this->library instanceof \Bsz\Config\Library) {
+            $filename = $this->library->getLogo();
+        }
+
+        if (file_exists('/usr/local/boss/themes/bodensee/images/'.$filename)) {
+            return $filename;
+        }
+        return '';
+    }
     
     /**
      * 

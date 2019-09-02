@@ -12,8 +12,15 @@
 <? endif; ?>
   <? if (!isset($this->layout()->renderingError)): ?>
     <div class="collapse navbar-collapse" id="header-collapse">
-      <nav>
+      <nav>         
         <ul class="nav navbar-nav navbar-right flip">
+          <? if ($this->client()->is('show_small_logo')): ?>
+            <? if ($this->templateDir.'/'.$this->templateName != 'search/home') : ?>
+                <li>
+                    <img height="38" src="<?=$this->imageLink($this->clientAsset()->getSmallLogo()) ?>" id="smalllogo" />
+                </li>
+            <? endif;?>
+          <? endif;?>
           <? if ($this->feedback()->tabEnabled()): ?>
             <li>
               <a id="feedbackLink" data-lightbox href="<?=$this->url('feedback-home') ?>"><i class="fa fa-envelope" aria-hidden="true"></i> <?=$this->transEsc("Feedback")?></a>
