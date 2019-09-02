@@ -1,7 +1,7 @@
 <hr/>
 <div class="row">  
-    <div class="graybg clearfix">
-        
+    <div class="graybg clearfix">     
+
         <? if ($this->client()->get('Footer')->get('classic') == 1): ?>
         <?=$this->partial('bsz/footerbox.phtml', ['boxNo' => 1, 'heading' => $this->transEsc('Search Options')])?>
         <?=$this->partial('bsz/footerbox.phtml', ['boxNo' => 2, 'heading' => $this->transEsc('Find More')])?>
