@@ -334,7 +334,7 @@ function typeaheadLibraries() {
                 method: 'GET',
                 dataType: 'json',
                 success: function() {
-                    window.location = VuFind.path;
+                    window.location = $('#typeahead-referer').val();
                 }
             });
         }

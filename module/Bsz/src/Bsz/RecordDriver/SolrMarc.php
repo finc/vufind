@@ -448,28 +448,38 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                         $tmpSubfields[$subfield->getCode()] = $isil;                        
                 } elseif ($subfield->getCode() == 'd') {
                     $ill_status = '';
+                    $ill_icon = '';
                     switch ($subfield->getData()) {
                         case 'a': $ill_status = 'ILL::status_a';
+                            $ill_icon = 'fa-check text-success    ';
                             break;
                         case 'b': $ill_status = 'ILL::status_b';
+                            $ill_icon = 'fa-copy';
                             break;
                         case 'c': $ill_status = 'ILL::status_c';
+                            $ill_icon = 'fa-check text-success    ';
                             break;
                         case 'd': $ill_status = 'ILL::status_d';
+                            $ill_icon = 'fa-times text-danger';
                             break;
                         case 'e': $ill_status = 'ILL::status_e';
+                            $ill_icon = 'fa-network-wired text-success';
                             break;
                         case 'n':
                         case 'N':
                             $ill_status = 'ILL::status_N';
+                            $ill_icon = 'fa-times text-danger';
                             break;
                         case 'l':
                         case 'L': $ill_status = 'ILL::status_L';
+                            $ill_icon = 'fa-check text-success    ';
                             break;                 
                         default: $ill_status = 'ILL::status_d';
+                            $ill_icon = 'fa_times text-danger';
                     }
                     $tmpSubfields['d'] = $subfield->getData();
-                    $tmpSubfields['ILL::status'] = $ill_status;
+                    $tmpSubfields['ill_status'] = $ill_status;
+                    $tmpSubfields['ill_icon'] = $ill_icon;
                 } elseif (!isset($tmpSubfields[$subfield->getCode()])) {
                     // without $recurringSubfields, only the first occurence is 
                     // included

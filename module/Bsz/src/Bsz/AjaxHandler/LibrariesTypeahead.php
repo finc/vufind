@@ -50,7 +50,7 @@ class LibrariesTypeahead extends \VuFind\AjaxHandler\AbstractBase {
         $code = 500;
         $query = $params->fromQuery('q');
         if (!empty($query)) {
-            $dbresult = $this->libraries->getActiveByName($query);                
+            $dbresult = $this->libraries->getActiveByName($query, 10);                
             $code = 200;
             foreach ($dbresult as $library) {
                 $json[] = [
