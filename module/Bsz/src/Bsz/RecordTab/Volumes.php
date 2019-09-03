@@ -71,6 +71,9 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
     public function getContent() {
         if($this->content === null) {
             $relId = $this->driver->tryMethod('getIdsRelated');   
+            // add the ID of the current hit, thats usefull if its a 
+            // Gesamtaufnahme
+            array_push($relId, $this->driver->getUniqueID());
             $this->content = []; 
             if(is_array($relId) && count($relId) > 0) {
                 foreach($relId as $k => $id) {
