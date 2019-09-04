@@ -34,7 +34,7 @@
               </a>
             </li>
           <? endif; ?>
-          <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
+          <? if (count($this->client()->getIsils()) > 0 && is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
             <li class="logoutOptions<? if(!$account->isLoggedIn()): ?> hidden<? endif ?>">
               <a href="<?=$this->url('myresearch-home', [], ['query' => ['redirect' => 0]])?>"><i class="fa fa-star" aria-hidden="true"></i> <?=$this->transEsc("Your Account")?></a>
             </li>
