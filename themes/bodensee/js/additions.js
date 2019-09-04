@@ -305,9 +305,10 @@ function typeaheadLibraries() {
 
     $('.typeahead').typeahead({
         items: 'all',
+        minLength: 1,
         source: function (val, process) {
             return $.ajax({
-                url: baseurl+'librariesTypeahead&q='+val,
+                url: baseurl+'librariesTypeahead&boss=0&q='+val,
                 method: "GET",
                 dataType: 'json',
                 success: function(data) {
@@ -322,7 +323,7 @@ function typeaheadLibraries() {
                 method: 'GET',
                 dataType: 'json',
                 success: function() {
-                    window.location = $('#typeahead-referer').val();
+//                    window.location = $('#typeahead-referer').val();
                 }
             });
         }

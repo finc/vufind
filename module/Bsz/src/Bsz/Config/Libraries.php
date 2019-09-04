@@ -253,7 +253,7 @@ class Libraries extends TableGateWay
      * 
      * @return array
      */
-    public function getActiveByName($name, $limit = 15) {
+    public function getActiveByName($name, $limit = 15, $boss) {
         
         $sql = new Sql($this->getAdapter());
         $select = $sql->select()
@@ -265,6 +265,9 @@ class Libraries extends TableGateWay
                 and
                 ->equalTo('is_ill_active', 1)
                 ->like('libraries.name', '%'.$name.'%');
+        if (isset($boss)) {
+            $select->where->and->equalTo('is_boss', (int)$boss);
+        }
 
         $results = $this->selectWith($select);        
         return $results;
