@@ -323,7 +323,7 @@ function typeaheadLibraries() {
                 method: 'GET',
                 dataType: 'json',
                 success: function() {
-//                    window.location = $('#typeahead-referer').val();
+                    window.location = $('#typeahead-referer').val();
                 }
             });
         }
