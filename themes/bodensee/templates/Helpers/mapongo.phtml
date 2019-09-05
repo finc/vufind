@@ -1,14 +1,18 @@
 <div class="mapongo row">
+    <? if (!empty($this->imageurl)): ?>
     <div class="col-sm-6">
         <h5>Mapongo</h5>
         <a href="<?=$this->linkurl?>" class="external hasicon">
             <img class="img-responsive" src="<?=$this->imageurl?>"/>
         </a>        
     </div>    
+    <? endif; ?>
+    <? if (!empty($this->qrurl)): ?>
     <div class="col-sm-6 hidden-xs">
         <h5>QR-Code</h5>
         <a href="<?=$this->linkurl?>" class="external hasicon">
             <img class="img-responsive" src="<?=$this->qrurl?>"/>
         </a>        
     </div>
+    <? endif; ?>
 </div>
