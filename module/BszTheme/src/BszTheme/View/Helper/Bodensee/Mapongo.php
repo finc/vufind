@@ -38,27 +38,28 @@ class Mapongo extends AbstractHelper
      */
     public function __invoke($signatur, $lang = 'de')
     {
-        $signatur = preg_replace('/.*\|\s/', '', $signatur);
-        return $this->render($signatur, $lang);
+        preg_match('/\|\s(.*)/', $signatur, $matches);
+        $rvk = isset($matches[1]) ? $matches[1] : ''; 
+        return $this->render($rvk, $lang);
     }
     
     /**
      * Renders a helper template
      * 
-     * @param string $signatur
+     * @param string $rvk
      * @param string $lang
      * @return string
      */
-    protected function render($signatur, $lang) 
+    protected function render($rvk, $lang) 
     {
         
         $imageurl = $this->config->get('imageurl');
         $linkurl = $this->config->get('url');
         $qrurl = $this->config->get('qrurl');
         
-        if (!empty($linkurl) && !empty($imageurl) && !empty($signatur)) {
+        if (!empty($linkurl) && !empty($rvk)) {
             $replace = [
-                '%SIG%' => urlencode($signatur),
+                '%SIG%' => urlencode($rvk),
                 '%LANG%' => $lang,
             ];
             $imageurl = str_replace(array_keys($replace),$replace, $imageurl);
