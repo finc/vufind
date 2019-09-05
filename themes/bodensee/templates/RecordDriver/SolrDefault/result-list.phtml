@@ -89,7 +89,6 @@
         </div>
       <? endif; ?>
 
-      <div class="callnumAndLocation ajax-availability hidden"></div>
       <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
       <div>
         <strong><?=$this->transEsc('Edition')?>: </strong>
@@ -106,6 +105,19 @@
             'driver' => $this->driver,
             'hiddenFilterString' => $hiddenFilterString                                            
         ])?>            
+      <div class="callnumAndLocation ajax-availability hidden">
+    <? if ($this->driver->supportsAjaxStatus()): ?>
+        <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
+        <span class="callnumber ajax-availability hidden">
+            <?=$this->transEsc('Loading')?>...<br/>
+        </span>
+        <strong><?=$this->transEsc('Located')?>:</strong>
+        <span class="location ajax-availability hidden">
+            <?=$this->transEsc('Loading')?>...
+        </span>
+        <div class="locationDetails"></div>
+    <? endif; ?>
+    </div>
       <div class="result-formats">
         <?=$this->record($this->driver)->getFormatList() ?>
         <? if (empty($urls) && $this->driver->supportsAjaxStatus()): ?>

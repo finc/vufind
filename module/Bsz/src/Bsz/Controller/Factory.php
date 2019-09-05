@@ -67,32 +67,6 @@ class Factory implements FactoryInterface {
             $container,
             $container->get('VuFind\Config')->get('config')
         );
-    }
-    /**
-     * 
-     * @param ContainerInterface $container
-     * @return \Bsz\Controller\SearchController
-     */
-    public static function getSearchController(ContainerInterface $container)
-    {
-        return new SearchController(
-            $container,
-            $container->get('VuFind\Config')->get('config')
-        );
-    }  
-    
-    /**
-     * 
-     * @param ContainerInterface $container
-     * @return \Bsz\Controller\TestController
-     */
-    public static function getTestController(ContainerInterface $container)
-    {
-        return new TestController(
-            $container,
-            $container->get('Bsz\Config\Libraries')
-        );
-    } 
-    
+    }        
 } 
    

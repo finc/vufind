@@ -78,6 +78,7 @@ class Module
                 'clientAsset' =>    'BszTheme\View\Helper\Factory::getClientAsset',
                 'IllForm' =>        'BszTheme\View\Helper\Bodensee\Factory::getIllForm',
                 'libraries' =>      'BszTheme\View\Helper\Factory::getLibraries',
+                'mapongo' =>      'BszTheme\View\Helper\Bodensee\Factory::getMapongo',
             ],
             'invokables' => [
                 'mapper'        => 'BszTheme\View\Helper\FormatMapper',

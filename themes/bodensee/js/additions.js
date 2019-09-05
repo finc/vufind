@@ -36,18 +36,6 @@ function   performMark() {
     });
 }
 
-function moreChildren(id) {
-  $('.' + id).removeClass('hidden');
-  $('#more-' + id).addClass('hidden');
-  return false;
-}
-
-function lessChildren(id) {
-  $('.' + id).addClass('hidden');
-  $('#more-' + id).removeClass('hidden');
-  return false;
-}
-
 function showmore() {
     $('.showmore').click(function(e) {
         var id = $(this).attr('id').split('-')[1];
@@ -317,9 +305,10 @@ function typeaheadLibraries() {
 
     $('.typeahead').typeahead({
         items: 'all',
+        minLength: 1,
         source: function (val, process) {
             return $.ajax({
-                url: baseurl+'librariesTypeahead&q='+val,
+                url: baseurl+'librariesTypeahead&boss=0&q='+val,
                 method: "GET",
                 dataType: 'json',
                 success: function(data) {
@@ -345,6 +334,20 @@ function typeaheadLibraries() {
     })
     
 
+}
+
+/**
+ * Switches between texts on collapse control buttons
+ * Alternative text should be in the data-alttext attribute
+ * 
+ */
+function textToggle() {
+    $('.text-toggle').on('click', function(e) {    
+        var oldtext = $(this).text();
+        var newtext = $(this).attr('data-alttext');
+        $(this).text(newtext);
+        $(this).attr('data-alttext', oldtext);      
+    });
 }
 
 /*
@@ -373,4 +376,5 @@ $(document).ready(function() {
     }
     openUrlTooltip();
     checkAdvSearch();
+    textToggle();
 });

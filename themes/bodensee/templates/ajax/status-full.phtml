@@ -14,7 +14,7 @@
         }                    
                     
         $message = '';
-        if (is_array($item['message']) && array_key_exists('en', $item['message'])) {
+        if (isset($item['message']) && is_array($item['message']) && array_key_exists('en', $item['message'])) {
             $message = isset($item['message'][$this->layout()->userLang]) ? $item['message'][$this->layout()->userLang] : $item['message']['en'];
         }
     ?>

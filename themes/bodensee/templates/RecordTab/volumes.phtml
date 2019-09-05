@@ -3,9 +3,6 @@
     $this->headTitle($this->translate('Volumes') . ': ' . $this->driver->getBreadcrumb());
 
     $content = $this->tab->getContent();        
-
-    
-
 ?>
 <? if(isset($content) && count($content) > 0): ?>
 <? $rand = rand(0, 9999)?>
@@ -33,11 +30,8 @@
     </tbody>
     <tfoot>
         <tr><td>
-            <button id="more-volumeslist" onclick="return moreChildren('volumeslist')" class="btn btn-info btn-xs" data-toggle="collapse" data-target=".showmore-<?=$rand?>" aria-expanded="false">
+            <button class="btn btn-info btn-xs text-toggle" data-toggle="collapse" data-target=".showmore-<?=$rand?>" aria-expanded="false" data-alttext="<?=$this->transEsc('Showless')?>">
                 <?=$this->transEsc('Showmore')?>
-            </button>    
-            <button onclick="return lessChildren('volumeslist')" class="btn btn-info btn-xs hidden volumeslist" data-toggle="collapse" data-target=".showmore-<?=$rand?>" aria-expanded="false">
-                <?=$this->transEsc('Showless')?>
             </button>    
         </td></tr>
     </tfoot>
@@ -48,6 +42,7 @@
        $('.tablesorter').tablesorter({
             sortList : [[1,1]]
        }); 
+       textToggle();
     });
 </script>
 <? else: ?>

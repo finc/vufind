@@ -49,8 +49,9 @@ class LibrariesTypeahead extends \VuFind\AjaxHandler\AbstractBase {
         $json = [];
         $code = 500;
         $query = $params->fromQuery('q');
+        $boss = $params->fromQuery('boss');
         if (!empty($query)) {
-            $dbresult = $this->libraries->getActiveByName($query, 10);                
+            $dbresult = $this->libraries->getActiveByName($query, 10, $boss);                
             $code = 200;
             foreach ($dbresult as $library) {
                 $json[] = [
