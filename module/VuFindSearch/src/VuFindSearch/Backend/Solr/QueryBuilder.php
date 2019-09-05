@@ -160,10 +160,7 @@ class QueryBuilder implements QueryBuilderInterface
                 }
             } elseif ($handler->hasDismax()) {
                 $params->set('qf', implode(' ', $handler->getDismaxFields()));
-                // BSZ: GVI has no searchhandler edismax, only dismax, which is 
-                // the default. and the dismax searchhandler asumes edismax!!!
-                // so we leave qt free and get edismax :-)
-                //$params->set('qt', $handler->getDismaxHandler());
+                $params->set('qt', $handler->getDismaxHandler());
                 foreach ($handler->getDismaxParams() as $param) {
                     $params->add(reset($param), next($param));
                 }
