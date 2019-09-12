@@ -140,7 +140,7 @@
                 <? if ($this->permission()->allowDisplay('feature.Favorites')): ?>
                     <? /* Add to favorites */ ?>
                     <li>
-                        <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="save-record result-link-label" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId()) ?>">
+                        <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="btn save-record result-link-label" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId()) ?>">
                             <i class="result-link-icon fa fa-fw fa-star" aria-hidden="true"></i>
                             <?=$this->transEsc('Add to favorites')?>
                         </a>                 
@@ -164,7 +164,7 @@
                 $pid = 'panel-'.$rand.'-';
             ?>
             <li>
-                <a class="result-link-label duplicates-toggle" data-toggle="collapse" href="#<?=$pgid?>">
+                <a class="btn result-link-label duplicates-toggle" data-toggle="collapse" href="#<?=$pgid?>">
                       <i class="result-link-icon fa fa-arrow-down"></i>
                       <?=$this->transEsc('show_duplicates')?>
                       <span class="badge pull-right"><?=$subRecordsCount?></span>
