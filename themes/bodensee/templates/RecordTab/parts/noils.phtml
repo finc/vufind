@@ -1,44 +1,50 @@
-<dl class="dl-horizontal">
-<? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
-<dt><?=$this->transEsc("Call Number")?>:</dt>    
+<div class="row">    
+    <div class="col-sm-12">
+        
+        <dl class="dl-horizontal">
+        <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
+        <dt><?=$this->transEsc("Call Number")?>:</dt>    
 
-<dd><? foreach ($callNos as $callNo): ?>
-      <? if ($this->callnumberHandler): ?>
-        <a href="<?=$this->url('alphabrowse-home') ?>?source=<?=$this->escapeHtmlAttr($this->callnumberHandler) ?>&amp;from=<?=$this->escapeHtmlAttr($callNo) ?>"><?=$this->escapeHtml($callNo)?></a>
-      <? else: ?>
-        <?=$this->escapeHtml($callNo)?>
-      <? endif; ?>
-      <br />
-    <? endforeach; ?>    
-</dd>   
-<? endif; ?>
-<? if (!empty($row['number'])): ?>
-    <dt><?=$this->transEsc('Local IDN')?>:</dt>
-    <dd><?=$this->escapeHtml($row['number'])?></dd>
-<? endif; ?>        
-<? if (!empty($row['storage'])): ?>
-    <dt><?=$this->transEsc('storage')?>:</dt>
-    <dd><?=$this->escapeHtml($row['storage'])?></dd>
-<? endif; ?>        
-<? if (!empty($row['availability'])): ?>
-    <dt><?=$this->transEsc('ILL::indicator')?>:</dt>
-    <dd><?=$this->transEsc($row['availability'])?></dd>
-<? endif; ?>
-<? if (!empty($row['notes'])): ?>
-    <dt><?=$this->transEsc('Note')?>:</dt>
-    <dd><?=$this->transEsc($row['notes'])?></dd>
-<? endif; ?>
-<? if (!empty($row['link']) && strpos($row['link'], 'http') === 0): ?>
-    <dt><?=$this->transEsc('Link')?>:</dt>
-    <dd><a href="<?=$row['link']?>" class="external"><?=$this->transEsc('Local Online Access')?></a></dd>
-<? endif; ?>
-<? if (!empty($row['status'])): ?>
-    <dt><?=$this->transEsc('Bestandsangaben')?>:</dt>
-    <dd><?=$this->escapeHtml($row['status'])?></dd>
-<? endif; ?>
-</dl> 
-<? if (!empty($row['status'])): ?>
-    <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial())): ?>
-        <?=$this->recordLink()->linkPPNButton($this->driver) ?>
-    <? endif; ?>
-<? endif; ?>
+        <dd><? foreach ($callNos as $callNo): ?>
+              <? if ($this->callnumberHandler): ?>
+                <a href="<?=$this->url('alphabrowse-home') ?>?source=<?=$this->escapeHtmlAttr($this->callnumberHandler) ?>&amp;from=<?=$this->escapeHtmlAttr($callNo) ?>"><?=$this->escapeHtml($callNo)?></a>
+              <? else: ?>
+                <?=$this->escapeHtml($callNo)?>
+              <? endif; ?>
+              <br />
+            <? endforeach; ?>    
+        </dd>   
+        <? endif; ?>
+        <? if (!empty($row['number'])): ?>
+            <dt><?=$this->transEsc('Local IDN')?>:</dt>
+            <dd><?=$this->escapeHtml($row['number'])?></dd>
+        <? endif; ?>        
+        <? if (!empty($row['storage'])): ?>
+            <dt><?=$this->transEsc('storage')?>:</dt>
+            <dd><?=$this->escapeHtml($row['storage'])?></dd>
+        <? endif; ?>        
+        <? if (!empty($row['availability'])): ?>
+            <dt><?=$this->transEsc('ILL::indicator')?>:</dt>
+            <dd><?=$this->transEsc($row['availability'])?></dd>
+        <? endif; ?>
+        <? if (!empty($row['notes'])): ?>
+            <dt><?=$this->transEsc('Note')?>:</dt>
+            <dd><?=$this->transEsc($row['notes'])?></dd>
+        <? endif; ?>
+        <? if (!empty($row['link']) && strpos($row['link'], 'http') === 0): ?>
+            <dt><?=$this->transEsc('Link')?>:</dt>
+            <dd><a href="<?=$row['link']?>" class="external"><?=$this->transEsc('Local Online Access')?></a></dd>
+        <? endif; ?>
+        <? if (!empty($row['status'])): ?>
+            <dt><?=$this->transEsc('Bestandsangaben')?>:</dt>
+            <dd><?=$this->escapeHtml($row['status'])?></dd>
+        <? endif; ?>
+        </dl> 
+        <? if (!empty($row['status'])): ?>
+            <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial())): ?>
+                <?=$this->recordLink()->linkPPNButton($this->driver) ?>
+            <? endif; ?>
+        <? endif; ?>
+    </div>
+</div>
+    
