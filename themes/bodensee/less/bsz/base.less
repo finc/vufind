@@ -191,3 +191,11 @@ mark {
 body.offcanvas.template-dir-record .offcanvas-toggle {
     display: none;
 }
+
+.result-links li .btn {
+    text-align: left;
+    &:hover, &:focus {
+        background-color: darken(@gray-lighter, 5%);
+        color: @link-color;
+    }
+}
