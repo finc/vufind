@@ -429,19 +429,24 @@ class Record extends \VuFind\View\Helper\Root\Record
     protected function checkIllIndicator() {
         // all networks should have 924 now, so, we check ill indicator 
         $f924 = $this->driver->tryMethod('getField924');
+        $no924dcount = 0;
         foreach ($f924 as $field) {
             if (isset($field['d']) && 
                 (strtolower($field['d']) == 'e' || strtolower($field['d']) == 'b'
                 // k is deprecated but might still be used
                 || strtolower($field['d']) == 'k') ) {
                 return true;
-            } else {
-                // records with at least one 924 with NO indicator field d 
-                // are available 
-                return true;
+            } elseif (!isset($field['d'])) {
+                $no924dcount++;
             }
         } 
-        return false;
+        if ($no924dcount > 0) {
+            // records with at least one 924 with NO indicator field d 
+            // are available 
+            return true;
+        } else {
+            return false;            
+        }
     }
 
     /**
