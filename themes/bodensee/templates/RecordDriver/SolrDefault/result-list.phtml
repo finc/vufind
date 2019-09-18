@@ -228,10 +228,10 @@
                                         <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>          
                                     </div>      
                                 <? endif; ?>
-                                <? if( $this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
+                                <? if( $this->searchTabs()->isILL() && strlen($sub->getConsortium()) > 0): ?>
                                     <div class="ill-source">                
                                         <strong><?=$this->transEsc('Network')?>:</strong>
-                                        <span><?=$this->driver->getConsortium() ?></span> 
+                                        <span><?=$sub->getConsortium() ?></span> 
                                     </div>          
                                 <? endif; ?>
                                 <? echo $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
