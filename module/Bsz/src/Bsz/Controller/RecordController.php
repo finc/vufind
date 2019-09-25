@@ -149,6 +149,7 @@ class RecordController extends \VuFind\Controller\RecordController
             if ($this->checkAuth($params)) {
                 // remove password from TAN field
                 unset($params['Passwort']);
+//                $params['Bemerkung'] = str_replace("\n", ' ', $params['Bemerkung']);
                 
                 // free form uses a Jahr field which must be copies into Jahrgang und EJahr
                 if (isset($params['Jahr'])) {
@@ -162,7 +163,7 @@ class RecordController extends \VuFind\Controller\RecordController
                     $dom = new \Zend\Dom\Query($response->getBody());
                     $message = $dom->queryXPath('ergebnis/text()')->getDocument();
                     $success = $this->parseResponse($message);    
-
+                    
                 } catch (\Exception $ex) {
                     $this->flashMessenger()->addErrorMessage('ILL::request_error_technical');
                     $this->logError($params['Sigel'].': Error while parsing HTML response from ZFL server');
