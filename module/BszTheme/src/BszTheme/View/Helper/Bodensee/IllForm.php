@@ -108,12 +108,12 @@ class IllForm extends AbstractHelper
         ];
         switch ($this->status) {
             case static::STATUS_SENT_SUCCESS:
-                $texts['headline'] = $this->view->transEsc('request_submit_ok');
+                $texts['headline'] = $this->view->transEsc('ILL::request_submit_ok');
                 break;
             case static::STATUS_SENT_FAILURE:
-                $texts['headline'] = $this->view->transEsc('request_submit_failure');
+                $texts['headline'] = $this->view->transEsc('ILL::request_submit_failure');
                 break;
-            default: $texts['headline'] = $this->view->transEsc('request_submit_text');
+            default: $texts['headline'] = $this->view->transEsc('ILL::request_submit_text');
         }
         if (isset($this->driver)) {
             $article = $this->driver->tryMethod('isArticle');
@@ -123,19 +123,19 @@ class IllForm extends AbstractHelper
             if ($article) {
                 $texts['title'] = $this->driver->getContainerTitle();
                 $texts['subtitle'] = '';
-                $texts['hint'] = $this->view->transEsc('help_paper');
+                $texts['hint'] = $this->view->transEsc('ILL::help_paper');
             } elseif ($journal) {
                 $texts['title'] = $this->driver->getShortTitle();
                 $texts['subtitle'] = $this->driver->getSubTitle();
-                $texts['hint'] = $this->view->transEsc('help_paper');                
+                $texts['hint'] = $this->view->transEsc('ILL::help_paper');                
             } elseif ($ebook) {
                 $texts['title'] = $this->driver->getShortTitle();
                 $texts['subtitle'] = $this->driver->getSubtitle();
-                $texts['hint'] = $this->view->transEsc('help_ebooks');
+                $texts['hint'] = $this->view->transEsc('ILL::help_ebooks');
             } else {
                 $texts['title'] = $this->driver->getShortTitle();
                 $texts['subtitle'] = $this->driver->getSubtitle();
-                $texts['hint'] = $this->view->transEsc('help_paper');
+                $texts['hint'] = $this->view->transEsc('ILL::help_paper');
             }
         }
         return $texts[$key];

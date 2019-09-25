@@ -164,11 +164,11 @@ class RecordController extends \VuFind\Controller\RecordController
                     $success = $this->parseResponse($message);    
 
                 } catch (\Exception $ex) {
-                    $this->flashMessenger()->addErrorMessage('request_error_technical');
+                    $this->flashMessenger()->addErrorMessage('ILL::request_error_technical');
                     $this->logError($params['Sigel'].': Error while parsing HTML response from ZFL server');
                 }
             } else { // wrong credentials
-                $this->flashMessenger()->addErrorMessage('request_error_blocked');
+                $this->flashMessenger()->addErrorMessage('ILL::request_error_blocked');
                 $this->logError($params['Sigel'].': ILL request blocked. Checkauth failed');
                 $success = false;
             }
@@ -321,11 +321,11 @@ class RecordController extends \VuFind\Controller\RecordController
 
             } catch (\Exception $ex) {
                 $this->logError($params['Sigel'].': Error while parsing XML'.$ex->getMessage());
-                $this->flashMessenger()->addErrorMessage('request_error_technical');
+                $this->flashMessenger()->addErrorMessage('ILL::request_error_technical');
             }
             $status = (isset($xml->status) && $xml->status == 'FLOK');            
         } else {
-            $this->flashMessenger()->addErrorMessage('request_error_blocked');
+            $this->flashMessenger()->addErrorMessage('ILL::request_error_blocked');
             $this->logError('ILL request blocked. Sigel not found ');
             $status = false;
         }
