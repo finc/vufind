@@ -1016,10 +1016,10 @@ class SolrGviMarc extends SolrMarc implements Definition
 
         // Building a regex pattern
         foreach ($isils as $k => $isil) {
-            $isils[$k] = preg_quote($isil, '/');
+            $isils[$k] = '^'.preg_quote($isil, '/').'$';
         }
         $pattern = implode('|', $isils);
-        $pattern = '/^'.str_replace('\*', '.*', $pattern).'$/' ;
+        $pattern = '/'.str_replace('\*', '.*', $pattern).'/' ;
 
         foreach ($f924 as $fields) {
             if (isset($fields['b']) && preg_match($pattern, $fields['b'])) {
