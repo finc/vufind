@@ -18,10 +18,11 @@ endif
 print-%:
 	@echo '$*=$($*)'
 clean: 
+	mkdir -p tmp
 	rm -f make/*.d
-	rm -f css/*.map
-	rm -f css/*.css
+	mv css/* tmp
 	make all
+	rm -f tmp/*
 css/%.css: less/%.less 
 	lessc -s -M '$<' '$@' > 'make/$*.d'
 	mkdir -p tmp
