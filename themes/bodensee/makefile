@@ -5,7 +5,9 @@
 SOURCES = $(shell ls less/*.less)
 SOURCES := $(filter-out less/vufind.less, $(SOURCES))
 TARGETS = $(patsubst less/%.less,css/%.css,$(SOURCES))
+TMP		= $(patsubst css/, tmp/,$(TARGETS))
 DEPEND = $(patsubst less/%.less,make/%.d,$(SOURCES))
+TMP = $(patsubst css/, tmp/,$@)
 
 ifeq ($(NOMAP),true)
 	CSSMAP = 
@@ -17,12 +19,14 @@ print-%:
 	@echo '$*=$($*)'
 clean: 
 	rm -f make/*.d
-	rm -f map/*.map
-	rm -f $(TARGETS)
+	rm -f css/*.map
+	rm -f css/*.css
 	make all
 css/%.css: less/%.less 
 	lessc -s -M '$<' '$@' > 'make/$*.d'
-	lessc -s $< --clean-css="--s0 --advanced" $(CSSMAP) $@ 
+	mkdir -p tmp
+	lessc -s $< --clean-css="--s0 --advanced" $(CSSMAP) TMP
+	mv -u TMP $@
 -include $(DEPEND)
 all: $(TARGETS)
 
