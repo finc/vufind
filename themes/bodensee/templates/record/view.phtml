@@ -93,7 +93,7 @@
           
               if (!$obj->isVisible()) { $tab_classes[] = 'hidden'; }
               if ($this->client()->is('hide_staff_view') && $tab == 'Details') {
-                  $tab_classes[] = 'hidden';
+                  $tab_classes[] = 'greyed-out';
               }
               if (!$obj->supportsAjax()) { $tab_classes[] = 'noajax'; }
             ?>
