@@ -1,25 +1,33 @@
 # Makefile for creating Stylesheets
-# Do not modify in IDE - it replaces tabsw with spaces. 
 # http://www.thumbtack.com/engineering/makefiles-for-less-and-css/
 
 # Just call make all
-
-
 SOURCES = $(shell ls less/*.less)
 SOURCES := $(filter-out less/vufind.less, $(SOURCES))
-SOURCES := $(filter-out less/a11y.less, $(SOURCES))
 TARGETS = $(patsubst less/%.less,css/%.css,$(SOURCES))
+TMP		= $(patsubst css/, tmp/,$(TARGETS))
 DEPEND = $(patsubst less/%.less,make/%.d,$(SOURCES))
+TMP = $(patsubst css/, tmp/,$@)
+
+ifeq ($(NOMAP),true)
+	CSSMAP = 
+else 
+	CSSMAP = --source-map="$@.map"
+endif
+# for debugging. usage: make print-VARIABLE
 print-%:
 	@echo '$*=$($*)'
 clean: 
+	mkdir -p tmp
 	rm -f make/*.d
-	rm -f map/*.map
-	rm -f $(TARGETS)
+	mv css/* tmp
 	make all
+	rm -f tmp/*
 css/%.css: less/%.less 
 	lessc -s -M '$<' '$@' > 'make/$*.d'
-	lessc -s $< --clean-css="--s0" --source-map="map/$*.css.map" > $@ 
+	mkdir -p tmp
+	lessc -s $< --clean-css="--s0 --advanced" $(CSSMAP) TMP
+	mv -u TMP $@
 -include $(DEPEND)
 all: $(TARGETS)
 
