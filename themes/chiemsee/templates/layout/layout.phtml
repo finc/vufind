@@ -9,8 +9,6 @@
      echo $this->headTitle()
     ?>
     
-    <link rel="shortcut icon" href="<?= $this->imageLink($this->client()->getFavicon()) ?>" type="image/x-icon" />
-    <link rel="icon" href="<?= $this->imageLink($this->client()->getFavicon()) ?>" type="image/x-icon" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <?$this->headMeta()->appendName('author', 'Bibliotheks Service Zentrum Baden Württemberg (BSZ)')?>
     <?$this->headMeta()->appendName('keywords', 'boss2, boss, bsz, bibliothek, bücher, zeitschriften')?>
@@ -96,9 +94,9 @@
       }
 
       // Session keep-alive
-      if ($this->KeepAlive()) {
+      if ($this->keepAlive()) {
           $this->headScript()->appendScript('var keepAliveInterval = '
-            . $this->KeepAlive());
+            . $this->keepAlive());
           $this->headScript()->appendFile("keep_alive.js");
       }
     ?>
@@ -115,7 +113,7 @@
         $this->layout()->searchbox = $this->render('search/searchbox.phtml');
       }
       if (!isset($this->layout()->searchtabs)) {
-        $this->layout()->searchtabs = $this->render('search/searchtabs.phtml');
+        $this->layout()->searchtabs = $this->render('search/searchbox.phtml');
       }
       
     ?>

@@ -1,6 +1,6 @@
 <? $account = $this->auth()->getManager(); ?>
 <div class="navbar-header navbar-right">
-    <a class="navbar-logo" title="" href="/"><img src="<?=$this->imageLink($this->client()->getLogo())?>" /></a>
+    <a class="navbar-logo" title="" href="/"><img src="<?=$this->imageLink($this->clientAsset()->getLogo())?>" /></a>
 </div>
 <? if ($this->layout()->searchbox !== false && !$this->client()->is('disable_searchbar')): ?>
   <div class="navbar-left">
