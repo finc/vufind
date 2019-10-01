@@ -1,0 +1,25 @@
+<? if($this->overrideRecordLink): ?>
+<tr>
+  <th>&nbsp;</th>
+  <td>   
+      <? if($this->record($this->driver)->isAtCurrentLibrary(true) && !$this->driver->isArticle() && !$this->record($this->driver)->isAvailableForInterlending()): ?>
+      <strong><?=$this->transEsc('available_at_current_library')?>
+        <? if(! $this->client()->isIsilSession()): ?>
+          <a class="internal" href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc('to_local_hit')?></a>
+        <? endif; ?>             
+      </strong>
+      <? elseif($this->record($this->driver)->isAtCurrentLibrary(true) && $this->driver->isArticle()): ?>
+        <a title="<?=$this->transEsc('Interlibrary Loan')?>" 
+           href="<?=$this->recordLink()->getUrl($this->driver, $this->overrideRecordLink)?>/ILLForm" 
+           id="illform" class="btn btn-success"><?=$this->transEsc('Bestellen')?></a>
+        <span><?=$this->transEsc('ill_article_local')?></span>
+      <? elseif($this->record($this->driver)->isAvailableForInterlending()): ?>  
+        <a title="<?=$this->transEsc('Interlibrary Loan')?>" 
+           href="<?=$this->recordLink()->getUrl($this->driver, $this->overrideRecordLink)?>/ILLForm" 
+           id="illform" class="btn btn-success"><?=$this->transEsc('Bestellen')?></a>
+      <? else: ?>
+      <strong><?=$this->transEsc('not_available_for_ill')?></strong>              
+      <? endif; ?>
+  </td>
+</tr>
+<? endif; ?>      

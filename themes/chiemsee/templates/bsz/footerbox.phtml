@@ -1,0 +1,41 @@
+<? if ($this->client()->is('disable_footer')):
+ $colwidth = 'col-sm-12';
+else:
+ $colwidth = 'col-sm-3';
+endif;?>
+<? if (!$this->client()->is('disable_footer') || $boxNo === 3): ?>
+  <? $links = $this->client()->getFooterLinks($boxNo); ?>
+  <div class="<?=$colwidth?>">
+    <div class="well">          
+    <p><strong><?=$heading?></strong></p>
+    <? if (count($links) > 0): ?>
+    <ul>
+        <? foreach ($links as $k => $link): ?>
+            <? $external = false;
+            if ($boxNo == 3 && $k == count($links) - 1) {
+                $translation = 'Privacy';
+            } else {
+                $translation = 'footer_box_'.$boxNo.'_'.($k+1);
+            }
+            if (strpos($link, '://') !== FALSE):
+                $external = true;
+                $url = $link;                        
+            elseif (strpos($link, '/') !== FALSE):
+                $url = $link;   
+            elseif ($link == 'bsz-privacy'):
+                $external = true;
+                $url = 'https://elib.dlr.de/datenschutz.html';
+            else:
+                $url = $this->url($link);               
+            endif; ?>
+            <li><a href="<?=$url?>" class="<?= $external ? 'external' : 'internal'?>"><?=$this->transEsc($translation)?></a></li>
+        <? endforeach; ?>
+        <? if ($boxNo == 3 && $this->client()->is('help_link')): ?>
+        <li><a class="internal help-link" href="<?=$this->url('help-home')?>?topic=search"><?=$this->transEsc('Hilfe zu den Suchoperatoren')?></a></li>
+        <? endif; ?>
+    </ul>
+  <? endif; ?>
+  <div class="nofloat"></div>
+    </div>
+  </div>
+  <? endif; ?>
