@@ -24,7 +24,8 @@
  * THE SOFTWARE.
  */
 
-namespace Bsz\RecordDriver;
+namespace Dlr\RecordDriver;
+
 use Bsz\FormatMapper;
 
 /**
@@ -33,50 +34,27 @@ use Bsz\FormatMapper;
  * @author Stefan Winkler <stefan.winkler@bsz-bw.de>
  * 
  */
-class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
-    
-    /**
-     *
-     * @var \Bsz\Config\Client
-     */
-    protected $client;
+class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
+
     /**
      *
      * @var SimpleXMLElement
      */
     protected $xml;
+
     /**
-     *
      * @param FormatMapper $mapper
-     * @param \Bsz\Config\Client $Client
      * @param type $mainConfig
      * @param type $recordConfig
      * @param type $searchSettings
      */
-    public function __construct(FormatMapper $mapper, \Bsz\Config\Client $client, $mainConfig = null, $recordConfig = null,
-        $searchSettings = null) {
-        
+    public function __construct(FormatMapper $mapper, $mainConfig = null, $recordConfig = null,
+            $searchSettings = null) {
+
         parent::__construct($mapper, $mainConfig, $recordConfig, $searchSettings);
         $this->mapper = $mapper;
-        $this->client = $client;
     }
-      
-    /**
-     * Is this a Oai record
-     * @return boolean
-     */
-    public function isNtrsOai() {
-        return true;
-    } 
-    
-    /**
-     * Is this a DLR-Koha record
-     * @return boolean
-     */
-    public function isDlrKoha() {
-        return false;
-    } 
-    
+
     /**
      * Attach a Search Results Plugin Manager connection and related logic to
      * the driver
@@ -84,17 +62,14 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      * @param \VuFind\SearchRunner $runner
      * @return void
      */
-    public function attachSearchRunner(\VuFind\Search\SearchRunner $runner)
-    {
+    public function attachSearchRunner(\VuFind\Search\SearchRunner $runner) {
         $this->runner = $runner;
-    }  
-    
-    public function parseOAI()
-    {   
-        $xml = $this->getXML('oai_dc');
-
     }
-    
+
+    public function parseOAI() {
+        $xml = $this->getXML('oai_dc');
+    }
+
     /**
      * Set raw data to initialize the object.
      *
@@ -106,76 +81,71 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      *
      * @return void
      */
-    public function setRawData($data)
-    {
+    public function setRawData($data) {
         $this->fields = $data;
         $this->xml = simplexml_load_string($this->fields['fullrecord']);
     }
-    
+
     /**
      * Parse the date out of oai data
      * @return array
      */
-    public function getPublicationDates() 
-    {
+    public function getPublicationDates() {
         $dates = $this->getDcFields('date');
         // if we got a known format, parse this
-        if (isset($dates[0]) &&  strlen($dates[0]) == 8) {
+        if (isset($dates[0]) && strlen($dates[0]) == 8) {
             $year = substr($dates[0], 0, 4);
             $month = substr($dates[0], 4, 2);
             $day = substr($dates[0], 6, 2);
-            $date = new \DateTime($year.'-'.$month.'-'.$day);
-            return [$date->format('d.m.Y')];            
+            $date = new \DateTime($year . '-' . $month . '-' . $day);
+            return [$date->format('d.m.Y')];
         }
-        return $dates; 
+        return $dates;
     }
+
     /**
      * 
      * @param string $field
      * @return array
      */
     protected function getDcFields($field) {
-       return $this->xml->xpath('dc:'.$field);
+        return $this->xml->xpath('dc:' . $field);
     }
-    
+
     /**
      * Returns an array with url and desc keys to link the document id. 
      * @return array
      */
-    public function getDokumentLink() 
-    {
+    public function getDokumentLink() {
         $link = [];
         $id = parent::getUniqueID();
         $split = explode(':', $id);
         if (strpos($split[1], 'nasa') !== FALSE) {
-            $link['url'] = 'http://ntrs.nasa.gov/search.jsp?R='.end($split);
+            $link['url'] = 'http://ntrs.nasa.gov/search.jsp?R=' . end($split);
         } else {
-            $link['url'] = 'http://elib.dlr.de/'.end($split);            
+            $link['url'] = 'http://elib.dlr.de/' . end($split);
         }
         $link['desc'] = end($split);
         return $link;
     }
-    
-    public function getCopyright() 
-    {
+
+    public function getCopyright() {
         $copy = $this->getDcFields('coverage');
         return array_shift($copy);
     }
-    
-    public function getSource() 
-    {
+
+    public function getSource() {
         $source = $this->getDcFields('source');
         return array_shift($source);
     }
-    
+
     /**
      * Get default OpenURL parameters.
      * this is slightly changed compared to VuFind original
      *
      * @return array
      */
-    protected function getDefaultOpenUrlParams()
-    {
+    protected function getDefaultOpenUrlParams() {
         // Get a representative publication date:
         $pubDate = $this->getPublicationDates();
         $pubDate = empty($pubDate) ? '' : $pubDate[0];
@@ -194,8 +164,7 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      * get all formats from solr field format
      * @return array
      */
-    public function getFormats() 
-    {
+    public function getFormats() {
         $formats = [];
         if (isset($this->fields['format'])) {
             $formats = $this->fields['format'];
@@ -213,48 +182,41 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      * 
      * @return array
      */
-    public function getInstitutes() 
-    {   
-        
+    public function getInstitutes() {
+
         $institutes = [];
         if (isset($this->fields['institute'])) {
             $institutes = array_filter($this->fields['institute']);
         }
-        
+
         return array_unique($institutes, SORT_STRING);
-    }   
-    
+    }
+
     /**
      * Source elib?
      * @return boolean
      */
-    protected function isElib() 
-    {
-        if (isset($this->fields['institution_id']) && 
+    protected function isElib() {
+        if (isset($this->fields['institution_id']) &&
                 in_array('elib', $this->fields['institution_id'])) {
             return true;
         }
         return false;
-            
     }
-    
+
     /**
      * Source NASA? 
      * @return boolean
      */
-    protected function isNTRS()
-    {
-        if (isset($this->fields['institution_id']) && 
+    protected function isNTRS() {
+        if (isset($this->fields['institution_id']) &&
                 in_array('NTRS', $this->fields['institution_id'])) {
             return true;
         }
         return false;
-        
     }
-    
-    
-    
-        /**
+
+    /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
      *
@@ -268,8 +230,7 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      *
      * @return array
      */
-    public function getURLs()
-    {
+    public function getURLs() {
         //url = 856u:555u
 
         $urls = [];
@@ -285,8 +246,7 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
             } elseif (!array_key_exists('desc', $url) && $this->isNTRS()) {
                 $url['desc'] = 'Full Text';
             }
-            $urls[$key] = $url;                
-            
+            $urls[$key] = $url;
         }
         return $urls;
     }
@@ -295,8 +255,7 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      * For rticles: get container title
      * @return type
      */
-    public function getContainerTitle()
-    {
+    public function getContainerTitle() {
         return '';
     }
 
@@ -304,8 +263,7 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      * For rticles: get container title
      * @return type
      */
-    public function getContainer()
-    {
+    public function getContainer() {
         return array();
     }
 
@@ -313,8 +271,7 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      * Get the Container issue from different fields
      * @return string
      */
-    public function getContainerIssue()
-    {
+    public function getContainerIssue() {
         // not supported for OAI data:
         return '';
     }
@@ -323,8 +280,7 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      * Get container pages from different fields
      * @return string
      */
-    public function getContainerPages()
-    {
+    public function getContainerPages() {
         // not supported for OAI data:
         return '';
     }
@@ -333,20 +289,18 @@ class SolrNtrsoai extends \VuFind\RecordDriver\SolrDefault {
      * get container year from different fields
      * @return string
      */
-    public function getContainerYear()
-    {
+    public function getContainerYear() {
         // not supported for OAI data:
         return '';
     }
-    
+
     /**
      * get container year from different fields
      * @return array
      */
-    public function getRelatedItems() 
-    {
+    public function getRelatedItems() {
         // not supported for OAI data:
         return array();
     }
-}
 
+}

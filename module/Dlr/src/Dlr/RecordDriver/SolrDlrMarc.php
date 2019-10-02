@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace Bsz\RecordDriver;
+namespace Dlr\RecordDriver;
 use Bsz\FormatMapper;
 
 /**
@@ -32,27 +32,20 @@ use Bsz\FormatMapper;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrDlrmarc extends \Bsz\RecordDriver\SolrMarc {
+class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc {
     
     /**
-     *
-     * @var \Bsz\Config\Client
-     */
-    protected $client;
-    /**
-     * 
      * @param FormatMapper $mapper
-     * @param \Bsz\Config\Client $Client
      * @param type $mainConfig
      * @param type $recordConfig
      * @param type $searchSettings
      */
-    public function __construct(FormatMapper $mapper, \Bsz\Config\Client $client, $mainConfig = null, $recordConfig = null,
+    
+    public function __construct(FormatMapper $mapper,$mainConfig = null, $recordConfig = null,
         $searchSettings = null) {
         
         parent::__construct($mapper, $mainConfig, $recordConfig, $searchSettings);
         $this->mapper = $mapper;
-        $this->client = $client;
     }
     
     /**
@@ -170,15 +163,6 @@ class SolrDlrmarc extends \Bsz\RecordDriver\SolrMarc {
         }
     }
     
-     /**
-     * is this record an elid record
-     * @return boolean
-     */
-    public function isElib() 
-    {
-        return false;
-            
-    }
 
     /**
      * is this item part of a collection?
