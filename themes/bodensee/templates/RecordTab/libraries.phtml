@@ -23,7 +23,7 @@
             <td class="hidden-xs">
                 <? if (isset($result['b']) && trim($result['b']) != ''): ?>
                     <span class="text-nowrap">
-                    <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::Sigelstelle')?>" href="https://sigel.staatsbibliothek-berlin.e/nc/suche/?isil=<?=trim($result['b'])?>" class="external"><?=$this->escapeHtml($result['b'])?></a>
+                    <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::Sigelstelle')?>" href="https://sigel.staatsbibliothek-berlin.de/nc/suche/?isil=<?=trim($result['b'])?>" class="external"><?=$this->escapeHtml($result['b'])?></a>
                     </span>
                 <? else: ?>
                     <?=isset($result['b']) ? $this->escapeHtml($result['b']) : ''?>
