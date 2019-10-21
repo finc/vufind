@@ -33,7 +33,7 @@
                    </dd>
                 <? else: ?>
                   <? /* Begin Unavailable Items (Recalls) */ ?>
-                  <dd class="text-danger"><?=$this->transEsc($row['status'])?>
+                  <dd class="text-danger"><? if (strlen($this->$row['status'] > 0)):?> <?= $this->transEsc($row['status']) ?> <? else: ?> <?= $this->transEsc("unavailable") ?> <? endif; ?>
                   <? if (isset($row['returnDate']) && $row['returnDate']): ?>&ndash; <span class="small"><?=$this->escapeHtml($row['returnDate'])?></span><? endif; ?>
                   <? if (isset($row['duedate']) && $row['duedate']): ?>
                     &ndash; <span class="small"><?=$this->transEsc("Due")?>: <?=$this->escapeHtml($row['duedate'])?></span>
@@ -53,7 +53,7 @@
 
             <dd>
             </dd>
-            <? if (isset($row['part']) && strlen($row['part']) > 0): ?>
+            <? if (isset($row['part']) && strlen($row['part'][0]) > 0): ?>
                 <dd><?=$this->escapeHtml($row['part'])?></dd>
             <? endif; ?>
             <? if (isset($row['about']) && count($row['about']) > 0): ?>

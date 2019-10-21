@@ -1,4 +1,4 @@
-<? 
+<?
     $status = isset($row['status']) ? strtolower($row['status']) : 'unknown';
     $duedate = isset($row['duedate']) ? $row['duedate'] : '';
     $message = '';
@@ -55,7 +55,7 @@
         </dl>
     </div>
     <div class="col-xs-3 col-sm-6">
-        <?=$this->mapongo($row['callnumber'], $this->layout()->userLang)?>
+        <?// =$this->mapongo($row['callnumber'], $this->layout()->userLang)?>
     </div>
 </div>
 
