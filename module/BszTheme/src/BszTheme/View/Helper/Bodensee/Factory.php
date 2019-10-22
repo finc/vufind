@@ -224,7 +224,7 @@ class Factory
         return new IllForm($mergedParams);        
     }
     
-    public function getMapongo(ContainerInterface $container)
+    public static function getMapongo(ContainerInterface $container)
     {
         $client = $container->get('Bsz\Config\Client');
         return new Mapongo(
