@@ -20,6 +20,10 @@ $config = [
                 ]
             ],
         ]
-    ]
-    
+    ],    
+    'view_manager' => [
+        'display_exceptions'       => APPLICATION_ENV == 'development',
+    ],
 ];
+return $config;
+
