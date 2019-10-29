@@ -11,8 +11,8 @@ $config = [
                     'Dlr\RecordDriver\SolrNtrsOai'         => 'Dlr\RecordDriver\Factory',
                 ],
                 'aliases' => [                    
-                    'SolrDlrMarc'                   =>  'Dlr\RecordDriver\SolrDlrMarc',                    
-                    'SolrNtrsOai'                   =>  'Dlr\RecordDriver\SolrNtrsOai',                    
+                    'solrdlrmarc'                   =>  'Dlr\RecordDriver\SolrDlrMarc',                    
+                    'solrntrsoai'                   =>  'Dlr\RecordDriver\SolrNtrsOai',                    
                 ],
                 'delegators' => [
                     'Bsz\RecordDriver\SolrDlrMarc'     => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],

@@ -31,9 +31,14 @@ class PluginManager extends \VuFind\RecordDriver\PluginManager
         $key = $keyPrefix . ucwords(
             $data['record_format'] ?? $data['recordtype'] ?? $defaultKeySuffix
         );
+        var_dump($key);
         $recordType = $this->has($key) ? $key : $keyPrefix . $defaultKeySuffix;
             
-        if (strpos($recordType, 'Gvi') === FALSE) {
+        // Findex also sends recordtype=SolrMarc, so, we need to distinguish
+        //  between Findex and other sources. 
+        
+        
+        if (!preg_match('/Gvi|Dlr|Ntrs/i', $recordType)) {
             $recordType = 'SolrFindexMarc';
         }         
 
