@@ -50,7 +50,7 @@ interface Definition {
     public function getShortTitle() : string;
     public function getSubTitle() : string;
     #public function getSubTitle() : string|bool ;
-    public function getURLs() : array;
+    //public function getURLs() : array;
     
     
     

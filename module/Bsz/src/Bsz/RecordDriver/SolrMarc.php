@@ -35,6 +35,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
     use \VuFind\RecordDriver\MarcAdvancedTrait;
+    use HelperTrait;
 
     protected $mapper;
     protected $formats;
@@ -89,7 +90,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                     if (!empty($data)) {
                         // Are we concatenating fields or storing them separately?
                         if ($concat) {
-                            $currentLine .= $data . static::DELIMITER;
+                            $currentLine .= $data . ' ';
                         } else {
                             $matches[] = $data;
                         }

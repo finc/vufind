@@ -32,7 +32,8 @@ use Bsz\FormatMapper;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc {
+class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc 
+    implements \Bsz\RecordDriver\Definition {
     
     /**
      * @param FormatMapper $mapper

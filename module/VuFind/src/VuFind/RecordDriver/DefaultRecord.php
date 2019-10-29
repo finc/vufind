@@ -553,7 +553,7 @@ class DefaultRecord extends AbstractBase
      *
      * @return array
      */
-    public function getISBNs()
+    public function getISBNs() : array
     {
         // If ISBN is in the index, it should automatically be an array... but if
         // it's not set at all, we should normalize the value to an empty array.
@@ -566,7 +566,7 @@ class DefaultRecord extends AbstractBase
      *
      * @return array
      */
-    public function getISSNs()
+    public function getISSNs() : array
     {
         // If ISSN is in the index, it should automatically be an array... but if
         // it's not set at all, we should normalize the value to an empty array.
