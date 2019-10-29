@@ -472,7 +472,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                             break;
                         case 'l':
                         case 'L': $ill_status = 'ILL::status_L';
-                            $ill_icon = 'fa-question-circle text-danger';
+                            $ill_icon = 'fa-check text-success    ';
                             break;                 
                         default: $ill_status = 'ILL::status_d';
                             $ill_icon = 'fa_times text-danger';
