@@ -814,6 +814,18 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     }
     
     
+    /**
+     * Used in ResultScroller Class. Does not work when string is interlending
+     * @return string
+     */
+    
+    public function getResourceSource()
+    {
+        $id = $this->getSourceIdentifier();
+        return $id == 'Solr' ? 'VuFind' : $id;
+    }
+    
+    
     
     
 

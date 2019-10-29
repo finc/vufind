@@ -836,16 +836,6 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
-     * Used in ResultScroller Class. Does not work when string is interlending
-     * @return string
-     */
-    public function getResourceSource()
-    {
-        $id = $this->getSourceIdentifier();
-        return $id == 'Solr' ? 'VuFind' : $id;
-    }
-
-    /**
      * Returns an array of related items for multipart results, including
      * its own id
      * @return array
