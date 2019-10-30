@@ -28,6 +28,7 @@ css/%.css: less/%.less
 	mkdir -p tmp
 	lessc -s $< --clean-css="--s0 --advanced" $(CSSMAP) TMP
 	mv -u TMP $@
+        sed -i "s/sourceMappingURL=css/sourceMappingURL=/themes/bodensee/css/g" $@
 -include $(DEPEND)
 all: $(TARGETS)
 
