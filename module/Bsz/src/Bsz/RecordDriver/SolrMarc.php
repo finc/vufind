@@ -35,6 +35,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
     use \VuFind\RecordDriver\MarcAdvancedTrait;
+    use HelperTrait;
 
     protected $mapper;
     protected $formats;
@@ -89,7 +90,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                     if (!empty($data)) {
                         // Are we concatenating fields or storing them separately?
                         if ($concat) {
-                            $currentLine .= $data . static::DELIMITER;
+                            $currentLine .= $data . ' ';
                         } else {
                             $matches[] = $data;
                         }
@@ -472,7 +473,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                             break;
                         case 'l':
                         case 'L': $ill_status = 'ILL::status_L';
-                            $ill_icon = 'fa-question-circle text-danger';
+                            $ill_icon = 'fa-check text-success    ';
                             break;                 
                         default: $ill_status = 'ILL::status_d';
                             $ill_icon = 'fa_times text-danger';
@@ -811,6 +812,18 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         }
 
         return $this->cleanString($subTitle);
+    }
+    
+    
+    /**
+     * Used in ResultScroller Class. Does not work when string is interlending
+     * @return string
+     */
+    
+    public function getResourceSource()
+    {
+        $id = $this->getSourceIdentifier();
+        return $id == 'Solr' ? 'VuFind' : $id;
     }
     
     

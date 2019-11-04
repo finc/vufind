@@ -1,1 +1,2 @@
-<?=$this->url(strtolower($this->searchClassId).'-results')?>?lookfor=<?=urlencode($this->lookfor)?>&type=Author
+<?php $searchRoute = $this->searchOptions($this->driver->getSourceIdentifier())->getSearchAction(); ?>
+<?=$this->url($searchRoute)?>?lookfor=<?=urlencode($this->lookfor)?>&type=Author

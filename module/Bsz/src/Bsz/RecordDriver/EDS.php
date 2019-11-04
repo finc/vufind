@@ -385,7 +385,7 @@ class EDS extends \VuFind\RecordDriver\EDS {
      * 
      * @return array
      */
-    public function getISSNs()
+    public function getISSNs() : array
     {
         $issns = parent::getIssns();
         $arrayKeys = [
