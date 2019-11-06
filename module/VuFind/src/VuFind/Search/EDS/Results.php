@@ -129,12 +129,13 @@ class Results extends \VuFind\Search\Base\Results
                     $current['counts'][$facetIndex]['operator']
                         = $this->getParams()->getFacetOperator($field);
 
-                    // Create display value:
+                    // BSZ: All EDS Facets have first Character as uppercase. Trnaslated facets expects this aswell
+                    $uppercase = ucwords($facetDetails['displayText']);
                     $current['counts'][$facetIndex]['displayText'] = $translate
                         ? $this->translate(
-                            "$transTextDomain::{$facetDetails['displayText']}"
-                        ) : $facetDetails['displayText'];
-
+                            "$transTextDomain::{$uppercase}"
+                        ) : $uppercase;
+                   
                     // Create display value:
                     $current['counts'][$facetIndex]['value']
                         = $facetDetails['value'];
