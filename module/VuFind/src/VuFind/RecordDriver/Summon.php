@@ -239,7 +239,7 @@ class Summon extends DefaultRecord
      *
      * @return array
      */
-    public function getISBNs()
+    public function getISBNs() : array
     {
         if (isset($this->fields['ISBN']) && is_array($this->fields['ISBN'])) {
             return $this->fields['ISBN'];
@@ -252,7 +252,7 @@ class Summon extends DefaultRecord
      *
      * @return array
      */
-    public function getISSNs()
+    public function getISSNs() : array
     {
         $issns = [];
         if (isset($this->fields['ISSN'])) {
