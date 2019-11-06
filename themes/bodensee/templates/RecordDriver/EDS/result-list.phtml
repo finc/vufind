@@ -114,10 +114,11 @@
                 <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
                    $mot = isset($customLink['MouseOverText'])? $customLink['MouseOverText'] : '';
                    $icon = isset ($customLink['Icon']) ? $customLink['Icon'] : '';
-                   $name = isset($customLink['Text']) ? $customLink['Text'] : '';?>
+                   $name = isset($customLink['Text']) ? $customLink['Text'] : '';
+                ?>
                 <span>
                     <a href="<?=$this->escapeHtmlAttr(str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $url))?>" title="<?=$mot?>" class="external custom-link hasicon ">
-                        <? if ($icon): ?><img src="<?=str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $icon)?>" /><?=$name?> <? endif; ?>
+                        <? if ($icon): ?><img src="<?=str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $icon)?>" /><? endif; ?><strong><?=$name?></strong>
                     </a>
                 </span>
                 <? if ($this->client()->is('only_first_customlink')): ?>
