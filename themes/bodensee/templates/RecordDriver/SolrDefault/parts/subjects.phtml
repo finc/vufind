@@ -37,6 +37,7 @@
   <? endif; ?>
   
   
+  <? if ($this->client()->is('show_rvk')): ?>
   <? $notations = $this->driver->tryMethod('getRVKNotations'); 
   if(!empty($notations)): ?>
   <? $contentDisplayed = true; ?>
@@ -61,6 +62,7 @@
       </td>
   <? endif; ?>
   </tr>
+  <? endif; ?>
   <? endif; ?>
   
   <? $fivclassification = $this->driver->tryMethod('getFIVClassification'); 
@@ -97,7 +99,7 @@
   </tr>
   <? endif; ?>  
       
-      
+<? if ($this->client()->is('show_rvk')): ?>      
 <? $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings'); if (!empty($subjects)): ?>
   <tr>
     <th><?=$this->transEsc('RVKSubjects')?>: </th>
@@ -130,6 +132,7 @@
     </td>
   </tr>
   <? endif; ?>
+<? endif; ?>
 
 
   
