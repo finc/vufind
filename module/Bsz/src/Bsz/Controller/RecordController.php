@@ -348,7 +348,7 @@ class RecordController extends \VuFind\Controller\RecordController
         if ((bool)preg_match('/Bestell-Id:\s*(\d*)/', $html->textContent, $id) === true ) {
             $this->orderId = $id[1];
             // Order is successfull
-            $this->flashMessenger()->addSuccessMessage('request_submit_ok');
+            $this->flashMessenger()->addSuccessMessage('ILL::request_submit_ok');
             return true;
         } else {
             // order not successfull - disable error reporting because 
