@@ -18,7 +18,7 @@
     </thead>
     <tbody>        
         <? $count = 1; foreach ($content as $result): ?>
-        <tr <? if ($count > 10): ?> class="showmore-<?=$rand?> collapse multi-collapse<? endif; ?>>
+        <tr <? if ($count > 10): ?> class="showmore-<?=$rand?> collapse multi-collapse"<? endif; ?>>
             <td><a class="internal"  href="<?=$this->recordLink()->getUrl($result)?>"><?=$this->string()->cleanEsc($result->getTitle())?> <?=$this->string()->cleanEsc($result->getTitleSection())?></a></td>
             <td><?=implode(', ',$result->getPublicationDates())?></td>
             <td><?=$result->getPrimaryAuthor()?></td>
