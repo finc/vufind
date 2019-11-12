@@ -12,21 +12,25 @@
 <tr>
 <th><?=$this->transEsc('Series')?>: </th>
 <td>
+  <? $seriesids = $this->driver->getSeriesIds();?>
+  <? $count =  0; ?>
   <? foreach ($series as $field): ?>
+    <? $field['id'] = $seriesids[$count] ?>
     <?/* Depending on the record driver, $field may either be an array with
        "name" and "number" keys or a flat string containing only the series
        name.  We should account for both cases to maximize compatibility. */?>
     <? if (is_array($field)): ?>
       <? if (!empty($field['name'])): ?>
-        <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field['name'])?><?=$hiddenFilterString?>"><?=$this->escapeHtml($field['name'])?></a>
+        <a class="searchicon" href="<? if (!empty($field['id'])): ?><?=$this->url('record', ['id' => $field['id']])?><? else: ?><?=$this->record($this->driver)->getLink('series', $field['name'])?><?=$hiddenFilterString?><? endif; ?>"><?=$this->escapeHtml($field['name'])?></a>
         <? if (!empty($field['number'])): ?>
           <?=$this->escapeHtml($field['number'])?>
         <? endif; ?>
         <br/>
       <? endif; ?>
     <? else: ?>
-      <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field)?><?=$hiddenFilterString?>"><?=$this->escapeHtml($field)?></a><br/>
+      <a class="searchicon" href="<? if (!empty($field['id'])): ?><?=$this->url('record', ['id' => $field['id']])?><? else: ?><?=$this->record($this->driver)->getLink('series', $field)?><?=$hiddenFilterString?><? endif; ?>"><?=$this->escapeHtml($field)?></a><br/>
     <? endif; ?>
+    <? $count++; ?>
   <? endforeach; ?>
 </td>
 </tr>

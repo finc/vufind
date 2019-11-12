@@ -1171,4 +1171,24 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $return;
     }
 
+    /**
+     * get 830|w if it exists with (DE-627)-Prefix
+     * 
+     * @return array
+     */
+    public function getSeriesIds() {
+        $fields = [
+            830 => ['w'],
+        ];
+        $ids = [];
+        $array_clean = [];
+        $array = $this->getFieldsArray($fields);
+        foreach ($array as $subfields) {
+            $ids = explode(' ', $subfields);
+            if (preg_match('/^((?!DE-576|DE-609|DE-600.*-).)*$/', $ids[0] )  ) {
+                    $array_clean[] = $ids[0];
+            }
+        }
+        return $array_clean;
+    }     
 }
