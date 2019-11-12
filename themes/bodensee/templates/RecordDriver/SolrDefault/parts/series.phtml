@@ -15,7 +15,9 @@
   <? $seriesids = $this->driver->getSeriesIds();?>
   <? $count =  0; ?>
   <? foreach ($series as $field): ?>
-    <? $field['id'] = $seriesids[$count] ?>
+    <? if (isset($seriesids[$count])): ?>
+        <? $field['id'] = $seriesids[$count] ?>
+    <? endif; ?>
     <?/* Depending on the record driver, $field may either be an array with
        "name" and "number" keys or a flat string containing only the series
        name.  We should account for both cases to maximize compatibility. */?>
