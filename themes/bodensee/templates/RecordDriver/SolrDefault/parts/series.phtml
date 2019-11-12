@@ -1,13 +1,4 @@
- <?/* Display series section if at least one series exists. */?>
- <? 
-    $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
-    $hiddenFilterString = '';
-    foreach ($hiddenFilters as $key => $filter) {
-        foreach ($filter as $value) {
-            $hiddenFilterString .= '&hiddenFilters[]=' . $this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value);
-        }
-    }
-?>
+<?/* Display series section if at least one series exists. */?>
 <? $series = $this->driver->getSeries(); if (!empty($series)): ?>
 <tr>
 <th><?=$this->transEsc('Series')?>: </th>
@@ -23,14 +14,14 @@
        name.  We should account for both cases to maximize compatibility. */?>
     <? if (is_array($field)): ?>
       <? if (!empty($field['name'])): ?>
-        <a class="searchicon" href="<? if (!empty($field['id'])): ?><?=$this->url('record', ['id' => $field['id']])?><? else: ?><?=$this->record($this->driver)->getLink('series', $field['name'])?><?=$hiddenFilterString?><? endif; ?>"><?=$this->escapeHtml($field['name'])?></a>
+        <a class="searchicon" href="<? if (!empty($field['id'])): ?><?=$this->url('record', ['id' => $field['id']])?><? else: ?><?=$this->record($this->driver)->getLink('series', $field['name'])?><? endif; ?>"><?=$this->escapeHtml($field['name'])?></a>
         <? if (!empty($field['number'])): ?>
           <?=$this->escapeHtml($field['number'])?>
         <? endif; ?>
         <br/>
       <? endif; ?>
     <? else: ?>
-      <a class="searchicon" href="<? if (!empty($field['id'])): ?><?=$this->url('record', ['id' => $field['id']])?><? else: ?><?=$this->record($this->driver)->getLink('series', $field)?><?=$hiddenFilterString?><? endif; ?>"><?=$this->escapeHtml($field)?></a><br/>
+      <a class="searchicon" href="<? if (!empty($field['id'])): ?><?=$this->url('record', ['id' => $field['id']])?><? else: ?><?=$this->record($this->driver)->getLink('series', $field)?><? endif; ?>"><?=$this->escapeHtml($field)?></a><br/>
     <? endif; ?>
     <? $count++; ?>
   <? endforeach; ?>
