@@ -522,7 +522,34 @@ class SolrGviMarc extends SolrMarc implements Definition
             if (!$sf) {
                 continue;
             }
+            //  we don't want to show licensed content
+            //  ind1,2 = 4,0 is probably lincensed content.
+            //  only if we find a kostenfrei in |z, we use the link
+            if ($ind1 == 4 && $ind2 == 0) {
+                $sfz = $f->getSubField('z');
+                if (is_object($sfz)) {
+                    if (stripos($sfz->getData(), 'Kostenfrei') === false) continue;
+                } else {
+                    continue;
+                }
+            }
+            
             $url['url'] = $sf->getData();
+            
+            // add urn:nbn Resolver baseurl if missing
+            if (strpos($url['url'], 'urn:nbn') !== false && strpos($url['url'], 'http') === false ) {
+                $url['desc'] = $url['url'];
+                $url['url'] = 'https://nbn-resolving.org/' . $url['url'];
+            }
+
+            // add hdl: Resolver baseurl if missing
+            $sf2 = $f->getSubField('2');
+            if (is_object($sf2)) {               
+                if ($sf2->getData() === 'hdl' && strpos($url['url'], 'http') === false ) {
+                    $url['desc'] = $url['url'];
+                    $url['url'] = 'https://hdl.handle.net/' . $url['url'];
+                }
+            }
 
             if (($sf = $f->getSubField('3')) && strlen($sf->getData()) > 2) {
                 $url['desc'] = $sf->getData();
