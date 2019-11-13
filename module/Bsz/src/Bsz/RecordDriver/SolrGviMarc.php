@@ -889,7 +889,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         $fields = [
             245 => ['n', 'p'],
-            490 => ['v']
+            830 => ['n', 'p']
         ];
         $volumes = preg_replace("/\/$/", "", $this->getFieldsArray($fields));
         return array_shift($volumes);
@@ -903,7 +903,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         $fields = [
             245 => ['n'],
-            490 => ['v']
+            830 => ['v']
           ];
         $volumes = preg_replace("/[\/,]$/", "", $this->getFieldsArray($fields));
         return array_shift($volumes);
