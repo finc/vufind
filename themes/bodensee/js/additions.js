@@ -350,7 +350,8 @@ function textToggle() {
     });
 }
 function openInPopup() {
-    $('.open-popup').click(function(e) {
+    $(document).on('click', '.open-popup', function(e) {
+        console.log('hier')
         e.preventDefault()
         var href = $(this).attr('href');
         
