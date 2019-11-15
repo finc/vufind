@@ -349,6 +349,42 @@ function textToggle() {
         $(this).attr('data-alttext', oldtext);      
     });
 }
+function openInPopup() {
+    $('.open-popup').click(function(e) {
+        e.preventDefault()
+        var href = $(this).attr('href');
+        
+        var name = $(this).attr('data-name');
+        name = name == 'undefined' ? name : 'BOSS';
+        
+        var width = $(this).attr('data-width');
+        width = width == 'undefined' ? width : '1024';
+        
+        var height = $(this).attr('data-height');
+        height = height == 'undefined' ? height : '580';
+        
+        var options = [
+            'width='+width,
+            'height='+height,
+            'location=no',
+            'menubar=no',
+            'toolbar=no',
+            'status=no',
+            'scrollbars=yes',
+            'directories=no',
+            'resizable=yes',
+            'alwaysRaised=yes',
+            'hotkeys=no',
+            'top=0',
+            'left=200',
+            'screenY=0',
+            'screenX=200'
+        ];
+        
+        window.open(href, name, options.join(',')).focus();;
+        
+    });
+}
 
 /*
 * this is executed after site is loaded
@@ -377,4 +413,5 @@ $(document).ready(function() {
     openUrlTooltip();
     checkAdvSearch();
     textToggle();
+    openInPopup();
 });

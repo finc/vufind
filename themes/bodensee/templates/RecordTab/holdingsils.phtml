@@ -86,3 +86,9 @@
         <a href="<?=$row['link']?>" class="btn btn-primary recallholdButtonLink <? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external "><?=$this->transEsc('recall/hold')?></a>
     <? endif; ?>
 <? endif; ?>  
+        
+<script type="text/javascript">
+    $(document).ready(function() {
+        openInPopup();
+    })
+</script>
