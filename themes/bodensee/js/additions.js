@@ -342,13 +342,20 @@ function typeaheadLibraries() {
  * 
  */
 function textToggle() {
-    $('.text-toggle').on('click', function(e) {    
+    $(document).on('click', '.text-toggle', function(e) {    
         var oldtext = $(this).text();
         var newtext = $(this).attr('data-alttext');
         $(this).text(newtext);
         $(this).attr('data-alttext', oldtext);      
     });
 }
+
+/**
+ * Opens links in a popup window. Name and width/height can be set via data 
+ * attributes
+ * 
+ */
+
 function openInPopup() {
     $(document).on('click', '.open-popup', function(e) {
         console.log('hier')
@@ -387,6 +394,12 @@ function openInPopup() {
     });
 }
 
+function tableSorter() {    
+    $('.tablesorter').tablesorter({
+         sortList : [[1,1]]
+    }); 
+}
+
 /*
 * this is executed after site is loaded
 * main loop
@@ -400,6 +413,7 @@ $(document).ready(function() {
     if ($.fn.typeahead) {
         typeaheadLibraries();
     }
+    tableSorter();
     keyboardShortcuts();
     remoteModal();
     duplicates();
