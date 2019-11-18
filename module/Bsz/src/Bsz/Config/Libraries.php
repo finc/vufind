@@ -261,10 +261,15 @@ class Libraries extends TableGateWay
             ->order('libraries.name')
             ->order('name')
             ->limit($limit);
-        $select->where->
-                and
-                ->equalTo('is_ill_active', 1)
-                ->like('libraries.name', '%'.$name.'%');
+        $select->where
+                ->nest
+                    ->like('libraries.name', '%'.$name.'%')
+                    ->or
+                    ->like('libraries.isil', '%'.$name.'%')                
+                ->unnest
+                ->and
+                    ->equalTo('is_ill_active', 1);
+                
         if (isset($boss)) {
             $select->where->and->equalTo('is_boss', (int)$boss);
         }
