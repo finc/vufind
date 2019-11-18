@@ -59,9 +59,8 @@
             <?=$this->escapeHtml($message)?>
           </span>          
         <? endif; ?>
-      </td>
       <? if ($this->client()->is('hold_links_result_list')): ?>
-        <td>
+           <br/>
             <? // no idea why this is necessary here ?>
             <? $item['ilslink'] = str_replace('SOPAC', 'SMOPAC', $item['ilslink'])?> 
             <? $status = strtolower($item['status'])?>
@@ -84,8 +83,9 @@
                     <a class="open-popup" data-name="KIOSK" href="<?=$item['ilslink']?>"><?=$this->transEsc('Place a Hold')?></a>
                 <? endif; ?>            
             <? endif; ?>
-            </td>
+           
         <? endif; ?>
+      </td>
     </tr>
   <? endforeach; ?>
 <? if (count($this->statusItems) > 5): ?>
