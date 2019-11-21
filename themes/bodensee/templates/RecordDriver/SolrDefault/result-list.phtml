@@ -36,7 +36,7 @@
 
 <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
 <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
-<div class="media ">
+<div class="media">
     <? if ($thumbnail && $thumbnailAlignment == 'left'): ?>
         <?=$thumbnail ?>
     <? endif ?>
@@ -83,8 +83,48 @@
                      )</span>
                 <? endif; ?>
                 </div>
-             <? endif; ?>
-        </div>
-    </div>
-</div>
+            <? endif; ?>
+            <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
+                <div>
+                    <strong><?=$this->transEsc('Edition')?>: </strong>
+                    <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>          
+                </div>      
+            <? endif; ?>
+            <? if( $this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
+                <div class="ill-source">                
+                    <strong><?=$this->transEsc('Network')?>:</strong>
+                    <span><?=$this->driver->getConsortium() ?></span> 
+                </div>          
+            <? endif; ?>   
+            <?=$this->render('RecordDriver/SolrDefault/parts/links.phtml', [
+                'driver' => $this->driver,
+                'hiddenFilterString' => $hiddenFilterString])?>   
+                  
+            <div class="callnumAndLocation ajax-availability hidden">
+                <? if ($this->driver->supportsAjaxStatus()): ?>
+                    <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
+                    <span class="callnumber ajax-availability hidden">
+                        <?=$this->transEsc('Loading')?>...<br/>
+                    </span>
+                    <strong><?=$this->transEsc('Located')?>:</strong>
+                    <span class="location ajax-availability hidden">
+                        <?=$this->transEsc('Loading')?>...
+                    </span>
+                    <div class="locationDetails"></div>
+                <? endif; ?>
+            </div>
+            <div class="result-formats">
+                <?=$this->record($this->driver)->getFormatList() ?>
+                <? if (empty($urls) && $this->driver->supportsAjaxStatus()): ?>
+                    <span class="status ajax-availability hidden">
+                        <span class="label label-default"><?=$this->transEsc('Loading')?>...</span>
+                    </span>   
+                <? endif; ?>
+            </div>
+            <div class="result-previews">
+                <?=$this->record($this->driver)->getPreviews()?>
+            </div>
+        </div> <!-- end result-body -->
+    </div> <!-- end media-body -->
+</div> <!-- end media -->
   
