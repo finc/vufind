@@ -52,6 +52,7 @@
       <? $hiddenItems = ['PublrInfo'] ?> 
       <? foreach ($items as $key => $item): ?>
         <? if (!empty($item['Data'])  && !in_array($item['Group'], $hiddenItems)): ?>
+        <tr>
           <th><?=$this->transEsc($item['Label'])?>:</th>          
             <? if($item['Label'] !== 'DOI' && $item['Label'] !== 'Access URL'): ?>
               <td><?=$this->driver->linkUrls($item['Data'], $item['Label'])?></td>
@@ -59,7 +60,6 @@
             <? $link = $this->string()->cleanEbscoLinks($item['Data'])?>
               <td><a href="<?=$link?>" class="external"><?=$link?></a></td>
             <? endif; ?>
-        <tr>
         </tr>
         <? endif; ?>
       <? endforeach; ?>
@@ -117,7 +117,14 @@
       <? endforeach; ?>
     <? endif; ?>
 
-    <? $customLinks = $this->driver->getCustomLinks(); ?>
+    <? if (!empty($this->driver->getDoi()) && !$this->client()->is('doi_in_customlink') && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable()): ?>
+        <tr>
+            <th>DOI:</th>
+            <td><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank">https://doi.org/<?= $this->driver->getDoi(); ?></a></td>
+        </tr>
+      <? endif; ?>
+
+      <? $customLinks = $this->driver->getCustomLinks(); ?>
     <? if ( !empty($customLinks) && $this->client()->is('show_other_customlinks') && empty($customFTLinks) && empty($this->driver->getDoi()) && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable() ): ?>
       <? foreach ($customLinks as $customLink): ?>
         <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
@@ -136,16 +143,9 @@
             <? break; ?>
         <? endif; ?>        
       <? endforeach; ?>
-    <? endif; ?>   
-    <? if (!empty($this->driver->getDoi()) && !$this->client()->is('doi_in_customlink') && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable()): ?>
-        <tr>
-            <th>DOI:</th>
-            <td><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank">https://doi.org/<?= $this->driver->getDoi(); ?></a></td>
-        </tr>
-      </div>
-      <? endif; ?>
+    <? endif; ?> 
+    
     </table>    
-    <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
   </div>
 </div>
 <div class="nofloat"></div>
