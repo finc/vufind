@@ -56,13 +56,13 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
     }
     
     /**
-     * Tab ios shown if there is at least one 924 in MARC. 
+     * Tab is shown if there is at least one 924 in MARC. 
      * @return boolean
      */
     public function isActive()
     {
-        $this->f924 = $this->driver->getField924();
-        if (count($this->f924) > 0) {
+        $this->f924 = $this->driver->tryMethod('getField924');
+        if ($this->f924) {
             return true;                
         }            
         return false;        
