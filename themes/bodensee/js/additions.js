@@ -299,39 +299,43 @@ function datepicker() {
  *
  */
 function typeaheadLibraries() {
-    var baseurl = VuFind.path + '/AJAX/JSON?method=';
-    // Workaround for a bug in typeahead.js
-    setTimeout(() => $('.typeahead').focus(), 0);
+    
+    if ($.fn.typeahead) {
+        
+        var baseurl = VuFind.path + '/AJAX/JSON?method=';
+        // Workaround for a bug in typeahead.js
+        setTimeout(() => $('.typeahead').focus(), 0);
 
-    $('.typeahead').typeahead({
-        items: 'all',
-        minLength: 1,
-        source: function (val, process) {
-            return $.ajax({
-                url: baseurl+'librariesTypeahead&boss=0&q='+val,
-                method: "GET",
-                dataType: 'json',
-                success: function(data) {
-                    return process(data.data);
-                }
-            });
+        $('.typeahead').typeahead({
+            items: 'all',
+            minLength: 1,
+            source: function (val, process) {
+                return $.ajax({
+                    url: baseurl+'librariesTypeahead&boss=0&q='+val,
+                    method: "GET",
+                    dataType: 'json',
+                    success: function(data) {
+                        return process(data.data);
+                    }
+                });
 
-        },
-        afterSelect: function(item) {
-            $.ajax({
-                url: baseurl + 'saveIsil&isil='+item.id,
-                method: 'GET',
-                dataType: 'json',
-                success: function() {
-                    window.location = $('#typeahead-referer').val();
-                }
-            });
-        }
-    });
-    // if the typeahead is hidden and the button is clicked, set the focus
-    $('#library-typeahead').on('shown.bs.collapse', function() {
-        $('.typeahead').focus();
-    })
+            },
+            afterSelect: function(item) {
+                $.ajax({
+                    url: baseurl + 'saveIsil&isil='+item.id,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function() {
+                        window.location = $('#typeahead-referer').val();
+                    }
+                });
+            }
+        });
+        // if the typeahead is hidden and the button is clicked, set the focus
+        $('#library-typeahead').on('shown.bs.collapse', function() {
+            $('.typeahead').focus();
+        })
+    }
     
 
 }
@@ -342,15 +346,23 @@ function typeaheadLibraries() {
  * 
  */
 function textToggle() {
-    $('.text-toggle').on('click', function(e) {    
+    $(document).on('click', '.text-toggle', function(e) {    
         var oldtext = $(this).text();
         var newtext = $(this).attr('data-alttext');
         $(this).text(newtext);
         $(this).attr('data-alttext', oldtext);      
     });
 }
+
+/**
+ * Opens links in a popup window. Name and width/height can be set via data 
+ * attributes
+ * 
+ */
+
 function openInPopup() {
-    $('.open-popup').click(function(e) {
+    $(document).on('click', '.open-popup', function(e) {
+        console.log('hier')
         e.preventDefault()
         var href = $(this).attr('href');
         
@@ -386,6 +398,14 @@ function openInPopup() {
     });
 }
 
+function tableSorter() {    
+    if ($.fn.tablesorter) {
+        $('.tablesorter').tablesorter({
+             sortList : [[1,1]]
+        }); 
+    }
+}
+
 /*
 * this is executed after site is loaded
 * main loop
@@ -396,9 +416,8 @@ $(document).ready(function() {
     externalLinks();
     bootstrapTooltip();
     modalPopup();
-    if ($.fn.typeahead) {
-        typeaheadLibraries();
-    }
+    typeaheadLibraries();
+    tableSorter();        
     keyboardShortcuts();
     remoteModal();
     duplicates();

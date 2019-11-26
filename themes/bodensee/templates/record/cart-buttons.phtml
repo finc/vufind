@@ -10,15 +10,5 @@
       <i class="cart-link-icon fa fa-times" title="<?=$this->transEsc('Remove from Book Bag') ?>"></i><!--
    --><span class="cart-link-label"><?=$this->transEsc('Remove from Book Bag') ?></span>
     </a>
-    <noscript>
-      <form method="post" name="addForm" action="<?=$this->url('cart-processor')?>">
-        <input type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($cartId)?>" />
-        <? if ($cart->contains($cartId)): ?>
-          <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
-        <? else: ?>
-          <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
-        <? endif; ?>
-      </form>
-    </noscript>
   </li>
 <? endif; ?>

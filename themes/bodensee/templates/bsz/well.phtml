@@ -23,7 +23,7 @@
                 $label = isset($settings->get('label_'.$lang)[$k]) ? $settings->get('label_'.$lang)[$k] : $settings->get('label_de')[$k];
             ?>
             <li>
-                <a href="<?=$url?>" title="<?=$this->transEsc($title)?>" <? if (!empty($title)): ?>data-toggle="tooltip"<? endif; ?>class="<?=$this->escapeHtmlAttr($class)?>"><?=$this->escapeHtml($label)?></a>
+                <a href="<?=$url?>" title="<?=$this->transEsc($title)?>" <? if (!empty($title)): ?>data-toggle="tooltip" <? endif; ?>class="<?=$this->escapeHtmlAttr($class)?>"><?=$this->escapeHtml($label)?></a>
             </li>
             <? endforeach; ?>
         </ul>

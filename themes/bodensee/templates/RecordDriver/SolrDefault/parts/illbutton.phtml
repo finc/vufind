@@ -21,8 +21,8 @@ $basePath = '/Record/';
 <tr>
     <th>&nbsp;</th>
     <td>       
-        <? // vorhanden in lokaler Bibliothek - kein Artikel ?>
-        <? if($current && !$available && !($this->driver->isJournal() || $this->driver->isArticle() || $this->driver->isNewsPaper())): ?>
+        <? // vorhanden in lokaler Bibliothek - kein Aufsatz, Zeitschrift oder Zeitung ?>
+        <? if($current && !($this->driver->isJournal() || $this->driver->isArticle() || $this->driver->isNewsPaper())): ?>
             <? if ($network == 'SWB'): ?>
                 <strong>
                     <? if (count($swb) > 0): ?>                    

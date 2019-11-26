@@ -56,7 +56,7 @@ class LibrariesTypeahead extends \VuFind\AjaxHandler\AbstractBase {
             foreach ($dbresult as $library) {
                 $json[] = [
                     'id' => $library->getIsil(), 
-                    'name' => $library->getName()
+                    'name' => $library->getName().' ('.$library->getIsil().')'
                 ];
             }       
         }

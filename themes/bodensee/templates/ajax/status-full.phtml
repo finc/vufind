@@ -45,7 +45,7 @@
             <i class="fa <?=$this->escapeHtmlAttr($icon)?> <?=$class?>"></i>
             <?=($item['reserve'] == 'Y') ? $this->transEsc("On Reserve") : $this->transEsc("Available")?>
           </span>
-        <? elseif ($item['status'] === "On loan"): ?>
+        <? elseif (strtolower($item['status']) === "on loan"): ?>
             <span class="text-danger text-nowrap">
                 <i class="fa <?=$this->escapeHtmlAttr($icon)?> <?=$class?>"></i>
                 <?=$this->transEsc("On loan")?>
@@ -57,7 +57,33 @@
           <span class="text-danger text-nowrap">
             <i class="fa <?=$this->escapeHtmlAttr($icon)?> <?=$class?>"></i>
             <?=$this->escapeHtml($message)?>
-          </span>
+          </span>          
+        <? endif; ?>
+      <? if ($this->client()->is('hold_links_result_list')): ?>
+           <br/>
+            <? // no idea why this is necessary here ?>
+            <? $item['ilslink'] = str_replace('SOPAC', 'SMOPAC', $item['ilslink'])?> 
+            <? $status = strtolower($item['status'])?>
+            <? if($status == 'on loan' && !empty($duedate)): ?>
+                <?=$this->transEsc('Due')?> <?=$this->escapeHtml($duedate)?>
+                <? if ( !empty($item['ilslink']) && !$this->client()->is('only_one_holds_button') ): ?>
+                    &ndash; 
+                    <a class="open-popup" data-name="KIOSK" href="<?=$item['ilslink']?>"><?=$this->transEsc('Recall This')?></a>
+                <? endif; ?>
+            <? elseif($status == 'unavailable'): ?>
+                <?=$this->transEsc('daia-'.$status)?>
+                <? if (!empty($item['ilslink']) && !$this->client()->is('only_one_holds_button') ): ?>
+                    &ndash; <? /* <a href="<?=$item['ilslink']?>" class="<? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external"><?=$this->transEsc('Recall This')?></a> */?>
+                    <a class="open-popup" data-name="KIOSK" href="<?=$item['ilslink']?>"><?=$this->transEsc('Recall This')?></a>
+                <? endif; ?>
+            <? else: ?>
+                <?=$this->transEsc('daia-'.$status)?>
+                <? if (!empty($item['ilslink']) && !$this->client()->is('only_one_holds_button') && $this->client()->is('always_place_hold') && ( strtolower($item['status']) != 'for reference') || $this->client()->is('show_readingroom_link') && !$isStorageReadingroom  ) : ?>
+                    &ndash; 
+                    <a class="open-popup" data-name="KIOSK" href="<?=$item['ilslink']?>"><?=$this->transEsc('Place a Hold')?></a>
+                <? endif; ?>            
+            <? endif; ?>
+           
         <? endif; ?>
       </td>
     </tr>

@@ -244,6 +244,7 @@ class Library
      */
     public function getLogo() {
         $sigel = str_replace(' ', '', $this->getSigel());
+        $sigel = preg_replace('/\/.*/', '', $sigel);
         return 'logo/libraries/'.$sigel.'.jpg';
     }
     
