@@ -62,19 +62,18 @@ JS;
           <?=$this->clientAsset()->getLogoHtml()?>
       </div>      
   </div>
-  <div class="row form-group">   
+  <div class="row ">   
       <div class="col-sm-12">          
           <? if(($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>          
             <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>         
           <? elseif($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
             <h2><?=$this->escapeHtml((string)$library)?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>          
           <? endif; ?>
-          
           <? if (strpos($this->translate('homepage_text'), '<') !== FALSE): ?>
-            <p><?=$this->translate('homepage_text')?></p>
+                <?=$this->translate('homepage_text')?>
           <? else: ?>
-            <p><?=$this->transEsc('homepage_text')?></p>
-          <? endif; ?>        
+                <?=$this->transEsc('homepage_text')?>
+          <? endif; ?>
           
           <? if ($this->client()->isIsilSession()): ?>
               <?=$this->partial('bsz/illselector.phtml')?>
@@ -83,8 +82,9 @@ JS;
         </div>
   </div>
   <div class="row">
-      <div class="col-sm-12">
-          <?=$this->flashmessages()?>         
+      <div class="col-sm-12 ">
+          <?=$this->flashmessages()?>
+          <div class="specialhome">
           <? if ($this->client()->is('wlb_special_home')): ?>
                     <?= $this->render('bsz/wlb/'.$this->layout()->userLang.'.phtml')?>
           <? endif; ?>          
@@ -93,7 +93,8 @@ JS;
           <? endif; ?>             
           <? if ($this->client()->is('hsmm_special_home')): ?>
                     <?= $this->render('bsz/hsmm/'.$this->layout()->userLang.'.phtml')?>
-          <? endif; ?>             
+          <? endif; ?> 
+          </div>
       </div>
   </div>
   
