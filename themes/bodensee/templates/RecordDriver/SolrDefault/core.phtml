@@ -76,17 +76,21 @@
             <?=$this->render('RecordDriver/SolrDefault/parts/series.phtml')?>
 
             <? $journalTitle = $this->driver->getContainerTitle(); 
-              $issue=$this->driver->getContainerIssue(); 
-              $relParts=$this->driver->getContainerRelParts(); 
-              $year=$this->driver->getContainerYear(); 
-              $pages=$this->driver->getContainerPages(); 
+              $issue =      $this->driver->getContainerIssue(); 
+              $relParts =   $this->driver->getContainerRelParts(); 
+              $year =       $this->driver->getContainerYear(); 
+              $pages =      $this->driver->getContainerPages(); 
             if ($this->driver->isArticle() && !empty($journalTitle)): ?>
                  <tr>
                 <th><?=$this->transEsc('Published in')?>: </th>
                 <td>
-                       <?= $this->string()->cleanEsc($journalTitle)?><!--
-                    --><? if (!empty($issue)): ?><?= $this->string()->cleanEsc($issue) ?><? endif; ?><!--
-                    --><? if (!empty($relParts)): ?>. - <?=$relParts?><? else: ?><? if (!empty($year)): ?>. - <?=$this->string()->cleanEsc($year)?><? endif; ?><? if (!empty($pages)): ?>, S. <?=$pages?><? endif; ?><? endif; ?>            
+                    <?= $this->string()->cleanEsc($journalTitle)?>
+                    <? if (!empty($issue)): ?>
+                        <?= $this->string()->cleanEsc($issue) ?>                    
+                    <? else: ?>    
+                        <? if (!empty($relParts)): ?>. - <?=$relParts?><? else: ?><? if (!empty($year)): ?>. - <?=$this->string()->cleanEsc($year)?><? endif; ?><? if (!empty($pages)): ?>, S. <?=$pages?><? endif; ?><? endif; ?>            
+                    <? endif; ?>
+                    
                 </td>
             </tr>
             <? endif; ?>
