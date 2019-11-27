@@ -155,7 +155,7 @@ trait ContainerTrait {
         $issue = $this->getFieldsArray($fields);
         if (count($issue) > 0 && !empty($issue[0])) {
             $string = array_shift($issue);
-            return str_replace(' ', '/', $string);
+            return $string;
         }
         return '';
     }

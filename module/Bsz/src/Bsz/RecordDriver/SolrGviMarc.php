@@ -147,8 +147,12 @@ class SolrGviMarc extends SolrMarc implements Definition
         return [];
         $rvkchain = [];
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
-            foreach ($field->getSubFields('k') as $item) {
-                $rvkchain[] = $item->getData();
+            if ($field->getIndicator(1) == 'r' 
+                && $field->getIndicator(2) == 'v'
+            ) {
+                foreach ($field->getSubFields('k') as $item) {
+                    $rvkchain[] = $item->getData();
+                }                
             }
         }
         return array_unique($rvkchain);
@@ -180,7 +184,9 @@ class SolrGviMarc extends SolrMarc implements Definition
         }
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
             $suba = $field->getSubField('a');
-            if ($suba) {
+            if ($suba && $field->getIndicator(1) == 'r' 
+                && $field->getIndicator(2) == 'v'
+            ) {
                 $title = [];
                 foreach ($field->getSubFields('k') as $item) {
                     $title[] = htmlentities($item->getData());
