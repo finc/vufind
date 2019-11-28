@@ -69,11 +69,11 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
      */
     public function getContent() {
         if($this->content === null) {
-            $relId = $this->driver->tryMethod('getIdsRelated');   
+            $relId = $this->driver->tryMethod('getIdsRelatedArticle');   
+            $relId[] = $this->driver->getUniqueId();
             $this->content = []; 
             if(is_array($relId) && count($relId) > 0) {
                 foreach($relId as $k => $id) {
-//                    $relId[$k] = 'id_related_host_item:"'.$id.'"';
                     $relId[$k] = 'id_related:"'.$id.'"';
                 }
 
@@ -91,6 +91,7 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
                 }               
                 $filter[] = 'material_content_type:Article';
                 $params['filter'] = $filter; 
+                var_dump($filter);
                 $results = $this->runner->run($params);   
                 
                 $results instanceof \VuFind\Search\Solr\Results;
