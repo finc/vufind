@@ -219,12 +219,12 @@ class Record extends \VuFind\View\Helper\Root\Record
         } else if ($this->driver->isEBook() && $network == 'GBV') {
             // GBV eBooks are not available
             return false;             
-        } elseif ($this->driver->isMonographicSerial()) {
+        } else if ($this->driver->isEBook() && $network == 'SWB') {
+            // GBV eBooks are not available
+            return $this->checkIllIndicator();             
+        } elseif ($this->driver->isMonographicSerial() || $this->driver->isEBook()) {
             return false;
-        } else {
-            // all other formats - check ill indicator
-            return $this->checkIllIndicator();
-        }
+        } 
         
         // if we arrived here, item is not available at current library, is no
         // serial and no collection, it is available
@@ -232,8 +232,10 @@ class Record extends \VuFind\View\Helper\Root\Record
         if (!$this->isAtCurrentLibrary(true)
                 && !$this->driver->isSerial() 
                 && !$this->driver->isCollection()) {
+        die(__CLASS__ . '::' . __METHOD__);
             return true;
         }
+        return false;
     }
 
     /**
@@ -427,26 +429,26 @@ class Record extends \VuFind\View\Helper\Root\Record
      * @return boolean
      */
     protected function checkIllIndicator() {
-        // all networks should have 924 now, so, we check ill indicator 
+
+        $allowedCodes = ['e', 'b', 'k'];             
+        
         $f924 = $this->driver->tryMethod('getField924');
         $no924dcount = 0;
         foreach ($f924 as $field) {
-            if (isset($field['d']) && 
-                (strtolower($field['d']) == 'e' || strtolower($field['d']) == 'b'
-                // k is deprecated but might still be used
-                || strtolower($field['d']) == 'k') ) {
+           if (isset($field['d']) && in_array($field['d'], $allowedCodes)) {
                 return true;
             } elseif (!isset($field['d'])) {
                 $no924dcount++;
             }
-        } 
-        if ($no924dcount > 0) {
-            // records with at least one 924 with NO indicator field d 
-            // are available 
-            return true;
-        } else {
-            return false;            
         }
+        /*
+         * When we reach this, all 924 prevent ILL. If $no924dcount is > 0
+         * then there is an empty or invalid subfield which always allows ILL. 
+         */
+        if ($no924dcount > 0) {
+            return true;
+        } 
+        return false;
     }
 
     /**
