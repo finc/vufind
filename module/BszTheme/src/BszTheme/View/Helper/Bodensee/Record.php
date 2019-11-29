@@ -232,7 +232,6 @@ class Record extends \VuFind\View\Helper\Root\Record
         if (!$this->isAtCurrentLibrary(true)
                 && !$this->driver->isSerial() 
                 && !$this->driver->isCollection()) {
-        die(__CLASS__ . '::' . __METHOD__);
             return true;
         }
         return false;
