@@ -137,7 +137,7 @@
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author">
                     <? foreach ($authors['primary'] as $name => $info): ?>
-                        <?=$this->render('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
                     <? endforeach; ?>
                 </td>
             </tr>
