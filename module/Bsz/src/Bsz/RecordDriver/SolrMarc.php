@@ -345,6 +345,29 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         }
         return false;
     }
+    
+        /**
+     * Ist der Titel ein EBook? 
+     * Wertet die Felder 007/00, 007/01 und Leader 7 aus
+     * @return boolean
+     */
+    public function isElectronic()
+    {
+        $f007 = $leader = null;
+        $f007_0 = '';
+        $f007 = $this->getMarcRecord()->getFields("007", false);
+        foreach ($f007 as $field) {
+            $data = strtoupper($field->getData());
+            if (strlen($data) > 0) {
+                $f007_0 = $data{0};
+            }            
+        }
+        if ($f007_0 == 'C') {
+            return true;                
+        }    
+        return false;
+    }
+    
     /**
      * Ist der Titel ein Buch, das schließt auch eBooks mit ein!
      * Wertet den Leader aus
