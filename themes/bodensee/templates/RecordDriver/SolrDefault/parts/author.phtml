@@ -20,7 +20,7 @@
     <? if (!empty($summAuthors['primary'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
         <? foreach ($summAuthors['primary'] as $name => $info): ?>
-            <?=$this->render('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+            <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
         <? endforeach; ?>
         <br/>
     <? endif; ?>
@@ -31,7 +31,7 @@
             <strong><?=$this->transEsc('by')?></strong>
         <?endif?>
         <? foreach ($summAuthors['secondary'] as $name => $info): ?>
-            <?=$this->render('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+            <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
         <? endforeach; ?>
         <br/>
 <? endif; ?>

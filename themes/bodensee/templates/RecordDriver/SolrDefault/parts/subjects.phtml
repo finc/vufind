@@ -12,7 +12,7 @@
          <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
-              <? $subject = trim($subject . ' ' . $subfield); ?>              
+              <? $subject = trim($subject . ' ' . $subfield); ?>
               <a class="showmore-item searchicon <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>" 
                  href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
               <? $count++ ?>
