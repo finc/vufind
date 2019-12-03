@@ -217,11 +217,10 @@ class Record extends \VuFind\View\Helper\Root\Record
         ) {
             return true;
         } else if ($this->driver->isEBook() && $network == 'GBV') {
-            // GBV eBooks are not available
+            return $this->checkIllIndicator(['a', 'b', 'e', 'b', ]);             
             return false;             
-        } else if ($this->driver->isEBook() && $network == 'SWB') {
-            // GBV eBooks are not available
-            return $this->checkIllIndicator();             
+        } else if ($this->driver->isJournal() && $this->driver->isElectronic() && $network == 'SWB') {
+            return $this->checkIllIndicator(['e', 'b', ]);             
         } elseif ($this->driver->isMonographicSerial() || $this->driver->isEBook()) {
             return false;
         } 
@@ -424,13 +423,11 @@ class Record extends \VuFind\View\Helper\Root\Record
     
     /**
      * Check the ILL indicator
-     * 
+     * @param array $allowedCodes
      * @return boolean
      */
-    protected function checkIllIndicator() {
+    protected function checkIllIndicator($allowedCodes) {
 
-        $allowedCodes = ['e', 'b', 'k'];             
-        
         $f924 = $this->driver->tryMethod('getField924');
         $no924dcount = 0;
         foreach ($f924 as $field) {
