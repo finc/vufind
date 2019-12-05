@@ -216,10 +216,9 @@ class Record extends \VuFind\View\Helper\Root\Record
             || $this->driver->isNewspaper()
         ) {
             return true;
-        } else if ($this->driver->isEBook() && $network == 'GBV') {
-            return $this->checkIllIndicator(['a', 'b', 'e', 'b', ]);             
+        } else if ($this->driver->isEBook()) {     
             return false;             
-        } else if ($this->driver->isJournal() && $this->driver->isElectronic() && $network == 'SWB') {
+        } else if ($this->driver->isJournal() && $this->driver->isElectronic() && ($network == 'SWB' || $network == 'ZDB')) {
             return $this->checkIllIndicator(['e', 'b', ]);             
         } elseif ($this->driver->isMonographicSerial() || $this->driver->isEBook()) {
             return false;
