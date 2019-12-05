@@ -210,10 +210,10 @@ class Record extends \VuFind\View\Helper\Root\Record
             return false;
         } elseif ($this->driver->isFree()) {
             return false;
-        } elseif ($this->driver->isArticle() 
+        } elseif (($this->driver->isArticle() 
             // printed journals, articles, newspapers - show hint
             || $this->driver->isJournal()
-            || $this->driver->isNewspaper()
+            || $this->driver->isNewspaper()) && !$this->driver->isElectronic()
         ) {
             return true;
         } else if ($this->driver->isEBook()) {     
