@@ -935,7 +935,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     public function getVolumeNumber()
     {
         $fields = [
-            830 => ['9'],
+            830 => ['v'],
             773 => ['g']
         ];
         $volumes = preg_replace("/[\/,]$/", "", $this->getFieldsArray($fields));
