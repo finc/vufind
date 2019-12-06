@@ -122,9 +122,7 @@ class Factory
     public static function getRecord(ContainerInterface$container)
     {
         return new Record(
-            $container->get('VuFind\Config')->get('config'),
-            $container->get(\Bsz\Config\Client::class),
-            $container->get('Bsz\Holding')
+            $container->get('VuFind\Config')->get('config')
         );
     }
     /**

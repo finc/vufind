@@ -30,7 +30,11 @@ class Factory {
     
     public static function getIllLogic(ContaineInterface $container) {
         $config = $container->get('VuFind\Config')->get('ILL');
-        return new \Bsz\ILL\Logic($config);
+        return new \Bsz\ILL\Logic(
+            $config,
+            $container->get('Bsz\Holding'),
+            $container->get(\Bsz\Config\Client::class)->getIsilsAvailability()               
+        );
     }
     
 }
