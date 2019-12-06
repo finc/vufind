@@ -182,8 +182,19 @@ class Record extends \VuFind\View\Helper\Root\Record
     } 
     
     
-    public function showIllButton() {
+    public function renderIllButton()
+    {
         $this->logic->setDriver($this->driver);
-        return $this->logic->isAvailable();
+        $message = '';
+        $status = $this->logic->isAvailable();
+        $message = $this->logic->getMessage();
+
+        return $this->renderTemplate('', [
+            'status' => $status,
+            'message' => $message
+        ]);
+
     }
+    
+
 }

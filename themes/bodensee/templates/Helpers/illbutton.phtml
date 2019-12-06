@@ -1,0 +1,25 @@
+<? if ($status): ?>
+    <div class="col-sm-3" style="padding-left: 0;">    
+        
+         <span>
+            data-toggle="popover"
+            data-trigger="focus"
+            role="button"
+            tabindex
+            data-content="<?=$this->transEsc('shib_login_required')?>"
+            data-title="<?=$this->transEsc('shib_login_required_title')?>"            
+             <? endif; ?>>
+             <a title="<?= $this->transEsc('Interlibrary Loan') ?>" 
+                accesskey="" href="<?= $url ?>" 
+                id="illform" class="<?=$this->escapeHtmlAttr($class)?> btn btn-success btn-sm <? if($this->customUrl):?>external hasicon<? endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
+         </span>
+     </div>
+     <div class="col-sm-9">
+         <? if (isset($message)): ?>
+         <span class="help-text">
+             <?= $this->transEsc($message) ?><br/>
+             <?= $this->recordLink()->linkPPN($this->driver) ?>                        
+         </span>              
+         <? endif; ?>
+     </div>
+<? endif; ?>

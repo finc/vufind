@@ -323,9 +323,9 @@
             </td>
         </tr>        
         <? endif; ?>
-              <? if ($this->searchTabs()->isILL($this->searchClassId)): ?>
-
-      <? endif; ?>
+        <? if ($this->searchTabs()->isILL($this->searchClassId)): ?>
+            <?=$this->record($this->driver)->renderIllButton()?>
+        <? endif; ?>
     </table>
     <?/* End Main Details */?>
     </div>
