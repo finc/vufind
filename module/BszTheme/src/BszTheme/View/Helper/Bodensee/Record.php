@@ -30,7 +30,8 @@
 namespace BszTheme\View\Helper\Bodensee;
 
 use Zend\View\Exception\RuntimeException,
-    Zend\View\Helper\AbstractHelper;
+    Zend\View\Helper\AbstractHelper,
+    Bsz\Ill\Logic as IllLogic;
 
 /**
  * Record driver view helper
@@ -45,15 +46,17 @@ class Record extends \VuFind\View\Helper\Root\Record
 {
 
     protected $localIsils = [];
+    protected $logic;
     
     /**
      * Constructor
      *
      * @param \Zend\Config\Config $config VuFind configuration
      */
-    public function __construct($config = null)
+    public function __construct($config = null, IllLogic $logic )
     {
         parent::__construct($config);
+        $this->logic = $logic;
     }
 
     /**
@@ -73,9 +76,8 @@ class Record extends \VuFind\View\Helper\Root\Record
             'format-class.phtml', ['format' => $format]
         );
     }
-
     
-        /**
+    /**
      * 
      *
      * @param bool $openUrlActive Is there an active OpenURL on the page?
@@ -177,5 +179,11 @@ class Record extends \VuFind\View\Helper\Root\Record
         }
         $transEsc = $this->getView()->plugin('transEsc');
         return $transEsc('Title not available');
-    }    
+    } 
+    
+    
+    public function showIllButton() {
+        $this->logic->setDriver($this->driver);
+        return $this->logic->isAvailable();
+    }
 }

@@ -27,8 +27,7 @@
  */
 namespace BszTheme\View\Helper\Bodensee;
 
-use Interop\Container\ContainerInterface,
-    Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 
 /**
@@ -122,7 +121,9 @@ class Factory
     public static function getRecord(ContainerInterface$container)
     {
         return new Record(
-            $container->get('VuFind\Config')->get('config')
+            $container->get('VuFind\Config')->get('config'),
+                
+            $container->get(\Bsz\ILL\Logic::class)    
         );
     }
     /**

@@ -51,9 +51,21 @@ class Logic {
     public function __construct(\Zend\Config\Config $config, Holding $holding, $isils = [])
     {
         $this->config = $config;        
-        $this->driver = $driver;
         $this->holding = $holding;
         $this->localIsils = $isils;
+    }
+    
+    /**
+     * Each instance of this class can be used for many RecordDriver instances, 
+     * but not at the same time. 
+     * 
+     * @param SolrMarc $driver
+     */
+    public function setDriver(SolrMarc $driver) 
+    {
+        
+        $this->driver = $driver;
+        $this->ppns = [];
     }
     
     

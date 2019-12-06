@@ -28,12 +28,13 @@ use Interop\Container\ContainerInterface;
  */
 class Factory {
     
-    public static function getIllLogic(ContaineInterface $container) {
+    public static function getIllLogic(ContainerInterface $container) 
+    {
         $config = $container->get('VuFind\Config')->get('ILL');
         return new \Bsz\ILL\Logic(
             $config,
             $container->get('Bsz\Holding'),
-            $container->get(\Bsz\Config\Client::class)->getIsilsAvailability()               
+            $container->get(\Bsz\Config\Client::class)->getIsilAvailability()               
         );
     }
     
