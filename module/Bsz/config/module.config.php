@@ -54,12 +54,12 @@ $config = [
             'Bsz\Config\Dedup'  => 'Bsz\Config\Factory::getDedup',
             'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',
             'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',
-            'Bsz\Holding'    => 'Bsz\Factory::getHolding',
+            'Bsz\ILL\Holding'    => 'Bsz\ILL\Factory::getHolding',
             'Bsz\Parser\OpenUrl' => 'Bsz\Parser\Factory::getOpenUrlParser',
             'Bsz\SearchTabsHelper' => 'Bsz\Service\Factory::getSearchTabsHelper',
             'Bsz\Auth\Manager' => 'Bsz\Auth\Factory::getManager',
             'Bsz\RecordDriver\PluginManager' => 'Bsz\RecordDriver\PluginManagerFactory',
-            \Bsz\ILL\Logic::class => 'Bsz\ILL\Factory::getIllLogic',
+            'Bsz\ILL\Logic' => 'Bsz\ILL\Factory::getIllLogic',
             
         ],
         'invokables' => [

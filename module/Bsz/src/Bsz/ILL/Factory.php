@@ -38,4 +38,14 @@ class Factory {
         );
     }
     
+        /**
+     * 
+     * @param ServiceManager $sm
+     * @param \VuFind\Search\SearchRunner
+     * @return Bsz\Bsz\Holding
+     */
+    public static function getHolding(ServiceManager $sm) {        
+        return new Holding($sm->get('VuFind\SearchRunner'));
+    }  
+    
 }
