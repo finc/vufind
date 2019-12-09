@@ -428,21 +428,11 @@ class Record extends \VuFind\View\Helper\Root\Record
     protected function checkIllIndicator($allowedCodes) {
 
         $f924 = $this->driver->tryMethod('getField924');
-        $no924dcount = 0;
         foreach ($f924 as $field) {
            if (isset($field['d']) && in_array($field['d'], $allowedCodes)) {
                 return true;
-            } elseif (!isset($field['d'])) {
-                $no924dcount++;
-            }
+            } 
         }
-        /*
-         * When we reach this, all 924 prevent ILL. If $no924dcount is > 0
-         * then there is an empty or invalid subfield which always allows ILL. 
-         */
-        if ($no924dcount > 0) {
-            return true;
-        } 
         return false;
     }
 
