@@ -33,7 +33,7 @@ class Factory {
         $config = $container->get('VuFind\Config')->get('ILL');
         return new \Bsz\ILL\Logic(
             $config,
-            $container->get('Bsz\Holding'),
+            $container->get('Bsz\ILL\Holding'),
             $container->get(\Bsz\Config\Client::class)->getIsilAvailability()               
         );
     }
@@ -44,8 +44,8 @@ class Factory {
      * @param \VuFind\Search\SearchRunner
      * @return Bsz\Bsz\Holding
      */
-    public static function getHolding(ServiceManager $sm) {        
-        return new Holding($sm->get('VuFind\SearchRunner'));
+    public static function getHolding(ContainerInterface $container) {        
+        return new Holding($container->get('VuFind\SearchRunner'));
     }  
     
 }

@@ -19,7 +19,7 @@
 namespace Bsz\ILL;
 
 use Bsz\RecordDriver\SolrMarc;
-use Bsz\Holding;
+use Bsz\ILL\Holding;
 /**
  * Class to determing availability via inter-library loan
  *
