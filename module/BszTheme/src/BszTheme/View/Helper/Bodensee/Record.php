@@ -196,5 +196,28 @@ class Record extends \VuFind\View\Helper\Root\Record
 
     }
     
+    /**
+     * Determine if a record is available at the first ISIL or at it's 
+     * institutes. In opposite to isAtCurrentLibrary, we do not include other 
+     * libraries (=other ISILs) here. 
+     * 
+     * @return boolean
+     * 
+     */
+    
+    public function isAtFirstIsil() {
+        
+        $holdings = $this->driver->tryMethod('getLocalHoldings');
+        $allIsils = $this->client->getIsilAvailability();
+        $firstIsil = reset($allIsils);
+
+        foreach ($holdings as $holding) {
+            if (preg_match("/(^$firstIsil\$)|($firstIsil)[-\/\s]+/", $holding['b'])) {
+                return true;
+            }
+        }
+        return false;       
+    }
+    
 
 }
