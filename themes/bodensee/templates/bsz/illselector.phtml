@@ -3,7 +3,7 @@
   
 ?>
 <? if ($this->client()->hasIsilSession()):?>
-<p><?=$this->transEsc('ILL::update_library')?> <button class="btn btn-info btn-xs" data-toggle="collapse" data-target="#library-typeahead"><?=$this->transEsc('ILL::button_change_library')?> <i class="fa fa-caret-down"></i></button></p>
+<p><?=$this->transEsc('ILL::update_library')?>: <a class="textlink" href="#" data-toggle="collapse" data-target="#library-typeahead"><?=$this->transEsc('ILL::button_change_library')?> <i class="fa fa-caret-down"></i></a></p>
 <? endif; ?>
 <div class="well collapse<? if (!$this->client()->hasIsilSession()):?> in<?endif;?>" id="library-typeahead" aria-expanded="<?php if($this->client()->hasIsilSession()):?>false<?php else: ?>true<?php endif; ?>">
     <p><?=$this->translate('ILL::select_library')?></p>
