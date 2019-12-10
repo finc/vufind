@@ -427,8 +427,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         }
         return false;
     }
-
-    
     /**
      * Determine  if a record is freely available. 
      * Indicator 2 references to the record itself. 
@@ -441,13 +439,14 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         foreach ($f856 as $field) {
             
             $z = $field->getSubfield('z');
-            if (is_string($z) && strpos(strtolower($z), 'kostenfrei') !== FALSE && $field->getIndicator(2) == 0) {
+            if (is_string($z) && $field->getIndicator(2) == 0
+                && preg_match('/^kostenlos|kostenfrei$/i', $subject)
+            ) {
                 return true;
             }
         }
         return false;
     }
-
     /**
      * Get Content of 924 as array: isil => array of subfields
      * 
