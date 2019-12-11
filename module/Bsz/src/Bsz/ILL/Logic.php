@@ -89,7 +89,7 @@ class Logic {
         $status[] = !$this->isSerialOrCollection();
         $status[] = !$this->isAtCurrentLibrary();
         $status[] = $this->checkFormat();
-        $status[] = $this->checkIllIndicator();
+        $status[] = $this->checkIndicator();
         /*
          * No ILL allowed if one value is false
          */
@@ -315,11 +315,12 @@ class Logic {
      *
      * @return boolean
      */
-    protected function checkIllIndicator()
+    protected function checkIndicator()
     {
 
         $f924 = $this->driver->tryMethod('getField924');
-        $allowedCodes = $this->config->get($this->format)->get('indicaor');
+        $section = $this->config->get($this->format);
+        $allowedCodes = $section->get('indicator')->toArray();
 
         foreach ($f924 as $field) {
            if (isset($field['d']) && in_array($field['d'], $allowedCodes)) {
@@ -370,7 +371,7 @@ class Logic {
         $section = $this->config->get($this->format);
         $network = $this->driver->getNetwork();
         
-        if (in_array($network, $section->get('excludeNetwork'))) {
+        if (in_array($network, $section->get('excludeNetwork')->toArray())) {
             $this->messages[] = 'ILL::cond_format_network';
             return false;
         } elseif (!$section->get('enabled')) {
@@ -406,6 +407,16 @@ class Logic {
     public function getMessages()
     {
         return $this->messages;
+    }
+    
+    /**
+     * Access the PPNs found via web service
+     * 
+     * @return array
+     */
+    public function getPPNs() 
+    {
+        return array_unique($this->ppns);
     }
     
 
