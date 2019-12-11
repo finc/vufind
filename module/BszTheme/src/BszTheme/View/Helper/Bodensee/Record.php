@@ -187,9 +187,9 @@ class Record extends \VuFind\View\Helper\Root\Record
         $this->logic->setDriver($this->driver);
         $message = '';
         $status = $this->logic->isAvailable();
-        $message = $this->logic->getMessage();
+        $message = $this->logic->getMessages();
 
-        return $this->renderTemplate('', [
+        return $this->renderTemplate('parts/illbutton.phtml', [
             'status' => $status,
             'message' => $message
         ]);
