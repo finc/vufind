@@ -323,8 +323,14 @@
             </td>
         </tr>        
         <? endif; ?>
+                
         <? if ($this->searchTabs()->isILL($this->searchClassId)): ?>
-            <?=$this->record($this->driver)->renderIllButton()?>
+            <tr>
+                <th><?=$this->transEsc('Interlibrary Loan')?>:</th>
+                <td>
+                    <?=$this->record($this->driver)->renderIllButton()?>
+                </td>
+            </tr>
         <? endif; ?>
     </table>
     <?/* End Main Details */?>

@@ -1,4 +1,4 @@
-<?
+<?php
 $network = $this->driver->getNetwork(); 
 $class = '';
 
@@ -7,28 +7,30 @@ if ($this->customUrl) {
     $url = $this->openUrl($this->driver, 'illform')->getUrl();
 }
 ?>
-<? if ($status): ?>
-    <div class="col-sm-3" style="padding-left: 0;">    
-        <? // TODO Permissions.ini to check login ?>
-        <span <? if (false): ?>             
+<?php if ($status): ?>
+    <div class="col-sm-12" style="padding-left: 0;">    
+                <?php if (isset($messages) && count($messages) > 0): ?>       
+        <strong><?=$this->transEsc('ILL::cond_heading')?></strong>
+        <ul class="help-text">
+            <?php foreach ($messages as $message): ?>
+            <li><?= $this->transEsc($message)?></li>
+            <?php endforeach; ?>            
+            <li><?= $this->recordLink()->linkPPN($this->driver) ?></li>
+        </ul>              
+        <?php endif; ?>
+        <?php // TODO Permissions.ini to check login ?>
+        <span <?php if (false): ?>             
             data-toggle="popover"
             data-trigger="focus"
             role="button"
             tabindex
             data-content="<?=$this->transEsc('shib_login_required')?>"
             data-title="<?=$this->transEsc('shib_login_required_title')?>"            
-             <? endif; ?>>
+             <?php endif; ?>>
              <a title="<?= $this->transEsc('Interlibrary Loan') ?>" 
                 accesskey="" href="<?= $url ?>" 
                 id="illform" class="<?=$this->escapeHtmlAttr($class)?> btn btn-success btn-sm <? if($this->customUrl):?>external hasicon<? endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
          </span>
     </div>
-    <div class="col-sm-9">
-        <? if (isset($message)): ?>
-        <span class="help-text">
-            <?= $this->transEsc($message) ?><br/>
-            <?= $this->recordLink()->linkPPN($this->driver) ?>                        
-        </span>              
-        <? endif; ?>
-    </div>
-<? endif; ?>
+
+<?php endif; ?>

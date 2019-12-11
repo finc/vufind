@@ -45,7 +45,6 @@ use Zend\View\Exception\RuntimeException,
 class Record extends \VuFind\View\Helper\Root\Record
 {
 
-    protected $localIsils = [];
     protected $logic;
     
     /**
@@ -187,11 +186,11 @@ class Record extends \VuFind\View\Helper\Root\Record
         $this->logic->setDriver($this->driver);
         $message = '';
         $status = $this->logic->isAvailable();
-        $message = $this->logic->getMessages();
-
+        $messages = $this->logic->getMessages();
+        
         return $this->renderTemplate('parts/illbutton.phtml', [
             'status' => $status,
-            'message' => $message
+            'messages' => $messages
         ]);
 
     }
@@ -208,7 +207,7 @@ class Record extends \VuFind\View\Helper\Root\Record
     public function isAtFirstIsil() {
         
         $holdings = $this->driver->tryMethod('getLocalHoldings');
-        $allIsils = $this->client->getIsilAvailability();
+        $allIsils = $this->logic->getLocalIsils();
         $firstIsil = reset($allIsils);
 
         foreach ($holdings as $holding) {

@@ -122,7 +122,7 @@ class Logic {
                 $format = static::FORMAT_BOOK;
             } elseif ($this->driver->isArticle()) {
                 $format = static::FORMAT_ARTICLE;
-            } elseif ($this->driver->isJournal() || 
+            } elseif ($this->driver->isJournal() ||
                 $this->driver->isNewsPaper()
             ) {
                 $format = static::FORMAT_JOURNAL;
@@ -340,17 +340,22 @@ class Logic {
     {
         $network = $this->driver->getNetwork();
         $ppn = $this->driver->getPPN();
-        $this->messages[] = 'ILL::cond_hebis_8';
-        return ($network == 'HEBIS' && preg_match('/^8/', $ppn));
+
+        if ($network == 'HEBIS' && preg_match('/^8/', $ppn)) {
+            $this->messages[] = 'ILL::cond_hebis_8';
+            return true;
+
+        }
+        return false;
 
     }
 
     /**
      * Determine is record is a serial or a collection
-     * 
+     *
      * @return boolean
      */
-    
+
     protected function isSerialOrCollection()
     {
         if ($this->driver->isSerial() || $this->driver->isCollection()) {
@@ -362,32 +367,32 @@ class Logic {
     /**
      * Check if format is enabled for inter-library loan and if it's enabled for
      * the current network
-     * 
+     *
      * @return boolean
      */
-    
+
     protected function checkFormat()
     {
         $section = $this->config->get($this->format);
         $network = $this->driver->getNetwork();
-        
+
         if (in_array($network, $section->get('excludeNetwork')->toArray())) {
             $this->messages[] = 'ILL::cond_format_network';
             return false;
         } elseif (!$section->get('enabled')) {
             $this->messages[] = 'ILL::cond_format';
             return false;
-        }        
+        }
         return true;
     }
-   
+
     /**
      * Check if the record is available for free
-     * 
+     *
      * @return boolean
      */
-    
-    protected function isFree() 
+
+    protected function isFree()
     {
         if ($this->driver->isFree()) {
             $this->messages[] = 'ILL::cond_free';
@@ -395,30 +400,35 @@ class Logic {
         }
         return false;
     }
-    
-    
+
+
     /**
      * Get all messages that occurrec during processing. Messages are trans-
-     * lation keys and should be translated afterwards. 
-     *      * 
+     * lation keys and should be translated afterwards.
+     *      *
      * @return array
      */
-    
+
     public function getMessages()
     {
         return $this->messages;
     }
-    
+
     /**
      * Access the PPNs found via web service
-     * 
+     *
      * @return array
      */
-    public function getPPNs() 
+    public function getPPNs()
     {
         return array_unique($this->ppns);
     }
-    
+
+    public function getLocalIsils()
+    {
+        return $this->localIsils;
+    }
+
 
 
 
