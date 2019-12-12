@@ -7,30 +7,31 @@ if ($this->customUrl) {
     $url = $this->openUrl($this->driver, 'illform')->getUrl();
 }
 ?>
-<?php if ($status): ?>
-    <div class="col-sm-12" style="padding-left: 0;">    
-                <?php if (isset($messages) && count($messages) > 0): ?>       
+
+<div class="col-sm-12" style="padding-left: 0;">    
         <strong><?=$this->transEsc('ILL::cond_heading')?></strong>
         <ul class="help-text">
-            <?php foreach ($messages as $message): ?>
-            <li><?= $this->transEsc($message)?></li>
-            <?php endforeach; ?>            
-            <li><?= $this->recordLink()->linkPPN($this->driver) ?></li>
-        </ul>              
-        <?php endif; ?>
-        <?php // TODO Permissions.ini to check login ?>
-        <span <?php if (false): ?>             
-            data-toggle="popover"
-            data-trigger="focus"
-            role="button"
-            tabindex
-            data-content="<?=$this->transEsc('shib_login_required')?>"
-            data-title="<?=$this->transEsc('shib_login_required_title')?>"            
-             <?php endif; ?>>
-             <a title="<?= $this->transEsc('Interlibrary Loan') ?>" 
-                accesskey="" href="<?= $url ?>" 
-                id="illform" class="<?=$this->escapeHtmlAttr($class)?> btn btn-success btn-sm <? if($this->customUrl):?>external hasicon<? endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
-         </span>
-    </div>
-
+            <?php if (isset($messages) && count($messages) > 0): ?>       
+                    <?php foreach ($messages as $message): ?>
+                    <li><?= $this->transEsc($message)?></li>
+                    <?php endforeach; ?>            
+            <?php endif; ?>
+            <?php if (count($ppns) > 0): ?>                    
+                    <li><?= $this->transEsc('parallel_editions_available') ?>
+                        <ul>                    
+                        <? foreach ($ppns as $id): ?>
+                            <li><a class="" href="<?='/Record/'.$id?>"><?= $this->transEsc('to_parallel_edition') ?></a></li>                
+                        <? endforeach; ?>
+                        </ul>
+                    </li>
+            <?php else: ?>
+                        <li><?= $this->recordLink()->linkPPN($this->driver) ?></li>
+            <?php endif; ?>
+    </ul>        
+<?php if ($status): ?>
+   <?php // TODO Permissions.ini to check login ?>
+       <a title="<?= $this->transEsc('Interlibrary Loan') ?>" accesskey="" href="<?= $url ?>" 
+        id="illform" class="<?=$this->escapeHtmlAttr($class)?> btn btn-success btn-sm <? if($this->customUrl):?>external hasicon<? endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
 <?php endif; ?>
+
+</div>

@@ -187,10 +187,12 @@ class Record extends \VuFind\View\Helper\Root\Record
         $message = '';
         $status = $this->logic->isAvailable();
         $messages = $this->logic->getMessages();
+        $ppns = $this->logic->getPPNs();
         
         return $this->renderTemplate('parts/illbutton.phtml', [
             'status' => $status,
-            'messages' => $messages
+            'messages' => $messages,
+            'ppns' => $ppns
         ]);
 
     }

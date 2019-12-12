@@ -42,6 +42,7 @@ class Logic {
     protected $localIsils;
     protected $ppns = [];
     protected $messages = [];
+    protected $libraries = [];
 
     /**
      *
@@ -93,7 +94,12 @@ class Logic {
         /*
          * No ILL allowed if one value is false
          */
-        return in_array(false, $status);
+        if (in_array(false, $status)) {
+            return false;
+        } else {
+            return true;
+        }
+       
 
     }
 
@@ -220,7 +226,7 @@ class Logic {
         }
         $parallel = [];
         if (count($ppns) > 0) {
-            $parallel = $this->holding->getParallelEditions($ppns, $this->client->getIsilAvailability());
+            $parallel = $this->holding->getParallelEditions($ppns, $this->localIsils);
             // check the found records for local available isils
             $isils = [];
             foreach ($parallel->getResults() as $record) {
@@ -254,6 +260,7 @@ class Logic {
 
         if (count($this->ppns) == 0) {
             // if we have local holdings, item can't be ordered
+            $this->messages[] = 'ILL::available_at_current_library';
             if ($this->driver->hasLocalHoldings()) {
                 $status = true;
             } elseif ($network == 'SWB'  && $this->hasParallelEditions()
@@ -320,13 +327,16 @@ class Logic {
 
         $f924 = $this->driver->tryMethod('getField924');
         $section = $this->config->get($this->format);
-        $allowedCodes = $section->get('indicator')->toArray();
-
+        $tmp = $section->get('indicator', ['a', 'b', 'c', 'e']);
+        $allowedCodes = is_object($tmp) ? $tmp->toArray() : $tmp;
+ 
         foreach ($f924 as $field) {
-           if (isset($field['d']) && in_array($field['d'], $allowedCodes)) {
+            $code = isset($field['d']) ? $field['d'] : null;
+            if (isset($code) && in_array($code, $allowedCodes)) {
                 return true;
             }
         }
+        $this->messages[] = 'ILL::cond_indicator';
         return false;
     }
 
@@ -375,8 +385,11 @@ class Logic {
     {
         $section = $this->config->get($this->format);
         $network = $this->driver->getNetwork();
+        
+        $forbidden = $section->get('excludeNetwork', []);
+        $forbidden = is_object($forbidden) ? $forbidden->toArray() : [];
 
-        if (in_array($network, $section->get('excludeNetwork')->toArray())) {
+        if (in_array($network, $forbidden)) {
             $this->messages[] = 'ILL::cond_format_network';
             return false;
         } elseif (!$section->get('enabled')) {
