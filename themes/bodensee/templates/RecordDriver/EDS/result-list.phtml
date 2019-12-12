@@ -15,8 +15,8 @@
           </a>
     <?php else: ?>
           <span class="recordcover pt-icon pt-<?=$this->driver->getPubTypeId()?>"></span>
-      <div><?=$this->driver->getPubType()?></div>
-    <?php endif; ?>
+        <div class="small text-center"><?=$this->transEsc($this->driver->getPubType())?></div>
+      <? endif; ?>
     </div>
 <?php $thumbnail = ob_get_contents(); ?>
 <?php ob_end_clean(); ?>
