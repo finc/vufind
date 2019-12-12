@@ -94,7 +94,7 @@ class Logic {
         /*
          * No ILL allowed if one value is false
          */
-        var_dump($status);
+        //var_dump($status);
         if (in_array(false, $status)) {
             return false;
         } else {
