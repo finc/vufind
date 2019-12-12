@@ -94,6 +94,7 @@ class Logic {
         /*
          * No ILL allowed if one value is false
          */
+        var_dump($status);
         if (in_array(false, $status)) {
             return false;
         } else {
@@ -260,8 +261,8 @@ class Logic {
 
         if (count($this->ppns) == 0) {
             // if we have local holdings, item can't be ordered
-            $this->messages[] = 'ILL::available_at_current_library';
             if ($this->driver->hasLocalHoldings()) {
+                $this->messages[] = 'ILL::available_at_current_library';
                 $status = true;
             } elseif ($network == 'SWB'  && $this->hasParallelEditions()
             ) {
