@@ -35,7 +35,7 @@
                 <? else: ?>
                     <?=isset($result['name']) ? $this->escapeHtml($result['name']) : ''?>
                 <? endif; ?>
-                <? if (isset($result['adisurl'])): ?>
+                <? if (isset($result['adisurl']) && $this->driver->getNetwork() !== 'ZDB'): ?>
                     <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['adisurl'])?>
                     <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::library_opac')?>" href="<?=$opac?>" class="external hasicon"><i class="fa fa-book"></i></a>                
                 <? endif; ?>
