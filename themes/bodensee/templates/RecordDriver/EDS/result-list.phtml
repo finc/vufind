@@ -28,6 +28,7 @@
   <?php endif; ?>
   <div class="media-body">
     <div class="result-body">
+       <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
       <?php $items = $this->driver->getItems();
         if (isset($items) && !empty($items)):
           foreach ($items as $item):
