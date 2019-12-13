@@ -35,6 +35,10 @@
                 <? else: ?>
                     <?=isset($result['name']) ? $this->escapeHtml($result['name']) : ''?>
                 <? endif; ?>
+                <? if (isset($result['adisurl'])): ?>
+                    <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['adisurl'])?>
+                    <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::library_opac')?>" href="<?=$opac?>" class="external hasicon"><i class="fa fa-book"></i></a>                
+                <? endif; ?>
             </td>
             <td><?=isset($result['g']) ? $this->escapeHtml($result['g']) : ''?></td>
             <td><? if (isset($result['ill_icon'])): ?><i class="fa <?=$result['ill_icon']?>"></i> <? endif; ?><span class="text hidden-xs"><?=isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></span></td>
