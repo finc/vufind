@@ -180,7 +180,7 @@
                         $date = array_shift($dates);
                         $edition = $sub->getEdition();
                         $header = [
-                            $this->escapeHtml($sub->getNetwork()),
+                            $this->escapeHtml($sub->getNetwork()),                            
                             //$this->escapeHtml($date),
                             $this->escapeHtml($edition)
                         ];
@@ -228,6 +228,12 @@
                                             <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>          
                                         </div>      
                                     <? endif; ?>
+                                    <? if (!empty($header[0])): ?>
+                                        <div>                                    
+                                            <strong><?=$this->transEsc('Network')?>:</strong>
+                                            <span property="network"><?=$this->escapeHtml($header[0])?></span>          
+                                        </div>      
+                                    <? endif; ?>                                    
                                     <div class="result-formats">
                                         <?=$this->record($sub)->getFormatList() ?>            
                                     </div>
