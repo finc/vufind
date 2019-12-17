@@ -28,7 +28,7 @@ class SolrGviMarc extends SolrMarc implements Definition
 {
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
-    use \VuFind\RecordDriver\MarcAdvancedTrait;    
+    use MarcAdvancedTraitBsz;  
     use SubrecordTrait;  
     use HelperTrait;
     use ContainerTrait;
