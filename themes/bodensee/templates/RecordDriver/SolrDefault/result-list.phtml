@@ -45,8 +45,11 @@
             <div>
                 <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
                 <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
-                    <?=$this->record($this->driver)->getTitleHtml()?>
+                    <?=$this->record($this->driver)->getTitleHtml()?> 
                 </a>
+                <? if ($titlesection = $this->driver->getTitleSection()):?>
+                    / <?= $titlesection ?>
+                <? endif; ?>
             </div>
             
             <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
