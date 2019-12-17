@@ -1,8 +1,8 @@
 function   performMark() {
     var lookfor = '';
-    var input_simple = $('#searchForm_lookfor').val();
+    var input_simple = $('#searchForm_lookfor').text();
     // remove boole expressions with AND OR NOT when capitalletters and seperated from words
-    var input_simple = input_simple.replace(/((\sOR\s))|((\sAND\s))|((\sNOT\s))/g, ' ');
+    input_simple = input_simple.replace(/((\sOR\s))|((\sAND\s))|((\sNOT\s))/g, ' ');
     var input_adv = $('span.adv_lookfor').text();   
     if (typeof input_simple !== 'undefined' && input_simple.trim() !== '') {
         lookfor = input_simple;
