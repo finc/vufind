@@ -285,7 +285,7 @@
           <td>
             <? foreach ($recordLinks as $recordLink): ?>
               <?=$this->transEsc($recordLink['title'])?>:
-              <? /** todo: Link needs hiddenfilter **/>
+              <? /** todo: Link needs hiddenfilter **/?>
               <?/** <a href="<?=$this->recordLink()->related($recordLink['link'])?>"><?=$this->escapeHtml($recordLink['value'])?></a>. - <?=$this->transEsc($recordLink['edition'])?><br /> **/?>
               <?=$this->escapeHtml($recordLink['value'])?>. - <?=$this->transEsc($recordLink['edition'])?><br />              
             <? endforeach; ?>
