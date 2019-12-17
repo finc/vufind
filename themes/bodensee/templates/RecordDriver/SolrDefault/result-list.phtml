@@ -210,7 +210,10 @@
 
                                     <a class="title" href="<?=$this->recordLink()->getUrl($sub)?>">
                                         <?=$this->record($sub)->getTitleHtml()?>
-                                    </a><br/>
+                                    </a>
+                                    <? if ($titlesection = $this->driver->getTitleSection()):?>
+                                        / <?= $titlesection ?>
+                                    <? endif; ?>
                                     <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
                                             'driver' => $sub,
                                             'hiddenFilterString' => $hiddenFilterString                                            
