@@ -1,11 +1,12 @@
 function   performMark() {
     var lookfor = '';
-    var input_simple = $('#searchForm_lookfor').text();
-    // remove boole expressions with AND OR NOT when capitalletters and seperated from words
-    input_simple = input_simple.replace(/((\sOR\s))|((\sAND\s))|((\sNOT\s))/g, ' ');
-    var input_adv = $('span.adv_lookfor').text();   
+    var input_simple = '';
+    var input_adv = '';    
+    var input_simple = $('#searchForm_lookfor').val();
+    var input_adv = $('li.adv_lookfor').text();
     if (typeof input_simple !== 'undefined' && input_simple.trim() !== '') {
-        lookfor = input_simple;
+        // remove boole expressions with AND OR NOT when capitalletters and seperated from words
+        lookfor = input_simple.replace(/((\sOR\s))|((\sAND\s))|((\sNOT\s))/g, ' ');
     } else if (typeof input_adv !== 'undefined'  && input_adv.trim() !== '') {
         lookfor = input_adv;
         var mapObj = {
@@ -16,8 +17,8 @@ function   performMark() {
             "Verlag:":"", "Publisher:":"",
             "Serie:":"", "Series:":"",
             "UND":"", "AND":"",
-            "NICHT":"", "NOT":"", 
-           "ODER":"", "OR":""
+            "NICHT":"", "NOT":"",
+            "ODER":"", "OR":""
         };
         var re = new RegExp(Object.keys(mapObj).join("|"),"g");
         lookfor = lookfor.replace(re, function(matched){
