@@ -44,14 +44,16 @@
         <?
           // Remove unnecessary scripts
           // we need jquery, bootstrap, common and additions here
-          $this->headScript()->offsetUnset(3);
-          $this->headScript()->offsetUnset(4);
-          $this->headScript()->offsetUnset(5);
-          $this->headScript()->offsetUnset(6);
-          $this->headScript()->offsetUnset(8);
-//          $this->headScript()->offsetUnset(7);
-          $this->headScript()->offsetUnset(9); // additions
-          $this->headScript()->offsetUnset(10); // mark
+          // $this->headScript()->offsetUnset(1); // bootstrap
+          $this->headScript()->offsetUnset(2); // bootstrap accessabiblity
+          $this->headScript()->offsetUnset(3); // validator
+          $this->headScript()->offsetUnset(4); // form-attr-polyfill
+          $this->headScript()->offsetUnset(5); // autocomplete
+          // $this->headScript()->offsetUnset(6); // common
+          $this->headScript()->offsetUnset(7); // lightbox (Reference Error
+          // $this->headScript()->offsetUnset(8); // additions
+          $this->headScript()->offsetUnset(9); // jquery.mark
+          $this->headScript()->offsetUnset(10); // ??
 
         ?>
         <?=$this->headScript()?>
