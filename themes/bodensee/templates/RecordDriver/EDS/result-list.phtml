@@ -56,16 +56,13 @@
      
         
       <? if (!empty($this->driver->getDoi()) && !$this->client()->is('doi_in_customlink') && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable()): ?>
-      <div class="resulItemLine1"><span><strong>DOI:</strong></span>
-        <span><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank">https://doi.org/<?= $this->driver->getDoi(); ?></a></span>
+      <div class="resulItemLine1">
+        <span><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank"><?=$this->transEsc('getFullTxt');?></a></span>
       </div>
-      <? endif; ?>
-      
-      
-          
-      <? $customFTLinks = $this->driver->getFTCustomLinks(); 
+      <? else: ?>          
+        <? $customFTLinks = $this->driver->getFTCustomLinks(); 
         if ( !empty($customFTLinks)  && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable() ): ?>
-        <div class="resulItemLine1">
+            <div class="resulItemLine1">
             
                 <? foreach ($customFTLinks as $customLink): ?>
                     <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
@@ -79,10 +76,13 @@
                     <? if ($this->client()->is('only_first_customlink')): ?>
                         <? break; ?>
                     <? endif; ?>
+                    </br>
                 <? endforeach; ?>
-        </div>
+            </div>
+        <? endif; ?>
       <? endif; ?>
-        
+      
+      
       <? if ($this->driver->hasHTMLFullTextAvailable()): ?>
       <strong><a href="<?= $this->recordLink()->getUrl($this->driver)?>#html" class="fulltext _record_link hasicon text-danger">
             <i class="fa fa-file-text-o"></i><?=$this->transEsc('HTML Full Text')?>
@@ -114,7 +114,7 @@
                 <?php if ($this->client()->is('only_first_customlink')): ?>
                     <?php break; ?>
                 <?php endif; ?>
-            <?php endforeach; ?>
+            <? endforeach; ?>
         </div>      
       <? endif; ?>   
     </div>
