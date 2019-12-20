@@ -145,6 +145,10 @@ class UrlQueryHelper
                         $this->urlParams['type' . $i][] = $inner->getHandler();
                         if (null !== ($op = $inner->getOperator())) {
                             $this->urlParams['op' . $i][] = $op;
+                        } 
+                        // BSZ: Noch ins BSZ-Modul ableiten?
+                        else {
+                            $this->urlParams['op' . $i][] = 'AND';
                         }
                     }
                 }

@@ -187,22 +187,24 @@ class Record extends \VuFind\View\Helper\Root\Record
      */
     public function isAtCurrentLibrary($webservice = false)
     {
-        $status = false;        
+        $status = false;     
+        $network = $this->driver->getNetwork();
+        
         if (count($this->ppns) == 0) {
             // if we have local holdings, item can't be ordered
             if ($this->hasLocalHoldings()) {
                 $status = true;
-            } elseif ($webservice && $this->driver->getNetwork() == 'SWB'
+            } elseif ($webservice && $network == 'SWB'
                  && $this->hasParallelEditions()
             ) {
                 $status = true;
-            } elseif ($webservice && $this->driver->getNetwork() !== 'SWB'
+            } elseif ($webservice && $network !== 'SWB'
                 && $this->queryWebservice()
             ) {
                 $status = true;
             }            
         } 
-        if ($this->hasLocalHoldings() && $this->driver->getNetwork() == 'ZDB') {
+        if ($this->hasLocalHoldings() && $network == 'ZDB') {
             $this->queryWebservice();
         }
         // we dont't want to do the query twice, so we save the status
@@ -217,34 +219,43 @@ class Record extends \VuFind\View\Helper\Root\Record
      */
     public function isAvailableForInterlending()
     {
-        // items marked as free
+        // HEBIS items with 8 at the first position are freely available
         $ppn = $this->driver->getPPN();
         if (($this->driver->getNetWork() == 'HEBIS' && preg_match('/^8/', $ppn))
                 || $this->driver->isFree()) {
             return false;
         }
-
-        // printed journals - show hint
-        if ($this->driver->isArticle() || $this->driver->isJournal() || $this->driver->isNewspaper()) {
+        // printed journals, articles, newspapers - show hint
+        if ($this->driver->isArticle() 
+            || $this->driver->isJournal()
+            || $this->driver->isNewspaper()
+        ) {
             return true;
         } 
-        // ebooks - always available
-        else if ($this->driver->isEBook() && $this->driver->getNetwork() == 'SWB') {
-            // evaluate ill indicator
-            $f924 = $this->driver->tryMethod('getField924');
-            foreach ($f924 as $field) {
-                if (isset($field['d']) && ($field['d'] == 'e' 
-                       || $field['d'] == 'b'
-                       // k is deprecated but might still be used
-                       || $field['d'] == 'k') ) {
-                    return true;
-                }
-            }
-            // eBooks from other networks do not have 924 and can't be ordered. 
-            return false;
+        // eBooks - check ill indicator, except GBV eBooks. 
+        else if ($this->driver->isEBook()) {
+            
+            if ($this->driver->getNetwork() == 'GBV') {
+                // GBV EBooks can't be ordered
+                return false;
+            } else {
+                // all networks should have 924 now, so, we check ill indicator 
+                $f924 = $this->driver->tryMethod('getField924');
+                foreach ($f924 as $field) {
+                    if (isset($field['d']) && 
+                        ($field['d'] == 'e' || $field['d'] == 'b'
+                        // k is deprecated but might still be used
+                        || $field['d'] == 'k') ) {
+                        return true;
+                    }
+                } 
+            }      
         }
-        // Books - always available, serials are excluded because of Gesamtaufnahmen. 
-        else if (!$this->isAtCurrentLibrary(true) &&!$this->driver->isSerial() && !$this->driver->isCollection()) {
+        // Books - always available, serials and Collections are excluded 
+        // because of Gesamtaufnahmen. 
+        else if (!$this->isAtCurrentLibrary(true)
+                && !$this->driver->isSerial() 
+                && !$this->driver->isCollection()) {
             return true;
         }
         return false;

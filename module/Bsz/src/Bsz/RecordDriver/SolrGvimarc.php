@@ -93,7 +93,7 @@ class SolrGvimarc extends SolrMarc
                         // Numeric subfields are for control purposes and should not
                         // be displayed:
                         if (!is_numeric($subfield->getCode())
-                                && $subfield->getCode() == "a") {
+                                && ($subfield->getCode() == "a" || $subfield->getCode() == "x")) {
                             array_push($retval, $subfield->getData());
                         }
                     }

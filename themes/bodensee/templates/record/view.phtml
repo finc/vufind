@@ -39,9 +39,9 @@
       </li>
     <? else: ?>
       <? if ($this->scrollData['firstRecord']): ?>
-      <li class="disabled"><a href="#" class="btn btn-primary"><i class="fa fa-caret-left"></i><i class="fa fa-caret-left"></i></a></li>
+      <li class="disabled"><a href="#" class="btn btn-primary disabled"><i class="fa fa-caret-left"></i><i class="fa fa-caret-left"></i></a></li>
       <? endif; ?>
-      <li class="disabled"><a class="btn btn-primary" href="#"><i class="fa fa-caret-left"></i></a></li>
+      <li class="disabled"><a class="btn btn-primary disabled" href="#"><i class="fa fa-caret-left"></i></a></li>
     <? endif; ?>
     <?=$this->transEsc('of_num_results', [
       '%%position%%' => $this->localizedNumber($this->scrollData['currentPosition']),
@@ -57,9 +57,9 @@
         </li>
       <? endif; ?>
      <? else: ?>
-     <li class="disabled"><a class="btn btn-primary" href="#"><i class="fa fa-caret-right"></i></a></li>
+     <li class="disabled"><a class="btn btn-primary disabled" href="#"><i class="fa fa-caret-right"></i></a></li>
       <? if ($this->scrollData['lastRecord']): ?>
-        <li class="disabled"><a class="btn btn-primary" href="#"><i class="fa fa-caret-right"></i><i class="fa fa-caret-right"></i></a></li>
+        <li class="disabled"><a class="btn btn-primary disabled" href="#"><i class="fa fa-caret-right"></i><i class="fa fa-caret-right"></i></a></li>
       <? endif; ?>
     <? endif; ?>
   </ul>

@@ -53,6 +53,7 @@ if(isset($firstLibrary) && $firstLibrary->getAuth() == 'tan'): ?>
 <input type="hidden" name="Verbund" value="<?=$this->escapeHtmlAttr($verbund)?>" />
 <input type="hidden" name="TitelId" value="<?=$this->escapeHtmlAttr($ppn)?>" />
 <input type="hidden" name="Besteller" value="E" />
+<input type="hidden" name="ATEB" value="off" />
 <? if (!isset($this->driver) || (isset($firstLibrary) && $firstLibrary->getSigel() == '122')): ?>
 <? // freies Fernleihformular ?>
 <input type="hidden" name="SignZustand" value="on" />

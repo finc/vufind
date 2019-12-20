@@ -45,7 +45,7 @@ class RecordController extends \VuFind\Controller\RecordController
     use \VuFind\Controller\StorageRetrievalRequestsTrait;
     use \VuFind\Log\LoggerAwareTrait;
     
-    const TIMEOUT = 30;
+    const TIMEOUT = 120;
     
     protected $orderId = 0;
     
@@ -131,7 +131,7 @@ class RecordController extends \VuFind\Controller\RecordController
         $first = $libraries->getFirstActive($client->getIsils());
         $submitDisabled = false;
         
-        if ($authManager->loginEnabled() 
+        if (isset($first) && $authManager->loginEnabled() 
                 && !$authManager->isLoggedIn()
                 && $first->getAuth() == 'shibboleth') {
             $this->FlashMessenger()->addErrorMessage('You must be logged in first');
