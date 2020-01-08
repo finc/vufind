@@ -25,7 +25,10 @@ if ($this->customUrl) {
                         </ul>
                     </li>
             <?php else: ?>
-                        <li><?= $this->recordLink()->linkPPN($this->driver) ?></li>
+                    <? $link = $this->recordLink()->linkPPN($this->driver) ?>
+                    <? if (!empty($link)): ?>
+                    <li><?=$link?></li>
+                    <? endif; ?>
             <?php endif; ?>
     </ul>        
 <?php if ($status): ?>
