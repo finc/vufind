@@ -325,21 +325,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function isEBook()
     {
         $f007 = $leader = null;
-        $f007_0 = $f007_1 = $leader_7 = '';
-        $f007 = $this->getMarcRecord()->getFields("007", false);
-        foreach ($f007 as $field) {
-            $data = strtoupper($field->getData());
-            if (strlen($data) > 0) {
-                $f007_0 = $data{0};
-            }
-            if (strlen($data) > 1) {
-                $f007_1 = $data{1};
-            }
-        }
+        $leader_7 = '';
+        $f007 = $this->get007();
         $leader = $this->getMarcRecord()->getLeader();
         $leader_7 = strtoupper($leader{7});
         if ($leader_7 == 'M') {
-            if ($f007_0 == 'C' && $f007_1 == 'R') {
+            if (preg_match('/^cr/i', $f007)) {
                 return true;
             }
         }
@@ -354,15 +345,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function isElectronic()
     {
         $f007 = $leader = null;
-        $f007_0 = '';
-        $f007 = $this->getMarcRecord()->getFields("007", false);
-        foreach ($f007 as $field) {
-            $data = strtoupper($field->getData());
-            if (strlen($data) > 0) {
-                $f007_0 = $data{0};
-            }            
-        }
-        if ($f007_0 == 'C') {
+        $f007 = $this->get007();
+
+        if (preg_match('/^c/i', $f007)) {
             return true;                
         }    
         return false;
@@ -377,7 +362,10 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     {
         $leader = $this->getMarcRecord()->getLeader();
         $leader_7 = strtoupper($leader{7});
-        if ($leader_7 == 'M') {
+   
+        $f007 = $this->get007();
+        
+        if ($leader_7 == 'M' && preg_match('/^t/i', $f007)) {
             return true;
         }
         return false;
@@ -848,7 +836,28 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         return $id == 'Solr' ? 'VuFind' : $id;
     }
     
-    
+    /**
+     * Get the two char code in 007
+     * 
+     * @return string
+     */
+    private function get007()
+    {
+        $f007 = null;
+        $f007_0 = $f007_1 = '';
+        $f007 = $this->getMarcRecord()->getFields("007", false);
+        foreach ($f007 as $field) {
+            $data = strtoupper($field->getData());
+            if (strlen($data) > 0) {
+                $f007_0 = $data{0};
+            }
+            if (strlen($data) > 1) {
+                $f007_1 = $data{1};
+            }
+        }
+        return $f007_0.$f007_1;
+        
+    }
     
     
 
