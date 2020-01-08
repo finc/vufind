@@ -28,7 +28,7 @@ use Bsz\ILL\Holding;
 class Logic {
 
     const FORMAT_EJOUNAL = 'Ejournal';
-    const FORMAT_JOURNAL = 'Eournal';
+    const FORMAT_JOURNAL = 'Journal';
     const FORMAT_EBOOK = 'Ebook';
     const FORMAT_BOOK = 'Book';
     const FORMAT_MONOSERIAL = 'MonoSerial';
@@ -135,7 +135,7 @@ class Logic {
                 $format = static::FORMAT_JOURNAL;
             }
         }
-       return $format;
+        return $format;
     }
 
     /**
