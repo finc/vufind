@@ -2,7 +2,7 @@
 $url = $this->recordLink()->getUrl($this->driver).'/ILLForm';
 $network = $this->driver->getNetwork(); 
 if ($this->customUrl) {
-    $url = $this->openUrl($this->driver, 'illform')->getUrl();
+    $url = $this->openUrl($this->driver, 'illform')->getUrl($this->customUrl);
 }
 $account = $this->auth()->getManager();
 $class = '';
