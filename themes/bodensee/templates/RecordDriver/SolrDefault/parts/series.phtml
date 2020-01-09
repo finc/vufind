@@ -6,7 +6,7 @@
   <? $seriesids = $this->driver->tryMethod('getSeriesIds');?>
   <? $count =  0; ?>
   <? foreach ($series as $field): ?>
-    <? if (is_array($seriesIds) && isset($seriesids[$count])): ?>
+    <? if (isset($seriesIds) && isset($seriesids[$count])): ?>
         <? $field['id'] = $seriesids[$count] ?>
     <? endif; ?>
     <?/* Depending on the record driver, $field may either be an array with
