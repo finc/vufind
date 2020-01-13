@@ -2,7 +2,7 @@
 $url = $this->recordLink()->getUrl($this->driver).'/ILLForm';
 $network = $this->driver->getNetwork(); 
 if ($this->customUrl) {
-    $url = $this->openUrl($this->driver, 'illform')->getUrl();
+    $url = $this->openUrl($this->driver, 'illform')->getUrl($this->customUrl);
 }
 $account = $this->auth()->getManager();
 $class = '';
@@ -103,11 +103,11 @@ $basePath = '/Record/';
         <? // Nicht per Fernleihe ausleihbar ?> 
         <? else: ?>
             <? if ($this->driver->isFree()): ?>
-                <strong><?= $this->transEsc('not_available_for_ill_free') ?></strong>              
+                <strong><?= $this->transEsc('ILL::not_available_free') ?></strong>              
             <? elseif ($this->driver->isCollection()): ?>
-                <strong><?= $this->transEsc('not_available_for_ill_collection') ?></strong>              
+                <strong><?= $this->transEsc('ILL::not_available_collection') ?></strong>              
             <? else: ?>
-                <strong><?= $this->transEsc('not_available_for_ill') ?></strong>   
+                <strong><?= $this->transEsc('ILL::not_available') ?></strong>   
                 <? // Show link to SWB hit even if its not available ?>
                 <? if ($network !== 'SWB' && $this->record($this->driver)->hasSwbId() && $this->record($this->driver)->getSwbId() != $this->driver->getUniqueId()): ?>
                     <ul>                    

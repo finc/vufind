@@ -301,6 +301,7 @@ class FormatMapper {
         elseif(in_array('SoundCassette', $formats) && in_array('SoundRecording', $formats)) {return ['Cassette']; }
         elseif(in_array('SoundRecording', $formats) && in_array('Article', $formats)) {return ['Music-CD']; } //Kommt im GBV vor
         elseif(in_array('E-Journal', $formats) && in_array('Newspaper', $formats)) {return ['Newspaper']; }
+        elseif(in_array('Compilation', $formats) && in_array('Book', $formats)) {return ['Compilation']; }
         
         return $formats;
                 

@@ -216,6 +216,7 @@ $config = [
                 'aliases' => [
                     'VuFind\Resolver\Driver\Redi' => 'Bsz\Resolver\Driver\Redi',
                     'VuFind\Resolver\Driver\Ezb'  => 'Bsz\Resolver\Driver\Ezb',
+                    'ill' => 'Bsz\Resolver\Driver\Ill'
                 ]
             ],
 
