@@ -29,7 +29,7 @@
         </ul>
         <? endif; ?>
         <? if ($settings->get('text_'.$lang)): ?>
-        <p><?=$this->escapeHtml($settings->get('text_'.$lang))?></p>
+        <small style="margin-left: 0"><?=$this->escapeHtml($settings->get('text_'.$lang))?><small>
         <? endif; ?>
     </div>
     
