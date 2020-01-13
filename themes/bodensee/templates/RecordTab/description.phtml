@@ -38,7 +38,9 @@
         <th><?=$this->transEsc('Note')?></th>
         <td><?=$this->escapeHtml($note)?></td>          
     </tr>
-  <? endif; ?>  
+  <? endif; ?>
+
+  <? /* redundant? 
     <? $parallel = $this->driver->tryMethod('getRelatedEditions'); if ($parallel): ?>
     <? $contentDisplyed = true ?> 
     <tr>
@@ -50,6 +52,32 @@
         </td>
     </tr>
   <? endif; ?>
+  */ ?>
+
+      <? $recordLinks = $this->driver->getAllRecordLinks(); ?>
+      <? if(!empty($recordLinks)): ?>
+      <? $contentDispalyed = true ?>
+        <tr>
+          <th><?=$this->transEsc('Related Items')?>:</th>
+          <td>
+            <? foreach ($recordLinks as $recordLink): ?>
+              <?=$this->transEsc($recordLink['title'])?>:
+              <? /** todo: Link needs hiddenfilter **/?>
+              <?/** <a href="<?=$this->recordLink()->related($recordLink['link'])?>"><?=$this->escapeHtml($recordLink['value'])?></a>. - <?=$this->transEsc($recordLink['edition'])?><br /> **/?>
+              <?=$this->escapeHtml($recordLink['value'])?>. - <?=$this->transEsc($recordLink['edition'])?><br />              
+            <? endforeach; ?>
+            <? /* if we have record links, display relevant explanatory notes */
+              $related = $this->driver->getRelationshipNotes();
+              if (!empty($related)): ?>
+                <? foreach ($related as $field): ?>
+                  <?=$this->escapeHtml($field)?><br/>
+                <? endforeach; ?>
+            <? endif; ?>
+          </td>
+        </tr>
+      <? endif; ?>
+
+  
   <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
@@ -278,26 +306,6 @@
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
   
-      <? $recordLinks = $this->driver->getAllRecordLinks(); ?>
-      <? if(!empty($recordLinks)): ?>
-        <tr>
-          <th><?=$this->transEsc('Related Items')?>:</th>
-          <td>
-            <? foreach ($recordLinks as $recordLink): ?>
-              <?=$this->transEsc($recordLink['title'])?>:
-              <? /** todo: Link needs hiddenfilter **/?>
-              <?/** <a href="<?=$this->recordLink()->related($recordLink['link'])?>"><?=$this->escapeHtml($recordLink['value'])?></a>. - <?=$this->transEsc($recordLink['edition'])?><br /> **/?>
-              <?=$this->escapeHtml($recordLink['value'])?>. - <?=$this->transEsc($recordLink['edition'])?><br />              
-            <? endforeach; ?>
-            <? /* if we have record links, display relevant explanatory notes */
-              $related = $this->driver->getRelationshipNotes();
-              if (!empty($related)): ?>
-                <? foreach ($related as $field): ?>
-                  <?=$this->escapeHtml($field)?><br/>
-                <? endforeach; ?>
-            <? endif; ?>
-          </td>
-        </tr>
-      <? endif; ?>
+
       
 </table>
