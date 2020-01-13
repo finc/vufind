@@ -2,7 +2,7 @@
 /**
  * Class to help build URLs and forms in the view based on search settings.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -144,11 +144,18 @@ class UrlQueryHelper
                         $this->urlParams['lookfor' . $i][] = $inner->getString();
                         $this->urlParams['type' . $i][] = $inner->getHandler();
                         if (null !== ($op = $inner->getOperator())) {
+                            // We want the op and lookfor parameters to align
+                            // with each other; let's backfill empty op values
+                            // if there aren't enough in place already.
+                            $expectedOps
+                                = count($this->urlParams['lookfor' . $i]) - 1;
+                            while (
+                                count($this->urlParams['op' . $i] ?? [])
+                                < $expectedOps
+                            ) {
+                                $this->urlParams['op' . $i][] = '';
+                            }
                             $this->urlParams['op' . $i][] = $op;
-                        } 
-                        // BSZ: Noch ins BSZ-Modul ableiten?
-                        else {
-                            $this->urlParams['op' . $i][] = 'AND';
                         }
                     }
                 }
@@ -241,15 +248,16 @@ class UrlQueryHelper
     /**
      * Replace a term in the search query (used for spelling replacement)
      *
-     * @param string $from Search term to find
-     * @param string $to   Search term to insert
+     * @param string  $from      Search term to find
+     * @param string  $to        Search term to insert
+     * @param boolean $normalize If we should apply text normalization when replacing
      *
      * @return UrlQueryHelper
      */
-    public function replaceTerm($from, $to)
+    public function replaceTerm($from, $to, $normalize = false)
     {
         $query = clone $this->queryObject;
-        $query->replaceTerm($from, $to);
+        $query->replaceTerm($from, $to, $normalize);
         return new static($this->urlParams, $query, $this->config);
     }
 
@@ -302,6 +310,20 @@ class UrlQueryHelper
         $params = $this->urlParams;
         // Clear page:
         unset($params['filter']);
+
+        return new static($params, $this->queryObject, $this->config, false);
+    }
+
+    /**
+     * Reset default filter state.
+     *
+     * @return string
+     */
+    public function resetDefaultFilters()
+    {
+        $params = $this->urlParams;
+        // Clear page:
+        unset($params['dfApplied']);
 
         return new static($params, $this->queryObject, $this->config, false);
     }

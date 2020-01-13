@@ -12,13 +12,15 @@
 <? endif; ?>
   <? if (!isset($this->layout()->renderingError)): ?>
     <div class="collapse navbar-collapse" id="header-collapse">
-      <nav>
+      <nav>         
         <ul class="nav navbar-nav navbar-right flip">
-          <? if ($this->client()->isIsilSession()): ?>
-            <li class="dropdown">
-                <?=$this->partial('bsz/illdropdown.phtml')?>           
-            </li>
-          <? endif; ?>
+          <? if ($this->client()->is('show_small_logo')): ?>
+            <? if ($this->templateDir.'/'.$this->templateName != 'search/home') : ?>
+                <li>
+                    <img height="38" src="<?=$this->imageLink($this->clientAsset()->getSmallLogo()) ?>" id="smalllogo" />
+                </li>
+            <? endif;?>
+          <? endif;?>
           <? if ($this->feedback()->tabEnabled()): ?>
             <li>
               <a id="feedbackLink" data-lightbox href="<?=$this->url('feedback-home') ?>"><i class="fa fa-envelope" aria-hidden="true"></i> <?=$this->transEsc("Feedback")?></a>
@@ -27,12 +29,12 @@
           <? $cart = $this->cart(); if ($cart->isActive()): ?>
             <li id="cartSummary">
               <a id="cartItems" data-lightbox title="<?=$this->transEsc('View Book Bag')?>" href="<?=$this->url('cart-home')?>">
-                <i class="fa fa-suitcase" aria-hidden="true"></i> <strong><?=count($cart->getItems())?></strong> <?=$this->transEsc('items')?>
+                <i class="fa fa-list" aria-hidden="true"></i> <strong><?=count($cart->getItems())?></strong> <?=$this->transEsc('items')?>
                 <span class="full<?=!$cart->isFull() ? ' hidden' : '' ?>">(<?=$this->transEsc('bookbag_full') ?>)</span>
               </a>
             </li>
           <? endif; ?>
-          <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
+          <? if (count($this->client()->getIsils()) > 0 && is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
             <li class="logoutOptions<? if(!$account->isLoggedIn()): ?> hidden<? endif ?>">
               <a href="<?=$this->url('myresearch-home', [], ['query' => ['redirect' => 0]])?>"><i class="fa fa-star" aria-hidden="true"></i> <?=$this->transEsc("Your Account")?></a>
             </li>
@@ -86,6 +88,11 @@
           <? endif; ?>
           <li class="home">
               <a class="lang-<?=$this->layout()->userLang ?>" href="<?=$this->url('home')?>"><i class="fa fa-home"></i><span class="sr-only"><?=$this->transEsc('Home')?></span>
+          <? if ($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
+          <?=$this->escapeHtml($this->client())?>
+          <? elseif ($this->client()->isIsilSession() && !$this->client()->hasIsilSession()): ?>
+          <?=$this->transEsc('ILL::button_choose_library')?>
+          <? endif; ?>                  
               </a>  
           </li>
         </ul>

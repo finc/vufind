@@ -33,20 +33,16 @@ namespace Bsz\Controller;
  */
 class ShibController extends \VuFind\Controller\AbstractBase
 {
-    
-    public function __construct() {
-        // we need to override abstractBase __constructor as it requires 
-        // some kind of service locator crap... 
-    }    
     /**
      * This action let's you choose IdP
-     */
+    */
+    
     public function wayfAction() {
         // Store the referer, so the user can return to this site after login
         $this->setFollowupUrlToReferer();
         
-        $libraries = $this->getServiceLocator()->get('Bsz\Config\Libraries');
-        $client = $this->getServiceLocator()->get('Bsz\Config\Client');
+        $libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
+        $client = $this->serviceLocator->get('Bsz\Config\Client');
         $isils = $client->getIsils();
         $library = $libraries->getByIsil($client->getIsils());
         
@@ -80,12 +76,12 @@ class ShibController extends \VuFind\Controller\AbstractBase
         $baseUrl = sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
 
         $target = $baseUrl.$action.'?auth_method=Shibboleth';
-        $config = $this->getServiceLocator()->get('VuFind\Config')
+        $config = $this->serviceLocator->get('VuFind\Config')
                 ->get('config')->get('Shibboleth');
         // build actual url
         try {
             $isil = $this->params()->fromQuery('isil');
-            $libraries = $this->getServiceLocator()->get('bsz\libraries');
+            $libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
             $library = $libraries->getByIsil($isil);
             $idp = $library->getIdp();
 

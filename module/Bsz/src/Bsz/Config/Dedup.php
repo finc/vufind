@@ -1,7 +1,7 @@
 <?php
 
 namespace Bsz\Config;
-use Zend\Session\Container;
+use Zend\Session\Container as SessionContainer;
 
 /**
  * Class for setting dedup options
@@ -19,7 +19,8 @@ class Dedup
     protected $response;
     protected $cookiedata;
     
-    public function __construct($config, Container $container, $response, $cookiedata)
+    public function __construct($config, SessionContainer $container,
+            $response, $cookiedata)
     {
         $this->config = $config;
         $this->container = $container;
@@ -44,12 +45,11 @@ class Dedup
     
     public function store($post)
     {
-        $params = $this->getCurrentSettings();
-        
-        if (isset($post['group'])) {
+        $params = $this->getCurrentSettings();  
+        if (array_key_exists('group', $post)) {
             $cookie = new \Zend\Http\Header\SetCookie(
                     'group', 
-                    $post['group'], 
+                    (int)$post['group'], 
                     time() + 14 * 24* 60 * 60, 
                     '/');
             $header = $this->response->getHeaders();
@@ -86,8 +86,8 @@ class Dedup
     {
         $params = [
            'group' => $this->container->offsetExists('group') ? (bool)$this->container->offsetGet('group') : (bool)$this->config->get('group'),
-           'field' => $this->container->offsetExists('group_field') ? $this->container->offsetGet('group_field') : $this->config->get('group.field'),
-           'limit' => $this->container->offsetExists('group_limit') ? $this->container->offsetGet('group_limit') : $this->config->get('group.limit'),            
+           'group_field' => $this->container->offsetExists('group_field') ? $this->container->offsetGet('group_field') : $this->config->get('group.field'),
+           'group_limit' => $this->container->offsetExists('group_limit') ? $this->container->offsetGet('group_limit') : $this->config->get('group.limit'),            
         ];
         return $params;
     }

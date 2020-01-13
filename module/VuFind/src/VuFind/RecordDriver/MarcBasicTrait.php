@@ -3,7 +3,7 @@
  * Functions to add basic MARC-driven functionality to a record driver not already
  * powered by the standard index spec. Depends upon MarcReaderTrait.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2017.
  *
@@ -320,6 +320,4 @@ trait MarcBasicTrait
     {
         return $this->getFieldArray('300', ['a', 'b', 'c', 'e', 'f', 'g'], true);
     }
-    
-
 }

@@ -71,33 +71,38 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
     public function getContent() {
         if($this->content === null) {
             $relId = $this->driver->tryMethod('getIdsRelated');   
+            // add the ID of the current hit, thats usefull if its a 
+            // Gesamtaufnahme
             $this->content = []; 
-            if(is_array($relId) && count($relId) > 0) {
-                foreach($relId as $k => $id) {
-//                    $relId[$k] = 'id_related_host_item:"'.$id.'"';            
-                    $relId[$k] = 'id_related:"'.$id.'"';                    
-                }
-                $params = [
-                    'sort' => 'publish_date_sort desc, id desc',
-                    'lookfor' => implode(' OR ', $relId),              
-                    'limit'   => 1000,
-                ];
+            if (is_array($relId)) {
+                array_push($relId, $this->driver->getUniqueID());
+                if (is_array($relId) && count($relId) > 0) {
+                    foreach($relId as $k => $id) {
+//                      $relId[$k] = 'id_related_host_item:"'.$id.'"';            
+                        $relId[$k] = 'id_related:"'.$id.'"';                    
+                    }
+                    $params = [
+                        'sort' => 'publish_date_sort desc, id desc',
+                     'lookfor' => implode(' OR ', $relId),              
+                     'limit'   => 500,
+                    ];
 
-                $filter = [];
-                if ($this->isFL() === FALSE) {
-                    foreach($this->isils as $isil) {
-                        $filter[] = '~institution_id:'.$isil;
-                    }   
-                }
-                $filter[] = '~material_content_type:Book';
-                $filter[] = '~material_content_type:"Musical Score"';
-                $params['filter'] = $filter;
+                    $filter = [];
+                    if ($this->isFL() === FALSE) {
+                        foreach($this->isils as $isil) {
+                         $filter[] = '~institution_id:'.$isil;
+                        }   
+                    }
+                    $filter[] = '~material_content_type:Book';
+                    $filter[] = '~material_content_type:"Musical Score"';
+                    $params['filter'] = $filter;
                               
-                $results = $this->runner->run($params); 
+                    $results = $this->runner->run($params); 
                 
-                $results instanceof \Bsz\Search\Solr\Results;
-                $this->content = $results->getResults();
-            }   
+                    $results instanceof \Bsz\Search\Solr\Results;
+                    $this->content = $results->getResults();
+                }
+            }
         }
         return $this->content;
     }
@@ -129,10 +134,12 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
     public function isActive() {
         //getContents to determine active state
         $this->getContent();
-        if(($this->driver->isCollection() || $this->driver->isPart()
+        if ($this->getContent() !== []) {
+            if(($this->driver->isCollection() || $this->driver->isPart()
                 || $this->driver->isMonographicSerial() 
                 || $this->driver->isJournal()) && !empty($this->content)) {
-            return true;
+                return true;
+            }
         }
         return false;
     }

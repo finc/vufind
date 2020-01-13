@@ -2,7 +2,7 @@
 /**
  * Collections Controller
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -116,7 +116,7 @@ class CollectionsController extends AbstractBase
         $limit = $this->getBrowseLimit();
 
         // Load Solr data or die trying:
-        $db = $this->serviceLocator->get('VuFind\Search\BackendManager')
+        $db = $this->serviceLocator->get(\VuFind\Search\BackendManager::class)
             ->get('Solr');
         $result = $db->alphabeticBrowse($source, $from, $page, $limit);
 
@@ -174,7 +174,7 @@ class CollectionsController extends AbstractBase
         $browseField = "hierarchy_browse";
 
         $searchObject = $this->serviceLocator
-            ->get('VuFind\SearchResultsPluginManager')->get('Solr');
+            ->get(\VuFind\Search\Results\PluginManager::class)->get('Solr');
         foreach ($appliedFilters as $filter) {
             $searchObject->getParams()->addFilter($filter);
         }
@@ -183,8 +183,7 @@ class CollectionsController extends AbstractBase
         $result = $searchObject->getFullFieldFacets(
             [$browseField], false, 150000, 'index'
         );
-        $result = isset($result[$browseField]['data']['list'])
-            ? $result[$browseField]['data']['list'] : [];
+        $result = $result[$browseField]['data']['list'] ?? [];
 
         $delimiter = $this->getBrowseDelimiter();
         foreach ($result as $rkey => $collection) {
@@ -266,7 +265,7 @@ class CollectionsController extends AbstractBase
         }
         $result = $sorted;
 
-        return isset($key) ? $key : 0;
+        return $key ?? 0;
     }
 
     /**
@@ -338,7 +337,7 @@ class CollectionsController extends AbstractBase
     {
         $title = addcslashes($title, '"');
         $query = new Query("is_hierarchy_title:\"$title\"", 'AllFields');
-        $searchService = $this->serviceLocator->get('VuFind\Search');
+        $searchService = $this->serviceLocator->get(\VuFindSearch\Service::class);
         $result = $searchService->search('Solr', $query, 0, $this->getBrowseLimit());
         return $result->getRecords();
     }

@@ -1,0 +1,69 @@
+<?
+  $addThis = $this->addThis();
+  if (!empty($addThis)) {
+    $this->headScript()->appendFile('https://s7.addthis.com/js/250/addthis_widget.js?pub=' . urlencode($addThis));
+  }
+
+  // Set up some variables for convenience:
+  $id = $this->driver->getUniqueId();
+  $controllerClass = 'controller:' . $this->record($this->driver)->getController();
+  $cart = $this->cart();
+  $cartId = $this->driver->getResourceSource() . '|' . $id;
+?>
+<ul class="nav nav-pills hidden-print finger-friendly-icons">
+    <? $sources = $this->recordLink()->getCoverServiceUrls($this->driver);
+    if(count($sources) > 0):?>
+    <li class="dropdown">
+        <a class="dropdown-toggle" type="button" id="coverservices-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <i class="fa fa-copyright"></i>
+            <span class="hidden-xs caret"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="coverservices-dropdown">
+            
+            <li class="dropdown-header"><?=$this->transEsc('cover_sources')?></li>
+            <? foreach($sources as $source => $url):?>
+                <li><a class="external" href="<?=$url?>"><?=$this->escapeHtml($source)?></a></li>
+            <? endforeach; ?>            
+        </ul>
+    </li>
+    <? endif; ?>
+
+  <li><a id="mail-record" class="modal-link <?=$controllerClass?>" href="<?=$this->url('record-email', array('id'=>$id)) ?>" title="<?=$this->transEsc('Email this')?>"><i class="fa fa-envelope"></i> <span class="text"><?=$this->transEsc('Email this')?></span></a></li>
+
+  <? $exportFormats = $this->export()->getFormatsForRecord($this->driver); ?>
+  <? if(count($exportFormats) > 0): ?>
+    <li class="dropdown">
+        <a class="export-toggle dropdown-toggle" data-toggle="dropdown" href="<?=$this->recordLink()->getActionUrl($this->driver, 'Export')?>" title="<?=$this->transEsc('Export this')?>"><i class="fa fa-list-alt" style="margin-top: 2px;"></i> <span class="text"><?=$this->transEsc('Export Record') ?></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <? foreach ($exportFormats as $exportFormat): ?>
+        <li><a <? if ($this->export()->needsRedirect($exportFormat)): ?>target="<?=$this->escapeHtmlAttr($exportFormat)?>Main" <? endif; ?>href="<?=$this->recordLink()->getActionUrl($this->driver, 'Export')?>?style=<?=$this->escapeHtmlAttr($exportFormat)?>"><?=$this->transEsc('Export to')?> <?=$this->transEsc($exportFormat)?></a></li>
+        <? endforeach; ?>
+      </ul>
+    </li>
+  <? endif; ?>
+
+  <? if ($this->userlist()->getMode() !== 'disabled'): ?>
+  <li><a id="save-record" class="modal-link <?=$controllerClass?>" href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" title="<?=$this->transEsc('Add to favorites')?>"><i class="fa fa-star"></i> <span class="text"><?=$this->transEsc('Add to favorites')?></span></a></li>
+  <? endif; ?>
+  <? if (!empty($addThis)): ?>
+    <li><a class="addThis addthis_button" href="https://www.addthis.com/bookmark.php?v=250&amp;pub=<?=urlencode($addThis)?>"><i class="fa fa-bookmark"></i> <?=$this->transEsc('Bookmark')?></a></li>
+  <? endif; ?>
+  <? if ($cart->isActive()): ?>
+    <li id="bookbag-menu">
+      <input id="cartId" type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($cartId)?>" />
+      <a id="cart-add" class="<? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden" href="#" title="<?=$this->transEsc('Add to bookbag')?>"><i class="fa fa-plus"></i> <span class="text"><?=$this->transEsc('Add to Book Bag') ?></span></a>
+      
+      <a id="cart-remove" class="<? if($cart->contains($cartId)): ?>correct <? endif ?>hidden" href="#"><i class="fa fa-minus-circle"></i> <span class="text"><?=$this->transEsc('Remove from Book Bag') ?></span></a>
+      <noscript>
+        <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
+          <input type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($cartId)?>" />
+          <? if ($cart->contains($cartId)): ?>
+            <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
+          <? else: ?>
+            <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
+          <? endif; ?>
+        </form>
+      </noscript>
+    </li>
+  <? endif; ?>
+</ul>

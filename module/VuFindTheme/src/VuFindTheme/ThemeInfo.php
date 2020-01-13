@@ -2,7 +2,7 @@
 /**
  * Class to represent currently-selected theme and related information.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -199,7 +199,7 @@ class ThemeInfo
      * if boolean false, return containing theme name; if self::RETURN_ALL_DETAILS,
      * return an array containing both values (keyed with 'path' and 'theme').
      *
-     * @return string
+     * @return string|array|null
      */
     public function findContainingTheme($relativePath, $returnType = false)
     {
@@ -213,8 +213,7 @@ class ThemeInfo
         while (!empty($currentTheme)) {
             $currentThemeSet = array_merge(
                 (array)$currentTheme,
-                isset($allThemeInfo[$currentTheme]['mixins'])
-                    ? $allThemeInfo[$currentTheme]['mixins'] : []
+                $allThemeInfo[$currentTheme]['mixins'] ?? []
             );
             foreach ($currentThemeSet as $theme) {
                 foreach ($allPaths as $currentPath) {

@@ -1,0 +1,24 @@
+ <?/* Display series section if at least one series exists. */?>
+<? $series = $this->driver->getSeries(); if (!empty($series)): ?>
+<tr>
+<th><?=$this->transEsc('Series')?>: </th>
+<td>
+  <? foreach ($series as $field): ?>
+    <?/* Depending on the record driver, $field may either be an array with
+       "name" and "number" keys or a flat string containing only the series
+       name.  We should account for both cases to maximize compatibility. */?>
+    <? if (is_array($field)): ?>
+      <? if (!empty($field['name'])): ?>
+        <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field['name'])?>"><?=$this->escapeHtml($field['name'])?></a>
+        <? if (!empty($field['number'])): ?>
+          <?=$this->escapeHtml($field['number'])?>
+        <? endif; ?>
+        <br/>
+      <? endif; ?>
+    <? else: ?>
+      <a class="searchicon" href="<?=$this->record($this->driver)->getLink('series', $field)?>"><?=$this->escapeHtml($field)?></a><br/>
+    <? endif; ?>
+  <? endforeach; ?>
+</td>
+</tr>
+<? endif; ?>

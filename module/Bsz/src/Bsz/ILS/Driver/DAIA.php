@@ -27,23 +27,27 @@
 namespace Bsz\ILS\Driver;
 
 use \VuFind\Exception\ILS as ILSException;
-use Zend\ServiceManager\ServiceManager;
-use DOMDocument;
 
 /**
  * Description of DAIAaDis
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class DAIA extends DAIAbsz
+class DAIA extends \VuFind\ILS\Driver\DAIA
 {
-    /**
-     * Flag to enable multiple DAIA-queries
-     *
-     * @var bool
-     */
-    protected $multiQuery = false;
+    use ItemTrait;
     
+    protected $isil;
+    protected $parsePpn = true;
+    protected $holdings = [];
+    
+    public function __construct(\VuFind\Date\Converter $converter, $isil, $baseUrl = '') {
+        $this->dateConverter = $converter;
+        $this->isil = $isil;
+        if (strlen($baseUrl) > 0) {
+            $this->baseUrl = $baseUrl;
+        }
+    }
 
     /**
      * Perform an HTTP request.

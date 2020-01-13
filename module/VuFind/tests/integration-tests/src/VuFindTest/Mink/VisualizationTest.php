@@ -2,7 +2,7 @@
 /**
  * Mink test class for visualization view.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2017.
  *
@@ -35,9 +35,12 @@ namespace VuFindTest\Mink;
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Page
+ * @retry    4
  */
 class VisualizationTest extends \VuFindTest\Unit\MinkTestCase
 {
+    use \VuFindTest\Unit\AutoRetryTrait;
+
     /**
      * Test that combined results work in mixed AJAX/non-AJAX mode.
      *

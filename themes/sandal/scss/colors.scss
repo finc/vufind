@@ -21,7 +21,7 @@ $search-row-selected-color: $white !default;
 
 $sidebar-title-bg: $white !default;
 $sidebar-title-color: $near-black !default;
-$sidebar-title-icon-color: $gray-light !default;
+$sidebar-title-icon-color: $light-silver !default;
 $sidebar-item-bg: $white !default;
 $sidebar-item-color: $black !default;
 $sidebar-item-hover-bg: $lightest-blue !default;
@@ -45,5 +45,6 @@ $input-border-radius:         .25rem !default;
 $autocomplete-hover-bg:     $header-light !default;
 $dropdown-link-hover-bg:    $header-light !default;
 $dropdown-link-hover-color: $black !default;
+$list-group-active-bg:      $brand-secondary !default;
 $table-bg-hover:            $header-light !default;
 $pagination-color:          $header-bg !default;

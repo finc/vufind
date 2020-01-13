@@ -2,7 +2,7 @@
 /**
  * Title Hold Logic Class
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2007.
  *
@@ -155,7 +155,7 @@ class TitleHolds
         static $holdings = [];
 
         if (!isset($holdings[$id])) {
-            $holdings[$id] = $this->catalog->getHolding($id);
+            $holdings[$id] = $this->catalog->getHolding($id)['holdings'];
         }
         return $holdings[$id];
     }

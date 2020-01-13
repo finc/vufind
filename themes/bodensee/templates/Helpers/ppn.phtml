@@ -1,5 +1,3 @@
 <? if (!empty($link)): ?>
 <a href="<?=$link?>" class="external"><?=$this->escapeHtml($ppn)?></a> <small><? if(isset($label)):?>(<?=$this->transEsc($label)?>)<? endif; ?></small>
-<? else: ?>
-<span><?=$this->escapeHtml($ppn)?></span>
 <? endif; ?>

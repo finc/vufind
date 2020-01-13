@@ -1,6 +1,9 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()->in(__DIR__ . '/../module');
+$finder = PhpCsFixer\Finder::create()
+    ->in(__DIR__ . '/../config')
+    ->in(__DIR__ . '/../module')
+    ->in(__DIR__ . '/../public');
 
 $rules = [
     'align_multiline_comment' => true,
@@ -53,6 +56,7 @@ $rules = [
     'no_useless_return' => true,
     'no_whitespace_before_comma_in_array' => true,
     'no_whitespace_in_blank_line' => true,
+    'non_printable_character' => true,
     'ordered_imports' => true,
     'phpdoc_no_access' => true,
     'single_blank_line_at_eof' => true,
@@ -64,6 +68,7 @@ $rules = [
     'switch_case_semicolon_to_colon' => true,
     'switch_case_space' => true,
     'ternary_operator_spaces' => true,
+    'ternary_to_null_coalescing' => true,
     'visibility_required' => true,
 ];
 

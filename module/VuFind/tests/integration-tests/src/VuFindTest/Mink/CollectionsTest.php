@@ -2,7 +2,7 @@
 /**
  * Mink test class for basic collection functionality.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2017.
  *
@@ -35,9 +35,12 @@ namespace VuFindTest\Mink;
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Page
+ * @retry    4
  */
 class CollectionsTest extends \VuFindTest\Unit\MinkTestCase
 {
+    use \VuFindTest\Unit\AutoRetryTrait;
+
     /**
      * Go to a collection page.
      *
@@ -73,6 +76,11 @@ class CollectionsTest extends \VuFindTest\Unit\MinkTestCase
     public function testBasic()
     {
         $this->changeConfigs([
+            'config' => [
+                'Collections' => [
+                    'collections' => true
+                ],
+            ],
             'HierarchyDefault' => [
                 'Collections' => [
                     'link_type' => 'Top'
@@ -92,6 +100,11 @@ class CollectionsTest extends \VuFindTest\Unit\MinkTestCase
     public function testKeywordFilter()
     {
         $this->changeConfigs([
+            'config' => [
+                'Collections' => [
+                    'collections' => true
+                ],
+            ],
             'HierarchyDefault' => [
                 'Collections' => [
                     'link_type' => 'Top'
@@ -120,7 +133,10 @@ class CollectionsTest extends \VuFindTest\Unit\MinkTestCase
             'config' => [
                 'Hierarchy' => [
                     'showTree' => true
-                ]
+                ],
+                'Collections' => [
+                    'collections' => true
+                ],
             ],
             'HierarchyDefault' => [
                 'Collections' => [
@@ -136,7 +152,7 @@ class CollectionsTest extends \VuFindTest\Unit\MinkTestCase
             trim($this->findCss($page, '#tree-preview h2')->getText()),
             'Subcollection 1'
         );
-        $this->findCss($page, '[recordid="colitem2"] a')->click();
+        $this->clickCss($page, '[recordid="colitem2"] a');
         $this->snooze();
 
         $this->assertEquals(

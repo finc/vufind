@@ -7,6 +7,7 @@
     . '<li><a href="' . $this->url('cart-home') . '">' . $this->transEsc('Cart') . '</a></li> '
     . '<li class="active">' . $this->transEsc('email_selected_favorites') . '</li>';
 ?>
+<div class="col-sm-12">    
 <h2><?=$this->transEsc('bookbag_email_selected') ?></h2>
 <?=$this->flashmessages()?>
 <form class="form-cart-email" action="<?=$this->url('cart-email')?>" method="post"  name="bulkEmail">
@@ -14,10 +15,10 @@
     <input type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($current->getSourceIdentifier() . '|' . $current->getUniqueId())?>" />
   <? endforeach; ?>
   <div class="form-group">
-    <label class="control-label"><?=$this->transEsc('Title')?>:</label>
+    <label class="control-label"><?=$this->transEsc('Title')?>: </label>
     <? if(count($this->records) > 1): ?>
-      <button type="button" class="btn btn-default hidden" data-toggle="collapse" data-target="#itemhide">
-        <?=count($this->records) . ' ' . $this->transEsc('items') ?>
+      <button type="button" class="btn btn-primary btn-xs hidden" data-toggle="collapse" data-target="#itemhide">
+        <?=count($this->records) . ' ' . $this->transEsc('items') ?>         
       </button>
       <div id="itemhide" class="collapse in">
         <ul>
@@ -40,3 +41,4 @@ JS;
 ?>
 <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET') ?>
 <div class="nofloat"></div>
+</div>

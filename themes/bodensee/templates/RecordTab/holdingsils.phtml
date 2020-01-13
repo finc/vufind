@@ -47,14 +47,17 @@
 <? if (isset($holdings['holdings'])): ?>
   
 <? foreach ($holdings['holdings'] as $holding): ?>
-
-  <h4><? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
-            <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
-              <a href="<?=$holding['locationhref']?>" target="_blank"><?=$locationText?></a>
-            <? else: ?>
-              <?=$locationText?>
-            <? endif; ?>      
-    </h4>
+<div class="row">    
+    <div class="col-sm-12">    
+      <h4><? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
+                <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
+                  <a href="<?=$holding['locationhref']?>" target="_blank"><?=$locationText?></a>
+                <? else: ?>
+                  <?=$locationText?>
+                <? endif; ?>      
+        </h4>
+    </div>
+</div>
 
     
   <? foreach ($holding['items'] as $row): ?>

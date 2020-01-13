@@ -168,7 +168,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
                 break;    
             case 'fis': $icon = 'fa-university';
                 break;    
-            default: $icon = 'fa-question-circle';
+            default: $icon = 'fa-search';
                 break;
         }
         return $icon;

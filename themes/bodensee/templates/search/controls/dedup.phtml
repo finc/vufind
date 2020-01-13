@@ -1,6 +1,6 @@
 <? if ($this->results instanceof \VuFind\Search\Solr\Results): ?>
 <? if ($this->client()->is('show_group_hits')): ?>
-<form class="form-inline search-dedup" action="<?=$this->currentPath()?>" method="POST" name=""dedup">    
+<form class="form-inline search-dedup" action="<?=$this->currentPath()?>" method="POST" id=dedup">    
     <div class="form-group">
         <label for="dedup-checkbox"><?=$this->transEsc('group hits')?></label>
         <input type="checkbox" name="dedup-enabled" value="" id="dedup-checkbox" <? if ($this->dedup):?>checked<? endif; ?>/>          

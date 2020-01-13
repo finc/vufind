@@ -3,7 +3,7 @@
 /**
  * Unit tests for QueryGroup class.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -28,7 +28,7 @@
  */
 namespace VuFindTest\Query;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use VuFindSearch\Query\Query;
 use VuFindSearch\Query\QueryGroup;
 
@@ -41,7 +41,7 @@ use VuFindSearch\Query\QueryGroup;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org
  */
-class QueryGroupTest extends PHPUnit_Framework_TestCase
+class QueryGroupTest extends TestCase
 {
     /**
      * Test containsTerm() method
@@ -85,6 +85,23 @@ class QueryGroupTest extends PHPUnit_Framework_TestCase
         $q = $this->getSampleQueryGroup();
         $q->replaceTerm('query', 'question');
         $this->assertEquals('test question multi word question', $q->getAllTerms());
+    }
+
+    /**
+     * Test replaceTerm() method with and without normalization using complex input
+     *
+     * @return void
+     */
+    public function testReplaceTermWithNormalization()
+    {
+        // Without normalization we only replace the accented instance of "query":
+        $q = $this->getSampleQueryGroupWithWeirdCharacters();
+        $q->replaceTerm('quéry', 'quéstion', false);
+        $this->assertEquals('tést quéstion multi WORD query', $q->getAllTerms());
+        // With normalization, we replace both instances of "query":
+        $q = $this->getSampleQueryGroupWithWeirdCharacters();
+        $q->replaceTerm('quéry', 'quéstion', true);
+        $this->assertEquals('test quéstion multi word quéstion', $q->getAllTerms());
     }
 
     /**
@@ -133,6 +150,20 @@ class QueryGroupTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test detection of normalized terms.
+     *
+     * @return void
+     */
+    public function testContainsNormalizedTerm()
+    {
+        $q = $this->getSampleQueryGroupWithWeirdCharacters();
+        // regular contains will fail because of the accent:
+        $this->assertFalse($q->containsTerm('test'));
+        // normalized contains will succeed:
+        $this->assertTrue($q->containsNormalizedTerm('test'));
+    }
+
+    /**
      * Get a test object.
      *
      * @return QueryGroup
@@ -142,6 +173,19 @@ class QueryGroupTest extends PHPUnit_Framework_TestCase
         $q1 = new Query('test');
         $q2 = new Query('query');
         $q3 = new Query('multi word query');
+        return new QueryGroup('OR', [$q1, $q2, $q3]);
+    }
+
+    /**
+     * Get a test object with uppercase and accents.
+     *
+     * @return QueryGroup
+     */
+    protected function getSampleQueryGroupWithWeirdCharacters()
+    {
+        $q1 = new Query('tést');
+        $q2 = new Query('Quéry');
+        $q3 = new Query('multi WORD query');
         return new QueryGroup('OR', [$q1, $q2, $q3]);
     }
 }

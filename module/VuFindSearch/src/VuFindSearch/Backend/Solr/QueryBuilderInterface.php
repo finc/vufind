@@ -3,7 +3,7 @@
 /**
  * SOLR QueryBuilder interface definition.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -54,17 +54,6 @@ interface QueryBuilderInterface
      * @return ParamBag
      */
     public function build(AbstractQuery $query);
-
-    /**
-     * Control whether or not the QueryBuilder should create an hl.q parameter
-     * when the main query includes clauses that should not be factored into
-     * highlighting. (Turned off by default).
-     *
-     * @param bool $enable Should highlighting query generation be enabled?
-     *
-     * @return void
-     */
-    public function setCreateHighlightingQuery($enable);
 
     /**
      * Control whether or not the QueryBuilder should create a spellcheck.q

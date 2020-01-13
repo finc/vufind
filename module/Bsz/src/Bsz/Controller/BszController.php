@@ -19,13 +19,14 @@
  */
 
 namespace Bsz\Controller;
-use Zend\Session\Container;
+use Zend\Session\Container as SessionContainer;
 /**
  * Für statische Seiten etc. 
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class BszController extends \VuFind\Controller\AbstractBase {
+    
     
     /**
      * Write isil into Session 
@@ -48,10 +49,11 @@ class BszController extends \VuFind\Controller\AbstractBase {
             throw new \Bsz\Exception('parameter isil missing');
         }
         if (count($isils) > 0) {
-            $container = new Container(
-                'fernleihe', $this->getServiceLocator()->get('VuFind\SessionManager')
+            $session = new SessionContainer(
+                'fernleihe',
+                $this->serviceLocator->get(\Zend\Session\SessionManager::class)
             );
-            $container->offsetSet('isil', $isils);     
+            $session->offsetSet('isil', $isils);     
             $uri= $this->getRequest()->getUri();
             $cookie = new \Zend\Http\Header\SetCookie(
                     'isil', 
@@ -100,14 +102,14 @@ class BszController extends \VuFind\Controller\AbstractBase {
     public function dedupAction() {
         
         $params = [];
-        $dedup = $this->getServiceLocator()->get('Bsz/Config/Dedup');
+        $dedup = $this->serviceLocator->get('Bsz\Config\Dedup');
        
         $post = $this->params()->fromPost();     
         
         // store form date in session and cookie
         if (isset($post['submit_dedup_form'])) {
             $params = $dedup->store($post);
-            $this->FlashMessenger()->addSuccessMessage('dedup_settings_success');
+            $this->flashMessenger()->addSuccessMessage('dedup_settings_success');
             
         } else {
             // Load default values from session or config
@@ -119,6 +121,17 @@ class BszController extends \VuFind\Controller\AbstractBase {
         
         return $view;
         
+    }
+    
+    
+    public function libraryAction() {
+        
+        $client = $this->serviceLocator->get(\Bsz\Config\Client::class);
+        $libraries = $this->serviceLocator->get(\Bsz\Config\Libraries::class);
+        $library = $libraries->getFirstActive($client->getIsils());
+        $homepage = $library->getHomepage();
+        return $this->redirect()->toUrl($homepage);
+       
     }
    
 }

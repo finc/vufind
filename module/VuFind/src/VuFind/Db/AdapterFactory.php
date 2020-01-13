@@ -1,8 +1,9 @@
 <?php
 /**
- * Database utility class.
+ * Database utility class. May be used as a service or as a standard
+ * Zend Framework factory.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -27,10 +28,13 @@
  */
 namespace VuFind\Db;
 
+use Interop\Container\ContainerInterface;
+use Zend\Config\Config;
 use Zend\Db\Adapter\Adapter;
 
 /**
- * Database utility class.
+ * Database utility class. May be used as a service or as a standard
+ * Zend Framework factory.
  *
  * @category VuFind
  * @package  Db
@@ -38,23 +42,49 @@ use Zend\Db\Adapter\Adapter;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Site
  */
-class AdapterFactory
+class AdapterFactory implements \Zend\ServiceManager\Factory\FactoryInterface
 {
     /**
      * VuFind configuration
      *
-     * @var \Zend\Config\Config
+     * @var Config
      */
     protected $config;
 
     /**
      * Constructor
      *
-     * @param \Zend\Config\Config $config VuFind configuration
+     * @param Config $config VuFind configuration (provided when used as service;
+     * omitted when used as factory)
      */
-    public function __construct(\Zend\Config\Config $config)
+    public function __construct(Config $config = null)
     {
-        $this->config = $config;
+        $this->config = $config ?: new Config([]);
+    }
+
+    /**
+     * Create an object (glue code for FactoryInterface compliance)
+     *
+     * @param ContainerInterface $container     Service manager
+     * @param string             $requestedName Service being created
+     * @param null|array         $options       Extra options (optional)
+     *
+     * @return object
+     *
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     * creating a service.
+     * @throws ContainerException if any other error occurs
+     */
+    public function __invoke(ContainerInterface $container, $requestedName,
+        array $options = null
+    ) {
+        if (!empty($options)) {
+            throw new \Exception('Unexpected options sent to factory!');
+        }
+        $this->config = $container->get(\VuFind\Config\PluginManager::class)
+            ->get('config');
+        return $this->getAdapter();
     }
 
     /**
@@ -70,6 +100,9 @@ class AdapterFactory
     public function getAdapter($overrideUser = null, $overridePass = null)
     {
         // Parse details from connection string:
+        if (!isset($this->config->Database->database)) {
+            throw new \Exception('"database" setting missing');
+        }
         return $this->getAdapterFromConnectionString(
             $this->config->Database->database, $overrideUser, $overridePass
         );
@@ -146,7 +179,7 @@ class AdapterFactory
     ) {
         list($type, $details) = explode('://', $connectionString);
         preg_match('/(.+)@([^@]+)\/(.+)/', $details, $matches);
-        $credentials = isset($matches[1]) ? $matches[1] : null;
+        $credentials = $matches[1] ?? null;
         if (isset($matches[2])) {
             if (strpos($matches[2], ':') !== false) {
                 list($host, $port) = explode(':', $matches[2]);
@@ -154,7 +187,7 @@ class AdapterFactory
                 $host = $matches[2];
             }
         }
-        $dbName = isset($matches[3]) ? $matches[3] : null;
+        $dbName = $matches[3] ?? null;
         if (strstr($credentials, ':')) {
             list($username, $password) = explode(':', $credentials, 2);
         } else {
@@ -167,7 +200,7 @@ class AdapterFactory
         // Set up default options:
         $options = [
             'driver' => $this->getDriverName($type),
-            'hostname' => isset($host) ? $host : null,
+            'hostname' => $host ?? null,
             'username' => $username,
             'password' => $password,
             'database' => $dbName

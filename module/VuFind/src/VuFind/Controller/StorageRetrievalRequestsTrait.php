@@ -2,7 +2,7 @@
 /**
  * Storage retrieval requests trait (for subclasses of AbstractRecord)
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -132,7 +132,7 @@ trait StorageRetrievalRequestsTrait
         // Find and format the default required date:
         $defaultRequired = $this->storageRetrievalRequests()
             ->getDefaultRequiredDate($checkRequests);
-        $defaultRequired = $this->serviceLocator->get('VuFind\DateConverter')
+        $defaultRequired = $this->serviceLocator->get(\VuFind\Date\Converter::class)
             ->convertToDisplayDate("U", $defaultRequired);
         try {
             $defaultPickup
@@ -141,16 +141,18 @@ trait StorageRetrievalRequestsTrait
             $defaultPickup = false;
         }
 
+        $config = $this->getConfig();
+        $allowHomeLibrary = $config->Account->set_home_library ?? true;
         $view = $this->createViewModel(
             [
                 'gatheredDetails' => $gatheredDetails,
                 'pickup' => $pickup,
                 'defaultPickup' => $defaultPickup,
-                'homeLibrary' => $this->getUser()->home_library,
+                'homeLibrary' => $allowHomeLibrary
+                    ? $this->getUser()->home_library : '',
                 'extraFields' => $extraFields,
                 'defaultRequiredDate' => $defaultRequired,
-                'helpText' => isset($checkRequests['helpText'])
-                    ? $checkRequests['helpText'] : null
+                'helpText' => $checkRequests['helpText'] ?? null
             ]
         );
         $view->setTemplate('record/storageretrievalrequest');

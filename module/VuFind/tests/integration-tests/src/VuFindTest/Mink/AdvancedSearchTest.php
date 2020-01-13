@@ -2,7 +2,7 @@
 /**
  * Mink test class to test advanced search.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2014.
  *
@@ -37,9 +37,12 @@ use Behat\Mink\Element\Element;
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Page
+ * @retry    4
  */
 class AdvancedSearchTest extends \VuFindTest\Unit\MinkTestCase
 {
+    use \VuFindTest\Unit\AutoRetryTrait;
+
     /**
      * Test persistent
      *

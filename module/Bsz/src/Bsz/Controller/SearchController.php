@@ -23,14 +23,17 @@ class SearchController extends \VuFind\Controller\SearchController
         if ($msg != '') {
             $this->FlashMessenger()->addWarningMessage($msg);
         }
+        $request = $this->getRequest();
+        $referer = $request->getHeader('referer');
+        $view->referer = $referer;
         return $view;
     }
     
     public function resultsAction()
     {
-        $dedup = $this->getServiceLocator()->get('Bsz/Config/Dedup');
+        $dedup = $this->serviceLocator->get('Bsz\Config\Dedup');
         $isils = $this->params()->fromQuery('isil');
-        if (count($isils) > 0) {
+        if ($isils) {
             return $this->processIsil();
         }
         $view = Parent::resultsAction();

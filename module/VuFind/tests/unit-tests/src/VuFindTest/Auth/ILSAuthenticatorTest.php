@@ -2,7 +2,7 @@
 /**
  * ILS Authenticator Test Class
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -202,7 +202,7 @@ class ILSAuthenticatorTest extends \VuFindTest\Unit\TestCase
      */
     protected function getMockUser($methods = null)
     {
-        return $this->getMockBuilder('VuFind\Db\Row\User')
+        return $this->getMockBuilder(\VuFind\Db\Row\User::class)
             ->disableOriginalConstructor()
             ->setMethods($methods)
             ->getMock();
@@ -217,7 +217,7 @@ class ILSAuthenticatorTest extends \VuFindTest\Unit\TestCase
      */
     protected function getMockManager($methods = null)
     {
-        return $this->getMockBuilder('VuFind\Auth\Manager')
+        return $this->getMockBuilder(\VuFind\Auth\Manager::class)
             ->disableOriginalConstructor()
             ->setMethods($methods)
             ->getMock();
@@ -232,7 +232,7 @@ class ILSAuthenticatorTest extends \VuFindTest\Unit\TestCase
      */
     protected function getMockConnection($methods = null)
     {
-        return $this->getMockBuilder('VuFind\ILS\Connection')
+        return $this->getMockBuilder(\VuFind\ILS\Connection::class)
             ->disableOriginalConstructor()
             ->setMethods($methods)
             ->getMock();

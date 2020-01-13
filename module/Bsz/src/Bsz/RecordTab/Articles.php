@@ -69,18 +69,18 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
      */
     public function getContent() {
         if($this->content === null) {
-            $relId = $this->driver->tryMethod('getIdsRelated');   
+            $relId = $this->driver->tryMethod('getIdsRelatedArticle');   
+            $relId[] = $this->driver->getUniqueId();
             $this->content = []; 
             if(is_array($relId) && count($relId) > 0) {
                 foreach($relId as $k => $id) {
-//                    $relId[$k] = 'id_related_host_item:"'.$id.'"';
                     $relId[$k] = 'id_related:"'.$id.'"';
                 }
 
                 $params = [
                     'sort' => 'publish_date_sort desc, id desc',
                     'lookfor' => implode(' OR ', $relId),                                      
-                    'limit' => 1000
+                    'limit' => 500
                 ];                
                 
                 $filter = [];

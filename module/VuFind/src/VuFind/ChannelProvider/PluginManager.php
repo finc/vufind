@@ -2,7 +2,7 @@
 /**
  * Channel provider plugin manager
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2016.
  *
@@ -39,6 +39,54 @@ namespace VuFind\ChannelProvider;
 class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
 {
     /**
+     * Default plugin aliases.
+     *
+     * @var array
+     */
+    protected $aliases = [
+        'alphabrowse' => AlphaBrowse::class,
+        'facets' => Facets::class,
+        'listitems' => ListItems::class,
+        'newilsitems' => NewILSItems::class,
+        'random' => Random::class,
+        'recentlyreturned' => RecentlyReturned::class,
+        'similaritems' => SimilarItems::class,
+        'trendingilsitems' => TrendingILSItems::class,
+    ];
+
+    /**
+     * Default plugin factories.
+     *
+     * @var array
+     */
+    protected $factories = [
+        AlphaBrowse::class => AlphaBrowseFactory::class,
+        Facets::class => FacetsFactory::class,
+        ListItems::class => ListItemsFactory::class,
+        NewILSItems::class => AbstractILSChannelProviderFactory::class,
+        Random::class => RandomFactory::class,
+        RecentlyReturned::class => AbstractILSChannelProviderFactory::class,
+        SimilarItems::class => SimilarItemsFactory::class,
+        TrendingILSItems::class => AbstractILSChannelProviderFactory::class,
+    ];
+
+    /**
+     * Constructor
+     *
+     * Make sure plugins are properly initialized.
+     *
+     * @param mixed $configOrContainerInstance Configuration or container instance
+     * @param array $v3config                  If $configOrContainerInstance is a
+     * container, this value will be passed to the parent constructor.
+     */
+    public function __construct($configOrContainerInstance = null,
+        array $v3config = []
+    ) {
+        $this->addInitializer(RouterInitializer::class);
+        parent::__construct($configOrContainerInstance, $v3config);
+    }
+
+    /**
      * Return the name of the base class or interface that plug-ins must conform
      * to.
      *
@@ -46,6 +94,6 @@ class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
      */
     protected function getExpectedInterface()
     {
-        return 'VuFind\ChannelProvider\ChannelProviderInterface';
+        return ChannelProviderInterface::class;
     }
 }

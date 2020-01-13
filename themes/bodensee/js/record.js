@@ -315,7 +315,6 @@ $(document).ready(function() {
     $(window).keydown(function(e) {
       if (e.keyCode === 73 && e.ctrlKey && e.altKey) {
           $('.record-tabs .hidden').removeClass('hidden');
-          window.location = $('.details').attr('href');
       }
 
     });

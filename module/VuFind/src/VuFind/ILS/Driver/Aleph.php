@@ -2,7 +2,7 @@
 /**
  * Aleph ILS driver
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) UB/FU Berlin
  *
@@ -37,7 +37,7 @@
  */
 namespace VuFind\ILS\Driver;
 
-use VuFind\Exception\Date as DateException;
+use VuFind\Date\DateException;
 use VuFind\Exception\ILS as ILSException;
 
 /**
@@ -318,7 +318,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      *
      * @var AlephTranslator
      */
-    protected $translator = false;
+    protected $alephTranslator = false;
 
     /**
      * Cache manager
@@ -333,6 +333,13 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      * @var \VuFind\Date\Converter
      */
     protected $dateConverter = null;
+
+    /**
+     * The base URL, where the REST DLF API is running
+     *
+     * @var string
+     */
+    protected $dlfbaseurl = null;
 
     /**
      * Constructor
@@ -388,6 +395,9 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
             $this->xserver_enabled = false;
         }
         $this->dlfport = $this->config['Catalog']['dlfport'];
+        if (isset($this->config['Catalog']['dlfbaseurl'])) {
+            $this->dlfbaseurl = $this->config['Catalog']['dlfbaseurl'];
+        }
         $this->sublibadm = $this->config['sublibadm'];
         if (isset($this->config['duedates'])) {
             $this->duedates = $this->config['duedates'];
@@ -408,12 +418,12 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
             ) {
                 $cache = $this->cacheManager
                     ->getCache($this->config['Cache']['type']);
-                $this->translator = $cache->getItem('alephTranslator');
+                $this->alephTranslator = $cache->getItem('alephTranslator');
             }
-            if ($this->translator == false) {
-                $this->translator = new AlephTranslator($this->config);
+            if ($this->alephTranslator == false) {
+                $this->alephTranslator = new AlephTranslator($this->config);
                 if (isset($cache)) {
-                    $cache->setItem('alephTranslator', $this->translator);
+                    $cache->setItem('alephTranslator', $this->alephTranslator);
                 }
             }
         }
@@ -479,11 +489,12 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
     protected function doRestDLFRequest($path_elements, $params = null,
         $method = 'GET', $body = null
     ) {
-        $path = '';
-        foreach ($path_elements as $path_element) {
-            $path .= $path_element . "/";
+        $path = implode('/', $path_elements);
+        if ($this->dlfbaseurl === null) {
+            $url = "http://$this->host:$this->dlfport/rest-dlf/" . $path;
+        } else {
+            $url = $this->dlfbaseurl . $path;
         }
-        $url = "http://$this->host:$this->dlfport/rest-dlf/" . $path;
         $url = $this->appendQueryString($url, $params);
         $result = $this->doHTTPRequest($url, $method, $body);
         $replyCode = (string)$result->{'reply-code'};
@@ -556,7 +567,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
             $this->debug("url: $url response: $answer");
         }
         $answer = str_replace('xmlns=', 'ns=', $answer);
-        $result = simplexml_load_string($answer);
+        $result = @simplexml_load_string($answer);
         if (!$result) {
             if ($this->debug_enabled) {
                 $this->debug("XML is not valid, URL: $url");
@@ -578,10 +589,17 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
     protected function parseId($id)
     {
         if (count($this->bib) == 1) {
-            return [$this->bib[0], $id];
+            $retval = [$this->bib[0], $id];
         } else {
-            return explode('-', $id);
+            $retval = explode('-', $id);
         }
+        if (count($retval) != 2) {
+            throw new \Exception("The resulting array has incorrect size");
+        }
+        if (!in_array($retval[0], $this->bib)) {
+            throw new \Exception("The resulting array contains unknown library ID");
+        }
+        return $retval;
     }
 
     /**
@@ -716,16 +734,19 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      * This is responsible for retrieving the holding information of a certain
      * record.
      *
-     * @param string $id     The record id to retrieve the holdings for
-     * @param array  $patron Patron data
+     * @param string $id      The record id to retrieve the holdings for
+     * @param array  $patron  Patron data
+     * @param array  $options Extra options (not currently used)
      *
-     * @throws \VuFind\Exception\Date
+     * @throws DateException
      * @throws ILSException
      * @return array         On success, an associative array with the following
      * keys: id, availability (boolean), status, location, reserve, callnumber,
      * duedate, number, barcode.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getHolding($id, array $patron = null)
+    public function getHolding($id, array $patron = null, array $options = [])
     {
         $holding = [];
         list($bib, $sys_no) = $this->parseId($id);
@@ -737,14 +758,19 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
             $params['patron'] = $this->defaultPatronId;
         }
         $xml = $this->doRestDLFRequest(['record', $resource, 'items'], $params);
-        foreach ($xml->{'items'}->{'item'} as $item) {
+        if (!empty($xml->{'items'})) {
+            $items = $xml->{'items'}->{'item'};
+        } else {
+            $items = [];
+        }
+        foreach ($items as $item) {
             $item_status         = (string)$item->{'z30-item-status-code'}; // $isc
             // $ipsc:
             $item_process_status = (string)$item->{'z30-item-process-status-code'};
             $sub_library_code    = (string)$item->{'z30-sub-library-code'}; // $slc
             $z30 = $item->z30;
-            if ($this->translator) {
-                $item_status = $this->translator->tab15Translate(
+            if ($this->alephTranslator) {
+                $item_status = $this->alephTranslator->tab15Translate(
                     $sub_library_code, $item_status, $item_process_status
                 );
             } else {
@@ -762,9 +788,9 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
             //$reserve = ($item_status['request'] == 'C')?'N':'Y';
             $collection = (string)$z30->{'z30-collection'};
             $collection_desc = ['desc' => $collection];
-            if ($this->translator) {
+            if ($this->alephTranslator) {
                 $collection_code = (string)$item->{'z30-collection-code'};
-                $collection_desc = $this->translator->tab40Translate(
+                $collection_desc = $this->alephTranslator->tab40Translate(
                     $collection_code, $sub_library_code
                 );
             }
@@ -847,7 +873,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      * @param array $user   The patron array from patronLogin
      * @param array $params Parameters
      *
-     * @throws \VuFind\Exception\Date
+     * @throws DateException
      * @throws ILSException
      * @return array      Array of the patron's historic loans on success.
      */
@@ -952,7 +978,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      *
      * @param array $user The patron array from patronLogin
      *
-     * @throws \VuFind\Exception\Date
+     * @throws DateException
      * @throws ILSException
      * @return array        Array of the patron's transactions on success.
      */
@@ -971,7 +997,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
             $z30 = $item->z30;
             $group = $item->xpath('@href');
             $group = substr(strrchr($group[0], "/"), 1);
-            //$renew = $item->xpath('@renew');
+            $renew = $item->xpath('@renew');
             //$docno = (string) $z36->{'z36-doc-number'};
             //$itemseq = (string) $z36->{'z36-item-sequence'};
             //$seq = (string) $z36->{'z36-sequence'};
@@ -1002,7 +1028,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
                 'duedate' => $this->parseDate($due),
                 //'holddate' => $holddate,
                 //'delete' => $delete,
-                'renewable' => true,
+                'renewable' => $renew[0] == "Y",
                 //'create' => $this->parseDate($create)
             ];
         }
@@ -1031,7 +1057,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      * Renew My Items
      *
      * Function for attempting to renew a patron's items.  The data in
-     * $renewDetails['details'] is determined by getRenewDetails().
+     * $details['details'] is determined by getRenewDetails().
      *
      * @param array $details An array of data required for renewing items
      * including the Patron ID and an array of renewal IDS
@@ -1044,13 +1070,16 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
         $result = [];
         foreach ($details['details'] as $id) {
             try {
-                $this->doRestDLFRequest(
+                $xml = $this->doRestDLFRequest(
                     [
                         'patron', $patron['id'], 'circulationActions', 'loans', $id
                     ],
                     null, 'POST', null
                 );
-                $result[$id] = ['success' => true];
+                $due = (string)$xml->xpath('//new-due-date');
+                $result[$id] = [
+                    'success' => true, 'new_date' => $this->parseDate($due)
+                ];
             } catch (AlephRestfulException $ex) {
                 $result[$id] = [
                     'success' => false, 'sysMessage' => $ex->getMessage()
@@ -1067,7 +1096,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      *
      * @param array $user The patron array from patronLogin
      *
-     * @throws \VuFind\Exception\Date
+     * @throws DateException
      * @throws ILSException
      * @return array      Array of the patron's holds on success.
      */
@@ -1198,7 +1227,7 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      *
      * @param array $user The patron array from patronLogin
      *
-     * @throws \VuFind\Exception\Date
+     * @throws DateException
      * @throws ILSException
      * @return mixed      Array of the patron's fines on success.
      */
@@ -1748,21 +1777,27 @@ class Aleph extends AbstractBase implements \Zend\Log\LoggerAwareInterface,
      */
     public function getPickUpLocations($patron, $holdInfo = null)
     {
+        $pickupLocations = [];
         if ($holdInfo != null) {
             $details = $this->getHoldingInfoForItem(
                 $patron['id'], $holdInfo['id'], $holdInfo['item_id']
             );
-            $pickupLocations = [];
             foreach ($details['pickup-locations'] as $key => $value) {
                 $pickupLocations[] = [
-                    "locationID" => $key, "locationDisplay" => $value
+                    "locationID" => $key,
+                    "locationDisplay" => $value,
                 ];
             }
-            return $pickupLocations;
         } else {
             $default = $this->getDefaultPickUpLocation($patron);
-            return empty($default) ? [] : [$default];
+            if (!empty($default)) {
+                $pickupLocations[] = [
+                    "locationID" => $default,
+                    "locationDisplay" => $default,
+                ];
+            }
         }
+        return $pickupLocations;
     }
 
     /**

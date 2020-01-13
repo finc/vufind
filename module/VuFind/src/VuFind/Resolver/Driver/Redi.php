@@ -2,7 +2,7 @@
 /**
  * ReDi Link Resolver Driver
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Leipzig University Library 2015
  *
@@ -81,7 +81,7 @@ class Redi extends AbstractBase
      */
     public function fetchLinks($openURL)
     {
-        $url = $this->baseUrl . '?' . $openURL;
+        $url = $this->getResolverUrl($openURL);
         $feed = $this->httpClient->setUri($url)->send()->getBody();
         return $feed;
     }

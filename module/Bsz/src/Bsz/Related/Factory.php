@@ -39,6 +39,6 @@ class Factory {
      */
     public static function getSimilar(ServiceManager $sm)
     {
-        return new Similar($sm->getServiceLocator()->get('VuFind\Search'), $sm->getServiceLocator()->get('Bsz\Client'));
+        return new Similar($sm->getServiceLocator()->get('VuFind\Search'), $sm->getServiceLocator()->get('Bsz\Config\Client'));
     }
 }

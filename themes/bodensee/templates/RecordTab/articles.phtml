@@ -19,7 +19,7 @@
     <tbody>        
         <? $count = 1; foreach ($content as $result): ?>
         <tr <? if ($count > 10): ?> class="showmore-<?=$rand?> collapse multi-collapse"<? endif; ?>>
-            <td><a class="internal"  href="<?=$this->recordLink()->getUrl($result, $this->overrideRecordLink)?>"><?=$this->string()->cleanEsc($result->getTitle())?> <?=$this->string()->cleanEsc($result->getTitleSection())?></a></td>
+            <td><a class="internal"  href="<?=$this->recordLink()->getUrl($result)?>"><?=$this->string()->cleanEsc($result->getTitle())?> <?=$this->string()->cleanEsc($result->getTitleSection())?></a></td>
             <td><?=implode(', ',$result->getPublicationDates())?></td>
             <td><?=$result->getPrimaryAuthor()?></td>
         </tr>
@@ -29,12 +29,9 @@
     <? if ($count > 10): ?> 
         <tfoot>
             <tr><td>
-                <button id="more-articleslist" onclick="return moreChildren('articleslist')" class="btn btn-info btn-xs" data-toggle="collapse" data-target=".showmore-<?=$rand?>" aria-expanded="false">
+                <button class="btn btn-info btn-xs text-toggle" data-toggle="collapse" data-target=".showmore-<?=$rand?>" aria-expanded="false" data-alttext="<?=$this->transEsc('Showless')?>">
                     <?=$this->transEsc('Showmore')?>
-                </button>    
-                <button onclick="return lessChildren('articleslist')" class="btn btn-info btn-xs hidden articleslist" data-toggle="collapse" data-target=".showmore-<?=$rand?>" aria-expanded="false">
-                    <?=$this->transEsc('Showless')?>
-                </button>     
+                </button>   
             </td></tr>
         </tfoot>
     <? endif; ?>

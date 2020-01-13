@@ -3,7 +3,7 @@
  * Functions to add advanced MARC-driven functionality to a record driver already
  * powered by the standard index spec. Depends upon MarcReaderTrait.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2017.
  *
@@ -853,11 +853,15 @@ trait MarcAdvancedTrait
     {
         // Special case for MARC:
         if ($format == 'marc21') {
-            $xml = $this->getMarcRecord()->toXML();
-            $xml = str_replace(
-                [chr(27), chr(28), chr(29), chr(30), chr(31)], ' ', $xml
+            $sanitizeXmlRegEx
+                = '[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+';
+            $xml = simplexml_load_string(
+                trim(
+                    preg_replace(
+                        "/$sanitizeXmlRegEx/u", ' ', $this->getMarcRecord()->toXML()
+                    )
+                )
             );
-            $xml = simplexml_load_string($xml);
             if (!$xml || !isset($xml->record)) {
                 return false;
             }

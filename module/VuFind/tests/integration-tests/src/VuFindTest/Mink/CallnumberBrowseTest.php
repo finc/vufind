@@ -2,7 +2,7 @@
 /**
  * Mink search actions test class.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2011.
  *
@@ -35,9 +35,17 @@ namespace VuFindTest\Mink;
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Page
+ * @retry    4
  */
 class CallnumberBrowseTest extends \VuFindTest\Unit\MinkTestCase
 {
+    use \VuFindTest\Unit\AutoRetryTrait;
+
+    /**
+     * Record ID to use in testing.
+     *
+     * @var string
+     */
     protected $id = 'testdeweybrowse';
 
     /**
@@ -51,24 +59,6 @@ class CallnumberBrowseTest extends \VuFindTest\Unit\MinkTestCase
         if (!$this->continuousIntegrationRunning()) {
             return $this->markTestSkipped('Continuous integration not running.');
         }
-    }
-
-    /**
-     * Search for the specified query.
-     *
-     * @param string $query Search term(s)
-     *
-     * @return \Behat\Mink\Element\Element
-     */
-    protected function performSearch($query, $page = false)
-    {
-        $session = $this->getMinkSession();
-        $session->visit($this->getVuFindUrl() . '/Search/Home');
-        $page = $session->getPage();
-        $this->findCss($page, '#searchForm_lookfor')->setValue($query);
-        $this->findCss($page, '.btn.btn-primary')->click();
-        $this->snooze();
-        return $page;
     }
 
     /**
@@ -163,11 +153,6 @@ class CallnumberBrowseTest extends \VuFindTest\Unit\MinkTestCase
         $link = $page->find('css', '.callnumber a,.groupCallnumber a,.fullCallnumber a');
         if ($expectLinks) {
             $this->checkLink($link, $type);
-            // TODO
-            // if 'all'
-            // - refresh until multiple
-            // - test multiple
-            // else
         } else {
             $this->assertTrue(null === $link);
         }

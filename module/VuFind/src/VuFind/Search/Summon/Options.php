@@ -2,7 +2,7 @@
 /**
  * Summon Search Options
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2011.
  *
@@ -146,6 +146,9 @@ class Options extends \VuFind\Search\Base\Options
             $this->emptySearchRelevanceOverride
                 = $searchSettings->General->empty_search_relevance_override;
         }
+
+        // Load autocomplete preferences:
+        $this->configureAutocomplete($searchSettings);
 
         // Set up views
         $this->initViewOptions($searchSettings);

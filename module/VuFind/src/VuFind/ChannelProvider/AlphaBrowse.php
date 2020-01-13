@@ -2,7 +2,7 @@
 /**
  * Alphabrowse channel provider.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2016.
  *
@@ -30,7 +30,6 @@ namespace VuFind\ChannelProvider;
 use VuFind\I18n\Translator\TranslatorAwareInterface;
 use VuFind\Record\Router as RecordRouter;
 use VuFind\RecordDriver\AbstractBase as RecordDriver;
-use VuFind\Search\Base\Params;
 use VuFind\Search\Base\Results;
 use VuFindSearch\Backend\Solr\Backend;
 use VuFindSearch\ParamBag;
@@ -141,16 +140,11 @@ class AlphaBrowse extends AbstractChannelProvider
      */
     public function setOptions(array $options)
     {
-        $this->channelSize = isset($options['channelSize'])
-            ? $options['channelSize'] : 20;
-        $this->maxRecordsToExamine = isset($options['maxRecordsToExamine'])
-            ? $options['maxRecordsToExamine'] : 2;
-        $this->browseIndex = isset($options['browseIndex']) ?
-            $options['browseIndex'] : 'lcc';
-        $this->solrField = isset($options['solrField']) ?
-            $options['solrField'] : 'callnumber-raw';
-        $this->rowsBefore = isset($options['rows_before']) ?
-            $options['rows_before'] : 10;
+        $this->channelSize = $options['channelSize'] ?? 20;
+        $this->maxRecordsToExamine = $options['maxRecordsToExamine'] ?? 2;
+        $this->browseIndex = $options['browseIndex'] ?? 'lcc';
+        $this->solrField = $options['solrField'] ?? 'callnumber-raw';
+        $this->rowsBefore = $options['rows_before'] ?? 10;
     }
 
     /**

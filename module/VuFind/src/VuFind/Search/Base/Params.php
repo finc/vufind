@@ -2,7 +2,7 @@
 /**
  * Abstract parameters search model.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -79,7 +79,7 @@ class Params
      *
      * @var int
      */
-    protected $limit = 10;
+    protected $limit = 20;
 
     /**
      * Search type (basic or advanced)
@@ -129,6 +129,22 @@ class Params
      * @var array
      */
     protected $extraFacetLabels = [];
+
+    /**
+     * Config sections to search for facet labels if no override configuration
+     * is set.
+     *
+     * @var array
+     */
+    protected $defaultFacetLabelSections = ['ExtraFacetLabels'];
+
+    /**
+     * Config sections to search for checkbox facet labels if no override
+     * configuration is set.
+     *
+     * @var array
+     */
+    protected $defaultFacetLabelCheckboxSections = [];
 
     /**
      * Checkbox facet configuration
@@ -198,6 +214,24 @@ class Params
 
         // Make sure we have some sort of query object:
         $this->query = new Query();
+
+        // Set up facet label settings, to be used as fallbacks if specific facets
+        // are not already configured:
+        $config = $configLoader->get($options->getFacetsIni());
+        $sections = $config->FacetLabels->labelSections
+            ?? $this->defaultFacetLabelSections;
+        foreach ($sections as $section) {
+            foreach ($config->$section ?? [] as $field => $label) {
+                $this->extraFacetLabels[$field] = $label;
+            }
+        }
+
+        // Activate all relevant checkboxes, also important for labeling:
+        $checkboxSections = $config->FacetLabels->checkboxSections
+            ?? $this->defaultFacetLabelCheckboxSections;
+        foreach ($checkboxSections as $checkboxSection) {
+            $this->initCheckboxFacets($checkboxSection);
+        }
     }
 
     /**
@@ -805,10 +839,11 @@ class Params
 
     /**
      * Detects if a filter is advanced (true) or simple (false). An advanced
-     * filter is currently defined as one surrounded by parentheses, while a
-     * simple filter is of the form field:value. Advanced filters are used to
-     * express more complex queries, such as combining multiple values from
-     * multiple fields using boolean operators.
+     * filter is currently defined as one surrounded by parentheses (possibly
+     * with a leading exclusion operator), while a simple filter is of the form
+     * field:value. Advanced filters are used to express more complex queries,
+     * such as combining multiple values from multiple fields using boolean
+     * operators.
      *
      * @param string $filter A filter string
      *
@@ -816,7 +851,7 @@ class Params
      */
     public function isAdvancedFilter($filter)
     {
-        if (substr($filter, 0, 1) == '(') {
+        if (substr($filter, 0, 1) == '(' || substr($filter, 0, 2) == '-(') {
             return true;
         }
         return false;
@@ -922,21 +957,22 @@ class Params
         // Extract the facet field name from the filter, then add the
         // relevant information to the array.
         list($fieldName) = explode(':', $filter);
-        $this->checkboxFacets[$fieldName][]
+        $this->checkboxFacets[$fieldName][$filter]
             = ['desc' => $desc, 'filter' => $filter];
     }
 
     /**
      * Get a user-friendly string to describe the provided facet field.
      *
-     * @param string $field Facet field name.
-     * @param string $value Facet value.
+     * @param string $field   Facet field name.
+     * @param string $value   Facet value.
+     * @param string $default Default field name (null for default behavior).
      *
-     * @return string       Human-readable description of field.
+     * @return string         Human-readable description of field.
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getFacetLabel($field, $value = null)
+    public function getFacetLabel($field, $value = null, $default = null)
     {
         if (!isset($this->facetConfig[$field])
             && !isset($this->extraFacetLabels[$field])
@@ -948,7 +984,8 @@ class Params
             return $this->facetConfig[$field];
         }
         return isset($this->extraFacetLabels[$field])
-            ? $this->extraFacetLabels[$field] : 'unrecognized_facet_label';
+            ? $this->extraFacetLabels[$field]
+            : ($default ?: 'unrecognized_facet_label');
     }
 
     /**
@@ -1104,15 +1141,22 @@ class Params
     /**
      * Get information on the current state of the boolean checkbox facets.
      *
+     * @param array $whitelist Whitelist of checkbox filters to return (null for all)
+     *
      * @return array
      */
-    public function getCheckboxFacets()
+    public function getCheckboxFacets(array $whitelist = null)
     {
         // Build up an array of checkbox facets with status booleans and
         // toggle URLs.
         $result = [];
         foreach ($this->checkboxFacets as $facets) {
             foreach ($facets as $facet) {
+                // If the current filter is not on the whitelist, skip it (but
+                // accept everything if the whitelist is empty).
+                if (!empty($whitelist) && !in_array($facet['filter'], $whitelist)) {
+                    continue;
+                }
                 $facet['selected'] = $this->hasFilter($facet['filter']);
                 // Is this checkbox always visible, even if non-selected on the
                 // "no results" screen?  By default, no (may be overridden by
@@ -1597,29 +1641,6 @@ class Params
     }
 
     /**
-     * Load all available facet settings.  This is mainly useful for showing
-     * appropriate labels when an existing search has multiple filters associated
-     * with it.
-     *
-     * @param string $preferredSection Section to favor when loading settings;
-     * if multiple sections contain the same facet, this section's description
-     * will be favored.
-     *
-     * @return void
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function activateAllFacets($preferredSection = false)
-    {
-        // By default, there is only 1 set of facet settings, so this function isn't
-        // really necessary.  However, in the Search History screen, we need to
-        // use this for Solr-based Search Objects, so we need this dummy method to
-        // allow other types of Search Objects to co-exist with Solr-based ones.
-        // See the Solr Search Object for details of how this works if you need to
-        // implement context-sensitive facet settings in another module.
-    }
-
-    /**
      * Override the normal search behavior with an explicit array of IDs that must
      * be retrieved.
      *
@@ -1714,13 +1735,15 @@ class Params
      *
      * @param string $facetList     Config section containing fields to activate
      * @param string $facetSettings Config section containing related settings
-     * @param string $cfgFile       Name of configuration to load
+     * @param string $cfgFile       Name of configuration to load (null to load
+     * default facets configuration).
      *
      * @return bool                 True if facets set, false if no settings found
      */
-    protected function initFacetList($facetList, $facetSettings, $cfgFile = 'facets')
+    protected function initFacetList($facetList, $facetSettings, $cfgFile = null)
     {
-        $config = $this->configLoader->get($cfgFile);
+        $config = $this->configLoader
+            ->get($cfgFile ?? $this->getOptions()->getFacetsIni());
         if (!isset($config->$facetList)) {
             return false;
         }
@@ -1753,14 +1776,16 @@ class Params
      * Initialize checkbox facet settings for the specified configuration sections.
      *
      * @param string $facetList Config section containing fields to activate
-     * @param string $cfgFile   Name of configuration to load
+     * @param string $cfgFile   Name of configuration to load (null to load
+     * default facets configuration).
      *
      * @return bool             True if facets set, false if no settings found
      */
     protected function initCheckboxFacets($facetList = 'CheckboxFacets',
-        $cfgFile = 'facets'
+        $cfgFile = null
     ) {
-        $config = $this->configLoader->get($cfgFile);
+        $config = $this->configLoader
+            ->get($cfgFile ?? $this->getOptions()->getFacetsIni());
         if (empty($config->$facetList)) {
             return false;
         }

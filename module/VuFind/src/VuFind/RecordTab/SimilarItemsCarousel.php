@@ -1,8 +1,8 @@
 <?php
 /**
- * Staff view (array dump) tab
+ * Similar items carousel tab.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -28,7 +28,7 @@
 namespace VuFind\RecordTab;
 
 /**
- * Staff view (array dump) tab
+ * Similar items carousel tab.
  *
  * @category VuFind
  * @package  RecordTabs

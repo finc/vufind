@@ -108,12 +108,12 @@ class IllForm extends AbstractHelper
         ];
         switch ($this->status) {
             case static::STATUS_SENT_SUCCESS:
-                $texts['headline'] = $this->view->transEsc('ill_request_submit_ok');
+                $texts['headline'] = $this->view->transEsc('ILL::request_submit_ok');
                 break;
             case static::STATUS_SENT_FAILURE:
-                $texts['headline'] = $this->view->transEsc('ill_request_submit_failure');
+                $texts['headline'] = $this->view->transEsc('ILL::request_submit_failure');
                 break;
-            default: $texts['headline'] = $this->view->transEsc('ill_request_submit_text');
+            default: $texts['headline'] = $this->view->transEsc('ILL::request_submit_text');
         }
         if (isset($this->driver)) {
             $article = $this->driver->tryMethod('isArticle');
@@ -123,19 +123,19 @@ class IllForm extends AbstractHelper
             if ($article) {
                 $texts['title'] = $this->driver->getContainerTitle();
                 $texts['subtitle'] = '';
-                $texts['hint'] = $this->view->transEsc('ill_help_paper');
+                $texts['hint'] = $this->view->transEsc('ILL::help_paper');
             } elseif ($journal) {
                 $texts['title'] = $this->driver->getShortTitle();
                 $texts['subtitle'] = $this->driver->getSubTitle();
-                $texts['hint'] = $this->view->transEsc('ill_help_paper');                
+                $texts['hint'] = $this->view->transEsc('ILL::help_paper');                
             } elseif ($ebook) {
                 $texts['title'] = $this->driver->getShortTitle();
                 $texts['subtitle'] = $this->driver->getSubtitle();
-                $texts['hint'] = $this->view->transEsc('ill_help_ebooks');
+                $texts['hint'] = $this->view->transEsc('ILL::help_ebooks');
             } else {
                 $texts['title'] = $this->driver->getShortTitle();
                 $texts['subtitle'] = $this->driver->getSubtitle();
-                $texts['hint'] = $this->view->transEsc('ill_help_paper');
+                $texts['hint'] = $this->view->transEsc('ILL::help_paper');
             }
         }
         return $texts[$key];
@@ -148,7 +148,9 @@ class IllForm extends AbstractHelper
             } else if ($this->driver->isJournal() 
                     || $this->driver->isNewspaper()) {
                 return $this->renderBibliographicFieldsJournal();            
-            } if ($this->driver->isBook() || $this->driver->isEBook()) {
+            } if ($this->driver->isBook() || $this->driver->isEBook()
+                   || $this->driver->isMonographicSerial()
+            ) {
                 return $this->renderBibliographicFieldsBook();
             }            
         } else {
@@ -174,7 +176,7 @@ class IllForm extends AbstractHelper
             ['Edition', 'Auflage'],
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers')],
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication')],
-            ['Year of Publication', 'EJahr', $this->getFromDriver('getPublicationDates'), '', true, 'ill_error_year'],
+            ['Year of Publication', 'EJahr', $this->getFromDriver('getPublicationDates'), '', true, 'ILL::error_year'],
             ['VolumeTitle', 'BandTitel', $this->getFromDriver('getVolume')],
             ['Volume', 'Band'],
             ['ISBN', 'Isbn', $this->getFromDriver('getCleanISBN')],
@@ -208,7 +210,7 @@ class IllForm extends AbstractHelper
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers', $container)],
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication', $container)],
             // we must get year and issue from the actual driver object
-            ['Year of Publication', 'EJahr', $this->getFromDriver('getPublicationDates'), '', true, 'ill_error_year'],
+            ['Year of Publication', 'EJahr', $this->getFromDriver('getPublicationDates'), '', true, 'ILL::error_year'],
             ['Issue', 'Heft', $this->getFromDriver('getContainerIssue')],
         ];
         if ($this->driver->isContainerMonography()) {
@@ -233,8 +235,9 @@ class IllForm extends AbstractHelper
             ['Subtitle', 'Untertitel', $this->getText('subtitle')],
             ['Publisher', 'Verlag', $this->getFromDriver('getPublishers')],
             ['Publication_Place', 'EOrt', $this->getFromDriver('getPlacesOfPublication')],
-            ['storage_retrieval_request_year', 'Jahrgang', '', '', true, 'ill_error_year'],
+            ['storage_retrieval_request_year', 'Jahrgang', '', '', true, 'ILL::error_year'],
             ['Issue', 'Heft'],
+            ['Volume', 'Band'],
             ['ISSN', 'Issn', $this->getFromDriver('getCleanISSN')],
         ];
         return $this->renderFormFields($fields);        
@@ -248,7 +251,7 @@ class IllForm extends AbstractHelper
             ['Author', 'Verfasser'],
             ['Edition', 'Auflage'],            
             ['Publisher', 'Verlag', ''],
-            ['Year/Volume', 'Jahr', '', '', true, 'ill_error_year'],
+            ['Year/Volume', 'Jahr', '', '', true, 'ILL::error_year'],
             ['Publication_Place', 'EOrt', ''],
             ['VolumeTitle', 'BandTitel'],
             ['Volume', 'Band'],
@@ -271,29 +274,29 @@ class IllForm extends AbstractHelper
             $fields = [
                 ['article author', 'AufsatzAutor', '', '', true],
                 ['article title', 'AufsatzTitel', '', '', true],
-                ['pages', 'Seitenangabe', '', '', true, 'ill_error_pages']
+                ['pages', 'Seitenangabe', '', '', true, 'ILL::error_pages']
             ];              
             if (isset($this->driver) && $this->driver->isContainerMonography()) {
-                $fields[] = ['storage_retrieval_request_volume', 'Jahrgang', '', 'ill_placeholder_article', false, 'ill_error_year' ];
+                $fields[] = ['storage_retrieval_request_volume', 'Jahrgang', '', 'ILL::placeholder_article', false, 'ILL::error_year' ];
             }
         } elseif (isset($this->driver) && $this->driver->isArticle()) {
             $fields = [
                 ['article author', 'AufsatzAutor', $this->getFromDriver('getPrimaryAuthor'), '', true],
                 ['article title', 'AufsatzTitel', $this->getFromDriver('getTitle'), '', true],
-                ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true, 'ill_error_year'],
-                ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ill_error_pages'],
+                ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true, 'ILL::error_year'],
+                ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ILL::error_pages'],
             ];              
         } elseif (isset($this->driver) && $this->driver->isBook()) {
             $fields = [
                 ['article author', 'AufsatzAutor', ''],
                 ['article title', 'AufsatzTitel', ''],
-                ['pages', 'Seitenangabe', '', '', false, 'ill_error_pages'],                
+                ['pages', 'Seitenangabe', '', '', false, 'ILL::error_pages'],                
             ];              
         } else {
             $fields = [
                 ['article author', 'AufsatzAutor', ''],
                 ['article title', 'AufsatzTitel', ''],
-                ['pages', 'Seitenangabe', '', '', false, 'ill_error_pages'],
+                ['pages', 'Seitenangabe', '', '', false, 'ILL::error_pages'],
             ];  
             
         }

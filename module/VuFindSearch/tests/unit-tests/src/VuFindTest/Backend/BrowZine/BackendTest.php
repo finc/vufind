@@ -3,7 +3,7 @@
 /**
  * Unit tests for BrowZine backend.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2017.
  *
@@ -120,7 +120,7 @@ class BackendTest extends \VuFindTest\Unit\TestCase
      */
     public function testConstructorSetters()
     {
-        $fact = $this->createMock('VuFindSearch\Response\RecordCollectionFactoryInterface');
+        $fact = $this->createMock(\VuFindSearch\Response\RecordCollectionFactoryInterface::class);
         $conn = $this->getConnector();
         $back = new Backend($conn, $fact);
         $this->assertEquals($fact, $back->getRecordCollectionFactory());
@@ -185,8 +185,8 @@ class BackendTest extends \VuFindTest\Unit\TestCase
      */
     protected function getConnectorMock(array $mock = [])
     {
-        $client = $this->createMock('Zend\Http\Client');
-        return $this->getMockBuilder('VuFindSearch\Backend\BrowZine\Connector')
+        $client = $this->createMock(\Zend\Http\Client::class);
+        return $this->getMockBuilder(\VuFindSearch\Backend\BrowZine\Connector::class)
             ->setMethods($mock)
             ->setConstructorArgs([$client, 'faketoken', 'fakeid'])
             ->getMock();

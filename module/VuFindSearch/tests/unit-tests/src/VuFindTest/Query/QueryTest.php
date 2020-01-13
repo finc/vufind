@@ -3,7 +3,7 @@
 /**
  * Unit tests for Query class.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -28,7 +28,7 @@
  */
 namespace VuFindTest\Query;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use VuFindSearch\Query\Query;
 
 /**
@@ -40,7 +40,7 @@ use VuFindSearch\Query\Query;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org
  */
-class QueryTest extends PHPUnit_Framework_TestCase
+class QueryTest extends TestCase
 {
     /**
      * Test containsTerm() method
@@ -82,6 +82,21 @@ class QueryTest extends PHPUnit_Framework_TestCase
         $q = new Query('test query we<(ird and/or');
         $q->replaceTerm('and', 'not');
         $this->assertEquals('test query we<(ird not/or', $q->getString());
+    }
+
+    /**
+     * Test normalization-related logic
+     *
+     * @return void
+     */
+    public function testNormalization()
+    {
+        $q = new Query('this is a tést OF THINGS');
+        $this->assertFalse($q->containsTerm('test'));
+        $this->assertTrue($q->containsNormalizedTerm('test'));
+        $this->assertEquals('this is a test of things', $q->getNormalizedString());
+        $q->replaceTerm('test', 'mess', true);
+        $this->assertEquals('this is a mess of things', $q->getString());
     }
 
     /**

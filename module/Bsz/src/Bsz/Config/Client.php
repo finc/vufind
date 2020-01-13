@@ -20,7 +20,7 @@
 
 namespace Bsz\Config;
 
-use Zend\Session\Container;
+use \Zend\Session\Container;
 
 /**
  * Client class extends VuFinds configuration to fit our needs. 
@@ -51,6 +51,16 @@ class Client extends \Zend\Config\Config
      * @var Container
      */
     protected $container;
+    
+    /**
+     * This method is used if object is casted to string
+     * 
+     * @return string
+     */
+    public function __toString() {
+        $isils = $this->getIsils();        
+        return implode('',$isils);
+    }
     
     public function appendContainer(Container $container) {
         $this->container = $container;
@@ -92,7 +102,7 @@ class Client extends \Zend\Config\Config
     public function getFooterLinks($boxNo) {
         $boxName = 'box'.(int)$boxNo;
         $links = $this->get('FooterLinks')->get($boxName);
-        if ($boxNo == 2 && count($links) == 0) {
+        if ($boxNo == 2 && !$links) {
             $links[] = '/Search/History';
             $links[] = '/Search/Advanced';
         } else if($boxNo == 1 && $this->isIsilSession() && $this->hasIsilSession()) {
@@ -262,12 +272,7 @@ class Client extends \Zend\Config\Config
      */
     public function isIsilSession()
     {
-        $setting = (bool)$this->get('Switches')->get('isil_session');
-        if ($setting) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool)$this->get('Switches')->get('isil_session');
     }
 
     /**
@@ -327,6 +332,9 @@ class Client extends \Zend\Config\Config
             'SAX' => 'SWB',
             'THU' => 'GBV',
             'BSZ' => 'SWB',
+            'ÖVK' => 'GBV',
+            'GVK' => 'GBV',
+            'SWB' => 'SWB',
             // Attention: 
             // Holdings.php uses array flip. The isils must be at the bottom! 
             // Otherwise, holdings won't search correct

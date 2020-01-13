@@ -2,7 +2,7 @@
 /**
  * OAI Module Controller
  *
- * PHP Version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2011.
  *
@@ -26,6 +26,8 @@
  * @link     https://vufind.org/wiki/development:plugins:controllers Wiki
  */
 namespace VuFind\Controller;
+
+use VuFindApi\Formatter\RecordFormatter;
 
 /**
  * OAIController Class
@@ -99,14 +101,13 @@ class OaiController extends AbstractBase
                 $this->getRequest()->getQuery()->toArray(),
                 $this->getRequest()->getPost()->toArray()
             );
-            $server = new $serverClass(
-                $this->serviceLocator->get('VuFind\SearchResultsPluginManager'),
-                $this->serviceLocator->get('VuFind\RecordLoader'),
-                $this->serviceLocator->get('VuFind\DbTablePluginManager'),
-                $config, $baseURL, $params
-            );
+            $server = $this->serviceLocator->get($serverClass);
+            $server->init($config, $baseURL, $params);
             $server->setRecordLinkHelper(
-                $this->getViewRenderer()->plugin('recordlink')
+                $this->getViewRenderer()->plugin('recordLink')
+            );
+            $server->setRecordFormatter(
+                $this->serviceLocator->get(RecordFormatter::class)
             );
             $xml = $server->getResponse();
         } catch (\Exception $e) {
