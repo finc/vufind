@@ -448,7 +448,7 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
         }
         $holdings = $this->getHolding($id);
 
-        if (count($holdings) > 0) {
+        if (isset($holdings) && count($holdings) > 0) {
             // Filter out unwanted statuses
             foreach ($holdings as $holding) {
                 if ($holding['callnumber'] == 'Unknown') {
