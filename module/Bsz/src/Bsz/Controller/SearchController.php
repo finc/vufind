@@ -21,7 +21,7 @@ class SearchController extends \VuFind\Controller\SearchController
         $view = parent::homeAction();
         $msg = getenv('MAINTENANCE_MODE');
         if ($msg != '') {
-            $this->FlashMessenger()->addWarningMessage($msg);
+            $this->flashMessenger()->addWarningMessage($msg);
         }
         $request = $this->getRequest();
         $referer = $request->getHeader('referer');
