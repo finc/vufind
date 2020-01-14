@@ -142,7 +142,10 @@ class RecordController extends \VuFind\Controller\RecordController
         if (isset($params['Bestellform'])) {
 
             // use regex to trim username
-            if (isset($first) && strlen($first->getRegex()) > 0 && $first->getAuth() == 'shibboleth') {
+            if (isset($first) && strlen($first->getRegex()) > 0 
+                && $first->getAuth() == 'shibboleth' 
+                && isset($params['BenutzerNummer'])
+            ) {
                 $params['BenutzerNummer'] = preg_replace($first->getRegex(), "$1", $params['BenutzerNummer']);         
             }
             // response is  okay
