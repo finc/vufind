@@ -17,248 +17,73 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 namespace Bsz\RecordDriver;
-use Zend\ServiceManager\ServiceManager;
+
+use Interop\Container\ContainerInterface,
+    \VuFind\RecordDriver\SolrDefaultFactory;
 
 /**
  * BSZ RecordDriverFactory
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory extends \VuFind\RecordDriver\Factory {
+class Factory extends SolrDefaultFactory {
+    
      /**
      * Factory for EDS record driver.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return EDS
      */
-    public static function getEDS(ServiceManager $sm)
+    public static function getEDS(ContainerInterface $container)
     {
-        $eds = $sm->getServiceLocator()->get('VuFind\Config')->get('EDS');
-        return new EDS($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'), $eds, $eds
+        $eds = $container->get('VuFind\Config')->get('EDS');
+        return new EDS($container->get('Bsz\Mapper'), 
+            $container->get('VuFind\Config')->get('config'), $eds, $eds
         );
-    }
-    /**
-     * Factory for SolrMarc record driver.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGviMarc(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarc($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
-        );
-        return Factory::attach($driver, $sm);
-    }
-    /**
-     * Factory for SWB record driver
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGvimarcde576(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarcde576($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
-        );
-        return Factory::attach($driver, $sm);
-    }
-    
-    /**
-     * Factory for ZDB record driver
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGviMarcde600(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarcde600($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
-        );
-        return Factory::attach($driver, $sm);
-    }
-    
-    /**
-     * Factory for GBV record driver
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGviMarcde601(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarcde601($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
-        );
-        return Factory::attach($driver, $sm);
-    }
-    
-    /**
-     * Factory for KOBV record driver
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGviMarcde602(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarcde602($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
-        );
-        return Factory::attach($driver, $sm);
-    }
-    
-    /**
-     * Factory for HEBIS record driver
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGviMarcde603(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarcde603($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
-        );
-        return Factory::attach($driver, $sm);
-    }
-    
-    /**
-     * Factory for BVB record driver
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGviMarcde604(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarcde604($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
-        );
-        return Factory::attach($driver, $sm);
-    }
-    
-    /**
-     * Factory for HBZ record driver
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGviMarcde605(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarcde605($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
-        );
-        return Factory::attach($driver, $sm);
-    }
-    
-    /**
-     * Factory for DNB record driver
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGviMarcde101(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarcde101($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
-        );
-        return Factory::attach($driver, $sm);
     }
 
-    /**
-     * Factory for K10plus record driver
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SolrMarc
-     */
-    public static function getSolrGviMarcde627(ServiceManager $sm)
-    {
-        $driver = new SolrGvimarcde627($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('bsz\client'),
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
-            null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')                
-        );
-        return Factory::attach($driver, $sm);
-    }
     
     /**
-     * Factory for SolrMarc record driver.
+     * Create an object
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container     Service manager
+     * @param string             $requestedName Service being created
+     * @param null|array         $options       Extra options (optional)
      *
-     * @return SolrMarc
+     * @return object
+     *
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     * creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public static function getSolrMarc(ServiceManager $sm)
-    {
-        $driver = new SolrMarc($sm->getServiceLocator()->get('bsz\mapper'), 
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+    public function __invoke(ContainerInterface $container, $requestedName,
+        array $options = null
+    ) {
+        if (!empty($options)) {
+            throw new \Exception('Unexpected options sent to factory.');
+        }
+
+        $requestedName = $requestedName;
+             
+        $driver = new $requestedName(
+            $container->get('Bsz\Mapper'), 
+            $container->get('Bsz\Config\Client'),
             null,
-            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+            $container->get('VuFind\Config')->get('searches')
         );
         $driver->attachILS(
-            $sm->getServiceLocator()->get('VuFind\ILSConnection'),
-            $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
-            $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+            $container->get(\VuFind\ILS\Connection::class),
+            $container->get(\VuFind\ILS\Logic\Holds::class),
+            $container->get(\VuFind\ILS\Logic\TitleHolds::class)
         );
-        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
-        return $driver;
+        
+        $driver->attachSearchService($container->get('VuFind\Search'));
+        $driver->attachSearchRunner($container->get('VuFind\SearchRunner'));
+       return $driver;
     }
     
-    /**
-     * Attach all the common stuff
-     * 
-     * @param \Bsz\RecordDriver\SolrMarc $driver
-     * @return \Bsz\RecordDriver\SolrMarc
-     */
-    private static function attach(SolrMarc $driver, ServiceManager $sm)
-    {
-        $driver->attachILS(
-            $sm->getServiceLocator()->get('VuFind\ILSConnection'),
-            $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
-            $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
-        );
-        //We use this to fetch containers - they are missing in out MARC record
-        $driver->attachSearchRunner($sm->getServiceLocator()->get('VuFind\SearchRunner'));
-        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
-        return $driver;
-    }
 
 }
 

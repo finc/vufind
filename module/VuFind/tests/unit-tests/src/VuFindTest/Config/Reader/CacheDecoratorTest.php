@@ -3,7 +3,7 @@
 /**
  * Config CacheDecorator test class file.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -39,7 +39,7 @@ use VuFind\Config\Reader\CacheDecorator;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:testing:unit_tests Wiki
  */
-class CacheDecoratorTest extends \PHPUnit_Framework_TestCase
+class CacheDecoratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Read config from while, new file.
@@ -48,13 +48,13 @@ class CacheDecoratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromFileAndString()
     {
-        $cache = $this->getMockForAbstractClass('Zend\Cache\Storage\StorageInterface', ['setItem', 'hasItem']);
+        $cache = $this->getMockForAbstractClass('Zend\Cache\Storage\StorageInterface');
         $cache->expects($this->exactly(2))
             ->method('setItem');
         $cache->expects($this->exactly(2))
             ->method('hasItem')
             ->will($this->returnValue(false));
-        $reader = $this->getMockForAbstractClass('Zend\Config\Reader\ReaderInterface', ['fromFile', 'fromString']);
+        $reader = $this->getMockForAbstractClass('Zend\Config\Reader\ReaderInterface');
         $reader->expects($this->once())
             ->method('fromFile')
             ->will($this->returnValue([]));
@@ -73,7 +73,7 @@ class CacheDecoratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromFileAndStringCached()
     {
-        $cache = $this->getMockForAbstractClass('Zend\Cache\Storage\StorageInterface', ['setItem', 'hasItem', 'getItem']);
+        $cache = $this->getMockForAbstractClass('Zend\Cache\Storage\StorageInterface');
         $cache->expects($this->never())
             ->method('setItem');
         $cache->expects($this->exactly(2))
@@ -82,7 +82,7 @@ class CacheDecoratorTest extends \PHPUnit_Framework_TestCase
         $cache->expects($this->exactly(2))
             ->method('getItem')
             ->will($this->returnValue([]));
-        $reader = $this->getMockForAbstractClass('Zend\Config\Reader\ReaderInterface', ['fromFile', 'fromString']);
+        $reader = $this->getMockForAbstractClass('Zend\Config\Reader\ReaderInterface');
         $deco = new CacheDecorator($reader, $cache);
         $deco->fromFile('ignore');
         $deco->fromString('ignore');

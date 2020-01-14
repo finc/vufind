@@ -26,7 +26,7 @@
 <? if (isset($this->scrollData) && ($this->scrollData['previousRecord'] || $this->scrollData['nextRecord'])): ?>
   <ul class="pager hidden-print">
        <li>
-          <a class="backtosearch btn btn-info" title="<?=$this->transEsc('Back to Search')?>" href="<?=$this->getLastSearchLink('', '', '', false)?>" class="backtosearch btn btn-info"><i class="fa fa-list-ol"></i></a>
+          <a class="backtosearch btn btn-primary" title="<?=$this->transEsc('Back to Search')?>" href="<?=$this->searchMemory()->getLastSearchUrl('', '', '', false)?>" class="backtosearch btn btn-info"><i class="fa fa-list-ol"></i></a>
       </li>
     <? if ($this->scrollData['previousRecord']): ?>
       <? if ($this->scrollData['firstRecord']): ?>
@@ -93,7 +93,7 @@
           
               if (!$obj->isVisible()) { $tab_classes[] = 'hidden'; }
               if ($this->client()->is('hide_staff_view') && $tab == 'Details') {
-                  $tab_classes[] = 'hidden';
+                  $tab_classes[] = 'greyed-out';
               }
               if (!$obj->supportsAjax()) { $tab_classes[] = 'noajax'; }
             ?>

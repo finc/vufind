@@ -1,0 +1,71 @@
+<? $subjects = $this->driver->getAllSubjectHeadings(); if (!empty($subjects)): ?>
+  <tr>
+    <th><?=$this->transEsc('Subjects')?>: </th>
+    <td>
+    <? $count = 0 ?>
+      <? foreach ($subjects as $field): ?>
+      <span class="subjectLine" property="keywords">
+        <? $subject = ''; ?>
+        <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
+            <? $i = 0; foreach ($field as $subfield): ?>
+              <?=($i++ == 0) ? '' : ' &gt; '?>
+              <? $subject = trim($subject . ' ' . $subfield); ?>              
+              <a class="searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>" 
+                 href="<?=$this->record($this->driver)->getLink('topic', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+              <? $count++ ?>
+            <? endforeach; ?>
+        <? else: ?>                
+            <? foreach ($field as $subfield): ?>
+            <a class="searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+              <? $count++ ?>
+            <? endforeach; ?>
+        <? endif; ?>
+      </span>
+      <? endforeach; ?>
+      <? if($count >=5): ?>
+      <a href="#" class="showmore"><?=$this->transEsc('Showmore')?></a>
+      <?endif; ?>
+    </td>
+  </tr>
+  <? unset($subjects)?>
+  <? endif; ?>
+  
+<? if ($this->driver instanceof \Bsz\RecordDriver\SolrDlrmarc): ?>
+
+  <?$subjects = $this->driver->getAllRVKSubjectHeadings(); if (!empty($subjects)): ?>
+  <tr>
+    <th>RVK-<?=$this->transEsc('Subjects')?>: </th>
+    <td>
+      <div class="subjectLine" property="keywords">
+      <? $count = 0; ?>
+      <? foreach ($subjects as $field): ?>
+        <? $subject = ''; ?>
+        <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
+            <? $i = 0; foreach ($field as $subfield): ?>
+              <?=($i++ == 0) ? '' : ' &gt; '?>
+              <? $subject = trim($subject . ' ' . $subfield); ?>
+              <? //Die Links hatten eine Klasse backlink. Diese führt mit einer 
+              // bestimmten Browsererweiterung (uBlock / AdBlock?) zu komischer 
+              // Darstellung beim Hovern
+              ?>
+              <a class="searchicon" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+            <? endforeach; ?>
+        <? else: ?>
+            <a class="searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" 
+               href="<?=$this->record($this->driver)->getLink('rvkheading', $field, $this->searchClassId)?>">
+                <?=trim($this->escapeHtml($field))?></a>  
+        <? endif; ?>
+        <? $count++ ?>
+      <? endforeach; ?>
+      <? if($count > 5):?>
+      <a href="#" class="showmore"><?=$this->transEsc('Showmore')?></a>
+      <? endif; ?>
+      </div>
+    </td>
+  </tr>
+  <? endif; ?>
+<? endif; ?>
+
+
+
+  

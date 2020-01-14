@@ -2,7 +2,7 @@
 /**
  * Shibboleth permission provider for VuFind.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2007.
  *
@@ -89,8 +89,9 @@ class Shibboleth extends ServerParam
     public function getPermissions($options)
     {
         $this->debug('getPermissions: idpServerParam = ' . $this->idpServerParam);
-        if ($this->request->getServer()->get($this->idpServerParam) === null) {            
+        if ($this->request->getServer()->get($this->idpServerParam) === null) {
             $this->logWarning('getPermissions: Shibboleth server params missing');
+
             return [];
         }
 

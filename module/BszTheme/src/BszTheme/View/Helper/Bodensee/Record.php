@@ -107,23 +107,6 @@ class Record extends \VuFind\View\Helper\Root\Record
         );
     }
 
-    /**
-     * Render the link of the specified type.
-     *
-     * @param string $type    Link type
-     * @param string $lookfor String to search for at link
-     *
-     * @return string
-     */
-    public function getLink($type, $lookfor, $searchClassId = 'Search')
-    {
-        if ($searchClassId == 'Solr' || $searchClassId == null) {
-            $searchClassId = 'Search';
-        }
-        return $this->renderTemplate(
-                        'link-' . $type . '.phtml', ['lookfor' => $lookfor, 'searchClassId' => $searchClassId]
-        );
-    }
     
         /**
      * 
@@ -219,41 +202,32 @@ class Record extends \VuFind\View\Helper\Root\Record
      */
     public function isAvailableForInterlending()
     {
-        // HEBIS items with 8 at the first position are freely available
         $ppn = $this->driver->getPPN();
-        if (($this->driver->getNetWork() == 'HEBIS' && preg_match('/^8/', $ppn))
-                || $this->driver->isFree()) {
+        $network = $this->driver->getNetwork();
+        // first, the special cases
+        if (($network == 'HEBIS' && preg_match('/^8/', $ppn))) {
+            // HEBIS items with 8 at the first position are freely available
             return false;
-        }
-        // printed journals, articles, newspapers - show hint
-        if ($this->driver->isArticle() 
+        } elseif ($this->driver->isFree()) {
+            return false;
+        } elseif (($this->driver->isArticle() 
+            // printed journals, articles, newspapers - show hint
             || $this->driver->isJournal()
-            || $this->driver->isNewspaper()
+            || $this->driver->isNewspaper()) && !$this->driver->isElectronic()
         ) {
             return true;
+        } else if ($this->driver->isEBook()) {     
+            return false;             
+        } else if ($this->driver->isJournal() && $this->driver->isElectronic() && ($network == 'SWB' || $network == 'ZDB')) {
+            return $this->checkIllIndicator(['e', 'b', ]);             
+        } elseif ($this->driver->isMonographicSerial() || $this->driver->isEBook()) {
+            return false;
         } 
-        // eBooks - check ill indicator, except GBV eBooks. 
-        else if ($this->driver->isEBook()) {
-            
-            if ($this->driver->getNetwork() == 'GBV') {
-                // GBV EBooks can't be ordered
-                return false;
-            } else {
-                // all networks should have 924 now, so, we check ill indicator 
-                $f924 = $this->driver->tryMethod('getField924');
-                foreach ($f924 as $field) {
-                    if (isset($field['d']) && 
-                        ($field['d'] == 'e' || $field['d'] == 'b'
-                        // k is deprecated but might still be used
-                        || $field['d'] == 'k') ) {
-                        return true;
-                    }
-                } 
-            }      
-        }
-        // Books - always available, serials and Collections are excluded 
-        // because of Gesamtaufnahmen. 
-        else if (!$this->isAtCurrentLibrary(true)
+        
+        // if we arrived here, item is not available at current library, is no
+        // serial and no collection, it is available
+
+        if (!$this->isAtCurrentLibrary(true)
                 && !$this->driver->isSerial() 
                 && !$this->driver->isCollection()) {
             return true;
@@ -445,6 +419,50 @@ class Record extends \VuFind\View\Helper\Root\Record
 
         return $this->renderTemplate('result-list.phtml');
     }
-
     
+    /**
+     * Check the ILL indicator
+     * @param array $allowedCodes
+     * @return boolean
+     */
+    protected function checkIllIndicator($allowedCodes) {
+
+        $f924 = $this->driver->tryMethod('getField924');
+        foreach ($f924 as $field) {
+           if (isset($field['d']) && in_array($field['d'], $allowedCodes)) {
+                return true;
+            } 
+        }
+        return false;
+    }
+
+    /**
+     * Get HTML to render a title.
+     *
+     * @param int $maxLength Maximum length of non-highlighted title.
+     *
+     * @return string
+     */
+    public function getTitleHtml($maxLength = 180)
+    {
+        $highlightedTitle = $this->driver->tryMethod('getHighlightedTitle');
+        if (is_array($this->driver->tryMethod('getTitle'))) {
+            $title = trim($this->driver->tryMethod('getTitle')[0]);
+        } else {
+            $title = trim($this->driver->tryMethod('getTitle'));
+        }
+            
+        if (!empty($highlightedTitle)) {
+            $highlight = $this->getView()->plugin('highlight');
+            $addEllipsis = $this->getView()->plugin('addEllipsis');
+            return $highlight($addEllipsis($highlightedTitle, $title));
+        }
+        if (!empty($title)) {
+            $escapeHtml = $this->getView()->plugin('escapeHtml');
+            $truncate = $this->getView()->plugin('truncate');
+            return $escapeHtml($truncate($title, $maxLength));
+        }
+        $transEsc = $this->getView()->plugin('transEsc');
+        return $transEsc('Title not available');
+    }    
 }

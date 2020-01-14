@@ -2,7 +2,7 @@
 /**
  * Collection Controller
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -61,12 +61,13 @@ class CollectionController extends AbstractRecord
     /**
      * Get the tab configuration for this controller.
      *
-     * @return array
+     * @return \VuFind\RecordTab\TabManager
      */
-    protected function getRecordTabConfig()
+    protected function getRecordTabManager()
     {
-        $cfg = $this->serviceLocator->get('Config');
-        return $cfg['vufind']['recorddriver_collection_tabs'];
+        $manager = parent::getRecordTabManager();
+        $manager->setContext('collection');
+        return $manager;
     }
 
     /**
@@ -79,6 +80,12 @@ class CollectionController extends AbstractRecord
      */
     protected function showTab($tab, $ajax = false)
     {
+        // Check that collections are enabled and redirect if necessary
+        $config = $this->getConfig();
+        if (empty($config->Collections->collections)) {
+            return $this->redirectToRecord();
+        }
+
         $result = parent::showTab($tab, $ajax);
         if (!$ajax && $result instanceof \Zend\View\Model\ViewModel) {
             $result->setTemplate('collection/view');
@@ -93,7 +100,8 @@ class CollectionController extends AbstractRecord
      */
     protected function resultScrollerActive()
     {
-        $config = $this->serviceLocator->get('VuFind\Config')->get('config');
+        $config = $this->serviceLocator->get(\VuFind\Config\PluginManager::class)
+            ->get('config');
         return isset($config->Record->next_prev_navigation)
             && $config->Record->next_prev_navigation;
     }

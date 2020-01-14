@@ -1,42 +1,34 @@
-<? 
-    $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
-    $hiddenFilterString = '';
-    foreach ($hiddenFilters as $key => $filter) {
-        foreach ($filter as $value) {
-            $hiddenFilterString .= '&hiddenFilters[]=' . $this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value);
-        }
-    }
-?>
-      
 <? $subjects = $this->driver->getAllSubjectHeadings();?>
 <? if (!empty($subjects)): ?>
 
 <? $rand = rand(0, 9999)?> 
   <tr>
-    <th><?=$this->transEsc('Subjects')?>: </th>
+    <th><?=$this->transEsc('Subjects')?>:</th>
     <td id="showmore-items-<?=$rand?>">
       <? $count = 0 ?>
-      <? foreach ($subjects as $field): ?>      
+      <? foreach ($subjects as $field): ?>     
         <span class="subjectLine" property="keywords">
          <? $subject = ''; ?>
          <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
-              <? $subject = trim($subject . ' ' . $subfield); ?>              
-              <a class="showmore-item searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>" 
-                 href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
+              <? $subject = trim($subject . ' ' . $subfield); ?>
+              <a class="showmore-item searchicon <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>" 
+                 href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
               <? $count++ ?>
             <? endforeach; ?>
-          <? else: ?>
-                <?  $field = explode('--', $field); ?>
+          <? elseif (is_array($field) && count($field) > 1): ?>
                 <? foreach ($field as $subfield): ?>
-                <a class="searchicon showmore-item <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?><?=$hiddenFilterString?>"><?=trim($this->escapeHtml($subfield))?></a>
-                <? $count++ ?>
-            <? endforeach; ?>
+                    <a class="searchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+                    <? $count++ ?>
+                <? endforeach; ?>
+          <? else: ?>
+            <a class="searchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" href="<?=$this->record($this->driver)->getLink('subject', $field, $this->searchClassId)?>"><?=trim($this->escapeHtml($field))?></a>            
+            <? $count++ ?>
           <? endif; ?>
       </span>
       <? endforeach; ?>
-      <? if($count >=5): ?>
+      <? if($count > 5): ?>
       <a href="#" class="showmore" id="showmore-<?=$rand?>">[<?=$this->transEsc('Showmore')?>...]</a>
       <?endif; ?>
     </td>
@@ -45,6 +37,7 @@
   <? endif; ?>
   
   
+  <? if ($this->client()->is('show_rvk')): ?>
   <? $notations = $this->driver->tryMethod('getRVKNotations'); 
   if(!empty($notations)): ?>
   <? $contentDisplayed = true; ?>
@@ -63,12 +56,13 @@
           
           ?>
           <span class="notationLine">
-                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('rvknotation', $shortcut, $this->searchClassId)?><?=$hiddenFilterString?>" class="searchicon" title="<?=$descriptionHtml?>" ><?=$this->transEsc($shortcut)?></a>
+                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('rvknotation', $shortcut, $this->searchClassId)?>" class="searchicon" title="<?=$descriptionHtml?>" ><?=$this->transEsc($shortcut)?></a>
           </span>
           <? endforeach; ?>
       </td>
   <? endif; ?>
   </tr>
+  <? endif; ?>
   <? endif; ?>
   
   <? $fivclassification = $this->driver->tryMethod('getFIVClassification'); 
@@ -80,7 +74,7 @@
       <td>
           <? foreach ($fivclassification as $notation): ?>
             <span class="notationLine">
-                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('fivclassification', $notation, $this->searchClassId)?><?=$hiddenFilterString?>" class="searchicon" title="<?=$this->transEsc($notation)?>" ><?=$notation?></a>
+                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('fivclassification', $notation, $this->searchClassId)?>" class="searchicon" title="<?=$this->transEsc($notation)?>" ><?=$notation?></a>
             </span>
           <? endforeach; ?>
       </td>
@@ -97,7 +91,7 @@
       <td>
           <? foreach ($dficlassification as $notation): ?>
             <span class="notationLine">
-                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('dficlassification', $notation, $this->searchClassId)?><?=$hiddenFilterString?>" class="searchicon" title="<?=$this->transEsc($notation)?>" ><?=$notation?></a>
+                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('dficlassification', $notation, $this->searchClassId)?>" class="searchicon" title="<?=$this->transEsc($notation)?>" ><?=$notation?></a>
             </span>
           <? endforeach; ?>
       </td>
@@ -105,8 +99,8 @@
   </tr>
   <? endif; ?>  
       
-      
-<? $subjects = $this->driver->getAllRVKSubjectHeadings(); if (!empty($subjects)): ?>
+<? if ($this->client()->is('show_rvk')): ?>      
+<? $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings'); if (!empty($subjects)): ?>
   <tr>
     <th><?=$this->transEsc('RVKSubjects')?>: </th>
     <td>
@@ -126,7 +120,7 @@
             <? endforeach; ?>
         <? else: ?>
             <a class="searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" 
-               href="<?=$this->record($this->driver)->getLink('rvkheading', $field, $this->searchClassId)?><?=$hiddenFilterString?>">
+               href="<?=$this->record($this->driver)->getLink('rvkheading', $field, $this->searchClassId)?>">
                 <?=trim($this->escapeHtml($field))?></a>  
         <? endif; ?>
         <? $count++ ?>
@@ -138,6 +132,7 @@
     </td>
   </tr>
   <? endif; ?>
+<? endif; ?>
 
 
   

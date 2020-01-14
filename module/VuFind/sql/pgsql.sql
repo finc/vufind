@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS "comments";
 
 CREATE TABLE comments (
 id SERIAL,
-user_id int NOT NULL DEFAULT '0',
+user_id int DEFAULT NULL,
 resource_id int NOT NULL DEFAULT '0',
 comment text NOT NULL,
 created timestamp NOT NULL DEFAULT '1970-01-01 00:00:00',
@@ -31,6 +31,7 @@ title varchar(255) NOT NULL DEFAULT '',
 author varchar(255) DEFAULT NULL,
 year int DEFAULT NULL,
 source varchar(50) NOT NULL DEFAULT 'Solr',
+extra_metadata text DEFAULT NULL,
 PRIMARY KEY (id)
 );
 CREATE INDEX resource_record_id_idx ON resource (record_id);
@@ -83,6 +84,21 @@ CREATE INDEX search_user_id_idx ON search (user_id);
 CREATE INDEX search_folder_id_idx ON search (folder_id);
 CREATE INDEX session_id_idx ON search (session_id);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table shortlinks
+--
+
+DROP TABLE IF EXISTS "shortlinks";
+
+CREATE TABLE shortlinks (
+id SERIAL,
+path text,
+created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (id)
+);
+
 
 -- --------------------------------------------------------
 
@@ -114,6 +130,7 @@ pass_hash varchar(60) DEFAULT NULL,
 firstname varchar(50) NOT NULL DEFAULT '',
 lastname varchar(50) NOT NULL DEFAULT '',
 email varchar(255) NOT NULL DEFAULT '',
+email_verified timestamp DEFAULT NULL,
 cat_id varchar(255) DEFAULT NULL,
 cat_username varchar(50) DEFAULT NULL,
 cat_password varchar(70) DEFAULT NULL,
@@ -123,6 +140,8 @@ major varchar(100) NOT NULL DEFAULT '',
 home_library varchar(100) NOT NULL DEFAULT '',
 created timestamp NOT NULL DEFAULT '1970-01-01 00:00:00',
 verify_hash varchar(42) NOT NULL DEFAULT '',
+last_login timestamp NOT NULL DEFAULT '1970-01-01 00:00:00',
+auth_method varchar(50) DEFAULT NULL,
 PRIMARY KEY (id),
 UNIQUE (username),
 UNIQUE (cat_id)
@@ -289,7 +308,7 @@ CREATE INDEX user_card_user_id_idx ON user_card (user_id);
 -- Constraints for table comments
 --
 ALTER TABLE comments
-ADD CONSTRAINT comments_ibfk_1 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE CASCADE,
+ADD CONSTRAINT comments_ibfk_1 FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE SET NULL,
 ADD CONSTRAINT comments_ibfk_2 FOREIGN KEY (resource_id) REFERENCES resource (id) ON DELETE CASCADE;
 
 

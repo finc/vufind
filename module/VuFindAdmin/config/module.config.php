@@ -4,26 +4,27 @@ namespace VuFindAdmin\Module\Configuration;
 $config = [
     'controllers' => [
         'factories' => [
-            'VuFindAdmin\Controller\AdminController' => 'VuFindAdmin\Controller\Factory::getAdminController',
-            'VuFindAdmin\Controller\ConfigController' => 'VuFindAdmin\Controller\Factory::getConfigController',
-            'VuFindAdmin\Controller\MaintenanceController' => 'VuFindAdmin\Controller\Factory::getMaintenanceController',
-            'VuFindAdmin\Controller\SocialController' => 'VuFindAdmin\Controller\Factory::getSocialstatsController',
-            'VuFindAdmin\Controller\StatisticsController' => 'VuFindAdmin\Controller\Factory::getStatisticsController',
-            'VuFindAdmin\Controller\TagsController' => 'VuFindAdmin\Controller\Factory::getTagsController',
+            'VuFindAdmin\Controller\AdminController' => 'VuFind\Controller\AbstractBaseFactory',
+            'VuFindAdmin\Controller\ConfigController' => 'VuFind\Controller\AbstractBaseFactory',
+            'VuFindAdmin\Controller\MaintenanceController' => 'VuFind\Controller\AbstractBaseFactory',
+            'VuFindAdmin\Controller\SocialstatsController' => 'VuFind\Controller\AbstractBaseFactory',
+            'VuFindAdmin\Controller\TagsController' => 'VuFind\Controller\AbstractBaseFactory',
+            'VuFindAdmin\Controller\OverdriveController' =>
+                'VuFind\Controller\AbstractBaseFactory',
         ],
         'aliases' => [
             'Admin' => 'VuFindAdmin\Controller\AdminController',
             'AdminConfig' => 'VuFindAdmin\Controller\ConfigController',
             'AdminMaintenance' => 'VuFindAdmin\Controller\MaintenanceController',
-            'AdminSocial' => 'VuFindAdmin\Controller\SocialController',
-            'AdminStatistics' => 'VuFindAdmin\Controller\StatisticsController',
+            'AdminSocial' => 'VuFindAdmin\Controller\SocialstatsController',
             'AdminTags' => 'VuFindAdmin\Controller\TagsController',
+            'AdminOverdrive' => 'VuFindAdmin\Controller\OverdriveController',
         ],
     ],
     'router' => [
         'routes' => [
             'admin' => [
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Zend\Router\Http\Literal',
                 'options' => [
                     'route'    => '/Admin',
                     'defaults' => [
@@ -34,7 +35,7 @@ $config = [
                 'may_terminate' => true,
                 'child_routes' => [
                     'disabled' => [
-                        'type' => 'Zend\Mvc\Router\Http\Literal',
+                        'type' => 'Zend\Router\Http\Literal',
                         'options' => [
                             'route'    => '/Disabled',
                             'defaults' => [
@@ -44,7 +45,7 @@ $config = [
                         ]
                     ],
                     'config' => [
-                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'type' => 'Zend\Router\Http\Segment',
                         'options' => [
                             'route'    => '/Config[/:action]',
                             'defaults' => [
@@ -54,7 +55,7 @@ $config = [
                         ]
                     ],
                     'maintenance' => [
-                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'type' => 'Zend\Router\Http\Segment',
                         'options' => [
                             'route'    => '/Maintenance[/:action]',
                             'defaults' => [
@@ -64,7 +65,7 @@ $config = [
                         ]
                     ],
                     'social' => [
-                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'type' => 'Zend\Router\Http\Segment',
                         'options' => [
                             'route'    => '/Social[/:action]',
                             'defaults' => [
@@ -73,22 +74,22 @@ $config = [
                             ]
                         ]
                     ],
-                    'statistics' => [
-                        'type' => 'Zend\Mvc\Router\Http\Segment',
-                        'options' => [
-                            'route'    => '/Statistics[/:action]',
-                            'defaults' => [
-                                'controller' => 'AdminStatistics',
-                                'action'     => 'Home',
-                            ]
-                        ]
-                    ],
                     'tags' => [
-                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'type' => 'Zend\Router\Http\Segment',
                         'options' => [
                             'route'    => '/Tags[/:action]',
                             'defaults' => [
                                 'controller' => 'AdminTags',
+                                'action'     => 'Home',
+                            ]
+                        ]
+                    ],
+                    'overdrive' => [
+                        'type' => 'Zend\Router\Http\Segment',
+                        'options' => [
+                            'route'    => '/Overdrive',
+                            'defaults' => [
+                                'controller' => 'AdminOverdrive',
                                 'action'     => 'Home',
                             ]
                         ]

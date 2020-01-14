@@ -43,7 +43,7 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
      * keys: id, availability (boolean), status, location, reserve, callnumber,
      * duedate, number, barcode.
      */
-    public function getHolding($id, array $patron = null)
+    public function getHolding($id, array $patron = null, array $options = [])
     {
         $useHoldings = isset($this->config['settings']['useHoldings'])
             ? $this->config['settings']['useHoldings'] : 'none';

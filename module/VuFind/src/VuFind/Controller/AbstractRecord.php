@@ -2,7 +2,7 @@
 /**
  * VuFind Record Controller
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -198,7 +198,7 @@ class AbstractRecord extends AbstractBase
 
         // Save tags, if any:
         if ($tags = $this->params()->fromPost('tag')) {
-            $tagParser = $this->serviceLocator->get('VuFind\Tags');
+            $tagParser = $this->serviceLocator->get(\VuFind\Tags::class);
             $driver->addTags($user, $tagParser->parse($tags));
             $this->flashMessenger()
                 ->addMessage(['msg' => 'add_tag_success'], 'success');
@@ -252,6 +252,30 @@ class AbstractRecord extends AbstractBase
      */
     public function homeAction()
     {
+        // If collections are active, we may need to check if the driver is actually
+        // a collection; if so, we should redirect to the collection controller.
+        $checkRoute = $this->params()->fromPost('checkRoute')
+            ?? $this->params()->fromQuery('checkRoute')
+            ?? false;
+        $config = $this->getConfig();
+        if ($checkRoute && $config->Collections->collections ?? false) {
+            $routeConfig = isset($config->Collections->route)
+                ? $config->Collections->route->toArray() : [];
+            $collectionRoutes
+                = array_merge(['record' => 'collection'], $routeConfig);
+            $routeName = $this->event->getRouteMatch()->getMatchedRouteName() ?? '';
+            if ($collectionRoute = ($collectionRoutes[$routeName] ?? null)) {
+                $driver = $this->loadRecord();
+                if (true === $driver->tryMethod('isCollection')) {
+                    $params = $this->params()->fromQuery()
+                        + $this->params()->fromRoute();
+                    $collectionUrl = $this->url()
+                        ->fromRoute($collectionRoute, $params);
+                    return $this->redirect()->toUrl($collectionUrl);
+                }
+            }
+        }
+
         return $this->showTab(
             $this->params()->fromRoute('tab', $this->getDefaultTab())
         );
@@ -287,11 +311,11 @@ class AbstractRecord extends AbstractBase
         // Perform the save operation:
         $driver = $this->loadRecord();
         $post = $this->getRequest()->getPost()->toArray();
-        $tagParser = $this->serviceLocator->get('VuFind\Tags');
+        $tagParser = $this->serviceLocator->get(\VuFind\Tags::class);
         $post['mytags']
-            = $tagParser->parse(isset($post['mytags']) ? $post['mytags'] : '');
+            = $tagParser->parse($post['mytags'] ?? '');
         $favorites = $this->serviceLocator
-            ->get('VuFind\Favorites\FavoritesService');
+            ->get(\VuFind\Favorites\FavoritesService::class);
         $results = $favorites->save($post, $user, $driver);
 
         // Display a success status message:
@@ -415,7 +439,7 @@ class AbstractRecord extends AbstractBase
         $driver = $this->loadRecord();
 
         // Create view
-        $mailer = $this->serviceLocator->get('VuFind\Mailer');
+        $mailer = $this->serviceLocator->get(\VuFind\Mailer\Mailer::class);
         $view = $this->createEmailViewModel(
             null, $mailer->getDefaultRecordSubject($driver)
         );
@@ -452,7 +476,8 @@ class AbstractRecord extends AbstractBase
      */
     protected function smsEnabled()
     {
-        $check = $this->serviceLocator->get('VuFind\AccountCapabilities');
+        $check = $this->serviceLocator
+            ->get(\VuFind\Config\AccountCapabilities::class);
         return $check->getSmsSetting() !== 'disabled';
     }
 
@@ -472,7 +497,7 @@ class AbstractRecord extends AbstractBase
         $driver = $this->loadRecord();
 
         // Load the SMS carrier list:
-        $sms = $this->serviceLocator->get('VuFind\SMS');
+        $sms = $this->serviceLocator->get(\VuFind\SMS\SMSInterface::class);
         $view = $this->createViewModel();
         $view->carriers = $sms->getCarriers();
         $view->validation = $sms->getValidationType();
@@ -527,7 +552,7 @@ class AbstractRecord extends AbstractBase
         $format = $this->params()->fromQuery('style');
 
         // Display export menu if missing/invalid option
-        $export = $this->serviceLocator->get('VuFind\Export');
+        $export = $this->serviceLocator->get(\VuFind\Export::class);
         if (empty($format) || !$export->recordSupportsFormat($driver, $format)) {
             if (!empty($format)) {
                 $this->flashMessenger()
@@ -550,12 +575,33 @@ class AbstractRecord extends AbstractBase
                 ->toUrl($export->getRedirectUrl($format, $callback));
         }
 
+        $recordHelper = $this->getViewRenderer()->plugin('record');
+
+        $exportType = $export->getBulkExportType($format);
+        if ('post' === $exportType) {
+            $params = [
+                'exportType' => 'post',
+                'postField' => $export->getPostField($format),
+                'postData' => $recordHelper($driver)->getExport($format),
+                'targetWindow' => $export->getTargetWindow($format),
+                'url' => $export->getRedirectUrl($format, ''),
+                'format' => $format
+            ];
+            $msg = [
+                'translate' => false, 'html' => true,
+                'msg' => $this->getViewRenderer()->render(
+                    'cart/export-success.phtml', $params
+                )
+            ];
+            $this->flashMessenger()->addSuccessMessage($msg);
+            return $this->redirectToRecord();
+        }
+
         // Send appropriate HTTP headers for requested format:
         $response = $this->getResponse();
         $response->getHeaders()->addHeaders($export->getHeaders($format));
 
         // Actually export the record
-        $recordHelper = $this->getViewRenderer()->plugin('record');
         $response->setContent($recordHelper($driver)->getExport($format));
         return $response;
     }
@@ -617,19 +663,7 @@ class AbstractRecord extends AbstractBase
     }
 
     /**
-     * Alias to getRecordTabConfig for backward compatibility.
-     *
-     * @deprecated use getRecordTabConfig instead
-     *
-     * @return array
-     */
-    protected function getTabConfiguration()
-    {
-        return $this->getRecordTabConfig();
-    }
-
-    /**
-     * Support method to load tab information from the RecordTabPluginManager.
+     * Support method to load tab information from the RecordTab PluginManager.
      *
      * @return void
      */
@@ -637,16 +671,12 @@ class AbstractRecord extends AbstractBase
     {
         $driver = $this->loadRecord();
         $request = $this->getRequest();
-        $rtpm = $this->serviceLocator->get('VuFind\RecordTabPluginManager');
-        $details = $rtpm->getTabDetailsForRecord(
-            $driver, $this->getRecordTabConfig(), $request,
-            $this->fallbackDefaultTab
-        );
+        $manager = $this->getRecordTabManager();
+        $details = $manager
+            ->getTabDetailsForRecord($driver, $request, $this->fallbackDefaultTab);
         $this->allTabs = $details['tabs'];
         $this->defaultTab = $details['default'] ? $details['default'] : false;
-        $this->backgroundTabs = $rtpm->getBackgroundTabNames(
-            $driver, $this->getRecordTabConfig()
-        );
+        $this->backgroundTabs = $manager->getBackgroundTabNames($driver);
     }
 
     /**

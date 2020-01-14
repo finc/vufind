@@ -2,7 +2,7 @@
 /**
  * ILS driver test
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2011.
  *
@@ -54,10 +54,10 @@ class DemoTest extends \VuFindTest\Unit\TestCase
      */
     public function setUp()
     {
-        $session = $this->getMockBuilder('Zend\Session\Container')
+        $session = $this->getMockBuilder(\Zend\Session\Container::class)
             ->disableOriginalConstructor()->getMock();
         $this->driver = new Demo(
-            new \VuFind\Date\Converter(), $this->createMock('VuFindSearch\Service'),
+            new \VuFind\Date\Converter(), $this->createMock(\VuFindSearch\Service::class),
             function () use ($session) {
                 return $session;
             }

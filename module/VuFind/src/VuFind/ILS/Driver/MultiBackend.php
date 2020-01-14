@@ -2,9 +2,9 @@
 /**
  * Multiple Backend Driver.
  *
- * PHP version 5
+ * PHP version 7
  *
- * Copyright (C) The National Library of Finland 2012-2017.
+ * Copyright (C) The National Library of Finland 2012-2018.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -190,11 +190,53 @@ class MultiBackend extends AbstractBase implements \Zend\Log\LoggerAwareInterfac
      */
     public function getStatuses($ids)
     {
-        $items = [];
+        // Group records by source and request statuses from the drivers
+        $grouped = [];
         foreach ($ids as $id) {
-            $items[] = $this->getStatus($id);
+            $source = $this->getSource($id);
+            if (!isset($grouped[$source])) {
+                $driver = $this->getDriver($source);
+                $grouped[$source] = [
+                    'driver' => $driver,
+                    'ids' => []
+                ];
+            }
+            $grouped[$source]['ids'][] = $id;
         }
-        return $items;
+
+        // Process each group
+        $results = [];
+        foreach ($grouped as $source => $current) {
+            // Get statuses only if a driver is configured for this source
+            if ($current['driver']) {
+                $localIds = array_map(
+                    function ($id) {
+                        return $this->getLocalId($id);
+                    },
+                    $current['ids']
+                );
+                try {
+                    $statuses = $current['driver']->getStatuses($localIds);
+                } catch (ILSException $e) {
+                    $statuses = array_map(
+                        function ($id) {
+                            return [
+                                ['id' => $id, 'error' => 'An error has occurred']
+                            ];
+                        },
+                        $localIds
+                    );
+                }
+                $statuses = array_map(
+                    function ($status) use ($source) {
+                        return $this->addIdPrefixes($status, $source);
+                    },
+                    $statuses
+                );
+                $results = array_merge($results, $statuses);
+            }
+        }
+        return $results;
     }
 
     /**
@@ -203,14 +245,17 @@ class MultiBackend extends AbstractBase implements \Zend\Log\LoggerAwareInterfac
      * This is responsible for retrieving the holding information of a certain
      * record.
      *
-     * @param string $id     The record id to retrieve the holdings for
-     * @param array  $patron Patron data
+     * @param string $id      The record id to retrieve the holdings for
+     * @param array  $patron  Patron data
+     * @param array  $options Extra options (not currently used)
      *
      * @return array         On success, an associative array with the following
      * keys: id, availability (boolean), status, location, reserve, callnumber,
      * duedate, number, barcode.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getHolding($id, array $patron = null)
+    public function getHolding($id, array $patron = null, array $options = [])
     {
         $source = $this->getSource($id);
         $driver = $this->getDriver($source);
@@ -439,16 +484,17 @@ class MultiBackend extends AbstractBase implements \Zend\Log\LoggerAwareInterfac
      * by a specific patron.
      *
      * @param array $patron The patron array from patronLogin
+     * @param array $params Parameters
      *
      * @return mixed      Array of the patron's transactions
      */
-    public function getMyTransactions($patron)
+    public function getMyTransactions($patron, $params = [])
     {
         $source = $this->getSource($patron['cat_username']);
         $driver = $this->getDriver($source);
         if ($driver) {
             $transactions = $driver->getMyTransactions(
-                $this->stripIdPrefixes($patron, $source)
+                $this->stripIdPrefixes($patron, $source), $params
             );
             return $this->addIdPrefixes($transactions, $source);
         }
@@ -493,7 +539,7 @@ class MultiBackend extends AbstractBase implements \Zend\Log\LoggerAwareInterfac
      */
     public function getRenewDetails($checkoutDetails)
     {
-        $source = $this->getSource($checkoutDetails['id']);
+        $source = $this->getSource($checkoutDetails['id'] ?? '');
         $driver = $this->getDriver($source);
         if ($driver) {
             $details = $driver->getRenewDetails(
@@ -883,7 +929,7 @@ class MultiBackend extends AbstractBase implements \Zend\Log\LoggerAwareInterfac
     public function getCancelHoldDetails($holdDetails)
     {
         $source = $this->getSource(
-            $holdDetails['id'] ? $holdDetails['id'] : $holdDetails['item_id']
+            $holdDetails['id'] ?? $holdDetails['item_id'] ?? ''
         );
         $driver = $this->getDriver($source);
         if ($driver) {
@@ -965,7 +1011,7 @@ class MultiBackend extends AbstractBase implements \Zend\Log\LoggerAwareInterfac
      */
     public function getCancelStorageRetrievalRequestDetails($details)
     {
-        $source = $this->getSource($details['id']);
+        $source = $this->getSource($details['id'] ?? '');
         $driver = $this->getDriver($source);
         if ($driver
             && $this->methodSupported(
@@ -1090,7 +1136,7 @@ class MultiBackend extends AbstractBase implements \Zend\Log\LoggerAwareInterfac
         $source = $this->getSource($details['id']);
         $driver = $this->getDriver($source);
         if ($driver
-            && $this->methodSupported($driver, 'placeILLRequest', compact($details))
+            && $this->methodSupported($driver, 'placeILLRequest', compact('details'))
         ) {
             // Patron is not stripped so that the correct library can be determined
             $details = $this->stripIdPrefixes($details, $source, ['id'], ['patron']);
@@ -1172,9 +1218,7 @@ class MultiBackend extends AbstractBase implements \Zend\Log\LoggerAwareInterfac
      */
     public function getCancelILLRequestDetails($details)
     {
-        $source = $this->getSource(
-            $details['id'] ? $details['id'] : $details['item_id']
-        );
+        $source = $this->getSource($details['id'] ?? $details['item_id'] ?? '');
         $driver = $this->getDriver($source);
         if ($driver
             && $this->methodSupported(

@@ -45,6 +45,25 @@ class ClientAsset extends AbstractHelper
     public function getHeader() {
         return 'header/'.$this->tag.'.jpg';
     }
+
+
+    /**
+     * 
+     * @return string
+     */
+    public function getSmallLogo() {
+        $filename = '';
+        if ($this->library === null) {
+            $filename = 'logo/'.$this->tag.'-small.png';            
+        } else if ($this->library instanceof \Bsz\Config\Library) {
+            $filename = $this->library->getLogo();
+        }
+
+        if ($this->fileExists($filename)) {
+            return $filename;
+        }
+        return '';
+    }
     
     /**
      * 
@@ -53,12 +72,12 @@ class ClientAsset extends AbstractHelper
     public function getLogo() {
         $filename = '';
         if ($this->library === null) {
-            $filename = 'logo/'.$this->tag.'.png';            
+            $filename = 'logo/'.$this->tag.'.png';    
         } else if ($this->library instanceof \Bsz\Config\Library) {
             $filename = $this->library->getLogo();
         }
 
-        if (file_exists('/usr/local/boss/themes/bodensee/images/'.$filename)) {
+        if ($this->fileExists($filename)) {
             return $filename;
         }
         return '';
@@ -70,6 +89,21 @@ class ClientAsset extends AbstractHelper
             'website' => $this->website, 
             'imglink' => $this->getLogo()
         ]);
+    }
+    
+    /**
+     * TODO: QnD implementation
+     * @param string $filename
+     * @return boolean
+     */
+    private function fileExists($filename) {
+        $result = false;
+        if ('/usr/local/boss/themes/bodensee/images/'.$filename) {
+            $result = true;
+        } elseif('/usr/local/boss/themes/chiemsee/images/'.$filename) {
+            $result = true;
+        }
+        return $result;
     }
     
 }

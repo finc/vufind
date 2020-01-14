@@ -2,7 +2,7 @@
 /**
  * Hold Logic Class
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2007.
  *
@@ -121,10 +121,8 @@ class Holds
         foreach ($holdings as $groupKey => $items) {
             $retVal[$groupKey] = [
                 'items' => $items,
-                'location' => isset($items[0]['location'])
-                    ? $items[0]['location'] : '',
-                'locationhref' => isset($items[0]['locationhref'])
-                    ? $items[0]['locationhref'] : ''
+                'location' => $items[0]['location'] ?? '',
+                'locationhref' => $items[0]['locationhref'] ?? ''
             ];
             // Copy all text fields from the item to the holdings level
             foreach ($items as $item) {
@@ -211,7 +209,7 @@ class Holds
 
             $grb = 'getRequestBlocks'; // use variable to shorten line below:
             $blocks
-                = $patron && $this->catalog->checkCapability($grb, compact($patron))
+                = $patron && $this->catalog->checkCapability($grb, compact('patron'))
                 ? $this->catalog->getRequestBlocks($patron) : false;
 
             $mode = $this->catalog->getHoldsMode();
@@ -233,6 +231,9 @@ class Holds
         }
         return [
             'blocks' => $blocks,
+            'total' => $result['total'],
+            'page' => $result['page'],
+            'itemLimit' => $result['itemLimit'],
             'holdings' => $this->formatHoldings($holdings)
         ];
     }
@@ -247,8 +248,8 @@ class Holds
     protected function standardHoldings($result)
     {
         $holdings = [];
-        if (count($result)) {
-            foreach ($result as $copy) {
+        if ($result['total']) {
+            foreach ($result['holdings'] as $copy) {
                 $show = !in_array($copy['location'], $this->hideHoldings);
                 if ($show) {
                     $groupKey = $this->getHoldingsGroupKey($copy);
@@ -272,8 +273,8 @@ class Holds
     {
         $holdings = [];
 
-        if (count($result)) {
-            foreach ($result as $copy) {
+        if ($result['total']) {
+            foreach ($result['holdings'] as $copy) {
                 $show = !in_array($copy['location'], $this->hideHoldings);
                 if ($show) {
                     if ($holdConfig) {
@@ -317,8 +318,8 @@ class Holds
         $holds_override = isset($this->config->Catalog->allow_holds_override)
             ? $this->config->Catalog->allow_holds_override : false;
 
-        if (count($result)) {
-            foreach ($result as $copy) {
+        if ($result['total']) {
+            foreach ($result['holdings'] as $copy) {
                 $show = !in_array($copy['location'], $this->hideHoldings);
                 if ($show) {
                     $groupKey = $this->getHoldingsGroupKey($copy);
@@ -523,8 +524,7 @@ class Holds
         // Build Params
         return [
             'action' => $action, 'record' => $details['id'],
-            'source' => isset($details['source'])
-                ? $details['source'] : DEFAULT_SEARCH_BACKEND,
+            'source' => $details['source'] ?? DEFAULT_SEARCH_BACKEND,
             'query' => $queryString, 'anchor' => "#tabnav"
         ];
     }

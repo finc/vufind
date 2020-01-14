@@ -2,7 +2,7 @@
 /**
  * Additional functionality for API controllers.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) The National Library 2015-2016.
  *
@@ -115,7 +115,8 @@ trait ApiTrait
      */
     protected function isAccessDenied($permission)
     {
-        $auth = $this->serviceLocator->get('ZfcRbac\Service\AuthorizationService');
+        $auth = $this->serviceLocator
+            ->get(\ZfcRbac\Service\AuthorizationService::class);
         if (!$auth->isGranted($permission)) {
             return $this->output([], self::STATUS_ERROR, 403, 'Permission denied');
         }

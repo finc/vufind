@@ -1,0 +1,180 @@
+<?=$this->doctype('HTML5')?>
+<html lang="<?=$this->layout()->userLang?>">
+  <head>
+    <?$this->headThemeResources()?>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="robots" content="noindex, nofollow" />
+    <? $this->headTitle()->setPostfix(' - '.$this->client()->getTitle());            
+     echo $this->headTitle()
+    ?>
+    
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <?$this->headMeta()->appendName('author', 'Bibliotheks Service Zentrum Baden Württemberg (BSZ)')?>
+    <?$this->headMeta()->appendName('keywords', 'boss2, boss, bsz, bibliothek, bücher, zeitschriften')?>
+    <?$this->headMeta()->appendName('applcation-name', 'BSZ One Step Search (BOSS) v2')?>
+    <?=$this->headMeta()?>
+    <?
+      // Set up OpenSearch link:
+      $this->headLink(
+        array(
+          'href' => $this->url('search-opensearch') . '?method=describe',
+          'type' => 'application/opensearchdescription+xml',
+          'title' => $this->transEsc('Library Catalog Search'),
+          'rel' => 'search'
+        )
+      );
+    ?>
+    <!-- RTL styling -->
+    <? if ($this->layout()->rtl) {
+      $this->headLink()->appendStylesheet('vendor/bootstrap-rtl.min.css');
+    } ?>
+    <?=$this->headLink()?>    
+    <?=$this->headStyle()?>
+    <?
+      // Set global path for Javascript code:
+      $this->headScript()->prependScript("path = '" . rtrim($this->url('home'), '/') . "';");
+
+      // Deal with cart stuff:
+      if (!isset($this->renderingError)) {
+        $this->jsTranslations()->addStrings(
+          array(
+            'add_tag_success' => 'add_tag_success',
+            'bulk_email_success' => 'bulk_email_success',
+            'bulk_noitems_advice' => 'bulk_noitems_advice',
+            'bulk_save_success' => 'bulk_save_success',
+            'close' => 'close',
+            'libphonenumber_invalid' => 'libphonenumber_invalid',
+            'libphonenumber_invalidcountry' => 'libphonenumber_invalidcountry',
+            'libphonenumber_invalidregion' => 'libphonenumber_invalidregion',
+            'libphonenumber_notanumber' => 'libphonenumber_notanumber',
+            'libphonenumber_toolong' => 'libphonenumber_toolong',
+            'libphonenumber_tooshort' => 'libphonenumber_tooshort',
+            'libphonenumber_tooshortidd' => 'libphonenumber_tooshortidd',
+            'loading' => 'Loading',
+            'sms_success' => 'sms_success',
+            'number_thousands_separator' => ['number_thousands_separator', null, ',']
+          )
+        );
+        $cart = $this->cart();
+        $this->jsTranslations()->addStrings([
+            'openurl_tooltip_left' => 'openurl_tooltip_left',
+            'openurl_tooltip_right' => 'openurl_tooltip_right',
+            'openurl_tooltip_green' => 'openurl_tooltip_green',
+            'openurl_tooltip_yellow' => 'openurl_tooltip_yellow',
+            'openurl_tooltip_red' => 'openurl_tooltip_red',
+            'no_result' => 'no result'
+        ]);
+        if ($cart->isActive()) {
+          $this->headScript()->appendFile("vendor/cookies.js", null, ['async' => '']);
+          $this->headScript()->appendFile("cart.js", null, ['async' => 'true']);
+          $domain = $cart->getCookieDomain();
+          $this->headScript()->appendScript(
+            'var cartCookieDomain = ' . (!empty($domain) ? "'$domain'" : 'false') . ';'
+          );
+          $this->jsTranslations()->addStrings(
+            array(
+              'addBookBag' => 'Add to Book Bag',
+              'bookbagFull' => 'bookbag_full_msg',
+              'bookbagMax' => $cart->getMaxSize(),
+              'bookbagStatusFull' => 'bookbag_full',
+              'confirmDelete' => 'confirm_delete',
+              'confirmEmpty' => 'bookbag_confirm_empty',
+              'itemsAddBag' => 'items_added_to_bookbag',
+              'itemsInBag' => 'items_already_in_bookbag',
+              'removeBookBag' => 'Remove from Book Bag',
+              'viewBookBag' => 'View Book Bag'
+            )
+          );
+        }
+        $this->headScript()->appendScript($this->jsTranslations()->getScript());
+        $this->headScript()->appendScript(
+          'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'
+        );
+      }
+
+      // Session keep-alive
+      if ($this->keepAlive()) {
+          $this->headScript()->appendScript('var keepAliveInterval = '
+            . $this->keepAlive());
+          $this->headScript()->appendFile("keep_alive.js");
+      }
+    ?>
+    <?=$this->headScript()?>
+  </head>
+  <body class="<?=$this->layoutClass('offcanvas-row')?><? if ($this->layout()->rtl): ?> rtl<? endif; ?>">
+    <? // Set up the search box -- there are three possible cases:
+      // 1. No search box was set; we should default to the normal box
+      // 2. It was set to false; we should display nothing
+      // 3. It is set to a custom string; we should display the provided version
+      // Set up default search box if no data was provided from the template;
+      // this covers case 1.  Cases 2 and 3 are then covered by logic below.
+      if (!isset($this->layout()->searchbox)) {
+        $this->layout()->searchbox = $this->render('search/searchbox.phtml');
+      }
+      if (!isset($this->layout()->searchtabs)) {
+        $this->layout()->searchtabs = $this->render('search/searchbox.phtml');
+      }
+      
+    ?>
+    <header>
+      <div class="container navbar navbar-default navbar-fixed-top">
+            <?=$this->render('header.phtml')?>              
+          
+      </div>
+    </header>      
+    <div role="main" class="main">
+        <div class="container breadcrumbs">
+        <? if((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
+          && !empty($this->layout()->breadcrumbs)
+          && $this->layout()->breadcrumbs !== false
+        ): ?>
+          <ul class="breadcrumb hidden-print">
+          <? if(is_array($this->layout()->breadcrumbs)): ?>
+            <? if(count($this->layout()->breadcrumbs) > 1): ?>
+              <?=$this->render('breadcrumbs/multi.phtml', array(
+                  'parents' => $this->layout()->breadcrumbs,
+                  'title'   => $this->layout()->title,
+                  'end'     => $this->layout()->breadcrumbEnd,
+                  'from'    => $this->layout()->from
+                )) ?>
+            <? else: ?>
+              <?=$this->render('breadcrumbs/default.phtml', array(
+                  'parents' => $this->layout()->breadcrumbs,
+                  'title'   => $this->layout()->title
+                )) ?>
+            <? endif; ?>
+          <? else: ?>
+            <?=$this->layout()->breadcrumbs ?>
+          <? endif; ?>
+          </ul>
+        <? endif; ?>
+        </div>
+      <div class="container">
+        <?=$this->layout()->content ?>
+      </div>
+    </div>
+    <footer class="hidden-print">
+      <div class="container">
+        <?=$this->render('footer.phtml')?>
+      </div>
+    </footer>
+    <!-- MODAL IN CASE WE NEED ONE -->
+    <div id="modal" class="modal fade hidden-print" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 id="modalTitle" class="modal-title">...</h4>
+          </div>
+          <div class="modal-body"><?=$this->transEsc('Loading') ?>...</div>
+        </div>
+      </div>
+    </div>
+    <div class="offcanvas-toggle" data-toggle="offcanvas"><i class="fa"></i></div>
+    <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
+    <?=$this->googleanalytics()?>
+    <?=$this->piwik()?>
+    <?=$this->render('bsz/browserupdate.phtml')?>
+  </body>
+</html>

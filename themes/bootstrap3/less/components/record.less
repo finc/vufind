@@ -1,5 +1,5 @@
 .record .media-body h3 { margin-top: 0; } // Align title with top of image
-.recordcover { max-height: 300px; max-width: 110px;} // Keep the image from getting out of control
+.recordcover { max-height: 300px; } // Keep the image from getting out of control
 .browzine .recordcover {
   margin-top: 2px;
   margin-bottom: 4px;
@@ -28,8 +28,8 @@
 .record-nav > li,
 .btn-bookbag-toggle { width: 100%; }
 .record-nav > li > a { padding: .5rem; }
-/*.record-nav > li > a,
-.btn-bookbag-toggle { text-align: center; }*/
+.record-nav > li > a,
+.btn-bookbag-toggle { text-align: center; }
 @media(min-width: 768px) {
   .record-nav > li,
   .btn-bookbag-toggle { width: auto; }
@@ -124,4 +124,34 @@
 .marc-row-007,
 .marc-row-008 {
   white-space: pre-wrap;
+}
+
+/* ------ Relais ------ */
+.relaisLink { display: inline-block; }
+
+/* ------ Collection ------ */
+.collection-list-controls {
+  display: flex;
+  flex-flow: row wrap;
+
+  .collection-control {
+    white-space: nowrap;
+    margin: 0 0.5rem 0 0;
+  }
+}
+.collectionDetails .active-filters .filters {
+  padding: 0 0 5px 0;
+}
+.collection-list-results {
+  margin-top: 0.5rem;
+}
+
+/* ------ Tabs ------ */
+.tab-pane::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+.tab-pane .result {
+  margin-left: 0;
 }

@@ -5,7 +5,7 @@
  * Based on the proof-of-concept-driver by Till Kinstler, GBV.
  * Relaunch of the daia driver developed by Oliver Goldschmidt.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Jochen Lienhard 2014.
  *
@@ -51,6 +51,9 @@ use Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 class DAIA extends AbstractBase implements
     HttpServiceAwareInterface, LoggerAwareInterface
 {
+    use CacheTrait {
+        getCacheKey as protected getBaseCacheKey;
+    }
     use \VuFindHttp\HttpServiceAwareTrait;
     use \VuFind\Log\LoggerAwareTrait;
 
@@ -207,7 +210,7 @@ class DAIA extends AbstractBase implements
      */
     protected function getCacheKey($suffix = null)
     {
-        return parent::getCacheKey(md5($this->baseURL) . $suffix);
+        return $this->getBaseCacheKey(md5($this->baseUrl) . $suffix);
     }
 
     /**
@@ -380,14 +383,17 @@ class DAIA extends AbstractBase implements
      * This is responsible for retrieving the holding information of a certain
      * record.
      *
-     * @param string $id     The record id to retrieve the holdings for
-     * @param array  $patron Patron data
+     * @param string $id      The record id to retrieve the holdings for
+     * @param array  $patron  Patron data
+     * @param array  $options Extra options (not currently used)
      *
      * @return array         On success, an associative array with the following
      * keys: id, availability (boolean), status, location, reserve, callnumber,
      * duedate, number, barcode.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getHolding($id, array $patron = null)
+    public function getHolding($id, array $patron = null, array $options = [])
     {
         return $this->getStatus($id);
     }
@@ -490,7 +496,7 @@ class DAIA extends AbstractBase implements
                 list($responseMediaType) = array_pad(
                     explode(
                         ';',
-                        $result->getHeaders()->get('ContentType')->getFieldValue(),
+                        $result->getHeaders()->get('Content-Type')->getFieldValue(),
                         2
                     ),
                     2,
@@ -750,7 +756,7 @@ class DAIA extends AbstractBase implements
                 $result_item['item_id'] = $item['id'];
                 // custom DAIA field used in getHoldLink()
                 $result_item['ilslink']
-                    = (isset($item['href']) ? $item['href'] : $doc_href);
+                    = ($item['href'] ?? $doc_href);
                 // count items
                 $number++;
                 $result_item['number'] = $this->getItemNumber($item, $number);
@@ -1058,7 +1064,7 @@ class DAIA extends AbstractBase implements
     }
 
     /**
-     * Helper function to determine the holdtype availble for current item.
+     * Helper function to determine the holdtype available for current item.
      * DAIA does not genuinly allow distinguishing between holdable and recallable
      * items. This could be achieved by usage of limitations but this would not be
      * shared functionality between different DAIA implementations (thus should be
@@ -1133,8 +1139,7 @@ class DAIA extends AbstractBase implements
      */
     protected function getItemDepartmentLink($item)
     {
-        return isset($item['department']['href'])
-            ? $item['department']['href'] : false;
+        return $item['department']['href'] ?? false;
     }
 
     /**

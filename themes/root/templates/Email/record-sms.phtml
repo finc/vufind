@@ -1,4 +1,4 @@
-<?
+<?php
     // This is a text-only email template; do not include HTML!
 
     // If this record supports real-time status, we'll assume it's a local
@@ -6,6 +6,9 @@
     // we'll just show URL and title.  This prioritization is important,
     // since text messages can be short, and we want the most important stuff
     // at the top!
+    $recordUrl = $this->shortenUrl(
+        $this->serverUrl($this->recordLink()->getUrl($this->driver))
+    );
     if ($this->driver->supportsAjaxStatus()) {
         $holdings = $this->driver->getRealTimeHoldings();
 
@@ -18,7 +21,7 @@
         foreach ($holdings['holdings'] as $details) {
             $location = $details['location'];
             foreach ($details['items'] as $item) {
-                $callno = isset($item['callnumber']) ? $item['callnumber'] : false;
+                $callno = $item['callnumber'] ?? false;
                 if ($item['availability']) {
                     if ($callno) {
                         // Best case scenario -- available item with call number!
@@ -46,9 +49,9 @@
             echo $this->translate('Location') . ': ' . trim($location) . "\n";
         }
         echo $this->driver->getBreadcrumb() . "\n";
-        echo $this->serverUrl($this->recordLink()->getUrl($this->driver)) . "\n";
+        echo $recordUrl . "\n";
     } else {
-        echo $this->serverUrl($this->recordLink()->getUrl($this->driver)) . "\n";
+        echo $recordUrl . "\n";
         echo $this->driver->getBreadcrumb() . "\n";
     }
 ?>

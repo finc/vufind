@@ -22,9 +22,10 @@ namespace Bsz\RecordDriver;
 
 use Bsz\FormatMapper,
     VuFindCode\ISBN;
+    
 
 /**
- * Description of SolrMarc
+ * This is the base BSZ SolrMarc class 
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
@@ -34,42 +35,28 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     use \VuFind\RecordDriver\IlsAwareTrait;
     use \VuFind\RecordDriver\MarcReaderTrait;
     use \VuFind\RecordDriver\MarcAdvancedTrait;
+    use HelperTrait;
 
-    const DELIMITER = ' ';
-    // Multipart Levels
-    const MULTIPART_PART = 'part';
-    const MULTIPART_COLLECTION = 'collection';
-    const NO_MULTIPART = 'no_multipart';
-    // Bibliographic Levels
-    const BIBLIO_MONO_COMPONENT = 'MonographPart';
-    const BIBLIO_SERIAL_COMPONENT = 'SerialPart';
-    const BIBLIO_COLLECTION = 'Collection';
-    const BIBLIO_SUBUNIT = 'Subunit';
-    const BIBLIO_MONOGRAPH = 'Monograph';
-    const BIBLIO_SERIAL = 'Serial';
-    const BIBLIO_INTEGRATED = 'Integrated';
-    // Simple breakdown of above 
-    const INDEPENDENT = 'independent';
-    const COLLECTION = 'collection';
-    const PART = 'part';
-
-    /**
-     *
-     * @var FormatMapper 
-     */
     protected $mapper;
-
-    /**
-     *
-     * @var \VuFind\SearchRunner
-     */
+    protected $formats;
     protected $runner;
+    protected $container = [];
+    
+    /**
+     * 
+     * @param FormatMapper $mapper
+     * @param \Bsz\Config\Client $mainConfig
+     * @param type $recordConfig
+     * @param type $searchSettings
+     */
 
-    public function __construct(FormatMapper $Mapper, $mainConfig = null, $recordConfig = null, $searchSettings = null)
+    public function __construct(FormatMapper $mapper, 
+            \Bsz\Config\Client $mainConfig = null, 
+            $recordConfig = null,
+            $searchSettings = null)
     {
-
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
-        $this->mapper = $Mapper;
+        $this->mapper = $mapper;
     }
 
     /**
@@ -103,7 +90,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                     if (!empty($data)) {
                         // Are we concatenating fields or storing them separately?
                         if ($concat) {
-                            $currentLine .= $data . static::DELIMITER;
+                            $currentLine .= $data . ' ';
                         } else {
                             $matches[] = $data;
                         }
@@ -358,6 +345,29 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         }
         return false;
     }
+    
+        /**
+     * Ist der Titel ein EBook? 
+     * Wertet die Felder 007/00, 007/01 und Leader 7 aus
+     * @return boolean
+     */
+    public function isElectronic()
+    {
+        $f007 = $leader = null;
+        $f007_0 = '';
+        $f007 = $this->getMarcRecord()->getFields("007", false);
+        foreach ($f007 as $field) {
+            $data = strtoupper($field->getData());
+            if (strlen($data) > 0) {
+                $f007_0 = $data{0};
+            }            
+        }
+        if ($f007_0 == 'C') {
+            return true;                
+        }    
+        return false;
+    }
+    
     /**
      * Ist der Titel ein Buch, das schließt auch eBooks mit ein!
      * Wertet den Leader aus
@@ -462,28 +472,38 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                         $tmpSubfields[$subfield->getCode()] = $isil;                        
                 } elseif ($subfield->getCode() == 'd') {
                     $ill_status = '';
+                    $ill_icon = '';
                     switch ($subfield->getData()) {
-                        case 'a': $ill_status = 'ill_status_a';
+                        case 'a': $ill_status = 'ILL::status_a';
+                            $ill_icon = 'fa-check text-success    ';
                             break;
-                        case 'b': $ill_status = 'ill_status_b';
+                        case 'b': $ill_status = 'ILL::status_b';
+                            $ill_icon = 'fa-copy';
                             break;
-                        case 'c': $ill_status = 'ill_status_c';
+                        case 'c': $ill_status = 'ILL::status_c';
+                            $ill_icon = 'fa-check text-success    ';
                             break;
-                        case 'd': $ill_status = 'ill_status_d';
+                        case 'd': $ill_status = 'ILL::status_d';
+                            $ill_icon = 'fa-times text-danger';
                             break;
-                        case 'e': $ill_status = 'ill_status_e';
+                        case 'e': $ill_status = 'ILL::status_e';
+                            $ill_icon = 'fa-network-wired text-success';
                             break;
                         case 'n':
                         case 'N':
-                            $ill_status = 'ill_status_N';
+                            $ill_status = 'ILL::status_N';
+                            $ill_icon = 'fa-times text-danger';
                             break;
                         case 'l':
-                        case 'L': $ill_status = 'ill_status_L';
+                        case 'L': $ill_status = 'ILL::status_L';
+                            $ill_icon = 'fa-check text-success    ';
                             break;                 
-                        default: $ill_status = 'ill_status_d';
+                        default: $ill_status = 'ILL::status_d';
+                            $ill_icon = 'fa_times text-danger';
                     }
                     $tmpSubfields['d'] = $subfield->getData();
                     $tmpSubfields['ill_status'] = $ill_status;
+                    $tmpSubfields['ill_icon'] = $ill_icon;
                 } elseif (!isset($tmpSubfields[$subfield->getCode()])) {
                     // without $recurringSubfields, only the first occurence is 
                     // included
@@ -518,38 +538,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             }
         }
         return [];
-    }
-
-    /**
-     * Returns ISBN as string. ISBN-13 preferred
-     *
-     * @return mixed
-     */
-    public function getCleanISBN()
-    {
-
-        // Get all the ISBNs and initialize the return value:
-        $isbns = $this->getISBNs();
-        $isbn10 = false;
-
-        // Loop through the ISBNs:
-        foreach ($isbns as $isbn) {
-            // Strip off any unwanted notes:
-            if ($pos = strpos($isbn, ' ')) {
-                $isbn = substr($isbn, 0, $pos);
-            }
-
-            // If we find an ISBN-10, return it immediately; otherwise, if we find
-            // an ISBN-13, save it if it is the first one encountered.
-            $isbnObj = new ISBN($isbn);
-            if ($isbn13 = $isbnObj->get13()) {
-                return $isbn13;
-            }
-            if (!$isbn10) {
-                $isbn10 = $isbnObj->get10();
-            }
-        }
-        return $isbn10;
     }
 
     /**
@@ -688,6 +676,183 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         
         return $params;
     }
+    
+    /**
+     * Get the call number associated with the record (empty string if none).
+     *
+     * @return string
+     */
+    public function getCallNumber() : string
+    {
+        return $this->getPPN();
+    }
+    
+    /**
+     * Get PPN of Record
+     *
+     * @return string
+     */
+    
+    public function getPPN() : string
+    {
+        return $this->getMarcRecord()->getField('001')->getData();
+    }
+    
+        /**
+     * Returns ISBN as string. ISBN-13 preferred
+     *
+     * @return mixed
+     */
+    public function getCleanISBN() : string
+    {
+
+        // Get all the ISBNs and initialize the return value:
+        $isbns = $this->getISBNs();
+        $isbn10 = false;
+
+        // Loop through the ISBNs:
+        foreach ($isbns as $isbn) {
+            // Strip off any unwanted notes:
+            if ($pos = strpos($isbn, ' ')) {
+                $isbn = substr($isbn, 0, $pos);
+            }
+
+            // If we find an ISBN-10, return it immediately; otherwise, if we find
+            // an ISBN-13, save it if it is the first one encountered.
+            $isbnObj = new ISBN($isbn);
+            if ($isbn13 = $isbnObj->get13()) {
+                return $isbn13;
+            }
+            if (!$isbn10) {
+                $isbn10 = $isbnObj->get10();
+            }
+        }
+        return $isbn10;
+    }
+    
+    /**
+     * Get just the base portion of the first listed ISSN (or false if no ISSNs).
+     *
+     * @return mixed
+     */
+    public function getCleanISSN() : string
+    {
+        $issns = $this->getISSNs();
+        if (empty($issns)) {
+            return false;
+        }
+        $issn = $issns[0];
+        if ($pos = strpos($issn, ' ')) {
+            $issn = substr($issn, 0, $pos);
+        }
+        // ISSN without dash are treatened as invalid be JOP
+        if (strpos($issn, '-') === false) {
+            $issn = substr($issn, 0, 4).'-'.substr($issn, 4, 4);
+        }
+        return $issn;
+    }
+    
+    /**
+     * Get an array of all the languages associated with the record.
+     *
+     * @return array
+     */
+    public function getLanguages() : array
+    {
+        $languages = [];
+        $fields = $this->getMarcRecord()->getFields('041');
+        foreach ($fields as $field) {
+                foreach ($field->getSubFields('a') as $sf) {
+                    $languages[] = $sf->getData();
+                }
+        }
+        return $languages;
+    }
+    
+    /**
+     * Get the publishers of the record.
+     *
+     * @return array
+     */
+    public function getPublishers() : array 
+    {
+        $fields = [
+            260 => 'b',
+            264 => 'b',
+        ];
+        return $this->getFieldsArray($fields);
+    }
+    
+     /**
+     * Get the full title of the record.
+     *
+     * @return string
+     */
+    public function getTitle() : string
+    {
+        $tmp = [
+            $this->getShortTitle(),
+            ' : ',
+            $this->getSubtitle(),
+        ];
+        $title = implode(' ', $tmp);
+        return $this->cleanString($title);
+    }
+    
+    /**
+     * Get the short (pre-subtitle) title of the record.
+     *
+     * @return string
+     */
+    public function getShortTitle() : string
+    {
+        $shortTitle = $this->getFirstFieldValue('245', array('a'), false);
+
+        // Sortierzeichen weg
+        if (strpos($shortTitle, '@') !== false) {
+            $occurrence = strpos($shortTitle, '@');
+            $shortTitle = substr_replace($shortTitle, '', $occurrence, 1);
+        }
+        // remove all non printable chars - they max look ugly in <title> tags
+//        $shortTitle = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $shortTitle);
+
+        return $this->cleanString($shortTitle);
+    }
+    
+        /**
+     * Get the subtitle of the record.
+     *
+     * @return string
+     */
+    public function getSubtitle() : string
+    {
+        $subTitle = $this->getFirstFieldValue('245', array('b'), false);
+
+        // Sortierzeichen weg
+        if (strpos($subTitle, '@') !== false) {
+            $occurrence = strpos($subTitle, '@');
+            $subTitle = substr_replace($subTitle, '', $occurrence, 1);
+        }
+
+        return $this->cleanString($subTitle);
+    }
+    
+    
+    /**
+     * Used in ResultScroller Class. Does not work when string is interlending
+     * @return string
+     */
+    
+    public function getResourceSource()
+    {
+        $id = $this->getSourceIdentifier();
+        return $id == 'Solr' ? 'VuFind' : $id;
+    }
+    
+    
+    
+    
+
        
 
 }

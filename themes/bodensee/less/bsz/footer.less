@@ -10,9 +10,6 @@
                 margin-right: 2em;
             }            
         }
-        div {
-            padding-bottom: 1em;            
-        }
     }    
     
 }
@@ -20,22 +17,18 @@
 /* footer - auf Grundlage von finc */
 footer {
     hr {
-        border: 0;
+        border: 0px solid @gray-lighter;
         margin-top: 15px;
         margin-bottom: 15px;
     }
-     .row div .well {
-        /*#gradient > .vertical(@start-color: @gray-lighter; @end-color: lighten(@gray-light, 10%));*/
-/**        border-radius: 0.5em; /* CSS3 */
-        /*border: 0.09em solid #ccc;*/
-        /*box-shadow: 0 0.09em 0.375em @gray-light;*/
+    .row div .well {
         @media (min-width: @screen-sm-min) {
             min-height: 10.1em;            
             
         }
         @media (max-width: @screen-xs-max) {
-            padding-top: 8px;
-            padding-bottom: 8px;
+            padding-top: 0;
+            padding-bottom: 0;
         }
         @media (min-width: @screen-sm-min) {
             padding-top: 15px;
@@ -45,20 +38,51 @@ footer {
         margin-bottom: 0.2em;
         padding-left: 15px;
         padding-right: 15px;
-        background-color: @gray-lighter;
+        background-color: transparent;
+        border: 0;
     }
 
-    .well ul {
-        list-style: none outside none;
-        margin: 0;
-        padding: 0;
-        li a {
-            text-decoration: none;
-        }        
+    .well {
+        .box-shadow(inset 0 0px 0px rgba(0, 0, 0, 0));
+        h4, h5 {
+            color: lighten(@text-color, 10%);
+            font-weight: bold;
+        }
+        
+        ul {
+            list-style: none outside none;
+            margin: 0;
+            padding: 0;
+
+            li {
+                padding-bottom: 5px;
+                a:hover {
+                    color: @brand-primary;
+                }
+                a {
+                    color: lighten(@text-color, 10%);
+                }
+                a,a:hover {
+                    text-decoration: none;
+                    font-size: @font-size-small;
+                }            
+            }
+
+        }
     }
     small {
         float: right;
         margin: 5px 15px;
+        font-size: @font-size-small;
+        color: @gray;
+        a, a:hover {
+            color: @gray;
+            
+        }
     }
     
+}
+
+.graybg {
+    background-color: @gray-lighter;
 }

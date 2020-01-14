@@ -3,7 +3,7 @@
 /**
  * EIT backend.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Julia Bauder 2013.
  *
@@ -138,8 +138,6 @@ class Backend extends AbstractBackend
      * @param QueryBuilder $queryBuilder Query builder
      *
      * @return void
-     *
-     * @todo Typehint QueryBuilderInterface
      */
     public function setQueryBuilder(QueryBuilder $queryBuilder)
     {

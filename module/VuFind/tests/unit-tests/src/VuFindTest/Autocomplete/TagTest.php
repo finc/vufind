@@ -2,7 +2,7 @@
 /**
  * Tag autocomplete test class.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2011.
  *
@@ -68,12 +68,12 @@ class TagTest extends \VuFindTest\Unit\DbTestCase
         ];
 
         // Fake services:
-        $tagTable = $this->getMockBuilder('VuFind\Db\Table\Tags')
+        $tagTable = $this->getMockBuilder(\VuFind\Db\Table\Tags::class)
             ->disableOriginalConstructor()->setMethods(['matchText'])->getMock();
         $tagTable->expects($this->once())->method('matchText')
             ->with($this->equalTo('foo'))
             ->will($this->returnValue($tags));
-        $tableManager = $this->getMockBuilder('VuFind\Db\Table\PluginManager')
+        $tableManager = $this->getMockBuilder(\VuFind\Db\Table\PluginManager::class)
             ->disableOriginalConstructor()->setMethods(['get'])->getMock();
         $tableManager->expects($this->once())->method('get')
             ->with($this->equalTo('Tags'))

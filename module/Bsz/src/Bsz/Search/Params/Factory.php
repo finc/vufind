@@ -19,7 +19,7 @@
  */
 
 namespace Bsz\Search\Params;
-use \Zend\ServiceManager\ServiceManager;
+use Interop\Container\ContainerInterface;
 
 /**
  * BSz Search params Factory
@@ -34,13 +34,12 @@ class Factory {
      *
      * @return \VuFind\Search\Solr\Params
      */
-    public static function getSolr(ServiceManager $sm)
+    public static function getSolr(ContainerInterface $container)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config');
-        $options = $sm->getServiceLocator()
-            ->get('VuFind\SearchOptionsPluginManager')->get('solr');
-        $dedup = $sm->getServiceLocator()->get('Bsz/Config/Dedup');
-        $client = $sm->getServiceLocator()->get('bsz\client');
+        $config = $container->get('VuFind\Config');
+        $options = $container->get('VuFind\SearchOptionsPluginManager')->get('solr');
+        $dedup = $container->get('Bsz\Config\Dedup');
+        $client = $container->get('Bsz\Config\Client');
         $params = new \Bsz\Search\Solr\Params($options, $config, null, $dedup, $client);
 
         return $params;

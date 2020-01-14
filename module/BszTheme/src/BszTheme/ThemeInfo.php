@@ -67,6 +67,8 @@ class ThemeInfo extends \VuFindTheme\ThemeInfo {
             // Here, we make the css files dynamic
             $first = array_keys($this->allThemeInfo)[0];
             $second = array_keys($this->allThemeInfo)[1];
+            $third = array_keys($this->allThemeInfo)[2];
+            
             $this->allThemeInfo[$first]['favicon'] = $this->addClientFavicon();
             
             $css = isset($this->allThemeInfo[$first]['css']) ? $this->allThemeInfo[$first]['css'] : [];   
@@ -79,7 +81,14 @@ class ThemeInfo extends \VuFindTheme\ThemeInfo {
                     if ($value == 'compiled.css') {
                         unset($this->allThemeInfo[$second]['css'][$key]);
                     }
-                }
+                }      
+            }
+            if (isset($this->allThemeInfo[$third]['css'])) {
+                foreach ($this->allThemeInfo[$third]['css'] as $key => $value) {
+                    if ($value == 'compiled.css') {
+                        unset($this->allThemeInfo[$third]['css'][$key]);
+                    }
+                }      
             }
         }
         return $this->allThemeInfo;

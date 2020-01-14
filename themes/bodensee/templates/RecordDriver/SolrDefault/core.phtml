@@ -40,7 +40,11 @@
            $subtitle = $this->driver->getTitleSection();
         ?>
         <h3 property="name">
-        <?=$this->escapeHtml($title)?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
+        <? if (is_array($title)): ?>    
+            <?=$this->escapeHtml($title[0])?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
+        <? else: ?>
+            <?=$this->escapeHtml($title)?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
+        <? endif; ?>
         <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
         </h3>
 
@@ -52,36 +56,41 @@
         <? endif; ?>
         <?/* Display Main Details */?>
         <table class="table table-striped">        
-            <? $container = $this->driver->getContainer(); if (count($container) > 0 ) : ?>
+            <? $container = $this->driver->tryMethod('getContainer'); if ($container) : ?>            
             <tr>
                 <th><?=$this->transEsc('collective_editions')?>:</th>
                 <td><? foreach($container as $cont): ?>
-                    <a class="internal" href="<?=$this->RecordLink()->getUrl($cont)?>"><?=$this->string()->cleanEsc($cont->getTitle())?></a><br/>
+                    <a class="internal" href="<?=$this->recordLink()->getUrl($cont)?>"><?=$this->string()->cleanEsc($cont->getTitle())?></a><br/>
                 <? endforeach; ?></td>
             </tr>
             <? endif; ?>      
 
-            <? $volume = $this->driver->getVolume(); ?>
+            <? $volume = $this->driver->tryMethod('getVolume'); ?>
             <? if (!empty($volume)): ?>
                 <tr>
                   <th><?=$this->transEsc('Volume/Issue')?>: </th>
-                  <td><?=$this->escapeHTML($volume)?></td>
+                  <td><?=$this->escapeHtml($volume)?></td>
                 </tr>
             <? endif; ?> 
 
             <?=$this->render('RecordDriver/SolrDefault/parts/series.phtml')?>
+
             <? $journalTitle = $this->driver->getContainerTitle(); 
-              $issue=$this->driver->getContainerIssue(); 
-              $relParts=$this->driver->getContainerRelParts(); 
-              $year=$this->driver->getContainerYear(); 
-              $pages=$this->driver->getContainerPages(); 
+              $issue =      $this->driver->getContainerIssue(); 
+              $relParts =   $this->driver->getContainerRelParts(); 
+              $year =       $this->driver->getContainerYear(); 
+              $pages =      $this->driver->getContainerPages(); 
             if ($this->driver->isArticle() && !empty($journalTitle)): ?>
                  <tr>
                 <th><?=$this->transEsc('Published in')?>: </th>
                 <td>
-                       <?= $this->string()->cleanEsc($journalTitle)?><!--
-                    --><? if (!empty($issue)): ?><?= $this->string()->cleanEsc($issue) ?><? endif; ?><!--
-                    --><? if (!empty($relParts)): ?>. - <?=$relParts?><? else: ?><? if (!empty($year)): ?>. - <?=$this->string()->cleanEsc($year)?><? endif; ?><? if (!empty($pages)): ?>, S. <?=$pages?><? endif; ?><? endif; ?>            
+                    <?= $this->string()->cleanEsc($journalTitle)?>
+                    <? if (!empty($issue)): ?>
+                        <?= $this->string()->cleanEsc($issue) ?>                    
+                    <? else: ?>    
+                        <? if (!empty($relParts)): ?>. - <?=$relParts?><? else: ?><? if (!empty($year)): ?>. - <?=$this->string()->cleanEsc($year)?><? endif; ?><? if (!empty($pages)): ?>, S. <?=$pages?><? endif; ?><? endif; ?>            
+                    <? endif; ?>
+                    
                 </td>
             </tr>
             <? endif; ?>
@@ -98,7 +107,7 @@
                   <? endif ; ?>
                 </td>
             </tr>
-            <? endif; ?>     
+            <? endif;?>     
             
             <? $nextTitles = $this->driver->getNewerTitles(); $prevTitles = $this->driver->getPreviousTitles(); ?>
             <? if (!empty($nextTitles)): ?>
@@ -121,17 +130,15 @@
             </tr>
             <? endif; ?>
             
-            <? $authors = $this->driver->getDeduplicatedAuthors(); ?>
-            <? $noLivePrimaryAuthor = $this->driver->getPrimaryAuthorNoLive(); ?>
-            <? $gnd_author = preg_replace('/\(.*\)/', '', $this->driver->getPrimaryAuthorGND()); ?>
-            <? if (isset($authors['main']) && !empty($authors['main'])): ?>
+            <? $authors = $this->driver->getDeduplicatedAuthors(['role', 'gnd', 'live']); ?>
+
+            <? if (isset($authors['primary']) && !empty($authors['primary'])): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author">
-                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLivePrimaryAuthor)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($authors['main'])?></a>
-                    <? if ($gnd_author != ''): ?>
-                       (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_author?>" class="searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_author ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a>)
-                    <? endif; ?>
+                    <? foreach ($authors['primary'] as $name => $info): ?>
+                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                    <? endforeach; ?>
                 </td>
             </tr>
             <? endif; ?>
@@ -140,35 +147,24 @@
             <tr>
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
                 <td property="creator">
-                <? foreach ($authors['corporate'] as $corp): ?>
-                    <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($corp)?>&amp;type=Author<?= $hiddenFilterString ?>"><?=$this->escapeHtml($corp)?></a><br/>
+                <? foreach ($authors['corporate'] as $name => $info): ?>
+                    <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                    <br/>
                 <? endforeach; ?>
                 </td>
             </tr>
-            <? endif; ?>
-            
+            <? endif; ?>            
             <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
-            <? $noLiveSecondaryAuthors = $this->driver->getSecondaryAuthorsNoLive(); ?>
-            <? $gnd_au2 = preg_replace('/\(.*\)/', '', $this->driver->getSecondaryAuthorGND()); ?>
-            <? $role_au2 = $this->driver->getSecondaryAuthorsRole(); ?>
             <tr>
                 <th><?=$this->transEsc('Other Authors')?>: </th>
-                <td><? $i = 0;?>
-                    <span>
-                    <? foreach ($authors['secondary'] as $k => $field): ?>
-                        <?=($i++ == 0)?'':', '?>
-                        <span property="contributor">
-                            <a class="author" href="<?=$this->url('search-results')?>?lookfor=<?=urlencode($noLiveSecondaryAuthors[$k])?>&amp;type=Author<?= $hiddenFilterString ?>">
-                                <?=$this->escapeHtml($field)?>
-                            </a>
-                        </span>
-                        <? if (isset($gnd_au2[$k])): ?>
-                            (<a data-placement="right" data-toggle="tooltip" title="<?=$gnd_au2[$k]?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?= $gnd_au2[$k] ?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$gnd_au2[$k]?></span>)<? endif; ?><? if (isset($role_au2[$k])): ?>; <?=$this->transEsc('CreatorRoles::'.$role_au2[$k]);?><? endif; ?>
+                <td>
+                    <? foreach ($authors['secondary'] as $name => $info): ?>
+                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                        <br/>
                     <? endforeach; ?>
-                    </span>
                 </td>
             </tr>
-            <? endif; ?>
+            <? endif;?>
 
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
             <tr>
@@ -179,7 +175,7 @@
             </tr>
             <? endif; ?>  
 
-            <? $scale = $this->driver->getScale(); if (!empty($scale)): ?>
+            <? $scale = $this->driver->tryMethod('getScale'); if (!empty($scale)): ?>
             <tr>
                 <th><?=$this->transEsc('Scale')?>: </th>
                 <td>
@@ -267,7 +263,7 @@
             ?>
 
             <? // Show local urls or SWB-links but not both ?>
-            <? $localUrls = $this->driver->getLocalUrls()?>     
+            <? $localUrls = $this->driver->tryMethod('getLocalUrls')?>     
             <? if (!empty($localUrls[0]['url'])): ?>
                 <tr>
                     <th><?=$this->transEsc('Local Online Access')?>: </th>

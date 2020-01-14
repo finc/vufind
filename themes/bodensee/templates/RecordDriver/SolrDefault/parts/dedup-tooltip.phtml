@@ -1,7 +1,5 @@
-<? if(\Bsz\Debug::isInternal() && $this->driver->getGroupField() !== ''): ?>
-    <? $url = "http://gvi.kobv.de:8000/gvifind?id=";
-    ?>    
-    <a href="<?=$url.$this->driver->getUniqueId()?>" target="_blank" data-toggle="tooltip" class="text-primary dedup-info" data-placement="auto top" title="<?=$this->escapeHtmlAttr($this->driver->getGroupField())?>">
+<? if(\Bsz\Debug::isInternal() && $this->driver->tryMethod('getGroupField') !== ''): ?>
+    <a href="#" target="_blank" data-toggle="tooltip" class="text-primary dedup-info" data-placement="auto top" title="<?=$this->escapeHtmlAttr($this->driver->tryMethod('getGroupField'))?>">
         <i class="fa fa-question-circle"></i>
     </a>
 <? endif; ?>

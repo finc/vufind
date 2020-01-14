@@ -72,7 +72,7 @@ class Holding {
     
     /**
      * 
-     * @param \Bsz\client $client
+     * @param Bsz\Config\Client $client
      */
     public function __construct(Runner $runner) 
     {
@@ -230,7 +230,7 @@ class Holding {
             
             foreach ($results->getResults() as $record) {
                 $libraries = [];
-                $record instanceof \Bsz\RecordDriver\SolrGvimarc;
+                $record instanceof \Bsz\RecordDriver\SolrGviMarc;
                 $ppn = $record->getPPN();
                 $f924 = $record->getField924(true, true);
                 

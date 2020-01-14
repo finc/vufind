@@ -3,7 +3,7 @@
 /**
  * Record cache tests.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  * Copyright (C) The National Library of Finland 2015.
@@ -230,7 +230,7 @@ class CacheTest extends TestCase
     /**
      * Create Record Table
      *
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return PHPUnit\Framework\MockObject\MockObject
      */
     protected function getRecordTable()
     {
@@ -257,7 +257,7 @@ class CacheTest extends TestCase
             return false;
         };
 
-        $recordTable = $this->getMockBuilder('VuFind\Db\Table\Record')
+        $recordTable = $this->getMockBuilder(\VuFind\Db\Table\Record::class)
             ->disableOriginalConstructor()->getMock();
         $recordTable->method('findRecords')
             ->will($this->returnCallback($findRecordsCallback));
@@ -281,7 +281,7 @@ class CacheTest extends TestCase
     /**
      * Create a Record Factory Manager
      *
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return PHPUnit\Framework\MockObject\MockObject
      */
     protected function getRecordFactoryManager()
     {
@@ -321,11 +321,11 @@ class CacheTest extends TestCase
      * @param string $id     id
      * @param string $source source
      *
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return PHPUnit\Framework\MockObject\MockObject
      */
     protected function getDriver($id = 'test', $source = 'Solr')
     {
-        $driver = $this->createMock('VuFind\RecordDriver\AbstractBase');
+        $driver = $this->createMock(\VuFind\RecordDriver\AbstractBase::class);
         $driver->expects($this->any())
             ->method('getUniqueId')
             ->will($this->returnValue($id));

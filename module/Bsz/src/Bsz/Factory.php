@@ -31,20 +31,11 @@ class Factory {
     /**
      * 
      * @param ServiceManager $sm
-     * @return \Bsz\Theme\ThemeInfo
-     */
-    public static function getThemeInfo(ServiceManager $sm) {
-        $Client = $sm->get('bsz\config\client');
-        return new Theme\ThemeInfo(realpath(__DIR__ . '/../../../../themes'), 'bootprint3', $Client);
-    }
-    /**
-     * 
-     * @param ServiceManager $sm
      * @param \VuFind\Search\SearchRunner
-     * @return \Bsz\Bsz\Holding
+     * @return Bsz\Bsz\Holding
      */
     public static function getHolding(ServiceManager $sm) {        
-        return new \Bsz\Holding($sm->get('VuFind\SearchRunner'));
+        return new Holding($sm->get('VuFind\SearchRunner'));
     }   
     
 }

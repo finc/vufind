@@ -2,7 +2,7 @@
 /**
  * SideFacets Recommendations Module
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -154,8 +154,8 @@ class SideFacets extends AbstractFacets
         // Parse the additional settings:
         $settings = explode(':', $settings);
         $mainSection = empty($settings[0]) ? 'Results' : $settings[0];
-        $checkboxSection = isset($settings[1]) ? $settings[1] : false;
-        $iniName = isset($settings[2]) ? $settings[2] : 'facets';
+        $checkboxSection = $settings[1] ?? false;
+        $iniName = $settings[2] ?? 'facets';
 
         // Load the desired facet information...
         $config = $this->configLoader->get($iniName);
@@ -248,6 +248,17 @@ class SideFacets extends AbstractFacets
     }
 
     /**
+     * Get checkbox facet information from the search results.
+     *
+     * @return array
+     */
+    public function getCheckboxFacetSet()
+    {
+        return $this->results->getParams()
+            ->getCheckboxFacets(array_keys($this->checkboxFacets));
+    }
+
+    /**
      * Get facet information from the search results.
      *
      * @return array
@@ -268,9 +279,9 @@ class SideFacets extends AbstractFacets
                 $facetArray = $this->hierarchicalFacetHelper->buildFacetArray(
                     $hierarchicalFacet, $facetSet[$hierarchicalFacet]['list']
                 );
-                $facetSet[$hierarchicalFacet]['list']
-                    = $this->hierarchicalFacetHelper
-                        ->flattenFacetHierarchy($facetArray);
+                $facetSet[$hierarchicalFacet]['list'] = $this
+                    ->hierarchicalFacetHelper
+                    ->flattenFacetHierarchy($facetArray);
             }
         }
 
@@ -353,7 +364,7 @@ class SideFacets extends AbstractFacets
         if (empty($this->collapsedFacets)) {
             return [];
         } elseif ($this->collapsedFacets == '*') {
-            return array_keys($this->getFacetSet());
+            return array_keys($this->mainFacets);
         }
         return array_map('trim', explode(',', $this->collapsedFacets));
     }
@@ -399,39 +410,6 @@ class SideFacets extends AbstractFacets
 
         // No config found; use default behavior:
         return 'more';
-    }
-
-    /**
-     * Get the list of filters to display
-     *
-     * @param array $extraFilters Extra filters to add to the list.
-     *
-     * @return array
-     */
-    public function getVisibleFilters($extraFilters = [])
-    {
-        // Merge extras into main list:
-        $filterList = array_merge(
-            $this->results->getParams()->getFilterList(true), $extraFilters
-        );
-
-        // Filter out suppressed values:
-        $final = [];
-        foreach ($filterList as $field => $filters) {
-            $current = [];
-            foreach ($filters as $filter) {
-                if (!isset($filter['suppressDisplay'])
-                    || !$filter['suppressDisplay']
-                ) {
-                    $current[] = $filter;
-                }
-            }
-            if (!empty($current)) {
-                $final[$field] = $current;
-            }
-        }
-
-        return $final;
     }
 
     /**

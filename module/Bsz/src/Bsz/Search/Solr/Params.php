@@ -13,6 +13,7 @@ class Params extends \VuFind\Search\Solr\Params
 {
     
     protected $dedup;
+    protected $limit = 10;
     protected $client;
     
     public function __construct($options, \VuFind\Config\PluginManager $configLoader,
@@ -117,7 +118,7 @@ class Params extends \VuFind\Search\Solr\Params
         $backendParams->add('shards.tolerant', 'true');
         
         // maximum search time in ms
-        $backendParams->add('timeAllowed', '4000');
+        // $backendParams->add('timeAllowed', '4000');
 
         // defaultOperator=AND was removed in schema.xml
         $backendParams->add('q.op', "AND");

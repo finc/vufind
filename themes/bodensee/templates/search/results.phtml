@@ -31,7 +31,7 @@
   if (isset($this->overrideTitle)) {
     $this->layout()->breadcrumbs .= '<li class="active">' . $this->escapeHtml($this->overrideTitle) . '</li>';
   } else {
-    $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('Search') . ': ' . $this->escapeHtml($lookfor) . '</li>' . '<span class="adv_lookfor hidden">' . $this->escapeHtml($lookfor) . '</span>';
+    $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('Search') . ': ' . $this->escapeHtml($lookfor) . '</li>' . '<li class="adv_lookfor hidden">' . $this->escapeHtml($lookfor) . '</li>';
     
   }
   if($advSearch !== false) {
@@ -103,12 +103,12 @@
         <?=$this->recommend($current)?>
       <? endforeach; ?>
       <? foreach ($this->results->getRecommendations('noresults') as $current): ?>
-      <? if (!in_array($current, $top)): ?>
-        <?=$this->recommend($current)?>
-      <? endif; ?>
+        <? if (!in_array($current, $top)): ?>
+            <?=$this->recommend($current)?>
+        <? endif; ?>
       <? endforeach; ?>
     <? else: ?>
-    <form id="search-cart-form" method="post" name="bulkActionForm" action="<?=$this->url('cart-searchresultsbulk')?>" data-lightbox data-lightbox-onsubmit="bulkFormHandler">
+    <form id="search-cart-form" method="post" action="<?=$this->url('cart-searchresultsbulk')?>" data-lightbox data-lightbox-onsubmit="bulkFormHandler">
       <?=$this->context($this)->renderInContext('search/bulk-action-buttons.phtml', ['idPrefix' => ''])?>    
         <?=$this->render('search/list-' . $this->params->getView() . '.phtml')?>
         <?=$this->context($this)->renderInContext('search/bulk-action-buttons.phtml', array('idPrefix' => 'bottom_'))?>
@@ -136,19 +136,14 @@
         <? endif; ?>
         <? if ( $library !== null): ?>
             <? $url =  $library->hasCustomUrl() ? $library->getCustomUrl() : $this->url('record-freeform'); ?>
-            <a class="<?=$library->hasCustomUrl()? 'external' : 'internal' ?> hasicon" href="<?=$url?>"><i class="fa fa-file-o"></i><span class="text"><?=$this->transEsc('ill_request_free_form')?></span></a>            
+            <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::free_form_tooltip')?>" class="<?=$library->hasCustomUrl()? 'external' : 'internal' ?> hasicon" href="<?=$url?>"><i class="fa fa-file-o"></i><span class="text"><?=$this->transEsc('ILL::request_free_form')?></span></a>            
         <? endif; ?>
 
       </div>
     <? endif; ?>
-  </div>
-  <? /* End Main Listing */ ?>
-
-  <? /* Narrow Search Options */ ?>
-  <div class="<?=$this->layoutClass('sidebar')?>">
-    <? foreach ($this->results->getRecommendations('side') as $current): ?>
-      <?=$this->recommend($current)?>
-    <? endforeach; ?>
-  </div>
-  <? /* End Narrow Search Options */ ?>
+</div>
+<div class="<?=$this->layoutClass('sidebar')?>">
+  <? foreach ($this->results->getRecommendations('side') as $current): ?>
+    <?=$this->recommend($current)?>
+  <? endforeach; ?>
 </div>

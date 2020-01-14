@@ -5,7 +5,7 @@
  * This wrapper works with a driver class to pass information from the ILS to
  * VuFind.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2007.
  *
@@ -111,16 +111,25 @@ class Connection implements TranslatorAwareInterface, LoggerAwareInterface
     protected $failing = false;
 
     /**
+     * Request object
+     *
+     * @var \Zend\Http\Request
+     */
+    protected $request;
+
+    /**
      * Constructor
      *
      * @param \Zend\Config\Config              $config        Configuration
      * representing the [Catalog] section of config.ini
      * @param \VuFind\ILS\Driver\PluginManager $driverManager Driver plugin manager
      * @param \VuFind\Config\PluginManager     $configReader  Configuration loader
+     * @param \Zend\Http\Request               $request       Request object
      */
     public function __construct(\Zend\Config\Config $config,
         \VuFind\ILS\Driver\PluginManager $driverManager,
-        \VuFind\Config\PluginManager $configReader
+        \VuFind\Config\PluginManager $configReader,
+        \Zend\Http\Request $request = null
     ) {
         if (!isset($config->driver)) {
             throw new \Exception('ILS driver setting missing.');
@@ -131,6 +140,7 @@ class Connection implements TranslatorAwareInterface, LoggerAwareInterface
         $this->config = $config;
         $this->configReader = $configReader;
         $this->driverManager = $driverManager;
+        $this->request = $request;
     }
 
     /**
@@ -338,7 +348,7 @@ class Connection implements TranslatorAwareInterface, LoggerAwareInterface
                 $response['consortium'] = $functionConfig['consortium'];
             }
         } else {
-            $id = isset($params['id']) ? $params['id'] : null;
+            $id = $params['id'] ?? null;
             if ($this->checkCapability('getHoldLink', [$id, []])) {
                 $response = ['function' => "getHoldLink"];
             }
@@ -487,7 +497,7 @@ class Connection implements TranslatorAwareInterface, LoggerAwareInterface
             } else {
                 $cancelParams = [
                     $params ?: [],
-                    isset($params['patron']) ? $params['patron'] : null
+                    $params['patron'] ?? null
                 ];
                 $check2 = $this->checkCapability(
                     'getCancelStorageRetrievalRequestLink', $cancelParams
@@ -573,7 +583,7 @@ class Connection implements TranslatorAwareInterface, LoggerAwareInterface
             } else {
                 $cancelParams = [
                     $params ?: [],
-                    isset($params['patron']) ? $params['patron'] : null
+                    $params['patron'] ?? null
                 ];
                 $check2 = $this->checkCapability(
                     'getCancelILLRequestLink', $cancelParams
@@ -613,6 +623,29 @@ class Connection implements TranslatorAwareInterface, LoggerAwareInterface
     }
 
     /**
+     * Check Current Loans
+     *
+     * A support method for checkFunction(). This is responsible for checking
+     * the driver configuration to determine if the system supports current
+     * loans.
+     *
+     * @param array $functionConfig Function configuration
+     * @param array $params         Patron data
+     *
+     * @return mixed On success, an associative array with specific function keys
+     * and values; on failure, false.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    protected function checkMethodgetMyTransactions($functionConfig, $params)
+    {
+        if ($this->checkCapability('getMyTransactions', [$params ?: []])) {
+            return $functionConfig;
+        }
+        return false;
+    }
+
+    /**
      * Check Historic Loans
      *
      * A support method for checkFunction(). This is responsible for checking
@@ -646,7 +679,7 @@ class Connection implements TranslatorAwareInterface, LoggerAwareInterface
     {
         if (is_array($helpText)) {
             $lang = $this->getTranslatorLocale();
-            return isset($helpText[$lang]) ? $helpText[$lang] : '';
+            return $helpText[$lang] ?? '';
         }
         return $helpText;
     }
@@ -922,6 +955,70 @@ class Connection implements TranslatorAwareInterface, LoggerAwareInterface
             'getConfig', ['changePassword', compact('patron')]
         ) ? $this->getDriver()->getConfig('changePassword', compact('patron'))
             : false;
+    }
+
+    /**
+     * Get Patron Transactions
+     *
+     * This is responsible for retrieving all transactions (i.e. checked out items)
+     * by a specific patron.
+     *
+     * @param array $patron The patron array from patronLogin
+     * @param array $params Parameters
+     *
+     * @return mixed        Array of the patron's transactions
+     */
+    public function getMyTransactions($patron, $params = [])
+    {
+        $result = $this->__call('getMyTransactions', [$patron, $params]);
+
+        // Support also older driver return value:
+        if (!isset($result['count'])) {
+            $result = [
+                'count' => count($result),
+                'records' => $result
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get holdings
+     *
+     * Retrieve holdings from ILS driver class and normalize result array if needed.
+     *
+     * @param string $id      The record id to retrieve the holdings for
+     * @param array  $patron  Patron data
+     * @param array  $options Additional options
+     *
+     * @return array Array with holding data
+     */
+    public function getHolding($id, $patron = null, $options = [])
+    {
+        // Get pagination options for holdings tab
+        $holdsConfig
+            = $this->checkCapability('getConfig', ['Holds', compact('patron')])
+            ? $this->driver->getConfig('Holds') : null;
+        $itemLimit = !empty($holdsConfig['itemLimit'])
+            ? $holdsConfig['itemLimit'] : null;
+        $page = $this->request ? $this->request->getQuery('page', 1) : 1;
+        $offset = ($itemLimit && is_numeric($itemLimit))
+            ? ($page * $itemLimit) - $itemLimit
+            : null;
+        $defaultOptions = compact('page', 'itemLimit', 'offset');
+        $finalOptions = $options + $defaultOptions;
+
+        // Get the holdings from the ILS
+        $holdings = $this->__call('getHolding', [$id, $patron, $finalOptions]);
+
+        // Return all the necessary details:
+        return [
+            'total' => $holdings['total'] ?? count($holdings),
+            'holdings' => $holdings['holdings'] ?? $holdings,
+            'page' => $finalOptions['page'],
+            'itemLimit' => $finalOptions['itemLimit'],
+        ];
     }
 
     /**

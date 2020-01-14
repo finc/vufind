@@ -166,26 +166,6 @@ class EDS extends \VuFind\RecordDriver\EDS {
         return $params;
     }
     
-       /**
-     * 
-     * @param bool $overrideSupportsOpenUrl
-     * @return array|boolean
-     */
-    public function getOpenUrl($overrideSupportsOpenUrl = false)
-    {
-        $urls = $this->getFieldRecursive(['CustomLinks']);
-        $firstHit = '';
-        if (is_array($urls)) {
-            foreach ($urls as $url) {            
-                if (isset($url['Url']) && strpos($url['Url'], 'redi-bw.de') !== FALSE) {
-                    $pos = strpos($url['Url'], '?');
-                    $firstHit = substr($url['Url'], $pos + 1);
-                }
-            }
-        }
-        // Assemble the URL:
-        return $firstHit;
-    }
     
     /**
      * parses Format to OpenURL genre
@@ -196,57 +176,18 @@ class EDS extends \VuFind\RecordDriver\EDS {
         $ptype = $this->getPubType();
         if (strpos(strtolower($ptype), 'journal') !== FALSE) {
             $formats = ['Journal'];
-        } else {
+        } elseif (strpos(strtolower($ptype), 'book') !== FALSE) {
+            $formats = ['Book'];            
+        } elseif (strpos(strtolower($ptype), 'articles') !== FALSE) {
             $formats = ['Article'];            
+        }  else {
+            $formats = ['UnknownFormat'];            
         }
         return ucfirst(array_shift($formats)); 
     }
     
     
-        /**
-     * Get OpenURL parameters for an article.
-     *
-     * @return array
-     */
-    protected function getArticleOpenUrlParams()
-    {
-        $params = $this->getDefaultOpenUrlParams();
-        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
-        $params['rft.genre'] = 'article';
-        $params['rft.issn'] = (string) $this->getCleanISSN();
-        // an article may have also an ISBN:
-        $params['rft.isbn'] = (string) $this->getCleanISBN();
-        $params['rft.volume'] = $this->getContainerVolume();
-        $params['rft.issue'] = $this->getContainerIssue();
-        $params['rft.spage'] = $this->getContainerStartPage();
-        // unset default title -- we only want jtitle/atitle here:
-        unset($params['rft.title']);
-        $params['rft.jtitle'] = $this->getContainerTitle();
-        $params['rft.atitle'] = $this->getTitle();
-        $params['rft.au'] = $this->getPrimaryAuthor();
 
-        $params['rft.format'] = 'Article';
-        $langs = $this->getLanguages();
-        if (count($langs) > 0) {
-            $params['rft.language'] = $langs[0];
-        }
-        // remove empty fields
-        return array_filter($params);
-    }
-    
-    /**
-     * Get OpenURL parameters for a journal.
-     *
-     * @return array
-     */
-    protected function getJournalOpenURLParams()
-    {
-        $params = [];
-        $params['rft.issn'] = (string) $this->getCleanISSN();
-        $params['rft.jtitle'] = $this->getTitle();
-        $params['rft.genre'] = 'journal';
-        return array_filter($params);
-    }
     
         /**
      * Get the PDF url of the record. If missing, return false
@@ -385,7 +326,7 @@ class EDS extends \VuFind\RecordDriver\EDS {
      * 
      * @return array
      */
-    public function getISSNs()
+    public function getISSNs() : array
     {
         $issns = parent::getIssns();
         $arrayKeys = [

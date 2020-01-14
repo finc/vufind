@@ -2,7 +2,7 @@
 /**
  * Mink link resolver test class.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2016.
  *
@@ -37,9 +37,12 @@ use Behat\Mink\Element\Element;
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Page
+ * @retry    4
  */
 class LinkResolverTest extends \VuFindTest\Unit\MinkTestCase
 {
+    use \VuFindTest\Unit\AutoRetryTrait;
+
     /**
      * Standard setup method.
      *
@@ -107,7 +110,7 @@ class LinkResolverTest extends \VuFindTest\Unit\MinkTestCase
     {
         // Click the OpenURL link:
         if ($click) {
-            $this->findCss($page, '.fulltext')->click();
+            $this->clickCss($page, '.fulltext');
         }
         $this->snooze();
 
@@ -157,7 +160,8 @@ class LinkResolverTest extends \VuFindTest\Unit\MinkTestCase
         $page = $session->getPage();
         $this->findCss($page, '#searchForm_lookfor')
             ->setValue('id:testsample1');
-        $this->findCss($page, '.btn.btn-primary')->click();
+        $this->clickCss($page, '.btn.btn-primary');
+        $this->snooze();
 
         // Verify the OpenURL
         $this->assertOpenUrl($page);
@@ -185,7 +189,7 @@ class LinkResolverTest extends \VuFindTest\Unit\MinkTestCase
         $page = $session->getPage();
         $this->findCss($page, '#searchForm_lookfor')
             ->setValue('id:testsample1');
-        $this->findCss($page, '.btn.btn-primary')->click();
+        $this->clickCss($page, '.btn.btn-primary');
 
         // Verify the OpenURL
         $this->assertOpenUrl($page, false /* do not click link */);

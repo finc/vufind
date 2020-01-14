@@ -1,25 +1,30 @@
 <hr/>
 <div class="row">  
-    <? if ($this->client()->get('Footer')->get('classic') == 1): ?>
-    <?=$this->partial('bsz/footerbox.phtml', ['boxNo' => 1, 'heading' => $this->transEsc('Search Options')])?>
-    <?=$this->partial('bsz/footerbox.phtml', ['boxNo' => 2, 'heading' => $this->transEsc('Find More')])?>
-    <?=$this->partial('bsz/footerbox.phtml', ['boxNo' => 3, 'heading' => $this->transEsc('Help')])?>
-    <? else: ?>
-        <? 
-            $count = $this->client()->get('Footer')->get('boxes');
-           
-            for($i = 1; $i <= $count; $i++) {
-                
-                if ($this->client()->get('FooterBox'.$i) !== null) {
-                    echo $this->partial('bsz/well.phtml', [
-                        'count' => $count,
-                        'settings' => $this->client()->get('FooterBox'.$i)
-                    ]);                
-                }
-            }
-        ?>
-    <? endif; ?>
+    <div class="graybg clearfix">     
 
-    <small role="contentinfo"><a href="https://wiki.bsz-bw.de/doku.php?id=projekte:boss:bossroadmap" class="external"><?=$this->escapeHtml($this->client()->getVersion())?></a> &copy; <?=date('Y')?> <a href="http://bsz-bw.de" class="external hasicon"><img src="/themes/bodensee/images/logo/bsztiny.gif" alt="BSZ Logo" /></a>
-        powered by <a href="https://vufind.org" class="external">vufind</a> 4, Covers &copy; <a href="https://Buchhandel.de" class="external">Buchhandel.de</a></small>        
+        <? if ($this->client()->get('Footer')->get('classic') == 1): ?>
+        <?=$this->partial('bsz/footerbox.phtml', ['boxNo' => 1, 'heading' => $this->transEsc('Search Options')])?>
+        <?=$this->partial('bsz/footerbox.phtml', ['boxNo' => 2, 'heading' => $this->transEsc('Find More')])?>
+        <?=$this->partial('bsz/footerbox.phtml', ['boxNo' => 3, 'heading' => $this->transEsc('Help')])?>
+        <? else: ?>
+            <? 
+                $count = $this->client()->get('Footer')->get('boxes');
+
+                for($i = 1; $i <= $count; $i++) {
+
+                    if ($this->client()->get('FooterBox'.$i) !== null) {
+                        echo $this->partial('bsz/well.phtml', [
+                            'count' => $count,
+                            'settings' => $this->client()->get('FooterBox'.$i)
+                        ]);                
+                    }
+                }
+            ?>
+        <? endif; ?>
+    </div>
+
+</div>
+<div class="row lastline">    
+    <small role="contentinfo"><a href="https://wiki.bsz-bw.de/doku.php?id=projekte:boss:bossroadmap" class="external"><?=$this->escapeHtml($this->client()->getVersion())?></a> &copy; <?=date('Y')?> <a href="https://www.bsz-bw.de" class="external hasicon">BSZ</a>
+        powered by <a href="https://vufind.org" class="external">VuFind</a> 6, Covers &copy; <a href="https://Buchhandel.de" class="external">Buchhandel.de</a></small>        
 </div>

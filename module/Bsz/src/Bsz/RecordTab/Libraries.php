@@ -24,7 +24,9 @@
  * THE SOFTWARE.
  */
 
-namespace Bsz\RecordTab    ;
+namespace Bsz\RecordTab;
+
+use Bsz\Config\Libraries as LibConf;
 
 
 /**
@@ -36,13 +38,13 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
 {
     /**
      *
-     * @var \Bsz\Config\Libraries
+     * @var Bsz\Config\Libraries
      */
     protected $libraries;
     protected $f924;
     protected $visible;
     
-    public function __construct(\Bsz\Config\Libraries $libraries, $visible = true) 
+    public function __construct(LibConf $libraries, $visible = true) 
     {       
         $this->libraries = $libraries;    
         $this->visible = (bool)$visible;
@@ -54,13 +56,13 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
     }
     
     /**
-     * Tab ios shown if there is at least one 924 in MARC. 
+     * Tab is shown if there is at least one 924 in MARC. 
      * @return boolean
      */
     public function isActive()
     {
-        $this->f924 = $this->driver->getField924();
-        if (count($this->f924) > 0) {
+        $this->f924 = $this->driver->tryMethod('getField924');
+        if ($this->f924) {
             return true;                
         }            
         return false;        
@@ -72,6 +74,7 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
         foreach ($libraries as $library) {
             $this->f924[$library->getIsil()]['name'] = $library->getName();
             $this->f924[$library->getIsil()]['homepage'] = $library->getHomepage();            
+            $this->f924[$library->getIsil()]['adisurl'] = $library->getaDISURl();            
         }
         return $this->f924;        
     }

@@ -59,7 +59,7 @@ class RecordController extends \VuFind\Controller\RecordController
     {
         parent::__construct($sm, $config);
         // Don't know how this can be dont using Traits, eg. at the DAIA class. 
-        $this->logger = $sm->get('vufind\logger');
+        $this->logger = $sm->get(\VuFind\Log\Logger::class);
     }
     
      /**
@@ -105,11 +105,11 @@ class RecordController extends \VuFind\Controller\RecordController
     public function ILLFormAction()
     {
         $isils = $this->params()->fromQuery('isil');
-        if (count($isils) > 0) {
+        if ($isils) {
             return $this->processIsil();
         }
         $params = $this->params()->fromPost();
-        $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');
+        $config = $this->serviceLocator->get('Bsz\Config\Client')->get('ILL');
         // If Request does not have this param, we should not use collapsible 
         // panels
         $success = null;
@@ -121,20 +121,20 @@ class RecordController extends \VuFind\Controller\RecordController
         $this->baseUrlAuth = $this->isTestMode() ? $config->get('baseurl_auth_test') :
                 $config->get('baseurl_auth_live');
      
-        $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
-        $client = $this->getServiceLocator()->get('Bsz\Client');
+        $authManager = $this->serviceLocator->get('VuFind\AuthManager');
+        $client = $this->serviceLocator->get('Bsz\Config\Client');
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
-            $this->FlashMessenger()->addErrorMessage('missing_isil');
+            $this->flashMessenger()->addErrorMessage('missing_isil');
             throw new \Bsz\Exception('You must select a library to continue');
         } 
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
+        $libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
         $first = $libraries->getFirstActive($client->getIsils());
         $submitDisabled = false;
         
         if (isset($first) && $authManager->loginEnabled() 
                 && !$authManager->isLoggedIn()
                 && $first->getAuth() == 'shibboleth') {
-            $this->FlashMessenger()->addErrorMessage('You must be logged in first');
+            $this->flashMessenger()->addErrorMessage('You must be logged in first');
             $submitDisabled = true;
         }
 
@@ -149,6 +149,7 @@ class RecordController extends \VuFind\Controller\RecordController
             if ($this->checkAuth($params)) {
                 // remove password from TAN field
                 unset($params['Passwort']);
+//                $params['Bemerkung'] = str_replace("\n", ' ', $params['Bemerkung']);
                 
                 // free form uses a Jahr field which must be copies into Jahrgang und EJahr
                 if (isset($params['Jahr'])) {
@@ -162,13 +163,13 @@ class RecordController extends \VuFind\Controller\RecordController
                     $dom = new \Zend\Dom\Query($response->getBody());
                     $message = $dom->queryXPath('ergebnis/text()')->getDocument();
                     $success = $this->parseResponse($message);    
-
+                    
                 } catch (\Exception $ex) {
-                    $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
+                    $this->flashMessenger()->addErrorMessage('ILL::request_error_technical');
                     $this->logError($params['Sigel'].': Error while parsing HTML response from ZFL server');
                 }
             } else { // wrong credentials
-                $this->FlashMessenger()->addErrorMessage('ill_request_error_blocked');
+                $this->flashMessenger()->addErrorMessage('ILL::request_error_blocked');
                 $this->logError($params['Sigel'].': ILL request blocked. Checkauth failed');
                 $success = false;
             }
@@ -196,19 +197,19 @@ class RecordController extends \VuFind\Controller\RecordController
     public function freeFormAction() {
         // if one accesses this form with a library that uses custom form, 
         // redirect. 
-        $client = $this->getServiceLocator()->get('Bsz\Client');
-                $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
+        $client = $this->serviceLocator->get('Bsz\Config\Client');
+                $authManager = $this->serviceLocator->get('VuFind\AuthManager');
         $isils = $this->params()->fromQuery('isil');
         
-        if (count($isils) > 0) {
+        if ($isils) {
             return $this->processIsil();
         }
         
         if ($client->isIsilSession() && !$client->hasIsilSession() && count($isils) == 0) {
-            $this->FlashMessenger()->addErrorMessage('missing_isil');
+            $this->flashMessenger()->addErrorMessage('missing_isil');
             throw new \Bsz\Exception('You must select a library to continue');
         }
-        $libraries = $this->getServiceLocator()->get('bsz\libraries');
+        $libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
         $first = $libraries->getFirstActive($client->getIsils());
         if ($first !== null && $first->hasCustomUrl()) {
             return $this->redirect()->toUrl($first->getCustomUrl());
@@ -217,7 +218,7 @@ class RecordController extends \VuFind\Controller\RecordController
         if ($first !== null && $authManager->loginEnabled() 
                 && !$authManager->isLoggedIn()
                 && $first->getAuth() == 'shibboleth') {
-            $this->FlashMessenger()->addErrorMessage('You must be logged in first');
+            $this->flashMessenger()->addErrorMessage('You must be logged in first');
             $submitDisabled = true;
         }      
         
@@ -238,8 +239,8 @@ class RecordController extends \VuFind\Controller\RecordController
      */
     public function isTestMode()
     {
-        $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+        $client = $this->serviceLocator->get('Bsz\Config\Client');
+        $libraries = $this->serviceLocator->get('Bsz\Config\Libraries')
                 ->getActive($client->getIsils());
         $test = true;
         foreach ($libraries as $library) {
@@ -256,8 +257,8 @@ class RecordController extends \VuFind\Controller\RecordController
      */
     public function getCustomUrl()
     {
-        $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+        $client = $this->serviceLocator->get('Bsz\Config\Client');
+        $libraries = $this->serviceLocator->get('Bsz\Config\Libraries')
                 ->getActive($client->getIsils());
 
         foreach ($libraries as $library) {
@@ -275,8 +276,8 @@ class RecordController extends \VuFind\Controller\RecordController
      */
     public function getLibraryBySigel($sigel)
     {
-        $client = $this->getServiceLocator()->get('Bsz\Client');
-        $libraries = $this->getServiceLocator()->get('bsz\libraries')
+        $client = $this->serviceLocator->get('Bsz\Config\Client');
+        $libraries = $this->serviceLocator->get('Bsz\Config\Libraries')
                 ->getActive($client->getIsils());
 
         foreach ($libraries as $library) {
@@ -297,12 +298,12 @@ class RecordController extends \VuFind\Controller\RecordController
     public function checkAuth($params)
     {
         $library = $this->getLibraryBySigel($params['Sigel']);
-        $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');     
+        $config = $this->serviceLocator->get('Bsz\Config\Client')->get('ILL');     
         $status = false;
 
         if (isset($library)) {
             // is shibboleth auth is used, we do not need to check anything. 
-            $authManager = $this->getServiceLocator()->get('VuFind\AuthManager');
+            $authManager = $this->serviceLocator->get('VuFind\AuthManager');
             if ($authManager->loginEnabled() && $authManager->isLoggedIn()) {
                 return true;
             }
@@ -321,11 +322,11 @@ class RecordController extends \VuFind\Controller\RecordController
 
             } catch (\Exception $ex) {
                 $this->logError($params['Sigel'].': Error while parsing XML'.$ex->getMessage());
-                $this->FlashMessenger()->addErrorMessage('ill_request_error_technical');
+                $this->flashMessenger()->addErrorMessage('ILL::request_error_technical');
             }
             $status = (isset($xml->status) && $xml->status == 'FLOK');            
         } else {
-            $this->FlashMessenger()->addErrorMessage('ill_request_error_blocked');
+            $this->flashMessenger()->addErrorMessage('ILL::request_error_blocked');
             $this->logError('ILL request blocked. Sigel not found ');
             $status = false;
         }
@@ -347,7 +348,7 @@ class RecordController extends \VuFind\Controller\RecordController
         if ((bool)preg_match('/Bestell-Id:\s*(\d*)/', $html->textContent, $id) === true ) {
             $this->orderId = $id[1];
             // Order is successfull
-            $this->FlashMessenger()->addSuccessMessage('ill_request_submit_ok');
+            $this->flashMessenger()->addSuccessMessage('ILL::request_submit_ok');
             return true;
         } else {
             // order not successfull - disable error reporting because 
@@ -370,7 +371,7 @@ class RecordController extends \VuFind\Controller\RecordController
             }
 
             if (!empty($msgText)) {
-                $this->FlashMessenger()->addInfoMessage($msgText);    
+                $this->flashMessenger()->addInfoMessage($msgText);    
                 $this->logError('ILL error: message from ZFL: '.$msgText);
             }
             error_reporting($error_reporting);
@@ -412,7 +413,7 @@ class RecordController extends \VuFind\Controller\RecordController
     public function homeAction()
     {
         $isilsParam = $this->params()->fromQuery('isil');
-        if (count($isilsParam) > 0) {
+        if ($isilsParam) {
             return $this->processIsil();
         }
         $view = parent::homeAction();
@@ -420,13 +421,13 @@ class RecordController extends \VuFind\Controller\RecordController
         $view->customUrl = strlen($this->getCustomUrl()) > 0 ? $this->getcustomUrl() : false;
 
         $view->authMethod = '';
-        $client = $this->getServiceLocator()->get('bsz\client');
+        $client = $this->serviceLocator->get('Bsz\Config\Client');
         $isils = $client->getIsils();
         if ($client->isIsilSession() && !$client->hasIsilSession()) {
-            $this->FlashMessenger()->addErrorMessage('missing_isil');
+            $this->flashMessenger()->addErrorMessage('missing_isil');
         } else if (count($isils) > 0) {
             $isil = array_shift($isils);
-            $library = $this->getServiceLocator()->get('bsz\libraries')->getByIsil($isil);
+            $library = $this->serviceLocator->get('Bsz\Config\Libraries')->getByIsil($isil);
             $view->authMethod = $library->getAuth();
         } 
   
@@ -455,7 +456,7 @@ class RecordController extends \VuFind\Controller\RecordController
     
     private function doRequest($url, $params) 
     {
-        $config = $this->getServiceLocator()->get('bsz\client')->get('ILL');
+        $config = $this->serviceLocator->get('Bsz\Config\Client')->get('ILL');
          // send real order
         $client = new \Zend\Http\Client();
         $client->setEncType(\Zend\Http\Client::ENC_URLENCODED);

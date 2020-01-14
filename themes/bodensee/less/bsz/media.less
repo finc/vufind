@@ -18,6 +18,9 @@ Schriftgrößen verkleinern
     h4 {
         font-size: @font-size-reduce-factor * @font-size-h4;
     }
+    h5 {
+        font-size: @font-size-reduce-factor * @font-size-h4;
+    }
 }
 //Bookcover bündig mit Titel
 @media (min-width: @screen-xs-max) {
@@ -38,6 +41,11 @@ Schriftgrößen verkleinern
 header {
     // make search bar bigger on large screens
     @media (min-width: @screen-lg-min) {
+        .navbar-form #searchForm_lookfor {
+            min-width: 460px;
+        }    
+    }
+    @media (min-width: @screen-sm-min) {
         .navbar-form #searchForm_lookfor {
             min-width: 460px;
         }    

@@ -2,7 +2,7 @@
 /**
  * Symphony Web Services (symws) ILS Driver
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2007.
  *
@@ -270,13 +270,10 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
      * @param string $operation  the SymWS operation name
      * @param array  $parameters the request parameters for the operation
      * @param array  $options    An associative array of additional options:
-     *                           - 'login': login to use for the operation;
-     *                                      omit for configured default
-     *                                      credentials or anonymous
-     *                           - 'password': password associated with login;
-     *                                         omit for no password
-     *                           - 'header': SoapHeader to use for the request;
-     *                                       omit to handle automatically
+     * - 'login': login to use for the operation; omit for configured default
+     * credentials or anonymous
+     * - 'password': password associated with login; omit for no password
+     * - 'header': SoapHeader to use for the request; omit to handle automatically
      *
      * @return mixed the result of the SOAP call
      */
@@ -302,9 +299,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
          */
         if (isset($options['login'])) {
             $login    = $options['login'];
-            $password = isset($options['password'])
-                ? $options['password']
-                : null;
+            $password = $options['password'] ?? null;
         } elseif (isset($options['WebServices']['login'])
             && !in_array(
                 $operation,
@@ -978,8 +973,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
         $policyID   = strtoupper($policyID);
         $policyList = $this->getPolicyList($policyType);
 
-        return isset($policyList[$policyID]) ?
-            $policyList[$policyID] : $policyID;
+        return $policyList[$policyID] ?? $policyID;
     }
 
     /**
@@ -997,7 +991,7 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
     public function getStatus($id)
     {
         $statuses = $this->getStatuses([$id]);
-        return isset($statuses[$id]) ? $statuses[$id] : [];
+        return $statuses[$id] ?? [];
     }
 
     /**
@@ -1026,15 +1020,18 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
      * This is responsible for retrieving the holding information of a certain
      * record.
      *
-     * @param string $id     The record id to retrieve the holdings for
-     * @param array  $patron Patron data
+     * @param string $id      The record id to retrieve the holdings for
+     * @param array  $patron  Patron data
+     * @param array  $options Extra options (not currently used)
      *
      * @throws ILSException
      * @return array         On success, an associative array with the following
      * keys: id, availability (boolean), status, location, reserve, callnumber,
      * duedate, number, barcode.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getHolding($id, array $patron = null)
+    public function getHolding($id, array $patron = null, array $options = [])
     {
         return $this->getStatus($id);
     }
@@ -1372,18 +1369,12 @@ class Symphony extends AbstractBase implements LoggerAwareInterface
                 foreach ($fees as $fee) {
                     $fineList[] = [
                         'amount' => $fee->amount->_ * 100,
-                        'checkout' =>
-                            isset($fee->feeItemInfo->checkoutDate) ?
-                            $fee->feeItemInfo->checkoutDate : null,
+                        'checkout' => $fee->feeItemInfo->checkoutDate ?? null,
                         'fine' => $fee->billReasonDescription,
                         'balance' => $fee->amountOutstanding->_ * 100,
-                        'createdate' =>
-                            isset($fee->dateBilled) ? $fee->dateBilled : null,
-                        'duedate' =>
-                            isset($fee->feeItemInfo->dueDate) ?
-                            $fee->feeItemInfo->dueDate : null,
-                        'id' => isset($fee->feeItemInfo->titleKey) ?
-                            $fee->feeItemInfo->titleKey : null
+                        'createdate' => $fee->dateBilled ?? null,
+                        'duedate' => $fee->feeItemInfo->dueDate ?? null,
+                        'id' => $fee->feeItemInfo->titleKey ?? null
                     ];
                 }
             }

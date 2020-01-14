@@ -1,16 +1,41 @@
 <?php
-
-
+/**
+ * Module definition for the VuFind theme system.
+ *
+ * PHP version 7
+ *
+ * Copyright (C) Villanova University 2013.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * @category BSZ
+ * @package  Theme
+ * @author   Cornelius Amzar
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ * @link     https://vufind.org/wiki/development
+ */
 namespace BszTheme;
-use Zend\Mvc\MvcEvent;
+
+
 /**
  * Bsz theme adaption
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Module extends \VuFindTheme\Module
+class Module
 {
-        /**
+    /**
      * Get autoloader configuration
      *
      * @return void
@@ -35,17 +60,7 @@ class Module extends \VuFindTheme\Module
     {
         return [
             'factories' => [
-                'VuFindTheme\MixinGenerator' =>
-                    'VuFindTheme\Module::getMixinGenerator',
-                'VuFindTheme\ThemeCompiler' =>
-                    'VuFindTheme\Module::getThemeCompiler',
-                'VuFindTheme\ThemeGenerator' =>
-                    'VuFindTheme\Module::getThemeGenerator',
-                'VuFindTheme\ThemeInfo' => 'BszTheme\Factory::getThemeInfo',
-            ],
-            'invokables' => [
-                'VuFindTheme\Mobile' => 'VuFindTheme\Mobile',
-                'VuFindTheme\ResourceContainer' => 'VuFindTheme\ResourceContainer',
+                \VuFindTheme\ThemeInfo::class => "\BszTheme\ThemeInfoFactory::getThemeInfo",
             ],
         ];
     }  
@@ -59,11 +74,11 @@ class Module extends \VuFindTheme\Module
     {
         return [
             'factories' => [
-                'Client' =>         'BszTheme\View\Helper\Factory::getClient',
-                'ClientAsset' =>    'BszTheme\View\Helper\Factory::getClientAsset',
+                'client' =>         'BszTheme\View\Helper\Factory::getClient',
+                'clientAsset' =>    'BszTheme\View\Helper\Factory::getClientAsset',
                 'IllForm' =>        'BszTheme\View\Helper\Bodensee\Factory::getIllForm',
-                //'openurl' =>        'BszTheme\View\Helper\Bodensee\Factory::getOpenUrl',
-                'Libraries' =>      'BszTheme\View\Helper\Factory::getLibraries',
+                'libraries' =>      'BszTheme\View\Helper\Factory::getLibraries',
+                'mapongo' =>      'BszTheme\View\Helper\Bodensee\Factory::getMapongo',
             ],
             'invokables' => [
                 'mapper'        => 'BszTheme\View\Helper\FormatMapper',

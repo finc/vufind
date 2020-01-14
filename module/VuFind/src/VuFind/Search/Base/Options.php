@@ -2,7 +2,7 @@
 /**
  * Abstract options search model.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -28,6 +28,7 @@
 namespace VuFind\Search\Base;
 
 use VuFind\I18n\Translator\TranslatorAwareInterface;
+use Zend\Config\Config;
 
 /**
  * Abstract options search model.
@@ -126,7 +127,7 @@ abstract class Options implements TranslatorAwareInterface
      *
      * @var int
      */
-    protected $defaultLimit = 10;
+    protected $defaultLimit = 20;
 
     /**
      * Available limit options
@@ -225,6 +226,20 @@ abstract class Options implements TranslatorAwareInterface
      * @var bool
      */
     protected $autocompleteEnabled = false;
+
+    /**
+     * Autocomplete auto submit setting
+     *
+     * @var bool
+     */
+    protected $autocompleteAutoSubmit = true;
+
+    /**
+     * Configuration file to read global settings from
+     *
+     * @var string
+     */
+    protected $mainIni = 'config';
 
     /**
      * Configuration file to read search settings from
@@ -403,6 +418,17 @@ abstract class Options implements TranslatorAwareInterface
     public function getFacetsIni()
     {
         return $this->facetsIni;
+    }
+
+    /**
+     * Get the name of the ini file used for loading primary settings in this
+     * object.
+     *
+     * @return string
+     */
+    public function getMainIni()
+    {
+        return $this->mainIni;
     }
 
     /**
@@ -692,6 +718,16 @@ abstract class Options implements TranslatorAwareInterface
     }
 
     /**
+     * Should autocomplete auto submit?
+     *
+     * @return bool
+     */
+    public function autocompleteAutoSubmit()
+    {
+        return $this->autocompleteAutoSubmit;
+    }
+
+    /**
      * Get a string of the listviewOption (full or tab).
      *
      * @return string
@@ -902,5 +938,21 @@ abstract class Options implements TranslatorAwareInterface
     public function supportsFirstLastNavigation()
     {
         return $this->firstlastNavigation;
+    }
+
+    /**
+     * Configure autocomplete preferences from an .ini file.
+     *
+     * @param Config $searchSettings Object representation of .ini file
+     *
+     * @return void
+     */
+    protected function configureAutocomplete(Config $searchSettings = null)
+    {
+        // Only change settings from current values if they are defined in .ini:
+        $this->autocompleteEnabled = $searchSettings->Autocomplete->enabled
+            ?? $this->autocompleteEnabled;
+        $this->autocompleteAutoSubmit = $searchSettings->Autocomplete->auto_submit
+            ?? $this->autocompleteAutoSubmit;
     }
 }

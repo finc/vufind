@@ -19,9 +19,8 @@ public/phpinfo.php
 data/
 *.mrc
 /solr/
-nbproject
 /env.bat
 /config
 /local
-/nbproject/private/
-*.css.map
+/nbproject
+

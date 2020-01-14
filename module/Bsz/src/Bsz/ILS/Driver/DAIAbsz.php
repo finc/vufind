@@ -31,9 +31,7 @@
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
 namespace Bsz\ILS\Driver;
-use DOMDocument, VuFind\Exception\ILS as ILSException,
-    VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface,
-    Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
+use VuFind\Exception\ILS as ILSException;
 
 /**
  * ILS Driver for VuFind to query availability information via DAIA.
@@ -48,6 +46,8 @@ use DOMDocument, VuFind\Exception\ILS as ILSException,
  */
 class DAIAbsz extends \VuFind\ILS\Driver\DAIA
 {
+    use ItemTrait;
+    
     protected $isil;
     protected $parsePpn = true;
     /**
@@ -433,67 +433,7 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
 
         return $return;
     }
-    /**
-     * 
-     * @param array $item
-     * @return string
-     */
-    public function getItemPart($item) {
-        if (isset($item['part'])) {
-            return $item['part'];
-        } else {
-            return '';
-        }  
-    }
-    /**
-     * 
-     * @param array $item
-     * @return string
-     */
-    public function getItemAbout($item) {
-        if (isset($item['about'])) {
-            return $item['about'];
-        } else {
-            return '';
-        }  
-    }
-    
-    /**
-     * Returns the value for "location" in VuFind getStatus/getHolding array
-     *
-     * @param array $item Array with DAIA item data
-     *
-     * @return string
-     */
-    protected function getItemLocation($item)
-    {
-        $location = [];
-        if (isset($item['department'])
-            && array_key_exists('content', $item['department'])
-        ) {
-            $location[] = str_replace('Deutsches Zentrum für Luft- und Raumfahrt ,'
-                    . ' ', 'DLR, ', $item['department']['content']);
-        }
-        if (isset($item['storage'])
-            && array_key_exists('content', $item['storage'])
-        ) {
-            $location[] = $item['storage']['content'];
-        }
-        return implode(': ', $location);
-    }
-
-    /**
-     * Returns the value for "location" href in VuFind getStatus/getHolding array
-     *
-     * @param array $item Array with DAIA item data
-     *
-     * @return string
-     */
-    protected function getItemLocationLink($item)
-    {
-        return isset($item['storage']['href'])
-            ? $item['storage']['href'] : false;
-    }
+ 
     
     /**
      * Needed to hide holdings tab if empty

@@ -2,7 +2,7 @@
 /**
  * Mink cart test class.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2011.
  *
@@ -37,9 +37,11 @@ use Behat\Mink\Element\Element;
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Page
+ * @retry    4
  */
 class CartTest extends \VuFindTest\Unit\MinkTestCase
 {
+    use \VuFindTest\Unit\AutoRetryTrait;
     use \VuFindTest\Unit\UserCreationTrait;
 
     /**
@@ -200,6 +202,7 @@ class CartTest extends \VuFindTest\Unit\MinkTestCase
         $this->changeConfigs($extraConfigs);
 
         $page = $this->getSearchResultsPage();
+        $this->snooze();
         $this->addCurrentPageToCartUsingButtons($page);
         $this->assertEquals('2', $this->findCss($page, '#cartItems strong')->getText());
 
@@ -405,7 +408,7 @@ class CartTest extends \VuFindTest\Unit\MinkTestCase
         // Test that we can add multiple records:
         for ($x = 1; $x <= 3; $x++) {
             $page = $this->getRecordPage('testsample' . $x);
-            $this->findCss($page, '.cart-add')->click();
+            $this->clickCss($page, '.cart-add');
             $this->assertEquals(
                 $x . ' items', $this->findCss($page, '#cartItems')->getText()
             );
@@ -426,7 +429,7 @@ class CartTest extends \VuFindTest\Unit\MinkTestCase
         // First try deleting without selecting anything:
         $delete->click();
         $this->snooze();
-        $this->findCss($page, '#cart-confirm-delete')->click();
+        $this->clickCss($page, '#cart-confirm-delete');
         $this->snooze();
         $this->checkForNonSelectedMessage($page);
 
@@ -530,6 +533,8 @@ class CartTest extends \VuFindTest\Unit\MinkTestCase
     /**
      * Test that the email control works.
      *
+     * @retryCallback tearDownAfterClass
+     *
      * @return void
      */
     public function testCartEmail()
@@ -551,16 +556,18 @@ class CartTest extends \VuFindTest\Unit\MinkTestCase
         $this->checkForLoginMessage($page);
 
         // Create an account.
-        $this->findCss($page, '.modal-body .createAccountLink')->click();
+        $this->clickCss($page, '.modal-body .createAccountLink');
+        $this->snooze();
         $this->fillInAccountForm($page);
-        $this->findCss($page, '.modal-body .btn.btn-primary')->click();
+        $this->clickCss($page, '.modal-body .btn.btn-primary');
         $this->snooze();
 
-        $this->findCss($page, '.modal #email_from')->setValue('asdf@asdf.com');
-        $this->findCss($page, '.modal #email_message')->setValue('message');
-        $this->findCss($page, '.modal #email_to')
-            ->setValue('demian.katz@villanova.edu');
-        $this->findCss($page, '.modal-body .btn.btn-primary')->click();
+        $this->findCssAndSetValue($page, '.modal #email_from', 'asdf@asdf.com');
+        $this->findCssAndSetValue($page, '.modal #email_message', 'message');
+        $this->findCssAndSetValue(
+            $page, '.modal #email_to', 'demian.katz@villanova.edu'
+        );
+        $this->clickCss($page, '.modal-body .btn.btn-primary');
         $this->snooze();
         // Check for confirmation message
         $this->assertEquals(
@@ -596,7 +603,7 @@ class CartTest extends \VuFindTest\Unit\MinkTestCase
 
         // Save the favorites.
         $this->snooze();
-        $this->findCss($page, '.modal-body input[name=submit]')->click();
+        $this->clickCss($page, '.modal-body input[name=submit]');
         $this->snooze();
         $result = $this->findCss($page, '.modal-body .alert-success');
         $this->assertEquals(

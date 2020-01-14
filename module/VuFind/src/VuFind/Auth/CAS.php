@@ -2,7 +2,7 @@
 /**
  * CAS authentication module.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -251,8 +251,7 @@ class CAS extends AbstractBase
         foreach ($cas as $key => $value) {
             if (preg_match("/userattribute_[0-9]{1,}/", $key)) {
                 $valueKey = 'userattribute_value_' . substr($key, 14);
-                $sortedUserAttributes[$value] = isset($cas->$valueKey)
-                    ? $cas->$valueKey : null;
+                $sortedUserAttributes[$value] = $cas->$valueKey ?? null;
 
                 // Throw an exception if attributes are missing/empty.
                 if (empty($sortedUserAttributes[$value])) {
@@ -284,8 +283,9 @@ class CAS extends AbstractBase
             ) {
                 $casauth->setDebug($cas->log);
             }
+            $protocol = constant($cas->protocol ?? 'SAML_VERSION_1_1');
             $casauth->client(
-                SAML_VERSION_1_1, $cas->server, (int)$cas->port, $cas->context, false
+                $protocol, $cas->server, (int)$cas->port, $cas->context, false
             );
             if (isset($cas->CACert) && !empty($cas->CACert)) {
                 $casauth->setCasServerCACert($cas->CACert);

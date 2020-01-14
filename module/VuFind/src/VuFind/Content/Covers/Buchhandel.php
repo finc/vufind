@@ -2,7 +2,7 @@
 /**
  * Buchhandel cover content loader.
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -65,7 +65,7 @@ class Buchhandel extends \VuFind\Content\AbstractCover
         $this->url = $url;
         $this->apiToken = $apiToken;
         $this->supportsIsbn = true;
-        $this->cacheAllowed = true;
+        $this->cacheAllowed = false;
     }
 
     /**

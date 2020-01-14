@@ -52,54 +52,56 @@ JS;
               <img class="img-responsive" src="<?=$this->imageLink('logo/default.png')?>" alt="BSZ Logo" />
           </div>
       <? else: ?>
-          <div class="col-md-9 col-xs-6  hidden-sm hidden-xs">
+          <div class="col-md-8 col-xs-5  hidden-sm hidden-xs">
               <? if ($this->imageLink($this->clientAsset()->getHeader())): ?>
               <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" class="img-responsive" alt="Aufmacherbild" />
               <? endif; ?>
           </div>
       <? endif; ?>
-      <div class="col-xs-5 col-sm-3 pull-right">
+      <div class="col-xs-6 col-sm-4 pull-right">
           <?=$this->clientAsset()->getLogoHtml()?>
       </div>      
   </div>
-  <div class="row form-group">   
+  <div class="row ">   
       <div class="col-sm-12">          
           <? if(($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>          
             <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>         
           <? elseif($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
-            <h2><?=$this->escapeHTML((string)$library)?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>          
+            <h2><?=$this->escapeHtml((string)$library)?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>          
           <? endif; ?>
-          
           <? if (strpos($this->translate('homepage_text'), '<') !== FALSE): ?>
-            <p><?=$this->translate('homepage_text')?></p>
+                <?=$this->translate('homepage_text')?>
           <? else: ?>
-            <p><?=$this->transEsc('homepage_text')?></p>
+                <?=$this->transEsc('homepage_text')?>
           <? endif; ?>
-            
           
-          
-          <? if($this->client()->isIsilSession() && !$this->client()->hasIsilSession()): ?>
-          <p><?=$this->translate('ill_select_library')?></p>
-          <? endif; ?>
           <? if ($this->client()->isIsilSession()): ?>
-              <?=$this->partial('bsz/illdropdown.phtml')?>
+              <?=$this->partial('bsz/illselector.phtml')?>
           <? endif; ?>
           <? // Set Maintenance hints with SetEnv MAINTENANCE_MODE "..." in httpd-vufind.conf ?>
         </div>
   </div>
   <div class="row">
-      <div class="col-sm-12">
-          <?=$this->flashmessages()?>         
+      <div class="col-sm-12 ">
+          <?=$this->flashmessages()?>
+          <div class="specialhome">
           <? if ($this->client()->is('wlb_special_home')): ?>
                     <?= $this->render('bsz/wlb/'.$this->layout()->userLang.'.phtml')?>
           <? endif; ?>          
+          <? if ($this->client()->is('k10plusdiscovery_special_home')): ?>
+                    <?= $this->render('bsz/k10plusdiscovery/'.$this->layout()->userLang.'.phtml')?>
+          <? endif; ?>             
+          <? if ($this->client()->is('hsmm_special_home')): ?>
+                    <?= $this->render('bsz/hsmm/'.$this->layout()->userLang.'.phtml')?>
+          <? endif; ?> 
+          </div>
       </div>
   </div>
   
     <? if ($this->client()->getRSSFeed() !== null): ?>
         <div id="RSSFeedResultsDeferred" class="col-sm-6">
             <p><?=$this->transEsc("Loading")?>... <img src="<?=$this->imageLink('ajax_loading.gif')?>" /></p>
-            <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, "var url = VuFind.path + '/AJAX/News?mod=StartpageNews';$('#RSSFeedResultsDeferred').load(url);", 'SET')?>        </div>    
+            <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, "var url = VuFind.path + '/AJAX/Recommend?mod=StartPageNews';$('#RSSFeedResultsDeferred').load(url);", 'SET')?>        </div>    
     <? endif; ?>
     
     

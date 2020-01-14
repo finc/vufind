@@ -2,7 +2,7 @@
 /**
  * Book Bag / Bulk Action Controller
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2010.
  *
@@ -69,7 +69,7 @@ class CartController extends AbstractBase
      */
     protected function getCart()
     {
-        return $this->serviceLocator->get('VuFind\Cart');
+        return $this->serviceLocator->get(\VuFind\Cart::class);
     }
 
     /**
@@ -213,7 +213,10 @@ class CartController extends AbstractBase
         } elseif (strlen($this->params()->fromPost('export', '')) > 0) {
             $action = 'Export';
         } else {
-            throw new \Exception('Unrecognized bulk action.');
+            $action = $this->followup()->retrieveAndClear('cartAction', null);
+            if (empty($action)) {
+                throw new \Exception('Unrecognized bulk action.');
+            }
         }
         return $this->forwardTo($controller, $action);
     }
@@ -267,7 +270,7 @@ class CartController extends AbstractBase
             // Attempt to send the email and show an appropriate flash message:
             try {
                 // If we got this far, we're ready to send the email:
-                $mailer = $this->serviceLocator->get('VuFind\Mailer');
+                $mailer = $this->serviceLocator->get(\VuFind\Mailer\Mailer::class);
                 $mailer->setMaxRecipients($view->maxRecipients);
                 $cc = $this->params()->fromPost('ccself') && $view->from != $view->to
                     ? $view->from : null;
@@ -312,7 +315,7 @@ class CartController extends AbstractBase
      */
     protected function getExport()
     {
-        return $this->serviceLocator->get('VuFind\Export');
+        return $this->serviceLocator->get(\VuFind\Export::class);
     }
 
     /**
@@ -340,13 +343,30 @@ class CartController extends AbstractBase
             if ($export->needsRedirect($format)) {
                 return $this->redirect()->toUrl($url);
             }
+            $exportType = $export->getBulkExportType($format);
+            $params = [
+                'exportType' => $exportType,
+                'format' => $format
+            ];
+            if ('post' === $exportType) {
+                $records = $this->getRecordLoader()->loadBatch($ids);
+                $recordHelper = $this->getViewRenderer()->plugin('record');
+                $parts = [];
+                foreach ($records as $record) {
+                    $parts[] = $recordHelper($record)->getExport($format);
+                }
+
+                $params['postField'] = $export->getPostField($format);
+                $params['postData'] = $export->processGroup($format, $parts);
+                $params['targetWindow'] = $export->getTargetWindow($format);
+                $params['url'] = $export->getRedirectUrl($format, '');
+            } else {
+                $params['url'] = $url;
+            }
             $msg = [
                 'translate' => false, 'html' => true,
                 'msg' => $this->getViewRenderer()->render(
-                    'cart/export-success.phtml', [
-                        'url' => $url,
-                        'exportType' => $export->getBulkExportType($format)
-                    ]
+                    'cart/export-success.phtml', $params
                 )
             ];
             return $this->redirectToSource('success', $msg);
@@ -485,9 +505,6 @@ class CartController extends AbstractBase
         } else {
             $target = $this->url()->fromRoute('myresearch-home');
         }
-        $view = $this->createViewModel();
-        $view->setTemplate('cart/cart');
-        return $view;
-        //return $this->redirect()->toUrl($target);
+        return $this->redirect()->toUrl($target);
     }
 }

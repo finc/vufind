@@ -8,27 +8,28 @@
         <? if (!empty($heading)): ?>
         <h5><?=$this->escapeHtml($heading)?></h5>
         <? endif; ?>
-        <? if (count($settings->get('link')) > 0): ?>
+        <? if ($settings->offsetExists('link') && count($settings->get('link')) > 0): ?>
         <ul>            
             <? foreach ($settings->get('link') as $k => $link): ?>
             <?
                 if(strpos($link, '://') === FALSE) {
                     $url = $this->url($link);
-                    $class = 'internal';
+                    $class = strpos($link, 'bsz-library') === FALSE ? 'internal' : 'external';
                 } else {
                     $url = $link;
                     $class = 'external';
                 }
+                $title = strpos($url, 'Freeform') !== false ? 'ILL::free_form_tooltip' : '';
                 $label = isset($settings->get('label_'.$lang)[$k]) ? $settings->get('label_'.$lang)[$k] : $settings->get('label_de')[$k];
             ?>
             <li>
-                <a href="<?=$url?>" class="<?=$this->escapeHtmlAttr($class)?>"><?=$this->escapeHtml($label)?></a>
+                <a href="<?=$url?>" title="<?=$this->transEsc($title)?>" <? if (!empty($title)): ?>data-toggle="tooltip" <? endif; ?>class="<?=$this->escapeHtmlAttr($class)?>"><?=$this->escapeHtml($label)?></a>
             </li>
             <? endforeach; ?>
         </ul>
         <? endif; ?>
         <? if ($settings->get('text_'.$lang)): ?>
-        <p><?=$this->escapeHtml($settings->get('text_'.$lang))?></p>
+        <small style="margin-left: 0"><?=$this->escapeHtml($settings->get('text_'.$lang))?></small>
         <? endif; ?>
     </div>
     

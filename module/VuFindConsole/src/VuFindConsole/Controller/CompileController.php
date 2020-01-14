@@ -2,7 +2,7 @@
 /**
  * Compile Controller Module
  *
- * PHP version 5
+ * PHP version 7
  *
  * Copyright (C) Villanova University 2017.
  *
@@ -68,7 +68,7 @@ class CompileController extends AbstractBase
         if (empty($target)) {
             $target = "{$source}_compiled";
         }
-        $compiler = $this->serviceLocator->get('VuFindTheme\ThemeCompiler');
+        $compiler = $this->serviceLocator->get(\VuFindTheme\ThemeCompiler::class);
         if (!$compiler->compile($source, $target, $request->getParam('force'))) {
             Console::writeLine($compiler->getLastError());
             return $this->getFailureResponse();
