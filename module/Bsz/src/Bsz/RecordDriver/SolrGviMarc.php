@@ -18,7 +18,9 @@
  */
 namespace Bsz\RecordDriver;
 
-use Bsz\FormatMapper;
+use Bsz\Exception;
+use VuFind\RecordDriver\IlsAwareTrait;
+use VuFind\RecordDriver\MarcReaderTrait;
 
 /**
  *
@@ -26,14 +28,14 @@ use Bsz\FormatMapper;
  */
 class SolrGviMarc extends SolrMarc implements Definition
 {
-    use \VuFind\RecordDriver\IlsAwareTrait;
-    use \VuFind\RecordDriver\MarcReaderTrait;
-    use MarcAdvancedTraitBsz;  
-    use SubrecordTrait;  
+    use IlsAwareTrait;
+    use MarcReaderTrait;
+    use MarcAdvancedTraitBsz;
+    use SubrecordTrait;
     use HelperTrait;
     use ContainerTrait;
     use MarcAuthorTrait;
-    
+
     /**
      * Get subject headings associated with this record.  Each heading is
      * returned as an array of chunks, increasing from least specific to most
@@ -576,7 +578,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     /**
      * Returns consortium
      * @return array
-     * @throws \Bsz\Exception
+     * @throws Exception
      */
     public function getConsortium()
     {
@@ -851,7 +853,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     /**
      * Returns either Isil or Library name
      * @return array
-     * @throws \Bsz\Exception
+     * @throws Exception
      */
     public function getLibraries()
     {

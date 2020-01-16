@@ -19,15 +19,17 @@
  */
 
 namespace Bsz\Cover;
-use VuFindCode\ISBN, VuFind\Content\Covers\PluginManager as ApiManager;
+use Exception;
+use VuFindCode\ISBN;
 
 /**
  * Adapted version of cover loader
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Loader extends \VuFind\Cover\Loader {
-    
+class Loader extends \VuFind\Cover\Loader
+{
+
 
     protected $ean;
     /**
@@ -139,7 +141,7 @@ class Loader extends \VuFind\Cover\Loader {
         } else if (isset($ids['ean'])) {
             return $this->getCachePath($this->size, 'EAN' . $ids['ean']);
         }
-        throw new \Exception('Unexpected code path reached!');
+        throw new Exception('Unexpected code path reached!');
     }
     
 }

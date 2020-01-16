@@ -21,8 +21,7 @@
 namespace Bsz\RecordDriver;
 
 use Bsz\Config\Client;
-use Bsz\FormatMapper,
-    VuFindCode\ISBN;
+use Bsz\FormatMapper;
 use Exception;
 use File_MARC;
 use File_MARC_Exception;
@@ -32,6 +31,7 @@ use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcAdvancedTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
 use VuFind\Search\SearchRunner;
+use VuFindCode\ISBN;
 
 
 /**

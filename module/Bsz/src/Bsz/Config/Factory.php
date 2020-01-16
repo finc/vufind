@@ -26,8 +26,11 @@
 
 namespace Bsz\Config;
 
-use Interop\Container\ContainerInterface,
-    Zend\Db\ResultSet\ResultSet;
+use Bsz\LibrariesTable;
+use Interop\Container\ContainerInterface;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Session\Container;
+
 /**
  * Description of Factory
  *
@@ -37,16 +40,16 @@ class Factory
 {
 
     /**
-     * 
+     *
      * @param ContainerInterface $container
-     * @return \Bsz\Config\Client
+     * @return Client
      */
     public static function getClient(ContainerInterface $container)
     {
         $vufindconf = $container->get('VuFind\Config')->get('config')->toArray();
         $bszconf = $container->get('VuFind\Config')->get('bsz')->toArray();
         $searchconf = $container->get('VuFind\Config')->get('searches')->toArray();
-        $sessContainer = new \Zend\Session\Container(
+        $sessContainer = new Container(
             'fernleihe', $container->get('VuFind\SessionManager')
         );
         
@@ -62,9 +65,9 @@ class Factory
     }
 
     /**
-     * 
+     *
      * @param ContainerInterface $container
-     * @return \Bsz\LibrariesTable
+     * @return LibrariesTable
      */
     public static function getLibrariesTable(ContainerInterface $container)
     {
@@ -82,7 +85,7 @@ class Factory
     public static function getDedup(ContainerInterface $container) 
     {
         $config = $container->get('VuFind\Config')->get('config')->get('Index');
-        $sesscontainer = new \Zend\Session\Container(
+        $sesscontainer = new Container(
             'dedup', $container->get('VuFind\SessionManager')
         );
         $response = $container->get('Response');

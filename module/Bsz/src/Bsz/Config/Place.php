@@ -25,7 +25,6 @@
  */
 
 namespace Bsz\Config;
-use Zend\Db\ResultSet\ResultSet;
 
 /**
  * Description of Place

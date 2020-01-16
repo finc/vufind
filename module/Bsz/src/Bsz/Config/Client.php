@@ -20,29 +20,33 @@
 
 namespace Bsz\Config;
 
-use \Zend\Session\Container;
+use Exception;
+use Zend\Config\Config;
+use Zend\Config\Reader\Ini;
+use Zend\Http\PhpEnvironment\Request;
+use Zend\Session\Container;
 
 /**
- * Client class extends VuFinds configuration to fit our needs. 
+ * Client class extends VuFinds configuration to fit our needs.
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Client extends \Zend\Config\Config
+class Client extends Config
 {
 
     const LOGO_TYPE = '.png';
     const HEADER_TYPE = '.jpg';
     const FAVICON_TYPE = '.ico';
-    
+
     /**
      *
-     * @var \Zend\Http\PhpEnvironment\Request
+     * @var Request
      */
     protected $request;
 
     /**
      *
-     * @var \Bsz\Config\Libraries;
+     * @var Libraries;
      */
     protected $libraries;
     
@@ -193,13 +197,14 @@ class Client extends \Zend\Config\Config
         }
         return $value;
     }
-    
-/**
- * 
- * @param \Zend\Http\PhpEnvironment\Request $request
- * @return \Bsz\Config\Client
- */
-    public function setRequest(\Zend\Http\PhpEnvironment\Request $request) {
+
+    /**
+     *
+     * @param Request $request
+     * @return Client
+     */
+    public function setRequest(Request $request)
+    {
         $this->request = $request;
         return $this;
     }
@@ -243,7 +248,7 @@ class Client extends \Zend\Config\Config
         //Wenn nicht die Fernleihesicht, dann nehmen wir das Sigel aus der Konfig
         if (!$this->isIsilSession()) {
             $sigel = $this->get('OpenURL')->get('sigel');
-        } else if ($this->libraries instanceof \Bsz\Config\Libraries) {
+        } else if ($this->libraries instanceof Libraries) {
             $sigel = $this->libraries->getFirstActive($this->getIsils())->getSigel();
         }
         return $sigel;
@@ -289,9 +294,9 @@ class Client extends \Zend\Config\Config
 
     /**
      * Add Libraries to thie class
-     * @param \Bsz\Config\Libraries $libraries
+     * @param Libraries $libraries
      */
-    public function setLibraries(\Bsz\Config\Libraries $libraries)
+    public function setLibraries(Libraries $libraries)
     {
         $this->libraries = $libraries;
     }
@@ -357,7 +362,7 @@ class Client extends \Zend\Config\Config
     public function getAllClients()
     {
         $baseDir = '/usr/local/boss';
-        $Reader = new \Zend\Config\Reader\Ini();
+        $Reader = new Ini();
         $dirs = glob($baseDir . '/local/*', GLOB_ONLYDIR);
         $configs = [];
         foreach ($dirs as $dir) {
@@ -368,9 +373,9 @@ class Client extends \Zend\Config\Config
                         'title' => $config['Site']['title'],
                         'url' => $config['Site']['url']
                     ];
-                    $configs[] = $tmp;                    
+                    $configs[] = $tmp;
                 }
-            } catch (\Exception $ex) {
+            } catch (Exception $ex) {
                 continue;
             }
         }

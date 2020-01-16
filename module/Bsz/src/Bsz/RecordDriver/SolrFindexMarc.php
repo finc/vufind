@@ -8,27 +8,31 @@
 
 namespace Bsz\RecordDriver;
 
-use Bsz\FormatMapper,
-    VuFindCode\ISBN;
+use Bsz\Exception;
+use VuFind\RecordDriver\DefaultRecord;
+use VuFind\RecordDriver\IlsAwareTrait;
+use VuFind\RecordDriver\MarcAdvancedTrait;
+use VuFind\RecordDriver\MarcReaderTrait;
 
 /**
  * SolrMarc class for Findex records
  *
  * @author amzar
  */
-class SolrFindexMarc extends SolrMarc implements Definition {
-    
-    use \VuFind\RecordDriver\IlsAwareTrait;
-    use \VuFind\RecordDriver\MarcReaderTrait;
-    use \VuFind\RecordDriver\MarcAdvancedTrait;
+class SolrFindexMarc extends SolrMarc implements Definition
+{
+
+    use IlsAwareTrait;
+    use MarcReaderTrait;
+    use MarcAdvancedTrait;
     use SubrecordTrait;
     use HelperTrait;
     use ContainerTrait;
-    
+
     /**
      * Returns consortium
      * @return array
-     * @throws \Bsz\Exception
+     * @throws Exception
      */
     public function getConsortium()
     {
@@ -36,8 +40,8 @@ class SolrFindexMarc extends SolrMarc implements Definition {
         // GVK = GBV
         // SWB = SWB
         // ÖVK = GBV
-        
-        $consortium = \VuFind\RecordDriver\DefaultRecord::getCollections();
+
+        $consortium = DefaultRecord::getCollections();
         
         foreach ($consortium as $k => $con) {
             $mapped = $this->mainConfig->mapNetwork($con);
