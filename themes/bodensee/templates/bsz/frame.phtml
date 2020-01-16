@@ -53,132 +53,100 @@
           $this->headScript()->offsetUnset(7); // lightbox (Reference Error
           // $this->headScript()->offsetUnset(8); // additions
           $this->headScript()->offsetUnset(9); // jquery.mark
-          //$this->headScript()->offsetUnset(10); // ??
+        //$this->headScript()->offsetUnset(10); // ??
 
         ?>
-        <?=$this->headScript()?>
+        <?= $this->headScript() ?>
     </head>
-    <body class="frame" data-url="<?=$this->serverUrl()?>">
-        <header class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12"> 
-                    <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="GET" action="<?=$this->url($basicSearch)?>" name="searchForm" autocomplete="off" target="_blank">
+    <body class="frame" data-url="<?= $this->serverUrl() ?>">
+    <header class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="GET"
+                      action="<?= $this->url($basicSearch) ?>" name="searchForm" autocomplete="off" target="_blank">
                     <?= $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
                     <? $placeholder = $this->searchbox()->getPlaceholderText(isset($tabConfig['selected']['id']) ? $tabConfig['selected']['id'] : null); ?>
                     <div class="input-group has-feedback">
-                        <input <?=$disabled?> id="searchForm_lookfor" class="searchForm_lookfor form-control search-query<? if($this->searchbox()->autocompleteEnabled($this->searchClassId)):?> autocomplete searcher:<?=$this->escapeHtmlAttr($this->searchClassId) ?><? endif ?>" type="text" name="lookfor" value="<? if($this->searchType == 'basic'): echo $this->escapeHtmlAttr($this->lookfor);endif; ?>"<? if ($placeholder): ?> placeholder="<?=$this->transEsc($placeholder) ?>"<? endif ?> title="<?=$this->transEsc('empty_search')?>" data-content="<?=$this->transEsc('empty_search_text')?>" autocomplete="on"/>
+                        <input <?= $disabled ?> id="searchForm_lookfor"
+                               class="searchForm_lookfor form-control search-query<? if ($this->searchbox()->autocompleteEnabled($this->searchClassId)): ?> autocomplete searcher:<?= $this->escapeHtmlAttr($this->searchClassId) ?><? endif ?>"
+                               type="text" name="lookfor"
+                               value="<? if ($this->searchType == 'basic'): echo $this->escapeHtmlAttr($this->lookfor);endif; ?>"<? if ($placeholder): ?> placeholder="<?= $this->transEsc($placeholder) ?>"<? endif ?>
+                               title="<?= $this->transEsc('empty_search') ?>"
+                               data-content="<?= $this->transEsc('empty_search_text') ?>" autocomplete="on"/>
                         <div class="input-group-btn">
-                            <button type="submit" class="btn btn-info <?=$disabled?>"><i class="fa fa-search" aria-hidden="true"></i></button>            
+                            <button type="submit" class="btn btn-info <?= $disabled ?>"><i class="fa fa-search"
+                                                                                           aria-hidden="true"></i>
+                            </button>
                         </div>
                         <div class="input-group-btn">
                             <? if ($advSearch): ?>
-                            <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="btn btn-primary <?=$disabled?>" rel="nofollow" target="_blank"><i class='fa fa-search-plus'></i>
-                                <span class="text hidden-xs"><?=$this->transEsc("Advanced")?></a>
-                            <? endif; ?>            
+                                <a href="<?= $this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>"
+                                   class="btn btn-primary <?= $disabled ?>" rel="nofollow" target="_blank"><i
+                                            class='fa fa-search-plus'></i>
+                                    <span class="text hidden-xs"><?= $this->transEsc("Advanced") ?></a>
+                            <? endif; ?>
                         </div>
                     </div>
-                    <input type="hidden" name="type" value="<? if(array_key_exists(0, $handlers) && array_key_exists('value', $handlers[0])): ?><?=$this->escapeHtmlAttr($handlers[0]['value'])?><? endif; ?>" />
-                        <? if ((isset($hasDefaultsApplied) && $hasDefaultsApplied) || !empty($filterDetails)): ?>
-                        <? $defaultFilterState = $options->getRetainFilterSetting() ? ' checked="checked"' : ''; ?>
-                        <div class="checkbox">
-                          <label>
-                            <input type="hidden"<?=$defaultFilterState?> class="searchFormKeepFilters"/>
-                            <?//=$this->transEsc("basic_search_keep_filters")?>
-                          </label>
-                        </div>
-                        <div class="hidden">
-                          <? foreach ($filterDetails as $current): ?>
-                            <input class="applied-filter" id="<?=$this->escapeHtmlAttr($current['id'])?>" type="checkbox"<?=$defaultFilterState?> name="filter[]" value="<?=$this->escapeHtmlAttr($current['value'])?>" />
-                            <label for="<?=$this->escapeHtmlAttr($current['id'])?>"><?=$this->escapeHtml($current['value'])?></label>
-                          <? endforeach; ?>
-                          <? if (isset($hasDefaultsApplied) && $hasDefaultsApplied): ?>
-                            <!-- this is a hidden element that flags whether or not default filters have been applied;
-                                 it is intentionally unlabeled, as users are not meant to manipulate it directly. -->
-                            <input class="applied-filter" id="dfApplied" type="checkbox" name="dfApplied" value="1"<?=$defaultFilterState?> />
-                          <? endif; ?>
-                        </div>
-                      <? endif; ?>
-                      <? foreach ($hiddenFilters as $key => $filter): ?>
-                        <? foreach ($filter as $value): ?>
-                          <input type="hidden" name="hiddenFilters[]" value="<?=$this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value)?>" />
-                        <? endforeach; ?>
-                      <? endforeach; ?>
-                      <?
-                        /* Show hidden field for active search class when in combined handler mode. */
-                        if ($this->searchbox()->combinedHandlersActive()) {
-                          echo '<input type="hidden" name="activeSearchClassId" value="' . $this->escapeHtmlAttr($this->searchClassId) . '" />';
-                        }
-                        /* Load hidden limit preference from Session */
-                        if (!empty($lastLimit)) {
-                          echo '<input type="hidden" name="limit" value="' . $this->escapeHtmlAttr($lastLimit) . '" />';
-                        }
-                        if (!empty($lastSort)) {
-                          echo '<input type="hidden" name="sort" value="' . $this->escapeHtmlAttr($lastSort) . '" />';
-                        }
-                      ?>
-                    </form>
-                </div>
+                </form>
             </div>
-        </header>
-        <script type="text/javascript">
-            /**
-             * Here, we replace scripts from additions.js extended by special 
-             * beheviour, we only need in the frame. 
-             * */
-            $(document).ready(function(){
+        </div>
+    </header>
+    <script type="text/javascript">
+        /**
+         * Here, we replace scripts from additions.js extended by special
+         * beheviour, we only need in the frame.
+         * */
+        $(document).ready(function () {
                 var $tabs = $('#searchForm .nav-tabs');
                 var $input = $('#searchForm_lookfor');     
                 var $form = $('#searchForm');
                 var basicSearchUrl = '<?=$this->url($basicSearch).$hiddenFilterParams?>';
-                var $advanced = $('form .btn-primary');
+            var $advanced = $('form .btn-primary');
 
-                // limit to stop search
-                var limit = 2;
-                // add a href attribute to the first tab
-                $tabs.find('li.active a').attr('href', basicSearchUrl);
+            // limit to stop search
+            var limit = 2;
+            // add a href attribute to the first tab
+            $tabs.find('li.active a').attr('href', basicSearchUrl);
 
-
-                // avoid link execution when clicking tab
-                $tabs.find('li a').off();
-                $tabs.find('li a').click(function (e) {
-                    e.preventDefault();
-                    $tabs.find('li').removeClass('active');
-                    $(this).parent().addClass('active');
-                    var path = $(this).attr('href');
-                    if (typeof path === undefined || path - length === 0) {
-                        path = basicSearchUrl;
-                    } else if (path.indexOf('EDS') >= 0) {
-                        var href = '<?=$this->url($advSearch)?>'.replace('Search', 'EDS');
+            // avoid link execution when clicking tab - first remove event from additions.js
+            $tabs.find('li a').off();
+            $tabs.find('li a').click(function (e) {
+                e.preventDefault();
+                $tabs.find('li').removeClass('active');
+                $(this).parent().addClass('active');
+                var path = $(this).attr('href');
+                if (typeof path === undefined || path - length === 0) {
+                    path = basicSearchUrl;
+                } else if (path.indexOf('EDS') >= 0) {
+                    var href = '<?=$this->url($advSearch)?>'.replace('Search', 'EDS');
                         $advanced.attr('href', href);
                         path = path.replace('Home', 'Search');                        
                     } else {
                         var href = '<?=$this->url($advSearch)?>';
-                        $advanced.attr('href', href);
-                        path = path.replace('Home', 'Results');                                                
-                    }                    
-                    
-                    $form.attr('action', path);
-                    return false;
-                });
-                // show popover
-                $form.submit(function(e) {
-                    if ($input.val().replace( /\s*/gi,"" ).length <= limit) {
-                         $input.attr('data-placement', 'bottom');
-
-                         $input.popover('show');
-                         return false;
-                    } else {
-                         $input.popover('hide');
-                         return true;
-                    }
-                 });
-                 // hide popover
-                 $input.on('change keydown paste input', function(e) {
-                     if ($input.val().replace( /\W*/gi,"" ).length > limit) { 
-                         $input.popover('hide');
-                     }
-                 });
+                    $advanced.attr('href', href);
+                    path = path.replace('Home', 'Results');
+                }
+                path = path + '&';
+                $form.attr('action', path);
+                return false;
             });
-        </script>        
+
+            $form.off();
+            $form.submit(function (e) {
+                var url = $(this).attr('action') + $('#searchForm').serialize();
+                if ($input.val().replace(/[\*\s]/gi, "").length <= limit) {
+                    $input.attr('data-placement', 'bottom');
+
+                    $input.popover('show');
+                    return false;
+                } else {
+                    $input.popover('hide');
+                    window.open(url, '_blank');
+                    return false;
+                }
+
+            });
+        });
+    </script>
     </body>
 </html>
