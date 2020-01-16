@@ -11,8 +11,8 @@
 namespace Bsz\Backend\Solr\Response\Json;
 
 use VuFindSearch\Backend\Solr\Response\Json\Record;
-use VuFindSearch\Response\RecordCollectionFactoryInterface;
 use VuFindSearch\Exception\InvalidArgumentException;
+use VuFindSearch\Response\RecordCollectionFactoryInterface;
 
 class RecordCollectionFactory implements RecordCollectionFactoryInterface {
 
