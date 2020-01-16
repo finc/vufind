@@ -131,20 +131,21 @@
                 var $form = $('#searchForm');
                 var basicSearchUrl = '<?=$this->url($basicSearch).$hiddenFilterParams?>';
                 var $advanced = $('form .btn-primary');
-                
+
                 // limit to stop search
                 var limit = 2;
                 // add a href attribute to the first tab
                 $tabs.find('li.active a').attr('href', basicSearchUrl);
-                
+
 
                 // avoid link execution when clicking tab
-                $tabs.find('li a').click(function(e) {
+                $tabs.find('li a').off();
+                $tabs.find('li a').click(function (e) {
                     e.preventDefault();
                     $tabs.find('li').removeClass('active');
                     $(this).parent().addClass('active');
                     var path = $(this).attr('href');
-                    if (typeof path === undefined || path-length === 0 ) {
+                    if (typeof path === undefined || path - length === 0) {
                         path = basicSearchUrl;
                     } else if (path.indexOf('EDS') >= 0) {
                         var href = '<?=$this->url($advSearch)?>'.replace('Search', 'EDS');
