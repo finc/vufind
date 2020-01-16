@@ -193,6 +193,7 @@ function avoidEmptySearch() {
              $input.popover('hide');
              return true;
         }
+
      });
      $input.on('change keydown paste input', function(e) {
          if ($input.val().replace( /\W*/gi,"" ).length > limit) {
@@ -365,16 +366,16 @@ function textToggle() {
 
 function openInPopup() {
     $(document).on('click', '.open-popup', function(e) {
-        console.log('hier')
-        e.preventDefault()
+        console.log('hier');
+        e.preventDefault();
         var href = $(this).attr('href');
-        
+
         var name = $(this).attr('data-name');
         name = name == 'undefined' ? name : 'BOSS';
-        
+
         var width = $(this).attr('data-width');
         width = width == 'undefined' ? width : '1024';
-        
+
         var height = $(this).attr('data-height');
         height = height == 'undefined' ? height : '580';
         
@@ -395,8 +396,8 @@ function openInPopup() {
             'screenY=0',
             'screenX=200'
         ];
-        
-        window.open(href, name, options.join(',')).focus();;
+
+        window.open(href, name, options.join(',')).focus();
         
     });
 }
