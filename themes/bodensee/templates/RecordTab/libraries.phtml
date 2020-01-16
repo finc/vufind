@@ -24,7 +24,7 @@
                 <? if (isset($result['b']) && trim($result['b']) != ''): ?>
                     <span class="text-nowrap">
                     <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::Sigelstelle') ?>"
-                       href="https://sigel.staatsbibliothek-berlin.de/nc/suche/?isil=<?= trim($result['b']) ?>"
+                       href="<?= str_replace('%ISIL%', trim($result['b']), $this->client()->get('OPAC')->get('sigel')) ?>"
                        class="external hasicon"><?= $this->escapeHtml($result['b']) ?></a>
                     </span>
                 <? else: ?>
