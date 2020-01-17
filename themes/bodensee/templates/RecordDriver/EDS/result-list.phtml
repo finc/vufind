@@ -57,7 +57,7 @@
         
       <? if (!empty($this->driver->getDoi()) && !$this->client()->is('doi_in_customlink') && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable()): ?>
       <div class="resulItemLine1">
-        <span><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank"><?=$this->transEsc('getFullTxt');?></a></span>
+          <span><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank"><strong><?=$this->transEsc('getFullTxt');?></strong></a></span>
       </div>
       <? else: ?>          
         <? $customFTLinks = $this->driver->getFTCustomLinks(); 
