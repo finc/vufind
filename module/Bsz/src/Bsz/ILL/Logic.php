@@ -59,6 +59,10 @@ class Logic
     protected $ppns = [];
     protected $messages = [];
     protected $libraries = [];
+    /**
+     * @var array
+     */
+    protected $status;
 
     /**
      *
@@ -129,26 +133,44 @@ class Logic
 
     public function isAvailable()
     {
-        $status = [];
-
-        /*
-         * Take care of the negate operator here!
-         */
-        $status[] = !$this->isHebis8();
-        $status[] = !$this->isFree();
-        $status[] = !$this->isSerialOrCollection();
-        $status[] = !$this->isAtCurrentLibrary();
-        $status[] = $this->checkFormat();
-        $status[] = $this->checkIndicator();
-        /*
-         * No ILL allowed if one value is false
-         */
-        //var_dump($status);
-        if (in_array(false, $status)) {
+        if (empty($this->status)) {
+            $this->determineStatus();
+        }
+        if (in_array(false, $this->status)) {
             return false;
         } else {
             return true;
         }
+    }
+
+    /**
+     * Returns the unique status code
+     *
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        if (empty($this->status)) {
+            $this->determineStatus();
+        }
+        $binary = implode('', $this->status);
+        return bindec($binary);
+
+    }
+
+    /**
+     * Fills the internal status array.
+     * @return array
+     */
+    protected function determineStatus()
+    {
+        $this->status[] = !$this->isHebis8();
+        $this->status[] = !$this->isFree();
+        $this->status[] = !$this->isSerialOrCollection();
+        $this->status[] = !$this->isAtCurrentLibrary();
+        $this->status[] = $this->checkFormat();
+        $this->status[] = $this->checkIndicator();
+        return $this->status;
     }
 
     /**
