@@ -16,16 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace Bsz\ILL;
 
 use Bsz\RecordDriver\SolrMarc;
-use Bsz\ILL\Holding;
+use Zend\Config\Config;
+
 /**
  * Class to determing availability via inter-library loan
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Logic {
+class Logic
+{
 
     const FORMAT_EJOUNAL = 'Ejournal';
     const FORMAT_JOURNAL = 'Journal';
@@ -36,9 +39,22 @@ class Logic {
     const FORMAT_UNDEFINED = 'Undefined';
 
     protected $config;
+
+    /**
+     * @var SolrMarc
+     */
     protected $driver;
+    /**
+     * @var string
+     */
     protected $format;
+    /**
+     * @var Holding
+     */
     protected $holding;
+    /**
+     * @var array
+     */
     protected $localIsils;
     protected $ppns = [];
     protected $messages = [];
@@ -46,12 +62,12 @@ class Logic {
 
     /**
      *
-     * @param \Zend\Config\Config $config
+     * @param Config $config
      * @param Holding $holding
-     * @param type $isils
+     * @param array $isils
      */
 
-    public function __construct(\Zend\Config\Config $config, Holding $holding, $isils = [])
+    public function __construct(Config $config, Holding $holding, $isils = [])
     {
         $this->config = $config;
         $this->holding = $holding;
@@ -69,39 +85,6 @@ class Logic {
         $this->driver = $driver;
         $this->format = $this->getFormat();
         $this->ppns = [];
-    }
-
-
-    /**
-     * Checks if the item can be ordered via ILL
-     *
-     * @return boolean
-     */
-
-    public function isAvailable()
-    {
-        $status = [];
-
-        /*
-         * Take care of the negate operator here!
-         */
-        $status[] = !$this->isHebis8();
-        $status[] = !$this->isFree();
-        $status[] = !$this->isSerialOrCollection();
-        $status[] = !$this->isAtCurrentLibrary();
-        $status[] = $this->checkFormat();
-        $status[] = $this->checkIndicator();
-        /*
-         * No ILL allowed if one value is false
-         */
-        //var_dump($status);
-        if (in_array(false, $status)) {
-            return false;
-        } else {
-            return true;
-        }
-       
-
     }
 
     /**
@@ -139,78 +122,120 @@ class Logic {
     }
 
     /**
-     * Query webservice to get SWB hits with the same
-     * <ul>
-     * <li>ISSN or ISBN (preferred)</li>
-     * <li>Title, author and year (optional)</li>
-     * </ul>
-     * Found PPNs are added to ppns array and can be accessed by other methods.
+     * Checks if the item can be ordered via ILL
      *
      * @return boolean
      */
-    protected function queryWebservice()
+
+    public function isAvailable()
     {
+        $status = [];
 
-        // set up query params
-        $this->holding->setNetwork('DE-576');
-        $isbn = $this->driver->getCleanISBN();
-        $years = $this->driver->getPublicationDates();
-        $zdb = $this->driver->tryMethod('getZdbId');
-        $year = array_shift($years);
-
-        if ($this->driver->isArticle() || $this->driver->isJournal()
-                || $this->driver->isNewspaper()
-            ) {
-            // prefer ZDB ID
-            if (!empty($zdb)) {
-                $this->holding->setZdbId($zdb);
-            } else {
-                $this->holding->setIsxns($this->driver->getCleanISSN());
-            }
-            // use ISSN and year
-        } elseif (!empty($isbn)) {
-            // use ISBN and year
-            $this->holding->setIsxns($isbn)
-                            ->setYear($year);
+        /*
+         * Take care of the negate operator here!
+         */
+        $status[] = !$this->isHebis8();
+        $status[] = !$this->isFree();
+        $status[] = !$this->isSerialOrCollection();
+        $status[] = !$this->isAtCurrentLibrary();
+        $status[] = $this->checkFormat();
+        $status[] = $this->checkIndicator();
+        /*
+         * No ILL allowed if one value is false
+         */
+        //var_dump($status);
+        if (in_array(false, $status)) {
+            return false;
         } else {
-            // use title and author and year
-            $this->holding->setTitle($this->driver->getTitle())
-                          ->setAuthor($this->driver->getPrimaryAuthor())
-                          ->setYear($year);
+            return true;
         }
-        // check query and fire
-        if ($this->holding->checkQuery()) {
-            $result = $this->holding->query();
-            // check if any ppn is available locally
-            if (isset($result['holdings'])) {
-                // search for local available PPNs
-                foreach ($result['holdings'] as $ppn => $holding) {
-                    foreach ($holding as $entry) {
-                        if (isset($entry['isil']) && in_array($entry['isil'], $this->localIsils)) {
-                            // save PPN
-                            $this->ppns[] = '(DE-627)'.$ppn;
-                            $this->libraries[] = $entry['isil'];
-                        }
+    }
 
-                    }
-                }
-            }
-            // if no locally available ppn found, just take the first one
-            if (count($this->ppns) < 1 && isset($result['holdings'])) {
-                reset($result['holdings']);
-                $this->ppns[] = '(DE-627)'.key($result['holdings']);
-            }
+    /**
+     * Checks whether record is from HEBIS and it's ID begins with 8
+     *
+     * @return boolean
+     */
+
+    protected function isHebis8()
+    {
+        $network = $this->driver->getNetwork();
+        $ppn = $this->driver->getPPN();
+
+        if ($network == 'HEBIS' && preg_match('/^8/', $ppn)) {
+            $this->messages[] = 'ILL::cond_hebis_8';
+            return true;
 
         }
+        return false;
 
-        // check if any of the isils from webservic matches local isils
-        if (is_array($this->libraries) && count($this->libraries) > 0) {
+    }
+
+    /**
+     * Check if the record is available for free
+     *
+     * @return boolean
+     */
+
+    protected function isFree()
+    {
+        if ($this->driver->isFree()) {
+            $this->messages[] = 'ILL::cond_free';
             return true;
         }
         return false;
     }
 
-        /**
+    /**
+     * Determine is record is a serial or a collection
+     *
+     * @return boolean
+     */
+
+    protected function isSerialOrCollection()
+    {
+        if ($this->driver->isSerial() || $this->driver->isCollection()) {
+            $this->messages[] = 'ILL::cond_serial_collection';
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determin if an item is available locally. Checks for
+     * * 924 entries
+     * * Parallel editions in SWB
+     * * Similar results from SWB (if network != SWB)     *
+     *
+     * @return boolean
+     */
+
+    protected function isAtCurrentLibrary()
+    {
+        $status = false;
+        $network = $this->driver->getNetwork();
+
+        if (count($this->ppns) == 0) {
+            // if we have local holdings, item can't be ordered
+            if ($this->driver->hasLocalHoldings()) {
+                $this->messages[] = 'ILL::available_at_current_library';
+                $status = true;
+            } elseif ($network == 'SWB' && $this->hasParallelEditions()
+            ) {
+                $status = true;
+            } elseif ($network !== 'SWB' && $this->queryWebservice()
+            ) {
+                $status = true;
+            }
+        }
+        if ($this->driver->hasLocalHoldings() && $network == 'ZDB') {
+            $this->queryWebservice();
+        }
+        return $status;
+
+    }
+
+    /**
      * Quer< solr for parallel Editions available at local libraries
      * Save the found PPNs in global array
      *
@@ -246,135 +271,75 @@ class Logic {
     }
 
     /**
-     * Determin if an item is available locally. Checks for
-     * * 924 entries
-     * * Parallel editions in SWB
-     * * Similar results from SWB (if network != SWB)     *
+     * Query webservice to get SWB hits with the same
+     * ISSN or ISBN (preferred)
+     * Title, author and year (optional)
+     * Found PPNs are added to ppns array and can be accessed by other methods.
      *
      * @return boolean
      */
-
-    protected function isAtCurrentLibrary()
+    protected function queryWebservice()
     {
-        $status = false;
-        $network = $this->driver->getNetwork();
 
-        if (count($this->ppns) == 0) {
-            // if we have local holdings, item can't be ordered
-            if ($this->driver->hasLocalHoldings()) {
-                $this->messages[] = 'ILL::available_at_current_library';
-                $status = true;
-            } elseif ($network == 'SWB'  && $this->hasParallelEditions()
-            ) {
-                $status = true;
-            } elseif ($network !== 'SWB' && $this->queryWebservice()
-            ) {
-                $status = true;
+        // set up query params
+        $this->holding->setNetwork('DE-576');
+        $isbn = $this->driver->getCleanISBN();
+        $years = $this->driver->getPublicationDates();
+        $zdb = $this->driver->tryMethod('getZdbId');
+        $year = array_shift($years);
+
+        if ($this->driver->isArticle() || $this->driver->isJournal()
+            || $this->driver->isNewspaper()
+        ) {
+            // prefer ZDB ID
+            if (!empty($zdb)) {
+                $this->holding->setZdbId($zdb);
+            } else {
+                $this->holding->setIsxns($this->driver->getCleanISSN());
             }
+            // use ISSN and year
+        } elseif (!empty($isbn)) {
+            // use ISBN and year
+            $this->holding->setIsxns($isbn)
+                ->setYear($year);
+        } else {
+            // use title and author and year
+            $this->holding->setTitle($this->driver->getTitle())
+                ->setAuthor($this->driver->getPrimaryAuthor())
+                ->setYear($year);
         }
-        if ($this->driver->hasLocalHoldings() && $network == 'ZDB') {
-            $this->queryWebservice();
-        }
-        return $status;
+        // check query and fire
+        if ($this->holding->checkQuery()) {
+            $result = $this->holding->query();
+            // check if any ppn is available locally
+            if (isset($result['holdings'])) {
+                // search for local available PPNs
+                foreach ($result['holdings'] as $ppn => $holding) {
+                    foreach ($holding as $entry) {
+                        if (isset($entry['isil']) && in_array($entry['isil'], $this->localIsils)) {
+                            // save PPN
+                            $this->ppns[] = '(DE-627)' . $ppn;
+                            $this->libraries[] = $entry['isil'];
+                        }
 
-    }
-
-    /**
-     * Check if the item should have an ill button
-     * @return boolean
-     */
-//    public function isAvailableForInterlending()
-//    {
-//        $ppn = $this->driver->getPPN();
-//        $network = $this->driver->getNetwork();
-//        // first, the special cases
-//        if (($network == 'HEBIS' && preg_match('/^8/', $ppn))) {
-//            // HEBIS items with 8 at the first position are freely available
-//            return false;
-//        } elseif ($this->driver->isFree()) {
-//            return false;
-//        } elseif (($this->driver->isArticle()
-//            // printed journals, articles, newspapers - show hint
-//            || $this->driver->isJournal()
-//            || $this->driver->isNewspaper()) && !$this->driver->isElectronic()
-//        ) {
-//            return true;
-//        } else if ($this->driver->isEBook()) {
-//            return false;
-//        } else if ($this->driver->isJournal() && $this->driver->isElectronic() && ($network == 'SWB' || $network == 'ZDB')) {
-//            return $this->checkIllIndicator(['e', 'b', ]);
-//        } elseif ($this->driver->isMonographicSerial() || $this->driver->isEBook()) {
-//            return false;
-//        }
-//
-//        // if we arrived here, item is not available at current library, is no
-//        // serial and no collection, it is available
-//
-//        if (!$this->isAtCurrentLibrary(true)
-//                && !$this->driver->isSerial()
-//                && !$this->driver->isCollection()) {
-//            return true;
-//        }
-//        return false;
-//    }
-
-    /**
-     * Check the ILL indicator - invalid or empty indicators are ignored
-     *
-     * @return boolean
-     */
-    protected function checkIndicator()
-    {
-
-        $f924 = $this->driver->tryMethod('getField924');
-        $section = $this->config->get($this->format);
-        $tmp = $section->get('indicator', ['a', 'b', 'c', 'e']);
-        $allowedCodes = is_object($tmp) ? $tmp->toArray() : $tmp;
- 
-        foreach ($f924 as $field) {
-            $code = isset($field['d']) ? $field['d'] : null;
-            if (isset($code) && in_array($code, $allowedCodes)) {
-                return true;
+                    }
+                }
             }
-        }
-        $this->messages[] = 'ILL::cond_indicator';
-        return false;
-    }
-
-    /**
-     * Checks whether record is from HEBIS and it's ID begins with 8
-     *
-     * @return boolean
-     */
-
-    protected function isHebis8()
-    {
-        $network = $this->driver->getNetwork();
-        $ppn = $this->driver->getPPN();
-
-        if ($network == 'HEBIS' && preg_match('/^8/', $ppn)) {
-            $this->messages[] = 'ILL::cond_hebis_8';
-            return true;
+            // if no locally available ppn found, just take the first one
+            if (count($this->ppns) < 1 && isset($result['holdings'])) {
+                reset($result['holdings']);
+                $this->ppns[] = '(DE-627)' . key($result['holdings']);
+            }
 
         }
-        return false;
 
-    }
-
-    /**
-     * Determine is record is a serial or a collection
-     *
-     * @return boolean
-     */
-
-    protected function isSerialOrCollection()
-    {
-        if ($this->driver->isSerial() || $this->driver->isCollection()) {
-            $this->messages[] = 'ILL::cond_serial_collection';
+        // check if any of the isils from webservic matches local isils
+        if (is_array($this->libraries) && count($this->libraries) > 0) {
             return true;
         }
         return false;
     }
+
     /**
      * Check if format is enabled for inter-library loan and if it's enabled for
      * the current network
@@ -386,7 +351,7 @@ class Logic {
     {
         $section = $this->config->get($this->format);
         $network = $this->driver->getNetwork();
-        
+
         $forbidden = $section->get('excludeNetwork', []);
         $forbidden = is_object($forbidden) ? $forbidden->toArray() : [];
 
@@ -401,20 +366,27 @@ class Logic {
     }
 
     /**
-     * Check if the record is available for free
+     * Check the ILL indicator - invalid or empty indicators are ignored
      *
      * @return boolean
      */
-
-    protected function isFree()
+    protected function checkIndicator()
     {
-        if ($this->driver->isFree()) {
-            $this->messages[] = 'ILL::cond_free';
-            return true;
+
+        $f924 = $this->driver->tryMethod('getField924');
+        $section = $this->config->get($this->format);
+        $tmp = $section->get('indicator', ['a', 'b', 'c', 'e']);
+        $allowedCodes = is_object($tmp) ? $tmp->toArray() : $tmp;
+
+        foreach ($f924 as $field) {
+            $code = isset($field['d']) ? $field['d'] : null;
+            if (isset($code) && in_array($code, $allowedCodes)) {
+                return true;
+            }
         }
+        $this->messages[] = 'ILL::cond_indicator';
         return false;
     }
-
 
     /**
      * Get all messages that occurrec during processing. Messages are trans-
@@ -442,8 +414,6 @@ class Logic {
     {
         return $this->localIsils;
     }
-
-
 
 
 }
