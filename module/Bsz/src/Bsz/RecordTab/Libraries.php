@@ -74,6 +74,7 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
         foreach ($libraries as $library) {
             $this->f924[$library->getIsil()]['name'] = $library->getName();
             $this->f924[$library->getIsil()]['homepage'] = $library->getHomepage();            
+            $this->f924[$library->getIsil()]['adisurl'] = $library->getaDISURl();            
         }
         return $this->f924;        
     }

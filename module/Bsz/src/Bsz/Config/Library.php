@@ -221,9 +221,9 @@ class Library
     }  
     
     /**
-     * 
+     *
      * @param ResultSet $places
-     * @return \Bsz\Config\Library
+     * @return Library
      */
     public function setPlaces($places)
     {

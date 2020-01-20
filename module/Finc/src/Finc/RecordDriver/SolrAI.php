@@ -777,5 +777,39 @@ class SolrAI extends SolrDefault implements
     }
 
  
-    
+    /**
+     * Check for article ode e-article format
+     *
+     * @return mixed
+     */
+    public function isArticle() {
+        if ($this->aiRecord['rft.genre'] === "article") {
+            return true;
+        } else {
+            return false;
+        }
+    }    
+
+
+    /**
+     * Not implemented in this module
+     *
+     * @param string $field Name of the field.
+     *
+     * @return mixed
+     */
+    public function getContainerPages() {
+        return $this->getAIRecord('rft.pages');;
+    }
+
+    /**
+     * Not implemented in this module
+     *
+     * @param string $field Name of the field.
+     *
+     * @return mixed
+     */
+    public function getContainerYear() {
+        return $this->getPublishDateSort();
+    }
 }

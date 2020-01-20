@@ -23,22 +23,34 @@
             <td class="hidden-xs">
                 <? if (isset($result['b']) && trim($result['b']) != ''): ?>
                     <span class="text-nowrap">
-                    <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::Sigelstelle')?>" href="https://sigel.staatsbibliothek-berlin.de/nc/suche/?isil=<?=trim($result['b'])?>" class="external"><?=$this->escapeHtml($result['b'])?></a>
+                    <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::Sigelstelle') ?>"
+                       href="<?= str_replace('%ISIL%', trim($result['b']), $this->client()->get('OPAC')->get('sigel')) ?>"
+                       class="external hasicon"><?= $this->escapeHtml($result['b']) ?></a>
                     </span>
                 <? else: ?>
-                    <?=isset($result['b']) ? $this->escapeHtml($result['b']) : ''?>
+                    <?= isset($result['b']) ? $this->escapeHtml($result['b']) : '' ?>
                 <? endif; ?>
             </td>
             <td>
-                <? if (isset($result['homepage']) && isset($result['name']) && trim($result['homepage']) != ''): ?>
-                    <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::library_homepage')?>" href="<?=$result['homepage']?>" class="external"><?=$this->escapeHtml($result['name'])?></a>
+                <? if (isset($result['adisurl']) && isset($result['name']) && trim($result['adisurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
+                    <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['adisurl']) ?>
+                    <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_opac') ?>" href="<?= $opac ?>"
+                       class="external hasicon"><?= $this->escapeHtml($result['name']) ?></a>
+
                 <? else: ?>
-                    <?=isset($result['name']) ? $this->escapeHtml($result['name']) : ''?>
+                    <?= isset($result['name']) ? $this->escapeHtml($result['name']) : '' ?>
+                <? endif; ?>
+                <? if (isset($result['homepage'])): ?>
+                    <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_homepage') ?>"
+                       href="<?= $result['homepage'] ?>" class="external hasicon"><i class="fa fa-globe"></i></a>
                 <? endif; ?>
             </td>
-            <td><?=isset($result['g']) ? $this->escapeHtml($result['g']) : ''?></td>
-            <td><? if (isset($result['ill_icon'])): ?><i class="fa <?=$result['ill_icon']?>"></i> <? endif; ?><span class="text hidden-xs"><?=isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></span></td>
-            <? if ($this->driver->isJournal()): ?><td><?=isset($result['z']) ? $this->escapeHtml($result['z']) : ''?></td><? endif; ?>
+            <td><?= isset($result['g']) ? $this->escapeHtml($result['g']) : '' ?></td>
+            <td><? if (isset($result['ill_icon'])): ?><i class="fa <?= $result['ill_icon'] ?>"></i> <? endif; ?><span
+                        class="text hidden-xs"><?= isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></span>
+            </td>
+            <? if ($this->driver->isJournal()): ?>
+                <td><?= isset($result['z']) ? $this->escapeHtml($result['z']) : '' ?></td><? endif; ?>
         </tr>
         <? endforeach; ?>        
     </tbody>

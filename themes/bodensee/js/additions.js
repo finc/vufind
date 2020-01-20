@@ -1,9 +1,12 @@
 function   performMark() {
     var lookfor = '';
+    var input_simple = '';
+    var input_adv = '';    
     var input_simple = $('#searchForm_lookfor').val();
-    var input_adv = $('span.adv_lookfor').text();
+    var input_adv = $('li.adv_lookfor').text();
     if (typeof input_simple !== 'undefined' && input_simple.trim() !== '') {
-        lookfor = input_simple;
+        // remove boole expressions with AND OR NOT when capitalletters and seperated from words
+        lookfor = input_simple.replace(/((\sOR\s))|((\sAND\s))|((\sNOT\s))/g, ' ');
     } else if (typeof input_adv !== 'undefined'  && input_adv.trim() !== '') {
         lookfor = input_adv;
         var mapObj = {
@@ -190,6 +193,7 @@ function avoidEmptySearch() {
              $input.popover('hide');
              return true;
         }
+
      });
      $input.on('change keydown paste input', function(e) {
          if ($input.val().replace( /\W*/gi,"" ).length > limit) {
@@ -362,16 +366,16 @@ function textToggle() {
 
 function openInPopup() {
     $(document).on('click', '.open-popup', function(e) {
-        console.log('hier')
-        e.preventDefault()
+        console.log('hier');
+        e.preventDefault();
         var href = $(this).attr('href');
-        
+
         var name = $(this).attr('data-name');
         name = name == 'undefined' ? name : 'BOSS';
-        
+
         var width = $(this).attr('data-width');
         width = width == 'undefined' ? width : '1024';
-        
+
         var height = $(this).attr('data-height');
         height = height == 'undefined' ? height : '580';
         
@@ -392,8 +396,8 @@ function openInPopup() {
             'screenY=0',
             'screenX=200'
         ];
-        
-        window.open(href, name, options.join(',')).focus();;
+
+        window.open(href, name, options.join(',')).focus();
         
     });
 }

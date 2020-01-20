@@ -5853,7 +5853,7 @@
             "require": {
                 "php": ">=5.3.7",
                 "symfony/config": "^2.3.0|^3|^4",
-                "symfony/dependency-injection": "^2.3.0|^3|^4",
+                "symfony/dependency-injection": "^3.4.26|^3|^4",
                 "symfony/filesystem": "^2.3.0|^3|^4"
             },
             "require-dev": {

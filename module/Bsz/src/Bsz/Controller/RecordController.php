@@ -142,7 +142,10 @@ class RecordController extends \VuFind\Controller\RecordController
         if (isset($params['Bestellform'])) {
 
             // use regex to trim username
-            if (isset($first) && strlen($first->getRegex()) > 0 && $first->getAuth() == 'shibboleth') {
+            if (isset($first) && strlen($first->getRegex()) > 0 
+                && $first->getAuth() == 'shibboleth' 
+                && isset($params['BenutzerNummer'])
+            ) {
                 $params['BenutzerNummer'] = preg_replace($first->getRegex(), "$1", $params['BenutzerNummer']);         
             }
             // response is  okay
@@ -199,7 +202,7 @@ class RecordController extends \VuFind\Controller\RecordController
         // redirect. 
         $client = $this->serviceLocator->get('Bsz\Config\Client');
                 $authManager = $this->serviceLocator->get('VuFind\AuthManager');
-        $isils = $this->params()->fromQuery('isil');
+        $isils = (array) $this->params()->fromQuery('isil', []);
         
         if ($isils) {
             return $this->processIsil();
