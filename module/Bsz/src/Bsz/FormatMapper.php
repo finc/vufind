@@ -20,34 +20,37 @@
 
 namespace Bsz;
 
+use Zend\Config\Reader\Ini;
+
 /**
  * Formate einheitlich mappen für alle Quellen
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class FormatMapper {
-    
-    protected $_config;    
-    
+class FormatMapper
+{
+
+    protected $_config;
+
     public function __construct() {
 //        $this->_config = $this->getConfig();
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     protected function getConfig() {
-        if(null === $this->_config) {    
+        if(null === $this->_config) {
             $baseDir = '/usr/local/boss';
-            $Reader = new \Zend\Config\Reader\Ini();
-            $config = $Reader->fromFile($baseDir . '/config/vufind/formats.ini');           
+            $Reader = new Ini();
+            $config = $Reader->fromFile($baseDir . '/config/vufind/formats.ini');
             $this->_config = $config;
         }
         return $this->_config;
     }
-    
-    
+
+
     /**
      * Maps an array of format strings
      * @param array $inputs
@@ -60,70 +63,34 @@ class FormatMapper {
         }
         return array_unique($formats);
     }
-    
-   
+
+
     /**
      * Maps formats from formats.ini to icon file names
      * @param string $formats
      * @return string
      */
     public function mapIcon($formats) {
-        
+
         //this function uses simplifies formats as we can only show one icon
         $formats = $this->simplify($formats);
         foreach($formats as $k => $format) {
             $formats[$k] = strtolower($format);
         }
         $return = '';
-        if(is_array($formats)) {            
-            if(in_array('electronicresource', $formats) && in_array('e-book',$formats)) {$return = 'ebook';} 
-            elseif(in_array('videodisc', $formats) && in_array('video',$formats)) {$return = 'movie';} 
-            elseif(in_array('electronicresource', $formats) && in_array('journal',$formats)) {$return = 'ejournal';} 
-            elseif(in_array('opticaldisc', $formats) && in_array('e-book',$formats)) {$return = 'disc';} 
-            elseif(in_array('cd', $formats) && in_array('soundrecording',$formats)) {$return = 'music-cd';} 
-            elseif(in_array('book', $formats) && in_array('compilation',$formats)) {$return = 'serial';} 
-            elseif(in_array('musicalscore', $formats)) {$return = 'partitur';} 
-            elseif(in_array('atlas', $formats)) {$return = 'map';} 
-            elseif(in_array('serial', $formats)) {$return = 'collection';} 
-            elseif(in_array('journal', $formats)) {$return = 'journal';} 
-            elseif(in_array('conference proceeding', $formats)) {$return = 'journal';} 
-            elseif(in_array('e-journal', $formats)) {$return = 'ejournal';} 
-            elseif(in_array('text', $formats)) {$return = 'article';} 
-            elseif(in_array('pdf', $formats)) {$return = 'article';} 
-            elseif(in_array('book', $formats)) {$return = 'book';} 
-            elseif(in_array('book chapter', $formats)) {$return = 'book';}             
-            elseif(in_array('e-book', $formats)) {$return = 'ebook';} 
-            elseif(in_array('e-book', $formats)) {$return = 'ebook';}             
-            elseif(in_array('ebook', $formats)) {$return = 'ebook';}             
-            elseif(in_array('vhs', $formats)) {$return = 'vhs';} 
-            elseif(in_array('video', $formats)) {$return = 'video-disc';} 
-            elseif(in_array('microfilm', $formats)) {$return = 'microfilm';} 
-            elseif(in_array('platter', $formats)) {$return = 'platter';} 
-            elseif(in_array('dvd/bluray', $formats)) {$return = 'video-disc';} 
-            elseif(in_array('music-cd', $formats)) {$return = 'music-disc';} 
-            elseif(in_array('cd-rom', $formats)) {$return = 'disc';} 
-            elseif(in_array('article', $formats)) {$return = 'article';} 
-            elseif(in_array('magazine article', $formats)) {$return = 'article';} 
-            elseif(in_array('journal article', $formats)) {$return = 'article';} 
-            elseif(in_array('band', $formats)) {$return = 'book';} 
-            elseif(in_array('cassette', $formats)) {$return = 'cassette';} 
-            elseif(in_array('soundrecording', $formats)) {$return = 'sound';}      
-            elseif(in_array('norm', $formats)) {$return = 'norm';}                  
-            elseif(in_array('thesis', $formats)) {$return = 'thesis';}                  
-            elseif(in_array('proceedings', $formats)) {$return = 'books';}                  
-            elseif(in_array('electronic', $formats)) {$return = 'globe';}                  
-            else {$return =  'article'; }
-            
-            
+        if(is_array($formats)) {
+            if(in_array('electronicresource', $formats) && in_array('e-book',$formats)) {$return = 'ebook';} elseif(in_array('videodisc', $formats) && in_array('video',$formats)) {$return = 'movie';} elseif(in_array('electronicresource', $formats) && in_array('journal',$formats)) {$return = 'ejournal';} elseif(in_array('opticaldisc', $formats) && in_array('e-book',$formats)) {$return = 'disc';} elseif(in_array('cd', $formats) && in_array('soundrecording',$formats)) {$return = 'music-cd';} elseif(in_array('book', $formats) && in_array('compilation',$formats)) {$return = 'serial';} elseif(in_array('musicalscore', $formats)) {$return = 'partitur';} elseif(in_array('atlas', $formats)) {$return = 'map';} elseif(in_array('serial', $formats)) {$return = 'collection';} elseif(in_array('journal', $formats)) {$return = 'journal';} elseif(in_array('conference proceeding', $formats)) {$return = 'journal';} elseif(in_array('e-journal', $formats)) {$return = 'ejournal';} elseif(in_array('text', $formats)) {$return = 'article';} elseif(in_array('pdf', $formats)) {$return = 'article';} elseif(in_array('book', $formats)) {$return = 'book';} elseif(in_array('book chapter', $formats)) {$return = 'book';} elseif(in_array('e-book', $formats)) {$return = 'ebook';} elseif(in_array('e-book', $formats)) {$return = 'ebook';} elseif(in_array('ebook', $formats)) {$return = 'ebook';} elseif(in_array('vhs', $formats)) {$return = 'vhs';} elseif(in_array('video', $formats)) {$return = 'video-disc';} elseif(in_array('microfilm', $formats)) {$return = 'microfilm';} elseif(in_array('platter', $formats)) {$return = 'platter';} elseif(in_array('dvd/bluray', $formats)) {$return = 'video-disc';} elseif(in_array('music-cd', $formats)) {$return = 'music-disc';} elseif(in_array('cd-rom', $formats)) {$return = 'disc';} elseif(in_array('article', $formats)) {$return = 'article';} elseif(in_array('magazine article', $formats)) {$return = 'article';} elseif(in_array('journal article', $formats)) {$return = 'article';} elseif(in_array('band', $formats)) {$return = 'book';} elseif(in_array('cassette', $formats)) {$return = 'cassette';} elseif(in_array('soundrecording', $formats)) {$return = 'sound';} elseif(in_array('norm', $formats)) {$return = 'norm';} elseif(in_array('thesis', $formats)) {$return = 'thesis';} elseif(in_array('proceedings', $formats)) {$return = 'books';} elseif(in_array('electronic', $formats)) {$return = 'globe';} else {$return =  'article'; }
+
+
         }
 
 
         return 'bsz bsz-'. $return;
     }
-    
+
     /**
      * Returns physical medium from Marc21 field 007 - char 0 and 1
-     * @param char $code1 char 0 
+     * @param char $code1 char 0
      * @param char $code2 char 1
      * @return string
      */
@@ -145,7 +112,7 @@ class FormatMapper {
         $mappings['C']['O'] = 'OpticalDisc';
         // Do not return - this will cause anything with an
         // 856 field to be labeled as "Electronic"
-        $mappings['C']['R'] = 'E-Journal';
+        $mappings['C']['R'] = 'ElectronicResource';
         $mappings['C']['default'] = 'ElectronicResource'; //Software passt aber bei eBooks nicht?
         $mappings['D']['default'] = 'Globe';
         $mappings['F']['default'] = 'Braille';
@@ -184,15 +151,15 @@ class FormatMapper {
         $mappings['V']['D'] = 'VideoDisc';
         $mappings['V']['F'] = 'VideoCassette';
         $mappings['V']['R'] = 'VideoReel';
-        $mappings['V']['default'] = 'Video';     
-        $mappings['Z']['default'] = 'Kit';     
+        $mappings['V']['default'] = 'Video';
+        $mappings['Z']['default'] = 'Kit';
 
 
         if (isset($mappings[$code1])) {
             if (!empty($mappings[$code1][$code2])) {
                 $medium = $mappings[$code1][$code2];
             } elseif(!empty($mappings[$code1]['default'])) {
-                $medium = $mappings[$code1]['default'];                        
+                $medium = $mappings[$code1]['default'];
             }
 
         }
@@ -200,9 +167,10 @@ class FormatMapper {
 //        var_dump($code2);
         return $medium;
     }
+
     /**
      * Returns content/format from Marc21 field 007
-     * @param char $leader7 
+     * @param char $leader7
      * @param char $f007
      * @return string
      */
@@ -210,9 +178,10 @@ class FormatMapper {
         $format = '';
         $leader7 = strtoupper($leader7);
         $f007 = strtoupper($f007);
+        $f008 = strtoupper($f008);
         $mappings = [];
         $mappings['A']['default'] = 'Article'; // Artikel aus Zeitschrift
-        $mappings['B']['default'] = 'Article'; 
+        $mappings['B']['default'] = 'Article';
         $mappings['M']['C'] = 'E-Book';
         $mappings['M']['V'] = 'Video';
         $mappings['M']['S'] = 'SoundRecording';
@@ -220,15 +189,15 @@ class FormatMapper {
         $mappings['S']['N'] = 'Newspaper';
         $mappings['S']['P'] = 'Journal';
         $mappings['S']['M'] = 'Serial';
-        $mappings['S']['default'] = 'Serial';       
+        $mappings['S']['default'] = 'Serial';
 
         if (isset($mappings[$leader7])) {
             if ($leader7 == 'S' && isset($mappings[$leader7][$f008])) {
-                $format = $mappings[$leader7][$f008];                
+                $format = $mappings[$leader7][$f008];
             } elseif ($leader7 != 'S' && isset($mappings[$leader7][$f007])) {
                 $format = $mappings[$leader7][$f007];
             } elseif(isset($mappings[$leader7]['default'])) {
-                $format = $mappings[$leader7]['default'];                        
+                $format = $mappings[$leader7]['default'];
             }
         }
 //        var_dump($leader7);
@@ -236,9 +205,10 @@ class FormatMapper {
 //        var_dump($f008);
         return $format;
     }
+
     /**
      * Return content/format from Marc21 field 006
-     * @param char $leader6 
+     * @param char $leader6
      * @param char $f007
      * @return string
      */
@@ -260,15 +230,14 @@ class FormatMapper {
         $mappings['P'] = 'Kit';
         $mappings['R'] = 'PhysicalObject';
         $mappings['T'] = 'Manuscript';
-        
-     
+
 
         if (isset($mappings[$leader6])) {
             $format = $mappings[$leader6];
         }
         return $format;
     }
-    
+
     /**
      * Simplify format array
      * @param array $formats
@@ -276,38 +245,20 @@ class FormatMapper {
      */
     public function simplify($formats) {
         $formats = array_unique($formats);
-        foreach($formats as$k => $format) {
-            
+        foreach($formats as $k => $format) {
+
             if (!empty($format)) {
-                $formats[$k] = ucfirst($format);                
+                $formats[$k] = ucfirst($format);
             }
         }
-        if(in_array('SoundRecording', $formats) && in_array('MusicRecording', $formats)) {return ['Musik']; }
-        elseif(in_array('SheetMusic', $formats) && in_array('Book', $formats)) {return ['MusicalScore']; }
-        elseif(in_array('Map', $formats) && in_array('Book', $formats)) {return ['mapmaterial']; }
-        elseif(in_array('Platter', $formats) && in_array('SoundRecording', $formats)) {return ['Platter']; }
-        elseif(in_array('E-Journal', $formats) && in_array('E-Book', $formats)) {return ['E-Book']; }
-        elseif(in_array('E-Journal on Disc', $formats) && in_array('Journal', $formats)) {return ['E-Journal']; }
-        elseif(in_array('VideoDisc', $formats) && in_array('Video', $formats)) {return ['DVD/BluRay']; }
-        elseif(in_array('CD', $formats) && in_array('SoundRecording', $formats)) {return ['Music-CD']; }
-        elseif(in_array('OpticalDisc', $formats) && in_array('E-Book', $formats)) {return ['CD-ROM']; }
-        elseif(in_array('E-Journal', $formats) && in_array('Journal', $formats)) {return ['E-Journal']; }
-        elseif(in_array('E-Journal', $formats) && in_array('Article', $formats)) {return ['Article']; }
-        elseif(in_array('Journal', $formats) && in_array('Printed', $formats)) {return ['E-Journal']; }
-        //elseif(in_array('E-Journal', $formats) && in_array('Newspaper', $formats)) {return ['Newspaper']; }
-        elseif(in_array('VideoCassette', $formats) && in_array('Video', $formats)) {return ['VHS']; }
-        elseif(in_array('Microfilm', $formats) && in_array('Book', $formats)) {return ['Book']; }
-        elseif(in_array('Microfilm', $formats) && in_array('Journal', $formats)) {return ['Journal']; }
-        elseif(in_array('SoundCassette', $formats) && in_array('SoundRecording', $formats)) {return ['Cassette']; }
-        elseif(in_array('SoundRecording', $formats) && in_array('Article', $formats)) {return ['Music-CD']; } //Kommt im GBV vor
-        elseif(in_array('E-Journal', $formats) && in_array('Newspaper', $formats)) {return ['Newspaper']; }
-        elseif(in_array('Compilation', $formats) && in_array('Book', $formats)) {return ['Compilation']; }
-        
+        if(in_array('SoundRecording', $formats) && in_array('MusicRecording', $formats)) {return ['Musik']; } elseif(in_array('SheetMusic', $formats) && in_array('Book', $formats)) {return ['MusicalScore']; } elseif(in_array('Map', $formats) && in_array('Book', $formats)) {return ['mapmaterial']; } elseif(in_array('Platter', $formats) && in_array('SoundRecording', $formats)) {return ['Platter']; } elseif(in_array('E-Journal', $formats) && in_array('E-Book', $formats)) {return ['E-Book']; } elseif(in_array('E-Journal on Disc', $formats) && in_array('Journal', $formats)) {return ['E-Journal']; } elseif(in_array('VideoDisc', $formats) && in_array('Video', $formats)) {return ['DVD/BluRay']; } elseif(in_array('CD', $formats) && in_array('SoundRecording', $formats)) {return ['Music-CD']; } elseif(in_array('OpticalDisc', $formats) && in_array('E-Book', $formats)) {return ['CD-ROM']; } elseif(in_array('E-Journal', $formats) && in_array('Journal', $formats)) {return ['E-Journal']; } elseif(in_array('E-Journal', $formats) && in_array('Article', $formats)) {return ['Article']; } elseif(in_array('Journal', $formats) && in_array('Printed', $formats)) {return ['E-Journal']; } //elseif(in_array('E-Journal', $formats) && in_array('Newspaper', $formats)) {return ['Newspaper']; }
+        elseif(in_array('VideoCassette', $formats) && in_array('Video', $formats)) {return ['VHS']; } elseif(in_array('Microfilm', $formats) && in_array('Book', $formats)) {return ['Book']; } elseif(in_array('Microfilm', $formats) && in_array('Journal', $formats)) {return ['Journal']; } elseif(in_array('SoundCassette', $formats) && in_array('SoundRecording', $formats)) {return ['Cassette']; } elseif(in_array('SoundRecording', $formats) && in_array('Article', $formats)) {return ['Music-CD']; } //Kommt im GBV vor
+        elseif(in_array('E-Journal', $formats) && in_array('Newspaper', $formats)) {return ['Newspaper']; } elseif(in_array('Compilation', $formats) && in_array('Book', $formats)) {return ['Compilation']; }
+
         return $formats;
-                
+
     }
-    
-    
-    
+
+
 }
 

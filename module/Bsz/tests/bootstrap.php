@@ -51,8 +51,8 @@ set_include_path(implode(PATH_SEPARATOR, $pathParts));
 if (file_exists('vendor/autoload.php')) {
     $loader = include 'vendor/autoload.php';
     $loader = new Composer\Autoload\ClassLoader();
-    $loader->add('VuFindTest', __DIR__ . '/unit-tests/src');
-    $loader->add('VuFindTest', __DIR__ . '/../src');
+    $loader->add('BszTest', __DIR__ . '/unit-tests/src');
+    $loader->add('BszTest', __DIR__ . '/../src');
     // Dynamically discover all module src directories:
     $modules = opendir(__DIR__ . '/../..');
     while ($mod = readdir($modules)) {
