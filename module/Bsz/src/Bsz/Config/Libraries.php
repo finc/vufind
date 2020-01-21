@@ -54,10 +54,10 @@ class Libraries extends TableGateWay
                 ->join('authentications', 'fk_auth = authentications.id', ['auth_name' => 'name'])
                 ->order('libraries.name')
                 ->order('isil');
-            $select->where->
-                    and
-                    ->equalTo('is_ill_active', 1)
-                    ->in('isil', $isils);    
+            $select->where->nest
+                ->equalTo('is_ill_active', 1)
+                ->and
+                ->in('isil', $isils);
 
             $results = $this->selectWith($select);
 
