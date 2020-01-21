@@ -30,10 +30,6 @@
 namespace BszTheme\View\Helper\Bodensee;
 
 use Zend\Config\Config;
-use Zend\View\Exception\RuntimeException,
-    Zend\View\Helper\AbstractHelper,
-    Bsz\Ill\Logic as IllLogic;
-
 /**
  * Record driver view helper
  *
@@ -46,17 +42,18 @@ use Zend\View\Exception\RuntimeException,
 class Record extends \VuFind\View\Helper\Root\Record
 {
 
-    protected $logic;
+    protected $localIsils;
 
     /**
      * Constructor
      *
      * @param Config $config VuFind configuration
+     * @param array $localIsils
      */
-    public function __construct($config = null, IllLogic $logic )
+    public function __construct($config = null, $localIsils = [])
     {
         parent::__construct($config);
-        $this->logic = $logic;
+        $this->localIsils = $localIsils;
     }
 
     /**
@@ -181,22 +178,6 @@ class Record extends \VuFind\View\Helper\Root\Record
     }
 
 
-    public function renderIllButton()
-    {
-        $this->logic->attachDriver($this->driver);
-        $message = '';
-        $status = $this->logic->isAvailable();
-        $messages = $this->logic->getMessages();
-        $ppns = $this->logic->getPPNs();
-
-        return $this->renderTemplate('parts/illbutton.phtml', [
-            'status' => $status,
-            'messages' => $messages,
-            'ppns' => $ppns
-        ]);
-
-    }
-
     /**
      * Determine if a record is available at the first ISIL or at it's
      * institutes. In opposite to isAtCurrentLibrary, we do not include other
@@ -209,8 +190,7 @@ class Record extends \VuFind\View\Helper\Root\Record
     public function isAtFirstIsil() {
 
         $holdings = $this->driver->tryMethod('getLocalHoldings');
-        $allIsils = $this->logic->getLocalIsils();
-        $firstIsil = reset($allIsils);
+        $firstIsil = reset($this->localIsils);
 
         foreach ($holdings as $holding) {
             if (preg_match("/(^$firstIsil\$)|($firstIsil)[-\/\s]+/", $holding['b'])) {
@@ -219,6 +199,4 @@ class Record extends \VuFind\View\Helper\Root\Record
         }
         return false;
     }
-
-
 }
