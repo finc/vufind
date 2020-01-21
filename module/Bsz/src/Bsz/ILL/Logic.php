@@ -93,9 +93,9 @@ class Logic
 
     /**
      *
-     * @param Holdings $holdings
+     * @param Holding $holding
      */
-    public function attachHoldings(Holdings $holdings)
+    public function attachHoldings(Holding $holding)
     {
         $this->holding = $holding;
     }
