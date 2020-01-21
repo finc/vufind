@@ -29,6 +29,7 @@
 
 namespace BszTheme\View\Helper\Bodensee;
 
+use Zend\Config\Config;
 use Zend\View\Exception\RuntimeException,
     Zend\View\Helper\AbstractHelper,
     Bsz\Ill\Logic as IllLogic;
@@ -46,11 +47,11 @@ class Record extends \VuFind\View\Helper\Root\Record
 {
 
     protected $logic;
-    
+
     /**
      * Constructor
      *
-     * @param \Zend\Config\Config $config VuFind configuration
+     * @param Config $config VuFind configuration
      */
     public function __construct($config = null, IllLogic $logic )
     {
@@ -75,9 +76,9 @@ class Record extends \VuFind\View\Helper\Root\Record
             'format-class.phtml', ['format' => $format]
         );
     }
-    
+
     /**
-     * 
+     *
      *
      * @param bool $openUrlActive Is there an active OpenURL on the page?
      *
@@ -90,7 +91,7 @@ class Record extends \VuFind\View\Helper\Root\Record
             if (isset($array['desc']) && strlen($array['desc']) > 60 ) {
                 $array['desc'] = substr($array['desc'], 0, 60).'...';
                 $sources[$k] = $array;
-            }             
+            }
         }
         return $sources;
     }
@@ -107,17 +108,17 @@ class Record extends \VuFind\View\Helper\Root\Record
     {
         // Try to build thumbnail:
         $thumb = $this->driver->tryMethod('getThumbnail', [$size]);
-       
+
         if (empty($thumb)) {
             return false;
         }
-    
+
         if (is_array($thumb)) {
             if (array_key_exists('issn', $thumb)) {
                 return false;
             }
         }
-        
+
         // Array?  It's parameters to send to the cover generator:
         if (is_array($thumb)) {
             $urlHelper = $this->getView()->plugin('url');
@@ -128,7 +129,6 @@ class Record extends \VuFind\View\Helper\Root\Record
         return $thumb;
     }
 
-  
 
     /**
      * Renders FIS Logo with link
@@ -149,7 +149,7 @@ class Record extends \VuFind\View\Helper\Root\Record
 
         return $this->renderTemplate('result-list.phtml');
     }
-    
+
     /**
      * Get HTML to render a title.
      *
@@ -165,7 +165,7 @@ class Record extends \VuFind\View\Helper\Root\Record
         } else {
             $title = trim($this->driver->tryMethod('getTitle'));
         }
-            
+
         if (!empty($highlightedTitle)) {
             $highlight = $this->getView()->plugin('highlight');
             $addEllipsis = $this->getView()->plugin('addEllipsis');
@@ -178,17 +178,17 @@ class Record extends \VuFind\View\Helper\Root\Record
         }
         $transEsc = $this->getView()->plugin('transEsc');
         return $transEsc('Title not available');
-    } 
-    
-    
+    }
+
+
     public function renderIllButton()
     {
-        $this->logic->setDriver($this->driver);
+        $this->logic->attachDriver($this->driver);
         $message = '';
         $status = $this->logic->isAvailable();
         $messages = $this->logic->getMessages();
         $ppns = $this->logic->getPPNs();
-        
+
         return $this->renderTemplate('parts/illbutton.phtml', [
             'status' => $status,
             'messages' => $messages,
@@ -196,18 +196,18 @@ class Record extends \VuFind\View\Helper\Root\Record
         ]);
 
     }
-    
+
     /**
-     * Determine if a record is available at the first ISIL or at it's 
-     * institutes. In opposite to isAtCurrentLibrary, we do not include other 
-     * libraries (=other ISILs) here. 
-     * 
+     * Determine if a record is available at the first ISIL or at it's
+     * institutes. In opposite to isAtCurrentLibrary, we do not include other
+     * libraries (=other ISILs) here.
+     *
      * @return boolean
-     * 
+     *
      */
-    
+
     public function isAtFirstIsil() {
-        
+
         $holdings = $this->driver->tryMethod('getLocalHoldings');
         $allIsils = $this->logic->getLocalIsils();
         $firstIsil = reset($allIsils);
@@ -217,8 +217,8 @@ class Record extends \VuFind\View\Helper\Root\Record
                 return true;
             }
         }
-        return false;       
+        return false;
     }
-    
+
 
 }

@@ -19,7 +19,9 @@
 
 namespace Bsz\ILL;
 
+use Bsz\Config\Client;
 use Interop\Container\ContainerInterface;
+use VuFind\Search\SearchRunner;
 
 /**
  * FActory for inter-library loan logic
@@ -27,25 +29,26 @@ use Interop\Container\ContainerInterface;
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class Factory {
-    
-    public static function getIllLogic(ContainerInterface $container) 
+
+    public static function getIllLogic(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('ILL');
-        return new \Bsz\ILL\Logic(
+        $logic = new Logic(
             $config,
-            $container->get('Bsz\ILL\Holding'),
-            $container->get(\Bsz\Config\Client::class)->getIsilAvailability()               
+            $container->get(Client::class)->getIsilAvailability()
         );
+        $logic->attachHoldings($container->get('Bsz\ILL\Holding'));
+        return $logic;
     }
-    
-        /**
-     * 
+
+    /**
+     *
      * @param ServiceManager $sm
-     * @param \VuFind\Search\SearchRunner
+     * @param SearchRunner
      * @return Bsz\Bsz\Holding
      */
-    public static function getHolding(ContainerInterface $container) {        
+    public static function getHolding(ContainerInterface $container) {
         return new Holding($container->get('VuFind\SearchRunner'));
-    }  
-    
+    }
+
 }

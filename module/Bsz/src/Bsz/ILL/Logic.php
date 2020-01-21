@@ -71,10 +71,9 @@ class Logic
      * @param array $isils
      */
 
-    public function __construct(Config $config, Holding $holding, $isils = [])
+    public function __construct(Config $config, $isils = [])
     {
         $this->config = $config;
-        $this->holding = $holding;
         $this->localIsils = $isils;
     }
 
@@ -84,11 +83,21 @@ class Logic
      *
      * @param SolrMarc $driver
      */
-    public function setDriver(SolrMarc $driver)
+    public function attachDriver(SolrMarc $driver)
     {
         $this->driver = $driver;
         $this->format = $this->getFormat();
+        $this->status = [];
         $this->ppns = [];
+    }
+
+    /**
+     *
+     * @param Holdings $holdings
+     */
+    public function attachHoldings(Holdings $holdings)
+    {
+        $this->holding = $holding;
     }
 
     /**
@@ -265,6 +274,9 @@ class Logic
      */
     protected function hasParallelEditions()
     {
+        if (!$this->holding instanceof Holding) {
+            return false;
+        }
         $ppns = [];
         $related = $this->driver->tryMethod('getRelatedEditions');
         $hasParallel = false;
@@ -302,6 +314,9 @@ class Logic
      */
     protected function queryWebservice()
     {
+        if (!$this->holding instanceof Holding) {
+            return false;
+        }
 
         // set up query params
         $this->holding->setNetwork('DE-576');
