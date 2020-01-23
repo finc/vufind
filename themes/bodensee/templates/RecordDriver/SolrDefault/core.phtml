@@ -15,54 +15,62 @@
   $thumbnail = false;
   $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
   if ($cover): ?>
-    <? if ($coverDetails['html'] !== ''): ?> 
+    <? if ($coverDetails['html'] !== ''): ?>
 
-            <?=$cover ?>
-    <? endif; ?>
+          <?= $cover ?>
+      <? endif; ?>
   <? else: ?>
-    <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">     
-        <span class=""></span>
-    </div>
-<? endif; ?>   
+      <div class="recordcover unavailable <?= $this->mapper()->mapIcon($this->driver->getFormats()) ?>">
+          <span class=""></span>
+      </div>
+  <? endif; ?>
 
-<? /* Display qrcode if appropriate: */ ?>
+        <? /* Display qrcode if appropriate: */ ?>
         <? $QRCode = $this->record($this->driver)->getQRCode("core"); ?>
-        <? if($QRCode): ?>
-          <span class="hidden-xs">
-            <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
+        <? if ($QRCode): ?>
+            <span class="hidden-xs">
+            <br/><img alt="<?= $this->transEsc('QR Code') ?>" class="qrcode"
+                      src="<?= $this->escapeHtmlAttr($QRCode); ?>"/>
           </span>
         <? endif; ?>
-      <?=$this->record($this->driver)->getPreviews()?>
+        <?= $this->record($this->driver)->getPreviews() ?>
     </div>
     <div class="col-xs-12 col-sm-9">
-        <? 
-           $title = $this->driver->getTitle();
-           $subtitle = $this->driver->getTitleSection();
+        <?php
+        $title = $this->driver->getTitle();
+        $section = $this->driver->getTitleSection();
+        $titleol = $this->driver->tryMethod('getTitleOl');
         ?>
         <h3 property="name">
-        <? if (is_array($title)): ?>    
-            <?=$this->escapeHtml($title[0])?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
-        <? else: ?>
-            <?=$this->escapeHtml($title)?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
-        <? endif; ?>
-        <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
+            <? if (is_array($title)): ?>
+                <?= $this->escapeHtml($title[0]) ?> <small><?= $this->string()->cleanEsc($section) ?></small>
+            <? else: ?>
+                <?= $this->escapeHtml($title) ?> <small><?= $this->string()->cleanEsc($section) ?></small>
+            <? endif; ?>
+            <? if (!empty($titleol)): ?>
+                <h4><?= $this->escapeHtml($titleol) ?></h4>
+            <? endif; ?>
+            <?= $this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver]) ?>
         </h3>
 
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-          <? /* Display the lists that this record is saved to */ ?>
-          <div class="savedLists hidden alert alert-info" id="savedLists">
-            <strong><?=$this->transEsc("Saved in")?>:</strong>
-          </div>
+            <? /* Display the lists that this record is saved to */ ?>
+            <div class="savedLists hidden alert alert-info" id="savedLists">
+                <strong><?= $this->transEsc("Saved in") ?>:</strong>
+            </div>
         <? endif; ?>
-        <?/* Display Main Details */?>
-        <table class="table table-striped">        
-            <? $container = $this->driver->tryMethod('getContainer'); if ($container) : ?>            
-            <tr>
-                <th><?=$this->transEsc('collective_editions')?>:</th>
-                <td><? foreach($container as $cont): ?>
-                    <a class="internal" href="<?=$this->recordLink()->getUrl($cont)?>"><?=$this->string()->cleanEsc($cont->getTitle())?></a><br/>
-                <? endforeach; ?></td>
-            </tr>
+        <? /* Display Main Details */ ?>
+        <table class="table table-striped">
+            <? $container = $this->driver->tryMethod('getContainer');
+            if ($container) : ?>
+                <tr>
+                    <th><?= $this->transEsc('collective_editions') ?>:</th>
+                    <td><? foreach ($container as $cont): ?>
+                            <a class="internal"
+                               href="<?= $this->recordLink()->getUrl($cont) ?>"><?= $this->string()->cleanEsc($cont->getTitle()) ?></a>
+                            <br/>
+                        <? endforeach; ?></td>
+                </tr>
             <? endif; ?>      
 
             <? $volume = $this->driver->tryMethod('getVolume'); ?>
