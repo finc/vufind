@@ -24,6 +24,7 @@ namespace Bsz\RecordDriver;
 
 trait OriginalLanguageTrait
 {
+
     /**
      * @return string
      */
@@ -47,13 +48,21 @@ trait OriginalLanguageTrait
     }
 
     /**
+     * @return string
+     */
+    public function getSubtitleOl(): string
+    {
+        return $this->getOriginalLanguage(245, 'b');
+    }
+
+    /**
      * GRetrieve the original language string for a given field anf subfield
      *
      * @param $targetField
      * @param $targetSubfield
      * @return string
      */
-    public function getOriginalLanguage($targetField, $targetSubfield)
+    public function getOriginalLanguage($targetField, $targetSubfield) : string
     {
 
         $return = '';
@@ -70,12 +79,38 @@ trait OriginalLanguageTrait
     }
 
     /**
-     * @return string
+     * @param array $targets
+     * @return array
      */
-    public function getSubtitleOl(): string
+    public function getOriginalLanguageMulti(array $targets) : array
     {
-        return $this->getOriginalLanguage(245, 'b');
+        $return = [];
+        foreach ($targets as $tag => $subfields) {
+            $returnSub = [];
+            foreach ($subfields as $subfield) {
+                $returnSub[] = $this->getOriginalLanguage($tag, $subfield);
+            }
+            $return[] = implode(' ', $returnSub);
+        }
+        return $return;
     }
+
+    /**
+     * @return array
+     */
+    public function getPlacesOfPublicationOl()
+    {
+        $fields = [
+            260 => 'a',
+            264 => 'a',
+        ];
+        return $this->getOriginalLanguageMulti($fields);
+    }
+
+
+
+
+
 
 
 }

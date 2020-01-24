@@ -47,11 +47,11 @@
             <? else: ?>
                 <?= $this->escapeHtml($title) ?> <small><?= $this->string()->cleanEsc($section) ?></small>
             <? endif; ?>
-            <? if (!empty($titleol)): ?>
-                <h4><?= $this->escapeHtml($titleol) ?></h4>
-            <? endif; ?>
             <?= $this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver]) ?>
         </h3>
+        <? if (!empty($titleol)): ?>
+            <h4><?= $this->escapeHtml($titleol) ?></h4>
+        <? endif; ?>
 
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>
             <? /* Display the lists that this record is saved to */ ?>
