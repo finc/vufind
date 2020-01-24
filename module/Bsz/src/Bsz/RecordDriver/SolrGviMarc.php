@@ -956,25 +956,6 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
-     * Returns unique publication details
-     * @return array
-     */
-    public function getPublicationDetails()
-    {
-        $details = parent::getPublicationDetails();
-        return $details;
-    }
-
-   /**
-     * Is this a DLR-Koha record
-     * @return boolean
-     */
-    public function isDlrKoha()
-    {
-        return false;
-    }
-
-    /**
      * get local Urls from 924|k and the correspondig linklabel 924|l
      *
      * - $924 is repeatable
