@@ -61,9 +61,12 @@ trait OriginalLanguageTrait
 
         foreach ($fields as $field) {
             $subfield6 = $field->getSubfield('6')->getData();
-            $data = $field->getSubfield($targetSubfield)->getData();
-            if (substr_count($subfield6, $targetField) > 0 && isset($data)) {
-                $return = $data;
+            $sf= $field->getSubfield($targetSubfield);
+            if ($sf !== false) {
+                $data = $sf->getData();
+                if (substr_count($subfield6, $targetField) > 0 && isset($data)) {
+                    $return = $data;
+                }
             }
         }
         return $return;
