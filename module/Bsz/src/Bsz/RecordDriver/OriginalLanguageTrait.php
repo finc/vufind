@@ -138,11 +138,17 @@ trait OriginalLanguageTrait
      *
      * @return array
      */
-    public function getPublicationDetailsOl()
+    public function getPublicationDetailsOl(): array
     {
         $places = $this->getPlacesOfPublicationOl();
         $names = $this->getPublishersOl();
         $dates = $this->getHumanReadablePublicationDates();
+
+        // Do not return year only
+        if (empty($names) && empty($places)) {
+            return [];
+        }
+
 
         $i = 0;
         $retval = [];
