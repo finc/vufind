@@ -35,6 +35,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     use HelperTrait;
     use ContainerTrait;
     use MarcAuthorTrait;
+    use OriginalLanguageTrait;
 
     /**
      * Get subject headings associated with this record.  Each heading is
