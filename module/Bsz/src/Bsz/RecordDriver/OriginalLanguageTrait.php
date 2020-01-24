@@ -70,7 +70,7 @@ trait OriginalLanguageTrait
 
         foreach ($fields as $field) {
             $subfield6 = $field->getSubfield('6')->getData();
-            $sf= $field->getSubfield($targetSubfield);
+            $sf = $field->getSubfield($targetSubfield);
             if ($sf !== false) {
                 $data = $sf->getData();
                 if (substr_count($subfield6, $targetField) > 0 && isset($data)) {
@@ -82,10 +82,12 @@ trait OriginalLanguageTrait
     }
 
     /**
+     * Get multiple fields at once, subfields are separated by ' ' by default
      * @param array $targets
+     * @param string $separator
      * @return array
      */
-    public function getOriginalLanguageMulti(array $targets) : array
+    public function getOriginalLanguageMulti(array $targets, $separator = ' '): array
     {
         $return = [];
         foreach ($targets as $tag => $subfields) {
@@ -93,7 +95,7 @@ trait OriginalLanguageTrait
             foreach ($subfields as $subfield) {
                 $returnSub[] = $this->getOriginalLanguage($tag, $subfield);
             }
-            $return[] = implode(' ', $returnSub);
+            $return[] = implode($separator, $returnSub);
         }
         return $return;
     }
