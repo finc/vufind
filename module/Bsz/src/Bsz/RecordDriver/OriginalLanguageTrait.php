@@ -21,6 +21,7 @@
 
 namespace Bsz\RecordDriver;
 
+use VuFind\RecordDriver\Response\PublicationDetails;
 
 trait OriginalLanguageTrait
 {
@@ -87,17 +88,22 @@ trait OriginalLanguageTrait
      * @param string $separator
      * @return array
      */
-    public function getOriginalLanguageMulti(array $targets, $separator = ' '): array
+    public function getOriginalLanguageArray(array $targets, $separator = ' '): array
     {
         $return = [];
         foreach ($targets as $tag => $subfields) {
             $returnSub = [];
-            foreach ($subfields as $subfield) {
-                $returnSub[] = $this->getOriginalLanguage($tag, $subfield);
+            if (is_array($subfields)) {
+                foreach ($subfields as $subfield) {
+                    $returnSub[] = $this->getOriginalLanguage($tag, $subfield);
+                }
+            } else {
+                $returnSub[] = $this->getOriginalLanguage($tag, $subfields);
             }
+
             $return[] = implode($separator, $returnSub);
         }
-        return $return;
+        return array_values(array_filter($return));
     }
 
     /**
@@ -109,13 +115,50 @@ trait OriginalLanguageTrait
             260 => 'a',
             264 => 'a',
         ];
-        return $this->getOriginalLanguageMulti($fields);
+        return $this->getOriginalLanguageArray($fields);
     }
 
+    /**
+     * Get the publishers of the record.
+     *
+     * @return array
+     */
+    public function getPublishersOl(): array
+    {
+        $fields = [
+            260 => 'b',
+            264 => 'b',
+        ];
+        return $this->getOriginalLanguageArray($fields);
+    }
 
+    /**
+     * Get an array of publication detail lines combining information from
+     * getPublicationDates(), getPublishers() and getPlacesOfPublication().
+     *
+     * @return array
+     */
+    public function getPublicationDetailsOl()
+    {
+        $places = $this->getPlacesOfPublicationOl();
+        $names = $this->getPublishersOl();
+        $dates = $this->getHumanReadablePublicationDates();
 
+        $i = 0;
+        $retval = [];
 
-
+        while (isset($places[$i]) || isset($names[$i]) || isset($dates[$i])) {
+            // Build objects to represent each set of data; these will
+            // transform seamlessly into strings in the view layer.
+            $retval[] = new PublicationDetails(
+                $places[$i] ?? '',
+                $names[$i] ?? '',
+                $dates[$i] ?? ''
+            );
+            $i++;
+        }
+        return $retval;
+    }
 
 
 }
