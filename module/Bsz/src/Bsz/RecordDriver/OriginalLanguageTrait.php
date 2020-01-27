@@ -73,7 +73,7 @@ trait OriginalLanguageTrait
             $subfield6 = $field->getSubfield('6')->getData();
             $sf = $field->getSubfield($targetSubfield);
             if ($sf !== false) {
-                $data = $sf->getData();
+                $data = trim($sf->getData());
                 if (substr_count($subfield6, $targetField) > 0 && isset($data)) {
                     $return = $data;
                 }
@@ -101,7 +101,8 @@ trait OriginalLanguageTrait
                 $returnSub[] = $this->getOriginalLanguage($tag, $subfields);
             }
 
-            $return[] = implode($separator, $returnSub);
+            $tmp = implode($separator, $returnSub);
+            $return[] = trim($tmp);
         }
         return array_values(array_filter($return));
     }
@@ -164,6 +165,23 @@ trait OriginalLanguageTrait
             $i++;
         }
         return $retval;
+    }
+
+    /**
+     * Get container title in original language
+     *
+     * @return string
+     */
+    public function getSeriesOl()
+    {
+        $fields = [
+            '440' => ['a', 'p'],
+            '800' => ['a', 'b', 'c', 'd', 'f', 'p', 'q', 't'],
+            '830' => ['a', 'p'],
+            '490' => 'a'
+        ];
+        return $this->getOriginalLanguageArray($fields);
+
     }
 
 
