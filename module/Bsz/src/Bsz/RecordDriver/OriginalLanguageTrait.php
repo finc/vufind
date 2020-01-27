@@ -56,6 +56,12 @@ trait OriginalLanguageTrait
         return $this->getOriginalLanguage(245, 'b');
     }
 
+    public function getTitleSectionOl(): string
+    {
+        $array = $this->getOriginalLanguageArray(['245' => ['n', 'p']]);
+        return !empty($array) ? array_shift($array) : '';
+    }
+
     /**
      * GRetrieve the original language string for a given field anf subfield
      *
@@ -63,7 +69,7 @@ trait OriginalLanguageTrait
      * @param $targetSubfield
      * @return string
      */
-    public function getOriginalLanguage($targetField, $targetSubfield) : string
+    public function getOriginalLanguage($targetField, $targetSubfield): string
     {
 
         $return = '';
@@ -172,7 +178,7 @@ trait OriginalLanguageTrait
      *
      * @return string
      */
-    public function getSeriesOl()
+    public function getSeriesOl(): array
     {
         $fields = [
             '440' => ['a', 'p'],
