@@ -293,6 +293,22 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
+     * Get an array of notes "Enthaltene Werke" for the Notes-Tab.
+     *
+     * @return array
+     */
+    public function getNotes()
+    {
+        $notesCodes = ['501', '505', ];
+        $notes = [];
+        foreach ($notesCodes as $nc) {
+            $tmp = $this->getFieldArray($nc, ['a', 'b', 'c', 'd', 't', 'r'], true, ', ');
+            $notes = array_merge($notes, $tmp);
+        }
+        return $notes;
+    }
+
+    /**
      * Get an array of newer titles for the record.
      *
      * @return array
