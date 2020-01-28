@@ -27,6 +27,7 @@
 namespace Bsz\RecordTab;
 
 use Bsz\Config\Libraries as LibConf;
+use VuFind\RecordTab\AbstractBase;
 
 
 /**
@@ -34,20 +35,31 @@ use Bsz\Config\Libraries as LibConf;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Libraries extends \VuFind\RecordTab\AbstractBase
+class Libraries extends AbstractBase
 {
     /**
      *
      * @var Bsz\Config\Libraries
      */
     protected $libraries;
+    /**
+     * @var array
+     */
     protected $f924;
+    /**
+     * @var bool
+     */
     protected $visible;
+    /**
+     * @var bool
+     */
+    protected $swbonly;
     
-    public function __construct(LibConf $libraries, $visible = true) 
+    public function __construct(LibConf $libraries, $visible = true, $swbonly = false)
     {       
         $this->libraries = $libraries;    
         $this->visible = (bool)$visible;
+        $this->swbonly = $swbonly;
     }
     
     public function getDescription()
@@ -62,6 +74,13 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
     public function isActive()
     {
         $this->f924 = $this->driver->tryMethod('getField924');
+        if ($this->swbonly) {
+            foreach ($this->f924 as $k => $field) {
+                if (isset($field['c']) && strtoupper($field['c']) !== 'BSZ' ) {
+                    unset($this->f924[$k]);
+                }
+            }
+        }
         if ($this->f924) {
             return true;                
         }            

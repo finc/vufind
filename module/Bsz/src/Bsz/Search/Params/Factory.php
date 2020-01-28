@@ -19,6 +19,7 @@
  */
 
 namespace Bsz\Search\Params;
+use Bsz\Search\Solr\Params;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -30,7 +31,7 @@ class Factory {
     /**
      * Factory for Solr params object.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container
      *
      * @return \VuFind\Search\Solr\Params
      */
@@ -40,7 +41,7 @@ class Factory {
         $options = $container->get('VuFind\SearchOptionsPluginManager')->get('solr');
         $dedup = $container->get('Bsz\Config\Dedup');
         $client = $container->get('Bsz\Config\Client');
-        $params = new \Bsz\Search\Solr\Params($options, $config, null, $dedup, $client);
+        $params = new Params($options, $config, null, $dedup, $client);
 
         return $params;
     }
