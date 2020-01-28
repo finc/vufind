@@ -190,9 +190,20 @@ trait OriginalLanguageTrait
 
     }
 
+    /**
+     * @return string
+     */
     public function getEditionOl()
     {
         return $this->getOriginalLanguage(250, 'a');
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhysicalDescriptionsOl()
+    {
+        return $this->getOriginalLanguageArray(['300' => ['a', 'b', 'c', 'e', 'f', 'g']]);
     }
 
 

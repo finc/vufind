@@ -211,13 +211,19 @@
             </tr>
             <? endif; ?>    
             
-            <? $physical = $this->driver->getPhysicalDescriptions(); if (!empty($physical)): ?>
+            <? $physical = $this->driver->getPhysicalDescriptions();
+            $physicalol = $this->driver->getPhysicalDescriptionsOl();
+            if (!empty($physical)): ?>
             <? $contentDisplayed = true; ?>
             <tr>
                 <th><?=$this->transEsc('Physical Description')?>: </th>
                 <td><? foreach ($physical as $field): ?>
                     <?=$this->escapeHtml($field)?><br/>
-                  <? endforeach; ?></td>
+                  <? endforeach; ?>
+                  <? foreach ($physicalol as $field): ?>
+                    <?=$this->escapeHtml($field)?><br/>
+                  <? endforeach; ?>
+                </td>
             </tr>
             <? endif; ?>           
 
