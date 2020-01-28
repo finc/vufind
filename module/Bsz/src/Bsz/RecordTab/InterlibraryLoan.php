@@ -34,10 +34,12 @@ class InterlibraryLoan extends AbstractBase
     /**
      * InterlibraryLoan constructor.
      * @param Logic $logic
+     * @param bool $active
      */
-    public function __construct(Logic $logic)
+    public function __construct(Logic $logic, bool $active)
     {
         $this->logic = $logic;
+        $this->active = $active;
     }
 
     /**
@@ -53,7 +55,7 @@ class InterlibraryLoan extends AbstractBase
      */
     public function isActive()
     {
-        return true;
+        return $this->active;
     }
 
     /**

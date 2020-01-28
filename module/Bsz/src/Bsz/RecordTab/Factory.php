@@ -23,6 +23,8 @@ namespace Bsz\RecordTab;
 use Bsz\ILL\Logic;
 use Interop\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request;
+use Zend\Session\Container as SessionContainer;
+use Zend\Session\SessionManager as SessionManager;
 
 
 /**
@@ -141,6 +143,16 @@ class Factory
      */
     public static function getInterlibraryLoan(ContainerInterface $container)
     {
-        return new InterlibraryLoan($container->get(Logic::class));
+        $sm = $container->get(SessionManager::class);
+        $lastsearch = $sm->getStorage()->offsetGet('Search')->offsetGet('last');
+        $lastsearch = urldecode($lastsearch);
+        $illmode = false;
+
+        if (substr_count($lastsearch, 'consortium:"FL"') > 0 ||
+            substr_count($lastsearch, 'consortium:"ZDB"') > 0
+        ) {
+            $illmode = true;
+        }
+        return new InterlibraryLoan($container->get(Logic::class), $illmode);
     }
 }
