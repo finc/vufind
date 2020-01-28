@@ -51,4 +51,27 @@ class Notes extends \VuFind\RecordTab\AbstractBase
     {
         return $this->visible;
     }
+
+    /**
+     * Decide, if we show the Tab or not
+     *
+     * @return boolean
+     */
+    public function isActive() {
+        //getContents to determine active state
+        $content = $this->getContent();
+        if(!empty($content)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Do we have content for the tab?
+     *
+     * @return array|null
+     */
+    public function getContent() {
+        return $this->driver->getNotes();
+    }
 }
