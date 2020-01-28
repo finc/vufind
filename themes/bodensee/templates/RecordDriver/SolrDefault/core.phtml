@@ -39,6 +39,7 @@
         <?php
         $title = $this->driver->getTitle();
         $section = $this->driver->getTitleSection();
+        $sectionol = $this->driver->tryMethod('getTitleSectionOl');
         $titleol = $this->driver->tryMethod('getTitleOl');
         ?>
         <h3 property="name">
@@ -50,7 +51,12 @@
             <?= $this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver]) ?>
         </h3>
         <? if (!empty($titleol)): ?>
-            <h4><?= $this->escapeHtml($titleol) ?></h4>
+            <h4>
+                <?= $this->escapeHtml($titleol) ?>
+                <? if (!empty($sectionol)): ?>
+                    <small><?= $this->escapeHtml($sectionol) ?></small>
+                <? endif; ?>
+            </h4>
         <? endif; ?>
 
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>
@@ -227,25 +233,48 @@
             <? endif; ?> 
             
             <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
-            <tr>
-                <th><?=$this->transEsc('Published')?>: </th>
-                <td>
-                  <? foreach ($publications as $field): ?>
-                    <span property="publisher" typeof="Organization">
-                    <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
-                      <span property="location"><?=$this->escapeHtml($pubPlace)?></span> : 
+                <? $publicationsOl = $this->driver->tryMethod('getPublicationDetailsOl') ?>
+                <tr>
+                    <th><?= $this->transEsc('Published') ?>:</th>
+                    <td>
+                        <? foreach ($publications as $field): ?>
+                            <span property="publisher" typeof="Organization">
+                    <? $pubPlace = $field->getPlace();
+                    if (!empty($pubPlace)): ?>
+                        <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
                     <? endif; ?>
-                    <? $pubName = $field->getName(); if (!empty($pubName)): ?>
-                      <span property="name"><?=$this->escapeHtml($pubName)?></span>
-                    <? endif; ?>
+                                <? $pubName = $field->getName();
+                                if (!empty($pubName)): ?>
+                                    <span property="name"><?= $this->escapeHtml($pubName) ?></span>
+                                <? endif; ?>
                     </span>
-                    <? $pubDate = $field->getDate(); if (!empty($pubDate)): ?>
-                      <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
-                    <? endif; ?>
-                    <br/>
-                  <? endforeach; ?>
-                </td>
-            </tr>
+                            <? $pubDate = $field->getDate();
+                            if (!empty($pubDate)): ?>
+                                <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
+                            <? endif; ?>
+                            <br/>
+                        <? endforeach; ?>
+                        <? if (isset($publicationsOl)): ?>
+                            <? foreach ($publicationsOl as $field): ?>
+                                <span property="publisher" typeof="Organization">
+                        <? $pubPlace = $field->getPlace();
+                        if (!empty($pubPlace)): ?>
+                            <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
+                        <? endif; ?>
+                                    <? $pubName = $field->getName();
+                                    if (!empty($pubName)): ?>
+                                        <span property="name"><?= $this->escapeHtml($pubName) ?></span>
+                                    <? endif; ?>
+                        </span>
+                                <? $pubDate = $field->getDate();
+                                if (!empty($pubDate)): ?>
+                                    <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
+                                <? endif; ?>
+                                <br/>
+                            <? endforeach; ?>
+                        <? endif; ?>
+                    </td>
+                </tr>
             <? endif; ?>
             
             <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
