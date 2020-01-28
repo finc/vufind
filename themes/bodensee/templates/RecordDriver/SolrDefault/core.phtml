@@ -156,7 +156,7 @@
                 </td>
             </tr>
             <? endif; ?>
-            
+
             <? if (isset($authors['corporate']) && !empty($authors['corporate'])): ?>
             <tr>
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
@@ -179,6 +179,19 @@
                 </td>
             </tr>
             <? endif;?>
+
+            <? $cast = $this->driver->getMusicalCast(); ?>
+
+            <? if (isset($cast) && !empty($cast)): ?>
+                <tr>
+                    <th><?=$this->transEsc('MusicalCast')?>: </th>
+                    <td property="cast">
+                        <? foreach ($cast as $item): ?>
+                            <?= $item ?><br/>
+                        <? endforeach; ?>
+                    </td>
+                </tr>
+            <? endif; ?>
 
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
             <tr>
