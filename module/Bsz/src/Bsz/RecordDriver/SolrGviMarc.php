@@ -319,7 +319,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $castCodes = ['937'];
         $cast = [];
         foreach ($castCodes as $cc) {
-            $tmp = $this->getFieldArray($cc, ['d', 'e', 'f'], true, ', ');
+            $tmp = $this->getFieldArray($cc, ['d', 'e', 'f'], true, '/ ');
             $cast = array_merge($cast, $tmp);
         }
         return $cast;
