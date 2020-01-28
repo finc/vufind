@@ -443,7 +443,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getSummary()
     {
-        $summaryCodes = ['501', '502', '505', '515', '520'];
+        $summaryCodes = ['502', '505', '515', '520'];
         $summary = [];
         foreach ($summaryCodes as $sc) {
             $tmp = $this->getFieldArray($sc, ['a', 'b', 'c', 'd'], true, ', ');
