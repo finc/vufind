@@ -54,7 +54,6 @@ class Factory extends SolrDefaultFactory {
         $requestedName = $requestedName;
              
         $driver = new $requestedName(
-            $container->get('Bsz\Mapper'), 
             $container->get('Bsz\Config\Client'),
             null,
             $container->get('VuFind\Config')->get('searches')
