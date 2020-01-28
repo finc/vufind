@@ -299,10 +299,10 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getNotes()
     {
-        $notesCodes = ['501', '505', ];
+        $notesCodes = ['501', '505'];
         $notes = [];
         foreach ($notesCodes as $nc) {
-            $tmp = $this->getFieldArray($nc, ['a', 'b', 'c', 'd', 't', 'r'], true, ', ');
+            $tmp = $this->getFieldArray($nc, ['a', 't', 'r'], true, ', ');
             $notes = array_merge($notes, $tmp);
         }
         return $notes;
@@ -443,7 +443,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getSummary()
     {
-        $summaryCodes = ['501', '502', '505', '515', '520'];
+        $summaryCodes = ['502', '505', '515', '520'];
         $summary = [];
         foreach ($summaryCodes as $sc) {
             $tmp = $this->getFieldArray($sc, ['a', 'b', 'c', 'd'], true, ', ');
