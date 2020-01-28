@@ -190,5 +190,10 @@ trait OriginalLanguageTrait
 
     }
 
+    public function getEditionOl()
+    {
+        return $this->getOriginalLanguage(250, 'a');
+    }
+
 
 }
