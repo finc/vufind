@@ -256,8 +256,18 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      */
     public function getSeriesIds() {
         return null;
-    }    
+    }
 
-    
-    
+
+    /**
+     * Get an array of notes "Enthaltene Werke" for the Notes-Tab.
+     *
+     * @return array
+     */
+    public function getMusicalCast()
+    {
+        return null;
+    }
+
+
 }
