@@ -1078,7 +1078,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getRemarks()
     {
-        $remarkCodes = ['500', '511'];
+        $remarkCodes = ['511'];
         $remarks = [];
         foreach ($remarkCodes as $rc) {
             $tmp = $this->getFieldArray($rc, ['a'], true, ', ');
