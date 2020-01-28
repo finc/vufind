@@ -36,7 +36,7 @@ use Zend\View\Helper\HeadScript; ?>
         </li>
       <? endif; ?>
       <li>
-        <a class="previous btn btn-primary" href="<?=$this->recordLink()->getUrl($this->scrollData['previousRecord'])?>" title="<?=$this->transEsc('Previous Search Result')?>" rel="nofollow"><i class="fa fa-caret-left"></i></a>
+        <a class="previous btn btn-primary" href="<?=$this->recordLink()->getTabUrl($this->scrollData['previousRecord'], $this->activeTab)?>" title="<?=$this->transEsc('Previous Search Result')?>" rel="nofollow"><i class="fa fa-caret-left"></i></a>
       </li>
     <? else: ?>
       <? if ($this->scrollData['firstRecord']): ?>
@@ -50,7 +50,7 @@ use Zend\View\Helper\HeadScript; ?>
     ]) ?>
     <? if ($this->scrollData['nextRecord']): ?>
       <li>
-        <a class="next btn btn-primary" class="next" href="<?=$this->recordLink()->getUrl($this->scrollData['nextRecord'])?>" title="<?=$this->transEsc('Next Search Result')?>" rel="nofollow"><i class="fa fa-caret-right"></i></a>
+        <a class="next btn btn-primary" class="next" href="<?=$this->recordLink()->getTabUrl($this->scrollData['nextRecord'], $this->activeTab)?>" title="<?=$this->transEsc('Next Search Result')?>" rel="nofollow"><i class="fa fa-caret-right"></i></a>
       </li>
       <? if ($this->scrollData['lastRecord']): ?>
         <li>
