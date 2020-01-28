@@ -21,7 +21,8 @@
     '<li class="active">' . $this->recordLink()->getBreadcrumb($this->driver) . '</li> ';
   */
   $this->layout()->title = $this->driver->getShortTitle();
-?>
+
+use Zend\View\Helper\HeadScript; ?>
 
 <? if (isset($this->scrollData) && ($this->scrollData['previousRecord'] || $this->scrollData['nextRecord'])): ?>
   <ul class="pager hidden-print">
@@ -92,12 +93,9 @@
               }
           
               if (!$obj->isVisible()) { $tab_classes[] = 'hidden'; }
-              if ($this->client()->is('hide_staff_view') && $tab == 'Details') {
-                  $tab_classes[] = 'greyed-out';
-              }
               if (!$obj->supportsAjax()) { $tab_classes[] = 'noajax'; }
             ?>
-            <li<?=count($tab_classes) > 0 ? ' class="' . implode(' ', $tab_classes) . '"' : ''?>>
+            <li <?=count($tab_classes) > 0 ? ' class="' . implode(' ', $tab_classes) . '"' : ''?>>
               <a class="<?=strtolower($tab) ?>" href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>#tabnav"<? if ($obj->supportsAjax() && in_array($tab, $this->backgroundTabs)):?> data-background<? endif ?>><?=$this->transEsc($desc)?></a>
             </li>
           <? endforeach; ?>
@@ -122,4 +120,4 @@
     <? endforeach; ?>
   </div>
 </div>
-<?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, '$(document).ready(recordDocReady);', 'SET'); ?>
+<?=$this->inlineScript(HeadScript::SCRIPT, '$(document).ready(recordDocReady);', 'SET'); ?>

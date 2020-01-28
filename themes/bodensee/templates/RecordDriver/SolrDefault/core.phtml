@@ -290,10 +290,15 @@
                 </tr>
             <? endif; ?>
             
-            <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
+            <? $edition = $this->driver->getEdition();
+            $editionol = $this->driver->tryMethod('getEditionOl');
+            if (!empty($edition)): ?>
             <tr>
                 <th><?=$this->transEsc('Edition')?>: </th>
-                <td property="bookEdition"><?=$this->escapeHtml($edition)?></td>
+                <td property="bookEdition"><?=$this->escapeHtml($edition)?>
+                    <? if (isset($editionol)): ?><br/><?=$this->escapeHtml($editionol)?><? endif; ?>
+
+                </td>
             </tr>
             <? endif; ?>
             
