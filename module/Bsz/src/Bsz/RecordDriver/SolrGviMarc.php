@@ -1070,6 +1070,24 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $holdings;
     }
 
+
+    /**
+     * Get an array of remarks for the Details-Tab.
+     *
+     * @return array
+     */
+    public function getRemarks()
+    {
+        $remarkCodes = ['511'];
+        $remarks = [];
+        foreach ($remarkCodes as $rc) {
+            $tmp = $this->getFieldArray($rc, ['a'], true, ', ');
+            $remarks = array_merge($remarks, $tmp);
+        }
+        return $remarks;
+    }
+
+
     /**
      *  Scale of a map
      */

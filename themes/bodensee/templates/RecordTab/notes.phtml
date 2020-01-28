@@ -44,7 +44,7 @@ $this->headTitle($this->translate('ContainedNotes') . ': ' . $this->driver->getB
                     <?=$this->escapeHtml($field_long)?>
                 </dd>
             </dl>
-            <? endforeach; ?>
+        <? endforeach; ?>
     <? endif; ?>
 
     <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
