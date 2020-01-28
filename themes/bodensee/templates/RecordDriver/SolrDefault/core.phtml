@@ -212,7 +212,7 @@
             <? endif; ?>    
             
             <? $physical = $this->driver->getPhysicalDescriptions();
-            $physicalol = $this->driver->getPhysicalDescriptionsOl();
+            $physicalol = $this->driver->tryMethod('getPhysicalDescriptionsOl');
             if (!empty($physical)): ?>
             <? $contentDisplayed = true; ?>
             <tr>
@@ -220,9 +220,12 @@
                 <td><? foreach ($physical as $field): ?>
                     <?=$this->escapeHtml($field)?><br/>
                   <? endforeach; ?>
-                  <? foreach ($physicalol as $field): ?>
-                    <?=$this->escapeHtml($field)?><br/>
-                  <? endforeach; ?>
+
+                  <? if ($physicalol !== null): ?>
+                    <? foreach ($physicalol as $field): ?>
+                      <?=$this->escapeHtml($field)?><br/>
+                    <? endforeach; ?>
+                  <? endif; ?>
                 </td>
             </tr>
             <? endif; ?>           

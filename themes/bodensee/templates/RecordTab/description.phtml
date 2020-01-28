@@ -289,7 +289,7 @@
     </tr>
   <? endif; ?>
 
-    <? $remarks = $this->driver->getRemarks(); if (!empty($remarks)): ?>
+    <? $remarks = $this->driver->tryMethod('getRemarks'); if (!empty($remarks)): ?>
         <? $contentDisplayed = true; ?>
         <tr>
             <th><?=$this->transEsc('remarks')?>: </th>
@@ -301,8 +301,6 @@
         </tr>
     <? endif; ?>
 
-
-    
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
