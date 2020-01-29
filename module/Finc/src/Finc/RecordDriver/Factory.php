@@ -68,7 +68,7 @@ class Factory extends SolrDefaultFactory {
     {
         return new SolrAI(
             $container->get('VuFind\Config')->get('config'),
-            $container->get('VuFind\Config')->get('SolrAI'),
+            $container->get('VuFind\Config')->get('SolrAi'),
             $container->get('VuFind\Config')->get('searches')
         );
     }
