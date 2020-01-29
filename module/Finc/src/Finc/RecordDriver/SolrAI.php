@@ -792,14 +792,9 @@ class SolrAI extends SolrDefault implements
         } else {
             return false;
         }
-    }    
-
+    }
 
     /**
-     * Not implemented in this module
-     *
-     * @param string $field Name of the field.
-     *
      * @return mixed
      */
     public function getContainerPages()
@@ -808,11 +803,7 @@ class SolrAI extends SolrDefault implements
     }
 
     /**
-     * Not implemented in this module
-     *
-     * @param string $field Name of the field.
-     *
-     * @return mixed
+     * @return mixed|string
      */
     public function getContainerYear()
     {
