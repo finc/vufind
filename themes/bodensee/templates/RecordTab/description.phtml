@@ -6,10 +6,6 @@
     $isbn = $this->driver->getCleanISBN();
 ?>
 <table class="table table-striped">
-    <colgroup>
-        <col style="width: 30%;"/>
-        <col style="width: 60%;"/>
-    </colgroup>
   <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn)): ?>
   <? $contentDisplayed = true; ?>
     <tr>
