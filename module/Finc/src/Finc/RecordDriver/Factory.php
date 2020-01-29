@@ -32,7 +32,7 @@ use Interop\Container\ContainerInterface,
 class Factory extends SolrDefaultFactory {
 
     /**
-     * Default Factory, tries to add recordConf and attaches SearchService
+     * Default Factory
      *
      * @param ContainerInterface $container
      * @param string $requestedName
@@ -47,13 +47,9 @@ class Factory extends SolrDefaultFactory {
             throw new Exception('Unexpected options sent to factory.');
         }
 
-        preg_match("/.*\\(.*)\$/i", $requestedName, $matches);
-        $name = $matches[0] ?? '';
-        $recordConf = $container->get('VuFind\Config')->get($name);
-             
         $driver = new $requestedName(
             $container->get('VuFind\Config')->get('config'),
-            $recordConf,
+            null,
             $container->get('VuFind\Config')->get('searches')
         );
         $driver->attachSearchService($container->get('VuFind\Search'));
