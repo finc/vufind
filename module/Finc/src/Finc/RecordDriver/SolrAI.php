@@ -28,7 +28,10 @@
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 namespace Finc\RecordDriver;
+use Exception;
+use VuFind\RecordDriver\Response\PublicationDetails;
 use \VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface;
+use VuFindHttp\HttpServiceAwareTrait;
 
 /**
  * Recorddriver for Solr records from the aggregated index of Leipzig University
@@ -45,7 +48,7 @@ use \VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface;
 class SolrAI extends SolrDefault implements
     HttpServiceAwareInterface
 {
-    use \VuFindHttp\HttpServiceAwareTrait;
+    use HttpServiceAwareTrait;
 
     /**
      * AI record
@@ -193,7 +196,7 @@ class SolrAI extends SolrDefault implements
         while (!empty($names[$i])) {
             // Build objects to represent each set of data; these will
             // transform seamlessly into strings in the view layer.
-            $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
+            $retval[] = new PublicationDetails(
                 null,
                 isset($names[$i]) ? $names[$i] : '',
                 null
@@ -663,20 +666,20 @@ class SolrAI extends SolrDefault implements
      * @param string $baseUrl The Ai fullrecord server url.
      *
      * @return mixed          Raw curl request response (should be json).
-     * @throws \Exception
+     * @throws Exception
      */
     protected function retrieveAiFullrecord($id, $baseUrl)
     {
         if (!isset($id)) {
-            throw new \Exception('no id given');
+            throw new Exception('no id given');
         }
 
         $url = sprintf($baseUrl, $id);
 
         try {
             $response = $this->httpService->get($url);
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
 
         if (!$response->isSuccess()) {
@@ -697,18 +700,18 @@ class SolrAI extends SolrDefault implements
      * @param string $id Record id to be retrieved.
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getAIJSONFullrecord($id)
     {
         if (!isset($this->recordConfig->General)) {
-            throw new \Exception('SolrAI General settings missing.');
+            throw new Exception('SolrAI General settings missing.');
         }
 
         $baseUrl = $this->recordConfig->General->baseUrl;
 
         if (!isset($baseUrl)) {
-            throw new \Exception('no ai-blobserver configurated');
+            throw new Exception('no ai-blobserver configurated');
         }
 
         $response = $this->retrieveAiFullrecord($id, $baseUrl);
@@ -782,7 +785,8 @@ class SolrAI extends SolrDefault implements
      *
      * @return mixed
      */
-    public function isArticle() {
+    public function isArticle()
+    {
         if ($this->aiRecord['rft.genre'] === "article") {
             return true;
         } else {
@@ -798,8 +802,9 @@ class SolrAI extends SolrDefault implements
      *
      * @return mixed
      */
-    public function getContainerPages() {
-        return $this->getAIRecord('rft.pages');;
+    public function getContainerPages()
+    {
+        return $this->getAIRecord('rft.pages');
     }
 
     /**
@@ -809,7 +814,30 @@ class SolrAI extends SolrDefault implements
      *
      * @return mixed
      */
-    public function getContainerYear() {
+    public function getContainerYear()
+    {
         return $this->getPublishDateSort();
+    }
+
+    /**
+     * Strip HTML tags from description field
+     *
+     * @return array|mixed
+     */
+    public function getSummary()
+    {
+        if (isset($this->fields['description'])
+            && !empty($this->fields['description'])
+        ) {
+            $summary = $this->fields['description'];
+            if (is_array($summary)) {
+                foreach ($summary as $k => $sum) {
+                    $summary[$k] = strip_tags($sum);
+                }
+            } else {
+                $summary = [strip_tags($summary)];
+            }
+        }
+        return $summary;
     }
 }
