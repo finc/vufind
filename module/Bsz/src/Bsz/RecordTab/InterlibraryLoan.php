@@ -40,6 +40,7 @@ class InterlibraryLoan extends AbstractBase
     {
         $this->logic = $logic;
         $this->active = $active;
+        $this->accessPermission = 'access.InterLibraryLoanTab';
     }
 
     /**
