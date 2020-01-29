@@ -28,6 +28,8 @@
  */
 namespace Finc\RecordDriver;
 
+use Zend\Config\Config;
+
 /**
  * finc specific model for MARC records with a fullrecord in Solr.
  *
@@ -65,14 +67,14 @@ class SolrMarcFinc extends SolrMarc
     /**
      * Constructor
      *
-     * @param \Zend\Config\Config $mainConfig     VuFind main configuration (omit for
+     * @param Config $mainConfig     VuFind main configuration (omit for
      * built-in defaults)
-     * @param \Zend\Config\Config $recordConfig   Record-specific configuration file
+     * @param Config $recordConfig   Record-specific configuration file
      * (omit to use $mainConfig as $recordConfig)
-     * @param \Zend\Config\Config $searchSettings Search-specific configuration file
+     * @param Config $searchSettings Search-specific configuration file
      */
-    public function __construct($mainConfig = null, $recordConfig = null,
-                                $searchSettings = null
+    public function __construct(Config $mainConfig = null, Config $recordConfig = null,
+                                Config $searchSettings = null
     )
     {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);

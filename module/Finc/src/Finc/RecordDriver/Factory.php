@@ -19,54 +19,72 @@
 
 namespace Finc\RecordDriver;
 
+use Exception;
 use Interop\Container\ContainerInterface,
     \VuFind\RecordDriver\SolrDefaultFactory;
 
 /**
- * Factory fo DLR RecordDrivers
- *
+ * Class Factory
+ * @package Finc\RecordDriver
+ * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-
 class Factory extends SolrDefaultFactory {
-    
+
     /**
-     * Create an object
+     * Default Factory, tries to add recordConf and attaches SearchService
      *
-     * @param ContainerInterface $container     Service manager
-     * @param string             $requestedName Service being created
-     * @param null|array         $options       Extra options (optional)
-     *
-     * @return object
-     *
-     * @throws ServiceNotFoundException if unable to resolve the service.
-     * @throws ServiceNotCreatedException if an exception is raised when
-     * creating a service.
-     * @throws ContainerException if any other error occurs
+     * @param ContainerInterface $container
+     * @param string $requestedName
+     * @param array|null $options
+     * @return mixed|object
+     * @throws Exception
      */
     public function __invoke(ContainerInterface $container, $requestedName,
         array $options = null
     ) {
         if (!empty($options)) {
-            throw new \Exception('Unexpected options sent to factory.');
+            throw new Exception('Unexpected options sent to factory.');
         }
 
-        $requestedName = $requestedName;
+        preg_match("/.*\\(.*)\$/i", $requestedName, $matches);
+        $name = $matches[0] ?? '';
+        $recordConf = $container->get('VuFind\Config')->get($name);
              
         $driver = new $requestedName(
-            $container->get('Bsz\Mapper'), 
-            $container->get('Bsz\Config\Client'),
-            null,
+            $container->get('VuFind\Config')->get('config'),
+            $recordConf,
             $container->get('VuFind\Config')->get('searches')
         );
-        //$driver->attachILS(
-        //    $container->get(\VuFind\ILS\Connection::class),
-        //    $container->get(\VuFind\ILS\Logic\Holds::class),
-        //    $container->get(\VuFind\ILS\Logic\TitleHolds::class)
-        //);
-        
         $driver->attachSearchService($container->get('VuFind\Search'));
-        $driver->attachSearchRunner($container->get('VuFind\SearchRunner'));
-       return $driver;
+        return $driver;
     }
+
+    /**
+     * @param ContainerInterface $container
+     * @return SolrAI
+     */
+    public function getSolrAI(ContainerInterface $container)
+    {
+        return new SolrAI(
+            $container->get('VuFind\Config')->get('config'),
+            $container->get('VuFind\Config')->get('SolrAI'),
+            $container->get('VuFind\Config')->get('searches')
+        );
+    }
+
+
+    /**
+     * @param ContainerInterface $container
+     * @return SolrIS
+     */
+    public function getSolrIS(ContainerInterface $container)
+    {
+        return new SolrIS(
+            $container->get('VuFind\Config')->get('config'),
+            null,
+            null
+        );
+    }
+
 }

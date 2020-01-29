@@ -30,6 +30,9 @@
  * @link     https://vufind.org/wiki/development:plugins:record_drivers Wiki
  */
 namespace Finc\RecordDriver;
+use VuFind\Log\LoggerAwareTrait;
+use VuFind\Search\SearchRunner;
+use Zend\Config\Config;
 use Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 
 /**
@@ -50,7 +53,7 @@ use Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
 class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
     LoggerAwareInterface
 {
-    use \VuFind\Log\LoggerAwareTrait;
+    use LoggerAwareTrait;
     use SolrDefaultFincTrait;
 
     /**
@@ -63,14 +66,14 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
     /**
      * Constructor
      *
-     * @param \Zend\Config\Config $mainConfig     VuFind main configuration (omit for
+     * @param Config $mainConfig     VuFind main configuration (omit for
      * built-in defaults)
-     * @param \Zend\Config\Config $recordConfig   Record-specific configuration file
+     * @param Config $recordConfig   Record-specific configuration file
      * (omit to use $mainConfig as $recordConfig)
-     * @param \Zend\Config\Config $searchSettings Search-specific configuration file
+     * @param Config $searchSettings Search-specific configuration file
      */
-    public function __construct($mainConfig = null, $recordConfig = null,
-                                $searchSettings = null
+    public function __construct(Config $mainConfig = null, Config $recordConfig = null,
+                                Config $searchSettings = null
     )
     {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
@@ -152,7 +155,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      * @param \VuFind\SearchRunner $runner
      * @return void
      */
-    public function attachSearchRunner(\VuFind\Search\SearchRunner $runner)
+    public function attachSearchRunner(SearchRunner $runner)
     {
         $this->runner = $runner;
     }    
