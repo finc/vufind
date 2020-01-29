@@ -817,6 +817,7 @@ class SolrAI extends SolrDefault implements
      */
     public function getSummary()
     {
+        $summary = [];
         if (isset($this->fields['description'])
             && !empty($this->fields['description'])
         ) {
