@@ -81,7 +81,7 @@ class SolrMarcFinc extends SolrMarc
 
         // get the isil set in InstitutionInfo in config.ini
         if (isset($mainConfig->InstitutionInfo->isil)
-            && count($mainConfig->InstitutionInfo->isil) > 0
+            && $mainConfig->InstitutionInfo->isil
         ) {
             $this->isil = $this->mainConfig->InstitutionInfo->isil->toArray();
         } else {
