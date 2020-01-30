@@ -25,26 +25,13 @@ $this->headTitle($this->translate('ContainedNotes') . ': ' . $this->driver->getB
 ?>
     <? $notes = $this->driver->getNotes(); if (!empty($notes)): ?>
         <? $contentDisplayed = true; ?>
+        <ul>
             <? foreach ($notes as $field): ?>
-                <?
-                   $field_short = '';
-                   $field_long = '';
-                   $pos = strpos($field, '[');
-                   if ($pos !== false) {
-                        $field_long = substr($field, 0, $pos);
-                   } else {
-                       $field_long = $field;
-                   }
-                   preg_match('/\[(.*)\]/', $field, $matches);
-                   $field_short = $matches[1];
-                ?>
-            <dl>
-                <dt><strong><?=$this->escapeHtml($field_short)?></strong></dt>
-                <dd>
-                    <?=$this->escapeHtml($field_long)?>
-                </dd>
-            </dl>
-        <? endforeach; ?>
+                <li>
+                    <?=$this->escapeHtml($field)?>
+                </li>
+            <? endforeach; ?>
+        </ul>
     <? endif; ?>
 
     <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
