@@ -21,47 +21,13 @@
 namespace Bsz;
 
 /**
- * Formate einheitlich mappen für alle Quellen
- *
+ * Class FormatMapper
+ * @package Bsz
+ * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class FormatMapper {
-    
-    protected $_config;    
-    
-    public function __construct() {
-//        $this->_config = $this->getConfig();
-    }
-    
-    /**
-     * 
-     * @return array
-     */
-    protected function getConfig() {
-        if(null === $this->_config) {    
-            $baseDir = '/usr/local/boss';
-            $Reader = new \Zend\Config\Reader\Ini();
-            $config = $Reader->fromFile($baseDir . '/config/vufind/formats.ini');           
-            $this->_config = $config;
-        }
-        return $this->_config;
-    }
-    
-    
-    /**
-     * Maps an array of format strings
-     * @param array $inputs
-     * @return array
-     */
-    protected function mapArray($inputs) {
-        $formats = array();
-        foreach($inputs as $i) {
-            $formats[] = $this->map($i);
-        }
-        return array_unique($formats);
-    }
-    
-   
+
     /**
      * Maps formats from formats.ini to icon file names
      * @param string $formats
@@ -76,9 +42,7 @@ class FormatMapper {
         }
         $return = '';
         if(is_array($formats)) {
-
             // order is important: the second hit is ignored!
-
             // multiple formats
             if(in_array('electronicresource', $formats) && in_array('e-book',$formats)) {$return = 'ebook';}
             elseif(in_array('videodisc', $formats) && in_array('video',$formats)) {$return = 'movie';} 
@@ -86,7 +50,6 @@ class FormatMapper {
             elseif(in_array('opticaldisc', $formats) && in_array('e-book',$formats)) {$return = 'disc';} 
             elseif(in_array('cd', $formats) && in_array('soundrecording',$formats)) {$return = 'music-disc';}
             elseif(in_array('book', $formats) && in_array('compilation',$formats)) {$return = 'serial';}
-
             // single formats:
             elseif(in_array('atlas', $formats)) {$return = 'map';}
             elseif(in_array('article', $formats)) {$return = 'article';}
@@ -142,16 +105,9 @@ class FormatMapper {
             elseif(in_array('twodemensionalmovingimage', $formats)) {$return = 'movie';}
             elseif(in_array('video', $formats)) {$return = 'video-disc';}
             elseif(in_array('vhs', $formats)) {$return = 'vhs';}
-
-
-
             // fallback: besser neutral als article
             else {$return =  'article'; }
-            
-            
         }
-
-
         return 'bsz bsz-'. $return;
     }
     
@@ -163,63 +119,61 @@ class FormatMapper {
      */
     public function marc21007($code1, $code2) {
         $medium = '';
-        $code1 = strtoupper($code1);
-        $code2 = strtoupper($code2);
         $mappings = [];
-        $mappings['A']['D'] = 'Atlas';
-        $mappings['A']['default'] = 'Map';
-        $mappings['C']['A'] = 'TapeCartridge';
-        $mappings['C']['B'] = 'ChipCartridge';
-        $mappings['C']['C'] = 'DiscCartridge';
-        $mappings['C']['F'] = 'TapeCassette';
-        $mappings['C']['H'] = 'TapeReel';
-        $mappings['C']['J'] = 'FloppyDisk';
-        $mappings['C']['M'] = 'MagnetoOpticalDisc';
-        $mappings['C']['Z'] = 'E-Journal on Disc';
-        $mappings['C']['O'] = 'OpticalDisc';
+        $mappings['a']['d'] = 'Atlas';
+        $mappings['a']['default'] = 'Map';
+        $mappings['c']['a'] = 'TapeCartridge';
+        $mappings['c']['b'] = 'ChipCartridge';
+        $mappings['c']['c'] = 'DiscCartridge';
+        $mappings['c']['f'] = 'TapeCassette';
+        $mappings['c']['h'] = 'TapeReel';
+        $mappings['c']['j'] = 'FloppyDisk';
+        $mappings['c']['m'] = 'MagnetoOpticalDisc';
+        $mappings['c']['z'] = 'E-Journal on Disc';
+        $mappings['c']['o'] = 'OpticalDisc';
         // Do not return - this will cause anything with an
         // 856 field to be labeled as "Electronic"
-        $mappings['C']['R'] = 'E-Journal';
-        $mappings['C']['default'] = 'ElectronicResource'; //Software passt aber bei eBooks nicht?
-        $mappings['D']['default'] = 'Globe';
-        $mappings['F']['default'] = 'Braille';
-        $mappings['G']['C'] = 'FilmstripCartridge';
-        $mappings['G']['D'] = 'Filmstrip';
-        $mappings['G']['S'] = 'Slide';
-        $mappings['G']['T'] = 'Transparency';
-        $mappings['G']['default'] = 'Slide';
-        $mappings['H']['default'] = 'Microfilm';
-        $mappings['K']['C'] = 'Collage';
-        $mappings['K']['D'] = 'Drawing';
-        $mappings['K']['E'] = 'Painting';
-        $mappings['K']['F'] = 'Print';
-        $mappings['K']['G'] = 'Photonegative';
-        $mappings['K']['J'] = 'Print';
-        $mappings['K']['L'] = 'Drawing';
-        $mappings['K']['O'] = 'FlashCard';
-        $mappings['K']['N'] = 'Chart';
-        $mappings['K']['default'] = 'Photo';
-        $mappings['M']['F'] = 'VideoCassette';
-        $mappings['M']['R'] = 'Filmstrip';
-        $mappings['M']['default'] = 'MotionPicture';
-        $mappings['O']['default'] = 'Kit';
-        $mappings['Q']['U'] = 'SheetMusic';
-        $mappings['Q']['default'] = 'MusicalScore';
-        $mappings['R']['default'] = 'SensorImage';
-        $mappings['S']['D'] = 'CD';
-        $mappings['S']['O'] = 'SoundRecording'; // SO ist not specified
-        $mappings['S']['S'] = 'SoundCassette';
-        $mappings['S']['Z'] = 'Platter'; //Undefined aber sind meist Schallplatten        
-        $mappings['S']['default'] = 'SoundRecording'; // eigentlich unspecified
-        $mappings['T']['A'] = 'Printed'; //Text               
-        $mappings['T']['D'] = 'LooseLeaf'; //Text               
-        $mappings['T']['default'] = null; //Text               
-        $mappings['V']['C'] = 'VideoCartridge';
-        $mappings['V']['D'] = 'VideoDisc';
-        $mappings['V']['F'] = 'VideoCassette';
-        $mappings['V']['R'] = 'VideoReel';
-        $mappings['V']['default'] = 'Video';     
-        $mappings['Z']['default'] = 'Kit';     
+        $mappings['c']['r'] = 'E-Journal';
+        $mappings['c']['default'] = 'ElectronicResource'; //Software passt aber bei eBooks nicht?
+        $mappings['d']['default'] = 'Globe';
+        $mappings['f']['default'] = 'Braille';
+        $mappings['g']['c'] = 'FilmstripCartridge';
+        $mappings['g']['d'] = 'Filmstrip';
+        $mappings['g']['s'] = 'Slide';
+        $mappings['g']['t'] = 'Transparency';
+        $mappings['g']['default'] = 'Slide';
+        $mappings['h']['default'] = 'Microfilm';
+        $mappings['k']['c'] = 'Collage';
+        $mappings['k']['d'] = 'Drawing';
+        $mappings['k']['e'] = 'Painting';
+        $mappings['k']['f'] = 'Print';
+        $mappings['k']['g'] = 'Photonegative';
+        $mappings['k']['j'] = 'Print';
+        $mappings['k']['l'] = 'Drawing';
+        $mappings['k']['o'] = 'FlashCard';
+        $mappings['k']['n'] = 'Chart';
+        $mappings['k']['default'] = 'Photo';
+        $mappings['m']['f'] = 'VideoCassette';
+        $mappings['m']['r'] = 'Filmstrip';
+        $mappings['m']['default'] = 'MotionPicture';
+        $mappings['o']['default'] = 'Kit';
+        $mappings['q']['u'] = 'SheetMusic';
+        $mappings['q']['default'] = 'MusicalScore';
+        $mappings['r']['default'] = 'SensorImage';
+        $mappings['s']['d'] = 'CD';
+        $mappings['s']['o'] = 'SoundRecording'; // SO ist not specified
+        $mappings['s']['s'] = 'SoundCassette';
+        $mappings['s']['z'] = 'Platter'; //Undefined aber sind meist Schallplatten        
+        $mappings['s']['default'] = 'SoundRecording'; // eigentlich unspecified
+        $mappings['t']['a'] = 'Printed'; //Text               
+        $mappings['t']['d'] = 'LooseLeaf'; //Text               
+        $mappings['t']['default'] = null; //Text               
+        $mappings['v']['c'] = 'VideoCartridge';
+        $mappings['v']['d'] = 'VideoDisc';
+        $mappings['v']['f'] = 'VideoCassette';
+        $mappings['v']['r'] = 'VideoReel';
+        $mappings['v']['default'] = 'Video';     
+        $mappings['z']['default'] = 'Kit';     
 
 
         if (isset($mappings[$code1])) {
@@ -230,8 +184,6 @@ class FormatMapper {
             }
 
         }
-//        var_dump($code1);
-//        var_dump($code2);
         return $medium;
     }
     /**
@@ -242,32 +194,27 @@ class FormatMapper {
      */
     public function marc21leader7($leader7, $f007, $f008 ) {
         $format = '';
-        $leader7 = strtoupper($leader7);
-        $f007 = strtoupper($f007);
         $mappings = [];
-        $mappings['A']['default'] = 'Article'; // Artikel aus Zeitschrift
-        $mappings['B']['default'] = 'Article'; 
-        $mappings['M']['C'] = 'E-Book';
-        $mappings['M']['V'] = 'Video';
-        $mappings['M']['S'] = 'SoundRecording';
-        $mappings['M']['default'] = 'Book';
-        $mappings['S']['N'] = 'Newspaper';
-        $mappings['S']['P'] = 'Journal';
-        $mappings['S']['M'] = 'Serial';
-        $mappings['S']['default'] = 'Serial';       
+        $mappings['a']['default'] = 'Article'; // Artikel aus Zeitschrift
+        $mappings['b']['default'] = 'Article'; 
+        $mappings['m']['c'] = 'E-Book';
+        $mappings['m']['v'] = 'Video';
+        $mappings['m']['s'] = 'SoundRecording';
+        $mappings['m']['default'] = 'Book';
+        $mappings['s']['n'] = 'Newspaper';
+        $mappings['s']['p'] = 'Journal';
+        $mappings['s']['m'] = 'Serial';
+        $mappings['s']['default'] = 'Serial';       
 
         if (isset($mappings[$leader7])) {
-            if ($leader7 == 'S' && isset($mappings[$leader7][$f008])) {
+            if ($leader7 == 's' && isset($mappings[$leader7][$f008])) {
                 $format = $mappings[$leader7][$f008];                
-            } elseif ($leader7 != 'S' && isset($mappings[$leader7][$f007])) {
+            } elseif ($leader7 != 's' && isset($mappings[$leader7][$f007])) {
                 $format = $mappings[$leader7][$f007];
             } elseif(isset($mappings[$leader7]['default'])) {
                 $format = $mappings[$leader7]['default'];                        
             }
         }
-//        var_dump($leader7);
-//        var_dump($f007);
-//        var_dump($f008);
         return $format;
     }
     /**
@@ -278,22 +225,21 @@ class FormatMapper {
      */
     public function marc21leader6($leader6) {
         $format = '';
-        $leader6 = strtoupper($leader6);
 
         $mappings = [];
-        $mappings['C'] = 'MusicalScore';
-        $mappings['D'] = 'MusicalScore';
-        $mappings['E'] = 'Map';
-        $mappings['F'] = 'Map';
-        $mappings['G'] = 'Slide';
-        $mappings['I'] = 'Sound';
-        $mappings['J'] = 'MusicRecording';
-        $mappings['K'] = 'Photo';
-        $mappings['M'] = 'Electronic';
-        $mappings['O'] = 'Kit';
-        $mappings['P'] = 'Kit';
-        $mappings['R'] = 'PhysicalObject';
-        $mappings['T'] = 'Manuscript';
+        $mappings['c'] = 'MusicalScore';
+        $mappings['d'] = 'MusicalScore';
+        $mappings['e'] = 'Map';
+        $mappings['f'] = 'Map';
+        $mappings['g'] = 'Slide';
+        $mappings['i'] = 'Sound';
+        $mappings['j'] = 'MusicRecording';
+        $mappings['k'] = 'Photo';
+        $mappings['m'] = 'Electronic';
+        $mappings['o'] = 'Kit';
+        $mappings['p'] = 'Kit';
+        $mappings['r'] = 'PhysicalObject';
+        $mappings['t'] = 'Manuscript';
         
      
 
@@ -338,10 +284,7 @@ class FormatMapper {
         elseif(in_array('Compilation', $formats) && in_array('Book', $formats)) {return ['Compilation']; }
         
         return $formats;
-                
     }
-    
-    
     
 }
 
