@@ -609,10 +609,9 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $urls;
     }
 
+
     /**
-     * Returns consortium
-     * @return array
-     * @throws Exception
+     * @return string
      */
     public function getConsortium()
     {

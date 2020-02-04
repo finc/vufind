@@ -362,9 +362,16 @@
       <? endif; ?>
       
       <? if( strlen($this->driver->getConsortium()) > 0): ?>
+        <?  $consortium = $this->driver->getConsortium();
+            $consortiums = explode(', ', $consortium);
+        ?>
         <tr>
             <th><?=$this->transEsc('Network')?>:</th>
-            <td><?=$this->driver->getConsortium() ?></td> 
+            <td><? foreach ($consortiums as $con): ?>
+                <?=$this->abbrev($con)?>
+                <? endforeach; ?>
+
+            </td>
         </tr>          
       <? endif; ?> 
 
