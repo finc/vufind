@@ -106,7 +106,7 @@ class FormatMapper {
             elseif(in_array('video', $formats)) {$return = 'video-disc';}
             elseif(in_array('vhs', $formats)) {$return = 'vhs';}
             // fallback: besser neutral als article
-            else {$return =  'article'; }
+            else {$return =  'unknown'; }
         }
         return 'bsz bsz-'. $return;
     }
