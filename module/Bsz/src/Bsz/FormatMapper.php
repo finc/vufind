@@ -69,6 +69,7 @@ class FormatMapper {
             elseif(in_array('dvd/bluray', $formats)) {$return = 'video-disc';}
             elseif(in_array('e-journal', $formats)) {$return = 'ejournal';}
             elseif(in_array('electronic', $formats)) {$return = 'globe';}
+            elseif(in_array('electronicarticle', $formats)) {$return = 'article';}
             elseif(in_array('electronicbookpart', $formats)) {$return = 'ebook';}
             elseif(in_array('electronicbookcomponentpart', $formats)) {$return = 'ebook';}
             elseif(in_array('electronicjournal', $formats)) {$return = 'ejournal';}
