@@ -20,6 +20,7 @@
 
 namespace Bsz\RecordTab;
 
+use Bsz\Config\Client;
 use Bsz\ILL\Logic;
 use Interop\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request;
@@ -153,6 +154,10 @@ class Factory
         ) {
             $illmode = true;
         }
-        return new InterlibraryLoan($container->get(Logic::class), $illmode);
+        $libraries = $container->get(\Bsz\Config\Libraries::class);
+        $client = $container->get(Client::class);
+        $library = $libraries->getFirstActive($client->getIsils());
+
+        return new InterlibraryLoan($container->get(Logic::class), $library, $illmode);
     }
 }
