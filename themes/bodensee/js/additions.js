@@ -48,7 +48,6 @@ function showmore() {
 }
 
 function bootstrapTooltip() {
-
       $('[data-toggle="tooltip"]').tooltip({
           delay: {
               'show': 500,
@@ -407,12 +406,28 @@ function tableSorter() {
     }
 }
 
+
+/**
+ * Copy text to clipboard
+ */
+function copyToClipboard() {
+
+    var clipboard = new ClipboardJS('.copy-clipboard-toggle');
+    clipboard.on('success', function(e) {
+        console.info('copied to clipboard');
+        $('.copy-clipboard-toggle').find('i').removeClass('fa-copy').addClass('fa-check text-success');
+        e.clearSelection();
+    });
+}
+
+
 /*
 * this is executed after site is loaded
 * main loop
 */
 
 $(document).ready(function() {
+
     avoidEmptySearch();
     externalLinks();
     bootstrapTooltip();
@@ -434,4 +449,5 @@ $(document).ready(function() {
     checkAdvSearch();
     textToggle();
     openInPopup();
+    copyToClipboard();
 });
