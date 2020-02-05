@@ -81,6 +81,7 @@ class FormatMapper {
             elseif(in_array('journal', $formats)) {$return = 'journal';}
             elseif(in_array('journal article', $formats)) {$return = 'article';}
             elseif(in_array('magazine article', $formats)) {$return = 'article';}
+            elseif(in_array('mikroform', $formats)) {$return = 'microfilm';}
             elseif(in_array('microfiche', $formats)) {$return = 'microfilm';}
             elseif(in_array('microfilm', $formats)) {$return = 'microfilm';}
             elseif(in_array('notatedmusic', $formats)) {$return = 'partitur';}
@@ -93,7 +94,7 @@ class FormatMapper {
             elseif(in_array('performedmusic', $formats)) {$return = 'sound';}
             elseif(in_array('pdf', $formats)) {$return = 'article';}
             elseif(in_array('platter', $formats)) {$return = 'platter';}
-            elseif(in_array('proceedings', $formats)) {$return = 'books';}
+            elseif(in_array('proceedings', $formats)) {$return = 'article';}
             elseif(in_array('serial', $formats)) {$return = 'collection';}
             elseif(in_array('serialcomponentpart', $formats)) {$return = 'article';}
             elseif(in_array('sheet', $formats)) {$return = 'partitur';}
@@ -106,6 +107,7 @@ class FormatMapper {
             elseif(in_array('twodemensionalmovingimage', $formats)) {$return = 'movie';}
             elseif(in_array('video', $formats)) {$return = 'video-disc';}
             elseif(in_array('vhs', $formats)) {$return = 'vhs';}
+            elseif(in_array('newspaper', $formats)) {$return = 'newspaper';}
             // fallback: besser neutral als article
             else {$return =  'unknown'; }
         }
