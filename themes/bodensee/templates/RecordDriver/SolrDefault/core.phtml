@@ -235,12 +235,12 @@
                $issn = $this->driver->getCleanISSN();
                if (!empty($isbn)): ?>
             <tr>
-                <th><?=$this->transEsc('ISBN')?>:</th>
+                <th><?=$this->abbrev('ISBN', 'ISBN_long')?>:</th>
                 <td><?=$this->driver->getCleanISBN()?></td>
             </tr>
             <? elseif (!empty($issn)): ?>
             <tr>
-                <th><?=$this->transEsc('ISSN')?>:</th>
+                <th><?=$this->abbrev('ISSN', 'ISSN_long')?>:</th>
                 <td><?=$this->driver->getCleanISSN()?></td>
             </tr>
             <? endif; ?>

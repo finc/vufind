@@ -485,7 +485,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $arr = array();
         $arrSizes = array('small', 'medium', 'large');
         $isbn = $this->getCleanISBN();
-        $ean = $this->getEAN();
+        $ean = $this->getGTIN();
         if (in_array($size, $arrSizes)) {
             $arr['author'] = $this->getPrimaryAuthor();
         }
@@ -978,13 +978,13 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
-     * return EAN Code
+     * return GTIN Code
      * @return string
      */
-    public function getEAN()
+    public function getGTIN()
     {
-        $ean = $this->getFieldArray("024", ['a']);
-        return array_shift($ean);
+        $gtin = $this->getFieldArray("024", ['a']);
+        return array_shift($gtin);
     }
 
     /**
