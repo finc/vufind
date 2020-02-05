@@ -1,7 +1,5 @@
 function   performMark() {
     var lookfor = '';
-    var input_simple = '';
-    var input_adv = '';    
     var input_simple = $('#searchForm_lookfor').val();
     var input_adv = $('li.adv_lookfor').text();
     if (typeof input_simple !== 'undefined' && input_simple.trim() !== '') {
@@ -203,6 +201,14 @@ function avoidEmptySearch() {
 
 }
 
+function inputLength(selector) {
+    var val = '';
+    $(selector).each(function() {
+        val += $(this).val().replace( /[\*\s]/gi,"" );
+    });
+    return val.length;
+}
+
 function checkAdvSearch() {
     var limit = 2;
     var selector = '.adv-term-input.no-empty-search';
@@ -214,14 +220,6 @@ function checkAdvSearch() {
         return true;
     });
 }
-
-function inputLength(selector) {
-    var val = '';
-    $(selector).each(function() {
-        val += $(this).val().replace( /[\*\s]/gi,"" );
-    });
-    return val.length;
- }
 /*
 * Duplicatea button
 */
@@ -245,7 +243,7 @@ function duplicates() {
                window.location.reload(true);
            }
 
-  })
+  });
      });
  }
 
@@ -338,7 +336,7 @@ function typeaheadLibraries() {
         // if the typeahead is hidden and the button is clicked, set the focus
         $('#library-typeahead').on('shown.bs.collapse', function() {
             $('.typeahead').focus();
-        })
+        });
     }
     
 
@@ -366,7 +364,6 @@ function textToggle() {
 
 function openInPopup() {
     $(document).on('click', '.open-popup', function(e) {
-        console.log('hier');
         e.preventDefault();
         var href = $(this).attr('href');
 
