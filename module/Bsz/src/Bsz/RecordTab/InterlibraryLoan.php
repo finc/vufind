@@ -20,6 +20,8 @@
 
 namespace Bsz\RecordTab;
 
+use Bsz\Config\Library;
+use Exception;
 use VuFind\RecordTab\AbstractBase;
 use Bsz\ILL\Logic;
 
@@ -32,12 +34,23 @@ class InterlibraryLoan extends AbstractBase
     protected $logic;
 
     /**
+     * @var array
+     */
+    protected $library;
+
+
+    /**
      * InterlibraryLoan constructor.
      * @param Logic $logic
+     * @param Library $libraries
+     * @param bool $active
      */
-    public function __construct(Logic $logic)
+    public function __construct(Logic $logic, Library $library = null, bool $active = true)
     {
         $this->logic = $logic;
+        $this->library = $library;
+        $this->active = $active;
+        $this->accessPermission = 'access.InterlibraryLoanTab';
     }
 
     /**
@@ -50,10 +63,14 @@ class InterlibraryLoan extends AbstractBase
 
     /**
      * @return bool
+     * @throws Exception
      */
     public function isActive()
     {
-        return true;
+        if ($this->active) {
+            return parent::isActive();
+        }
+        return false;
     }
 
     /**
@@ -69,7 +86,8 @@ class InterlibraryLoan extends AbstractBase
         return [
             'status' => $status,
             'messages' => $messages,
-            'ppns' => $ppns
+            'ppns' => $ppns,
+            'library' => $this->library
         ];
     }
 }
