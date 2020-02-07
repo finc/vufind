@@ -22,6 +22,7 @@
 
 namespace Bsz\RecordTab;
 
+use VuFind\RecordTab\AbstractBase;
 use VuFind\Search\SearchRunner;
 
 /**
@@ -29,13 +30,18 @@ use VuFind\Search\SearchRunner;
  *
  * @author Stefan Winkler <stefan.winkler@bsz-bw.de>
  */
-class Notes extends \VuFind\RecordTab\AbstractBase
+class Notes extends AbstractBase
 {
     protected $visible;
 
+    /**
+     * Notes constructor.
+     * @param bool $visible
+     */
     public function __construct($visible = true)
     {
         $this->visible = (bool)$visible;
+        $this->accessPermission = 'access.NotesViewTab';
     }
     /**
      * Get the on-screen description for this tab.
@@ -57,10 +63,12 @@ class Notes extends \VuFind\RecordTab\AbstractBase
      *
      * @return boolean
      */
-    public function isActive() {
-        //getContents to determine active state
+    public function isActive()
+    {
+        $parent = parent::isActive();
         $content = $this->getContent();
-        if(!empty($content)) {
+
+        if($parent && !empty($content)) {
             return true;
         }
         return false;
@@ -71,7 +79,8 @@ class Notes extends \VuFind\RecordTab\AbstractBase
      *
      * @return array|null
      */
-    public function getContent() {
+    public function getContent()
+    {
         return $this->driver->getNotes();
     }
 }

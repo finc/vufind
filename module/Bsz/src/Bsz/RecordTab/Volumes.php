@@ -60,7 +60,7 @@ class Volumes extends AbstractBase {
     {
         $this->runner = $runner;
         $this->isils = $isils;
-        $this->accessPermission = 'access.VolumesTab';
+        $this->accessPermission = 'access.VolumesViewTab';
     }
     /**
      * Get the on-screen description for this tab

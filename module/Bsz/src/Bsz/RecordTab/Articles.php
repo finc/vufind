@@ -59,7 +59,7 @@ class Articles extends AbstractBase {
     {
         $this->runner = $runner;
         $this->isils = $isils;
-        $this->accessPermission = 'access.ArticlesTab';
+        $this->accessPermission = 'access.ArticlesViewTab';
     }
     /**
      * Get the on-screen description for this tab
