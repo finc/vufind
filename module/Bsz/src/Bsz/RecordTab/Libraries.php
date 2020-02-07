@@ -56,8 +56,9 @@ class Libraries extends AbstractBase
     protected $swbonly;
     
     public function __construct(LibConf $libraries, $visible = true, $swbonly = false)
-    {       
-        $this->libraries = $libraries;    
+    {
+        $this->accessPermission = 'access.LibrariesViewTab';
+        $this->libraries = $libraries;
         $this->visible = (bool)$visible;
         $this->swbonly = $swbonly;
     }
@@ -73,6 +74,15 @@ class Libraries extends AbstractBase
      */
     public function isActive()
     {
+        // If accessPermission is set, check for authorization to enable tab
+        if (!empty($this->accessPermission)) {
+            $auth = $this->getAuthorizationService();
+            if (!$auth) {
+                throw new \Exception('Authorization service missing');
+            }
+            return $auth->isGranted($this->accessPermission);
+        }
+
         $this->f924 = $this->driver->tryMethod('getField924');
         if ($this->swbonly) {
             foreach ($this->f924 as $k => $field) {
