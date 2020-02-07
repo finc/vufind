@@ -200,7 +200,20 @@
                     <span><?=$this->transEsc($format)?></span>
                     <? endforeach; ?></td>
             </tr>
-            <? endif; ?>  
+            <? endif; ?>
+
+            <? $parallel = $this->driver->tryMethod('getParallelEditions'); if (!empty($parallel)): ?>
+                <tr>
+                    <th><?=$this->transEsc('other_appearance')?>: </th>
+                    <td>
+                        <? if (count($parallel) > 0): ?><?=$this->transEsc('Erscheint auch als')?><? endif; ?>
+                        <? foreach($parallel as $para): ?>
+                        <? if (isset($para['ppn'], $para['label'])) : ?>
+                        <a class="searchicon" href="<?=$this->recordLink()->getUrl($para['ppn'])?>" ><?=$this->transEsc($para['label'])?></a>
+                        <? endif; ?>
+                        <? endforeach; ?></td>
+                </tr>
+            <? endif; ?>
 
             <? $scale = $this->driver->tryMethod('getScale'); if (!empty($scale)): ?>
             <tr>

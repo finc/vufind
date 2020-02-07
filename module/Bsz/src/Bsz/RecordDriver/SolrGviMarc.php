@@ -19,6 +19,7 @@
 namespace Bsz\RecordDriver;
 
 use Bsz\Exception;
+use File_MARC_Exception;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
 
@@ -1257,5 +1258,21 @@ class SolrGviMarc extends SolrMarc implements Definition
             }
         }
         return $array_clean;
-    }     
+    }
+
+    /**
+     * @return array
+     * @throws File_MARC_Exception
+     */
+    public function getParallelEditions()
+    {
+        $retval = [];
+        foreach ($this->getMarcRecord()->getfields(776) as $field) {
+
+            $tmp['ppn']     = $field->getSubfield('w') ? $field->getSubfield('w')->getData() : null;
+            $tmp['label']   = $field->getSubfield('n') ? $field->getSubfield('n')->getData() : null;
+            $retval[] = $tmp;
+        }
+        return array_filter($retval);
+    }
 }
