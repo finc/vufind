@@ -12,7 +12,9 @@
             <th class="col-sm-1 col-xs-1 hidden-xs"><?=$this->transEsc('Contact')?></th>
             <th><?=$this->transEsc('Library')?></th>        
             <th><?=$this->transEsc('Signatur')?></th>
-            <th class="col-sm-2 col-xs-2 hidden-xs"><?=$this->transEsc('Interlibrary Loan')?></th>
+            <? if ( $this->client()->getTitle() !== 'Südwestdeutscher Bibliotheksverbund' ): ?>
+                <th class="col-sm-2 col-xs-2 hidden-xs"><?=$this->transEsc('Interlibrary Loan')?></th>
+            <? endif; ?>
             <? if ($this->driver->isJournal()): ?><th><?=$this->transEsc('Collection')?></th><? endif; ?>
 
         </tr>        
@@ -31,6 +33,7 @@
                     <?= isset($result['b']) ? $this->escapeHtml($result['b']) : '' ?>
                 <? endif; ?>
             </td>
+
             <td>
                 <? if (isset($result['adisurl']) && isset($result['name']) && trim($result['adisurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
                     <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['adisurl']) ?>
@@ -45,12 +48,19 @@
                        href="<?= $result['homepage'] ?>" class="external hasicon"><i class="fa fa-globe"></i></a>
                 <? endif; ?>
             </td>
+
             <td><?= isset($result['g']) ? $this->escapeHtml($result['g']) : '' ?></td>
-            <td><? if (isset($result['ill_icon'])): ?><i class="fa <?= $result['ill_icon'] ?>"></i> <? endif; ?><span
+
+            <? if ( $this->client()->getTitle() !== 'Südwestdeutscher Bibliotheksverbund' ): ?>
+                <td>
+                    <? if (isset($result['ill_icon'])): ?><i class="fa <?= $result['ill_icon'] ?>"></i> <? endif; ?><span
                         class="text hidden-xs"><?= isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></span>
-            </td>
+                </td>
+            <? endif; ?>
+
             <? if ($this->driver->isJournal()): ?>
-                <td><?= isset($result['z']) ? $this->escapeHtml($result['z']) : '' ?></td><? endif; ?>
+                <td><?= isset($result['z']) ? $this->escapeHtml($result['z']) : '' ?></td>
+            <? endif; ?>
         </tr>
         <? endforeach; ?>        
     </tbody>
