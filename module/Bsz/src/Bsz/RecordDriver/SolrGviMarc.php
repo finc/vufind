@@ -1261,6 +1261,9 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
+     * This method is basically a duplicate of getAllRecordLinks but
+     * much easier designer and works well with German library links
+     *
      * @return array
      * @throws File_MARC_Exception
      */
@@ -1271,7 +1274,9 @@ class SolrGviMarc extends SolrMarc implements Definition
 
             $tmp['ppn']     = $field->getSubfield('w') ? $field->getSubfield('w')->getData() : null;
             $tmp['label']   = $field->getSubfield('n') ? $field->getSubfield('n')->getData() : null;
-            $retval[] = $tmp;
+            if (isset($tmp['ppn']) && isset($tmp['label'])) {
+                $retval[] = $tmp;
+            }
         }
         return array_filter($retval);
     }
