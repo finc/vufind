@@ -48,11 +48,12 @@ function showmore() {
 }
 
 function bootstrapTooltip() {
-      $('[data-toggle="tooltip"]').tooltip({
+      $('body').tooltip({
           delay: {
               'show': 500,
               'hide': 100
-          }
+          },
+          selector: '[data-toggle="tooltip"]'
       });
 }
 
