@@ -1,7 +1,7 @@
 <?php
-
-/*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+/**
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,33 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 
-namespace Bsz\Search\Params;
-use Bsz\Search\Solr\Params;
-use Interop\Container\ContainerInterface;
+namespace BszTheme\View\Helper\Bodensee;
+
+use Zend\View\Helper\AbstractHelper;
 
 /**
- * BSz Search params Factory
- *
+ * Class Abbrev
+ * @package BszTheme\View\Helper\Bodensee
+ * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory {
+class Abbrev extends AbstractHelper
+{
     /**
-     * Factory for Solr params object.
-     *
-     * @param ContainerInterface $container
-     *
-     * @return \VuFind\Search\Solr\Params
+     * @param string $abbrev        the acronym / abbreviation
+     * @param string $description   a translation key, defaults to $abbrev
+     * @return string
      */
-    public static function getSolr(ContainerInterface $container)
+    public function __invoke(string $abbrev, string $description = '')
     {
-        $config = $container->get('VuFind\Config');
-        $options = $container->get('VuFind\SearchOptionsPluginManager')->get('solr');
-        $dedup = $container->get('Bsz\Config\Dedup');
-        $client = $container->get('Bsz\Config\Client');
-        $params = new Params($options, $config, null, $dedup, $client);
-
-        return $params;
+        if (empty($description)) {
+            // uses the abbreviation as translaion key
+            $description = $abbrev;
+        }
+        return $this->getView()->render('Helpers/abbrev.phtml', [
+            'abbrev' => $abbrev,
+            'description' => $description
+        ]);
     }
+
 }

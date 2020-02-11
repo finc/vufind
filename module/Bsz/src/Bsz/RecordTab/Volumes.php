@@ -19,18 +19,20 @@
  */
 
 namespace Bsz\RecordTab;
+use Bsz\Search\Solr\Results;
+use VuFind\RecordTab\AbstractBase;
 use VuFind\Search\SearchRunner;
 
 /**
- * Tab for Display of other volumes of the same serie
- *
+ * Class Volumes
+ * @package Bsz\RecordTab
+ * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Volumes extends \VuFind\RecordTab\AbstractBase {
-    
+class Volumes extends AbstractBase {
+
     /**
-     *
-     * @var \Vu
+     * @var SearchRunner
      */
     protected $runner;
     
@@ -44,23 +46,28 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
      * @var string
      */
     protected $searchClassId;
-    
+
+    /**
+     * @var array
+     */
     protected $isils;
     
     /**
      * Constructor
      * @param SearchRunner $runner
      */
-    public function __construct(SearchRunner $runner, $isils = []) {
+    public function __construct(SearchRunner $runner, $isils = [])
+    {
         $this->runner = $runner;
-        $this->isils = $isils;        
-        ;
+        $this->isils = $isils;
+        $this->accessPermission = 'access.VolumesViewTab';
     }
     /**
      * Get the on-screen description for this tab
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Volumes';
     }
     
@@ -68,7 +75,8 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
      * 
      * @return array|null
      */
-    public function getContent() {
+    public function getContent()
+    {
         if($this->content === null) {
             $relId = $this->driver->tryMethod('getIdsRelated');   
             // add the ID of the current hit, thats usefull if its a 
@@ -99,7 +107,7 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
                               
                     $results = $this->runner->run($params); 
                 
-                    $results instanceof \Bsz\Search\Solr\Results;
+                    $results instanceof Results;
                     $this->content = $results->getResults();
                 }
             }
@@ -110,7 +118,8 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
     /**
      * Check if we are in an interlending or ZDB-TAB 
      **/
-    public function isFL() {
+    public function isFL()
+    {
         $last = '';
         if (isset($_SESSION['Search']['last']) ){
             $last = urldecode($_SESSION['Search']['last']);
@@ -131,10 +140,12 @@ class Volumes extends \VuFind\RecordTab\AbstractBase {
      * This Tab is Active for collections or parts of collections only. 
      * @return boolean
      */
-    public function isActive() {
+    public function isActive()
+    {
         //getContents to determine active state
         $this->getContent();
-        if ($this->getContent() !== []) {
+        $parent = parent::isActive();
+        if ($parent && $this->getContent() !== []) {
             if(($this->driver->isCollection() || $this->driver->isPart()
                 || $this->driver->isMonographicSerial() 
                 || $this->driver->isJournal()) && !empty($this->content)) {

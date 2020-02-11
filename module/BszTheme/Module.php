@@ -83,6 +83,7 @@ class Module
             'invokables' => [
                 'mapper'        => 'BszTheme\View\Helper\FormatMapper',
                 'string'        => 'BszTheme\View\Helper\StringHelper',
+                'abbrev'        => 'BszTheme\View\Helper\Bodensee\Abbrev'
             ],
         ];
     }

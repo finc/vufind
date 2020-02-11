@@ -1,7 +1,5 @@
 function   performMark() {
     var lookfor = '';
-    var input_simple = '';
-    var input_adv = '';    
     var input_simple = $('#searchForm_lookfor').val();
     var input_adv = $('li.adv_lookfor').text();
     if (typeof input_simple !== 'undefined' && input_simple.trim() !== '') {
@@ -50,7 +48,6 @@ function showmore() {
 }
 
 function bootstrapTooltip() {
-
       $('[data-toggle="tooltip"]').tooltip({
           delay: {
               'show': 500,
@@ -203,6 +200,14 @@ function avoidEmptySearch() {
 
 }
 
+function inputLength(selector) {
+    var val = '';
+    $(selector).each(function() {
+        val += $(this).val().replace( /[\*\s]/gi,"" );
+    });
+    return val.length;
+}
+
 function checkAdvSearch() {
     var limit = 2;
     var selector = '.adv-term-input.no-empty-search';
@@ -214,14 +219,6 @@ function checkAdvSearch() {
         return true;
     });
 }
-
-function inputLength(selector) {
-    var val = '';
-    $(selector).each(function() {
-        val += $(this).val().replace( /[\*\s]/gi,"" );
-    });
-    return val.length;
- }
 /*
 * Duplicatea button
 */
@@ -245,7 +242,7 @@ function duplicates() {
                window.location.reload(true);
            }
 
-  })
+  });
      });
  }
 
@@ -338,7 +335,7 @@ function typeaheadLibraries() {
         // if the typeahead is hidden and the button is clicked, set the focus
         $('#library-typeahead').on('shown.bs.collapse', function() {
             $('.typeahead').focus();
-        })
+        });
     }
     
 
@@ -366,7 +363,6 @@ function textToggle() {
 
 function openInPopup() {
     $(document).on('click', '.open-popup', function(e) {
-        console.log('hier');
         e.preventDefault();
         var href = $(this).attr('href');
 
@@ -410,12 +406,28 @@ function tableSorter() {
     }
 }
 
+
+/**
+ * Copy text to clipboard
+ */
+function copyToClipboard() {
+
+    var clipboard = new ClipboardJS('.copy-clipboard-toggle');
+    clipboard.on('success', function(e) {
+        console.info('copied to clipboard');
+        $('.copy-clipboard-toggle').find('i').removeClass('fa-copy').addClass('fa-check text-success');
+        e.clearSelection();
+    });
+}
+
+
 /*
 * this is executed after site is loaded
 * main loop
 */
 
 $(document).ready(function() {
+
     avoidEmptySearch();
     externalLinks();
     bootstrapTooltip();
@@ -437,4 +449,5 @@ $(document).ready(function() {
     checkAdvSearch();
     textToggle();
     openInPopup();
+    copyToClipboard();
 });
