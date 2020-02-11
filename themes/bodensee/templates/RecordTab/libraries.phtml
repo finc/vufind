@@ -24,11 +24,17 @@
         <tr>
             <td class="hidden-xs">
                 <? if (isset($result['b']) && trim($result['b']) != ''): ?>
-                    <span class="text-nowrap">
-                    <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::Sigelstelle') ?>"
-                       href="<?= str_replace('%ISIL%', trim($result['b']), $this->client()->get('OPAC')->get('sigel')) ?>"
-                       class="external hasicon"><?= $this->escapeHtml($result['b']) ?></a>
-                    </span>
+                    <? if ($result['b'] !== 'LFER'): ?>
+                        <span class="text-nowrap">
+                            <? if (isset($result['homepage'])): ?>
+                                <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_homepage') ?>"
+                                    href="<?= $result['homepage'] ?>"
+                                    class="external hasicon"><i class="fa fa-globe"></i><?= $this->escapeHtml($result['b']) ?></a>
+                            <? endif; ?>
+                        </span>
+                    <? else: ?>
+                        <?=$this->abbrev($result['b'], 'LFER_long')?>
+                    <? endif; ?>
                 <? else: ?>
                     <?= isset($result['b']) ? $this->escapeHtml($result['b']) : '' ?>
                 <? endif; ?>
@@ -38,18 +44,15 @@
                 <? if (isset($result['adisurl']) && isset($result['name']) && trim($result['adisurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
                     <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['adisurl']) ?>
                     <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_opac') ?>" href="<?= $opac ?>"
-                       class="external hasicon"><?= $this->escapeHtml($result['name']) ?></a>
-
+                       class="external hasicon">
+                        <i class="fa fa-globe"></i><?= $this->escapeHtml($result['name']) ?>
+                    </a>
                 <? else: ?>
                     <?= isset($result['name']) ? $this->escapeHtml($result['name']) : '' ?>
                 <? endif; ?>
-                <? if (isset($result['homepage'])): ?>
-                    <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_homepage') ?>"
-                       href="<?= $result['homepage'] ?>" class="external hasicon"><i class="fa fa-globe"></i></a>
-                <? endif; ?>
             </td>
 
-            <td><?= isset($result['g']) ? $this->escapeHtml($result['g']) : '' ?></td>
+            <td><?= isset($result['g']) ? $this->escapeHtml($result['g']) : $this->transEsc('NoCallnumber') ?></td>
 
             <? if ( $this->client()->getTitle() !== 'Südwestdeutscher Bibliotheksverbund' ): ?>
                 <td>
