@@ -36,45 +36,6 @@
     </tr>
   <? endif; ?>
 
-  <? /* redundant? 
-    <? $parallel = $this->driver->tryMethod('getRelatedEditions'); if ($parallel): ?>
-    <? $contentDisplyed = true ?> 
-    <tr>
-        <th><?=$this->transEsc('Related Items')?>:</th>
-        <td>
-            <? foreach($parallel as $para): ?>
-                <? if (isset($para['description'])):?><?=$this->escapeHtmlAttr($para['description'])?>: <? endif; ?><a href="/Record/<?=$this->escapeHtmlAttr($para['id'])?>" class="searchicon"><? if (isset($para['author'])):?><?=$this->escapeHtml($para['author'])?>: <? endif; ?><? if (isset($para['title'])):?><?=$this->escapeHtml($para['title'])?><? endif; ?></a><br/> 
-            <? endforeach; ?>
-        </td>
-    </tr>
-  <? endif; ?>
-  */ ?>
-
-      <? $recordLinks = $this->driver->getAllRecordLinks(); ?>
-      <? if(!empty($recordLinks)): ?>
-      <? $contentDispalyed = true ?>
-        <tr>
-          <th><?=$this->transEsc('Related Items')?>:</th>
-          <td>
-            <? foreach ($recordLinks as $recordLink): ?>
-                <?= $this->transEsc($recordLink['title']) ?>:
-                <? /** todo: Link needs hiddenfilter **/ ?>
-                <? /** <a href="<?=$this->recordLink()->related($recordLink['link'])?>"><?=$this->escapeHtml($recordLink['value'])?></a>. - <?=$this->transEsc($recordLink['edition'])?><br /> **/ ?>
-                <?= $this->escapeHtml($recordLink['value']) ?>.<? if (isset($recordLink['edition'])): ?> - <?= $this->transEsc($recordLink['edition']) ?><? endif; ?>
-                <br/>
-            <? endforeach; ?>
-            <? /* if we have record links, display relevant explanatory notes */
-              $related = $this->driver->getRelationshipNotes();
-              if (!empty($related)): ?>
-                <? foreach ($related as $field): ?>
-                  <?=$this->escapeHtml($field)?><br/>
-                <? endforeach; ?>
-            <? endif; ?>
-          </td>
-        </tr>
-      <? endif; ?>
-
-  
   <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
