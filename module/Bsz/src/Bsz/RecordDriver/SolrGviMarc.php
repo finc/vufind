@@ -607,7 +607,7 @@ class SolrGviMarc extends SolrMarc implements Definition
             }
             $urls[] = $url;
         }
-        return $urls;
+        return array_unique($urls);
     }
 
 
