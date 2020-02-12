@@ -30,6 +30,8 @@
                                 <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_homepage') ?>"
                                     href="<?= $result['homepage'] ?>"
                                     class="external hasicon"><i class="fa fa-globe"></i><?= $this->escapeHtml($result['b']) ?></a>
+                            <? else: ?>
+                                <?=$this->escapeHtml($result['b'])?>
                             <? endif; ?>
                         </span>
                     <? else: ?>
