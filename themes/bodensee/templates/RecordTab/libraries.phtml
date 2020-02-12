@@ -12,7 +12,7 @@
             <th class="col-sm-1 col-xs-1 hidden-xs"><?=$this->transEsc('Contact')?></th>
             <th><?=$this->transEsc('Library')?></th>        
             <th><?=$this->transEsc('Signatur')?></th>
-            <? if ( $this->client()->getTitle() !== 'Südwestdeutscher Bibliotheksverbund' ): ?>
+            <? if ( $this->client()->getTag() !== 'bsz' ): ?>
                 <th class="col-sm-2 col-xs-2 hidden-xs"><?=$this->transEsc('Interlibrary Loan')?></th>
             <? endif; ?>
             <? if ($this->driver->isJournal()): ?><th><?=$this->transEsc('Collection')?></th><? endif; ?>
@@ -54,7 +54,7 @@
 
             <td><?= isset($result['g']) ? $this->escapeHtml($result['g']) : $this->transEsc('NoCallnumber') ?></td>
 
-            <? if ( $this->client()->getTitle() !== 'Südwestdeutscher Bibliotheksverbund' ): ?>
+            <? if ( $this->client()->getTag() !== 'bsz' ): ?>
                 <td>
                     <? if (isset($result['ill_icon'])): ?><i class="fa <?= $result['ill_icon'] ?>"></i> <? endif; ?><span
                         class="text hidden-xs"><?= isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></span>
