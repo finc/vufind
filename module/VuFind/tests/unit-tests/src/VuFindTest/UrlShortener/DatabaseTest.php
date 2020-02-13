@@ -72,17 +72,20 @@ class DatabaseTest extends TestCase
             ->getMock();
     }
 
-    /**
-     * Test that the shortener works correctly under "happy path."
-     *
-     * @return void
-     * @throws Exception
-     */
     public function testShortener()
     {
         $table = $this->getMockTable(['insert', 'select']);
         $table->expects($this->once())->method('insert')
             ->with($this->equalTo(['path' => '/bar', 'hash' => 'a1e7812e2']));
+        $mockResults = $this->getMockBuilder(ResultSet::class)
+            ->setMethods(['count', 'current'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockResults->expects($this->once())->method('count')
+            ->will($this->returnValue(0));
+        $table->expects($this->once())->method('select')
+            ->with($this->equalTo(['hash' => 'a1e7812e2']))
+            ->will($this->returnValue($mockResults));
         $db = $this->getShortener($table);
         $this->assertEquals('http://foo/short/a1e7812e2', $db->shorten('http://foo/bar'));
     }
@@ -134,5 +137,30 @@ class DatabaseTest extends TestCase
             ->will($this->returnValue($mockResults));
         $db = $this->getShortener($table);
         $db->resolve('abcd12?');
+    }
+
+    /**
+     * Test that resolve errors correctly when given bad input
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    public function testResolutionOfOldIds()
+    {
+        $table = $this->getMockTable(['select']);
+        $mockResults = $this->getMockBuilder(ResultSet::class)
+            ->setMethods(['count', 'current'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockResults->expects($this->once())->method('count')
+            ->will($this->returnValue(1));
+        $mockResults->expects($this->once())->method('current')
+            ->will($this->returnValue(['path' => '/bar', 'hash' => 'A']));
+        $table->expects($this->once())->method('select')
+            ->with($this->equalTo(['hash' => 'A']))
+            ->will($this->returnValue($mockResults));
+        $db = $this->getShortener($table);
+        $this->assertEquals('http://foo/bar', $db->resolve('A'));
     }
 }
