@@ -42,7 +42,6 @@ use VuFind\Db\Table\Shortlinks as ShortlinksTable;
  */
 class Database implements UrlShortenerInterface
 {
-    const BASE62_BASE = 62;
     const SALT = 'RAnD0mVuFindSa!t';
     const HASH_ALGO = 'md5';
 
@@ -73,13 +72,13 @@ class Database implements UrlShortenerInterface
     }
 
 
-
     /**
      * Generate & store shortened URL in Database.
      *
      * @param string $url URL
      *
      * @return string
+     * @throws Exception
      */
     public function shorten($url)
     {
