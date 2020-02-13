@@ -76,14 +76,13 @@ class DatabaseTest extends TestCase
      * Test that the shortener works correctly under "happy path."
      *
      * @return void
+     * @throws Exception
      */
     public function testShortener()
     {
-        $table = $this->getMockTable(['insert', 'getLastInsertValue']);
+        $table = $this->getMockTable(['insert', 'select']);
         $table->expects($this->once())->method('insert')
             ->with($this->equalTo(['path' => '/bar', 'hash' => 'a1e7812e2']));
-        $table->expects($this->once())->method('getLastInsertValue')
-            ->will($this->returnValue('10'));
         $db = $this->getShortener($table);
         $this->assertEquals('http://foo/short/a1e7812e2', $db->shorten('http://foo/bar'));
     }

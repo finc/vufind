@@ -78,15 +78,18 @@ class Database implements UrlShortenerInterface
      * @param string $url URL
      *
      * @return string
-     * @throws Exception
      */
     public function shorten($url)
     {
         $path = str_replace($this->baseUrl, '', $url);
         $hash = hash(static::HASH_ALGO, $path.static::SALT);
         $shorthash = substr($hash, 0, 9);
+        $results = $this->table->select(['hash' => $shorthash]);
 
-        $this->table->insert(['path' => $path, 'hash' => $shorthash]);
+        // this should almost never happen - we then return the existing hash
+        if (is_null($results)) {
+            $this->table->insert(['path' => $path, 'hash' => $shorthash]);
+        }
 
         $shortUrl = $this->baseUrl . '/short/' . $shorthash;
         return $shortUrl;
