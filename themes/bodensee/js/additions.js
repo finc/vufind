@@ -308,7 +308,7 @@ function typeaheadLibraries() {
         
         var baseurl = VuFind.path + '/AJAX/JSON?method=';
         // Workaround for a bug in typeahead.js
-        setTimeout(() => $('.typeahead').focus(), 0);
+        setTimeout($('.typeahead').focus(), 100);
 
         $('.typeahead').typeahead({
             items: 'all',
