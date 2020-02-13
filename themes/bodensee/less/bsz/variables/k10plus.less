@@ -14,9 +14,9 @@
 @gray-light:             lighten(@gray-base, 60%);   // #999
 @gray-lighter:           lighten(@gray-base, 93.5%); // #eee
 
-@brand-primary:         #145078;
+@brand-primary:         #008181;
 @brand-success:         #73A839;
-@brand-info:            #5087d8;
+@brand-info:            #555;
 @brand-warning:         #DD5600;
 @brand-danger:          #C71C22;
 
@@ -31,7 +31,7 @@
 @text-color:            @gray;
 
 //** Global textual link color.
-@link-color:            @gray-dark;
+@link-color:            @brand-primary;
 //** Link hover color set via `darken()` function.
 @link-hover-color:      darken(@link-color, 15%);
 //** Link hover decoration.
@@ -42,7 +42,7 @@
 //
 //## Font, line-height, and color for body text, headings, and more.
 
-@font-family-sans-serif:  Lato, Helvetica, Arial, sans-serif;
+@font-family-sans-serif:  "Ubuntu", Helvetica, Arial, sans-serif;
 @font-family-serif:       Georgia, "Times New Roman", Times, serif;
 //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
 @font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -68,7 +68,7 @@
 @headings-font-family:    @font-family-base;
 @headings-font-weight:    500;
 @headings-line-height:    1.1;
-@headings-color:          #317EAC;
+@headings-color:          @brand-primary;
 
 
 //== Iconography
@@ -470,7 +470,7 @@
 
 @pager-bg:                             @pagination-bg;
 @pager-border:                         @pagination-border;
-@pager-border-radius:                  @border-radius-base;
+@pager-border-radius:                  15px;
 
 @pager-hover-bg:                       @pagination-hover-bg;
 
@@ -484,7 +484,7 @@
 //
 //##
 
-@jumbotron-padding:              30px;
+@jumbotron-padding:              10px;
 @jumbotron-color:                inherit;
 @jumbotron-bg:                   @gray-lighter;
 @jumbotron-heading-color:        inherit;
@@ -864,6 +864,6 @@
 //** Width of horizontal description list titles
 @dl-horizontal-offset:        @component-offset-horizontal;
 //** Point at which .dl-horizontal becomes horizontal
-@dl-horizontal-breakpoint:    500px;
+@dl-horizontal-breakpoint:    @grid-float-breakpoint;
 //** Horizontal line color.
 @hr-border:                   @gray-lighter;
