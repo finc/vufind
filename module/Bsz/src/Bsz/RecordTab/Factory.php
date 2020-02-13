@@ -19,7 +19,8 @@
  */
 
 namespace Bsz\RecordTab;
-use Zend\ServiceManager\ServiceManager;
+use Interop\Container\ContainerInterface;
+use Zend\Http\PhpEnvironment\Request;
 use Zend\Session\Container;
 
 
@@ -33,11 +34,11 @@ class Factory {
     /**
      * Factory for volumes tab
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container
      *
      * @return Volumes
      */
-    public static function getVolumes(ServiceManager $sm)
+    public static function getVolumes(ContainerInterface $container)
     {
         $last = '';
         if (isset($_SESSION['Search']['last']) ){
@@ -47,12 +48,12 @@ class Factory {
         if (strpos($last, 'consortium=FL') === FALSE 
             && strpos($last, 'consortium=ZDB') === FALSE
         ) {
-            $client = $sm->get('Bsz\Config\Client');
+            $client = $container->get('Bsz\Config\Client');
             $isils = $client->getIsils();
         }
 
 
-        $volumes = new Volumes($sm->get('VuFind\SearchRunner'), $isils);
+        $volumes = new Volumes($container->get('VuFind\SearchRunner'), $isils);
 
         
         return $volumes;
@@ -60,11 +61,11 @@ class Factory {
     /**
      * Factory for articles tab
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container
      *
-     * @return Volumes
+     * @return Articles
      */
-    public static function getArticles(ServiceManager $sm)
+    public static function getArticles(ContainerInterface $container)
     {
         $last = '';
         if (isset($_SESSION['Search']['last']) ){
@@ -74,12 +75,12 @@ class Factory {
         if (strpos($last, 'consortium=FL') === FALSE 
             && strpos($last, 'consortium=ZDB') === FALSE
         ) {
-            $client = $sm->get('Bsz\Config\Client');
+            $client = $container->get('Bsz\Config\Client');
             $isils = $client->getIsils();
         }
         
-        $articles = new Articles($sm->get('VuFind\SearchRunner'), $isils);
-        $request = new \Zend\Http\PhpEnvironment\Request();
+        $articles = new Articles($container->get('VuFind\SearchRunner'), $isils);
+        $request = new Request();
         $url = strtolower($request->getUriString());
         return $articles;
     }
@@ -87,42 +88,43 @@ class Factory {
     /**
      * Factory for libraries tab 
      * 
-     * @param ServiceManager $sm
-     * @return \Bsz\RecordTab\LibrariesTab
+     * @param ContainerInterface $container
+     * @return Libraries
      */
-    public static function getLibraries(ServiceManager $sm)
+    public static function getLibraries(ContainerInterface $container)
     {
-        $libraries = $sm->get('Bsz\Config\Libraries');
-        $client = $sm->get('Bsz\Config\Client');
-        return new Libraries($libraries, !$client->is('disable_library_tab'));
+        $libraries = $container->get('Bsz\Config\Libraries');
+        $client = $container->get('Bsz\Config\Client');
+        $swbonly = $client->getTag() === 'bsz' ?? false;
+        return new Libraries($libraries, !$client->is('disable_library_tab'), $swbonly);
     }
     /**
      * Factory for description tab
      * 
-     * @param ServiceManager $sm
-     * @return \Bsz\RecordTab\LibrariesTab
+     * @param ContainerInterface $container
+     * @return Description
      */
-    public static function getDescription(ServiceManager $sm)
+    public static function getDescription(ContainerInterface $container)
     {
-        $client = $sm->get('Bsz\Config\Client');
+        $client = $container->get('Bsz\Config\Client');
         return new Description(!$client->is('disable_description_tab'));
     }
         /**
      * Factory for HoldingsILS tab plugin.
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container Service manager.
      *
      * @return HoldingsILS
      */
-    public static function getHoldingsILS(ServiceManager $sm)
+    public static function getHoldingsILS(ContainerInterface $container)
     {
         // If VuFind is configured to suppress the holdings tab when the
         // ILS driver specifies no holdings, we need to pass in a connection
         // object:
-        $config = $sm->get('VuFind\Config')->get('config');
+        $config = $container->get('VuFind\Config')->get('config');
         if (isset($config->Site->hideHoldingsTabWhenEmpty) && $config->Site->hideHoldingsTabWhenEmpty
         ) {
-            $catalog = $sm->get('VuFind\ILSConnection');
+            $catalog = $container->get('VuFind\ILSConnection');
         } else {
             $catalog = false;
         }

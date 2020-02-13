@@ -15,54 +15,68 @@
   $thumbnail = false;
   $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
   if ($cover): ?>
-    <? if ($coverDetails['html'] !== ''): ?> 
+    <? if ($coverDetails['html'] !== ''): ?>
 
-            <?=$cover ?>
-    <? endif; ?>
+          <?= $cover ?>
+      <? endif; ?>
   <? else: ?>
-    <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">     
-        <span class=""></span>
-    </div>
-<? endif; ?>   
+      <div class="recordcover unavailable <?= $this->mapper()->mapIcon($this->driver->getFormats()) ?>">
+          <span class=""></span>
+      </div>
+  <? endif; ?>
 
-<? /* Display qrcode if appropriate: */ ?>
+        <? /* Display qrcode if appropriate: */ ?>
         <? $QRCode = $this->record($this->driver)->getQRCode("core"); ?>
-        <? if($QRCode): ?>
-          <span class="hidden-xs">
-            <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
+        <? if ($QRCode): ?>
+            <span class="hidden-xs">
+            <br/><img alt="<?= $this->transEsc('QR Code') ?>" class="qrcode"
+                      src="<?= $this->escapeHtmlAttr($QRCode); ?>"/>
           </span>
         <? endif; ?>
-      <?=$this->record($this->driver)->getPreviews()?>
+        <?= $this->record($this->driver)->getPreviews() ?>
     </div>
     <div class="col-xs-12 col-sm-9">
-        <? 
-           $title = $this->driver->getTitle();
-           $subtitle = $this->driver->getTitleSection();
+        <?php
+        $title = $this->driver->getTitle();
+        $section = $this->driver->getTitleSection();
+        $sectionol = $this->driver->tryMethod('getTitleSectionOl');
+        $titleol = $this->driver->tryMethod('getTitleOl');
         ?>
         <h3 property="name">
-        <? if (is_array($title)): ?>    
-            <?=$this->escapeHtml($title[0])?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
-        <? else: ?>
-            <?=$this->escapeHtml($title)?> <small><?=$this->string()->cleanEsc($subtitle)?></small>
-        <? endif; ?>
-        <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
+            <? if (is_array($title)): ?>
+                <?= $this->escapeHtml($title[0]) ?> <small><?= $this->string()->cleanEsc($section) ?></small>
+            <? else: ?>
+                <?= $this->escapeHtml($title) ?> <small><?= $this->string()->cleanEsc($section) ?></small>
+            <? endif; ?>
+            <?= $this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver]) ?>
         </h3>
+        <? if (!empty($titleol)): ?>
+            <h4>
+                <?= $this->escapeHtml($titleol) ?>
+                <? if (!empty($sectionol)): ?>
+                    <small><?= $this->escapeHtml($sectionol) ?></small>
+                <? endif; ?>
+            </h4>
+        <? endif; ?>
 
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-          <? /* Display the lists that this record is saved to */ ?>
-          <div class="savedLists hidden alert alert-info" id="savedLists">
-            <strong><?=$this->transEsc("Saved in")?>:</strong>
-          </div>
+            <? /* Display the lists that this record is saved to */ ?>
+            <div class="savedLists hidden alert alert-info" id="savedLists">
+                <strong><?= $this->transEsc("Saved in") ?>:</strong>
+            </div>
         <? endif; ?>
-        <?/* Display Main Details */?>
-        <table class="table table-striped">        
-            <? $container = $this->driver->tryMethod('getContainer'); if ($container) : ?>            
-            <tr>
-                <th><?=$this->transEsc('collective_editions')?>:</th>
-                <td><? foreach($container as $cont): ?>
-                    <a class="internal" href="<?=$this->recordLink()->getUrl($cont)?>"><?=$this->string()->cleanEsc($cont->getTitle())?></a><br/>
-                <? endforeach; ?></td>
-            </tr>
+        <? /* Display Main Details */ ?>
+        <table class="table table-striped">
+            <? $container = $this->driver->tryMethod('getContainer');
+            if ($container) : ?>
+                <tr>
+                    <th><?= $this->transEsc('collective_editions') ?>:</th>
+                    <td><? foreach ($container as $cont): ?>
+                            <a class="internal"
+                               href="<?= $this->recordLink()->getUrl($cont) ?>"><?= $this->string()->cleanEsc($cont->getTitle()) ?></a>
+                            <br/>
+                        <? endforeach; ?></td>
+                </tr>
             <? endif; ?>      
 
             <? $volume = $this->driver->tryMethod('getVolume'); ?>
@@ -142,7 +156,7 @@
                 </td>
             </tr>
             <? endif; ?>
-            
+
             <? if (isset($authors['corporate']) && !empty($authors['corporate'])): ?>
             <tr>
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
@@ -166,6 +180,19 @@
             </tr>
             <? endif;?>
 
+            <? $cast = $this->driver->getMusicalCast(); ?>
+
+            <? if (isset($cast) && !empty($cast)): ?>
+                <tr>
+                    <th><?=$this->transEsc('MusicalCast')?>: </th>
+                    <td property="cast">
+                        <? foreach ($cast as $item): ?>
+                            <?= $item ?><br/>
+                        <? endforeach; ?>
+                    </td>
+                </tr>
+            <? endif; ?>
+
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
             <tr>
                 <th><?=$this->transEsc('Format')?>: </th>
@@ -173,7 +200,20 @@
                     <span><?=$this->transEsc($format)?></span>
                     <? endforeach; ?></td>
             </tr>
-            <? endif; ?>  
+            <? endif; ?>
+
+            <? $parallel = $this->driver->tryMethod('getParallelEditions'); if (!empty($parallel)): ?>
+                <tr>
+                    <th><?=$this->transEsc('other_appearance')?>: </th>
+                    <td>
+                        <? if (count($parallel) > 0): ?><?=$this->transEsc('Erscheint auch als')?><? endif; ?>
+                        <? foreach($parallel as $para): ?>
+                        <? if (isset($para['ppn'], $para['label'])) : ?>
+                        <a class="searchicon" href="<?=$this->recordLink()->getUrl($para['ppn'])?>" ><?=$this->transEsc($para['label'])?></a>
+                        <? endif; ?>
+                        <? endforeach; ?></td>
+                </tr>
+            <? endif; ?>
 
             <? $scale = $this->driver->tryMethod('getScale'); if (!empty($scale)): ?>
             <tr>
@@ -184,13 +224,22 @@
             </tr>
             <? endif; ?>    
             
-            <? $physical = $this->driver->getPhysicalDescriptions(); if (!empty($physical)): ?>
+            <? $physical = $this->driver->getPhysicalDescriptions();
+            $physicalol = $this->driver->tryMethod('getPhysicalDescriptionsOl');
+            if (!empty($physical)): ?>
             <? $contentDisplayed = true; ?>
             <tr>
                 <th><?=$this->transEsc('Physical Description')?>: </th>
                 <td><? foreach ($physical as $field): ?>
                     <?=$this->escapeHtml($field)?><br/>
-                  <? endforeach; ?></td>
+                  <? endforeach; ?>
+
+                  <? if ($physicalol !== null): ?>
+                    <? foreach ($physicalol as $field): ?>
+                      <?=$this->escapeHtml($field)?><br/>
+                    <? endforeach; ?>
+                  <? endif; ?>
+                </td>
             </tr>
             <? endif; ?>           
 
@@ -199,12 +248,12 @@
                $issn = $this->driver->getCleanISSN();
                if (!empty($isbn)): ?>
             <tr>
-                <th><?=$this->transEsc('ISBN')?>:</th>
+                <th><?=$this->abbrev('ISBN', 'ISBN_long')?>:</th>
                 <td><?=$this->driver->getCleanISBN()?></td>
             </tr>
             <? elseif (!empty($issn)): ?>
             <tr>
-                <th><?=$this->transEsc('ISSN')?>:</th>
+                <th><?=$this->abbrev('ISSN', 'ISSN_long')?>:</th>
                 <td><?=$this->driver->getCleanISSN()?></td>
             </tr>
             <? endif; ?>
@@ -219,31 +268,59 @@
             <? endif; ?> 
             
             <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
-            <tr>
-                <th><?=$this->transEsc('Published')?>: </th>
-                <td>
-                  <? foreach ($publications as $field): ?>
-                    <span property="publisher" typeof="Organization">
-                    <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
-                      <span property="location"><?=$this->escapeHtml($pubPlace)?></span> : 
+                <? $publicationsOl = $this->driver->tryMethod('getPublicationDetailsOl') ?>
+                <tr>
+                    <th><?= $this->transEsc('Published') ?>:</th>
+                    <td>
+                        <? foreach ($publications as $field): ?>
+                            <span property="publisher" typeof="Organization">
+                    <? $pubPlace = $field->getPlace();
+                    if (!empty($pubPlace)): ?>
+                        <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
                     <? endif; ?>
-                    <? $pubName = $field->getName(); if (!empty($pubName)): ?>
-                      <span property="name"><?=$this->escapeHtml($pubName)?></span>
-                    <? endif; ?>
+                                <? $pubName = $field->getName();
+                                if (!empty($pubName)): ?>
+                                    <span property="name"><?= $this->escapeHtml($pubName) ?></span>
+                                <? endif; ?>
                     </span>
-                    <? $pubDate = $field->getDate(); if (!empty($pubDate)): ?>
-                      <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
-                    <? endif; ?>
-                    <br/>
-                  <? endforeach; ?>
-                </td>
-            </tr>
+                            <? $pubDate = $field->getDate();
+                            if (!empty($pubDate)): ?>
+                                <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
+                            <? endif; ?>
+                            <br/>
+                        <? endforeach; ?>
+                        <? if (isset($publicationsOl)): ?>
+                            <? foreach ($publicationsOl as $field): ?>
+                                <span property="publisher" typeof="Organization">
+                        <? $pubPlace = $field->getPlace();
+                        if (!empty($pubPlace)): ?>
+                            <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
+                        <? endif; ?>
+                                    <? $pubName = $field->getName();
+                                    if (!empty($pubName)): ?>
+                                        <span property="name"><?= $this->escapeHtml($pubName) ?></span>
+                                    <? endif; ?>
+                        </span>
+                                <? $pubDate = $field->getDate();
+                                if (!empty($pubDate)): ?>
+                                    <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
+                                <? endif; ?>
+                                <br/>
+                            <? endforeach; ?>
+                        <? endif; ?>
+                    </td>
+                </tr>
             <? endif; ?>
             
-            <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
+            <? $edition = $this->driver->getEdition();
+            $editionol = $this->driver->tryMethod('getEditionOl');
+            if (!empty($edition)): ?>
             <tr>
                 <th><?=$this->transEsc('Edition')?>: </th>
-                <td property="bookEdition"><?=$this->escapeHtml($edition)?></td>
+                <td property="bookEdition"><?=$this->escapeHtml($edition)?>
+                    <? if (isset($editionol)): ?><br/><?=$this->escapeHtml($editionol)?><? endif; ?>
+
+                </td>
             </tr>
             <? endif; ?>
             
@@ -298,9 +375,16 @@
       <? endif; ?>
       
       <? if( strlen($this->driver->getConsortium()) > 0): ?>
+        <?  $consortium = $this->driver->getConsortium();
+            $consortiums = explode(', ', $consortium);
+        ?>
         <tr>
             <th><?=$this->transEsc('Network')?>:</th>
-            <td><?=$this->driver->getConsortium() ?></td> 
+            <td><? foreach ($consortiums as $con): ?>
+                <?=$this->abbrev($con)?>
+                <? endforeach; ?>
+
+            </td>
         </tr>          
       <? endif; ?> 
 

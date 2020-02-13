@@ -30,9 +30,16 @@
         <? else: ?> 
             <strong><?=$this->transEsc('by')?></strong>
         <?endif?>
+        <? $count = 0?>
         <? foreach ($summAuthors['secondary'] as $name => $info): ?>
+            <? if ($count < 3): ?>
             <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+            <? endif; ?>
+            <? $count++ ?>
         <? endforeach; ?>
+        <? if (count($summAuthors['secondary']) >= 3): ?>
+            <?=$this->transEsc('et al.')?>
+        <? endif; ?>
         <br/>
 <? endif; ?>
     

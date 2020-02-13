@@ -1,30 +1,40 @@
-<?/* Display series section if at least one series exists. */?>
-<? $series = $this->driver->getSeries(); if (!empty($series)): ?>
-<tr>
-<th><?=$this->transEsc('Series')?>: </th>
-<td>
-  <? $seriesids = $this->driver->tryMethod('getSeriesIds');?>
-  <? $count =  0; ?>
-  <? foreach ($series as $field): ?>
-    <? if (isset($seriesIds) && isset($seriesids[$count])): ?>
-        <? $field['id'] = $seriesids[$count] ?>
-    <? endif; ?>
-    <?/* Depending on the record driver, $field may either be an array with
-       "name" and "number" keys or a flat string containing only the series
-       name.  We should account for both cases to maximize compatibility. */?>
-    <? if (is_array($field)): ?>
-      <? if (!empty($field['name'])): ?>
-        <a class="searchicon" href="<? if (!empty($field['id'])): ?><?=$this->url('record', ['id' => $field['id']])?><? else: ?><?=$this->record($this->driver)->getLink('series', $field['name'])?><? endif; ?>"><?=$this->escapeHtml($field['name'])?></a>
-        <? if (!empty($field['number'])): ?>
-          <?=$this->escapeHtml($field['number'])?>
-        <? endif; ?>
-        <br/>
-      <? endif; ?>
-    <? else: ?>
-      <a class="searchicon" href="<? if (!empty($field['id'])): ?><?=$this->url('record', ['id' => $field['id']])?><? else: ?><?=$this->record($this->driver)->getLink('series', $field)?><? endif; ?>"><?=$this->escapeHtml($field)?></a><br/>
-    <? endif; ?>
-    <? $count++; ?>
-  <? endforeach; ?>
-</td>
-</tr>
+<? /* Display series section if at least one series exists. */ ?>
+<? $series = $this->driver->getSeries();
+$seriesol = $this->driver->tryMethod('getSeriesOl');
+if (!empty($series)): ?>
+    <tr>
+        <th><?= $this->transEsc('Series') ?>:</th>
+        <td>
+            <? $seriesids = $this->driver->tryMethod('getSeriesIds'); ?>
+            <? $count = 0; ?>
+            <? foreach ($series as $field): ?>
+                <? if (isset($seriesIds) && isset($seriesids[$count])): ?>
+                    <? $field['id'] = $seriesids[$count] ?>
+                <? endif; ?>
+                <? /* Depending on the record driver, $field may either be an array with
+           "name" and "number" keys or a flat string containing only the series
+           name.  We should account for both cases to maximize compatibility. */ ?>
+                <? if (is_array($field)): ?>
+                    <? if (!empty($field['name'])): ?>
+                        <a class="searchicon"
+                           href="<? if (!empty($field['id'])): ?><?= $this->url('record', ['id' => $field['id']]) ?><? else: ?><?= $this->record($this->driver)->getLink('series', $field['name']) ?><? endif; ?>"><?= $this->escapeHtml($field['name']) ?></a>
+                        <? if (!empty($field['number'])): ?>
+                            <?= $this->escapeHtml($field['number']) ?>
+                        <? endif; ?>
+                        <br/>
+                    <? endif; ?>
+                <? else: ?>
+                    <a class="searchicon"
+                       href="<? if (!empty($field['id'])): ?><?= $this->url('record', ['id' => $field['id']]) ?><? else: ?><?= $this->record($this->driver)->getLink('series', $field) ?><? endif; ?>"><?= $this->escapeHtml($field) ?></a>
+                    <br/>
+                <? endif; ?>
+                <? $count++; ?>
+            <? endforeach; ?>
+            <? if ($seriesol): ?>
+                <? foreach ($seriesol as $serieol): ?>
+                    <?= $this->escapeHtml($serieol) ?>
+                <? endforeach; ?>
+            <? endif; ?>
+        </td>
+    </tr>
 <? endif; ?>

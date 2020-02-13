@@ -6,14 +6,10 @@
     $isbn = $this->driver->getCleanISBN();
 ?>
 <table class="table table-striped">
-    <colgroup>
-        <col style="width: 30%;"/>
-        <col style="width: 60%;"/>
-    </colgroup>
   <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn)): ?>
   <? $contentDisplayed = true; ?>
     <tr>
-      <th><?=$this->transEsc('PPN')?>:</th>
+      <th><?=$this->abbrev('PPN')?>:</th>
       <td>
         <?=$this->recordLink()->linkPPN($this->driver) ?>    
       </td>
@@ -90,12 +86,12 @@
       </td>
     </tr>
   <? endif; ?>
-  <? $ean = $this->driver->tryMethod('getEAN');
+  <? $ean = $this->driver->tryMethod('getGTIN');
      if(!empty($ean)):          
      $contentDisplayed = true;
   ?>
     <tr>
-        <th><?=$this->transEsc('EAN')?></th>
+        <th><?=$this->abbrev('GTIN')?>: </th>
         <td><?=$this->escapeHtml($ean)?></td>          
     </tr>
   <? endif; ?>  
@@ -212,7 +208,7 @@
   <? $isbns = $this->driver->getISBNs(); if (!empty($isbns)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
-      <th><?=$this->transEsc('ISBN')?>: </th>
+      <th><?=$this->abbrev('ISBN', 'ISBN_long')?>: </th>
       <td>
         <? foreach ($isbns as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
@@ -224,7 +220,7 @@
   <? $issns = $this->driver->getISSNs(); if (!empty($issns)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
-      <th><?=$this->transEsc('ISSN')?>: </th>
+      <th><?=$this->abbrev('ISSN', 'ISSN_long')?>: </th>
       <td>
         <? foreach ($issns as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
@@ -289,20 +285,18 @@
     </tr>
   <? endif; ?>
 
-  <? $authorNotes = empty($isbn) ? array() : $this->authorNotes($isbn); if (!empty($authorNotes)): ?>
-    <? $contentDisplayed = true; ?>
-    <tr>
-      <th><?=$this->transEsc('Author Notes')?>: </th>
-      <td>
-        <? foreach ($authorNotes as $provider => $list): ?>
-          <? foreach ($list as $field): ?>
-            <?=$field['Content']?><br/>
-          <? endforeach; ?>
-        <? endforeach; ?>
-      </td>
-    </tr>
-  <? endif; ?>
-    
+    <? $remarks = $this->driver->tryMethod('getRemarks'); if (!empty($remarks)): ?>
+        <? $contentDisplayed = true; ?>
+        <tr>
+            <th><?=$this->transEsc('remarks')?>: </th>
+            <td>
+                <? foreach ($remarks as $field): ?>
+                    <?=$this->escapeHtml($field)?><br/>
+                <? endforeach; ?>
+            </td>
+        </tr>
+    <? endif; ?>
+
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
