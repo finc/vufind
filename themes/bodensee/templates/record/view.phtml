@@ -88,7 +88,8 @@ use Zend\View\Helper\HeadScript; ?>
                   $tab_classes[] = 'active';
                 }
                 $tab_classes[] = 'initiallyActive';
-                $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc($desc) . '</li>';
+                $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ') .
+                      '<li class="active">' . $this->recordLink()->getBreadcrumb($this->driver) . '</li> ';
                 $activeTabObj = $obj;
               }
           

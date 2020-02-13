@@ -74,16 +74,10 @@ class Libraries extends AbstractBase
      */
     public function isActive()
     {
-        // If accessPermission is set, check for authorization to enable tab
-        if (!empty($this->accessPermission)) {
-            $auth = $this->getAuthorizationService();
-            if (!$auth) {
-                throw new \Exception('Authorization service missing');
-            }
-            return $auth->isGranted($this->accessPermission);
+        $parent = parent::isActive();
+        if (is_null($this->f924)) {
+            $this->f924 = $this->driver->tryMethod('getField924');
         }
-
-        $this->f924 = $this->driver->tryMethod('getField924');
         if ($this->swbonly) {
             foreach ($this->f924 as $k => $field) {
                 if (isset($field['c']) && strtoupper($field['c']) !== 'BSZ' ) {
@@ -91,7 +85,7 @@ class Libraries extends AbstractBase
                 }
             }
         }
-        if ($this->f924) {
+                if ($parent && $this->f924) {
             return true;                
         }            
         return false;        
@@ -99,13 +93,18 @@ class Libraries extends AbstractBase
     
     public function getContent()
     {
-        $libraries = $this->libraries->getByIsils(array_keys($this->f924));
-        foreach ($libraries as $library) {
-            $this->f924[$library->getIsil()]['name'] = $library->getName();
-            $this->f924[$library->getIsil()]['homepage'] = $library->getHomepage();            
-            $this->f924[$library->getIsil()]['adisurl'] = $library->getaDISURl();            
+        if (is_null($this->f924)) {
+            $this->f924 = $this->driver->tryMethod('getField924');
         }
-        return $this->f924;        
+        if (is_array($this->f924)) {
+            $libraries = $this->libraries->getByIsils(array_keys($this->f924));
+            foreach ($libraries as $library) {
+                $this->f924[$library->getIsil()]['name'] = $library->getName();
+                $this->f924[$library->getIsil()]['homepage'] = $library->getHomepage();
+                $this->f924[$library->getIsil()]['adisurl'] = $library->getaDISURl();
+            }
+        }
+        return $this->f924;
     }
     
     public function isVisible()
