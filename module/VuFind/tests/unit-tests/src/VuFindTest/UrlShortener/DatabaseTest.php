@@ -135,4 +135,29 @@ class DatabaseTest extends TestCase
         $db = $this->getShortener($table);
         $db->resolve('abcd12?');
     }
+
+    /**
+     * Test that resolve errors correctly when given bad input
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    public function testResolutionOfOldIds()
+    {
+        $table = $this->getMockTable(['select']);
+        $mockResults = $this->getMockBuilder(ResultSet::class)
+            ->setMethods(['count', 'current'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockResults->expects($this->once())->method('count')
+            ->will($this->returnValue(1));
+        $mockResults->expects($this->once())->method('current')
+            ->will($this->returnValue(['path' => '/bar', 'hash' => 'A']));
+        $table->expects($this->once())->method('select')
+            ->with($this->equalTo(['hash' => 'A']))
+            ->will($this->returnValue($mockResults));
+        $db = $this->getShortener($table);
+        $this->assertEquals('http://foo/bar', $db->resolve('A'));
+    }
 }
