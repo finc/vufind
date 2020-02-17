@@ -30,10 +30,19 @@
 namespace VuFind\Controller;
 
 use ArrayObject;
+use Exception;
+use Tuupola\Base62;
+use VuFind\Cache\Manager;
 use VuFind\Config\Locator as ConfigLocator;
+use VuFind\Config\Version;
+use VuFind\Config\Writer;
 use VuFind\Cookie\Container as CookieContainer;
 use VuFind\Cookie\CookieManager;
+use VuFind\Date\Converter;
+use VuFind\Db\AdapterFactory;
 use VuFind\Exception\RecordMissing as RecordMissingException;
+use VuFind\Search\Results\PluginManager;
+use Zend\Db\Adapter\Adapter;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Session\Container;
@@ -78,8 +87,10 @@ class UpgradeController extends AbstractBase
      * @param CookieManager           $cookieManager    Cookie manager
      * @param Container               $sessionContainer Session container
      */
-    public function __construct(ServiceLocatorInterface $sm,
-        CookieManager $cookieManager, Container $sessionContainer
+    public function __construct(
+        ServiceLocatorInterface $sm,
+        CookieManager $cookieManager,
+        Container $sessionContainer
     ) {
         parent::__construct($sm);
 
@@ -132,7 +143,9 @@ class UpgradeController extends AbstractBase
         parent::attachDefaultListeners();
         $events = $this->getEventManager();
         $events->attach(
-            MvcEvent::EVENT_DISPATCH, [$this, 'validateAutoConfigureConfig'], 1000
+            MvcEvent::EVENT_DISPATCH,
+            [$this, 'validateAutoConfigureConfig'],
+            1000
         );
     }
 
@@ -166,8 +179,8 @@ class UpgradeController extends AbstractBase
      */
     public function establishversionsAction()
     {
-        $this->cookie->newVersion = \VuFind\Config\Version::getBuildVersion();
-        $this->cookie->oldVersion = \VuFind\Config\Version::getBuildVersion(
+        $this->cookie->newVersion = Version::getBuildVersion();
+        $this->cookie->oldVersion = Version::getBuildVersion(
             $this->cookie->sourceDir
         );
 
@@ -208,19 +221,23 @@ class UpgradeController extends AbstractBase
             ? $this->cookie->sourceDir . '/web/conf'
             : $localConfig;
         $upgrader = new \VuFind\Config\Upgrade(
-            $this->cookie->oldVersion, $this->cookie->newVersion, $confDir,
-            dirname(ConfigLocator::getBaseConfigPath('config.ini')), $localConfig
+            $this->cookie->oldVersion,
+            $this->cookie->newVersion,
+            $confDir,
+            dirname(ConfigLocator::getBaseConfigPath('config.ini')),
+            $localConfig
         );
         try {
             $upgrader->run();
             $this->cookie->warnings = $upgrader->getWarnings();
             $this->cookie->configOkay = true;
             return $this->forwardTo('Upgrade', 'Home');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $extra = is_a($e, 'VuFind\Exception\FileAccess')
                 ? '  Check file permissions.' : '';
             $this->flashMessenger()->addMessage(
-                'Config upgrade failed: ' . $e->getMessage() . $extra, 'error'
+                'Config upgrade failed: ' . $e->getMessage() . $extra,
+                'error'
             );
             return $this->forwardTo('Upgrade', 'Error');
         }
@@ -229,7 +246,7 @@ class UpgradeController extends AbstractBase
     /**
      * Get a database adapter for root access using credentials in session.
      *
-     * @return \Zend\Db\Adapter\Adapter
+     * @return Adapter
      */
     protected function getRootDbAdapter()
     {
@@ -237,9 +254,10 @@ class UpgradeController extends AbstractBase
         // subsequent calls.
         static $adapter = false;
         if (!$adapter) {
-            $factory = $this->serviceLocator->get(\VuFind\Db\AdapterFactory::class);
+            $factory = $this->serviceLocator->get(AdapterFactory::class);
             $adapter = $factory->getAdapter(
-                $this->session->dbRootUser, $this->session->dbRootPass
+                $this->session->dbRootUser,
+                $this->session->dbRootPass
             );
         }
         return $adapter;
@@ -261,16 +279,16 @@ class UpgradeController extends AbstractBase
      *
      * @param string $charset Encoding setting to use.
      *
-     * @throws \Exception
+     * @throws Exception
      * @return void
      */
     protected function setDbEncodingConfiguration($charset)
     {
         $config = ConfigLocator::getLocalConfigPath('config.ini', null, true);
-        $writer = new \VuFind\Config\Writer($config);
+        $writer = new Writer($config);
         $writer->set('Database', 'charset', $charset);
         if (!$writer->save()) {
-            throw new \Exception('Problem writing DB encoding to config.ini');
+            throw new Exception('Problem writing DB encoding to config.ini');
         }
     }
 
@@ -302,7 +320,7 @@ class UpgradeController extends AbstractBase
     protected function fixSearchChecksumsInDatabase()
     {
         $manager = $this->serviceLocator
-            ->get(\VuFind\Search\Results\PluginManager::class);
+            ->get(PluginManager::class);
         $search = $this->getTable('search');
         $searchWhere = ['checksum' => null, 'saved' => 1];
         $searchRows = $search->select($searchWhere);
@@ -326,7 +344,7 @@ class UpgradeController extends AbstractBase
      * not logging SQL) or a Zend Framework object representing forward/redirect
      * (if we need to obtain user input).
      *
-     * @param \Zend\Db\Adapter\Adapter $adapter Database adapter
+     * @param Adapter $adapter Database adapter
      *
      * @return mixed
      */
@@ -492,6 +510,10 @@ class UpgradeController extends AbstractBase
      */
     public function fixdatabaseAction()
     {
+        // fix shortlinks
+        $this->fixshortlinks();
+        die();
+
         try {
             // If we haven't already tried it, attempt a structure update:
             if (!isset($this->session->sql)) {
@@ -499,7 +521,7 @@ class UpgradeController extends AbstractBase
                 // if VuFind is using a different database, we have to prompt the
                 // user to check the migrations directory and upgrade manually.
                 $adapter = $this->serviceLocator
-                    ->get(\Zend\Db\Adapter\Adapter::class);
+                    ->get(Adapter::class);
                 $platform = $adapter->getDriver()->getDatabasePlatformName();
                 if (strtolower($platform) == 'mysql') {
                     $upgradeResult = $this->upgradeMySQL($adapter);
@@ -532,11 +554,14 @@ class UpgradeController extends AbstractBase
                 return $this->redirect()->toRoute('upgrade-fixduplicatetags');
             }
 
+
+
             // Clean up the "VuFind" source, if necessary.
             $this->fixVuFindSourceInDatabase();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->flashMessenger()->addMessage(
-                'Database upgrade failed: ' . $e->getMessage(), 'error'
+                'Database upgrade failed: ' . $e->getMessage(),
+                'error'
             );
             return $this->forwardTo('Upgrade', 'Error');
         }
@@ -545,7 +570,7 @@ class UpgradeController extends AbstractBase
         // column checksum does not exist yet because of sqllog).
         try {
             $this->fixSearchChecksumsInDatabase();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->session->warnings->append(
                 'Could not fix checksums in table search - maybe column ' .
                 'checksum is missing? Exception thrown with ' .
@@ -598,15 +623,16 @@ class UpgradeController extends AbstractBase
                 try {
                     // Query a table known to exist
                     $factory = $this->serviceLocator
-                        ->get(\VuFind\Db\AdapterFactory::class);
+                        ->get(AdapterFactory::class);
                     $db = $factory->getAdapter($dbrootuser, $pass);
                     $db->query("SELECT * FROM user;");
                     $this->session->dbRootUser = $dbrootuser;
                     $this->session->dbRootPass = $pass;
                     return $this->forwardTo('Upgrade', 'FixDatabase');
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->flashMessenger()->addMessage(
-                        'Could not connect; please try again.', 'error'
+                        'Could not connect; please try again.',
+                        'error'
                     );
                 }
             }
@@ -726,7 +752,7 @@ class UpgradeController extends AbstractBase
 
         // Process submit button:
         if ($this->formWasSubmitted('submit')) {
-            $converter = $this->serviceLocator->get(\VuFind\Date\Converter::class);
+            $converter = $this->serviceLocator->get(Converter::class);
             foreach ($problems as $problem) {
                 try {
                     $driver = $this->getRecordLoader()
@@ -797,7 +823,7 @@ class UpgradeController extends AbstractBase
         // Process form submission:
         $version = $this->params()->fromPost('sourceversion');
         if (!empty($version)) {
-            $this->cookie->newVersion = \VuFind\Config\Version::getBuildVersion();
+            $this->cookie->newVersion = Version::getBuildVersion();
             if (floor($version) < 2) {
                 $this->flashMessenger()
                     ->addMessage('Illegal version number.', 'error');
@@ -829,7 +855,7 @@ class UpgradeController extends AbstractBase
     {
         // If the cache is messed up, nothing is going to work right -- check that
         // first:
-        $cache = $this->serviceLocator->get(\VuFind\Cache\Manager::class);
+        $cache = $this->serviceLocator->get(Manager::class);
         if ($cache->hasDirectoryCreationError()) {
             return $this->redirect()->toRoute('install-fixcache');
         }
@@ -900,5 +926,26 @@ class UpgradeController extends AbstractBase
         $storage[$this->session->getName()]
             = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
         return $this->forwardTo('Upgrade', 'Home');
+    }
+
+    protected function fixshortlinks()
+    {
+        $shortlinksTable = $this->getTable('shortlinks');
+        $base62 = new Base62();
+
+        $results = $shortlinksTable->select(['hash' => '']);
+
+        foreach ($results as $result) {
+            $id = $result['id'];
+            $base62->encode($id);
+            $shortlinksTable->update(
+                ['hash' => $base62->encode($id)],
+                ['id' => $id]
+            );
+        }
+
+
+
+        //$shortlinksTable->update(['hash' => $base62->encode()])
     }
 }
