@@ -27,6 +27,9 @@
  */
 namespace VuFind\View\Helper\Root;
 
+use Exception;
+use VuFind\RecordDriver;
+use VuFind\Resolver\Connection;
 use VuFind\Resolver\Driver\PluginManager;
 
 /**
@@ -71,7 +74,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
     /**
      * Current RecordDriver
      *
-     * @var \VuFind\RecordDriver
+     * @var RecordDriver
      */
     protected $recordDriver;
 
@@ -90,8 +93,11 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
      * @param PluginManager       $pluginManager Resolver plugin manager
      * @param \Zend\Config\Config $config        VuFind OpenURL config
      */
-    public function __construct(Context $context, $openUrlRules,
-        PluginManager $pluginManager, $config = null
+    public function __construct(
+        Context $context,
+        $openUrlRules,
+        PluginManager $pluginManager,
+        $config = null
     ) {
         $this->context = $context;
         $this->openUrlRules = $openUrlRules;
@@ -102,7 +108,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
     /**
      * Set up context for helper
      *
-     * @param \VuFind\RecordDriver $driver The current record driver
+     * @param RecordDriver $driver The current record driver
      * @param string               $area   OpenURL context ('results', 'record'
      *  or 'holdings'
      *
@@ -137,7 +143,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
             if (!isset($this->config->dynamic_graphic)) {
                 // if imagebased linking is forced by the template, but it is not
                 // configured properly, throw an exception
-                throw new \Exception(
+                throw new Exception(
                     'Template tries to display OpenURL as image based link, but
                      Image based linking is not configured! Please set parameter
                      dynamic_graphic in config file.'
@@ -208,7 +214,7 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
             ? $this->config->resolver : 'other';
         $openurl = $this->recordDriver->getOpenUrl();
         if ($this->resolverPluginManager->has($resolver)) {
-            $resolverObj = new \VuFind\Resolver\Connection(
+            $resolverObj = new Connection(
                 $this->resolverPluginManager->get($resolver)
             );
             $resolverUrl = $resolverObj->getResolverUrl($openurl);
@@ -236,7 +242,8 @@ class OpenUrl extends \Zend\View\Helper\AbstractHelper
 
         // Render the subtemplate:
         return $this->context->__invoke($this->getView())->renderInContext(
-            'Helpers/openurl.phtml', $params
+            'Helpers/openurl.phtml',
+            $params
         );
     }
 
