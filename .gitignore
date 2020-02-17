@@ -22,7 +22,4 @@ data/
 /env.bat
 /config
 /local
-/nbproject
-
 /.idea/
-/public/php---info.php
