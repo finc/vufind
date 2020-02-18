@@ -34,6 +34,7 @@ use Exception;
 use Tuupola\Base62;
 use VuFind\Cache\Manager;
 use VuFind\Config\Locator as ConfigLocator;
+use VuFind\Config\Upgrade;
 use VuFind\Config\Version;
 use VuFind\Config\Writer;
 use VuFind\Cookie\Container as CookieContainer;
@@ -220,7 +221,7 @@ class UpgradeController extends AbstractBase
         $confDir = $this->cookie->oldVersion < 2
             ? $this->cookie->sourceDir . '/web/conf'
             : $localConfig;
-        $upgrader = new \VuFind\Config\Upgrade(
+        $upgrader = new Upgrade(
             $this->cookie->oldVersion,
             $this->cookie->newVersion,
             $confDir,
@@ -510,10 +511,6 @@ class UpgradeController extends AbstractBase
      */
     public function fixdatabaseAction()
     {
-        // fix shortlinks
-        $this->fixshortlinks();
-        die();
-
         try {
             // If we haven't already tried it, attempt a structure update:
             if (!isset($this->session->sql)) {
@@ -554,7 +551,8 @@ class UpgradeController extends AbstractBase
                 return $this->redirect()->toRoute('upgrade-fixduplicatetags');
             }
 
-
+            // fix shortlinks
+            $this->fixshortlinks();
 
             // Clean up the "VuFind" source, if necessary.
             $this->fixVuFindSourceInDatabase();
@@ -928,16 +926,18 @@ class UpgradeController extends AbstractBase
         return $this->forwardTo('Upgrade', 'Home');
     }
 
+    /**
+     * @throws Exception
+     */
     protected function fixshortlinks()
     {
         $shortlinksTable = $this->getTable('shortlinks');
-        $base62 = new Base62();
+        $base62 = new \VuFind\Crypt\Base62();
 
         $results = $shortlinksTable->select(['hash' => '']);
 
         foreach ($results as $result) {
             $id = $result['id'];
-            $base62->encode($id);
             $shortlinksTable->update(
                 ['hash' => $base62->encode($id)],
                 ['id' => $id]
