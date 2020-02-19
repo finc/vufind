@@ -301,12 +301,12 @@ function datepicker() {
  *
  */
 function typeaheadLibraries() {
-    
+
     if ($.fn.typeahead) {
-        
+
         var baseurl = VuFind.path + '/AJAX/JSON?method=';
         // Workaround for a bug in typeahead.js
-        setTimeout($('.typeahead').focus(), 100);
+        setTimeout(function () {$('.typeahead').focus();}, 100);
 
         $('.typeahead').typeahead({
             items: 'all',
@@ -338,28 +338,28 @@ function typeaheadLibraries() {
             $('.typeahead').focus();
         });
     }
-    
+
 
 }
 
 /**
  * Switches between texts on collapse control buttons
  * Alternative text should be in the data-alttext attribute
- * 
+ *
  */
 function textToggle() {
-    $(document).on('click', '.text-toggle', function(e) {    
+    $(document).on('click', '.text-toggle', function(e) {
         var oldtext = $(this).text();
         var newtext = $(this).attr('data-alttext');
         $(this).text(newtext);
-        $(this).attr('data-alttext', oldtext);      
+        $(this).attr('data-alttext', oldtext);
     });
 }
 
 /**
- * Opens links in a popup window. Name and width/height can be set via data 
+ * Opens links in a popup window. Name and width/height can be set via data
  * attributes
- * 
+ *
  */
 
 function openInPopup() {
@@ -375,7 +375,7 @@ function openInPopup() {
 
         var height = $(this).attr('data-height');
         height = height == 'undefined' ? height : '580';
-        
+
         var options = [
             'width='+width,
             'height='+height,
@@ -395,15 +395,15 @@ function openInPopup() {
         ];
 
         window.open(href, name, options.join(',')).focus();
-        
+
     });
 }
 
-function tableSorter() {    
+function tableSorter() {
     if ($.fn.tablesorter) {
         $('.tablesorter').tablesorter({
              sortList : [[1,1]]
-        }); 
+        });
     }
 }
 
@@ -434,7 +434,7 @@ $(document).ready(function() {
     bootstrapTooltip();
     modalPopup();
     typeaheadLibraries();
-    tableSorter();        
+    tableSorter();
     keyboardShortcuts();
     remoteModal();
     duplicates();
