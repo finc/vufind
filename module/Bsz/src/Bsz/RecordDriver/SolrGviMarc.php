@@ -361,7 +361,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getPhysicalDescriptions()
     {
-        return $this->getFieldArray('300', ['a', 'b', 'c', 'e', 'f', 'g'], true);
+        return $this->getFieldArray('300', ['a', 'b', 'c', 'e', 'f', 'g'], false);
     }
 
     /**
