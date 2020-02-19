@@ -175,7 +175,7 @@ class Logic
     {
         $this->status[] = !$this->isHebis8();
         $this->status[] = !$this->isFree();
-        $this->status[] = !$this->isSerialOrCollection();
+        $this->status[] = !$this->isSerialAndCollection();
         $this->status[] = !$this->isAtCurrentLibrary();
         $this->status[] = $this->checkFormat();
         $this->status[] = $this->checkIndicator();
@@ -223,9 +223,9 @@ class Logic
      * @return boolean
      */
 
-    protected function isSerialOrCollection()
+    protected function isSerialAndCollection()
     {
-        if ($this->driver->isSerial() || $this->driver->isCollection()) {
+        if ($this->driver->isSerial() && $this->driver->isCollection()) {
             $this->messages[] = 'ILL::cond_serial_collection';
             return true;
         }
@@ -396,7 +396,7 @@ class Logic
             $this->messages[] = 'ILL::cond_format_network';
             return false;
         } elseif (!$section->get('enabled')) {
-            $this->messages[] = 'ILL::cond_format';
+            $this->messages[] = 'ILL::cond_format_'.$this->format;
             return false;
         }
         return true;
