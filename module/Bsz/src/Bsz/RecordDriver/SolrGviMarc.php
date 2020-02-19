@@ -19,6 +19,7 @@
 namespace Bsz\RecordDriver;
 
 use Bsz\Exception;
+use File_MARC_Exception;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
 
@@ -35,6 +36,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     use HelperTrait;
     use ContainerTrait;
     use MarcAuthorTrait;
+    use OriginalLanguageTrait;
 
     /**
      * Get subject headings associated with this record.  Each heading is
@@ -292,6 +294,39 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
+     * Get an array of notes "Enthaltene Werke" for the Notes-Tab.
+     *
+     * @return array
+     */
+    public function getNotes()
+    {
+        $notesCodes = ['501', '505'];
+        $notes = [];
+        foreach ($notesCodes as $nc) {
+            $tmp = $this->getFieldArray($nc, ['a', 't', 'r'], true, ', ');
+            $notes = array_merge($notes, $tmp);
+        }
+        return $notes;
+    }
+
+
+    /**
+     * Get an array of notes "Enthaltene Werke" for the Notes-Tab.
+     *
+     * @return array
+     */
+    public function getMusicalCast()
+    {
+        $castCodes = ['937'];
+        $cast = [];
+        foreach ($castCodes as $cc) {
+            $tmp = $this->getFieldArray($cc, ['d', 'e', 'f'], true, ' / ');
+            $cast = array_merge($cast, $tmp);
+        }
+        return $cast;
+    }
+
+    /**
      * Get an array of newer titles for the record.
      *
      * @return array
@@ -426,7 +461,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getSummary()
     {
-        $summaryCodes = ['501', '502', '505', '515', '520'];
+        $summaryCodes = ['502', '505', '515', '520'];
         $summary = [];
         foreach ($summaryCodes as $sc) {
             $tmp = $this->getFieldArray($sc, ['a', 'b', 'c', 'd'], true, ', ');
@@ -451,7 +486,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $arr = array();
         $arrSizes = array('small', 'medium', 'large');
         $isbn = $this->getCleanISBN();
-        $ean = $this->getEAN();
+        $ean = $this->getGTIN();
         if (in_array($size, $arrSizes)) {
             $arr['author'] = $this->getPrimaryAuthor();
         }
@@ -572,13 +607,12 @@ class SolrGviMarc extends SolrMarc implements Definition
             }
             $urls[] = $url;
         }
-        return $urls;
+        return array_unique($urls, SORT_REGULAR);
     }
 
+
     /**
-     * Returns consortium
-     * @return array
-     * @throws Exception
+     * @return string
      */
     public function getConsortium()
     {
@@ -945,32 +979,13 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
-     * return EAN Code
+     * return GTIN Code
      * @return string
      */
-    public function getEAN()
+    public function getGTIN()
     {
-        $ean = $this->getFieldArray("024", ['a']);
-        return array_shift($ean);
-    }
-
-    /**
-     * Returns unique publication details
-     * @return array
-     */
-    public function getPublicationDetails()
-    {
-        $details = parent::getPublicationDetails();
-        return $details;
-    }
-
-   /**
-     * Is this a DLR-Koha record
-     * @return boolean
-     */
-    public function isDlrKoha()
-    {
-        return false;
+        $gtin = $this->getFieldArray("024", ['a']);
+        return array_shift($gtin);
     }
 
     /**
@@ -1054,6 +1069,24 @@ class SolrGviMarc extends SolrMarc implements Definition
 
         return $holdings;
     }
+
+
+    /**
+     * Get an array of remarks for the Details-Tab.
+     *
+     * @return array
+     */
+    public function getRemarks()
+    {
+        $remarkCodes = ['511'];
+        $remarks = [];
+        foreach ($remarkCodes as $rc) {
+            $tmp = $this->getFieldArray($rc, ['a'], true, ', ');
+            $remarks = array_merge($remarks, $tmp);
+        }
+        return $remarks;
+    }
+
 
     /**
      *  Scale of a map
@@ -1225,5 +1258,26 @@ class SolrGviMarc extends SolrMarc implements Definition
             }
         }
         return $array_clean;
-    }     
+    }
+
+    /**
+     * This method is basically a duplicate of getAllRecordLinks but
+     * much easier designer and works well with German library links
+     *
+     * @return array
+     * @throws File_MARC_Exception
+     */
+    public function getParallelEditions()
+    {
+        $retval = [];
+        foreach ($this->getMarcRecord()->getfields(776) as $field) {
+
+            $tmp['ppn']     = $field->getSubfield('w') ? $field->getSubfield('w')->getData() : null;
+            $tmp['label']   = $field->getSubfield('n') ? $field->getSubfield('n')->getData() : null;
+            if (isset($tmp['ppn']) && isset($tmp['label'])) {
+                $retval[] = $tmp;
+            }
+        }
+        return array_filter($retval);
+    }
 }

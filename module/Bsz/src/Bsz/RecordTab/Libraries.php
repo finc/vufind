@@ -27,6 +27,7 @@
 namespace Bsz\RecordTab;
 
 use Bsz\Config\Libraries as LibConf;
+use VuFind\RecordTab\AbstractBase;
 
 
 /**
@@ -34,20 +35,32 @@ use Bsz\Config\Libraries as LibConf;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Libraries extends \VuFind\RecordTab\AbstractBase
+class Libraries extends AbstractBase
 {
     /**
      *
      * @var Bsz\Config\Libraries
      */
     protected $libraries;
+    /**
+     * @var array
+     */
     protected $f924;
+    /**
+     * @var bool
+     */
     protected $visible;
+    /**
+     * @var bool
+     */
+    protected $swbonly;
     
-    public function __construct(LibConf $libraries, $visible = true) 
-    {       
-        $this->libraries = $libraries;    
+    public function __construct(LibConf $libraries, $visible = true, $swbonly = false)
+    {
+        $this->accessPermission = 'access.LibrariesViewTab';
+        $this->libraries = $libraries;
         $this->visible = (bool)$visible;
+        $this->swbonly = $swbonly;
     }
     
     public function getDescription()
@@ -61,8 +74,18 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
      */
     public function isActive()
     {
-        $this->f924 = $this->driver->tryMethod('getField924');
-        if ($this->f924) {
+        $parent = parent::isActive();
+        if (is_null($this->f924)) {
+            $this->f924 = $this->driver->tryMethod('getField924');
+        }
+        if ($this->swbonly) {
+            foreach ($this->f924 as $k => $field) {
+                if (isset($field['c']) && strtoupper($field['c']) !== 'BSZ' ) {
+                    unset($this->f924[$k]);
+                }
+            }
+        }
+                if ($parent && $this->f924) {
             return true;                
         }            
         return false;        
@@ -70,13 +93,18 @@ class Libraries extends \VuFind\RecordTab\AbstractBase
     
     public function getContent()
     {
-        $libraries = $this->libraries->getByIsils(array_keys($this->f924));
-        foreach ($libraries as $library) {
-            $this->f924[$library->getIsil()]['name'] = $library->getName();
-            $this->f924[$library->getIsil()]['homepage'] = $library->getHomepage();            
-            $this->f924[$library->getIsil()]['adisurl'] = $library->getaDISURl();            
+        if (is_null($this->f924)) {
+            $this->f924 = $this->driver->tryMethod('getField924');
         }
-        return $this->f924;        
+        if (is_array($this->f924)) {
+            $libraries = $this->libraries->getByIsils(array_keys($this->f924));
+            foreach ($libraries as $library) {
+                $this->f924[$library->getIsil()]['name'] = $library->getName();
+                $this->f924[$library->getIsil()]['homepage'] = $library->getHomepage();
+                $this->f924[$library->getIsil()]['adisurl'] = $library->getaDISURl();
+            }
+        }
+        return $this->f924;
     }
     
     public function isVisible()

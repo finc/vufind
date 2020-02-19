@@ -42,7 +42,7 @@
   if(!empty($notations)): ?>
   <? $contentDisplayed = true; ?>
   <tr>
-      <th><span class="text-nowrap">RVK-<?=$this->transEsc('Notation')?>:</span></th>
+      <th><span class="text-nowrap"><?=$this->abbrev('RVK')?>-<?=$this->transEsc('Notation')?>:</span></th>
       <? if(is_array($notations)): ?>
       <td>
           <? foreach ($notations as $shortcut => $description): ?>

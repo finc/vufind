@@ -1,8 +1,12 @@
 <?php // This is a text-only email template; do not include HTML! ?>
-<?=$this->translate('This email was sent from')?>: <?=$this->from?>
 
+<?=$this->client()->get('Site')->get('title')?>
 ------------------------------------------------------------
   <?=$this->driver->getBreadcrumb()?>
+
+  <?=$this->driver->getPrimaryAuthor()?>
+
+  <?=$this->driver->getCleanISBN() ?? $this->driver->getCleanISSN() ?>
 
   <?=$this->translate('email_link')?>: <?=$this->serverUrl($this->recordLink()->getUrl($this->driver))?>
 
@@ -10,3 +14,4 @@
 <?php if (!empty($this->message)): ?><?=$this->translate("Message From Sender")?>:
 <?=$this->message?>
 <?php endif; ?>
+
