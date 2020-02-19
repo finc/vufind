@@ -1268,18 +1268,22 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         $retval = [];
         foreach ($this->getMarcRecord()->getfields(776) as $field) {
-            $tmp['ppn']     = $field->getSubfield('w') ? $field->getSubfield('w')->getData() : null;
 
-            if ($field->getSubfield('i')) {
-                $tmp['prefix'] = $field->getSubfield('i')->getData();
+            $tmp = [];
+            if ($field->getIndicator(1) == 0) {
+                $tmp['ppn']     = $field->getSubfield('w') ? $field->getSubfield('w')->getData() : null;
+
+                if ($field->getSubfield('i')) {
+                    $tmp['prefix'] = $field->getSubfield('i')->getData();
+                }
+                if ($field->getSubfield('t')) {
+                    $tmp['label'] = $field->getSubfield('t')->getData();
+                }
+                if ($field->getSubfield('n')) {
+                    $tmp['postfix'] .= $field->getSubfield('n')->getData();
+                }
             }
-            if ($field->getSubfield('t')) {
-                $tmp['label'] = $field->getSubfield('t')->getData();
-            }
-            if ($field->getSubfield('n')) {
-                $tmp['postfix'] .= $field->getSubfield('n')->getData();
-            }
-            if (isset($tmp['ppn']) && isset($tmp['label'])) {
+            if (isset($tmp['ppn'], $tmp['label'])) {
                 $retval[] = $tmp;
             }
         }

@@ -228,7 +228,6 @@
             <? $physical = $this->driver->getPhysicalDescriptions();
             $physicalol = $this->driver->tryMethod('getPhysicalDescriptionsOl');
             if (!empty($physical)): ?>
-            <? $contentDisplayed = true; ?>
             <tr>
                 <th><?=$this->transEsc('Physical Description')?>: </th>
                 <td><? foreach ($physical as $field): ?>
