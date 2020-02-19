@@ -96,7 +96,7 @@ class FormatMapper {
             elseif(in_array('pdf', $formats)) {$return = 'article';}
             elseif(in_array('platter', $formats)) {$return = 'platter';}
             elseif(in_array('proceedings', $formats)) {$return = 'article';}
-            elseif(in_array('serial', $formats)) {$return = 'collection';}
+            elseif(in_array('serial', $formats)) {$return = 'serial';}
             elseif(in_array('serialcomponentpart', $formats)) {$return = 'article';}
             elseif(in_array('sheet', $formats)) {$return = 'partitur';}
             elseif(in_array('soundrecording', $formats)) {$return = 'sound';}
