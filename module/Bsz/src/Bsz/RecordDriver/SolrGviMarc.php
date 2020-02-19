@@ -1271,12 +1271,14 @@ class SolrGviMarc extends SolrMarc implements Definition
             $tmp['ppn']     = $field->getSubfield('w') ? $field->getSubfield('w')->getData() : null;
 
             if ($field->getSubfield('i')) {
-                $tmp['label'] = $field->getSubfield('i')->getData();
+                $tmp['prefix'] = $field->getSubfield('i')->getData();
+            }
+            if ($field->getSubfield('t')) {
+                $tmp['label'] = $field->getSubfield('t')->getData();
             }
             if ($field->getSubfield('n')) {
-                $tmp['label'] .= $field->getSubfield('n')->getData();
+                $tmp['postfix'] .= $field->getSubfield('n')->getData();
             }
-
             if (isset($tmp['ppn']) && isset($tmp['label'])) {
                 $retval[] = $tmp;
             }
