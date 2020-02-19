@@ -35,13 +35,13 @@ class Volumes extends AbstractBase {
      * @var SearchRunner
      */
     protected $runner;
-    
+
     /**
      *
      * @var array
      */
     protected $content;
-    
+
     /**
      * @var string
      */
@@ -51,7 +51,7 @@ class Volumes extends AbstractBase {
      * @var array
      */
     protected $isils;
-    
+
     /**
      * Constructor
      * @param SearchRunner $runner
@@ -70,28 +70,28 @@ class Volumes extends AbstractBase {
     {
         return 'Volumes';
     }
-    
+
     /**
-     * 
+     *
      * @return array|null
      */
     public function getContent()
     {
         if($this->content === null) {
-            $relId = $this->driver->tryMethod('getIdsRelated');   
-            // add the ID of the current hit, thats usefull if its a 
+            $relId = $this->driver->tryMethod('getIdsRelated');
+            // add the ID of the current hit, thats usefull if its a
             // Gesamtaufnahme
-            $this->content = []; 
+            $this->content = [];
             if (is_array($relId)) {
                 array_push($relId, $this->driver->getUniqueID());
                 if (is_array($relId) && count($relId) > 0) {
                     foreach($relId as $k => $id) {
-//                      $relId[$k] = 'id_related_host_item:"'.$id.'"';            
-                        $relId[$k] = 'id_related:"'.$id.'"';                    
+//                      $relId[$k] = 'id_related_host_item:"'.$id.'"';
+                        $relId[$k] = 'id_related:"'.$id.'"';
                     }
                     $params = [
                         'sort' => 'publish_date_sort desc, id desc',
-                     'lookfor' => implode(' OR ', $relId),              
+                     'lookfor' => implode(' OR ', $relId),
                      'limit'   => 500,
                     ];
 
@@ -99,14 +99,15 @@ class Volumes extends AbstractBase {
                     if ($this->isFL() === FALSE) {
                         foreach($this->isils as $isil) {
                          $filter[] = '~institution_id:'.$isil;
-                        }   
+                        }
                     }
                     $filter[] = '~material_content_type:Book';
                     $filter[] = '~material_content_type:"Musical Score"';
+                    $filter[] = '~material_content_type:"Sound Recording"';
                     $params['filter'] = $filter;
-                              
-                    $results = $this->runner->run($params); 
-                
+
+                    $results = $this->runner->run($params);
+
                     $results instanceof Results;
                     $this->content = $results->getResults();
                 }
@@ -114,19 +115,19 @@ class Volumes extends AbstractBase {
         }
         return $this->content;
     }
-    
+
     /**
-     * Check if we are in an interlending or ZDB-TAB 
+     * Check if we are in an interlending or ZDB-TAB
      **/
     public function isFL()
     {
         $last = '';
         if (isset($_SESSION['Search']['last']) ){
             $last = urldecode($_SESSION['Search']['last']);
-        }   
-        if (strpos($last, 'consortium:FL') !== FALSE 
+        }
+        if (strpos($last, 'consortium:FL') !== FALSE
             || strpos($last, 'consortium:"FL"') !== FALSE
-            || strpos($last, 'consortium:ZDB') !== FALSE                
+            || strpos($last, 'consortium:ZDB') !== FALSE
             || strpos($last, 'consortium:"ZDB"') !== FALSE
         ) {
             return TRUE;
@@ -134,10 +135,10 @@ class Volumes extends AbstractBase {
             return FALSE;
         }
     }
-    
-    
+
+
     /**
-     * This Tab is Active for collections or parts of collections only. 
+     * This Tab is Active for collections or parts of collections only.
      * @return boolean
      */
     public function isActive()
@@ -147,12 +148,12 @@ class Volumes extends AbstractBase {
         $parent = parent::isActive();
         if ($parent && $this->getContent() !== []) {
             if(($this->driver->isCollection() || $this->driver->isPart()
-                || $this->driver->isMonographicSerial() 
+                || $this->driver->isMonographicSerial()
                 || $this->driver->isJournal()) && !empty($this->content)) {
                 return true;
             }
         }
         return false;
     }
-    
+
 }
