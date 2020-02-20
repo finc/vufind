@@ -56,7 +56,8 @@ class Logic
      * @var array
      */
     protected $localIsils;
-    protected $ppns = [];
+    protected $swbppns = [];
+    protected $parallelppns = [];
     protected $messages = [];
     protected $libraries = [];
     /**
@@ -88,7 +89,8 @@ class Logic
         $this->driver = $driver;
         $this->format = $this->getFormat();
         $this->status = [];
-        $this->ppns = [];
+        $this->swbppns = [];
+        $this->parallelppns = [];
     }
 
     /**
@@ -246,21 +248,20 @@ class Logic
         $status = false;
         $network = $this->driver->getNetwork();
 
-        if (count($this->ppns) == 0) {
-            // if we have local holdings, item can't be ordered - except Journals
-            if ($this->driver->hasLocalHoldings() && !$this->getFormat() === static::FORMAT_JOURNAL) {
-                $this->messages[] = 'ILL::available_at_current_library';
-                $status = true;
-            } elseif ($this->driver->hasLocalHoldings() && $this->getFormat() === static::FORMAT_JOURNAL) {
-                $this->messages[] = 'ILL::available_at_current_library_journal';
-                $status = true;
-            } elseif ($network == 'SWB' && $this->hasParallelEditions()) {
-                $status = true;
-            } elseif ($network !== 'SWB' && $this->queryWebservice()
-            ) {
-                $status = true;
-            }
+        // if we have local holdings, item can't be ordered - except Journals
+        if ($this->driver->hasLocalHoldings() && !$this->getFormat() === static::FORMAT_JOURNAL) {
+            $this->messages[] = 'ILL::available_at_current_library';
+            $status = true;
+        } elseif ($this->driver->hasLocalHoldings() && $this->getFormat() === static::FORMAT_JOURNAL) {
+            $this->messages[] = 'ILL::available_at_current_library_journal';
+            $status = true;
+        } elseif ($network == 'SWB' && $this->hasParallelEditions()) {
+            $status = true;
+        } elseif ($network !== 'SWB' && $this->queryWebservice()
+        ) {
+            $status = true;
         }
+
         if ($this->driver->hasLocalHoldings() && $network == 'ZDB') {
             $this->queryWebservice();
         }
@@ -274,10 +275,14 @@ class Logic
      *
      * @return boolean
      */
-    protected function hasParallelEditions()
+    public function hasParallelEditions()
     {
         if (!$this->holding instanceof Holding) {
             return false;
+        }
+        // avoid running the web service twice
+        if (count($this->parallelppns) > 0) {
+            return true;
         }
         $ppns = [];
         $related = $this->driver->tryMethod('getRelatedEditions');
@@ -299,9 +304,12 @@ class Logic
             foreach ($isils as $isil) {
                 if (in_array($isil, $this->localIsils)) {
                     $hasParallel = true;
-                    $this->ppns[] = $record->getUniqueId();
+                    $this->parallelppns[] = $record->getUniqueId();
                 }
             }
+        }
+        if ($hasParallel) {
+            $this->messages[] = 'ILL::parallel_editions_available';
         }
         return $hasParallel;
     }
@@ -318,6 +326,11 @@ class Logic
     {
         if (!$this->holding instanceof Holding) {
             return false;
+        }
+
+        // avoid running the webservice twice
+        if (count($this->swbppns) > 0) {
+            return true;
         }
 
         // set up query params
@@ -357,7 +370,7 @@ class Logic
                     foreach ($holding as $entry) {
                         if (isset($entry['isil']) && in_array($entry['isil'], $this->localIsils)) {
                             // save PPN
-                            $this->ppns[] = '(DE-627)' . $ppn;
+                            $this->swbppns[] = '(DE-627)' . $ppn;
                             $this->libraries[] = $entry['isil'];
                         }
 
@@ -365,9 +378,11 @@ class Logic
                 }
             }
             // if no locally available ppn found, just take the first one
-            if (count($this->ppns) < 1 && isset($result['holdings'])) {
+            if (count($this->swbppns) < 1 && isset($result['holdings'])) {
                 reset($result['holdings']);
-                $this->ppns[] = '(DE-627)' . key($result['holdings']);
+                $this->swbppns[] = '(DE-627)' . key($result['holdings']);
+                $this->messages[] = 'ILL::no_lokal_hit_go_to_swb';
+
             }
 
         }
@@ -447,7 +462,8 @@ class Logic
      */
     public function getPPNs()
     {
-        return array_unique($this->ppns);
+        $ppns = array_merge($this->parallelppns, $this->swbppns);
+        return array_unique($ppns);
     }
 
     public function getLocalIsils()
