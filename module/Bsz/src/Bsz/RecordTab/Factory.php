@@ -27,7 +27,6 @@ use Zend\Http\PhpEnvironment\Request;
 use Zend\Session\Container as SessionContainer;
 use Zend\Session\SessionManager as SessionManager;
 
-
 /**
  * Description of Factory
  *
@@ -50,8 +49,8 @@ class Factory
             $last = urldecode($_SESSION['Search']['last']);
         }
         $isils = [];
-        if (strpos($last, 'consortium=FL') === FALSE
-            && strpos($last, 'consortium=ZDB') === FALSE
+        if (strpos($last, 'consortium=FL') === false
+            && strpos($last, 'consortium=ZDB') === false
         ) {
             $client = $container->get('Bsz\Config\Client');
             $isils = $client->getIsils();
@@ -78,8 +77,8 @@ class Factory
             $last = urldecode($_SESSION['Search']['last']);
         }
         $isils = [];
-        if (strpos($last, 'consortium=FL') === FALSE
-            && strpos($last, 'consortium=ZDB') === FALSE
+        if (strpos($last, 'consortium=FL') === false
+            && strpos($last, 'consortium=ZDB') === false
         ) {
             $client = $container->get('Bsz\Config\Client');
             $isils = $client->getIsils();
@@ -145,7 +144,8 @@ class Factory
     public static function getInterlibraryLoan(ContainerInterface $container)
     {
         $sm = $container->get(SessionManager::class);
-        $lastsearch = $sm->getStorage()->offsetGet('Search')->offsetGet('last');
+        $search = $sm->getStorage()->offsetGet('Search');
+        $lastsearch = $search ? $search->offsetGet('last') : '';
         $lastsearch = urldecode($lastsearch);
         $illmode = false;
 
