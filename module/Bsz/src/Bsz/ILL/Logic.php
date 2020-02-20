@@ -430,8 +430,13 @@ class Logic
 
         $f924 = $this->driver->tryMethod('getField924');
         $section = $this->config->get($this->format);
-        $tmp = $section->get('indicator', ['a', 'b', 'c', 'e']);
+        $tmp = $section->get('indicator', []);
         $allowedCodes = is_object($tmp) ? $tmp->toArray() : $tmp;
+
+        // for this format not indicator check applicable
+        if (count($allowedCodes) == 0) {
+            return true;
+        }
 
         foreach ($f924 as $field) {
             $code = isset($field['d']) ? $field['d'] : null;
@@ -439,6 +444,7 @@ class Logic
                 return true;
             }
         }
+
         $this->messages[] = 'ILL::cond_indicator';
         return false;
     }
