@@ -25,7 +25,6 @@ use Exception;
 use VuFind\RecordTab\AbstractBase;
 use Bsz\ILL\Logic;
 
-
 class InterlibraryLoan extends AbstractBase
 {
     /**
@@ -87,7 +86,7 @@ class InterlibraryLoan extends AbstractBase
             'status' => $status,
             'messages' => $messages,
             'ppns' => $ppns,
-            'library' => $this->library
+            'library' => $this->library,
         ];
     }
 }

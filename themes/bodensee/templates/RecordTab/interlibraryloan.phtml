@@ -20,7 +20,6 @@ if ($this->customUrl) {
 <?
     $authMethod = $library ? $library->getAuth() : '';
     $account = $this->auth()->getManager();
-
 ?>
 
 <strong><?= $this->transEsc('ILL::cond_heading') ?></strong>
@@ -31,20 +30,17 @@ if ($this->customUrl) {
         <?php endforeach; ?>
     <?php endif; ?>
     <?php if (count($ppns) > 0): ?>
-        <li><?= $this->transEsc('parallel_editions_available') ?>
-            <ul>
-                <? foreach ($ppns as $id): ?>
-                    <li><a class="" href="<?= '/Record/' . $id ?>"><?= $this->transEsc('to_parallel_edition') ?></a>
-                    </li>
-                <? endforeach; ?>
-            </ul>
-        </li>
+            <? foreach ($ppns as $id): ?>
+                <li><a class="" href="<?= '/Record/' . $id ?>"><? if ($this->driver->getNetwork() == 'SWB'):?><?=$this->transEsc('ILL::ILL::to_local_hit') ?><?else: ?><?=$this->transEsc('ILL::to_local_hit')?><?endif ?></a>
+                </li>
+            <? endforeach; ?>
     <?php else: ?>
         <? $link = $this->recordLink()->linkPPN($this->driver) ?>
         <? if (!empty($link)): ?>
             <li><?= $link ?></li>
         <? endif; ?>
     <?php endif; ?>
+
 </ul>
 <?php if ($authMethod === 'shibboleth' && !$account->isLoggedIn()): ?>
     <div class="alert alert-danger">
