@@ -81,6 +81,6 @@ class Notes extends AbstractBase
      */
     public function getContent()
     {
-        return $this->driver->getNotes();
+        return $this->driver->tryMethod('getNotes');
     }
 }

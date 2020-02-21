@@ -101,9 +101,14 @@ class Volumes extends AbstractBase {
                          $filter[] = '~institution_id:'.$isil;
                         }
                     }
-                    $filter[] = '~material_content_type:Book';
-                    $filter[] = '~material_content_type:"Musical Score"';
-                    $filter[] = '~material_content_type:"Sound Recording"';
+
+                    // Test: all Formats but articles
+                    $filter[] = '-material_content_type:Article';
+
+//                    $filter[] = '~material_content_type:Book';
+//                    $filter[] = '~material_content_type:"Musical Score"';
+//                    $filter[] = '~material_content_type:"Sound Recording"';
+
                     $params['filter'] = $filter;
 
                     $results = $this->runner->run($params);

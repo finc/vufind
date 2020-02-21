@@ -59,7 +59,7 @@ $config = [
             'Bsz\SearchTabsHelper' => 'Bsz\Service\Factory::getSearchTabsHelper',
             'Bsz\Auth\Manager' => 'Bsz\Auth\Factory::getManager',
             'Bsz\RecordDriver\PluginManager' => 'Bsz\RecordDriver\PluginManagerFactory',
-            
+
         ],
         'invokables' => [
             'Bsz\RecordDriver\Definition' => 'Bsz\RecordDriver\Definition',
@@ -82,7 +82,7 @@ $config = [
             'auth' => [
                 'factories' => [
                    'Bsz\Auth\Shibboleth' => 'Bsz\Auth\Factory::getShibboleth'
-                ], 
+                ],
                 'aliases' => [
                     'VuFind\Auth\Shibboleth' => 'Bsz\Auth\Shibboleth'
                 ]
@@ -121,8 +121,9 @@ $config = [
                     'Bsz\RecordDriver\SolrGviMarcDE627' => 'Bsz\RecordDriver\Factory',
                     'Bsz\RecordDriver\EDS'              => 'Bsz\RecordDriver\Factory::getEDS',
                 ],
-                'aliases' => [                    
+                'aliases' => [
                     'SolrGviMarc'      =>  'Bsz\RecordDriver\SolrGviMarc',
+                    'SolrGvimarc'      =>  'Bsz\RecordDriver\SolrGviMarc',
                     'SolrFindexMarc'   =>  'Bsz\RecordDriver\SolrFindexMarc',
                     'SolrGviMarcDE101' =>  'Bsz\RecordDriver\SolrGviMarcDE101',
                     'SolrGviMarcDE576' =>  'Bsz\RecordDriver\SolrGviMarcDE576',
@@ -133,7 +134,7 @@ $config = [
                     'SolrGviMarcDE604' =>  'Bsz\RecordDriver\SolrGviMarcDE604',
                     'SolrGviMarcDE605' =>  'Bsz\RecordDriver\SolrGviMarcDE605',
                     'SolrGviMarcDE627' =>  'Bsz\RecordDriver\SolrGviMarcDE627',
-                    
+
                     'VuFind\RecordDriver\SolrMarc'  => 'Bsz\RecordDriver\SolrMarc',
                     'VuFind\RecordDriver\EDS'       => 'Bsz\RecordDriver\EDS',
                 ],
@@ -201,14 +202,14 @@ $config = [
                      'Bsz\AjaxHandler\DedupCheckbox' =>      'Bsz\AjaxHandler\Factory::getDedupCheckbox',
                      'Bsz\AjaxHandler\SaveIsil' =>           'Bsz\AjaxHandler\Factory::getSaveIsil',
                      'Bsz\AjaxHandler\LibrariesTypeahead' => 'Bsz\AjaxHandler\Factory::getLibrariesTypeahead',
-                    
+
                 ],
                 'aliases' => [
                     'dedupCheckbox' => 'Bsz\AjaxHandler\DedupCheckbox',
                     'saveIsil' => 'Bsz\AjaxHandler\SaveIsil',
                     'librariesTypeahead' => 'Bsz\AjaxHandler\LibrariesTypeahead'
                 ]
-            ],            
+            ],
             'resolver_driver' => [
                 'factories' => [
                     'Bsz\Resolver\Driver\Ezb' => 'Bsz\Resolver\Driver\Factory::getEzb',

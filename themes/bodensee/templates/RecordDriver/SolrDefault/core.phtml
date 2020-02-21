@@ -180,7 +180,7 @@
             </tr>
             <? endif;?>
 
-            <? $cast = $this->driver->getMusicalCast(); ?>
+            <? $cast = $this->driver->tryMethod('getMusicalCast'); ?>
 
             <? if (isset($cast) && !empty($cast)): ?>
                 <tr>

@@ -1289,4 +1289,9 @@ class SolrGviMarc extends SolrMarc implements Definition
         }
         return array_filter($retval);
     }
+
+    public function getNetwork() {
+        return 'NoNetwork';
+    }
+
 }
