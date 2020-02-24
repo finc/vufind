@@ -28,6 +28,7 @@
 namespace VuFind\UrlShortener;
 
 use Exception;
+use VuFind\Crypt\Base62;
 use VuFind\Db\Table\Shortlinks as ShortlinksTable;
 
 /**
@@ -105,7 +106,14 @@ class Database implements UrlShortenerInterface
     public function resolve($input)
     {
         $shorthash = substr($input, 0, 9);
-        $results = $this->table->select(['hash' => $shorthash]);
+
+        if (strlen($shorthash) < 9) {
+            $base62 = new Base62();
+            $id = $base62->decode($shorthash);
+            $results = $this->table->select(['id' => $id]);
+        } else {
+            $results = $this->table->select(['hash' => $shorthash]);
+        }
         if ($results->count() !== 1) {
             throw new Exception('Shortlink could not be resolved: ' . $shorthash);
         }
