@@ -23,3 +23,6 @@ data/
 /config
 /local
 /.idea/
+/nbproject/
+/public/php---info.php
+/local/config/vufind/

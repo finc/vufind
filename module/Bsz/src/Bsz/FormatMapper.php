@@ -34,7 +34,7 @@ class FormatMapper {
      * @return string
      */
     public function mapIcon($formats) {
-        
+
         //this function uses simplifies formats as we can only show one icon
         $formats = $this->simplify($formats);
         foreach($formats as $k => $format) {
@@ -45,12 +45,13 @@ class FormatMapper {
             // order is important: the second hit is ignored!
             // multiple formats
             if(in_array('electronicresource', $formats) && in_array('e-book',$formats)) {$return = 'ebook';}
-            elseif(in_array('videodisc', $formats) && in_array('video',$formats)) {$return = 'movie';} 
-            elseif(in_array('electronicresource', $formats) && in_array('journal',$formats)) {$return = 'ejournal';} 
-            elseif(in_array('opticaldisc', $formats) && in_array('e-book',$formats)) {$return = 'disc';} 
+            elseif(in_array('videodisc', $formats) && in_array('video',$formats)) {$return = 'movie';}
+            elseif(in_array('electronicresource', $formats) && in_array('journal',$formats)) {$return = 'ejournal';}
+            elseif(in_array('opticaldisc', $formats) && in_array('e-book',$formats)) {$return = 'disc';}
             elseif(in_array('cd', $formats) && in_array('soundrecording',$formats)) {$return = 'music-disc';}
             elseif(in_array('book', $formats) && in_array('compilation',$formats)) {$return = 'serial';}
             // single formats:
+            elseif(in_array('electronicresourceremoteaccess', $formats)) {$return = 'globe';}
             elseif(in_array('atlas', $formats)) {$return = 'map';}
             elseif(in_array('article', $formats)) {$return = 'article';}
             elseif(in_array('audiodisc', $formats)) {$return = 'music-disc';}
@@ -95,7 +96,7 @@ class FormatMapper {
             elseif(in_array('pdf', $formats)) {$return = 'article';}
             elseif(in_array('platter', $formats)) {$return = 'platter';}
             elseif(in_array('proceedings', $formats)) {$return = 'article';}
-            elseif(in_array('serial', $formats)) {$return = 'collection';}
+            elseif(in_array('serial', $formats)) {$return = 'serial';}
             elseif(in_array('serialcomponentpart', $formats)) {$return = 'article';}
             elseif(in_array('sheet', $formats)) {$return = 'partitur';}
             elseif(in_array('soundrecording', $formats)) {$return = 'sound';}
@@ -113,10 +114,10 @@ class FormatMapper {
         }
         return 'bsz bsz-'. $return;
     }
-    
+
     /**
      * Returns physical medium from Marc21 field 007 - char 0 and 1
-     * @param char $code1 char 0 
+     * @param char $code1 char 0
      * @param char $code2 char 1
      * @return string
      */
@@ -166,24 +167,24 @@ class FormatMapper {
         $mappings['s']['d'] = 'CD';
         $mappings['s']['o'] = 'SoundRecording'; // SO ist not specified
         $mappings['s']['s'] = 'SoundCassette';
-        $mappings['s']['z'] = 'Platter'; //Undefined aber sind meist Schallplatten        
+        $mappings['s']['z'] = 'Platter'; //Undefined aber sind meist Schallplatten
         $mappings['s']['default'] = 'SoundRecording'; // eigentlich unspecified
-        $mappings['t']['a'] = 'Printed'; //Text               
-        $mappings['t']['d'] = 'LooseLeaf'; //Text               
-        $mappings['t']['default'] = null; //Text               
+        $mappings['t']['a'] = 'Printed'; //Text
+        $mappings['t']['d'] = 'LooseLeaf'; //Text
+        $mappings['t']['default'] = null; //Text
         $mappings['v']['c'] = 'VideoCartridge';
         $mappings['v']['d'] = 'VideoDisc';
         $mappings['v']['f'] = 'VideoCassette';
         $mappings['v']['r'] = 'VideoReel';
-        $mappings['v']['default'] = 'Video';     
-        $mappings['z']['default'] = 'Kit';     
+        $mappings['v']['default'] = 'Video';
+        $mappings['z']['default'] = 'Kit';
 
 
         if (isset($mappings[$code1])) {
             if (!empty($mappings[$code1][$code2])) {
                 $medium = $mappings[$code1][$code2];
             } elseif(!empty($mappings[$code1]['default'])) {
-                $medium = $mappings[$code1]['default'];                        
+                $medium = $mappings[$code1]['default'];
             }
 
         }
@@ -191,7 +192,7 @@ class FormatMapper {
     }
     /**
      * Returns content/format from Marc21 field 007
-     * @param char $leader7 
+     * @param char $leader7
      * @param char $f007
      * @return string
      */
@@ -199,7 +200,7 @@ class FormatMapper {
         $format = '';
         $mappings = [];
         $mappings['a']['default'] = 'Article'; // Artikel aus Zeitschrift
-        $mappings['b']['default'] = 'Article'; 
+        $mappings['b']['default'] = 'Article';
         $mappings['m']['c'] = 'E-Book';
         $mappings['m']['v'] = 'Video';
         $mappings['m']['s'] = 'SoundRecording';
@@ -207,22 +208,22 @@ class FormatMapper {
         $mappings['s']['n'] = 'Newspaper';
         $mappings['s']['p'] = 'Journal';
         $mappings['s']['m'] = 'Serial';
-        $mappings['s']['default'] = 'Serial';       
+        $mappings['s']['default'] = 'Serial';
 
         if (isset($mappings[$leader7])) {
             if ($leader7 == 's' && isset($mappings[$leader7][$f008])) {
-                $format = $mappings[$leader7][$f008];                
+                $format = $mappings[$leader7][$f008];
             } elseif ($leader7 != 's' && isset($mappings[$leader7][$f007])) {
                 $format = $mappings[$leader7][$f007];
             } elseif(isset($mappings[$leader7]['default'])) {
-                $format = $mappings[$leader7]['default'];                        
+                $format = $mappings[$leader7]['default'];
             }
         }
         return $format;
     }
     /**
      * Return content/format from Marc21 field 006
-     * @param char $leader6 
+     * @param char $leader6
      * @param char $f007
      * @return string
      */
@@ -243,15 +244,15 @@ class FormatMapper {
         $mappings['p'] = 'Kit';
         $mappings['r'] = 'PhysicalObject';
         $mappings['t'] = 'Manuscript';
-        
-     
+
+
 
         if (isset($mappings[$leader6])) {
             $format = $mappings[$leader6];
         }
         return $format;
     }
-    
+
     /**
      * Simplify format array
      * @param array $formats
@@ -260,9 +261,9 @@ class FormatMapper {
     public function simplify($formats) {
         $formats = array_unique($formats);
         foreach($formats as$k => $format) {
-            
+
             if (!empty($format)) {
-                $formats[$k] = ucfirst($format);                
+                $formats[$k] = ucfirst($format);
             }
         }
         if(in_array('SoundRecording', $formats) && in_array('MusicRecording', $formats)) {return ['Musik']; }
@@ -285,9 +286,9 @@ class FormatMapper {
         elseif(in_array('SoundRecording', $formats) && in_array('Article', $formats)) {return ['Music-CD']; } //Kommt im GBV vor
         elseif(in_array('E-Journal', $formats) && in_array('Newspaper', $formats)) {return ['Newspaper']; }
         elseif(in_array('Compilation', $formats) && in_array('Book', $formats)) {return ['Compilation']; }
-        
+
         return $formats;
     }
-    
+
 }
 
