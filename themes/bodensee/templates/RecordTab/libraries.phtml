@@ -1,23 +1,23 @@
 <?
     // Set page title.
     $this->headTitle($this->translate('Libraries') . ': ' . $this->driver->getBreadcrumb());
-    $content = $this->tab->getContent();        
+    $content = $this->tab->getContent();
 ?>
 
 <? if(isset($content) && count($content) > 0): ?>
-    
+
 <table class="table table-striped table-condensed tablesorter">
     <thead>
         <tr>
             <th class="col-sm-1 col-xs-1 hidden-xs"><?=$this->transEsc('Contact')?></th>
-            <th><?=$this->transEsc('Library')?></th>        
+            <th><?=$this->transEsc('Library')?></th>
             <th><?=$this->transEsc('Signatur')?></th>
             <? if ( $this->client()->is('show_ill_column') ): ?>
                 <th class="col-sm-2 col-xs-2 hidden-xs"><?=$this->transEsc('Interlibrary Loan')?></th>
             <? endif; ?>
             <? if ($this->driver->isJournal()): ?><th><?=$this->transEsc('Collection')?></th><? endif; ?>
 
-        </tr>        
+        </tr>
     </thead>
     <tbody>
         <? foreach ($content as $result): ?>
@@ -54,7 +54,17 @@
                 <? endif; ?>
             </td>
 
-            <td><?= isset($result['g']) ? $this->escapeHtml($result['g']) : $this->transEsc('NoCallnumber') ?></td>
+            <td>
+                <? if ((isset($result['g']) && (isset($result['k']) !== true))): ?>
+                    <?=$this->escapeHtml($result['g'])?>
+                <? elseif(isset($result['k']) && isset($result['g'])): ?>
+                    <a href="<?=$result['k']?>" target="_blank"><?=$this->escapeHtml($result['g'])?></a>
+                <? elseif(isset($result['k'])): ?>
+                    <a href="<?=$result['k']?>" target="_blank"><?=$this->transEsc('E-Book')?></a>
+                <? else: ?>
+                    <?= $this->transEsc('NoCallnumber') ?>
+                <? endif; ?>
+            </td>
 
             <? if ( $this->client()->is('show_ill_column') ): ?>
                 <td>
@@ -67,14 +77,14 @@
                 <td><?= isset($result['z']) ? $this->escapeHtml($result['z']) : '' ?></td>
             <? endif; ?>
         </tr>
-        <? endforeach; ?>        
+        <? endforeach; ?>
     </tbody>
 </table>
 <script type="text/javascript">
     $(document).ready(function() {
        $('.tablesorter').tablesorter({
            sortList : [[0,0]]
-       }); 
+       });
     });
 </script>
 <? else: ?>

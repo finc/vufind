@@ -377,20 +377,20 @@
       </tr>
       <? endif; ?>
 
-      <? if( strlen($this->driver->getConsortium()) > 0): ?>
-        <?  $consortium = $this->driver->getConsortium();
+      <? if ($this->client()->is('show_network')): ?>
+        <? if( strlen($this->driver->getConsortium()) > 0): ?>
+            <?  $consortium = $this->driver->getConsortium();
             $consortiums = explode(', ', $consortium);
-        ?>
-        <tr>
-            <th><?=$this->transEsc('Network')?>:</th>
-            <td><? foreach ($consortiums as $con): ?>
+            ?>
+            <tr>
+                <th><?=$this->transEsc('Network')?>:</th>
+                <td><? foreach ($consortiums as $con): ?>
                 <?=$this->abbrev($con)?>
                 <? endforeach; ?>
-
-            </td>
-        </tr>
+                </td>
+            </tr>
+        <? endif; ?>
       <? endif; ?>
-
 
       <? if ($this->usertags()->getMode() !== 'disabled'): ?>
         <? $tagList = $this->driver->getTags(); ?>
