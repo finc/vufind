@@ -58,9 +58,9 @@
                 <? if ((isset($result['g']) && (isset($result['k']) !== true))): ?>
                     <?=$this->escapeHtml($result['g'])?>
                 <? elseif(isset($result['k']) && isset($result['g'])): ?>
-                    <a href="<?=$result['k']?>" target="_blank"><i class="fa fa-globe"></i><?=$this->escapeHtml($result['g'])?></a>
+                    <a href="<?=$result['k']?>" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><i class="fa fa-globe"></i><?=$this->escapeHtml($result['g'])?></a>
                 <? elseif(isset($result['k'])): ?>
-                    <a href="<?=$result['k']?>" target="_blank"><i class="fa fa-globe"></i><?=$this->transEsc('E-Book')?></a>
+                    <a href="<?=$result['k']?>" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><i class="fa fa-globe"></i><?=$this->transEsc('E-Book')?></a>
                 <? else: ?>
                     <?= $this->transEsc('NoCallnumber') ?>
                 <? endif; ?>
