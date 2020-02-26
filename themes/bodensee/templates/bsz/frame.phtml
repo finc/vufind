@@ -27,7 +27,7 @@
     }
     $hiddenFilterParams = $this->searchTabs()->getCurrentHiddenFilterParams($this->searchClassId, $ignoreHiddenFilterMemory, '?');
     $disabled = '';
-    if ($this->client()->isIsilSession() && !$this->client()->hasIsilSession()) {  
+    if ($this->client()->isIsilSession() && !$this->client()->hasIsilSession()) {
         $disabled = 'disabled';
     }
 ?>
@@ -63,7 +63,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="GET"
-                      action="<?= $this->url($basicSearch) ?>" name="searchForm" autocomplete="off" target="_blank">
+                      action="<?= $this->url($basicSearch) ?>?" name="searchForm" autocomplete="off" target="_blank">
                     <?= $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
                     <? $placeholder = $this->searchbox()->getPlaceholderText(isset($tabConfig['selected']['id']) ? $tabConfig['selected']['id'] : null); ?>
                     <div class="input-group has-feedback">
@@ -98,7 +98,7 @@
          * */
         $(document).ready(function () {
                 var $tabs = $('#searchForm .nav-tabs');
-                var $input = $('#searchForm_lookfor');     
+                var $input = $('#searchForm_lookfor');
                 var $form = $('#searchForm');
                 var basicSearchUrl = '<?=$this->url($basicSearch).$hiddenFilterParams?>';
             var $advanced = $('form .btn-primary');
@@ -120,7 +120,7 @@
                 } else if (path.indexOf('EDS') >= 0) {
                     var href = '<?=$this->url($advSearch)?>'.replace('Search', 'EDS');
                         $advanced.attr('href', href);
-                        path = path.replace('Home', 'Search');                        
+                        path = path.replace('Home', 'Search');
                     } else {
                         var href = '<?=$this->url($advSearch)?>';
                     $advanced.attr('href', href);
