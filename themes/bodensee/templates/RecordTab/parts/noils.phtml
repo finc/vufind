@@ -39,7 +39,7 @@
             <dt><?=$this->transEsc('Bestandsangaben')?>:</dt>
             <dd><?=$this->escapeHtml($row['status'])?></dd>
         <?php endif; ?>
-        <?php if (!empty($row['status'])): ?>
+        <?php if (!empty($row['status']) && !$this->client()->is('only_one_holds_button')): ?>
             <?php $ppn = $this->driver->tryMethod('getPPN'); if (!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial())): ?>
             <dt></dt>
             <dd><?=$this->recordLink()->linkPPNButton($this->driver) ?></dd>
