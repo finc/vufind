@@ -13,12 +13,12 @@ $config = [
                     'Finc\RecordDriver\SolrAI'       => 'Finc\RecordDriver\Factory::getSolrAI',
                     'Finc\RecordDriver\SolrIS'       => 'Finc\RecordDriver\Factory::getSolrIS',
                 ],
-                'aliases' => [                    
-                    'solrmarc'              =>  'Finc\RecordDriver\SolrMarc',                    
-                    'solrmarcfinc'              =>  'Finc\RecordDriver\SolrMarcFinc',                    
-                    'solrdefault'              =>  'Finc\RecordDriver\SolrDefault',                    
-                    'solrai'                   =>  'Finc\RecordDriver\SolrAI',                    
-                    'solris'                   =>  'Finc\RecordDriver\SolrIS',                    
+                'aliases' => [
+                    'solrmarc'              =>  'Finc\RecordDriver\SolrMarc',
+                    'solrmarcfinc'              =>  'Finc\RecordDriver\SolrMarcFinc',
+                    'solrdefault'              =>  'Finc\RecordDriver\SolrDefault',
+                    'solrai'                   =>  'Finc\RecordDriver\SolrAI',
+                    'solris'                   =>  'Finc\RecordDriver\SolrIS',
                 ],
                 'delegators' => [
                 // Enable this if ILS required
@@ -34,13 +34,13 @@ $config = [
     'service_manager' => [
         'factories' => [
             'Finc\RecordDriver\PluginManager' => 'Finc\RecordDriver\PluginManagerFactory',
-            
+
         ],
         'aliases' => [
             'VuFind\RecordDriver\PluginManager' => 'Finc\RecordDriver\PluginManager'
 
         ]
-    ],    
+    ],
     'view_manager' => [
         'display_exceptions'       => APPLICATION_ENV == 'development',
     ],
