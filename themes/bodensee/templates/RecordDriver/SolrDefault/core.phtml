@@ -79,15 +79,16 @@
                 </tr>
             <? endif; ?>
 
+
+            <?=$this->render('RecordDriver/SolrDefault/parts/series.phtml')?>
+
             <? $volume = $this->driver->tryMethod('getVolume'); ?>
             <? if (!empty($volume)): ?>
                 <tr>
-                  <th><?=$this->transEsc('Volume/Issue')?>: </th>
-                  <td><?=$this->escapeHtml($volume)?></td>
+                    <th><?=$this->transEsc('Volume/Issue')?>: </th>
+                    <td><?=$this->escapeHtml($volume)?></td>
                 </tr>
             <? endif; ?>
-
-            <?=$this->render('RecordDriver/SolrDefault/parts/series.phtml')?>
 
             <? $journalTitle = $this->driver->getContainerTitle();
               $issue =      $this->driver->getContainerIssue();
