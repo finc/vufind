@@ -228,13 +228,11 @@
             <? $physical = $this->driver->getPhysicalDescriptions();
             $physicalol = $this->driver->tryMethod('getPhysicalDescriptionsOl');
 
-            $separators = [' : ', ' ; ', ' + '];
-
             if (!empty($physical)): ?>
             <tr>
                 <th><?=$this->transEsc('Physical Description')?>: </th>
                 <td><? foreach ($physical as $k => $field): ?>
-                    <?=$this->escapeHtml($field)?><? if (isset($separators[$k], $physical[$k+1])):?><?=$this->escapeHtml($separators[$k])?><?endif?>
+                    <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
                   <? endforeach; ?>
                   <? if ($physicalol !== null): ?>
                     <br/>
