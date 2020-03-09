@@ -110,20 +110,6 @@
             </tr>
             <? endif; ?>
 
-            <? $journalIssue = $this->driver->getContainerIssue();
-               $journalYear= $this->driver->getContainerYear();
-               if (!empty($journalIssue) && !empty($journalYear)): ?>
-            <tr>
-                <th><?=$this->transEsc('Issue')?>:</th>
-                <td>
-                  <?=$this->string()->cleanEsc($journalIssue)?>
-                  <? if (!empty($journalYear)) : ?>
-                      / <?=$this->string()->cleanEsc($journalYear)?>
-                  <? endif ; ?>
-                </td>
-            </tr>
-            <? endif;?>
-
             <? $nextTitles = $this->driver->getNewerTitles(); $prevTitles = $this->driver->getPreviousTitles(); ?>
             <? if (!empty($nextTitles)): ?>
             <tr>
