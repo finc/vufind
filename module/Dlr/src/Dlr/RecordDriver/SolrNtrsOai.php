@@ -27,14 +27,20 @@
 namespace Dlr\RecordDriver;
 
 use Bsz\FormatMapper;
+use DateTime;
+use VuFind\RecordDriver\IlsAwareTrait;
+use VuFind\RecordDriver\SolrDefault;
+use VuFind\Search\SearchRunner;
 
 /**
  * Description of SolrOai
  *
  * @author Stefan Winkler <stefan.winkler@bsz-bw.de>
- * 
+ *
  */
-class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
+class SolrNtrsOai extends SolrDefault
+{
+    use IlsAwareTrait;
 
     /**
      *
@@ -48,9 +54,12 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * @param type $recordConfig
      * @param type $searchSettings
      */
-    public function __construct(FormatMapper $mapper, $mainConfig = null, $recordConfig = null,
-            $searchSettings = null) {
-
+    public function __construct(
+        FormatMapper $mapper,
+        $mainConfig = null,
+        $recordConfig = null,
+        $searchSettings = null
+    ) {
         parent::__construct($mapper, $mainConfig, $recordConfig, $searchSettings);
         $this->mapper = $mapper;
     }
@@ -62,11 +71,13 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * @param \VuFind\SearchRunner $runner
      * @return void
      */
-    public function attachSearchRunner(\VuFind\Search\SearchRunner $runner) {
+    public function attachSearchRunner(SearchRunner $runner)
+    {
         $this->runner = $runner;
     }
 
-    public function parseOAI() {
+    public function parseOAI()
+    {
         $xml = $this->getXML('oai_dc');
     }
 
@@ -81,7 +92,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      *
      * @return void
      */
-    public function setRawData($data) {
+    public function setRawData($data)
+    {
         $this->fields = $data;
         $this->xml = simplexml_load_string($this->fields['fullrecord']);
     }
@@ -90,37 +102,40 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * Parse the date out of oai data
      * @return array
      */
-    public function getPublicationDates() {
+    public function getPublicationDates()
+    {
         $dates = $this->getDcFields('date');
         // if we got a known format, parse this
         if (isset($dates[0]) && strlen($dates[0]) == 8) {
             $year = substr($dates[0], 0, 4);
             $month = substr($dates[0], 4, 2);
             $day = substr($dates[0], 6, 2);
-            $date = new \DateTime($year . '-' . $month . '-' . $day);
+            $date = new DateTime($year . '-' . $month . '-' . $day);
             return [$date->format('d.m.Y')];
         }
         return $dates;
     }
 
     /**
-     * 
+     *
      * @param string $field
      * @return array
      */
-    protected function getDcFields($field) {
+    protected function getDcFields($field)
+    {
         return $this->xml->xpath('dc:' . $field);
     }
 
     /**
-     * Returns an array with url and desc keys to link the document id. 
+     * Returns an array with url and desc keys to link the document id.
      * @return array
      */
-    public function getDokumentLink() {
+    public function getDokumentLink()
+    {
         $link = [];
         $id = parent::getUniqueID();
         $split = explode(':', $id);
-        if (strpos($split[1], 'nasa') !== FALSE) {
+        if (strpos($split[1], 'nasa') !== false) {
             $link['url'] = 'http://ntrs.nasa.gov/search.jsp?R=' . end($split);
         } else {
             $link['url'] = 'http://elib.dlr.de/' . end($split);
@@ -129,12 +144,14 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
         return $link;
     }
 
-    public function getCopyright() {
+    public function getCopyright()
+    {
         $copy = $this->getDcFields('coverage');
         return array_shift($copy);
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         $source = $this->getDcFields('source');
         return array_shift($source);
     }
@@ -145,7 +162,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      *
      * @return array
      */
-    protected function getDefaultOpenUrlParams() {
+    protected function getDefaultOpenUrlParams()
+    {
         // Get a representative publication date:
         $pubDate = $this->getPublicationDates();
         $pubDate = empty($pubDate) ? '' : $pubDate[0];
@@ -164,7 +182,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * get all formats from solr field format
      * @return array
      */
-    public function getFormats() {
+    public function getFormats()
+    {
         $formats = [];
         if (isset($this->fields['format'])) {
             $formats = $this->fields['format'];
@@ -179,11 +198,11 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
 
     /**
      * get Institutes and Institutions from solr field
-     * 
+     *
      * @return array
      */
-    public function getInstitutes() {
-
+    public function getInstitutes()
+    {
         $institutes = [];
         if (isset($this->fields['institute'])) {
             $institutes = array_filter($this->fields['institute']);
@@ -196,7 +215,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * Source elib?
      * @return boolean
      */
-    protected function isElib() {
+    protected function isElib()
+    {
         if (isset($this->fields['institution_id']) &&
                 in_array('elib', $this->fields['institution_id'])) {
             return true;
@@ -205,10 +225,11 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
     }
 
     /**
-     * Source NASA? 
+     * Source NASA?
      * @return boolean
      */
-    protected function isNTRS() {
+    protected function isNTRS()
+    {
         if (isset($this->fields['institution_id']) &&
                 in_array('NTRS', $this->fields['institution_id'])) {
             return true;
@@ -230,7 +251,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      *
      * @return array
      */
-    public function getURLs() {
+    public function getURLs()
+    {
         //url = 856u:555u
 
         $urls = [];
@@ -255,7 +277,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * For rticles: get container title
      * @return type
      */
-    public function getContainerTitle() {
+    public function getContainerTitle()
+    {
         return '';
     }
 
@@ -263,7 +286,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * For rticles: get container title
      * @return type
      */
-    public function getContainer() {
+    public function getContainer()
+    {
         return array();
     }
 
@@ -271,7 +295,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * Get the Container issue from different fields
      * @return string
      */
-    public function getContainerIssue() {
+    public function getContainerIssue()
+    {
         // not supported for OAI data:
         return '';
     }
@@ -280,7 +305,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * Get container pages from different fields
      * @return string
      */
-    public function getContainerPages() {
+    public function getContainerPages()
+    {
         // not supported for OAI data:
         return '';
     }
@@ -289,7 +315,8 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * get container year from different fields
      * @return string
      */
-    public function getContainerYear() {
+    public function getContainerYear()
+    {
         // not supported for OAI data:
         return '';
     }
@@ -298,9 +325,26 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault {
      * get container year from different fields
      * @return array
      */
-    public function getRelatedItems() {
+    public function getRelatedItems()
+    {
         // not supported for OAI data:
         return array();
     }
 
+    /**
+     * @return string
+     */
+    public function getContainerRelParts()
+    {
+        return '';
+    }
+
+    /**
+     * NASA OAI data are always articles.
+     * @return bool
+     */
+    public function isArticle()
+    {
+        return true;
+    }
 }
