@@ -25,42 +25,47 @@
  */
 
 namespace Dlr\RecordDriver;
+
 use Bsz\FormatMapper;
+use Bsz\RecordDriver\ContainerTrait;
+use Bsz\RecordDriver\Definition;
+use Bsz\RecordDriver\SolrMarc;
 
 /**
  * Description of SolrDlrmarc
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc 
-    implements \Bsz\RecordDriver\Definition {
-    
+class SolrDlrMarc extends SolrMarc implements Definition
+{
+    use ContainerTrait;
     /**
      * @param FormatMapper $mapper
      * @param type $mainConfig
      * @param type $recordConfig
      * @param type $searchSettings
      */
-    
-    public function __construct(FormatMapper $mapper,$mainConfig = null, $recordConfig = null,
-        $searchSettings = null) {
-        
+
+    public function __construct(
+        FormatMapper $mapper,
+        $mainConfig = null,
+        $recordConfig = null,
+        $searchSettings = null
+    ) {
         parent::__construct($mapper, $mainConfig, $recordConfig, $searchSettings);
         $this->mapper = $mapper;
     }
-    
+
     /**
-     * Get all subjects associated with this item. They are unique. 
+     * Get all subjects associated with this item. They are unique.
      *
      * @return array
      */
     public function getAllRVKSubjectHeadings()
     {
-        $rvkchain = []; 
-        foreach ($this->getMarcRecord()->getFields('936') as $field)
-        {
-            foreach ($field->getSubFields('k') as $item)
-            {
+        $rvkchain = [];
+        foreach ($this->getMarcRecord()->getFields('936') as $field) {
+            foreach ($field->getSubFields('k') as $item) {
                 $rvkchain[] = $item->getData();
             }
         }
@@ -77,29 +82,24 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
         $replace = [
             '"' => "'",
         ];
-        foreach ($this->getMarcRecord()->getFields('936') as $field)
-        {
+        foreach ($this->getMarcRecord()->getFields('936') as $field) {
             $suba = $field->getSubField('a');
-            if($suba) {
+            if ($suba) {
                 $title = [];
-                foreach ($field->getSubFields('k') as $item)
-                {
+                foreach ($field->getSubFields('k') as $item) {
                     $title[] = htmlentities($item->getData());
-
                 }
                 $notationList[$suba->getData()] = $title;
-                
             }
-
         }
         return $notationList;
-    }        
-    
+    }
+
     /**
      * get all formats from solr field format
      * @return array
      */
-    public function getFormats() 
+    public function getFormats()
     {
         $formats = [];
         if (isset($this->fields['format'])) {
@@ -119,7 +119,6 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
      */
     public function getMultipartLevel()
     {
-
         $leader = $this->getMarcRecord()->getLeader();
         $multipartLevel = strtoupper($leader{19});
 
@@ -131,7 +130,7 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
                 return static::NO_MULTIPART;
             case 'C':
                 return static::MULTIPART_PART;
-            default: 
+            default:
                 return static::NO_MULTIPART;
         }
     }
@@ -142,7 +141,6 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
      */
     public function getBibliographicLevel()
     {
-
         $leader = $this->getMarcRecord()->getLeader();
         $bibliographicLevel = strtoupper($leader{7});
         switch ($bibliographicLevel) {
@@ -163,7 +161,7 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
                 return static::BIBLIO_SERIAL;
         }
     }
-    
+
 
     /**
      * is this item part of a collection?
@@ -171,12 +169,11 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
      */
     public function isPart()
     {
-        
         $part = [
             static::MULTIPART_PART,
             static::BIBLIO_SERIAL,
             static::BIBLIO_MONO_COMPONENT
-                
+
         ];
         if (in_array($this->getBibliographicLevel(), $part) ||
                 in_array($this->getMultipartLevel(), $part)) {
@@ -184,9 +181,9 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
         }
         return false;
     }
-    
+
     /**
-     * As out fiels 773 does not contain any further title information we need 
+     * As out fiels 773 does not contain any further title information we need
      * to query solr again
      *
      * @return array
@@ -207,7 +204,7 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
                 // QnD
                 // We need the searchClassId here to get proper filters
                 $searchClassId = 'Solr';
-                
+
                 $results = $this->runner->run($params, $searchClassId);
                 $this->container = $results->getResults();
             }
@@ -215,7 +212,7 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
         return $this->container;
     }
 
-    public function getRelatedItems() 
+    public function getRelatedItems()
     {
         $related = [];
         $f774 = $this->getMarcRecord()->getFields('774');
@@ -228,21 +225,21 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
                         break;
                     case 't': $label = 'title';
                         break;
-                    case 'w' : $label = 'id';
+                    case 'w': $label = 'id';
                         break;
-                    case 'a' : $label = 'author';
+                    case 'a': $label = 'author';
                         break;
                     default: $label = 'unknown_field';
                 }
                 if (!array_key_exists($label, $tmp)) {
-                    $tmp[$label] = $subfield->getData();                    
+                    $tmp[$label] = $subfield->getData();
                 }
             }
-            $related[] = $tmp;  
+            $related[] = $tmp;
         }
         return $related;
     }
-    
+
     /**
      * Get the main corporate author (if any) for the record.
      *
@@ -257,8 +254,8 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
         }
         return $this->getFirstFieldValue('710', ['a', 'c', 'b']);
     }
-    
-        /**
+
+    /**
      * Get an array of all secondary authors (complementing getPrimaryAuthor()).
      *
      * @return array
@@ -268,9 +265,14 @@ class SolrDlrMarc extends \Bsz\RecordDriver\SolrMarc
         $corporate = $this->getCorporateAuthor();
         if (empty($corporate)) {
             return isset($this->fields['author2']) ?
-                $this->fields['author2'] : [];            
+                $this->fields['author2'] : [];
         } else {
             return [];
         }
+    }
+
+    public function getNetwork()
+    {
+        return '';
     }
 }

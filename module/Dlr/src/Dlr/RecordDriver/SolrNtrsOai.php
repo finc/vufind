@@ -27,7 +27,10 @@
 namespace Dlr\RecordDriver;
 
 use Bsz\FormatMapper;
+use DateTime;
 use VuFind\RecordDriver\IlsAwareTrait;
+use VuFind\RecordDriver\SolrDefault;
+use VuFind\Search\SearchRunner;
 
 /**
  * Description of SolrOai
@@ -35,7 +38,7 @@ use VuFind\RecordDriver\IlsAwareTrait;
  * @author Stefan Winkler <stefan.winkler@bsz-bw.de>
  *
  */
-class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault
+class SolrNtrsOai extends SolrDefault
 {
     use IlsAwareTrait;
 
@@ -68,7 +71,7 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault
      * @param \VuFind\SearchRunner $runner
      * @return void
      */
-    public function attachSearchRunner(\VuFind\Search\SearchRunner $runner)
+    public function attachSearchRunner(SearchRunner $runner)
     {
         $this->runner = $runner;
     }
@@ -107,7 +110,7 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault
             $year = substr($dates[0], 0, 4);
             $month = substr($dates[0], 4, 2);
             $day = substr($dates[0], 6, 2);
-            $date = new \DateTime($year . '-' . $month . '-' . $day);
+            $date = new DateTime($year . '-' . $month . '-' . $day);
             return [$date->format('d.m.Y')];
         }
         return $dates;
@@ -326,5 +329,22 @@ class SolrNtrsOai extends \VuFind\RecordDriver\SolrDefault
     {
         // not supported for OAI data:
         return array();
+    }
+
+    /**
+     * @return string
+     */
+    public function getContainerRelParts()
+    {
+        return '';
+    }
+
+    /**
+     * NASA OAI data are always articles.
+     * @return bool
+     */
+    public function isArticle()
+    {
+        return true;
     }
 }
