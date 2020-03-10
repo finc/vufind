@@ -22,13 +22,7 @@
   <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn)): ?>
   <? $contentDisplayed = true; ?>
     <tr>
-      <th>
-          <? if ($this->driver->isFisBildung()): ?>
-            <?=$this->transEsc('Dok-Id')?>
-          <? else: ?>
-            <?=$this->transEsc('PPN')?>
-          <? endif; ?>
-      </th>
+      <th><?=$this->transEsc('PPN')?></th>
       <td><?=$this->escapeHtml($ppn)?></td>
     </tr>
   <? endif; ?>
