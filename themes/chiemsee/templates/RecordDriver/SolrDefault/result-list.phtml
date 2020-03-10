@@ -3,7 +3,7 @@
     <div class="col-sm-2 col-xs-4">
 
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
-      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
+      <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
       <a href="<?=$this->recordLink()->getUrl($this->driver, $this->overrideRecordLink)?>">
       <?php $formats = $this->driver->getFormats();
        $icon = $this->mapper()->mapIcon($formats);
