@@ -29,7 +29,7 @@
             <?=$this->transEsc('PPN')?>
           <? endif; ?>
       </th>
-      <td><?=$this->escapeHTML($ppn)?></td>
+      <td><?=$this->escapeHtml($ppn)?></td>
     </tr>
   <? endif; ?>
   <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
@@ -44,14 +44,14 @@
     </tr>
   <? endif; ?>
   <? $ean = $this->driver->tryMethod('getGTIN');
-     if(!empty($ean)):          
+     if(!empty($ean)):
      $contentDisplayed = true;
   ?>
     <tr>
         <th><?=$this->transEsc('EAN')?></th>
-        <td><?=$this->escapeHtml($ean)?></td>          
+        <td><?=$this->escapeHtml($ean)?></td>
     </tr>
-  <? endif; ?>  
+  <? endif; ?>
 
   <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
     <? $contentDisplayed = true; ?>
@@ -76,7 +76,7 @@
       </td>
     </tr>
   <? endif; ?>
-  
+
 
   <? $freq = $this->driver->getPublicationFrequency(); if (!empty($freq)): ?>
     <? $contentDisplayed = true; ?>
@@ -255,7 +255,7 @@
       </td>
     </tr>
   <? endif; ?>
-    <? $notations = $this->driver->tryMethod('getRVKNotations'); 
+    <? $notations = $this->driver->tryMethod('getRVKNotations');
   if(!empty($notations)): ?>
   <? $contentDisplayed = true; ?>
   <tr>
@@ -263,7 +263,7 @@
       <? if(is_array($notations)): ?>
       <td>
           <? foreach ($notations as $shortcut => $description): ?>
-          <? 
+          <?
           $descriptionHtml = '<ol>';
           foreach($description as $item) {
             $descriptionHtml .= '<li>'.$item.'</li>';
@@ -285,9 +285,9 @@
          <th><?=$this->transEsc('Abstract')?></th>
          <td><?=$this->escapeHtml($abstract)?></td>
      </tr>
- <? endif; ?>    
+ <? endif; ?>
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
- 
+
 </table>
