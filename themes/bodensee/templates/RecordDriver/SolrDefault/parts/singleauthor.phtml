@@ -5,5 +5,5 @@
     $hiddenFilterString = isset($hiddenFilterString) ? $hiddenFilterString : '';
 ?>
 <a class="author" href="<?=$this->record($this->driver)->getLink('author', $this->name, $this->searchClassId)?>"><?=$this->transEsc($this->name)?><?if (isset($live)):?>, <?=$this->escapeHtml($live)?><? endif; ?></a><? if (!empty($gnd)): ?>
-    (<a data-placement="right" data-toggle="tooltip" title="<?=$this->escapeHtml($gnd)?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?=$this->escapeHtml($gnd)?>&amp;type=AllFields<?= $hiddenFilterString ?>">GND-ID</a><span class="visible-print">GND-ID: <?=$this->escapeHtml($gnd)?></span>)<? endif; ?>
-<? if (!empty($role)): ?>, <?=$this->transEsc('CreatorRoles::'.$role)?><? endif; ?>   
+    <a data-placement="right" data-toggle="tooltip" title="<?=$this->transEsc('Search GND-ID')?>: <?=$this->escapeHtml($gnd)?>" class="hidden-print searchLink" href="<?=$this->url('search-results')?>?lookfor=gnd_from:<?=$this->escapeHtml($gnd)?>&amp;type=AllFields<?= $hiddenFilterString ?>"></a><span class="visible-print">GND-ID: <?=$this->escapeHtml($gnd)?></span><? endif; ?>
+<? if (!empty($role)): ?>, <?=$this->transEsc('CreatorRoles::'.$role)?><? endif; ?>
