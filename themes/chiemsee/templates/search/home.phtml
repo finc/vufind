@@ -1,6 +1,8 @@
 <?php
   // Set page title.
-  $this->headTitle($this->translate('Search Home'));
+use Zend\View\Helper\HeadScript;
+
+$this->headTitle($this->translate('Search Home'));
 
   // Disable top search box -- this page has a special layout.
   $this->layout()->searchbox = false;
@@ -37,21 +39,12 @@
       <p><a href="mailto:<?=$supportEmail?>"><?=$supportEmail?></a></p>
     </div>
   <?php endif; ?>
-  <div class="row">
-      <?php if ($this->client()->isIsilSession()): ?>
-          <div class="col-md-4">
-              <img class="img-responsive" src="<?=$this->imageLink('/logo/default.png')?>" alt="BSZ Logo" />
-          </div>
-          <?php else: ?>
-          <div class="col-md-12 hidden-sm hidden-xs">
-              <?php if ($this->imageLink($this->clientAsset()->getHeader())): ?>
-              <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" class="img-responsive" alt="Aufmacherbild" />
-              <?php endif; ?>
-          </div>
+  <div class="col-md-12 hidden-sm hidden-xs no-padding">
+      <?php if ($this->imageLink($this->clientAsset()->getHeader())): ?>
+      <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" class="img-responsive" alt="Aufmacherbild" />
       <?php endif; ?>
-  </div>
-  <div class="row no-padding">
-      <div class="col-md-12">
+ </div>
+ <div class="col-md-12 no-padding">
           <div class="jumbotron">
 
           <?php if (!empty($this->layout()->userLang)): ?>
@@ -59,12 +52,9 @@
           <?php endif; ?>
           </div>
       </div>
-  </div>
   <?php if ($this->client()->is('list_of_clients')): ?>
     <?=$this->render('bsz/listofclients.phtml')?>
   <?php endif; ?>
-
-
 </div>
 
 <?php //$facetList = is_object($this->results) ? $this->results->getFacetList() : array();?>
@@ -82,7 +72,7 @@ $(document).ready(function() {
 });
 JS;
         ?>
-        <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
+        <?=$this->inlineScript(HeadScript::SCRIPT, $script, 'SET'); ?>
         <div class="facet <?=$field=='callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
           <p class="lead"><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></p>
           <div id="facet_<?=$this->escapeHtml($field)?>" class="jstree-facet"
