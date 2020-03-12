@@ -4,25 +4,24 @@
         ul {
             list-style-type: none;
             padding-left: 0;
-
+            
             li {
                 float: left;
                 margin-right: 2em;
-            }
+            }            
         }
         div {
-            padding-bottom: 1em;
+            padding-bottom: 1em;            
         }
-    }
-
+    }    
+    
 }
 
 /* footer - auf Grundlage von finc */
 footer {
-    padding-top: @grid-gutter-width/2;
     .container {
         background-color: @gray-darker;
-        &:extend(.navbar);
+        &:extend(.navbar);        
     }
     hr {
         border: 0;
@@ -34,7 +33,7 @@ footer {
             background-color: inherit;
             border: 0;
             color: white;
-
+            
             /*min-height: 10.1em;*/
             margin-bottom: 0.2em;
             padding: 15px;
@@ -43,13 +42,13 @@ footer {
                 list-style: none outside none;
                 margin: 0;
                 padding: 0;
-
+                
                 li a {
                     text-decoration: none;
                     color: @table-border-color;
-                }
+                }        
             }
-        }
+        }        
     }
 
     small {
@@ -61,5 +60,5 @@ footer {
             text-decoration: none;
         }
     }
-
+    
 }
