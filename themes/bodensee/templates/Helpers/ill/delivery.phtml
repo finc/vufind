@@ -1,19 +1,19 @@
 <? $labelSize = 6; ?>
 <? $inputSize = 6; ?>
 <? $disabled = ''; ?>
-<div class="form-group form-group-sm">            
+<div class="form-group form-group-sm">
         <? if (isset($params['Bestellform'])):
             $form = $params['Bestellform'];
-        elseif (isset($this->driver) && ($this->driver->isArticle() || $this->driver->isJournal())): 
+        elseif (isset($this->driver) && ($this->driver->isArticle() || $this->driver->isJournal())):
             $form = 'Kopie';
         elseif (!isset($this->driver)):
             $form = 'Kopie';
-        else: 
+        else:
             $form = 'Leihen';
         endif; ?>
         <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
         <div class="col-sm-3 col-xs-2">
-            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> <?=$disabled?>/>  
+            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> <?=$disabled?>/>
             <span for="ill-copy"><?=$this->transEsc('lend')?></span>
         </div>
         <div class="col-sm-3 col-xs-2">
@@ -21,45 +21,53 @@
             <span for="ill-copy"><?=$this->transEsc('paperdata')?></span>
         </div>
         <div class="col-sm-6 col-sm-offset-6 col-xs-8 col-xs-offset-4">
-            <span class="help-block"><?=$this->transEsc('ILL::help_copie_rent')?></span>            
+            <span class="help-block"><?=$this->transEsc('ILL::help_copie_rent')?></span>
         </div>
-    </div>    
+    </div>
     <div class="form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>"><?=$this->transEsc('Library')?>*</label>
-    <div class="col-sm-<?=$inputSize ?>">  
-        <? $libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>  
-        <? if(count($libraries) > 0): ?>  
+    <div class="col-sm-<?=$inputSize ?>">
+        <? $libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>
+        <? if(count($libraries) > 0): ?>
             <? foreach($libraries as $libkey => $library): ?>
+                    <? $checked = '' ?>
                     <? if (count($libraries) == 1) : ?>
                         <?=$this->escapeHtml($library->getName())?>
                         <input name="Sigel" type="hidden" value="<?=$this->escapeHtmlAttr($library->getSigel())?>"/>
                     <? else: ?>
                         <div class="radio">
                             <label for="ill-library-<?=$libkey?>">
-                                <input required="true" name="Sigel" id="ill-library-<?=$libkey?>" type="radio" value="<?=$this->escapeHtmlAttr($library->getSigel())?>" <?if($libkey == 0): ?>checked<?endif; ?>/>
+                                <? if ($params['Sigel']):?>
+                                    <? if ($params['Sigel'] == $library->getSigel()):?>
+                                        <? $checked = 'checked="checked"'?>
+                                    <? endif ?>
+                                <? elseif($libkey == 0): ?>
+                                    <? $checked = 'checked="checked"'?>
+                                <? endif; ?>
+                                <input required="true" name="Sigel" id="ill-library-<?=$libkey?>" type="radio" value="<?=$this->escapeHtmlAttr($library->getSigel())?>" <?=$checked?>/>
                                 <?=$this->escapeHtml($library->getName())?>
                             </label>
                         </div>
                     <? endif; ?>
             <? endforeach; ?>
-        <? endif; ?>  
+        <? endif; ?>
         </div>
 </div>
 <? if($this->libraries()->hasActivePlaces($this->client()->getIsils())): ?>
-<div class="form-group form-group-sm library-places">    
+<div class="form-group form-group-sm library-places">
     <label class="control-label col-sm-<?=$labelSize?>"><?=$this->transEsc('Places')?>*</label>
-    <div class="col-sm-<?=$inputSize ?>">  
-        <? $libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>        
-        <? if(count($libraries) > 0): ?>  
+    <div class="col-sm-<?=$inputSize ?>">
+        <? $libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>
+        <? if(count($libraries) > 0): ?>
             <? $checked = isset($params['AusgabeOrt']) ? $params['AusgabeOrt'] :'';?>
-            <? foreach($libraries as $libkey =>  $library): ?>            
+            <? foreach($libraries as $libkey =>  $library): ?>
                 <div id="library-places-<?=$libkey?>" class="place <?if($libkey > 0):?>hidden<? endif; ?>">
                 <? $places = $library->getPlaces(); if(count($places) > 0): ?>
                     <? foreach ($places as $placekey => $place): ?>
                         <div class="radio">
                             <label for="ill-place-<?=$libkey.'-'.$placekey?>">
-                                <input name="AusgabeOrt" id="ill-place-<?=$libkey.'-'.$placekey?>" 
-                                   type="radio" value="<?=$this->escapeHtml($place->getCode())?>" 
+                                <input name="AusgabeOrt" id="ill-place-<?=$libkey.'-'.$placekey?>"
+                                   type="radio" value="<?=$this->escapeHtml($place->getCode())?>"
                                    <?if($checked == $place): ?>checked<?endif; ?>
                                 />
                                 <?=$this->escapeHtml((string)$place)?>
@@ -68,15 +76,15 @@
                     <? endforeach; ?>
                 <? endif; ?>
                 </div>
-            <? endforeach; ?>            
-        <? endif; ?>  
-    </div>    
+            <? endforeach; ?>
+        <? endif; ?>
+    </div>
 </div>
 <? endif; ?>
 <div class="form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-delivery_until"><?=$this->transEsc('delivery_until')?>*</label>
-    <div class="col-sm-<?=$inputSize?> col-md-2"> 
-        <? 
+    <div class="col-sm-<?=$inputSize?> col-md-2">
+        <?
             $date = new DateTime();
             $date->add(new DateInterval('P100D'));
         ?>
