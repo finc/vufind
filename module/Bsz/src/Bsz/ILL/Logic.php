@@ -249,7 +249,7 @@ class Logic
         $network = $this->driver->getNetwork();
 
         // if we have local holdings, item can't be ordered - except Journals
-        if ($this->driver->hasLocalHoldings() && !$this->getFormat() === static::FORMAT_JOURNAL) {
+        if ($this->driver->hasLocalHoldings() && $this->getFormat() != static::FORMAT_JOURNAL) {
             $this->messages[] = 'ILL::available_at_current_library';
             $status = true;
         } elseif ($this->driver->hasLocalHoldings() && $this->getFormat() === static::FORMAT_JOURNAL) {
