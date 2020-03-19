@@ -555,6 +555,11 @@ class SolrGviMarc extends SolrMarc implements Definition
             $this->getMarcRecord()->getFields('856'),
             $this->getMarcRecord()->getFields('555')
         );
+
+        // Special case Proquest eBooks for DE-950
+        $isils = $this->getFieldArray('924', ['b'], false);
+        $is950 = in_array('DE-950', $isils)? true: false;
+
         foreach ($urlFields as $f) {
             $f instanceof File_MARC_Data_Field;
             $url = [];
@@ -567,7 +572,8 @@ class SolrGviMarc extends SolrMarc implements Definition
             //  we don't want to show licensed content
             //  ind1,2 = 4,0 is probably lincensed content.
             //  only if we find a kostenfrei in |z, we use the link
-            if ($ind1 == 4 && $ind2 == 0) {
+            //  special case: DE-950 Proquest links are shown
+            if (!$is950 && $ind1 == 4 && $ind2 == 0 ) {
                 $sfz = $f->getSubField('z');
                 if (is_object($sfz)) {
                     if (stripos($sfz->getData(), 'Kostenfrei') === false) {
@@ -1027,6 +1033,20 @@ class SolrGviMarc extends SolrMarc implements Definition
             $addedurls[] = $address;
         }
         return $localUrls;
+    }
+
+    /**
+     * Returns url  from 856|u
+     * @return String
+     */
+    public function getPDALink()
+    {
+        $fields = [
+            830 => ['v'],
+            773 => ['g']
+        ];
+        $volumes = preg_replace("/[\/,]$/", "", $this->getFieldsArray($fields));
+        return array_shift($volumes);
     }
 
     /**
