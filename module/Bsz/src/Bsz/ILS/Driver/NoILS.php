@@ -11,24 +11,24 @@ use Bsz\Config\Libraries;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class NoILS extends \VuFind\ILS\Driver\NoILS 
+class NoILS extends \VuFind\ILS\Driver\NoILS
 {
     /**
      *
      * @var Libraries
-     */    
+     */
     protected $libraries;
-    
-    
+
+
     protected $isils;
-    
-    public function __construct(\VuFind\Record\Loader $loader, Libraries $libraries, $isils) 
+
+    public function __construct(\VuFind\Record\Loader $loader, Libraries $libraries, $isils)
     {
         $this->libraries = $libraries;
         $this->isils = $isils;
         parent::__construct($loader);
     }
-    
+
     /**
      * Get Holding
      *
@@ -100,17 +100,17 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
                 $library = $this->libraries->getByIsil($currentIsil);
                 if (isset($library)) {
                     $parent[$k]['location'] = $library->getName();
-                    $parent[$k]['locationhref'] = $library->getHomepage();              
-                }                
+                    $parent[$k]['locationhref'] = $library->getHomepage();
+                }
             } else {
                 unset($parent[$k]);
-            } 
-                
+            }
+
        }
 
        return $parent;
     }
-    
+
         /**
      * Has Holdings
      *
