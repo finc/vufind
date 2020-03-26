@@ -17,19 +17,25 @@ class Params extends \VuFind\Search\Solr\Params
 {
     protected $dedup;
     protected $limit = 10;
-    protected $client;
 
+    /**
+     * Params constructor.
+     *
+     * @param $options
+     * @param PluginManager $configLoader
+     * @param HierarchicalFacetHelper|null $facetHelper
+     * @param Dedup|null $dedup
+     */
     public function __construct(
         $options,
         PluginManager $configLoader,
         HierarchicalFacetHelper $facetHelper = null,
-        Dedup $dedup = null,
-        Client $client = null
+        Dedup $dedup = null
     ) {
         parent::__construct($options, $configLoader);
         $this->dedup = $dedup;
-        $this->client = $client;
     }
+
     /**
      * Return the current filters as an array of strings ['field:filter']
      *
