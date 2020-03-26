@@ -2,6 +2,8 @@
 
 namespace Bsz\Search\Solr;
 
+use Bsz\Config\Client;
+use VuFind\Config\PluginManager;
 use VuFindSearch\ParamBag;
 use Bsz\Config;
 use Bsz\Config\Dedup;
@@ -19,10 +21,10 @@ class Params extends \VuFind\Search\Solr\Params
 
     public function __construct(
         $options,
-        \VuFind\Config\PluginManager $configLoader,
+        PluginManager $configLoader,
         HierarchicalFacetHelper $facetHelper = null,
         Dedup $dedup = null,
-        \Bsz\Config\Client $client = null
+        Client $client = null
     ) {
         parent::__construct($options, $configLoader);
         $this->dedup = $dedup;
@@ -104,6 +106,10 @@ class Params extends \VuFind\Search\Solr\Params
 
         if ((bool)$group === true) {
             $backendParams->add('group', 'true');
+
+            $group_field = '';
+            $group_limit = 0;
+
             if (isset($dedupParams['group_field'])) {
                 $group_field = $dedupParams['group_field'];
             } elseif ($index->get('group.field') !== null) {
@@ -195,26 +201,6 @@ class Params extends \VuFind\Search\Solr\Params
         }
 
         return $backendParams;
-    }
-
-    /**
-     * Get an array of hidden filters.
-     *
-     * @return array
-     */
-    public function getHiddenFilters()
-    {
-        $hidden = $this->hiddenFilters;
-        $or = [];
-        if (isset($this->client) && count($this->client->getIsils()) > 0
-            && !$this->client->isIsilSession()) {
-            foreach ($this->client->getIsils() as $isil) {
-                if (! in_array($isil, $hidden['~institution_id'])) {
-                    $hidden['~institution_id'] = $isil;
-                }
-            }
-        }
-        return $hidden;
     }
 
     /**
