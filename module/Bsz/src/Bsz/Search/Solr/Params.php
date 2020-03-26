@@ -1,7 +1,9 @@
 <?php
 
 namespace Bsz\Search\Solr;
-use VuFindSearch\ParamBag, Bsz\Config;
+
+use VuFindSearch\ParamBag;
+use Bsz\Config;
 use Bsz\Config\Dedup;
 
 /**
@@ -11,20 +13,22 @@ use Bsz\Config\Dedup;
  */
 class Params extends \VuFind\Search\Solr\Params
 {
-    
     protected $dedup;
     protected $limit = 10;
     protected $client;
-    
-    public function __construct($options, \VuFind\Config\PluginManager $configLoader,
-        HierarchicalFacetHelper $facetHelper = null, Dedup $dedup = null, \Bsz\Config\Client $client = NULL ) 
-    {
+
+    public function __construct(
+        $options,
+        \VuFind\Config\PluginManager $configLoader,
+        HierarchicalFacetHelper $facetHelper = null,
+        Dedup $dedup = null,
+        \Bsz\Config\Client $client = null
+    ) {
         parent::__construct($options, $configLoader);
         $this->dedup = $dedup;
         $this->client = $client;
-
     }
-        /**
+    /**
      * Return the current filters as an array of strings ['field:filter']
      *
      * @return array $filterQuery
@@ -72,7 +76,7 @@ class Params extends \VuFind\Search\Solr\Params
         }
         return $filterQuery;
     }
-    
+
     /**
      * Create search backend parameters for advanced features.
      *
@@ -81,42 +85,42 @@ class Params extends \VuFind\Search\Solr\Params
     public function getBackendParameters()
     {
         $backendParams = new ParamBag();
-        $backendParams->add('year', (int)date('Y')+1);      
-        
+        $backendParams->add('year', (int)date('Y')+1);
+
         $this->restoreFromCookie();
-        
+
         // Fetch group params for deduplication
         $config = $this->configLoader->get('config');
         $index = $config->get('Index');
         $group = false;
-        
+
         $dedupParams = $this->dedup->getCurrentSettings();
-        
+
         if (isset($dedupParams['group'])) {
-            $group = $dedupParams['group'];            
+            $group = $dedupParams['group'];
         } elseif ($index->get('group') !== null) {
             $group = $index->get('group');
         }
-        
+
         if ((bool)$group === true) {
             $backendParams->add('group', 'true');
             if (isset($dedupParams['group_field'])) {
                 $group_field = $dedupParams['group_field'];
-            } elseif ($index->get('group.field') !== null ) {
-                $group_field = $index->get('group.field');                
+            } elseif ($index->get('group.field') !== null) {
+                $group_field = $index->get('group.field');
             }
             $backendParams->add('group.field', $group_field);
 
             if (isset($dedupParams['group_limit'])) {
                 $group_limit = $dedupParams['group_limit'];
             } elseif ($index->get('group.limit') !== null) {
-                $group_limit = $index->get('group.limit');                
-            };
+                $group_limit = $index->get('group.limit');
+            }
             $backendParams->add('group.limit', $group_limit);
         }
         // search those shards that answer, accept partial results
         $backendParams->add('shards.tolerant', 'true');
-        
+
         // maximum search time in ms
         // $backendParams->add('timeAllowed', '4000');
 
@@ -128,7 +132,8 @@ class Params extends \VuFind\Search\Solr\Params
 
         // Spellcheck
         $backendParams->set(
-            'spellcheck', $this->getOptions()->spellcheckEnabled() ? 'true' : 'false'
+            'spellcheck',
+            $this->getOptions()->spellcheckEnabled() ? 'true' : 'false'
         );
 
         // Facets
@@ -191,7 +196,7 @@ class Params extends \VuFind\Search\Solr\Params
 
         return $backendParams;
     }
-    
+
     /**
      * Get an array of hidden filters.
      *
@@ -201,26 +206,24 @@ class Params extends \VuFind\Search\Solr\Params
     {
         $hidden = $this->hiddenFilters;
         $or = [];
-        if (isset($this->Client) && count($this->Client->getIsils()) > 0
+        if (isset($this->client) && count($this->client->getIsils()) > 0
             && !$this->client->isIsilSession()) {
-            foreach($this->Client->getIsils() as $isil) {
-                $or[] = 'institution_id:'.$isil;            
-                
+            foreach ($this->client->getIsils() as $isil) {
+                if (! in_array($isil, $hidden['~institution_id'])) {
+                    $hidden['~institution_id'] = $isil;
+                }
             }
-        }
-        if (count($or) > 0) {
-            $hidden[] = implode(' OR ',$or);            
         }
         return $hidden;
     }
-    
+
     /**
-     * This method reads the cookie and stores the information into the session 
-     * So we only need to process session bwlow. 
-     * 
+     * This method reads the cookie and stores the information into the session
+     * So we only need to process session bwlow.
+     *
      */
-    
-    protected function restoreFromCookie() 
+
+    protected function restoreFromCookie()
     {
         if (isset($this->cookie)) {
             if (isset($this->cookie->group)) {
@@ -232,8 +235,6 @@ class Params extends \VuFind\Search\Solr\Params
             if (isset($this->cookie->group_limit)) {
                 $this->container->offsetSet('group_limit', $this->cookie->group_limit);
             }
-            
         }
-        
     }
 }
