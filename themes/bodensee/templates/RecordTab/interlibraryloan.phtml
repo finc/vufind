@@ -1,0 +1,54 @@
+<?php
+$this->headTitle($this->translate('Interlibrary Loan') . ': ' . $this->driver->getBreadcrumb());
+$content = $this->tab->getContent();
+$messages = $content['messages'];
+$ppns = $content['ppns'];
+$status = $content['status'];
+$library = $content['library'];
+?>
+
+<?php
+$network = $this->driver->getNetwork();
+$class = '';
+
+$url = $this->recordLink()->getUrl($this->driver) . '/ILLForm';
+if ($this->customUrl) {
+    $url = $this->openUrl($this->driver, 'illform')->getUrl();
+}
+?>
+
+<?
+    $authMethod = $library ? $library->getAuth() : '';
+    $account = $this->auth()->getManager();
+?>
+
+<strong><?= $this->transEsc('ILL::cond_heading') ?></strong>
+<ul class="help-text">
+    <?php if (isset($messages) && count($messages) > 0): ?>
+        <?php foreach ($messages as $message): ?>
+            <li><?= $this->transEsc($message) ?></li>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    <?php if (count($ppns) > 0): ?>
+            <? foreach ($ppns as $id): ?>
+                <li><a class="" href="<?= '/Record/' . $id ?>"><? if ($this->driver->getNetwork() == 'SWB'):?><?=$this->transEsc('ILL::ILL::to_local_hit') ?><?else: ?><?=$this->transEsc('ILL::to_local_hit')?><?endif ?></a>
+                </li>
+            <? endforeach; ?>
+    <?php else: ?>
+        <? $link = $this->recordLink()->linkPPN($this->driver) ?>
+        <? if (!empty($link)): ?>
+            <li><?= $link ?></li>
+        <? endif; ?>
+    <?php endif; ?>
+
+</ul>
+<?php if ($authMethod === 'shibboleth' && !$account->isLoggedIn()): ?>
+    <div class="alert alert-danger">
+        <?=$this->transEsc('You must be logged in first')?>
+    </div>
+<?php elseif ($status): ?>
+    <a title="<?= $this->transEsc('Interlibrary Loan') ?>" accesskey="" href="<?= $url ?>"
+       id="illform"
+       class="<?= $this->escapeHtmlAttr($class) ?> btn btn-success btn-sm <? if ($this->customUrl): ?>external hasicon<? endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
+<?php endif; ?>
+

@@ -1,18 +1,22 @@
 <?php
 namespace Bsz\Module\Config;
 
+use Bsz\Controller\Factory;
+use Bsz\Route\RouteGenerator;
+use VuFind\RecordDriver\IlsAwareDelegatorFactory;
+
 $config = [
 
     'controllers' => [
         'factories' => [
-            'Bsz\Controller\SearchController' => \Bsz\Controller\Factory::class,
+            'Bsz\Controller\SearchController' => Factory::class,
             'Bsz\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
-            'Bsz\Controller\EdsrecordController' => \Bsz\Controller\Factory::class,
-            'Bsz\Controller\MyResearchController' => \Bsz\Controller\Factory::class,
-            'Bsz\Controller\HoldingController' =>   \Bsz\Controller\Factory::class,
-            'Bsz\Controller\ShibController' =>      \Bsz\Controller\Factory::class,
-            'Bsz\Controller\BszController' =>       \Bsz\Controller\Factory::class,
-            'Bsz\Controller\TestController' =>      \Bsz\Controller\Factory::class,
+            'Bsz\Controller\EdsrecordController' => Factory::class,
+            'Bsz\Controller\MyResearchController' => Factory::class,
+            'Bsz\Controller\HoldingController' => Factory::class,
+            'Bsz\Controller\ShibController' => Factory::class,
+            'Bsz\Controller\BszController' => Factory::class,
+            'Bsz\Controller\TestController' => Factory::class,
         ],
         'aliases' => [
             // shortcuts for our own controllers
@@ -54,11 +58,12 @@ $config = [
             'Bsz\Config\Dedup'  => 'Bsz\Config\Factory::getDedup',
             'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',
             'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',
-            'Bsz\Holding'    => 'Bsz\Factory::getHolding',
+            'Bsz\ILL\Holding'    => 'Bsz\ILL\Factory::getHolding',
             'Bsz\Parser\OpenUrl' => 'Bsz\Parser\Factory::getOpenUrlParser',
             'Bsz\SearchTabsHelper' => 'Bsz\Service\Factory::getSearchTabsHelper',
             'Bsz\Auth\Manager' => 'Bsz\Auth\Factory::getManager',
             'Bsz\RecordDriver\PluginManager' => 'Bsz\RecordDriver\PluginManagerFactory',
+            'Bsz\ILL\Logic' => 'Bsz\ILL\Factory::getIllLogic',
 
         ],
         'invokables' => [
@@ -123,7 +128,6 @@ $config = [
                 ],
                 'aliases' => [
                     'SolrGviMarc'      =>  'Bsz\RecordDriver\SolrGviMarc',
-                    'SolrGvimarc'      =>  'Bsz\RecordDriver\SolrGviMarc',
                     'SolrFindexMarc'   =>  'Bsz\RecordDriver\SolrFindexMarc',
                     'SolrGviMarcDE101' =>  'Bsz\RecordDriver\SolrGviMarcDE101',
                     'SolrGviMarcDE576' =>  'Bsz\RecordDriver\SolrGviMarcDE576',
@@ -139,19 +143,19 @@ $config = [
                     'VuFind\RecordDriver\EDS'       => 'Bsz\RecordDriver\EDS',
                 ],
                 'delegators' => [
-                    'Bsz\RecordDriver\SolrMarc'        => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarc'      => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrFindexMarc'   => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE627'=> [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE101' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE576' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE600' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE601' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE602' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE603' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE604' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE605' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
-                    'Bsz\RecordDriver\SolrGviMarcDE627' => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrMarc' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarc' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrFindexMarc' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE627' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE101' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE576' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE600' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE601' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE602' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE603' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE604' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE605' => [IlsAwareDelegatorFactory::class],
+                    'Bsz\RecordDriver\SolrGviMarcDE627' => [IlsAwareDelegatorFactory::class],
                 ]
             ],
             'recordtab' => [
@@ -161,13 +165,17 @@ $config = [
                     'Bsz\RecordTab\Articles' => 'Bsz\RecordTab\Factory::getArticles',
                     'Bsz\RecordTab\Notes' => 'Bsz\RecordTab\Factory::getNotes',
                     'Bsz\RecordTab\Libraries' => 'Bsz\RecordTab\Factory::getLibraries',
+                    'Bsz\RecordTab\HoldingsILS' => 'Bsz\RecordTab\Factory::getHoldingsILS',
+                    'Bsz\RecordTab\InterlibraryLoan' => 'Bsz\RecordTab\Factory::getInterLibraryLoan',
                 ],
                 'aliases' => [
                     'VuFind\RecordTab\HoldingsILS' => 'Bsz\RecordTab\HoldingsILS',
+                    'Articles' => 'Bsz\RecordTab\Articles',
                     'Volumes' => 'Bsz\RecordTab\Volumes',
                     'Articles' => 'Bsz\RecordTab\Articles',
                     'Notes' => 'Bsz\RecordTab\Notes',
                     'Libraries' => 'Bsz\RecordTab\Libraries',
+                    'InterlibraryLoan' => 'Bsz\RecordTab\InterlibraryLoan',
                 ]
             ],
             'search_backend' => [
@@ -199,9 +207,9 @@ $config = [
             ],
             'ajaxhandler' => [
                 'factories' => [
-                     'Bsz\AjaxHandler\DedupCheckbox' =>      'Bsz\AjaxHandler\Factory::getDedupCheckbox',
-                     'Bsz\AjaxHandler\SaveIsil' =>           'Bsz\AjaxHandler\Factory::getSaveIsil',
-                     'Bsz\AjaxHandler\LibrariesTypeahead' => 'Bsz\AjaxHandler\Factory::getLibrariesTypeahead',
+                    'Bsz\AjaxHandler\DedupCheckbox' =>      'Bsz\AjaxHandler\Factory::getDedupCheckbox',
+                    'Bsz\AjaxHandler\SaveIsil' =>           'Bsz\AjaxHandler\Factory::getSaveIsil',
+                    'Bsz\AjaxHandler\LibrariesTypeahead' => 'Bsz\AjaxHandler\Factory::getLibrariesTypeahead',
 
                 ],
                 'aliases' => [
@@ -240,7 +248,7 @@ $recordRoutes = [
     'record' => 'Record',
 ];
 
-$routeGenerator = new \Bsz\Route\RouteGenerator();
+$routeGenerator = new RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
 //$routeGenerator->addDynamicRoutes($config, $dynamicRoutes);
 $routeGenerator->addStaticRoutes($config, $staticRoutes);

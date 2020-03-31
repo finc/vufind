@@ -33,7 +33,6 @@ use VuFind\RecordDriver\MarcReaderTrait;
 use VuFind\Search\SearchRunner;
 use VuFindCode\ISBN;
 
-
 /**
  * This is the base BSZ SolrMarc class
  *
@@ -41,7 +40,6 @@ use VuFindCode\ISBN;
  */
 class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
-
     use IlsAwareTrait;
     use MarcReaderTrait;
     use MarcAdvancedTrait;
@@ -60,11 +58,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      * @param type $searchSettings
      */
 
-    public function __construct(FormatMapper $mapper,
-                                Client $mainConfig = null,
-                                $recordConfig = null,
-                                $searchSettings = null)
-    {
+    public function __construct(
+        FormatMapper $mapper,
+        Client $mainConfig = null,
+        $recordConfig = null,
+        $searchSettings = null
+    ) {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
         $this->mapper = $mapper;
     }
@@ -148,7 +147,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function getBibliographicLevel()
     {
-
         $leader = $this->getMarcRecord()->getLeader();
         $bibliographicLevel = $leader{7};
         switch ($bibliographicLevel) {
@@ -197,7 +195,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function isPart()
     {
-
         $part = [
             static::MULTIPART_PART,
             static::BIBLIO_SERIAL,
@@ -335,21 +332,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function isEBook()
     {
         $f007 = $leader = null;
-        $f007_0 = $f007_1 = $leader_7 = '';
-        $f007 = $this->getMarcRecord()->getFields("007", false);
-        foreach ($f007 as $field) {
-            $data = $field->getData();
-            if (strlen($data) > 0) {
-                $f007_0 = $data{0};
-            }
-            if (strlen($data) > 1) {
-                $f007_1 = $data{1};
-            }
-        }
+        $leader_7 = '';
+        $f007 = $this->get007();
         $leader = $this->getMarcRecord()->getLeader();
         $leader_7 = $leader{7};
         if ($leader_7 == 'M') {
-            if ($f007_0 == 'c' && $f007_1 == 'r') {
+            if (preg_match('/^cr/i', $f007)) {
                 return true;
             }
         }
@@ -364,15 +352,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function isElectronic()
     {
         $f007 = $leader = null;
-        $f007_0 = '';
-        $f007 = $this->getMarcRecord()->getFields("007", false);
-        foreach ($f007 as $field) {
-            $data = $field->getData();
-            if (strlen($data) > 0) {
-                $f007_0 = $data{0};
-            }
-        }
-        if ($f007_0 == 'c') {
+        $f007 = $this->get007();
+
+        if (preg_match('/^c/i', $f007)) {
             return true;
         }
         return false;
@@ -387,7 +369,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     {
         $leader = $this->getMarcRecord()->getLeader();
         $leader_7 = $leader{7};
-        if ($leader_7 == 'm') {
+        $f007 = $this->get007();
+
+        if ($leader_7 == 'M' && preg_match('/^t/i', $f007)) {
             return true;
         }
         return false;
@@ -450,9 +434,10 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     {
         $f856 = $this->getMarcRecord()->getFields(856);
         foreach ($f856 as $field) {
-
             $z = $field->getSubfield('z');
-            if (is_string($z) && strpos(strtolower($z), 'kostenfrei') !== FALSE && $field->getIndicator(2) == 0) {
+            if (is_string($z) && $field->getIndicator(2) == 0
+                && preg_match('/^kostenlos|kostenfrei$/i', $z)
+            ) {
                 return true;
             }
         }
@@ -516,13 +501,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                     $tmpSubfields['ill_status'] = $ill_status;
                     $tmpSubfields['ill_icon'] = $ill_icon;
                 } elseif (!isset($tmpSubfields[$subfield->getCode()])) {
-                    // without $recurringSubfields, only the first occurence is 
+                    // without $recurringSubfields, only the first occurence is
                     // included
                     $tmpSubfields[$subfield->getCode()] = $subfield->getData();
                 } elseif ($recurringSubfields) {
                     // with §recurringSubfields, all occurences are put together
                     $tmpSubfields[$subfield->getCode()] .= ' | ' . $subfield->getData();
-
                 }
             }
             if (isset($isil) && $isilAsKey) {
@@ -567,7 +551,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                 $errorReporting = error_reporting();
                 error_reporting(E_ERROR);
                 try {
-//                    error_reporting(0); 
+//                    error_reporting(0);
                     $marc = new File_MARCXML($marc, File_MARCXML::SOURCE_STRING);
                 } catch (Exception $ex) {
                     /**
@@ -575,14 +559,16 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                      */
                     $marc = preg_replace(['/#[0-9]*;/', '/&(?!amp;)/'], ['', '&amp;'], $backup);
                     $marc = new File_MARCXML($marc, File_MARCXML::SOURCE_STRING);
-                    // Try again                             
+                    // Try again
                 }
                 error_reporting($errorReporting);
             } else {
                 // When indexing over HTTP, SolrMarc may use entities instead of
                 // certain control characters; we should normalize these:
                 $marc = str_replace(
-                    ['#29;', '#30;', '#31;'], ["\x1D", "\x1E", "\x1F"], $marc
+                    ['#29;', '#30;', '#31;'],
+                    ["\x1D", "\x1E", "\x1F"],
+                    $marc
                 );
                 $marc = new File_MARC($marc, File_MARC::SOURCE_STRING);
             }
@@ -605,12 +591,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $formats = $this->getFormats();
         if ($this->isArticle()) {
             return 'Article';
-        } else if ($this->isSerial()) {
+        } elseif ($this->isSerial()) {
             // Newspapers, Journals
             return 'Journal';
-        } else if ($this->isEBook() || in_array('Book', $formats)) {
+        } elseif ($this->isEBook() || in_array('Book', $formats)) {
             return 'Book';
-        } else if (count($formats) > 0) {
+        } elseif (count($formats) > 0) {
             return array_shift($formats);
         }
         return 'Unknown';
@@ -859,5 +845,25 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         return $id == 'Solr' ? 'VuFind' : $id;
     }
 
-
+    /**
+     * Get the two char code in 007
+     *
+     * @return string
+     */
+    private function get007()
+    {
+        $f007 = null;
+        $f007_0 = $f007_1 = '';
+        $f007 = $this->getMarcRecord()->getFields("007", false);
+        foreach ($f007 as $field) {
+            $data = strtoupper($field->getData());
+            if (strlen($data) > 0) {
+                $f007_0 = $data{0};
+            }
+            if (strlen($data) > 1) {
+                $f007_1 = $data{1};
+            }
+        }
+        return $f007_0.$f007_1;
+    }
 }

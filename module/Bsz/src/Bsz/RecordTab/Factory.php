@@ -19,34 +19,38 @@
  */
 
 namespace Bsz\RecordTab;
+
+use Bsz\Config\Client;
+use Bsz\ILL\Logic;
 use Interop\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request;
-use Zend\Session\Container;
-
+use Zend\Session\Container as SessionContainer;
+use Zend\Session\SessionManager as SessionManager;
 
 /**
  * Description of Factory
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory {
-    
+class Factory
+{
+
     /**
      * Factory for volumes tab
      *
-     * @param ContainerInterface $container
+     * @param ContainerInterface $container Service manager.
      *
      * @return Volumes
      */
     public static function getVolumes(ContainerInterface $container)
     {
         $last = '';
-        if (isset($_SESSION['Search']['last']) ){
+        if (isset($_SESSION['Search']['last'])) {
             $last = urldecode($_SESSION['Search']['last']);
-        }   
+        }
         $isils = [];
-        if (strpos($last, 'consortium=FL') === FALSE 
-            && strpos($last, 'consortium=ZDB') === FALSE
+        if (strpos($last, 'consortium=FL') === false
+            && strpos($last, 'consortium=ZDB') === false
         ) {
             $client = $container->get('Bsz\Config\Client');
             $isils = $client->getIsils();
@@ -55,61 +59,63 @@ class Factory {
 
         $volumes = new Volumes($container->get('VuFind\SearchRunner'), $isils);
 
-        
+
         return $volumes;
     }
+
     /**
      * Factory for articles tab
      *
-     * @param ContainerInterface $container
+     * @param ServiceManager $sm Service manager.
      *
-     * @return Articles
+     * @return Volumes
      */
     public static function getArticles(ContainerInterface $container)
     {
         $last = '';
-        if (isset($_SESSION['Search']['last']) ){
+        if (isset($_SESSION['Search']['last'])) {
             $last = urldecode($_SESSION['Search']['last']);
-        }   
+        }
         $isils = [];
-        if (strpos($last, 'consortium=FL') === FALSE 
-            && strpos($last, 'consortium=ZDB') === FALSE
+        if (strpos($last, 'consortium=FL') === false
+            && strpos($last, 'consortium=ZDB') === false
         ) {
             $client = $container->get('Bsz\Config\Client');
             $isils = $client->getIsils();
         }
-        
+
         $articles = new Articles($container->get('VuFind\SearchRunner'), $isils);
         $request = new Request();
         $url = strtolower($request->getUriString());
         return $articles;
     }
-    
+
     /**
-     * Factory for libraries tab 
-     * 
+     * Factory for libraries tab
+     *
      * @param ContainerInterface $container
-     * @return Libraries
+     * @return LibrariesTab
      */
     public static function getLibraries(ContainerInterface $container)
     {
         $libraries = $container->get('Bsz\Config\Libraries');
         $client = $container->get('Bsz\Config\Client');
-        $swbonly = $client->getTag() === 'bsz' ?? false;
-        return new Libraries($libraries, !$client->is('disable_library_tab'), $swbonly);
+        return new Libraries($libraries, !$client->is('disable_library_tab'));
     }
+
     /**
      * Factory for description tab
-     * 
+     *
      * @param ContainerInterface $container
-     * @return Description
+     * @return LibrariesTab
      */
     public static function getDescription(ContainerInterface $container)
     {
         $client = $container->get('Bsz\Config\Client');
         return new Description(!$client->is('disable_description_tab'));
     }
-        /**
+
+    /**
      * Factory for HoldingsILS tab plugin.
      *
      * @param ContainerInterface $container Service manager.
@@ -129,5 +135,29 @@ class Factory {
             $catalog = false;
         }
         return new HoldingsILS($catalog);
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return InterlibraryLoan
+     */
+    public static function getInterlibraryLoan(ContainerInterface $container)
+    {
+        $sm = $container->get(SessionManager::class);
+        $search = $sm->getStorage()->offsetGet('Search');
+        $lastsearch = $search ? $search->offsetGet('last') : '';
+        $lastsearch = urldecode($lastsearch);
+        $illmode = false;
+
+        if (substr_count($lastsearch, 'consortium:"FL"') > 0 ||
+            substr_count($lastsearch, 'consortium:"ZDB"') > 0
+        ) {
+            $illmode = true;
+        }
+        $libraries = $container->get(\Bsz\Config\Libraries::class);
+        $client = $container->get(Client::class);
+        $library = $libraries->getFirstActive($client->getIsils());
+
+        return new InterlibraryLoan($container->get(Logic::class), $library, $illmode);
     }
 }

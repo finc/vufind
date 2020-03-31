@@ -1,0 +1,123 @@
+<?php
+$url = $this->recordLink()->getUrl($this->driver).'/ILLForm';
+$network = $this->driver->getNetwork();
+if ($this->customUrl) {
+    $url = $this->openUrl($this->driver, 'illform')->getUrl();
+}
+$account = $this->auth()->getManager();
+$class = '';
+if ($account->loginEnabled() && !$account->isLoggedIn() && isset($authMethod) && $authMethod == 'shibboleth'):
+    $class = 'disabled login-required';
+endif;
+// is this item available at current library
+$current = $this->record($this->driver)->isAtCurrentLibrary(true);
+// is this item available for interlending
+$available = $this->record($this->driver)->isAvailableForInterlending();
+// for SWB hits this is an ID of a parallel edition
+// for not-SWB hits, this is an id of a similar item in SWB.
+$swb = $this->record($this->driver)->getSwbId();
+$basePath = '/Record/';
+?>
+<tr>
+    <th>&nbsp;</th>
+    <td>       
+        <?php // vorhanden in lokaler Bibliothek - kein Aufsatz, Zeitschrift oder Zeitung?>
+        <?php if ($current && !($this->driver->isJournal() || $this->driver->isArticle() || $this->driver->isNewsPaper())): ?>
+            <?php if ($network == 'SWB'): ?>
+                <strong>
+                    <?php if (count($swb) > 0): ?>                    
+                        <?= $this->transEsc('parallel_editions_available') ?>
+                        <ul>                    
+                        <?php foreach ($swb as $id): ?>
+                            <li><a class="" href="<?=$basePath.$id?>"><?= $this->transEsc('to_parallel_edition') ?></a></li>                
+                        <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <?= $this->transEsc('available_at_current_library') ?>
+                        <?= $this->recordLink()->linkPPN($this->driver) ?> 
+                    <?php endif; ?>
+                </strong>
+            <?php else: ?>
+                <strong>
+                    <?= $this->transEsc('available_at_current_library') ?>
+                    <?php if (count($swb) > 0): ?>                    
+                        <ul>                    
+                        <?php foreach ($swb as $id): ?>
+                            <li><a class="" href="<?=$basePath.$id?>"><?= $this->transEsc('to_local_hit') ?></a></li>                
+                        <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </strong>
+            <?php endif; ?>
+        
+
+        <?php // Artikel - vorhanden in lokaler Bibliothek?>
+        <?php elseif ($current && ($this->driver->isJournal() || $this->driver->isArticle() || $this->driver->isNewsPaper())): ?>
+                <?php // es gibt SWB Treffer - diese werden verlinkt?>
+                <?php if ($network !== 'SWB' && count($swb) > 0): ?>  
+                    <strong>
+                        <?= $this->transEsc('available_at_current_library') ?>
+                        <ul>                    
+                        <?php foreach ($swb as $id): ?>
+                            <li><a class="" href="<?=$basePath.$id?>"><?= $this->transEsc('to_local_hit') ?></a></li>                
+                        <?php endforeach; ?>
+                        </ul>
+                    </strong>
+                <?php else: // Titel ist lokal verfügbar, aber trotzdem bestellbar, da wir die Bestandsangaben nicht prüfen können?> 
+                <div class="col-sm-3" style="padding-left: 0;">                  
+                    <span <?php if (strpos($class, 'login-required') !== false): ?>
+                       data-toggle="popover"
+                       data-trigger="focus"
+                       role="button"
+                       tabindex
+                       data-content="<?=$this->transEsc('shib_login_required')?>"
+                       data-title="<?=$this->transEsc('shib_login_required_title')?>"            
+                        <?php endif; ?>>
+                        <a title="<?= $this->transEsc('Interlibrary Loan') ?>" 
+                           accesskey="" href="<?= $url ?>" 
+                           id="illform" class="<?=$this->escapeHtmlAttr($class)?> btn btn-success btn-sm <?php if ($this->customUrl):?>external hasicon<?php endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
+                    </span>
+                </div>
+                <div class="col-sm-9">
+                    <span class="help-text">
+                        <?= $this->transEsc('ILL::article_local') ?><br/>
+                        <?= $this->recordLink()->linkPPN($this->driver) ?>                        
+                    </span>                    
+                </div>
+                <?php endif; ?>
+                
+        <?php // nicht in lokaler Bibliothek, für die Fernleihe verfügbar?>
+        <?php elseif (!$current && $available): ?>  
+        <span <?php if (strpos($class, 'login-required') !== false): ?>
+           data-toggle="popover"
+           data-trigger="focus"
+           role="button"
+           tabindex
+           data-content="<?=$this->transEsc('shib_login_required')?>"
+           data-title="<?=$this->transEsc('shib_login_required_title')?>"            
+            <?php endif; ?>>
+            <a title="<?= $this->transEsc('Interlibrary Loan') ?>" 
+               href="<?= $url ?>"                
+               id="illform" class="<?=$this->escapeHtmlAttr($class)?> btn btn-success btn-sm <?php if ($this->customUrl):?>external hasicon<?php endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a></span>
+
+        <?php // Nicht per Fernleihe ausleihbar?> 
+        <?php else: ?>
+            <?php if ($this->driver->isFree()): ?>
+                <strong><?= $this->transEsc('not_available_for_ill_free') ?></strong>              
+            <?php elseif ($this->driver->isCollection()): ?>
+                <strong><?= $this->transEsc('not_available_for_ill_collection') ?></strong>              
+            <?php else: ?>
+                <strong><?= $this->transEsc('not_available_for_ill') ?></strong>   
+                <?php // Show link to SWB hit even if its not available?>
+                <?php if ($network !== 'SWB' && $this->record($this->driver)->hasSwbId() && $this->record($this->driver)->getSwbId() != $this->driver->getUniqueId()): ?>
+                    <ul>                    
+                    <?php foreach ($swb as $id): ?>
+                        <li><a class="" href="<?=$basePath.$id?>"><?= $this->transEsc('to_local_hit') ?></a></li>                
+                    <?php endforeach; ?>                
+                    </ul>
+            <?php endif; ?>
+            
+            <?php endif; ?>
+        <?php endif; ?>
+    </td>
+</tr>

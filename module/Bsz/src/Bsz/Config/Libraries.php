@@ -24,7 +24,6 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-
 /**
  * Class for reading library config
  *
@@ -32,7 +31,6 @@ use Zend\Db\TableGateway\TableGateway;
  */
 class Libraries extends TableGateWay
 {
-
     const ID_BAWUE = 1;
     const ID_SAARLAND = 2;
     const ID_SACHSEN = 3;
@@ -54,10 +52,10 @@ class Libraries extends TableGateWay
                 ->join('authentications', 'fk_auth = authentications.id', ['auth_name' => 'name'])
                 ->order('libraries.name')
                 ->order('isil');
-            $select->where->
-                    and
-                    ->equalTo('is_ill_active', 1)
-                    ->in('isil', $isils);    
+            $select->where->nest
+                ->equalTo('is_ill_active', 1)
+                ->and
+                ->in('isil', $isils);
 
             $results = $this->selectWith($select);
 
@@ -81,7 +79,8 @@ class Libraries extends TableGateWay
      * @param array $isils
      * @return array
      */
-    public function getByIsils($isils) {
+    public function getByIsils($isils)
+    {
         $sql = new Sql($this->getAdapter());
         $select = $sql->select()
                   ->from('libraries')
@@ -92,7 +91,6 @@ class Libraries extends TableGateWay
             $select->where->and->in('isil', $isils);
         }
         return $this->selectWith($select);
-
     }
     /**
      * Get one Library by ISIL
@@ -100,7 +98,8 @@ class Libraries extends TableGateWay
      * @param string $isil
      * @return Library
      */
-    public function getByIsil($isil) {
+    public function getByIsil($isil)
+    {
         $sql = new Sql($this->getAdapter());
         $select = $sql->select()
             ->from('libraries')
@@ -113,7 +112,6 @@ class Libraries extends TableGateWay
             return $this->selectWith($select)->current();
         }
         return null;
-
     }
     /**
      * For some use-cases, we need to get the first selected library
@@ -166,7 +164,7 @@ class Libraries extends TableGateWay
         return $this->selectWith($select);
     }
     
-    public function getByIdPDomain($domain) 
+    public function getByIdPDomain($domain)
     {
         $sql = new Sql($this->getAdapter());
         $select = $sql->select()
@@ -234,7 +232,6 @@ class Libraries extends TableGateWay
      */
     public function compareIsils($isils)
     {
-
         if (count($isils) !== count($this->libraries)) {
             return false;
         }
@@ -247,14 +244,14 @@ class Libraries extends TableGateWay
     }
     /**
      * Returns all active ill libraries that matches the given name
-     * 
+     *
      * @param string    $name
      * @param int       $limit
-     * 
+     *
      * @return array
      */
-    public function getActiveByName($name, $limit = 15, $boss) {
-        
+    public function getActiveByName($name, $limit = 15, $boss)
+    {
         $sql = new Sql($this->getAdapter());
         $select = $sql->select()
             ->from('libraries')
@@ -265,7 +262,7 @@ class Libraries extends TableGateWay
                 ->nest
                     ->like('libraries.name', '%'.$name.'%')
                     ->or
-                    ->like('libraries.isil', '%'.$name.'%')                
+                    ->like('libraries.isil', '%'.$name.'%')
                 ->unnest
                 ->and
                     ->equalTo('is_ill_active', 1);
@@ -274,7 +271,7 @@ class Libraries extends TableGateWay
             $select->where->and->equalTo('is_boss', (int)$boss);
         }
 
-        $results = $this->selectWith($select);        
+        $results = $this->selectWith($select);
         return $results;
     }
 }
