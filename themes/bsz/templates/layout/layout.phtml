@@ -1,3 +1,8 @@
+<?php
+
+use Zend\View\Helper\HeadScript;
+
+?>
 <?=$this->doctype('HTML5')?>
 <html lang="<?=$this->layout()->userLang?>">
   <head>
@@ -9,12 +14,12 @@
     <?$this->headMeta()->appendName('keywords', 'boss4, boss, bsz, bibliothek, bücher, zeitschriften, aufsätze')?>
     <?$this->headMeta()->appendName('application-name', 'BSZ - One Step Search (BOSS) v4')?>
 
-    <? $this->headTitle()->setPostfix(' - '.$this->client()->getTitle());?>
+    <?php $this->headTitle()->setPostfix(' - '.$this->client()->getTitle());?>
     <?=$this->headTitle()?>
-    <?
+    <?php
       // Set up OpenSearch link:
       $this->headLink(
-        [
+          [
           'href' => $this->url('search-opensearch') . '?method=describe',
           'type' => 'application/opensearchdescription+xml',
           'title' => $this->transEsc('Library Catalog Search'),
@@ -28,24 +33,24 @@
     <?$this->headMeta()->appendProperty('og:url', $this->serverUrl(true))?>
     <?$this->headMeta()->appendProperty('og:description', $this->transEsc('homepage_text'))?>
 
-    <? if ($this->client()->isisilSession()): ?>
+    <?php if ($this->client()->isisilSession()): ?>
     <?$this->headMeta()->appendProperty('og:image', $this->serverUrl().$this->imageLink('logo/default.png'))?>
-    <? else: ?>
+    <?php else: ?>
     <?$this->headMeta()->appendProperty('og:image', $this->serverUrl().$this->imageLink($this->clientAsset()->getLogo()))?>
-    <? endif;?>
+    <?php endif;?>
     <?=$this->headMeta()?>
 
     <!-- RTL styling -->
-    <? if ($this->layout()->rtl) {
-      $this->headLink()->appendStylesheet('vendor/bootstrap-rtl.min.css');
+    <?php if ($this->layout()->rtl) {
+        $this->headLink()->appendStylesheet('vendor/bootstrap-rtl.min.css');
     } ?>
     <?=$this->headLink()?>
     <?=$this->headStyle()?>
-    <?
+    <?php
       if (!isset($this->renderingError)) {
-        // Add translation strings
-        $this->jsTranslations()->addStrings(
-          [
+          // Add translation strings
+          $this->jsTranslations()->addStrings(
+            [
             'add_tag_success' => 'add_tag_success',
             'bulk_email_success' => 'bulk_email_success',
             'bulk_noitems_advice' => 'bulk_noitems_advice',
@@ -69,9 +74,9 @@
             'sms_success' => 'sms_success'
           ]
         );
-        // Add libphonenumber.js strings
-        $this->jsTranslations()->addStrings(
-          [
+          // Add libphonenumber.js strings
+          $this->jsTranslations()->addStrings(
+            [
             "Phone number invalid" => 'libphonenumber_invalid',
             "Invalid country calling code" => 'libphonenumber_invalidcountry',
             "Invalid region code" => 'libphonenumber_invalidregion',
@@ -81,9 +86,9 @@
             "Phone number too short after IDD" => 'libphonenumber_tooshortidd'
           ]
         );
-        // Deal with cart stuff:
-        $cart = $this->cart();
-        $this->jsTranslations()->addStrings([
+          // Deal with cart stuff:
+          $cart = $this->cart();
+          $this->jsTranslations()->addStrings([
             'openurl_tooltip_left' => 'openurl_tooltip_left',
             'openurl_tooltip_right' => 'openurl_tooltip_right',
             'openurl_tooltip_green' => 'openurl_tooltip_green',
@@ -91,23 +96,23 @@
             'openurl_tooltip_red' => 'openurl_tooltip_red',
             'no_result' => 'no result'
         ]);
-        if ($cart->isActive()) {
-          $this->headScript()->appendFile("vendor/cookies.js");
-          $this->headScript()->appendFile("cart.js");
-          $domain = $cart->getCookieDomain();
-          if (!empty($domain)) {
-          $this->headScript()->appendScript(
+          if ($cart->isActive()) {
+              $this->headScript()->appendFile("vendor/cookies.js");
+              $this->headScript()->appendFile("cart.js");
+              $domain = $cart->getCookieDomain();
+              if (!empty($domain)) {
+                  $this->headScript()->appendScript(
               'VuFind.cart.setDomain("' . $domain . '");'
           );
-          }
-          $cookiePath = $cart->getCookiePath();
-          if (!empty($cookiePath)) {
-            $this->headScript()->appendScript(
-              'VuFind.cart.setCookiePath("' . $cookiePath . '");'
+              }
+              $cookiePath = $cart->getCookiePath();
+              if (!empty($cookiePath)) {
+                  $this->headScript()->appendScript(
+                'VuFind.cart.setCookiePath("' . $cookiePath . '");'
             );
-          }
-          $this->jsTranslations()->addStrings(
-            [
+              }
+              $this->jsTranslations()->addStrings(
+              [
               'addBookBag' => 'Add to Book Bag',
               'bookbagFull' => 'bookbag_full_msg',
               'bookbagMax' => $cart->getMaxSize(),
@@ -120,14 +125,14 @@
               'viewBookBag' => 'View Book Bag'
             ]
           );
-          $this->jsTranslations()->addStrings(
-            [
+              $this->jsTranslations()->addStrings(
+              [
                 'ill_form_error' => 'ill_error_in_form'
             ]
           );
-        }
-        $this->headScript()->appendScript(
-          'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'
+          }
+          $this->headScript()->appendScript(
+            'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'
         );
       }
 
@@ -138,34 +143,34 @@
           $this->headScript()->appendFile("keep_alive.js");
       }
     ?>
-    <?
+    <?php
       $root = rtrim($this->url('home'), '/');
       $translations = $this->jsTranslations()->getJSON();
       $dsb = DEFAULT_SEARCH_BACKEND;
       $setupJS = <<<JS
 VuFind.path = '{$root}';
 VuFind.defaultSearchBackend = '{$dsb}';
-VuFind.addTranslations({$translations});
+VuFind.addTranslations({$translations};)
 JS;
       $this->headScript()->appendScript($setupJS);
     ?>
     <?=$this->headScript()?>
   </head>
-  <body class="template-dir-<?=$this->templateDir?> template-name-<?=$this->templateName?> <?=$this->layoutClass('offcanvas-row')?><? if ($this->layout()->rtl): ?> rtl<? endif; ?>">
-    <? // Set up the search box -- there are three possible cases:
+  <body class="template-dir-<?=$this->templateDir?> template-name-<?=$this->templateName?> <?=$this->layoutClass('offcanvas-row')?><?php if ($this->layout()->rtl): ?> rtl<?php endif; ?>">
+    <?php // Set up the search box -- there are three possible cases:
       // 1. No search box was set; we should default to the normal box
       // 2. It was set to false; we should display nothing
       // 3. It is set to a custom string; we should display the provided version
       // Set up default search box if no data was provided from the template;
       // this covers case 1.  Cases 2 and 3 are then covered by logic below.
       if (!isset($this->layout()->searchbox)) {
-        $this->layout()->searchbox = $this->render('search/searchbox.phtml');
+          $this->layout()->searchbox = $this->render('search/searchbox.phtml');
       }
     ?>
     <header class="hidden-print">
         <div class="navbar navbar-default navbar-fixed-top">
             <div class="container white-bg">
-                <div class="navbar-brand">
+                <div class="navbar-brand" data-toggle="tooltip" title="<?=$this->transEsc('to_bsz_website')?>" data-placement="bottom">
                     <?=$this->clientAsset()->getLogoHtml()?>
                 </div>
             </div>
@@ -178,29 +183,29 @@ JS;
     <main role="main" class="main">
         <nav class="container breadcrumbs">
             <div class="row">
-                <? if((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
+                <?php if ((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
                   && !empty($this->layout()->breadcrumbs)
                   && $this->layout()->breadcrumbs !== false
                 ): ?>
                   <ul class="breadcrumb hidden-print">
-                  <? if(is_array($this->layout()->breadcrumbs)): ?>
-                    <? if(count($this->layout()->breadcrumbs) > 1): ?>
+                  <?php if (is_array($this->layout()->breadcrumbs)): ?>
+                    <?php if (count($this->layout()->breadcrumbs) > 1): ?>
                         <?=$this->render('breadcrumbs/multi.phtml', [
                           'parents' => $this->layout()->breadcrumbs,
                             'title' => $this->layout()->title,
                             'from' => $this->layout()->from
                         ]) ?>
-                    <? else: ?>
+                    <?php else: ?>
                         <?=$this->render('breadcrumbs/default.phtml', [
                           'parents' => $this->layout()->breadcrumbs,
                             'title' => $this->layout()->title
                           ]) ?>
-                    <? endif; ?>
-                  <? else: ?>
+                    <?php endif; ?>
+                  <?php else: ?>
                     <?=$this->layout()->breadcrumbs ?>
-                  <? endif; ?>
+                  <?php endif; ?>
                   </ul>
-                <? endif; ?>
+                <?php endif; ?>
             </div>
         </nav>
         <div class="container">
@@ -234,8 +239,8 @@ JS;
     <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
     <?=$this->googleanalytics()?>
     <?=$this->piwik()?>
-    <? if ($this->recaptcha()->active()): ?>
-      <?=$this->inlineScript(\Zend\View\Helper\HeadScript::FILE, "https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit&hl=" . $this->layout()->userLang, 'SET')?>
-    <? endif; ?>
+    <?php if ($this->recaptcha()->active()): ?>
+      <?=$this->inlineScript(HeadScript::FILE, "https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit&hl=" . $this->layout()->userLang, 'SET')?>
+    <?php endif; ?>
   </body>
 </html>
