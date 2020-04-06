@@ -1,17 +1,26 @@
 <?php // This is a text-only email template; do not include HTML! ?>
+<?=transEsc('mail_sender_not_checked')?>
 
-<?=$this->client()->get('Site')->get('title')?>
-------------------------------------------------------------
-  <?=$this->driver->getBreadcrumb()?>
-
-  <?=$this->driver->getPrimaryAuthor()?>
-
-  <?=$this->driver->getCleanISBN() ?? $this->driver->getCleanISSN() ?>
-
-  <?=$this->translate('email_link')?>: <?=$this->serverUrl($this->recordLink()->getUrl($this->driver))?>
-
-------------------------------------------------------------
-<?php if (!empty($this->message)): ?><?=$this->translate("Message From Sender")?>:
+<?php if (!empty($this->message)): ?>
+<?=$this->translate("Message From Sender")?>:
 <?=$this->message?>
 <?php endif; ?>
+
+<?=$this->client()->get('Site')->get('title')?>
+<?=$this->driver->getBreadcrumb()?>
+<?=$this->driver->getPrimaryAuthor()?>
+<?php if (!empty($this->driver->getCleanISBN())): ?>
+ISBN: <?=$this->driver->getCleanISBN()?>
+<?php endif; ?>
+<?php if (!empty($this->driver->getCleanISSN())): ?>
+ISSN: <?=$this->driver->getCleanISSN()?>
+<?php endif; ?>
+<?php $details = $this->driver->tryMethod('getPublicationDetails'); if($details):?>
+<?=$this->transEsc('Published')?>:
+<?php foreach($details as $detail):?>
+<?=$detail?>
+<?php endforeach; ?>
+<?php endif; ?>
+
+<?=$this->translate('email_link')?>: <?=$this->serverUrl($this->recordLink()->getUrl($this->driver))?>
 
