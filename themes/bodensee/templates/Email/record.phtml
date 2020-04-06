@@ -1,4 +1,7 @@
 <?php // This is a text-only email template; do not include HTML! ?>
+
+<?=$this->client()->get('Site')->get('title')?>
+
 <?=$this->transEsc('mail_sender_not_checked')?>
 
 <?php if (!empty($this->message)): ?>
@@ -6,14 +9,17 @@
 <?=$this->message?>
 <?php endif; ?>
 
-<?=$this->client()->get('Site')->get('title')?>
 <?=$this->driver->getBreadcrumb()?>
+
 <?=$this->driver->getPrimaryAuthor()?>
+
 <?php if (!empty($this->driver->getCleanISBN())): ?>
 ISBN: <?=$this->driver->getCleanISBN()?>
+
 <?php endif; ?>
 <?php if (!empty($this->driver->getCleanISSN())): ?>
 ISSN: <?=$this->driver->getCleanISSN()?>
+
 <?php endif; ?>
 <?php $details = $this->driver->tryMethod('getPublicationDetails'); if($details):?>
 <?=$this->transEsc('Published') ?>:
