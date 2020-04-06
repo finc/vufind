@@ -1,4 +1,4 @@
-<h2>Datenschutzerklärung</h2>
+<h2>Privatsphäre-Einstellungen</h2>
 
 <p>Gemäß <a href="https://www.bsz-bw.de/datenschutz.html" class="external">Artikel 13 der Europäischen Datenschutzgrundverordnung (EU-DSGVO)</a></p>
 
@@ -10,7 +10,7 @@
     <li>Bezeichnung der abgerufenen Datei</li>
     <li>Datum und Uhrzeit des Abrufs</li>
     <li>übertragene Datenmenge</li>
-    <li>Rückmeldung Ihres Browsers, dass er die aktuelle angezeigte Webseite gerade erfolgreich abgerufen hat</li> 
+    <li>Rückmeldung Ihres Browsers, dass er die aktuelle angezeigte Webseite gerade erfolgreich abgerufen hat</li>
 </ul>
 <p>Die IP-Adresse wird nicht gespeichert. </p>
 
@@ -18,11 +18,11 @@
 
 <p>Unsere Internetseiten verwenden an mehreren Stellen Cookies. Sie dienen dazu, unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen. Cookies sind kleine Textdateien, die auf Ihrem Rechner abgelegt werden und die Ihr Browser ggf. speichert. Alle von den Webservern des BSZ verwendeten Cookies sind sogenannte „Sessions-Cookies“. Sie werden nach Ende Ihres Besuchs deshalb automatisch von Ihrem Browser gelöscht. Die vom BSZ verwendeten Cookies richten auf Ihrem Rechner keinen Schaden an und enthalten keine Viren.</p>
 
-<?  if($this->piwik('siteid') > 0): ?>
+<?php  if ($this->piwik('siteid') > 0): ?>
 <h3>Matomo</h3>
 <p>Wir benutzen die Tracking-Software Matomo um unsere Benutzer anonym zu zählen. </p>
-<iframe style="border: 0; width: 100%; height: 160px" src="<?=$this->piwik('baseurl')?>/index.php?module=CoreAdminHome&action=optOut&idsite=<?=$this->piwik('siteid')?>&language=<?=$this->layout()->userLang?>"></iframe> 
-<? endif; ?>
+<iframe style="border: 0; width: 100%; height: 160px" src="<?=$this->piwik('baseurl')?>/index.php?module=CoreAdminHome&action=optOut&idsite=<?=$this->piwik('siteid')?>&language=<?=$this->layout()->userLang?>"></iframe>
+<?php endif; ?>
 
 
 <h3>Ihr gutes Recht: Auskunfterteilung</h3>
