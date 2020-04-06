@@ -4,7 +4,7 @@ Very basic styles
 
 .nofloat {
     float: none;
-    clear: both;    
+    clear: both;
     margin: 0;
     padding: 0;
 }
@@ -13,10 +13,10 @@ Very basic styles
     // this avoids double padding for content that already has a col-sm-12
     padding-left: 0;
     padding-right: 0;
-    
+
 }
 /**
-Hintergrundfarbverlauf beim Body 
+Hintergrundfarbverlauf beim Body
 **/
 html {
     min-height: 100%;
@@ -34,11 +34,11 @@ html {
 }
 
 /*Minimaler abstand zw den Zeilen, damit Bilder nicht am Text kleben*/
-.results-container .result{    
-    
+.results-container .result{
+
     &:nth-of-type(even) {
         background-color: @gray-lighter;
-    }  
+    }
 }
 .row .record, .row .result {
     table.table {
@@ -46,8 +46,8 @@ html {
             border-top: 0;
         }
         td {
-            border-top: 0;      
-        }            
+            border-top: 0;
+        }
         // table inside a table - ebsco
         table {
             td, th {
@@ -55,7 +55,7 @@ html {
             }
         }
     }
-    
+
 }
 /*Platzhalter für die Coverbilder*/
 .cover-placeholder {
@@ -75,7 +75,7 @@ html {
     &:extend(.pagination-lg);
     .active > a,
     .active > span{
-        font-weight: bold;        
+        font-weight: bold;
     }
 }
 
@@ -138,7 +138,7 @@ Ellipsis for too long texts
 }
 
 /**
-H4 headings shoulc look like text. 
+H4 headings shoulc look like text.
 **/
 h4, .h4 {
     color: @text-color;
@@ -157,18 +157,18 @@ h4, .h4 {
         .panel-heading {
             cursor: pointer;
         }
-        
+
     }
 }
 .tooltip-inner {
     max-width: 640px;
 }
 
-.panel-group.duplicates .panel{    
-    
+.panel-group.duplicates .panel{
+
     &:nth-of-type(even) {
         background-color: @table-bg-accent;
-    }  
+    }
 }
 
 .indent {
@@ -209,4 +209,9 @@ body.offcanvas.template-dir-record .offcanvas-toggle {
 .copy-clipboard-toggle {
     cursor: pointer;
     color: @link-color;
+}
+
+table.tablesorter thead tr th .tablesorter-header-inner::after {
+    float: none !important;
+    margin-left: 5px;
 }
