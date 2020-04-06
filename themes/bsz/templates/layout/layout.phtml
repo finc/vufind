@@ -50,7 +50,7 @@ use Zend\View\Helper\HeadScript;
       if (!isset($this->renderingError)) {
           // Add translation strings
           $this->jsTranslations()->addStrings(
-            [
+              [
             'add_tag_success' => 'add_tag_success',
             'bulk_email_success' => 'bulk_email_success',
             'bulk_noitems_advice' => 'bulk_noitems_advice',
@@ -76,7 +76,7 @@ use Zend\View\Helper\HeadScript;
         );
           // Add libphonenumber.js strings
           $this->jsTranslations()->addStrings(
-            [
+              [
             "Phone number invalid" => 'libphonenumber_invalid',
             "Invalid country calling code" => 'libphonenumber_invalidcountry',
             "Invalid region code" => 'libphonenumber_invalidregion',
@@ -102,17 +102,17 @@ use Zend\View\Helper\HeadScript;
               $domain = $cart->getCookieDomain();
               if (!empty($domain)) {
                   $this->headScript()->appendScript(
-              'VuFind.cart.setDomain("' . $domain . '");'
+                      'VuFind.cart.setDomain("' . $domain . '");'
           );
               }
               $cookiePath = $cart->getCookiePath();
               if (!empty($cookiePath)) {
                   $this->headScript()->appendScript(
-                'VuFind.cart.setCookiePath("' . $cookiePath . '");'
+                      'VuFind.cart.setCookiePath("' . $cookiePath . '");'
             );
               }
               $this->jsTranslations()->addStrings(
-              [
+                  [
               'addBookBag' => 'Add to Book Bag',
               'bookbagFull' => 'bookbag_full_msg',
               'bookbagMax' => $cart->getMaxSize(),
@@ -126,13 +126,13 @@ use Zend\View\Helper\HeadScript;
             ]
           );
               $this->jsTranslations()->addStrings(
-              [
+                  [
                 'ill_form_error' => 'ill_error_in_form'
             ]
           );
           }
           $this->headScript()->appendScript(
-            'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'
+              'var userIsLoggedIn = ' . ($this->auth()->isLoggedIn() ? 'true' : 'false') . ';'
         );
       }
 
@@ -150,7 +150,7 @@ use Zend\View\Helper\HeadScript;
       $setupJS = <<<JS
 VuFind.path = '{$root}';
 VuFind.defaultSearchBackend = '{$dsb}';
-VuFind.addTranslations({$translations};)
+VuFind.addTranslations({$translations});
 JS;
       $this->headScript()->appendScript($setupJS);
     ?>
