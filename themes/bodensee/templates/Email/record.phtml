@@ -1,5 +1,5 @@
 <?php // This is a text-only email template; do not include HTML! ?>
-<?=transEsc('mail_sender_not_checked')?>
+<?=$this->transEsc('mail_sender_not_checked')?>
 
 <?php if (!empty($this->message)): ?>
 <?=$this->translate("Message From Sender")?>:
@@ -16,8 +16,8 @@ ISBN: <?=$this->driver->getCleanISBN()?>
 ISSN: <?=$this->driver->getCleanISSN()?>
 <?php endif; ?>
 <?php $details = $this->driver->tryMethod('getPublicationDetails'); if($details):?>
-<?=$this->transEsc('Published')?>:
-<?php foreach($details as $detail):?>
+<?=$this->transEsc('Published') ?>:
+<?php foreach($details as $detail): ?>
 <?=$detail?>
 <?php endforeach; ?>
 <?php endif; ?>
