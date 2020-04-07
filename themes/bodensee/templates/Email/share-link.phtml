@@ -1,13 +1,14 @@
 <?php // This is a text-only email template; do not include HTML! ?>
-
 <?=$this->client()->get('Site')->get('title')?>
 
-------------------------------------------------------------
-<?php if (!empty($this->message)): ?><?=$this->translate("Message From Sender")?>:
+<?=$this->transEsc('mail_sender_not_checked')?>
+
+<?php if (!empty($this->message)): ?>
+<?=$this->translate("Message From Sender")?>:
 <?=$this->message?>
 
 <?php endif; ?>
-  <?=$this->translate('email_link')?>: <?=$this->shortenUrl($this->msgUrl)?>
 
-------------------------------------------------------------
+<?=$this->translate('email_link')?>:  <?=$this->translate('email_link')?>: <?=$this->shortenUrl($this->msgUrl)?>
+
 

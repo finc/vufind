@@ -7,9 +7,10 @@
 <?php if (!empty($this->message)): ?>
 <?=$this->translate("Message From Sender")?>:
 <?=$this->message?>
+
 <?php endif; ?>
 
-<?=$this->driver->getBreadcrumb()?>
+<?=$this->driver->getTitle()?>
 
 <?=$this->driver->getPrimaryAuthor()?>
 
