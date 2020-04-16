@@ -29,7 +29,7 @@ ISSN: <?=$this->driver->getCleanISSN()?>
 <?=$this->translate('email_link')?>: <?=$this->serverUrl($this->recordLink()->getUrl($this->driver))?>
 
 
-
+<?=$this->transEsc('Kind regards')?>
 
 <?=$this->client()->get('Site')->get('title')?>
 
