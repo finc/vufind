@@ -1,8 +1,6 @@
 <?php // This is a text-only email template; do not include HTML! ?>
-
-<?=$this->client()->get('Site')->get('title')?>
-
 <?=$this->transEsc('mail_sender_not_checked')?>
+
 
 <?php if (!empty($this->message)): ?>
 <?=$this->translate("Message From Sender")?>:
@@ -10,9 +8,10 @@
 
 <?php endif; ?>
 
-<?=$this->driver->getTitle()?>
 
-<?=$this->driver->getPrimaryAuthor()?>
+<?=$this->translate('Title')?>: <?=$this->driver->getTitle()?>
+
+<?=$this->translate('Author')?>: <?=$this->driver->getPrimaryAuthor()?>
 
 <?php if (!empty($this->driver->getCleanISBN())): ?>
 ISBN: <?=$this->driver->getCleanISBN()?>
@@ -23,11 +22,14 @@ ISSN: <?=$this->driver->getCleanISSN()?>
 
 <?php endif; ?>
 <?php $details = $this->driver->tryMethod('getPublicationDetails'); if($details):?>
-<?=$this->transEsc('Published') ?>:
-<?php foreach($details as $detail): ?>
-<?=$detail?>
-<?php endforeach; ?>
+<?=$this->transEsc('Published') ?>: <?=implode(' ', $details)?>
 <?php endif; ?>
 
+
 <?=$this->translate('email_link')?>: <?=$this->serverUrl($this->recordLink()->getUrl($this->driver))?>
+
+
+
+
+<?=$this->client()->get('Site')->get('title')?>
 
