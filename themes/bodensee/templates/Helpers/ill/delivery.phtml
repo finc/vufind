@@ -1,66 +1,45 @@
 <? $labelSize = 6; ?>
 <? $inputSize = 6; ?>
 <? $disabled = ''; ?>
+
+<?php $this->libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>
+<?php $this->firstLibrary = $this->libraries()->getFirstActive($this->client()->getIsils())?>
+
 <div class="form-group form-group-sm">
-        <? if (isset($params['Bestellform'])):
-            $form = $params['Bestellform'];
-        elseif (isset($this->driver) && ($this->driver->isArticle() || $this->driver->isJournal())):
-            $form = 'Kopie';
-        elseif (!isset($this->driver)):
-            $form = 'Kopie';
-        else:
-            $form = 'Leihen';
-        endif; ?>
-        <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
-        <div class="col-sm-3 col-xs-2">
-            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> <?=$disabled?>/>
-            <span for="ill-copy"><?=$this->transEsc('lend')?></span>
-        </div>
-        <div class="col-sm-3 col-xs-2">
-            <input type="radio" id="ill-copy" name="Bestellform" data-bestellform="" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?>/>
-            <span for="ill-copy"><?=$this->transEsc('paperdata')?></span>
-        </div>
-        <div class="col-sm-6 col-sm-offset-6 col-xs-8 col-xs-offset-4">
-            <span class="help-block"><?=$this->transEsc('ILL::help_copie_rent')?></span>
-        </div>
-    </div>
-    <div class="form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>"><?=$this->transEsc('Library')?>*</label>
     <div class="col-sm-<?=$inputSize ?>">
-        <? $libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>
-        <? if(count($libraries) > 0): ?>
-            <? foreach($libraries as $libkey => $library): ?>
-                    <? $checked = '' ?>
-                    <? if (count($libraries) == 1) : ?>
-                        <?=$this->escapeHtml($library->getName())?>
-                        <input name="Sigel" type="hidden" value="<?=$this->escapeHtmlAttr($library->getSigel())?>"/>
-                    <? else: ?>
-                        <div class="radio">
-                            <label for="ill-library-<?=$libkey?>">
-                                <? if ($params['Sigel']):?>
-                                    <? if ($params['Sigel'] == $library->getSigel()):?>
-                                        <? $checked = 'checked="checked"'?>
-                                    <? endif ?>
-                                <? elseif($libkey == 0): ?>
+        <? if(count($this->libraries) > 0): ?>
+            <? foreach($this->libraries as $libkey => $library): ?>
+                <? $checked = '' ?>
+                <? if (count($this->libraries) == 1) : ?>
+                    <?=$this->escapeHtml($library->getName())?>
+                    <input name="Sigel" type="hidden" value="<?=$this->escapeHtmlAttr($library->getSigel())?>"/>
+                <? else: ?>
+                    <div class="radio">
+                        <label for="ill-library-<?=$libkey?>">
+                            <? if ($params['Sigel']):?>
+                                <? if ($params['Sigel'] == $library->getSigel()):?>
                                     <? $checked = 'checked="checked"'?>
-                                <? endif; ?>
-                                <input required="true" name="Sigel" id="ill-library-<?=$libkey?>" type="radio" value="<?=$this->escapeHtmlAttr($library->getSigel())?>" <?=$checked?>/>
-                                <?=$this->escapeHtml($library->getName())?>
-                            </label>
-                        </div>
-                    <? endif; ?>
+                                <? endif ?>
+                            <? elseif($libkey == 0): ?>
+                                <? $checked = 'checked="checked"'?>
+                            <? endif; ?>
+                            <input required="true" name="Sigel" id="ill-library-<?=$libkey?>" type="radio" value="<?=$this->escapeHtmlAttr($library->getSigel())?>" <?=$checked?>/>
+                            <?=$this->escapeHtml($library->getName())?>
+                        </label>
+                    </div>
+                <? endif; ?>
             <? endforeach; ?>
         <? endif; ?>
-        </div>
+    </div>
 </div>
-<? if($this->libraries()->hasActivePlaces($this->client()->getIsils())): ?>
 <div class="form-group form-group-sm library-places">
     <label class="control-label col-sm-<?=$labelSize?>"><?=$this->transEsc('Places')?>*</label>
     <div class="col-sm-<?=$inputSize ?>">
-        <? $libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>
-        <? if(count($libraries) > 0): ?>
+        <? $this->libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>
+        <? if(count($this->libraries) > 0): ?>
             <? $checked = isset($params['AusgabeOrt']) ? $params['AusgabeOrt'] :'';?>
-            <? foreach($libraries as $libkey =>  $library): ?>
+            <? foreach($this->libraries as $libkey =>  $library): ?>
                 <div id="library-places-<?=$libkey?>" class="place <?if($libkey > 0):?>hidden<? endif; ?>">
                 <? $places = $library->getPlaces(); if(count($places) > 0): ?>
                     <? foreach ($places as $placekey => $place): ?>
@@ -80,7 +59,7 @@
         <? endif; ?>
     </div>
 </div>
-<? endif; ?>
+<? if($this->libraries()->hasActivePlaces($this->client()->getIsils())): ?>
 <div class="form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-delivery_until"><?=$this->transEsc('delivery_until')?>*</label>
     <div class="col-sm-<?=$inputSize?> col-md-2">
@@ -94,6 +73,7 @@
         </div>
             </div>
         </div>
+<? endif; ?>
 <div class=" form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('other_edition')?></label>
     <div class="col-sm-<?=$inputSize?> col-xs-1">
@@ -104,6 +84,33 @@
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_language"><?=$this->transEsc('other_language')?></label>
     <div class="col-sm-<?=$inputSize?> col-xs-1">
         <input type="checkbox" class="" id="ill-other_language" name="AndereSprache" <? if (isset($params['AndereSprache'])):?>checked=""<? endif; ?>/>
+    </div>
+</div>
+<div class="form-group form-group-sm">
+    <? if (isset($params['Bestellform'])):
+        $form = $params['Bestellform'];
+    elseif ($this->firstLibrary->allowsLend() && $this->firstLibrary->allowsCopy() && isset($this->driver) && ($this->driver->isArticle() || $this->driver->isJournal())):
+        $form = 'Kopie';
+    elseif (!isset($this->driver)):
+        $form = 'Kopie';
+    else:
+        $form = 'Kopie';
+    endif; ?>
+    <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
+    <div class="col-sm-3 col-xs-2">
+        <? if ($this->firstLibrary->allowsLend()): ?>
+            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> <?=$disabled?>/>
+            <span for="ill-copy"><?=$this->transEsc('lend')?></span>
+        <? endif; ?>
+    </div>
+    <div class="col-sm-3 col-xs-2">
+        <? if ($this->firstLibrary->allowsCopy()): ?>
+            <input type="radio" id="ill-copy" name="Bestellform" data-bestellform="" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?>/>
+            <span for="ill-copy"><?=$this->transEsc('paperdata')?></span>
+        <? endif; ?>
+    </div>
+    <div class="col-sm-6 col-sm-offset-6 col-xs-8 col-xs-offset-4">
+        <span class="help-block"><?=$this->transEsc('ILL::help_copie_rent')?></span>
     </div>
 </div>
 <div class=" form-group form-group-sm">
