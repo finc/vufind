@@ -70,7 +70,10 @@ class ClientAsset extends AbstractHelper
     public function getLogo()
     {
         $filename = '';
-        if ($this->library === null) {
+        if ($this->library === null && $this->tag === 'bsz') {
+            $filename = 'logo/' . $this->tag . '.svg';
+
+        } elseif ($this->library === null) {
             $filename = 'logo/' . $this->tag . '.png';
         } elseif ($this->library instanceof \Bsz\Config\Library) {
             $filename = $this->library->getLogo();

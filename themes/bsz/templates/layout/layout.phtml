@@ -34,7 +34,7 @@ use Zend\View\Helper\HeadScript;
     <?$this->headMeta()->appendProperty('og:description', $this->transEsc('homepage_text'))?>
 
     <?php if ($this->client()->isisilSession()): ?>
-    <?$this->headMeta()->appendProperty('og:image', $this->serverUrl().$this->imageLink('logo/default.png'))?>
+    <?$this->headMeta()->appendProperty('og:image', $this->serverUrl().$this->imageLink('logo/bsz.svg'))?>
     <?php else: ?>
     <?$this->headMeta()->appendProperty('og:image', $this->serverUrl().$this->imageLink($this->clientAsset()->getLogo()))?>
     <?php endif;?>
