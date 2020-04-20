@@ -551,7 +551,6 @@ class SolrGviMarc extends SolrMarc implements Definition
         $is950 = in_array('DE-950', $isils) ? true : false;
 
         foreach ($urlFields as $f) {
-            $f instanceof File_MARC_Data_Field;
             $url = [];
             $sf = $f->getSubField('u');
             $ind1 = $f->getIndicator(1);
@@ -592,6 +591,8 @@ class SolrGviMarc extends SolrMarc implements Definition
             }
 
             if (($sf = $f->getSubField('3')) && strlen($sf->getData()) > 2) {
+                $url['desc'] = $sf->getData();
+            } elseif (($sf = $f->getSubField('x'))) {
                 $url['desc'] = $sf->getData();
             } elseif (($sf = $f->getSubField('y'))) {
                 $url['desc'] = $sf->getData();
