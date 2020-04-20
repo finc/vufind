@@ -23,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Dlr\RecordDriver;
 
 use Bsz\FormatMapper;
@@ -39,13 +38,13 @@ use Bsz\RecordDriver\SolrMarc;
 class SolrDlrMarc extends SolrMarc implements Definition
 {
     use ContainerTrait;
+
     /**
      * @param FormatMapper $mapper
      * @param type $mainConfig
      * @param type $recordConfig
      * @param type $searchSettings
      */
-
     public function __construct(
         FormatMapper $mapper,
         $mainConfig = null,
@@ -161,7 +160,6 @@ class SolrDlrMarc extends SolrMarc implements Definition
                 return static::BIBLIO_SERIAL;
         }
     }
-
 
     /**
      * is this item part of a collection?

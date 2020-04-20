@@ -23,10 +23,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\ILS\Driver;
 
-use \VuFind\Exception\ILS as ILSException;
+use VuFind\Exception\ILS as ILSException;
 
 /**
  * Description of DAIAaDis
@@ -36,12 +35,13 @@ use \VuFind\Exception\ILS as ILSException;
 class DAIA extends \VuFind\ILS\Driver\DAIA
 {
     use ItemTrait;
-    
+
     protected $isil;
     protected $parsePpn = true;
     protected $holdings = [];
-    
-    public function __construct(\VuFind\Date\Converter $converter, $isil, $baseUrl = '') {
+
+    public function __construct(\VuFind\Date\Converter $converter, $isil, $baseUrl = '')
+    {
         $this->dateConverter = $converter;
         $this->isil = $isil;
         if (strlen($baseUrl) > 0) {
@@ -66,26 +66,25 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
 
         $http_headers = [
             "Content-type: " . $contentTypes[$this->daiaResponseFormat],
-            "Accept: " .  $contentTypes[$this->daiaResponseFormat]
+            "Accept: " . $contentTypes[$this->daiaResponseFormat]
         ];
-        
+
         $ppn = $id;
         // cut the braces away
-        if(strpos($id, ')') !== false) {            
+        if (strpos($id, ')') !== false) {
             $end = strpos($id, ')');
-            $ppn = substr($id, $end + 1);    
+            $ppn = substr($id, $end + 1);
         }
-            
+
         $params = [
             "id" => $this->daiaIdPrefix . $ppn,
-        ];                
+        ];
 
         try {
             $result = $this->httpService->get(
                 $this->baseUrl,
                 $params, null, $http_headers
             );
-            
         } catch (\Exception $e) {
             throw new \VuFind\Exception\ILS($e->getMessage());
         }
@@ -103,11 +102,10 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
             // return false as DAIA request failed
             return false;
         }
-        return ($result->getBody());
-
+        return $result->getBody();
     }
-    
-           /**
+
+    /**
      * This method adds status, availability, duedate, requests_placed
      * to response array
      *
@@ -123,7 +121,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         $availableLink = '';
         $queue = '';
         $message = [];
-        
+
         if (isset($item['message']) && is_array($item['message'])) {
             foreach ($item['message'] as $msg) {
                 if (isset($msg['lang'])) {
@@ -133,28 +131,26 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         }
         if (array_key_exists('available', $item)) {
             // check if item is loanable or presentation
-            $available = $this->getAvailableServices($item);      
+            $available = $this->getAvailableServices($item);
 
-            if (array_key_exists('loan', $available) 
+            if (array_key_exists('loan', $available)
                     && array_key_exists('presentation', $available)) {
-                $status = 'Loan';                        
+                $status = 'Loan';
                 $availability = true;
-            } elseif (array_key_exists('loan', $available) 
+            } elseif (array_key_exists('loan', $available)
                     && !array_key_exists('openaccess', $available)) {
-                $status = 'In store';                        
+                $status = 'In store';
                 $availability = true;
             } elseif (array_key_exists('presentation', $available)) {
-                $status = 'For reference';                        
+                $status = 'For reference';
                 $availability = true;
             }
-
 
             // log messages for debugging
             if (isset($available['message'])) {
                 $this->logMessages($available['message'], 'item->available');
             }
-                
-        } else if (array_key_exists('unavailable', $item)) {
+        } elseif (array_key_exists('unavailable', $item)) {
             foreach ($this->getUnvailableServices($item) as $unavailable) {
                 // attribute service can be set once or not
                 if (isset($unavailable['service'])
@@ -173,7 +169,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                     if (isset($unavailable['limitation'])) {
                         $status = $this
                             ->getItemLimitation($unavailable['limitation']);
-                    } 
+                    }
                     if ($message == 'missing') {
                         $status = 'Missing';
                     }
@@ -181,29 +177,26 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                 // items unavailable with duedate set
                 if (isset($unavailable['expected'])) {
                     $duedateRaw = $unavailable['expected'];
-                    
+
                     try {
                         $dateObject = new \DateTime($duedateRaw);
                         $dateToday = new \DateTime();
                         $difference = $dateToday->diff($dateObject)->days;
                         $duedate = $dateObject->format('d.m.Y');
-                        
                     } catch (\Exception $ex) {
-                        $this->debug('Date conversion failed: ' . $e->getMessage());
+                        $this->debug('Date conversion failed: ' . $ex->getMessage());
                         $duedate = null;
                     }
-                    
+
                     if (isset($difference) && $difference > 365) {
-                        $status = 'Permanent on loan';                            
+                        $status = 'Permanent on loan';
                     } else {
-                        $status = 'On Loan';                        
+                        $status = 'On Loan';
                     }
-                    
                 } else {
                     // no items available
                     $status = 'Unavailable';
                 }
-                
 
                 // attribute queue can be set
                 if (isset($unavailable['queue'])) {
@@ -215,9 +208,8 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                     $this->logMessages($unavailable['message'], 'item->unavailable');
                 }
             }
-            
         }
-        
+
         /*'availability' => '0',
         'status' => '',  // string - needs to be computed from availability info
         'duedate' => '', // if checked_out else null
@@ -236,8 +228,8 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
 
         return $return;
     }
-    
-         /**
+
+    /**
      * Parse an array with DAIA status information.
      *
      * @param string $id        Record id for the DAIA array.
@@ -274,7 +266,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                 $result_item['item_id'] = $item['id'];
                 // custom DAIA field used in getHoldLink()
                 $result_item['ilslink']
-                    = (isset($item['href']) ? $item['href'] : $doc_href);
+                    = ($item['href'] ?? $doc_href);
                 // count items
                 $number++;
                 $result_item['number'] = $this->getItemNumber($item, $number);
@@ -283,7 +275,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                 // set default value for part
                 $result_item['part'] = $this->getItemPart($item);
                 $result_item['about'] = $this->getItemAbout($item);
-                
+
                 // set default value for reserve
                 $result_item['reserve'] = $this->getItemReserveStatus($item);
                 // get callnumber
@@ -300,45 +292,48 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         }
         return $result;
     }
-    
+
     /**
      * Get a list of all available services
-     * 
+     *
      * @param array $item
-     * 
+     *
      * @return array
      */
-    protected function getAvailableServices($item) {
+    protected function getAvailableServices($item)
+    {
         $available = [];
         foreach ($item['available'] as $service) {
             $available[$service['service']] = $service;
         }
         return $available;
     }
+
     /**
      * Get a list of all unavailable services
-     * 
+     *
      * @param array $item
-     * 
+     *
      * @return array
      */
-    protected function getUnvailableServices($item) {
+    protected function getUnvailableServices($item)
+    {
         $unavailable = [];
         foreach ($item['unavailable'] as $service) {
             if ($service['service'] !== 'interloan' && $service['service'] !== 'openaccess') {
-                $unavailable[$service['service']] = $service;                
+                $unavailable[$service['service']] = $service;
             }
         }
         return $unavailable;
-    } 
-    
-        /**
+    }
+
+    /**
      * Get Hold Link
      *
      * The goal for this method is to return a URL to a "place hold" web page on
      * the ILS OPAC. This is used for ILSs that do not support an API or method
      * to place Holds.
-     * 
+     *
      * Switch to mobile version of OPAC
      *
      * @param string $id      The id of the bib record
@@ -357,7 +352,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         }
         return $details['ilslink'];
     }
-    
+
     /**
      * Initialize the driver.
      *
@@ -379,9 +374,9 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         } else {
             throw new ILSException('DAIA/baseUrl configuration needs to be set.');
         }
-        if (isset($this->isil) && strpos($this->baseUrl, '%s') !== FALSE) {
+        if (isset($this->isil) && strpos($this->baseUrl, '%s') !== false) {
             $this->baseUrl = sprintf($this->baseUrl, array_shift($this->isil));
-        }         
+        }
         if (isset($this->config['DAIA']['daiaResponseFormat'])) {
             $this->daiaResponseFormat = strtolower(
                 $this->config['DAIA']['daiaResponseFormat']
@@ -407,15 +402,15 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
             $this->debug('No ContentTypes for response defined. Accepting any.');
         }
     }
-    
-        /**
+
+    /**
      * Needed to hide holdings tab if empty
      * @param string $id
      * @return boolean
      */
-    public function hasHoldings($id) 
+    public function hasHoldings($id)
     {
-        // we can't query DAIA without an ISIL. 
+        // we can't query DAIA without an ISIL.
         if (empty($this->isil)) {
             return false;
         }
@@ -428,5 +423,4 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         }
         return false;
     }
-
 }

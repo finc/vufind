@@ -36,13 +36,13 @@ use VuFind\Controller\StorageRetrievalRequestsTrait;
 use VuFind\Log\Logger;
 use VuFind\Log\LoggerAwareTrait;
 use VuFind\RecordDriver\AbstractBase as AbstractRecordDriver;
+use Zend\Config\Config as Config;
 use Zend\Dom\Query;
 use Zend\Http\Client;
 use Zend\Http\Header\SetCookie;
-use Zend\View\Model\ViewModel;
 use Zend\Log\LoggerAwareInterface as LoggerAwareInterface;
-use Zend\Config\Config as Config;
 use Zend\ServiceManager\ServiceManager as ServiceManager;
+use Zend\View\Model\ViewModel;
 
 /**
  * This class was created to make a default record tab behavior possible
@@ -73,12 +73,12 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
     }
 
     /**
-    * Default tab for Solr is holdings, excepts its a collection, then volumes.
-    *
-    * @param AbstractRecordDriver $driver Record driver
-    *
-    * @return string
-    */
+     * Default tab for Solr is holdings, excepts its a collection, then volumes.
+     *
+     * @param AbstractRecordDriver $driver Record driver
+     *
+     * @return string
+     */
     protected function getDefaultTabForRecord(AbstractRecordDriver $driver)
     {
         // Load configuration:
@@ -108,8 +108,8 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
     }
 
     /**
-    * Render ILL form, check password and submit
-    */
+     * Render ILL form, check password and submit
+     */
     public function ILLFormAction()
     {
         $isils = $this->params()->fromQuery('isil');
@@ -176,11 +176,11 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
                     $success = $this->parseResponse($message);
                 } catch (Exception $ex) {
                     $this->flashMessenger()->addErrorMessage('ILL::request_error_technical');
-                    $this->logError($params['Sigel'].': Error while parsing HTML response from ZFL server');
+                    $this->logError($params['Sigel'] . ': Error while parsing HTML response from ZFL server');
                 }
             } else { // wrong credentials
                 $this->flashMessenger()->addErrorMessage('ILL::request_error_blocked');
-                $this->logError($params['Sigel'].': ILL request blocked. Checkauth failed');
+                $this->logError($params['Sigel'] . ': ILL request blocked. Checkauth failed');
                 $success = false;
             }
         }
@@ -188,7 +188,7 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
         $cookie = new SetCookie(
             'orderStatus',
             $success ? 1 : 0,
-            time()+ 60 * 60 * 2,
+            time() + 60 * 60 * 2,
             '/',
             $uri->getHost()
         );
@@ -211,7 +211,7 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
         // redirect.
         $client = $this->serviceLocator->get('Bsz\Config\Client');
         $authManager = $this->serviceLocator->get('VuFind\AuthManager');
-        $isils = (array) $this->params()->fromQuery('isil', []);
+        $isils = (array)$this->params()->fromQuery('isil', []);
 
         if ($isils) {
             return $this->processIsil();
@@ -233,7 +233,6 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
             $this->flashMessenger()->addErrorMessage('You must be logged in first');
             $submitDisabled = true;
         }
-
 
         $view = $this->createViewModelWithoutRecord([
             'success' => null,
@@ -332,7 +331,7 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
             try {
                 $xml = simplexml_load_string($response->getBody());
             } catch (Exception $ex) {
-                $this->logError($params['Sigel'].': Error while parsing XML'.$ex->getMessage());
+                $this->logError($params['Sigel'] . ': Error while parsing XML' . $ex->getMessage());
                 $this->flashMessenger()->addErrorMessage('ILL::request_error_technical');
             }
             $status = (isset($xml->status) && $xml->status == 'FLOK');
@@ -377,18 +376,19 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
             }
 
             if (empty($msgText)) {
-                $this->debug('HTML response from ZFL server: '.$html);
-                $this->logError('ILL error: could not parse error message out of HTML: '.$html);
+                $this->debug('HTML response from ZFL server: ' . $html);
+                $this->logError('ILL error: could not parse error message out of HTML: ' . $html);
             }
 
             if (!empty($msgText)) {
                 $this->flashMessenger()->addInfoMessage($msgText);
-                $this->logError('ILL error: message from ZFL: '.$msgText);
+                $this->logError('ILL error: message from ZFL: ' . $msgText);
             }
             error_reporting($error_reporting);
             return false;
         }
     }
+
     /**
      * Abstract method implementations
      */
@@ -401,7 +401,6 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
     {
         return parent::getUniqueID();
     }
-
 
     public function createViewModelWithoutRecord($params = null)
     {
@@ -444,6 +443,7 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
 
         return $view;
     }
+
     /**
      * We override this method to get rid of the driver dependency (for the free form)
      *

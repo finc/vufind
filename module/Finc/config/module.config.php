@@ -1,5 +1,4 @@
 <?php
-
 namespace Finc\Module\Config;
 
 $config = [
@@ -46,4 +45,3 @@ $config = [
     ],
 ];
 return $config;
-

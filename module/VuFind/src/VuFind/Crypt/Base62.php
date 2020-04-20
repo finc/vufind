@@ -18,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 namespace VuFind\Crypt;
 
 use Exception;/**
@@ -27,7 +26,6 @@ use Exception;/**
  * @category boss
  * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-
 class Base62
 {
     const BASE62_ALPHABET

@@ -1,11 +1,9 @@
 <?php
-
 namespace Bsz\ILS\Driver;
 
-
-use VuFind\Exception\ILS as ILSException;
-use VuFind\I18n\Translator\TranslatorAwareInterface;
 use Bsz\Config\Libraries;
+use VuFind\Exception\ILS as ILSException;
+
 /**
  * Description of NoILS
  *
@@ -18,7 +16,6 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
      * @var Libraries
      */
     protected $libraries;
-
 
     protected $isils;
 
@@ -81,7 +78,8 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
 
         return [];
     }
-        /**
+
+    /**
      * This is responsible for retrieving the status or holdings information of a
      * certain record from a Marc Record.
      *
@@ -105,13 +103,12 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
             } else {
                 unset($parent[$k]);
             }
+        }
 
-       }
-
-       return $parent;
+        return $parent;
     }
 
-        /**
+    /**
      * Has Holdings
      *
      * This is responsible for determining if holdings exist for a particular
@@ -132,6 +129,4 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
         }
         return false;
     }
-
-
 }

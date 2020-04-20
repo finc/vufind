@@ -23,19 +23,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\Recommend;
 
-use Interop\Container\ContainerInterface;
 use Bsz\Recommend\SideFacets as SideFacets;
+use Interop\Container\ContainerInterface;
 
 /**
  * Description of Factors
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory {
-        /**
+class Factory
+{
+    /**
      * Factory for SideFacets module.
      *
      * @param ContainerInterface $container Service manager.
@@ -46,14 +46,13 @@ class Factory {
     {
         $client = $container->get('Bsz\Config\Client');
         $isil = $client->isIsilSession() && $client->hasIsilSession() ? $client->getIsils() : null;
-       
+
         return new SideFacets(
             $container->get('VuFind\Config'),
             $container->get('VuFind\HierarchicalFacetHelper'),
             $isil
         );
     }
-
 
     /**
      * Factory for SearchButtons module.
@@ -68,8 +67,7 @@ class Factory {
         return new SearchButtons(
             $config->Content->europeanaAPI
         );
-    }        
-
+    }
 
     /**
      * Factory for RSSFeed module
@@ -84,7 +82,7 @@ class Factory {
         return new RSSFeedResults(
             $config->get('StartpageNews')->get('RSSFeed')
         );
-    }      
+    }
 
     /**
      * Factory for News Feed on Startpag
@@ -99,6 +97,5 @@ class Factory {
         return new RSSFeedResults(
             $config->get('StartpageNews')->get('RSSFeed')
         );
-    }     
-    
+    }
 }

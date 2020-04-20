@@ -1,5 +1,4 @@
 <?php
-
 namespace Bsz\RecordDriver;
 
 /**
@@ -52,7 +51,7 @@ class SolrGviMarcDE576 extends SolrGviMarc
 
     /**
      * Get the Container issue
-       *
+     *
      * @return string
      */
     public function getContainerIssue()
@@ -60,7 +59,6 @@ class SolrGviMarcDE576 extends SolrGviMarc
         $issue = $this->getFieldsArray([936 => ['e']]);
         return array_shift($issue);
     }
-
 
     /**
      * Get container volume

@@ -17,34 +17,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace BszTheme\View\Helper;
-use Zend\View\Helper\AbstractHelper,
-    Zend\View\Renderer\RendererInterface as Renderer;
+
+use Zend\View\Helper\AbstractHelper;
 
 /**
  * Description of Libraries
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Libraries extends AbstractHelper {
-    
+class Libraries extends AbstractHelper
+{
     /**
      * Constructor
      * @var \Bsz\Config\Libraries
      */
     protected $libraries;
-    
-    public function __construct(\Bsz\Config\Libraries $libraries) {
+
+    public function __construct(\Bsz\Config\Libraries $libraries)
+    {
         $this->libraries = $libraries;
     }
-    
+
     /**
      * This is called in views
      * @return bsz\Config\Libraries
      */
-    public function __invoke() {
+    public function __invoke()
+    {
         return $this->libraries;
     }
-    
 }

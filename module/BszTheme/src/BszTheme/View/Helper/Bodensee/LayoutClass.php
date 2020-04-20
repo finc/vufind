@@ -52,14 +52,14 @@ class LayoutClass extends \VuFind\View\Helper\Bootstrap3\LayoutClass
     public function __invoke($class)
     {
         switch ($class) {
-        case 'maximized': 
+        case 'maximized':
             return 'col-sm-12 col-md-11 col-lg-11';
-        case 'mainbody_foldout': 
+        case 'mainbody_foldout':
             return 'col-sm-12 col-md-9';
         case 'mainbody':
             return $this->sidebarOnLeft ? 'col-sm-9 col-sm-push-3' : 'col-sm-9';
         case 'mainbody_details':
-            return $this->sidebarOnLeft  ? 'col-sm-12' : 'col-sm-12';
+            return $this->sidebarOnLeft ? 'col-sm-12' : 'col-sm-12';
             break;
         case 'sidebar':
             return $this->sidebarOnLeft

@@ -29,10 +29,6 @@
  */
 namespace Bsz\RecordDriver;
 
-use \VuFind\RecordDriver\MarcAdvancedTrait;
-use VuFind\View\Helper\Root\RecordLink;
-use VuFind\XSLT\Processor as XSLTProcessor;
-
 /**
  * Functions to add advanced MARC-driven functionality to a record driver already
  * powered by the standard index spec. Depends upon MarcReaderTrait.
@@ -45,7 +41,6 @@ use VuFind\XSLT\Processor as XSLTProcessor;
  */
 trait MarcAdvancedTraitBsz
 {
-
     /**
      * Returns the array element for the 'getAllRecordLinks' method
      *
@@ -129,14 +124,13 @@ trait MarcAdvancedTraitBsz
             'edition' => $this->getRecordEdition($field)
         ];
     }
-    
-    public function getRecordEdition($field) {
+
+    public function getRecordEdition($field)
+    {
         $edition = '';
         if ($subfield = $field->getSubfield('d')) {
             $edition = trim($subfield->getData());
         }
         return $edition;
     }
-
 }
-

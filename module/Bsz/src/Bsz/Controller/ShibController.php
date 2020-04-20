@@ -23,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\Controller;
 
 /**
@@ -35,47 +34,47 @@ class ShibController extends \VuFind\Controller\AbstractBase
 {
     /**
      * This action let's you choose IdP
-    */
-    
-    public function wayfAction() {
+     */
+    public function wayfAction()
+    {
         // Store the referer, so the user can return to this site after login
         $this->setFollowupUrlToReferer();
-        
+
         $libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
         $client = $this->serviceLocator->get('Bsz\Config\Client');
         $isils = $client->getIsils();
         $library = $libraries->getByIsil($client->getIsils());
-        
+
         if (isset($library) && $library->getAuth() === 'shibboleth') {
             return $this->redirect()->toRoute(
                     'shib-redirect',
-                    [   
+                    [
                         'controller' => 'Shib',
                         'action' => 'Redirect',
                     ],
                     [
                         'query' => [
-                            'isil' => array_shift($isils)                        
+                            'isil' => array_shift($isils)
                         ]
                     ]
             );
         } else {
             throw new \Bsz\Exception('Accessed WAYF for non Shibboleth library');
-        }    
-        
+        }
     }
-    
+
     /**
      * this action redirects to IdP
      */
-    public function redirectAction() {
+    public function redirectAction()
+    {
 
         // Build target url
         $action = $this->url()->fromRoute('myresearch-home');
         $uri = $this->getRequest()->getUri();
         $baseUrl = sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
 
-        $target = $baseUrl.$action.'?auth_method=Shibboleth';
+        $target = $baseUrl . $action . '?auth_method=Shibboleth';
         $config = $this->serviceLocator->get('VuFind\Config')
                 ->get('config')->get('Shibboleth');
         // build actual url
@@ -89,18 +88,14 @@ class ShibController extends \VuFind\Controller\AbstractBase
                 'SAMLDS'    => 1,
                 'target'    => $target,
                 'entityID'  => $idp,
-            ];      
+            ];
             if ((int)$config->get('forceAuthn') === 1) {
                 $params['forceAuthn'] = 'true';
             }
-            $url = $baseUrl.'/Shibboleth.sso/Login?'.http_build_query($params);    
+            $url = $baseUrl . '/Shibboleth.sso/Login?' . http_build_query($params);
             return $this->redirect()->toUrl($url);
-            
         } catch (\Exception $ex) {
             throw new \Bsz\Exception('Could not redirect');
         }
-        
-
-        
     }
 }

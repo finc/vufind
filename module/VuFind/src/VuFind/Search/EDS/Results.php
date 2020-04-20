@@ -135,7 +135,7 @@ class Results extends \VuFind\Search\Base\Results
                         ? $this->translate(
                             "$transTextDomain::{$uppercase}"
                         ) : $uppercase;
-                   
+
                     // Create display value:
                     $current['counts'][$facetIndex]['value']
                         = $facetDetails['value'];

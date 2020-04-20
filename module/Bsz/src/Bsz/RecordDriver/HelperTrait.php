@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Bsz\RecordDriver;
 
 /**
@@ -13,15 +12,15 @@ namespace Bsz\RecordDriver;
  *
  * @author amzar
  */
-trait HelperTrait {
-
-        /**
+trait HelperTrait
+{
+    /**
      * Removes colon and slash at the end of the string
      * Removes any HTML
      * @param string $string
-         * 
+     *
      * @return string
-         * 
+     *
      */
     public function cleanString(?string $string = '') : string
     {
@@ -31,15 +30,14 @@ trait HelperTrait {
         $string = trim($string);
         return $string;
     }
-    
+
     /**
      * Return breadcrumb information for this record
-     * 
+     *
      * @return string
      */
     public function getBreadcrumb() : string
     {
         return $this->cleanString($this->getTitle());
     }
-    
 }

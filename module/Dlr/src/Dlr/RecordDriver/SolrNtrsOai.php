@@ -23,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Dlr\RecordDriver;
 
 use Bsz\FormatMapper;
@@ -288,7 +287,7 @@ class SolrNtrsOai extends SolrDefault
      */
     public function getContainer()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -328,7 +327,7 @@ class SolrNtrsOai extends SolrDefault
     public function getRelatedItems()
     {
         // not supported for OAI data:
-        return array();
+        return [];
     }
 
     /**

@@ -5,19 +5,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Bsz\RecordDriver;
 
 use Interop\Container\ContainerInterface;
-
 
 /**
  * Description of PluginManagerFactory
  *
  * @author amzar
  */
-class PluginManagerFactory extends \VuFind\ServiceManager\AbstractPluginManagerFactory {
-    
+class PluginManagerFactory extends \VuFind\ServiceManager\AbstractPluginManagerFactory
+{
     /**
      * Create an object
      *

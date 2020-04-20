@@ -1,6 +1,4 @@
 <?php
-
-
 namespace BszTest;
 
 use Bsz\FormatMapper;

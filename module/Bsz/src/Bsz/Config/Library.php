@@ -17,10 +17,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\Config;
-use Zend\Db\ResultSet\ResultSet;
 
+use Zend\Db\ResultSet\ResultSet;
 
 /**
  * Simple Library Object - uses for Interlending view
@@ -29,7 +28,6 @@ use Zend\Db\ResultSet\ResultSet;
  */
 class Library
 {
-
     /**
      * Used if no custom url is set
      */
@@ -51,7 +49,6 @@ class Library
     protected $boss;
     protected $lend_copy;
 
-
     public function exchangeArray($data)
     {
         $this->name = $data['name'];
@@ -62,12 +59,12 @@ class Library
         $this->homepage = $data['homepage'];
         $this->isil_availability = $data['isil_availability'];
         $this->email = $data['email'];
-        $this->auth = isset($data['auth_name']) ? $data['auth_name'] : 'adis';
-        $this->daia = isset($data['daiaurl']) ? $data['daiaurl'] : null;
-        $this->openurl = isset($data['openurl']) ? $data['openurl'] : null;
-        $this->adisurl = isset($data['adisurl']) ? $data['adisurl'] : null;
-        $this->idp = isset($data['shibboleth_idp']) ? $data['shibboleth_idp'] : null;
-        $this->regex = isset($data['regex']) ? $data['regex'] : null;
+        $this->auth = $data['auth_name'] ?? 'adis';
+        $this->daia = $data['daiaurl'] ?? null;
+        $this->openurl = $data['openurl'] ?? null;
+        $this->adisurl = $data['adisurl'] ?? null;
+        $this->idp = $data['shibboleth_idp'] ?? null;
+        $this->regex = $data['regex'] ?? null;
         $this->lend_copy = isset($data['lend_copy']) ? str_split($data['lend_copy'], 1) : [0b1, 0b1];
     }
 
@@ -123,7 +120,6 @@ class Library
     public function getAuth()
     {
         return $this->auth;
-
     }
 
     /**
@@ -132,7 +128,7 @@ class Library
      */
     public function getCountry()
     {
-        return (int) $this->country;
+        return (int)$this->country;
     }
 
     /**
@@ -153,7 +149,7 @@ class Library
      */
     public function getURLDAIA()
     {
-        if(isset($this->daia)) {
+        if (isset($this->daia)) {
             return $this->daia;
         } else {
             return static::DAIA_DEFAULT_URL;
@@ -179,6 +175,7 @@ class Library
         }
         return false;
     }
+
     /**
      * Does this library have a custom URL for ILL form?
      * @return boolean
@@ -190,6 +187,7 @@ class Library
         }
         return false;
     }
+
     /**
      * Get custom URL for ill form
      * @return string
@@ -217,7 +215,6 @@ class Library
         }
         $isils[] = $this->getIsil();
         return array_unique($isils);
-
     }
 
     /**
@@ -230,6 +227,7 @@ class Library
         $this->places = $places;
         return $this;
     }
+
     /**
      * Returns homepage
      * @return string
@@ -238,14 +236,16 @@ class Library
     {
         return $this->homepage;
     }
+
     /**
      * Returns library logo
      * @return string
      */
-    public function getLogo() {
+    public function getLogo()
+    {
         $sigel = str_replace(' ', '', $this->getSigel());
         $sigel = preg_replace('/\/.*/', '', $sigel);
-        return 'logo/libraries/'.$sigel.'.jpg';
+        return 'logo/libraries/' . $sigel . '.jpg';
     }
 
     /**
@@ -281,7 +281,6 @@ class Library
     /**
      * @return bool
      */
-
     public function allowsLend()
     {
         return $this->lend_copy[0] == 0b1;
@@ -290,11 +289,8 @@ class Library
     /**
      * @return bool
      */
-
     public function allowsCopy()
     {
         return $this->lend_copy[1] == 0b1;
     }
-
-
 }

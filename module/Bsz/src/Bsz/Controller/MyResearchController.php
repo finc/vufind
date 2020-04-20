@@ -1,5 +1,4 @@
 <?php
-
 namespace Bsz\Controller;
 
 /**
@@ -9,7 +8,7 @@ namespace Bsz\Controller;
  */
 class MyResearchController extends \VuFind\Controller\MyResearchController
 {
-        /**
+    /**
      * Prepare and direct the home page where it needs to go
      *
      * @return mixed
@@ -41,9 +40,9 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
         // or default action (if no followup provided):
         $url = $this->params()->fromQuery('followupUrl');
         if (empty($url)) {
-             $url = $this->getFollowupUrl();
+            $url = $this->getFollowupUrl();
         }
-        if (!empty($url)) { 
+        if (!empty($url)) {
             $this->clearFollowupUrl();
             // If a user clicks on the "Your Account" link, we want to be sure
             // they get to their account rather than being redirected to an old
