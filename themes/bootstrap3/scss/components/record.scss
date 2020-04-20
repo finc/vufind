@@ -1,3 +1,7 @@
+.record h1 {
+  font-size: 24px;
+  line-height: 1.15;
+}
 .record .media-body h3 { margin-top: 0; } // Align title with top of image
 .recordcover { max-height: 300px; } // Keep the image from getting out of control
 .browzine .recordcover {
@@ -128,25 +132,3 @@
 
 /* ------ Relais ------ */
 .relaisLink { display: inline-block; }
-
-/* ------ Collection ------ */
-.collection-list-controls {
-    display: flex;
-    flex-flow: row wrap;
-    margin-bottom: 0.5em;
-
-    .collection-control {
-      white-space: nowrap;
-      margin: 0 0.5rem 0.5rem 0;
-    }
-}
-
-/* ------ Tabs ------ */
-.tab-pane::after {
-  display: table;
-  clear: both;
-  content: "";
-}
-.tab-pane .result {
-  margin-left: 0;
-}
