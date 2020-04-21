@@ -44,9 +44,9 @@
         ?>
         <h3 property="name">
             <? if (is_array($title)): ?>
-                <?= $this->escapeHtml($title[0]) ?> <?= $this->string()->cleanEsc($section) ?>
+                <?= $this->escapeHtml($title[0]) ?><br/><?= $this->string()->cleanEsc($section) ?>
             <? else: ?>
-                <?= $this->escapeHtml($title) ?> <?= $this->string()->cleanEsc($section) ?>
+                <?= $this->escapeHtml($title) ?><br/><?= $this->string()->cleanEsc($section) ?>
             <? endif; ?>
             <?= $this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver]) ?>
         </h3>
@@ -54,7 +54,7 @@
             <h4>
                 <?= $this->escapeHtml($titleol) ?>
                 <? if (!empty($sectionol)): ?>
-                    <small><?= $this->escapeHtml($sectionol) ?></small>
+                    <br/><small><?= $this->escapeHtml($sectionol) ?></small>
                 <? endif; ?>
             </h4>
         <? endif; ?>

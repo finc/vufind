@@ -498,13 +498,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getTitleSection()
     {
-        $section = '';
-        $section_n = $this->getFirstFieldValue('245', array('n'), false);
-        if ($section_n != false) $section  .= $this->translate('Part') . ' ' . $section_n . '. ';
-        $section_p = $this->getFirstFieldValue('245', array('p'), false);
-        if ($section_p != false) $section  .= $section_p;
-
-        return $section;
+        return $this->getFirstFieldValue('245', ['n', 'p'], false);
     }
 
     /**
