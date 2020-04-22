@@ -1,6 +1,5 @@
 <? $labelSize = 6; ?>
 <? $inputSize = 6; ?>
-<? $disabled = ''; ?>
 
 <?php $this->libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>
 <?php $this->firstLibrary = $this->libraries()->getFirstActive($this->client()->getIsils())?>
@@ -99,7 +98,7 @@
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
     <div class="col-sm-3 col-xs-2">
         <? if ($this->firstLibrary->allowsLend()): ?>
-            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> <?=$disabled?>/>
+            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> />
             <span for="ill-copy"><?=$this->transEsc('lend')?></span>
         <? endif; ?>
     </div>
