@@ -17,20 +17,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\RecordTab;
+
 use Interop\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Session\Container;
-
 
 /**
  * Description of Factory
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory {
-    
+class Factory
+{
     /**
      * Factory for volumes tab
      *
@@ -41,23 +40,22 @@ class Factory {
     public static function getVolumes(ContainerInterface $container)
     {
         $last = '';
-        if (isset($_SESSION['Search']['last']) ){
+        if (isset($_SESSION['Search']['last'])) {
             $last = urldecode($_SESSION['Search']['last']);
-        }   
+        }
         $isils = [];
-        if (strpos($last, 'consortium=FL') === FALSE 
-            && strpos($last, 'consortium=ZDB') === FALSE
+        if (strpos($last, 'consortium=FL') === false
+            && strpos($last, 'consortium=ZDB') === false
         ) {
             $client = $container->get('Bsz\Config\Client');
             $isils = $client->getIsils();
         }
 
-
         $volumes = new Volumes($container->get('VuFind\SearchRunner'), $isils);
 
-        
         return $volumes;
     }
+
     /**
      * Factory for articles tab
      *
@@ -68,26 +66,26 @@ class Factory {
     public static function getArticles(ContainerInterface $container)
     {
         $last = '';
-        if (isset($_SESSION['Search']['last']) ){
+        if (isset($_SESSION['Search']['last'])) {
             $last = urldecode($_SESSION['Search']['last']);
-        }   
+        }
         $isils = [];
-        if (strpos($last, 'consortium=FL') === FALSE 
-            && strpos($last, 'consortium=ZDB') === FALSE
+        if (strpos($last, 'consortium=FL') === false
+            && strpos($last, 'consortium=ZDB') === false
         ) {
             $client = $container->get('Bsz\Config\Client');
             $isils = $client->getIsils();
         }
-        
+
         $articles = new Articles($container->get('VuFind\SearchRunner'), $isils);
         $request = new Request();
         $url = strtolower($request->getUriString());
         return $articles;
     }
-    
+
     /**
-     * Factory for libraries tab 
-     * 
+     * Factory for libraries tab
+     *
      * @param ContainerInterface $container
      * @return Libraries
      */
@@ -98,9 +96,10 @@ class Factory {
         $swbonly = $client->getTag() === 'bsz' ?? false;
         return new Libraries($libraries, !$client->is('disable_library_tab'), $swbonly);
     }
+
     /**
      * Factory for description tab
-     * 
+     *
      * @param ContainerInterface $container
      * @return Description
      */
@@ -109,7 +108,8 @@ class Factory {
         $client = $container->get('Bsz\Config\Client');
         return new Description(!$client->is('disable_description_tab'));
     }
-        /**
+
+    /**
      * Factory for HoldingsILS tab plugin.
      *
      * @param ContainerInterface $container Service manager.

@@ -27,9 +27,7 @@
  */
 namespace BszTheme\View\Helper\Bodensee;
 
-use Interop\Container\ContainerInterface,
-    Zend\ServiceManager\Factory\FactoryInterface;
-
+use Interop\Container\ContainerInterface;
 
 /**
  * Factory for Bootstrap view helpers.
@@ -51,7 +49,7 @@ class Factory
      *
      * @return Flashmessages
      */
-    public static function getFlashmessages(ContainerInterface$container)
+    public static function getFlashmessages(ContainerInterface $container)
     {
         $messenger = $container->get('ControllerPluginManager')
             ->get('FlashMessenger');
@@ -65,7 +63,7 @@ class Factory
      *
      * @return LayoutClass
      */
-    public static function getLayoutClass(ContainerInterface$container)
+    public static function getLayoutClass(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config');
         $left = !isset($config->Site->sidebarOnLeft)
@@ -83,6 +81,7 @@ class Factory
         }
         return new LayoutClass($left, $offcanvas);
     }
+
     /**
      * Construct the OpenUrl helper.
      *
@@ -90,7 +89,7 @@ class Factory
      *
      * @return OpenUrl
      */
-    public static function getOpenUrl(ContainerInterface$container)
+    public static function getOpenUrl(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config');
         $client = $container->get('Bsz\Config\Client');
@@ -101,17 +100,17 @@ class Factory
             ),
             true
         );
-        $resolverPluginManager = 
-            $container->get('VuFind\ResolverDriverPluginManager');        
+        $resolverPluginManager =
+            $container->get('VuFind\ResolverDriverPluginManager');
         return new OpenUrl(
             $container->get('ViewHelperManager')->get('context'),
             $openUrlRules,
             $resolverPluginManager,
             isset($config->OpenURL) ? $config->OpenURL : null,
-            !empty($isils) ? array_shift($isils) : null            
+            !empty($isils) ? array_shift($isils) : null
         );
     }
-      
+
     /**
      * Construct the Record helper.
      *
@@ -119,7 +118,7 @@ class Factory
      *
      * @return Record
      */
-    public static function getRecord(ContainerInterface$container)
+    public static function getRecord(ContainerInterface $container)
     {
         return new Record(
             $container->get('VuFind\Config')->get('config'),
@@ -127,33 +126,34 @@ class Factory
             $container->get('Bsz\Holding')
         );
     }
+
     /**
      * Construct the RecordLink helper.
      *
      * @param ContainerInterface$container Service manager.
-     * 
+     *
      * @throws \Bsz\Exception
      *
      * @return Record
      */
-    public static function getRecordLink(ContainerInterface$container)
+    public static function getRecordLink(ContainerInterface $container)
     {
         $client = $container->get(\Bsz\Config\Client::class);
-        $libraries = $container->get('Bsz\Config\Libraries');      
+        $libraries = $container->get('Bsz\Config\Libraries');
         $adisUrl = null;
 
-        $library = $libraries->getFirstActive($client->getIsils());  
+        $library = $libraries->getFirstActive($client->getIsils());
         if ($library instanceof \Bsz\Config\Library) {
-            $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null;                 
-        }        
-          
+            $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null;
+        }
+
         return new RecordLink(
             $container->get('VuFind\RecordRouter'),
             $container->get('VuFind\Config')->get('bsz'),
             $adisUrl
         );
     }
-    
+
     /**
      * Construct the GetLastSearchLink helper.
      *
@@ -161,21 +161,21 @@ class Factory
      *
      * @return GetLastSearchLink
      */
-    public static function getSearchMemory(ContainerInterface$container)
+    public static function getSearchMemory(ContainerInterface $container)
     {
         return new SearchMemory(
             $container->get('VuFind\Search\Memory')
         );
     }
-    
-        /**
+
+    /**
      * Construct the Piwik helper.
      *
      * @param ContainerInterface$container Service manager.
      *
      * @return Piwik
      */
-    public static function getPiwik(ContainerInterface$container)
+    public static function getPiwik(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config');
         $url = isset($config->Piwik->url) ? $config->Piwik->url : false;
@@ -186,15 +186,15 @@ class Factory
             : false;
         return new Piwik($url, $siteId, $customVars, $globalSiteId);
     }
-    
-            /**
+
+    /**
      * Construct the SearchTabs helper.
      *
      * @param ContainerInterface$container Service manager.
      *
      * @return SearchTabs
      */
-    public static function getSearchTabs(ContainerInterface$container)
+    public static function getSearchTabs(ContainerInterface $container)
     {
         return new SearchTabs(
             $container->get('VuFind\SearchResultsPluginManager'),
@@ -202,28 +202,27 @@ class Factory
             $container->get('VuFind\SearchTabsHelper')
         );
     }
-    
 
     /**
      * @param ContainerInterface$container
      * @return \BszTheme\View\Helper\Bodensee\IllForm
      */
-    public static function getIllForm(ContainerInterface$container) 
+    public static function getIllForm(ContainerInterface $container)
     {
         $request = $container->get('request');
         // params from form submission
         $params = $request->getPost()->toArray();
         // params from open url
         $openUrlParams = $request->getQuery()->toArray();
-        $parser = $container->get('Bsz\Parser\OpenUrl');            
+        $parser = $container->get('Bsz\Parser\OpenUrl');
         $parser->setParams($openUrlParams);
         // mapped openURL params
         $formParams = $parser->map2Form();
         // merge both param sets
         $mergedParams = array_merge($formParams, $params);
-        return new IllForm($mergedParams);        
+        return new IllForm($mergedParams);
     }
-    
+
     public static function getMapongo(ContainerInterface $container)
     {
         $client = $container->get('Bsz\Config\Client');
@@ -231,5 +230,4 @@ class Factory
             $client->get('Mapongo')
         );
     }
-    
 }

@@ -1,19 +1,19 @@
-<? /* Display thumbnail if appropriate: */ ?>
-<?  $formats = $this->driver->getFormats();
+<?php /* Display thumbnail if appropriate: */ ?>
+<?php  $formats = $this->driver->getFormats();
     $icon = $this->mapper()->mapIcon($formats);
 ?>
-<? if ($cover): ?>
-  <? if (isset($this->link) && $this->link != '#'): ?>
+<?php if ($cover): ?>
+  <?php if (isset($this->link) && $this->link != '#'): ?>
     <a href="<?=$this->escapeHtmlAttr($this->link)?>" >
-  <? elseif (isset($this->link) && $this->link == '#'): ?>
+  <?php elseif (isset($this->link) && $this->link == '#'): ?>
     <a href="#" class="modal-popup cover" data-toggle="modal" data-img-url="<?=$this->escapeHtmlAttr($cover); ?>">
-  <? endif; ?>
-  <img <? if ($linkPreview): ?>data-linkpreview="true" <? endif; ?>class="img-responsive hidden-print <?=$icon?>" src="<?=$this->escapeHtmlAttr($cover); ?>"/>
-  <? if ($this->link): ?>
+  <?php endif; ?>
+  <img loading="lazy" <?php if ($this->linkPreview): ?>data-linkpreview="true" <?php endif; ?>class="img-responsive hidden-print <?=$icon?>" src="<?=$this->escapeHtmlAttr($cover); ?>"/>
+  <?php if ($this->link): ?>
     </a>
-  <? endif; ?>
-<? else: ?>
-  <div class="recordcover unavailable hidden-print <?=$this->mapper()->mapIcon($this->driver->getFormats())?> medium">     
-    <span class=""></span>
-</div>
-<? endif; ?>
+  <?php endif; ?>
+<?php else: ?>
+    <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="internal hasicon" >
+        <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?> medium"></div>
+    </a>
+<?php endif; ?>

@@ -1,5 +1,4 @@
 <?php
-
 namespace Bsz\RecordDriver;
 
 /**
@@ -9,18 +8,8 @@ namespace Bsz\RecordDriver;
  */
 class SolrGviMarcDE603 extends SolrGviMarc
 {
-    public function getNetwork() {return 'HEBIS';}
-    
-    /**
-     * For rticles: get container title
-     * 
-     * @return type
-     */
-    public function getContainerTitle()
+    public function getNetwork()
     {
-        $fields = [772 => ['t']];
-        $array = $this->getFieldsArray($fields);
-        $title = array_shift($array);
-        return str_replace('In: ', '', $title);
+        return 'HEBIS';
     }
 }

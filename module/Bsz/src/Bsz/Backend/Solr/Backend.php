@@ -12,9 +12,8 @@ use VuFindSearch\ParamBag;
 use VuFindSearch\Query\AbstractQuery;
 use VuFindSearch\Response\RecordCollectionInterface;
 
-
-class Backend extends \VuFindSearch\Backend\Solr\Backend {
-
+class Backend extends \VuFindSearch\Backend\Solr\Backend
+{
     /**
      * Perform a search and return record collection.
      *
@@ -41,7 +40,7 @@ class Backend extends \VuFindSearch\Backend\Solr\Backend {
             $params->set('group', 'false');
         }
 
-        // Only group in ILL-TAB, 
+        // Only group in ILL-TAB,
         if (!$params->contains('fq', '-consortium:"FL"')) {
             $params->set('group', 'false');
         }
@@ -67,8 +66,7 @@ class Backend extends \VuFindSearch\Backend\Solr\Backend {
             // ngroups have massive performance penalty!
             $params->set('group.ngroups', 'false');
             $params->set('stats', 'true');
-            $params->set('stats.field', '{!cardinality=true}'.$params->get('group.field')['0']);
-
+            $params->set('stats.field', '{!cardinality=true}' . $params->get('group.field')['0']);
         }
 
         $response   = $this->connector->search($params);

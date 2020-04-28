@@ -1,7 +1,7 @@
 <?php $rand = rand(0,1000)?>
 <? if (!empty($link)): ?>
-    <a href="<?=$link?>" class="external" <? if(isset($label)):?>data-toggle="tooltip" title="<?=$this->transEsc($label)?>"<?php endif; ?>><span id="clipboard-<?=$rand?>"><?=$this->escapeHtml($ppn)?></a>
+    <a href="<?=$link?>" class="external" <? if(isset($label)):?>data-toggle="tooltip" title="<?=$this->transEsc($label)?>"<?php endif; ?>><span id="clipboard-<?=$rand?>"><?=$this->escapeHtml($ppn)?></span></a>
 <? else: ?>
-    <?=$this->escapeHtml($ppn)?>
+    <span id="clipboard-<?=$rand?>"><?=$this->escapeHtml($ppn)?></span>
 <? endif; ?>
-<span class="copy-clipboard-toggle" data-toggle="tooltip" title="<?=$this->transEsc('clipboard')?>" data-clipboard-target="#clipboard-<?=$rand?>"><i class="fa fa-copy"></i></span>
+&nbsp;<span class="copy-clipboard-toggle" data-toggle="tooltip" title="<?=$this->transEsc('clipboard')?>" data-clipboard-target="#clipboard-<?=$rand?>"><i class="fa fa-copy"></i></span>

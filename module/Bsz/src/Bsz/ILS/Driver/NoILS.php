@@ -1,34 +1,31 @@
 <?php
-
 namespace Bsz\ILS\Driver;
 
-
-use VuFind\Exception\ILS as ILSException;
-use VuFind\I18n\Translator\TranslatorAwareInterface;
 use Bsz\Config\Libraries;
+use VuFind\Exception\ILS as ILSException;
+
 /**
  * Description of NoILS
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class NoILS extends \VuFind\ILS\Driver\NoILS 
+class NoILS extends \VuFind\ILS\Driver\NoILS
 {
     /**
      *
      * @var Libraries
-     */    
+     */
     protected $libraries;
-    
-    
+
     protected $isils;
-    
-    public function __construct(\VuFind\Record\Loader $loader, Libraries $libraries, $isils) 
+
+    public function __construct(\VuFind\Record\Loader $loader, Libraries $libraries, $isils)
     {
         $this->libraries = $libraries;
         $this->isils = $isils;
         parent::__construct($loader);
     }
-    
+
     /**
      * Get Holding
      *
@@ -81,7 +78,8 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
 
         return [];
     }
-        /**
+
+    /**
      * This is responsible for retrieving the status or holdings information of a
      * certain record from a Marc Record.
      *
@@ -100,18 +98,17 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
                 $library = $this->libraries->getByIsil($currentIsil);
                 if (isset($library)) {
                     $parent[$k]['location'] = $library->getName();
-                    $parent[$k]['locationhref'] = $library->getHomepage();              
-                }                
+                    $parent[$k]['locationhref'] = $library->getHomepage();
+                }
             } else {
                 unset($parent[$k]);
-            } 
-                
-       }
+            }
+        }
 
-       return $parent;
+        return $parent;
     }
-    
-        /**
+
+    /**
      * Has Holdings
      *
      * This is responsible for determining if holdings exist for a particular
@@ -132,6 +129,4 @@ class NoILS extends \VuFind\ILS\Driver\NoILS
         }
         return false;
     }
-
-
 }

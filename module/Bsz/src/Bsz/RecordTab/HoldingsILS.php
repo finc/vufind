@@ -23,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\RecordTab;
 
 /**
@@ -39,14 +38,13 @@ class HoldingsILS extends \VuFind\RecordTab\HoldingsILS
      * @return bool
      */
     public function isActive()
-    {        
+    {
         $id = $this->driver->getUniqueID();
         if ($this->catalog) {
             if ($this->catalog->hasHoldings($id)) {
                 return true;
             }
-        } 
+        }
         return false;
     }
-    
 }

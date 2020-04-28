@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\Cover;
+
 use Exception;
 use VuFindCode\ISBN;
 
@@ -29,9 +29,8 @@ use VuFindCode\ISBN;
  */
 class Loader extends \VuFind\Cover\Loader
 {
-
-
     protected $ean;
+
     /**
      * Load an image given an ISBN and/or content type.
      *
@@ -48,7 +47,6 @@ class Loader extends \VuFind\Cover\Loader
      *
      * @return null|url
      */
-    
     public function loadImage($isbn = null, $size = 'small', $type = null,
         $title = null, $author = null, $callnumber = null, $issn = null,
         $oclc = null, $upc = null, $ean = null
@@ -68,7 +66,7 @@ class Loader extends \VuFind\Cover\Loader
         // are able to display an ISBN or content-type-based image.
         if (!in_array($this->size, $this->validSizes)) {
             $this->loadUnavailable();
-        } else if (!$this->fetchFromAPI()
+        } elseif (!$this->fetchFromAPI()
             && !$this->fetchFromContentType()
         ) {
             if (isset($this->config->Content->makeDynamicCovers)
@@ -77,18 +75,18 @@ class Loader extends \VuFind\Cover\Loader
                 $this->image = $this->getCoverGenerator()
                     ->generate($title, $author, $callnumber);
                 $this->contentType = 'image/jpeg';
-                // Generator returns empty string if makeDynamicCovers is 
+                // Generator returns empty string if makeDynamicCovers is
                 // html or false
-                if(strlen($this->image) > 0 ){
+                if (strlen($this->image) > 0) {
                     return $this->image;
                 } else {
                     $this->loadUnavailable();
                 }
-            } 
+            }
         }
         return null;
-        
     }
+
     /**
      * Get all valid identifiers as an associative array.
      *
@@ -114,7 +112,8 @@ class Loader extends \VuFind\Cover\Loader
         }
         return $ids;
     }
-     /**
+
+    /**
      * Support method for fetchFromAPI() -- set the localFile property.
      *
      * @param array $ids IDs returned by getIdentifiers() method
@@ -132,16 +131,15 @@ class Loader extends \VuFind\Cover\Loader
                 return $this->getCachePath($this->size, $ids['isbn']->get10());
             }
             return $file;
-        } else if (isset($ids['issn'])) {
+        } elseif (isset($ids['issn'])) {
             return $this->getCachePath($this->size, $ids['issn']);
-        } else if (isset($ids['oclc'])) {
+        } elseif (isset($ids['oclc'])) {
             return $this->getCachePath($this->size, 'OCLC' . $ids['oclc']);
-        } else if (isset($ids['upc'])) {
+        } elseif (isset($ids['upc'])) {
             return $this->getCachePath($this->size, 'UPC' . $ids['upc']);
-        } else if (isset($ids['ean'])) {
+        } elseif (isset($ids['ean'])) {
             return $this->getCachePath($this->size, 'EAN' . $ids['ean']);
         }
         throw new Exception('Unexpected code path reached!');
     }
-    
 }

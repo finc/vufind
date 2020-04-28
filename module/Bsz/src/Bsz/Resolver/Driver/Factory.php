@@ -1,8 +1,8 @@
 <?php
-
 namespace Bsz\Resolver\Driver;
 
 use Interop\Container\ContainerInterface;
+
 /**
  * Factory for Resolver Drivers
  *
@@ -23,11 +23,11 @@ class Factory
         return new Ezb(
             $config->OpenURL->url,
             $container->get('VuFind\Http')->createClient(),
-            'bibid='.$config->OpenURL->bibid
+            'bibid=' . $config->OpenURL->bibid
         );
     }
-    
-     /**
+
+    /**
      * Factory for Redi record driver.
      *
      * @param ContainerInterface $container Service manager.
@@ -42,8 +42,8 @@ class Factory
             $container->get('VuFind\Http')->createClient()
         );
     }
-    
-        /**
+
+    /**
      * Factory for Ezb record driver.
      *
      * @param ContainerInterface $container Service manager.

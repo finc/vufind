@@ -44,9 +44,9 @@
         ?>
         <h3 property="name">
             <? if (is_array($title)): ?>
-                <?= $this->escapeHtml($title[0]) ?> <small><?= $this->string()->cleanEsc($section) ?></small>
+                <?= $this->escapeHtml($title[0]) ?><br/><?= $this->string()->cleanEsc($section) ?>
             <? else: ?>
-                <?= $this->escapeHtml($title) ?> <small><?= $this->string()->cleanEsc($section) ?></small>
+                <?= $this->escapeHtml($title) ?><br/><?= $this->string()->cleanEsc($section) ?>
             <? endif; ?>
             <?= $this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver]) ?>
         </h3>
@@ -54,7 +54,7 @@
             <h4>
                 <?= $this->escapeHtml($titleol) ?>
                 <? if (!empty($sectionol)): ?>
-                    <small><?= $this->escapeHtml($sectionol) ?></small>
+                    <br/><small><?= $this->escapeHtml($sectionol) ?></small>
                 <? endif; ?>
             </h4>
         <? endif; ?>
@@ -109,20 +109,6 @@
                 </td>
             </tr>
             <? endif; ?>
-
-            <? $journalIssue = $this->driver->getContainerIssue();
-               $journalYear= $this->driver->getContainerYear();
-               if (!empty($journalIssue) && !empty($journalYear)): ?>
-            <tr>
-                <th><?=$this->transEsc('Issue')?>:</th>
-                <td>
-                  <?=$this->string()->cleanEsc($journalIssue)?>
-                  <? if (!empty($journalYear)) : ?>
-                      / <?=$this->string()->cleanEsc($journalYear)?>
-                  <? endif ; ?>
-                </td>
-            </tr>
-            <? endif;?>
 
             <? $nextTitles = $this->driver->getNewerTitles(); $prevTitles = $this->driver->getPreviousTitles(); ?>
             <? if (!empty($nextTitles)): ?>
@@ -229,13 +215,11 @@
             <? $physical = $this->driver->getPhysicalDescriptions();
             $physicalol = $this->driver->tryMethod('getPhysicalDescriptionsOl');
 
-            $separators = [' : ', ' ; ', ' + '];
-
             if (!empty($physical)): ?>
             <tr>
                 <th><?=$this->transEsc('Physical Description')?>: </th>
                 <td><? foreach ($physical as $k => $field): ?>
-                    <?=$this->escapeHtml($field)?><? if (isset($separators[$k], $physical[$k+1])):?><?=$this->escapeHtml($separators[$k])?><?endif?>
+                    <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
                   <? endforeach; ?>
                   <? if ($physicalol !== null): ?>
                     <br/>
@@ -378,20 +362,20 @@
       </tr>
       <? endif; ?>
 
-      <? if( strlen($this->driver->getConsortium()) > 0): ?>
-        <?  $consortium = $this->driver->getConsortium();
+      <? if ($this->client()->is('show_network')): ?>
+        <? if( strlen($this->driver->getConsortium()) > 0): ?>
+            <?  $consortium = $this->driver->getConsortium();
             $consortiums = explode(', ', $consortium);
-        ?>
-        <tr>
-            <th><?=$this->transEsc('Network')?>:</th>
-            <td><? foreach ($consortiums as $con): ?>
+            ?>
+            <tr>
+                <th><?=$this->transEsc('Network')?>:</th>
+                <td><? foreach ($consortiums as $con): ?>
                 <?=$this->abbrev($con)?>
                 <? endforeach; ?>
-
-            </td>
-        </tr>
+                </td>
+            </tr>
+        <? endif; ?>
       <? endif; ?>
-
 
       <? if ($this->usertags()->getMode() !== 'disabled'): ?>
         <? $tagList = $this->driver->getTags(); ?>

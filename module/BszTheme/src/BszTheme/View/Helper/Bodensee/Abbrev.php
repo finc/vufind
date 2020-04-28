@@ -18,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 namespace BszTheme\View\Helper\Bodensee;
 
 use Zend\View\Helper\AbstractHelper;
@@ -47,5 +46,4 @@ class Abbrev extends AbstractHelper
             'description' => $description
         ]);
     }
-
 }

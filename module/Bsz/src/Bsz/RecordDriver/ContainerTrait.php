@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Bsz\RecordDriver;
 
 /**
@@ -13,8 +12,8 @@ namespace Bsz\RecordDriver;
  *
  * @author amzar
  */
-trait ContainerTrait {
-
+trait ContainerTrait
+{
     /**
      * As out fiels 773 does not contain any further title information we need
      * to query solr again
@@ -43,10 +42,11 @@ trait ContainerTrait {
     }
 
     /**
-     * 
+     *
      * @return array
      */
-    public function getContainerIds() {
+    public function getContainerIds()
+    {
         $fields = [
             773 => ['w'],
         ];
@@ -56,19 +56,20 @@ trait ContainerTrait {
             $ids = explode(' ', $subfields);
             foreach ($ids as $id) {
                 // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
-                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id )  ) {
+                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id)) {
                     $ids[] = $id;
                 }
-            }            
+            }
         }
         return array_unique($ids);
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
-    public function getContainerId() {
+    public function getContainerId()
+    {
         $ids = $this->getContainerIds();
         return array_shift($ids);
     }
@@ -77,8 +78,9 @@ trait ContainerTrait {
      * Returns ISXN of containing item. ISBN is preferred, if set.
      * @return string
      */
-    public function getContainerIsxn() {
-         $fields = [
+    public function getContainerIsxn()
+    {
+        $fields = [
             773 => ['z'],
             773 => ['x'],
         ];
@@ -90,8 +92,9 @@ trait ContainerTrait {
      * Returns ISXN of containing item. ISBN is preferred, if set.
      * @return string
      */
-    public function getContainerRelParts() {
-         $fields = [
+    public function getContainerRelParts()
+    {
+        $fields = [
             773 => ['g'],
         ];
         $array = $this->getFieldsArray($fields);
@@ -107,12 +110,11 @@ trait ContainerTrait {
     {
         // this is applicable only if item is a part of another item
         if ($this->isPart()) {
-
             $isxn = $this->getContainerIsxn();
             // isbn set
             if (strlen($isxn) > 9) {
                 return true;
-            } elseif(empty($isxn)) {
+            } elseif (empty($isxn)) {
                 $containers = $this->getContainer();
 
                 if (is_array($containers)) {
@@ -123,8 +125,8 @@ trait ContainerTrait {
         }
         return false;
     }
-    
-        /**
+
+    /**
      * For rticles: get container title
      * @return type
      */
@@ -132,9 +134,6 @@ trait ContainerTrait {
     {
         $fields = [
             773 => ['a', 't'], //SWB, GBV
-            490 => ['v'], // BVB
-            772 => ['t'], // HEBIS,
-            780 => ['t']
         ];
         $array = $this->getFieldsArray($fields);
         $title = array_shift($array);
@@ -211,9 +210,9 @@ trait ContainerTrait {
     /**
      * This method returns dirty data, don't use it except for ILL!
      */
-    public function getContainerRaw() {
+    public function getContainerRaw()
+    {
         $f773g = $this->getFieldArray(773, ['g']);
         return array_shift($f773g);
     }
-
 }

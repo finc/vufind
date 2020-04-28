@@ -4,7 +4,7 @@
     $this->headScript()->appendFile('https://s7.addthis.com/js/250/addthis_widget.js?pub=' . urlencode($addThis));
   }
 ?>
-<div class="col-sm-12">    
+<div class="col-sm-12">
     <ul class="record-nav nav nav-pills hidden-print">
       <? if (count($this->driver->getCitationFormats()) > 0): ?>
         <li><a class="btn cite-record" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Cite')?>" rel="nofollow"><i class="fa fa-asterisk" aria-hidden="true"></i> <?=$this->transEsc('Cite this')?></a></li>
@@ -12,7 +12,7 @@
       <? if ($this->accountCapabilities()->getSmsSetting() !== 'disabled'): ?>
         <li><a class="tn sms-record" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'SMS')?>" rel="nofollow"><i class="fa fa-mobile" aria-hidden="true"></i> <?=$this->transEsc('Text this')?></a></li>
       <? endif; ?>
-      <li><a class="btn mail-record" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Email')?>" rel="nofollow"><i class="fa fa-envelope" aria-hidden="true"></i> <?=$this->transEsc('Email this')?></a></li>
+      <li><a class="btn mail-record" data-lightbox href="<?=$this->recordLink()->getActionUrl($this->driver, 'Email')?>" rel="nofollow"><i class="fa fa-envelope" aria-hidden="true"></i> <?=$this->transEsc('Email Record')?></a></li>
 
       <? $exportFormats = $this->export()->getFormatsForRecord($this->driver); ?>
       <? if(count($exportFormats) > 0): ?>

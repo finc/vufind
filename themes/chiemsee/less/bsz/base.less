@@ -4,38 +4,27 @@ Very vbasic styles
 
 .nofloat {
     float: none;
-    clear: both;    
+    clear: both;
 }
 // remove padding from rows
-.row.no-padding {
-  [class*="col-"] {
+.no-padding {
     padding-left: 0 !important;
     padding-right: 0 !important;
-  }
 }
-.row.no-outer-padding {
-  [class*="col-"]:first-child {
-    padding-left: 0 !important;   
-  }    
-  [class*="col-"]:last-child {
-    padding-right: 0 !important;   
-  }        
-}
-
 /**
-Hintergrundfarbverlauf beim Body 
+Hintergrundfarbverlauf beim Body
 **/
 html {
     min-height: 100%;
     body {
-        padding-top: @navbar-height + 5px;
+        padding-top: @navbar-height;
         padding-bottom: 200px; /*so footer is visible*/
         min-height: 100%;
         background-image: url("/themes/chiemsee/images/footer/earth_cut.jpg");
         background-repeat: no-repeat;
         background-position: center bottom;
         background-size: 1200px auto; // Background width = content width              vcc
-    
+
         .main > .container, footer > .container, header > .container.searchbox  {
             /*background-color: white;*/
         }
@@ -49,26 +38,26 @@ html {
 .result-list {
     .container, .container-fluid {
         .background-opacity;
-        
+
     }
     /*Minimaler abstand zw den Zeilen, damit Bilder nicht am Text kleben*/
-    .row.result {    
+    .row.result {
         padding: 0.6em 0;
-        border-bottom: 1px solid @table-border-color;            
+        border-bottom: 1px solid @table-border-color;
         &:last-child {
             border-bottom: 0 !important;
         }
-        
-        
+
+
     }
 }
-.row .record { 
+.row .record {
     table.table {
         th {
             width: 25%
         }
         td {
-            width: 75%            
+            width: 75%
         }
     }
 }
@@ -96,7 +85,7 @@ html {
     legend {
         border-bottom: 0;
     }
-    
+
 }
 /*Platzhalter für die Coverbilder*/
 .cover-placeholder {
@@ -116,7 +105,7 @@ html {
     &:extend(.pagination-lg);
     .active > a,
     .active > span{
-        font-weight: bold;        
+        font-weight: bold;
     }
     li > a {
         background-color: inherit;
@@ -184,7 +173,7 @@ Ellipsis for too long texts
 }
 
 /**
-H4 headings shoulc look like text. 
+H4 headings shoulc look like text.
 **/
 h4, .h4 {
     color: @text-color;
@@ -196,7 +185,7 @@ h4, .h4 {
         h1, h2, h3 {
             margin-top: 0;
         }
-        
+
 }
 .searchtools {
     margin-bottom: 15px;
@@ -204,4 +193,8 @@ h4, .h4 {
 
 .jumbotron li {
     font-size: @jumbotron-font-size;
+}
+
+.row.main {
+    margin-bottom: @grid-gutter-width;
 }

@@ -31,6 +31,7 @@
  * @link     http://vufind.org/wiki/vufind2:building_an_ils_driver Wiki
  */
 namespace Bsz\ILS\Driver;
+
 use VuFind\Exception\ILS as ILSException;
 
 /**
@@ -47,7 +48,7 @@ use VuFind\Exception\ILS as ILSException;
 class DAIAbsz extends \VuFind\ILS\Driver\DAIA
 {
     use ItemTrait;
-    
+
     protected $isil;
     protected $parsePpn = true;
     /**
@@ -55,15 +56,16 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
      * @var array
      */
     protected $holdings = [];
-    
+
     /**
      * Flag to enable multiple DAIA-queries
      *
      * @var bool
      */
     protected $multiQuery = false;
-    
-    public function __construct(\VuFind\Date\Converter $converter, $isil, $baseUrl = '') {
+
+    public function __construct(\VuFind\Date\Converter $converter, $isil, $baseUrl = '')
+    {
         $this->dateConverter = $converter;
         $this->isil = $isil;
         if (strlen($baseUrl) > 0) {
@@ -71,7 +73,7 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
         }
     }
 
-       /**
+    /**
      * Initialize the driver.
      *
      * Validate configuration and perform all resource-intensive tasks needed to
@@ -93,9 +95,9 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
          * else {
             throw new ILSException('DAIA/baseUrl configuration needs to be set.');
         }*/
-        if (isset($this->isil) && strpos($this->baseUrl, '%s') !== FALSE) {
+        if (isset($this->isil) && strpos($this->baseUrl, '%s') !== false) {
             $this->baseUrl = sprintf($this->baseUrl, array_shift($this->isil));
-        } 
+        }
         if (isset($this->config['DAIA']['daiaResponseFormat'])) {
             $this->daiaResponseFormat = strtolower(
                 $this->config['DAIA']['daiaResponseFormat']
@@ -121,14 +123,14 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
             $this->debug('No ContentTypes for response defined. Accepting any.');
         }
     }
-    
+
     /**
      * Get Hold Link
      *
      * The goal for this method is to return a URL to a "place hold" web page on
      * the ILS OPAC. This is used for ILSs that do not support an API or method
      * to place Holds.
-     * 
+     *
      * Uses the mobile version of aDIS by exchanging a number
      *
      * @param string $id      The id of the bib record
@@ -147,7 +149,8 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
         }
         return $details['ilslink'];
     }
-        /**
+
+    /**
      * Perform an HTTP request.
      *
      * @param string $id id for query in daia
@@ -164,25 +167,22 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
 
         $http_headers = [
             "Content-type: " . $contentTypes[$this->daiaResponseFormat],
-            "Accept: " .  $contentTypes[$this->daiaResponseFormat]
+            "Accept: " . $contentTypes[$this->daiaResponseFormat]
         ];
-        
-        if($this->parsePpn || strpos($id, ')') !== false) {
-            
+
+        if ($this->parsePpn || strpos($id, ')') !== false) {
             $end = strpos($id, ')');
-            $ppn = substr($id, $end + 1);    
-            
+            $ppn = substr($id, $end + 1);
+
             $params = [
                 "id" => $this->daiaIdPrefix . $ppn,
                 "format" => $this->daiaResponseFormat,
-            ];     
-           
-        }
-        else {
+            ];
+        } else {
             $params = [
                 "id" => $this->daiaIdPrefix . $id,
                 "format" => $this->daiaResponseFormat,
-            ];            
+            ];
         }
 
         try {
@@ -190,7 +190,6 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
                 $this->baseUrl,
                 $params, null, $http_headers
             );
-            
         } catch (\Exception $e) {
             throw new \VuFind\Exception\ILS($e->getMessage());
         }
@@ -208,10 +207,9 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
             // return false as DAIA request failed
             return false;
         }
-        return ($result->getBody());
-
+        return $result->getBody();
     }
-    
+
     /**
      * Get Status
      *
@@ -240,13 +238,13 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
                 }
             } catch (ILSException $e) {
                 $this->debug($e->getMessage());
-            }            
+            }
         } else {
             return $this->holdings[$id];
         }
     }
-    
-        /**
+
+    /**
      * Parse an array with DAIA status information.
      *
      * @param string $id        Record id for the DAIA array.
@@ -278,7 +276,7 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
                 $result_item['item_id'] = $item['id'];
                 // custom DAIA field used in getHoldLink()
                 $result_item['ilslink']
-                    = (isset($item['href']) ? $item['href'] : $doc_href);
+                    = ($item['href'] ?? $doc_href);
                 // count items
                 $number++;
                 $result_item['number'] = $this->getItemNumber($item, $number);
@@ -287,7 +285,7 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
                 // set default value for part
                 $result_item['part'] = $this->getItemPart($item);
                 $result_item['about'] = $this->getItemAbout($item);
-                
+
                 // set default value for reserve
                 $result_item['reserve'] = $this->getItemReserveStatus($item);
                 // get callnumber
@@ -305,8 +303,8 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
 
         return $result;
     }
-    
-        /**
+
+    /**
      * Returns an array with status information for provided item.
      *
      * @param array $item Array with DAIA item data
@@ -350,7 +348,7 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
                             // save the link to the ils if we have a href for loan
                             // service
                             $availableLink = $available['service']['href'];
-                        }                      
+                        }
                     }
 
                     // use limitation element for status string
@@ -384,7 +382,7 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
                     if (isset($unavailable['limitation'])) {
                         $status = $this
                             ->getItemLimitation($unavailable['limitation']);
-                    } 
+                    }
                     if ($message == 'missing') {
                         $status = 'Missing';
                     }
@@ -433,16 +431,15 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
 
         return $return;
     }
- 
-    
+
     /**
      * Needed to hide holdings tab if empty
      * @param string $id
      * @return boolean
      */
-    public function hasHoldings($id) 
+    public function hasHoldings($id)
     {
-        // we can't query DAIA without an ISIL. 
+        // we can't query DAIA without an ISIL.
         if (empty($this->isil)) {
             return false;
         }
@@ -453,7 +450,7 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
             foreach ($holdings as $holding) {
                 if ($holding['callnumber'] == 'Unknown') {
                     return false;
-                }                
+                }
             }
             return true;
         }
@@ -461,34 +458,37 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
         return false;
     }
 
-    public function translationEnabled() 
+    public function translationEnabled()
     {
         if (isset($this->config['DAIA']['noTranslation'])) {
             return false;
         }
         return true;
     }
-    
-    public function getNewItems() {
+
+    public function getNewItems()
+    {
         return [];
     }
-    
-    public function getDepartments() {
+
+    public function getDepartments()
+    {
         return [];
     }
-    
-    public function getInstructors() {
+
+    public function getInstructors()
+    {
         return [];
     }
-    
-    public function getCourses() {
+
+    public function getCourses()
+    {
         return [];
     }
-    
 
     /**
-     * Avois parsing an empty response - this may happen on ill portal if DAIA 
-     * is not configured correctly. 
+     * Avois parsing an empty response - this may happen on ill portal if DAIA
+     * is not configured correctly.
      * @param type $daiaResponse
      */
     protected function convertDaiaXmlToJson($daiaResponse)
@@ -496,8 +496,6 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
         if ($daiaResponse != false && !empty($daiaResponse)) {
             return parent::convertDaiaXmlToJson($daiaResponse);
         }
-        return '';        
-        
+        return '';
     }
-    
 }

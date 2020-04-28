@@ -23,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\Config;
 
 use Bsz\LibrariesTable;
@@ -38,7 +37,6 @@ use Zend\Session\Container;
  */
 class Factory
 {
-
     /**
      *
      * @param ContainerInterface $container
@@ -52,7 +50,7 @@ class Factory
         $sessContainer = new Container(
             'fernleihe', $container->get('VuFind\SessionManager')
         );
-        
+
         $client = new Client(array_merge($vufindconf, $bszconf, $searchconf), true);
         $client->appendContainer($sessContainer);
         if ($client->isIsilSession()) {
@@ -80,9 +78,9 @@ class Factory
         $resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAYOBJECT, new Library());
         $librariesTable = new Libraries('libraries', $adapter, null, $resultSetPrototype);
         return $librariesTable;
-    }  
-    
-    public static function getDedup(ContainerInterface $container) 
+    }
+
+    public static function getDedup(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config')->get('Index');
         $sesscontainer = new Container(
@@ -92,6 +90,4 @@ class Factory
         $cookie = $container->get('Request')->getCookie();
         return new Dedup($config, $sesscontainer, $response, $cookie);
     }
-    
 }
-

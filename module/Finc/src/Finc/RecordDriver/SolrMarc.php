@@ -28,9 +28,10 @@
  * @link     https://vufind.org/wiki/development:plugins:record_drivers Wiki
  */
 namespace Finc\RecordDriver;
-use VuFind\Exception\ILS as ILSException,
-    VuFind\View\Helper\Root\RecordLink,
-    VuFind\XSLT\Processor as XSLTProcessor;
+
+use VuFind\Exception\ILS as ILSException;
+use VuFind\View\Helper\Root\RecordLink;
+use VuFind\XSLT\Processor as XSLTProcessor;
 
 /**
  * Model for MARC records in Solr.
@@ -332,7 +333,7 @@ class SolrMarc extends SolrDefault
             ? $this->mainConfig->Record->replaceMarc260 : false;
         if (count($pubResults) > 0) {
             return $replace260 ? $pubResults : array_merge($results, $pubResults);
-        } else if (count($copyResults) > 0) {
+        } elseif (count($copyResults) > 0) {
             return $replace260 ? $copyResults : array_merge($results, $copyResults);
         }
 
@@ -518,11 +519,11 @@ class SolrMarc extends SolrDefault
                     // non-empty:
                     $data = trim($currentSubfield->getData());
                     if (!empty($data)) {
-                            $matches[] = $data;
-                        }
+                        $matches[] = $data;
                     }
                 }
             }
+        }
 
         // Send back the data in a different format depending on $concat mode:
         return $concat && $matches ? [implode($separator, $matches)] : $matches;
@@ -809,7 +810,7 @@ class SolrMarc extends SolrDefault
         // If reference found, exit loop and go straight to end
         // If no reference found, check the next link type instead
         foreach ($linkTypes as $linkType) {
-            switch (trim($linkType)){
+            switch (trim($linkType)) {
             case 'oclc':
                 foreach ($linkFields as $current) {
                     if ($oclc = $this->getIdFromLinkingField($current, 'OCoLC')) {
@@ -884,7 +885,7 @@ class SolrMarc extends SolrDefault
                     ? $matches[2]
                     : trim(str_replace(range('a', 'z'), '', ($matches[2])));
             }
-        } else if ($prefix == null) {
+        } elseif ($prefix == null) {
             // If no prefix was given or found, we presume it is a raw bib record
             return $text;
         }

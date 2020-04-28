@@ -1,6 +1,4 @@
-<h2>Datenschutzerklärung</h2>
-
-<p>Gemäß <a href="https://www.bsz-bw.de/datenschutz.html" class="external">Artikel 13 der Europäischen Datenschutzgrundverordnung (EU-DSGVO)</a></p>
+<h2>Datenschutz</h2>
 
 <h3>Zugriff auf das Internetangebot</h3>
 
@@ -10,7 +8,7 @@
     <li>Bezeichnung der abgerufenen Datei</li>
     <li>Datum und Uhrzeit des Abrufs</li>
     <li>übertragene Datenmenge</li>
-    <li>Rückmeldung Ihres Browsers, dass er die aktuelle angezeigte Webseite gerade erfolgreich abgerufen hat</li> 
+    <li>Rückmeldung Ihres Browsers, dass er die aktuelle angezeigte Webseite gerade erfolgreich abgerufen hat</li>
 </ul>
 <p>Die IP-Adresse wird nicht gespeichert. </p>
 
@@ -18,15 +16,13 @@
 
 <p>Unsere Internetseiten verwenden an mehreren Stellen Cookies. Sie dienen dazu, unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen. Cookies sind kleine Textdateien, die auf Ihrem Rechner abgelegt werden und die Ihr Browser ggf. speichert. Alle von den Webservern des BSZ verwendeten Cookies sind sogenannte „Sessions-Cookies“. Sie werden nach Ende Ihres Besuchs deshalb automatisch von Ihrem Browser gelöscht. Die vom BSZ verwendeten Cookies richten auf Ihrem Rechner keinen Schaden an und enthalten keine Viren.</p>
 
-<?  if($this->piwik('siteid') > 0): ?>
+<?php  if ($this->piwik('siteid') > 0): ?>
 <h3>Matomo</h3>
 <p>Wir benutzen die Tracking-Software Matomo um unsere Benutzer anonym zu zählen. </p>
-<iframe style="border: 0; width: 100%; height: 160px" src="<?=$this->piwik('baseurl')?>/index.php?module=CoreAdminHome&action=optOut&idsite=<?=$this->piwik('siteid')?>&language=<?=$this->layout()->userLang?>"></iframe> 
-<? endif; ?>
+<iframe style="border: 0; width: 100%; height: 160px" src="<?=$this->piwik('baseurl')?>/index.php?module=CoreAdminHome&action=optOut&idsite=<?=$this->piwik('siteid')?>&language=<?=$this->layout()->userLang?>"></iframe>
+<?php endif; ?>
 
 
 <h3>Ihr gutes Recht: Auskunfterteilung</h3>
 
-<p>Ihr Vertrauen ist uns wichtig. Sie haben jederzeit das Recht auf Auskunft über die bezüglich Ihrer Person gespeicherten Daten, deren Herkunft, gegebenenfalls Empfänger sowie den Zweck der Speicherung.</p>
-
-<p>Auskunft über die gespeicherten Daten erteilt Ihnen der Datenschutzbeauftragte des BSZ (E-Mail: <a href="mailto:datenschutz@bsz-bw.de">datenschutz@bsz-bw.de</a>). Sie können sich ebenso bei allen anderen Fragen an ihn wenden, die diese Datenschutzerklärung nicht beantworten konnte oder wenn Sie vertiefte Informationen wünschen.</p>
+<p>Ihr Vertrauen ist uns wichtig. Sie haben jederzeit das Recht auf Auskunft über die bezüglich Ihrer Person gespeicherten Daten, deren Herkunft, gegebenenfalls Empfänger sowie den Zweck der Speicherung. Bitte wenden Sie sich an die Datenschutzbeauftragte oder den Datenschutzbeauftragten Ihrer Organisation.</p>

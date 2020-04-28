@@ -5,7 +5,7 @@
  *
  * PHP version 5
  *
- * Copyright (C) Villanova  
+ * Copyright (C) Villanova
  *  University 2010.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,11 +27,10 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-
 namespace BszTheme\View\Helper\Bodensee;
 
-use \VuFind\View\Helper\Root\Context;
 use VuFind\Resolver\Driver\PluginManager;
+use VuFind\View\Helper\Root\Context;
 
 /**
  * OpenURL view helper
@@ -46,7 +45,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
 {
     protected $params;
     protected $isil;
-    
+
     /**
      * Constructor
      *
@@ -64,7 +63,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         $this->resolverPluginManager = $pluginManager;
         $this->isil = $isil;
     }
-    
+
     /**
      * Render appropriate UI controls for an OpenURL link.
      *
@@ -82,7 +81,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         return $this;
     }
 
-     /**
+    /**
      * Public method to render the OpenURL template
      *
      * @param bool $imagebased Indicates if an image based link
@@ -158,8 +157,8 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
             'Helpers/openurl.phtml', $params
         );
     }
-    
-        /**
+
+    /**
      * Support method for renderTemplate() -- process image based parameters.
      *
      * @param bool  $imagebased Indicates if an image based link
@@ -192,14 +191,14 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
             // the default value when linking the image.
             $params['openUrlImageBasedOverride'] = $this->recordDriver
                 ->tryMethod('getImageBasedOpenUrl');
-            
+
             $resolver = isset($this->config->resolver)
                 ? $this->config->resolver : 'other';
-            
+
             // Concatenate image based OpenUrl base and OpenUrl
             // to a usable image reference
-            $base = $this->config->dynamic_graphic;                
-         
+            $base = $this->config->dynamic_graphic;
+
             if ($this->resolverPluginManager->has($resolver)) {
                 $resolverObj = new \VuFind\Resolver\Connection(
                     $this->resolverPluginManager->get($resolver)
@@ -216,21 +215,21 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         }
         return $params;
     }
-    
+
     /**
-     * Just returns the URL, without rendering. 
-     * 
+     * Just returns the URL, without rendering.
+     *
      * @return string
      */
     public function getUrl($base = '')
     {
         // instantiate the resolver plugin to get a proper resolver link
         if ($this->area == 'illform') {
-            $resolver = 'ill';      
+            $resolver = 'ill';
             $additions = ['pid' => $this->getPidZoneString()];
         } else {
             $resolver = isset($this->config->resolver)
-                ? $this->config->resolver : 'other';            
+                ? $this->config->resolver : 'other';
         }
 
         $openurl = $this->recordDriver->getOpenUrl();
@@ -239,18 +238,18 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
                 $this->resolverPluginManager->get($resolver)
             );
             $resolverUrl = $resolverObj->getResolverUrl($openurl);
-            $resolverUrl .= '&'.http_build_query($additions);
+            $resolverUrl .= '&' . http_build_query($additions);
         } else {
             $resolverUrl = empty($base) ? '' : $base . '?' . $openurl;
-        }    
+        }
 
-        return $resolverUrl;        
+        return $resolverUrl;
     }
-    
+
     /**
-     * This returns an historiy xml-like url param needed for UB Heidelbergs 
+     * This returns an historiy xml-like url param needed for UB Heidelbergs
      * custom form
-     * 
+     *
      * @return string
      */
     public function getPidZoneString()
@@ -263,8 +262,8 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         ];
         foreach ($pidZone as $key => $value) {
             if (!empty($value)) {
-                $pidZoneString .= '<'.$key.'>'.$value.'</'.$key.'>';
-            }        
+                $pidZoneString .= '<' . $key . '>' . $value . '</' . $key . '>';
+            }
         }
         return $pidZoneString;
     }

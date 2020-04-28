@@ -23,12 +23,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\RecordTab;
 
 use Bsz\Config\Libraries as LibConf;
 use VuFind\RecordTab\AbstractBase;
-
 
 /**
  * Description of Libraries
@@ -54,7 +52,7 @@ class Libraries extends AbstractBase
      * @var bool
      */
     protected $swbonly;
-    
+
     public function __construct(LibConf $libraries, $visible = true, $swbonly = false)
     {
         $this->accessPermission = 'access.LibrariesViewTab';
@@ -62,38 +60,38 @@ class Libraries extends AbstractBase
         $this->visible = (bool)$visible;
         $this->swbonly = $swbonly;
     }
-    
+
     public function getDescription()
     {
         return 'Libraries';
     }
-    
+
     /**
-     * Tab is shown if there is at least one 924 in MARC. 
+     * Tab is shown if there is at least one 924 in MARC.
      * @return boolean
      */
     public function isActive()
     {
         $parent = parent::isActive();
-        if (is_null($this->f924)) {
+        if (null === $this->f924) {
             $this->f924 = $this->driver->tryMethod('getField924');
         }
         if ($this->swbonly) {
             foreach ($this->f924 as $k => $field) {
-                if (isset($field['c']) && strtoupper($field['c']) !== 'BSZ' ) {
+                if (isset($field['c']) && strtoupper($field['c']) !== 'BSZ') {
                     unset($this->f924[$k]);
                 }
             }
         }
-                if ($parent && $this->f924) {
-            return true;                
-        }            
-        return false;        
+        if ($parent && $this->f924) {
+            return true;
+        }
+        return false;
     }
-    
+
     public function getContent()
     {
-        if (is_null($this->f924)) {
+        if (null === $this->f924) {
             $this->f924 = $this->driver->tryMethod('getField924');
         }
         if (is_array($this->f924)) {
@@ -106,11 +104,9 @@ class Libraries extends AbstractBase
         }
         return $this->f924;
     }
-    
+
     public function isVisible()
     {
         return $this->visible;
     }
-
-
 }

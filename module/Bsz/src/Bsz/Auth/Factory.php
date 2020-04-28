@@ -1,9 +1,7 @@
 <?php
-
 namespace Bsz\Auth;
 
 use Interop\Container\ContainerInterface;
-
 
 /**
  * Description of Factory
@@ -12,7 +10,7 @@ use Interop\Container\ContainerInterface;
  */
 class Factory
 {
-        /**
+    /**
      * Construct the authentication manager.
      *
      * @param ServiceManager $sm Service manager.
@@ -27,7 +25,7 @@ class Factory
         $libraries = $container->get('Bsz\Config\Libraries');
         $library = null;
         if ($client->isIsilSession()) {
-            $library = $libraries->getFirstActive($client->getIsils());            
+            $library = $libraries->getFirstActive($client->getIsils());
         }
         try {
             // Check if the catalog wants to hide the login link, and override
@@ -57,7 +55,8 @@ class Factory
         $manager->checkForExpiredCredentials();
         return $manager;
     }
-        /**
+
+    /**
      * Construct the Shibboleth plugin.
      *
      * @param ServiceManager $sm Service manager.
@@ -71,5 +70,4 @@ class Factory
             $container->get('Bsz\Config\Libraries')
         );
     }
-    
 }

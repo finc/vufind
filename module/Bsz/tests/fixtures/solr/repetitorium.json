@@ -1,0 +1,157 @@
+{
+  "responseHeader": {
+    "zkConnected": true,
+    "status": 0,
+    "QTime": 8,
+    "params": {
+      "q": "id:(DE-627)027123073",
+      "df": "allfields",
+      "indent": "on",
+      "echoParams": "all",
+      "spellcheck": "false",
+      "rows": "10",
+      "wt": "json"
+    }
+  },
+  "response": {
+    "numFound": 2,
+    "start": 0,
+    "maxScore": 14.29501,
+    "docs": [
+      {
+        "consortium": [
+          "DE-601",
+          "DE-576"
+        ],
+        "catalog": "DE-627",
+        "collection": "K10PLUS",
+        "id": "(DE-627)111588456",
+        "recordtype": "GviMarcDE627",
+        "test_matchkey_1": "book:albert:leparifrançais:1985",
+        "test_matchkey_2": "book:albert:leparifrançais:1985:seuil",
+        "test_matchkey_3": "book:9782020086547:1985",
+        "cluster_id": "(DE-627)111588456",
+        "material_access": [
+          "Physical"
+        ],
+        "material_pubform": [
+          "Monograph/Item"
+        ],
+        "material_media_type": [
+          "Book"
+        ],
+        "material_content_type": [
+          "Book"
+        ],
+        "ill_flag": [
+          "Undefined"
+        ],
+        "_version_": 1655994918539100161,
+        "index_date": "2020-01-17T16:50:21.925Z",
+        "fullrecord": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><collection xmlns=\"http://www.loc.gov/MARC21/slim\"><record><leader>02069cam a2200529   4500</leader><controlfield tag=\"001\">111588456</controlfield><controlfield tag=\"003\">DE-627</controlfield><controlfield tag=\"005\">20191201003606.0</controlfield><controlfield tag=\"007\">tu</controlfield><controlfield tag=\"008\">921121s1985    xx |||||      00| ||fre c</controlfield><datafield tag=\"020\" ind1=\" \" ind2=\" \"><subfield code=\"a\">2020086549</subfield><subfield code=\"9\">2-02-008654-9</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-627)111588456</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-576)027123073</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-599)GBV111588456</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)12016544</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)12016544</subfield></datafield><datafield tag=\"040\" ind1=\" \" ind2=\" \"><subfield code=\"a\">DE-627</subfield><subfield code=\"b\">ger</subfield><subfield code=\"c\">DE-627</subfield><subfield code=\"e\">rakwb</subfield></datafield><datafield tag=\"041\" ind1=\" \" ind2=\" \"><subfield code=\"a\">fre</subfield></datafield><datafield tag=\"044\" ind1=\" \" ind2=\" \"><subfield code=\"c\">XA-FR</subfield></datafield><datafield tag=\"050\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">HD5775</subfield></datafield><datafield tag=\"082\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">339.5/0944</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">15.65</subfield><subfield code=\"2\">bkl</subfield></datafield><datafield tag=\"100\" ind1=\"1\" ind2=\" \"><subfield code=\"a\">Albert, Michel</subfield><subfield code=\"d\">1930-2015</subfield><subfield code=\"0\">(DE-588)124117392</subfield><subfield code=\"0\">(DE-627)08564868X</subfield><subfield code=\"0\">(DE-576)215326202</subfield><subfield code=\"4\">aut</subfield></datafield><datafield tag=\"245\" ind1=\"1\" ind2=\"3\"><subfield code=\"a\">Le pari français</subfield><subfield code=\"c\">Michel Albert</subfield></datafield><datafield tag=\"250\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Nouv. éd. refondue et augm</subfield></datafield><datafield tag=\"264\" ind1=\" \" ind2=\"1\"><subfield code=\"a\">[Paris]</subfield><subfield code=\"b\">Seuil</subfield><subfield code=\"c\">c1985</subfield></datafield><datafield tag=\"300\" ind1=\" \" ind2=\" \"><subfield code=\"a\">398 S</subfield><subfield code=\"b\">graph. Darst</subfield><subfield code=\"c\">18 cm</subfield></datafield><datafield tag=\"336\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Text</subfield><subfield code=\"b\">txt</subfield><subfield code=\"2\">rdacontent</subfield></datafield><datafield tag=\"337\" ind1=\" \" ind2=\" \"><subfield code=\"a\">ohne Hilfsmittel zu benutzen</subfield><subfield code=\"b\">n</subfield><subfield code=\"2\">rdamedia</subfield></datafield><datafield tag=\"338\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Band</subfield><subfield code=\"b\">nc</subfield><subfield code=\"2\">rdacarrier</subfield></datafield><datafield tag=\"490\" ind1=\"1\" ind2=\" \"><subfield code=\"a\">Points</subfield><subfield code=\"a\">Série politique</subfield><subfield code=\"v\">127</subfield></datafield><datafield tag=\"500\" ind1=\" \" ind2=\" \"><subfield code=\"a\">18 cm. - Includes bibliographical references</subfield></datafield><datafield tag=\"591\" ind1=\" \" ind2=\" \"><subfield code=\"a\">720 ff. (DDC): GBV/LOC ; IMD-Felder und 1131 maschinell ergänzt (SWB)</subfield></datafield><datafield tag=\"653\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Full employment policies</subfield><subfield code=\"x\">France</subfield></datafield><datafield tag=\"653\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Full employment policies</subfield><subfield code=\"x\">European Economic Community countries</subfield></datafield><datafield tag=\"653\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Full employment policies</subfield></datafield><datafield tag=\"830\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Points / Série politique</subfield><subfield code=\"v\">127</subfield><subfield code=\"9\">127</subfield><subfield code=\"w\">(DE-627)167172662</subfield><subfield code=\"w\">(DE-576)006658873</subfield><subfield code=\"w\">(DE-600)423007-3</subfield><subfield code=\"x\">0768-1135</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">927112221</subfield><subfield code=\"b\">DE-1a</subfield><subfield code=\"9\">1a</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">1 A 724836</subfield><subfield code=\"h\">2</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">623477076</subfield><subfield code=\"b\">DE-206</subfield><subfield code=\"9\">206</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">A 156285</subfield><subfield code=\"h\">K:</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">403202442</subfield><subfield code=\"b\">DE-89</subfield><subfield code=\"9\">89</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">TK/680/8371</subfield><subfield code=\"h\">FBL</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">403202442</subfield><subfield code=\"b\">DE-35</subfield><subfield code=\"9\">35</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">TK/680/8371</subfield><subfield code=\"h\">FBL</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">131611887</subfield><subfield code=\"b\">DE-Hil2</subfield><subfield code=\"9\">Hil 2</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">09 : 52812</subfield><subfield code=\"h\">MAGAZIN</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3102157432</subfield><subfield code=\"b\">DE-Sa16-1</subfield><subfield code=\"9\">Sa 16/1</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">310215753X</subfield><subfield code=\"b\">DE-16</subfield><subfield code=\"9\">16</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">85 A 2599</subfield></datafield><datafield tag=\"936\" ind1=\"b\" ind2=\"k\"><subfield code=\"a\">15.65</subfield><subfield code=\"j\">Frankreich</subfield><subfield code=\"x\">Geschichte</subfield><subfield code=\"0\">(DE-627)181571641</subfield></datafield><datafield tag=\"950\" ind1=\"l\" ind2=\" \"><subfield code=\"a\">Arbeitslosigkeit</subfield><subfield code=\"a\">Arbeitsmarkt</subfield><subfield code=\"a\">Arbeitspolitik</subfield><subfield code=\"a\">Vollbeschäftigung</subfield><subfield code=\"a\">Konjunkturpolitik</subfield><subfield code=\"a\">Frankreich</subfield><subfield code=\"2\">26</subfield></datafield><datafield tag=\"951\" ind1=\" \" ind2=\" \"><subfield code=\"a\">BO</subfield></datafield></record></collection>",
+        "language": [
+          "fre"
+        ],
+        "subject_topic_facet": [
+          "Full employment policies"
+        ],
+        "subject_all_facet": [
+          "Full employment policies"
+        ],
+        "institution_id": [
+          "DE-16",
+          "DE-1a",
+          "DE-206",
+          "DE-35",
+          "DE-89",
+          "DE-Hil2",
+          "DE-Sa16"
+        ],
+        "author_facet": [
+          "Albert, Michel"
+        ],
+        "ill_region": [
+          "BSZ",
+          "GBV"
+        ]
+      },
+      {
+        "consortium": [
+          "DE-601",
+          "DE-576"
+        ],
+        "catalog": "DE-627",
+        "collection": "K10PLUS",
+        "id": "(DE-627)027123073",
+        "recordtype": "GviMarcDE627",
+        "test_matchkey_1": "book:merziger:repetitoriumderhöherenmathematik:1991",
+        "test_matchkey_2": "book:merziger:repetitoriumderhöherenmathematik:1991:feldmann",
+        "test_matchkey_3": "book:9783923923335:1991",
+        "cluster_id": "(DE-627)027123073",
+        "material_access": [
+          "Physical"
+        ],
+        "material_pubform": [
+          "Monograph/Item"
+        ],
+        "material_media_type": [
+          "Book"
+        ],
+        "material_content_type": [
+          "Book"
+        ],
+        "ill_flag": [
+          "Undefined"
+        ],
+        "_version_": 1656259019757584384,
+        "index_date": "2020-01-20T14:48:08.017Z",
+        "fullrecord": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><collection xmlns=\"http://www.loc.gov/MARC21/slim\"><record><leader>02923cam a2200745   4500</leader><controlfield tag=\"001\">027123073</controlfield><controlfield tag=\"003\">DE-627</controlfield><controlfield tag=\"005\">20190318070303.0</controlfield><controlfield tag=\"007\">tu</controlfield><controlfield tag=\"008\">920820s1991    xx |||||      00| ||ger c</controlfield><datafield tag=\"020\" ind1=\" \" ind2=\" \"><subfield code=\"a\">3923923333</subfield><subfield code=\"9\">3-923923-33-3</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-627)027123073</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-576)023727780</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-599)GBV027123073</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)180681533</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)180681533</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-604)8043236588</subfield></datafield><datafield tag=\"040\" ind1=\" \" ind2=\" \"><subfield code=\"a\">DE-627</subfield><subfield code=\"b\">ger</subfield><subfield code=\"c\">DE-627</subfield><subfield code=\"e\">rakwb</subfield></datafield><datafield tag=\"041\" ind1=\" \" ind2=\" \"><subfield code=\"a\">ger</subfield></datafield><datafield tag=\"044\" ind1=\" \" ind2=\" \"><subfield code=\"c\">XA-DE</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">SM 100</subfield><subfield code=\"2\">rvk</subfield><subfield code=\"0\">(DE-625)rvk/143280:</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">SK 110</subfield><subfield code=\"2\">rvk</subfield><subfield code=\"0\">(DE-625)rvk/143215:</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">SK 399</subfield><subfield code=\"2\">rvk</subfield><subfield code=\"0\">(DE-625)rvk/143236:</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">31.00</subfield><subfield code=\"2\">bkl</subfield></datafield><datafield tag=\"100\" ind1=\"1\" ind2=\" \"><subfield code=\"a\">Merziger, Gerhard</subfield><subfield code=\"4\">aut</subfield></datafield><datafield tag=\"245\" ind1=\"1\" ind2=\"0\"><subfield code=\"a\">Repetitorium der höheren Mathematik</subfield><subfield code=\"c\">Gerhard Merziger; Thomas Wirth</subfield></datafield><datafield tag=\"250\" ind1=\" \" ind2=\" \"><subfield code=\"a\">1. Aufl.</subfield></datafield><datafield tag=\"264\" ind1=\" \" ind2=\"1\"><subfield code=\"a\">Springe</subfield><subfield code=\"b\">Feldmann</subfield><subfield code=\"c\">1991</subfield></datafield><datafield tag=\"300\" ind1=\" \" ind2=\" \"><subfield code=\"a\">565 S</subfield><subfield code=\"b\">Ill</subfield></datafield><datafield tag=\"336\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Text</subfield><subfield code=\"b\">txt</subfield><subfield code=\"2\">rdacontent</subfield></datafield><datafield tag=\"337\" ind1=\" \" ind2=\" \"><subfield code=\"a\">ohne Hilfsmittel zu benutzen</subfield><subfield code=\"b\">n</subfield><subfield code=\"2\">rdamedia</subfield></datafield><datafield tag=\"338\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Band</subfield><subfield code=\"b\">nc</subfield><subfield code=\"2\">rdacarrier</subfield></datafield><datafield tag=\"591\" ind1=\" \" ind2=\" \"><subfield code=\"a\">SW: 580:DDFHTW/Ssm ; 720 ff. bvb ; IMD-Felder und 1131 maschinell ergänzt (SWB)</subfield></datafield><datafield tag=\"650\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Mathematics</subfield></datafield><datafield tag=\"650\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Calculus</subfield></datafield><datafield tag=\"689\" ind1=\"0\" ind2=\"0\"><subfield code=\"D\">s</subfield><subfield code=\"0\">(DE-588)4035811-2</subfield><subfield code=\"0\">(DE-627)10624566X</subfield><subfield code=\"0\">(DE-576)209014903</subfield><subfield code=\"a\">Lineare Algebra</subfield><subfield code=\"2\">gnd</subfield></datafield><datafield tag=\"689\" ind1=\"0\" ind2=\" \"><subfield code=\"5\">(DE-627)</subfield></datafield><datafield tag=\"689\" ind1=\"1\" ind2=\"0\"><subfield code=\"D\">s</subfield><subfield code=\"0\">(DE-588)4001865-9</subfield><subfield code=\"0\">(DE-627)106395467</subfield><subfield code=\"0\">(DE-576)208844600</subfield><subfield code=\"a\">Analysis</subfield><subfield code=\"2\">gnd</subfield></datafield><datafield tag=\"689\" ind1=\"1\" ind2=\" \"><subfield code=\"5\">(DE-627)</subfield></datafield><datafield tag=\"700\" ind1=\"1\" ind2=\" \"><subfield code=\"a\">Wirth, Thomas</subfield><subfield code=\"4\">aut</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">064935124</subfield><subfield code=\"b\">DE-18-302</subfield><subfield code=\"9\">18/xxx</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">Mat B - 106.1</subfield><subfield code=\"h\">18/284</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">064935159</subfield><subfield code=\"b\">DE-18-302</subfield><subfield code=\"9\">18/xxx</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">Mat B - 106.4</subfield><subfield code=\"h\">18/284</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">064935167</subfield><subfield code=\"b\">DE-18-302</subfield><subfield code=\"9\">18/xxx</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">Mat B - 106.5</subfield><subfield code=\"h\">18/284</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">14926190X</subfield><subfield code=\"b\">DE-3</subfield><subfield code=\"9\">3</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">94 A 6038</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">373619227</subfield><subfield code=\"b\">DE-3</subfield><subfield code=\"9\">3</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">E Ma 300</subfield><subfield code=\"h\">Ha 10</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">259826049</subfield><subfield code=\"b\">DE-HIL3</subfield><subfield code=\"9\">Hil 3</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">MAT 0010/57a</subfield><subfield code=\"h\">N</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">148746454</subfield><subfield code=\"b\">DE-33</subfield><subfield code=\"9\">33</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">28 A 657</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">038250969</subfield><subfield code=\"b\">DE-Ma9</subfield><subfield code=\"9\">Ma 9</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">1992 a 4492:1</subfield><subfield code=\"h\">Magazin</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">141294027</subfield><subfield code=\"b\">DE-Ma9</subfield><subfield code=\"9\">Ma 9</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">1992 a 4492:2</subfield><subfield code=\"h\">Magazin</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">141294035</subfield><subfield code=\"b\">DE-Ma9</subfield><subfield code=\"9\">Ma 9</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">1992 a 4492:3</subfield><subfield code=\"h\">FH</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">141294043</subfield><subfield code=\"b\">DE-Ma9</subfield><subfield code=\"9\">Ma 9</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">1992 a 4492:4</subfield><subfield code=\"h\">FH</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">141294051</subfield><subfield code=\"b\">DE-Ma9</subfield><subfield code=\"9\">Ma 9</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">1992 a 4492:5</subfield><subfield code=\"h\">FH</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">141624590</subfield><subfield code=\"b\">DE-839</subfield><subfield code=\"9\">839</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">BA 220</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3353252185</subfield><subfield code=\"b\">DE-291-406</subfield><subfield code=\"9\">291/406</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">d</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3353252223</subfield><subfield code=\"b\">DE-352</subfield><subfield code=\"9\">352</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">mat 9:me79/r26</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">335325224X</subfield><subfield code=\"b\">DE-90-5</subfield><subfield code=\"9\">90/5</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">b</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3353252266</subfield><subfield code=\"b\">DE-747</subfield><subfield code=\"9\">747</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">SK 399 M577 R42</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3353252282</subfield><subfield code=\"b\">DE-Zi4</subfield><subfield code=\"9\">Zi 4</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3353252320</subfield><subfield code=\"b\">DE-Kon4</subfield><subfield code=\"9\">Kon 4</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">xa/63/c</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3353252347</subfield><subfield code=\"b\">DE-Fn1</subfield><subfield code=\"9\">Fn 1</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">b</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3353252363</subfield><subfield code=\"b\">DE-943</subfield><subfield code=\"9\">943</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">51 Mer</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">335325238X</subfield><subfield code=\"b\">DE-Stg258</subfield><subfield code=\"9\">Stg 258</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">b</subfield></datafield><datafield tag=\"935\" ind1=\" \" ind2=\" \"><subfield code=\"i\">Blocktest</subfield></datafield><datafield tag=\"936\" ind1=\"b\" ind2=\"k\"><subfield code=\"a\">31.00</subfield><subfield code=\"j\">Mathematik: Allgemeines</subfield><subfield code=\"0\">(DE-627)106415808</subfield></datafield><datafield tag=\"951\" ind1=\" \" ind2=\" \"><subfield code=\"a\">BO</subfield></datafield></record></collection>",
+        "language": [
+          "ger"
+        ],
+        "subject_topic_facet": [
+          "Analysis",
+          "Calculus",
+          "Lineare Algebra",
+          "Mathematics"
+        ],
+        "subject_all_facet": [
+          "Algebra, Linear",
+          "AlgeÌbre lineÌaire",
+          "Analyse matheÌmatique",
+          "Analysis",
+          "Calculus",
+          "Lineare Algebra",
+          "Mathematical analysis",
+          "Mathematics",
+          "Mathematische Analysis"
+        ],
+        "institution_id": [
+          "DE-18",
+          "DE-291",
+          "DE-3",
+          "DE-33",
+          "DE-352",
+          "DE-747",
+          "DE-839",
+          "DE-90",
+          "DE-943",
+          "DE-Fn1",
+          "DE-HIL3",
+          "DE-Kon4",
+          "DE-Ma9",
+          "DE-Stg258",
+          "DE-Zi4"
+        ],
+        "author_facet": [
+          "Merziger, Gerhard",
+          "Wirth, Thomas"
+        ],
+        "ill_region": [
+          "BSZ",
+          "GBV"
+        ]
+      }
+    ]
+  }
+}

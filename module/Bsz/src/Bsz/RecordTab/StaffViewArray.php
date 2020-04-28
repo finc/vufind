@@ -55,13 +55,12 @@ class StaffViewArray extends \VuFind\RecordTab\AbstractBase
     {
         return 'Staff View';
     }
-    
-    public function isActive() {
+
+    public function isActive()
+    {
 //        if (\Bsz\Debug::isInternal()) {
-            return true;
+        return true;
 //        }
 //        return false;
     }
-    
-    
 }

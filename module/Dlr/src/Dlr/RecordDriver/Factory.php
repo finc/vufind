@@ -16,20 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace Dlr\RecordDriver;
 
-use Interop\Container\ContainerInterface,
-    \VuFind\RecordDriver\SolrDefaultFactory;
+use Interop\Container\ContainerInterface;
+use VuFind\RecordDriver\SolrDefaultFactory;
 
 /**
  * Factory fo DLR RecordDrivers
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-
-class Factory extends SolrDefaultFactory {
-    
+class Factory extends SolrDefaultFactory
+{
     /**
      * Create an object
      *
@@ -52,9 +50,9 @@ class Factory extends SolrDefaultFactory {
         }
 
         $requestedName = $requestedName;
-             
+
         $driver = new $requestedName(
-            $container->get('Bsz\Mapper'), 
+            $container->get('Bsz\Mapper'),
             $container->get('Bsz\Config\Client'),
             null,
             $container->get('VuFind\Config')->get('searches')
@@ -64,9 +62,9 @@ class Factory extends SolrDefaultFactory {
             $container->get(\VuFind\ILS\Logic\Holds::class),
             $container->get(\VuFind\ILS\Logic\TitleHolds::class)
         );
-        
+
         $driver->attachSearchService($container->get('VuFind\Search'));
         $driver->attachSearchRunner($container->get('VuFind\SearchRunner'));
-       return $driver;
+        return $driver;
     }
 }

@@ -28,9 +28,10 @@
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 namespace Finc\RecordDriver;
+
 use Exception;
 use VuFind\RecordDriver\Response\PublicationDetails;
-use \VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface;
+use VuFindHttp\HttpServiceAwareInterface as HttpServiceAwareInterface;
 use VuFindHttp\HttpServiceAwareTrait;
 
 /**
@@ -154,11 +155,11 @@ class SolrAI extends SolrDefault implements
                 if (isset($value['rft.aulast']) || isset($value['rft.aufirst'])) {
                     $author
                         = (isset($value['rft.aulast'])
-                            ? $value['rft.aulast'].', '
+                            ? $value['rft.aulast'] . ', '
                             : '') .
-                        (isset($value['rft.aufirst']) ? $value['rft.aufirst'] : '');
+                        ($value['rft.aufirst'] ?? '');
                 } else {
-                    $author = (isset($value['rft.au']) ? $value['rft.au'] : '');
+                    $author = ($value['rft.au'] ?? '');
                 }
                 $retval[$i]['name'] = $author;
                 $i++;
@@ -168,8 +169,6 @@ class SolrAI extends SolrDefault implements
         return [];
     }
 
-    
-
     /**
      * Get the title of the item that contains this record (i.e. MARC 773s of a
      * journal).
@@ -178,8 +177,8 @@ class SolrAI extends SolrDefault implements
      */
     public function getContainerTitle()
     {
-        return (isset($this->fields['container_title']) ?
-                $this->fields['container_title'] : '');
+        return isset($this->fields['container_title']) ?
+                $this->fields['container_title'] : '';
     }
 
     /**
@@ -198,7 +197,7 @@ class SolrAI extends SolrDefault implements
             // transform seamlessly into strings in the view layer.
             $retval[] = new PublicationDetails(
                 null,
-                isset($names[$i]) ? $names[$i] : '',
+                $names[$i] ?? '',
                 null
             );
             $i++;
@@ -526,7 +525,7 @@ class SolrAI extends SolrDefault implements
         }
         $value = $this->getAIRecord('doi');
         if (!empty($value)) {
-            $params['rft_id'] = 'info:doi/'.$value;
+            $params['rft_id'] = 'info:doi/' . $value;
         }
         $value = $this->getAIRecord('languages');
         if (!empty($value)) {
@@ -650,7 +649,7 @@ class SolrAI extends SolrDefault implements
         }
         $value = $this->getAIRecord('doi');
         if (!empty($value)) {
-            $params['rft_id'] = 'info:doi/'.$value;
+            $params['rft_id'] = 'info:doi/' . $value;
         }
         $publishers = $this->getPublishers();
         if (count($publishers) > 0) {
@@ -732,7 +731,7 @@ class SolrAI extends SolrDefault implements
         if (empty($this->aiRecord) && !empty($id)) {
             $this->aiRecord = $this->getAIJSONFullrecord($id);
         }
-        if (!is_null($key)) {
+        if (null !== $key) {
             if (!isset($this->aiRecord[$key])
                 && !empty($this->aiRecord[$key])
                 && !is_array($this->aiRecord[$key])
@@ -779,7 +778,6 @@ class SolrAI extends SolrDefault implements
         return ['APAAI', 'MLAAI'];
     }
 
- 
     /**
      * Check for article ode e-article format
      *

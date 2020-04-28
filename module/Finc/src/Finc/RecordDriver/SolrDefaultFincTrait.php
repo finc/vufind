@@ -31,8 +31,9 @@
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 namespace Finc\RecordDriver;
-use VuFindSearch\ParamBag,
-    VuFindSearch\Query\Query as Query;
+
+use VuFindSearch\ParamBag;
+use VuFindSearch\Query\Query as Query;
 
 /**
  * finc specific model for Solr records based on the stock
@@ -50,7 +51,6 @@ use VuFindSearch\ParamBag,
  */
 trait SolrDefaultFincTrait
 {
-
     /**
      * Customized isCollection() to add a check if the record is a single element
      * collection.
@@ -94,10 +94,9 @@ trait SolrDefaultFincTrait
      * local_heading_facet_{indexExtension} is returned.
      *
      * @return array   Containing local_heading_[facet_]{indexExtension} fields.
-     * @access public
      */
-    public function getLocalHeading() {
-
+    public function getLocalHeading()
+    {
         $array = [];
 
         if (isset($this->mainConfig->CustomIndex->indexExtension)) {
@@ -114,24 +113,24 @@ trait SolrDefaultFincTrait
 
     /**
      * Custom method to return permissions set for this record in mainConfig
-     * 
+     *
      * @return int|null|string
      */
     public function getRecordPermission()
     {
         // do we have a RecordPermissions section in config.ini?
         if (isset($this->mainConfig->RecordPermissions)) {
-            
+
             // let's loop through all set RecordPermissions and evaluate them for the
             // current record
             foreach ($this->mainConfig->RecordPermissions->toArray() as $permission => $settings) {
-                foreach((array) $settings as $value) {
+                foreach ((array)$settings as $value) {
                     list($methodName, $methodReturn) = explode(':', $value);
-                    if (in_array($methodReturn, (array) $this->tryMethod($methodName))) {
+                    if (in_array($methodReturn, (array)$this->tryMethod($methodName))) {
                         // as the current permission matches the current record,
                         // return it
                         return $permission;
-                    } 
+                    }
                 }
             }
         }
@@ -152,7 +151,6 @@ trait SolrDefaultFincTrait
      * @deprecated      No need for this wrapper in custom SolrDefault
      *
      * @return array
-     * @access public
      */
     public function getLocalFormat()
     {
@@ -169,12 +167,11 @@ trait SolrDefaultFincTrait
         // Not indexed in Solr yet.
         return null;
     }
-    
+
     /**
      * Get an array of all footnotes in the record.
      *
      * @return array
-     * @access public
      */
     public function getFootnotes()
     {
@@ -185,7 +182,6 @@ trait SolrDefaultFincTrait
      * Get an array of dissertation notes.
      *
      * @return null
-     * @access protected
      */
     public function getDissertationNote()
     {
@@ -223,7 +219,7 @@ trait SolrDefaultFincTrait
             ? true : false;
 
         $format = (false === $isGeneralFormat && true === $isExtension)
-            ?  'format_' . $this->mainConfig->CustomIndex->indexExtension : 'format' ;
+            ? 'format_' . $this->mainConfig->CustomIndex->indexExtension : 'format';
 
         return isset($this->fields[$format]) ? $this->fields[$format] : [];
     }
@@ -254,15 +250,15 @@ trait SolrDefaultFincTrait
 
         if (strlen($this->getCleanISSN()) > 0) {
             return 'Journal';
-        } else if (strlen($this->getCleanISBN()) > 0) {
+        } elseif (strlen($this->getCleanISBN()) > 0) {
             return 'Book';
-        } else if (in_array('Book', $formats)) {
+        } elseif (in_array('Book', $formats)) {
             return 'Book';
-        } else if (in_array('Article', $formats)) {
+        } elseif (in_array('Article', $formats)) {
             return 'Article';
-        } else if (in_array('Journal', $formats)) {
+        } elseif (in_array('Journal', $formats)) {
             return 'Journal';
-        } else if (isset($formats[0])) {
+        } elseif (isset($formats[0])) {
             return $formats[0];
         }
         return 'UnknownFormat';
@@ -295,10 +291,12 @@ trait SolrDefaultFincTrait
         return $params;
     }
 
-    public function getSetMultiPart() {
-
+    public function getSetMultiPart()
+    {
         $ids = $this->getHierarchyParentID();
-        if (empty($ids)) return [];
+        if (empty($ids)) {
+            return [];
+        }
         $titles = $this->getHierarchyParentTitle();
         $result = [];
         if (count($ids) === count($titles)) {
@@ -348,7 +346,7 @@ trait SolrDefaultFincTrait
             ? true : false;
 
         $date = (true === $isExtension)
-            ?  'date_' . $this->mainConfig->CustomIndex->indexExtension : '' ;
+            ? 'date_' . $this->mainConfig->CustomIndex->indexExtension : '';
 
         return isset($this->fields[$date]) ? $this->fields[$date] : '';
     }
@@ -379,35 +377,34 @@ trait SolrDefaultFincTrait
      *
      * @return array
      */
-/*    protected function getFormatIcon()
-    {
-        global $configArray;
-
-        $format = $this->getFormats();
-        // check which method to build the css class is chosen
-        if (isset($this->mainConfig->Site->combinedIcons) && true == $this->mainConfig->Site->combinedIcons) {
-            // sort it
-            sort($format, SORT_LOCALE_STRING);
-            return strtolower(implode('', $format));
-            // otherwise take the first format
-        } else {
-            if (isset($this->fields['multipart_set'])) {
-                switch ($this->fields['multipart_set']) {
-                    case 'a': return 'sets';
-                    case 'b': break; //return 'part-related';
-                    case 'c': break; //return 'part-not-related';
+    /*    protected function getFormatIcon()
+        {
+            global $configArray;
+    
+            $format = $this->getFormats();
+            // check which method to build the css class is chosen
+            if (isset($this->mainConfig->Site->combinedIcons) && true == $this->mainConfig->Site->combinedIcons) {
+                // sort it
+                sort($format, SORT_LOCALE_STRING);
+                return strtolower(implode('', $format));
+                // otherwise take the first format
+            } else {
+                if (isset($this->fields['multipart_set'])) {
+                    switch ($this->fields['multipart_set']) {
+                        case 'a': return 'sets';
+                        case 'b': break; //return 'part-related';
+                        case 'c': break; //return 'part-not-related';
+                    }
                 }
+                //echo "<pre>"; print_r($format); echo "</pre>";
+                return $format[0];
             }
-            //echo "<pre>"; print_r($format); echo "</pre>";
-            return $format[0];
-        }
-    }*/
+        }*/
 
     /**
      * Get the source id of the record.
      *
      * @return string
-     * @access public
      */
     public function getSourceID()
     {
@@ -419,7 +416,6 @@ trait SolrDefaultFincTrait
      * Get an array of all mega_collections in the record.
      *
      * @return array
-     * @access public
      */
     public function getMegaCollection()
     {
@@ -430,7 +426,6 @@ trait SolrDefaultFincTrait
      * Get the content of field multipart_set.
      *
      * @return string
-     * @access public
      */
     public function getMultiPart()
     {
@@ -473,13 +468,13 @@ trait SolrDefaultFincTrait
         // methods
         if (count(self::getPrimaryAuthors())) {
             $buildCombined(
-                (array) self::getPrimaryAuthors(),
-                (array) self::getPrimaryAuthorsOrig()
+                (array)self::getPrimaryAuthors(),
+                (array)self::getPrimaryAuthorsOrig()
             );
         } elseif (count(self::getCorporateAuthors())) {
             $buildCombined(
-                (array) self::getCorporateAuthors(),
-                (array) self::getCorporateAuthorsOrig()
+                (array)self::getCorporateAuthors(),
+                (array)self::getCorporateAuthorsOrig()
             );
         } elseif (count(self::getSecondaryAuthors())) {
             $buildCombined(
@@ -501,7 +496,8 @@ trait SolrDefaultFincTrait
      *
      * @return string
      */
-    protected function getDefaultOrigName() {
+    protected function getDefaultOrigName()
+    {
         //TODO: make this configurable - aka get value from config!
         return 'noOrigName';
     }
@@ -662,14 +658,16 @@ trait SolrDefaultFincTrait
             )
         ];
 
-        $all_empty = TRUE;
+        $all_empty = true;
         foreach ($authors as $type => $values) {
             if (!empty($values)) {
-                $all_empty = FALSE;
+                $all_empty = false;
                 break;
             }
         }
-        if ($all_empty) return [];
+        if ($all_empty) {
+            return [];
+        }
 
         // deduplicate
         $dedup = function (&$array1, &$array2) {
@@ -716,7 +714,7 @@ trait SolrDefaultFincTrait
         $dedup_roles($authors['secondary_orig']);
         $dedup_roles($authors['corporate_orig']);
         $dedup_roles($authors['corporate_secondary_orig']);
-        
+
         return $authors;
     }
 
@@ -756,7 +754,7 @@ trait SolrDefaultFincTrait
      */
     public function getILSIdentifier($string)
     {
-        return (isset($this->fields[$string]) ? $this->fields[$string] : '');
+        return isset($this->fields[$string]) ? $this->fields[$string] : '';
     }
 
     /**
@@ -800,7 +798,7 @@ trait SolrDefaultFincTrait
      *
      * @return int mixed  If success return at least one finc id otherwise null.
      */
-    protected function addFincIDToRecord( $array )
+    protected function addFincIDToRecord($array)
     {
         // record ids
         $rids = [];
@@ -882,14 +880,13 @@ trait SolrDefaultFincTrait
      */
     public function getRelevance()
     {
-
-        $score = isset($this->fields['score']) ?  $this->fields['score'] : 0;
+        $score = isset($this->fields['score']) ? $this->fields['score'] : 0;
         $maxScore = isset($this->fields['score_maximum']) ? $this->fields['score_maximum'] : 0;
 
         if ($score == 0 || $maxScore == 0) {
             return 0;
         }
-        return round( ($score / $maxScore) , 5);
+        return round(($score / $maxScore), 5);
     }
 
     /**
@@ -897,7 +894,8 @@ trait SolrDefaultFincTrait
      *
      * @return string
      */
-    public function getRvk() {
+    public function getRvk()
+    {
         return isset($this->fields['rvk_facet']) ?
             $this->fields['rvk_facet'] : '';
     }
@@ -1072,7 +1070,6 @@ trait SolrDefaultFincTrait
      * for UBL only implemented.
      *
      * @return array
-     * @access protected
      * @link https://intern.finc.info/fincproject/issues/1315
      */
     public function getAdditionals()
@@ -1085,18 +1082,16 @@ trait SolrDefaultFincTrait
      * for UBL only implemented.
      *
      * @return array
-     * @access protected
      */
     public function getTopics()
     {
         return array_merge($this->getAllSubjectHeadings());
     }
-    
+
     /**
      * Check if Additional Items exists. Realized for instance of UBL only.
      *
      * @return boolean      True if additional items exists.
-     * @access public
      * @link https://intern.finc.info/fincproject/issues/1315
      */
     public function hasAdditionalItems()
@@ -1109,14 +1104,13 @@ trait SolrDefaultFincTrait
      * Check if Topics exists. Realized for instance of UBL only.
      *
      * @return boolean      True if topics exist.
-     * @access public
      */
     public function hasTopics()
     {
         $array = $this->getTopics();
         return (is_array($array) && count($array) > 0) ? true : false;
     }
-    
+
     /**
      * Filter author data for author year of birth and death
      * to give a better mark up.
@@ -1125,13 +1119,13 @@ trait SolrDefaultFincTrait
      *
      * @return array
      */
-    private function _filterAuthorDates( $authordata )
+    private function _filterAuthorDates($authordata)
     {
         $filter = function ($author) {
-            if (preg_match('/^(\s|.*)(\d{4})\s?-?\s?(\d{4})?$/Uu',$author, $match)) {
+            if (preg_match('/^(\s|.*)(\d{4})\s?-?\s?(\d{4})?$/Uu', $author, $match)) {
                 return (isset($match[3]))
-                    ? $match[1] .' *'. $match[2] . '-†'. $match[3]
-                    : $match[1] .' *'. $match[2] . '-';
+                    ? $match[1] . ' *' . $match[2] . '-†' . $match[3]
+                    : $match[1] . ' *' . $match[2] . '-';
             }
             return $author;
         };
@@ -1183,7 +1177,6 @@ trait SolrDefaultFincTrait
 
         // is the record's id indexed as its hierarchy_top_id
         if (in_array($currId, $hierId)) {
-
             $query = 'hierarchy_top_id:' . $currId;
             $result = $this->searchService->search('Solr', new Query($query));
             if (count($result) === 0) {

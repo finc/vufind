@@ -17,18 +17,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace BszTheme\View\Helper\Bodensee;
 
-use \Bsz\RecordDriver\SolrMarc;
 use Bsz\RecordDriver\Definition as Def;
+use Bsz\RecordDriver\SolrMarc;
 
 /**
  * Extension of Root RecordLink Helper
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
+class RecordLink extends \VuFind\View\Helper\Root\RecordLink
+{
     /**
      *
      * @var \VuFind\Config\config
@@ -47,14 +47,15 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
         $this->config = $config;
     }
 
-    public function getCoverServiceUrls($driver) {
+    public function getCoverServiceUrls($driver)
+    {
         $services = [];
         $sources = $this->config->get('CoverSources');
 
-        foreach($sources as $source => $url) {
+        foreach ($sources as $source => $url) {
             $isxn = strlen($driver->getCleanISSN()) > 0 ?
                     $driver->getCleanISSN() : $driver->getCleanISBN();
-            if(strlen($isxn) > 0) {
+            if (strlen($isxn) > 0) {
                 $services[$source] = sprintf($url, $isxn);
             }
         }
@@ -72,9 +73,9 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
         $props = $this->determineProperties($driver, $url);
         return $this->getView()->render('Helpers/ppnButton.phtml', $props);
     }
-    
+
     /**
-     * 
+     *
      * @param \BszTheme\View\Helper\Bodensee\Bsz\RecordDriver\SolrMarc $driver
      * @param type $url
      * @return array
@@ -113,35 +114,33 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink {
             'ppn' => $ppn,
             'label' => $label
         ];
-        
     }
-    
+
     /**
      * This method renders the author names well formated as HTML
-     * 
+     *
      * @param SolrMarc $driver
      * @param int $number 1 to number of authors
-     * 
+     *
      * @return string
      */
-    public function linkAuthor(SolrMarc $driver, int $number) : string 
+    public function linkAuthor(SolrMarc $driver, int $number) : string
     {
         $params = [];
         if ($number == 1) {
             $params = [
                 'gnd' => $driver->getPrimaryAuthor(Def::AUTHOR_GND),
                 'name' => $driver->getPrimaryAuthor(Def::AUTHOR_NAME),
-                'live' => $driver->getPrimaryAuthor(Def::AUTHOR_LIVE),                
+                'live' => $driver->getPrimaryAuthor(Def::AUTHOR_LIVE),
             ];
         } else {
             $number--;
             $params = [
                 'gnd' => $driver->getSecondaryAuthor(Def::AUTHOR_GND, $number),
                 'name' => $driver->getSecondaryAuthor(Def::AUTHOR_NAME, $number),
-                'live' => $driver->getSecondaryAuthor(Def::AUTHOR_LIVE, $number),                
+                'live' => $driver->getSecondaryAuthor(Def::AUTHOR_LIVE, $number),
             ];
         }
         return $this->getView()->render('Helpers/singleauthor.phtml', $params);
     }
-    
 }

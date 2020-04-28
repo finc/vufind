@@ -245,5 +245,3 @@ $routeGenerator->addRecordRoutes($config, $recordRoutes);
 //$routeGenerator->addDynamicRoutes($config, $dynamicRoutes);
 $routeGenerator->addStaticRoutes($config, $staticRoutes);
 return $config;
-
-

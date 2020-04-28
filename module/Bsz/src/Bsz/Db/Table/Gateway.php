@@ -26,8 +26,8 @@
  * @link     http://vufind.org   Main Site
  */
 namespace Bsz\Db\Table;
-use Zend\Db\TableGateway\TableGateway;
 
+use Zend\Db\TableGateway\TableGateway;
 
 /**
  * Generic VuFind table gateway.
@@ -40,6 +40,4 @@ use Zend\Db\TableGateway\TableGateway;
  */
 class Gateway extends TableGateway
 {
-
-
 }

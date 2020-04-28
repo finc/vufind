@@ -18,17 +18,17 @@
  */
 namespace Bsz\RecordDriver;
 
-use Interop\Container\ContainerInterface,
-    \VuFind\RecordDriver\SolrDefaultFactory;
+use Interop\Container\ContainerInterface;
+use VuFind\RecordDriver\SolrDefaultFactory;
 
 /**
  * BSZ RecordDriverFactory
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory extends SolrDefaultFactory {
-    
-     /**
+class Factory extends SolrDefaultFactory
+{
+    /**
      * Factory for EDS record driver.
      *
      * @param ContainerInterface $container Service manager.
@@ -38,12 +38,11 @@ class Factory extends SolrDefaultFactory {
     public static function getEDS(ContainerInterface $container)
     {
         $eds = $container->get('VuFind\Config')->get('EDS');
-        return new EDS($container->get('Bsz\Mapper'), 
+        return new EDS($container->get('Bsz\Mapper'),
             $container->get('VuFind\Config')->get('config'), $eds, $eds
         );
     }
 
-    
     /**
      * Create an object
      *
@@ -66,9 +65,9 @@ class Factory extends SolrDefaultFactory {
         }
 
         $requestedName = $requestedName;
-             
+
         $driver = new $requestedName(
-            $container->get('Bsz\Mapper'), 
+            $container->get('Bsz\Mapper'),
             $container->get('Bsz\Config\Client'),
             null,
             $container->get('VuFind\Config')->get('searches')
@@ -78,12 +77,9 @@ class Factory extends SolrDefaultFactory {
             $container->get(\VuFind\ILS\Logic\Holds::class),
             $container->get(\VuFind\ILS\Logic\TitleHolds::class)
         );
-        
+
         $driver->attachSearchService($container->get('VuFind\Search'));
         $driver->attachSearchRunner($container->get('VuFind\SearchRunner'));
-       return $driver;
+        return $driver;
     }
-    
-
 }
-

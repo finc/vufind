@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Bsz\ILS\Driver;
 
 /**
@@ -13,32 +12,36 @@ namespace Bsz\ILS\Driver;
  *
  * @author amzar
  */
-trait ItemTrait {
-   /**
-     * 
+trait ItemTrait
+{
+    /**
+     *
      * @param array $item
      * @return string
      */
-    public function getItemPart($item) {
+    public function getItemPart($item)
+    {
         if (isset($item['part'])) {
             return $item['part'];
         } else {
             return '';
-        }  
+        }
     }
+
     /**
-     * 
+     *
      * @param array $item
      * @return string
      */
-    public function getItemAbout($item) {
+    public function getItemAbout($item)
+    {
         if (isset($item['about'])) {
             return $item['about'];
         } else {
             return '';
-        }  
+        }
     }
-    
+
     /**
      * Returns the value for "location" in VuFind getStatus/getHolding array
      *
@@ -72,7 +75,6 @@ trait ItemTrait {
      */
     protected function getItemLocationLink($item)
     {
-        return isset($item['storage']['href'])
-            ? $item['storage']['href'] : false;
+        return $item['storage']['href'] ?? false;
     }
 }

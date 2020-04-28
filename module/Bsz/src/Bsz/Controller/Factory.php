@@ -17,20 +17,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\Controller;
 
-use Interop\Container\ContainerInterface,
-    Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Factory for all controllers which needs params
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-
-class Factory implements FactoryInterface {
-    
+class Factory implements FactoryInterface
+{
     /**
      * Create an object
      *
@@ -54,7 +52,7 @@ class Factory implements FactoryInterface {
         return new $requestedName($container);
     }
 
-     /**
+    /**
      * Construct the RecordController.
      *
      * @param ContainerInterface $container Service manager.
@@ -67,6 +65,5 @@ class Factory implements FactoryInterface {
             $container,
             $container->get('VuFind\Config')->get('config')
         );
-    }        
-} 
-   
+    }
+}

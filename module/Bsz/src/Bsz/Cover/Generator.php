@@ -18,22 +18,24 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 namespace Bsz\Cover;
+
 /**
- * This class fixes some issues of the original VuFind Generator class. 
+ * This class fixes some issues of the original VuFind Generator class.
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Generator extends \VuFind\Cover\Generator {
-    
+class Generator extends \VuFind\Cover\Generator
+{
     /**
      * Constructor
      * @param \VuFindTheme\ThemeInfo $themeInfo
      * @param array $settings
      */
-    public function __construct(\VuFindTheme\ThemeInfo $themeInfo, $settings = []) {
+    public function __construct(\VuFindTheme\ThemeInfo $themeInfo, $settings = [])
+    {
         parent::__construct($themeInfo, $settings);
     }
-    
+
     /**
      * Generates a dynamic cover image from elements of the book
      *
@@ -47,15 +49,12 @@ class Generator extends \VuFind\Cover\Generator {
     {
         if ($this->settings->mode == 'solid') {
             return $this->generateSolid($title, $author, $callnumber);
-        } 
-        else if($this->settings->mode == 'grid') {
+        } elseif ($this->settings->mode == 'grid') {
             return $this->generateGrid($title, $author, $callnumber);
         }
         //Set to html or false
-        else {            
+        else {
             return false;
         }
-        
-        
     }
 }

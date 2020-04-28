@@ -9,7 +9,7 @@
   if (!isset($this->searchClassId)) {
     $this->searchClassId = 'Solr';
   }
-  
+
   // Load search actions and settings (if any):
   $options = $this->searchOptions($this->searchClassId);
   $basicSearch = $options->getSearchAction();
@@ -17,9 +17,9 @@
 
   $this->layout()->breadcrumbs = false;
 
-  
+
   $library = $this->libraries()->getFirstActive($this->client()->getIsils());
-  
+
 ?>
 <div class="col-sm-12 searchHomeContent">
 <?php
@@ -47,9 +47,9 @@ JS;
     </div>
   <? endif; ?>
   <div class="row">
-      <? if ($this->client()->isIsilSession()): ?>      
+      <? if ($this->client()->isIsilSession()): ?>
           <div class="col-xs-5 col-sm-4 col-md-3">
-              <img class="img-responsive" src="<?=$this->imageLink('logo/default.png')?>" alt="BSZ Logo" />
+              <img class="img-responsive" src="<?=$this->imageLink('logo/bsz.svg')?>" alt="BSZ Logo" />
           </div>
       <? else: ?>
           <div class="col-md-8 col-xs-5  hidden-sm hidden-xs">
@@ -60,21 +60,21 @@ JS;
       <? endif; ?>
       <div class="col-xs-6 col-sm-4 pull-right">
           <?=$this->clientAsset()->getLogoHtml()?>
-      </div>      
+      </div>
   </div>
-  <div class="row ">   
-      <div class="col-sm-12">          
-          <? if(($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>          
-            <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>         
+  <div class="row ">
+      <div class="col-sm-12">
+          <? if(($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>
+            <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>
           <? elseif($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
-            <h2><?=$this->escapeHtml((string)$library)?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>          
+            <h2><?=$this->escapeHtml((string)$library)?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>
           <? endif; ?>
           <? if (strpos($this->translate('homepage_text'), '<') !== FALSE): ?>
                 <?=$this->translate('homepage_text')?>
           <? else: ?>
                 <?=$this->transEsc('homepage_text')?>
           <? endif; ?>
-          
+
           <? if ($this->client()->isIsilSession()): ?>
               <?=$this->partial('bsz/illselector.phtml')?>
           <? endif; ?>
@@ -87,26 +87,29 @@ JS;
           <div class="specialhome">
           <? if ($this->client()->is('wlb_special_home')): ?>
                     <?= $this->render('bsz/wlb/'.$this->layout()->userLang.'.phtml')?>
-          <? endif; ?>          
+          <? endif; ?>
+          <? if ($this->client()->is('k10plus_special_home')): ?>
+              <?= $this->render('bsz/k10plus/'.$this->layout()->userLang.'.phtml')?>
+          <? endif; ?>
           <? if ($this->client()->is('k10plusdiscovery_special_home')): ?>
                     <?= $this->render('bsz/k10plusdiscovery/'.$this->layout()->userLang.'.phtml')?>
-          <? endif; ?>             
+          <? endif; ?>
           <? if ($this->client()->is('hsmm_special_home')): ?>
                     <?= $this->render('bsz/hsmm/'.$this->layout()->userLang.'.phtml')?>
-          <? endif; ?> 
+          <? endif; ?>
           </div>
       </div>
   </div>
-  
+
     <? if ($this->client()->getRSSFeed() !== null): ?>
         <div id="RSSFeedResultsDeferred" class="col-sm-6">
             <p><?=$this->transEsc("Loading")?>... <img src="<?=$this->imageLink('ajax_loading.gif')?>" /></p>
-            <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, "var url = VuFind.path + '/AJAX/Recommend?mod=StartPageNews';$('#RSSFeedResultsDeferred').load(url);", 'SET')?>        </div>    
+            <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, "var url = VuFind.path + '/AJAX/Recommend?mod=StartPageNews';$('#RSSFeedResultsDeferred').load(url);", 'SET')?>        </div>
     <? endif; ?>
-    
-    
+
+
   <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $ilsStatusScript, 'SET'); ?>
-  
+
   <?//$this->context($this)->renderInContext("search/searchbox.phtml", ['ignoreHiddenFilterMemory' => true])?>
   <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, '$("#searchForm_lookfor").focus();', 'SET'); ?>
 </div>

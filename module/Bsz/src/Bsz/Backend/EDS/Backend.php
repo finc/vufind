@@ -5,30 +5,24 @@
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-
 namespace Bsz\Backend\EDS;
 
 use Exception;
-use VuFindSearch\Backend\AbstractBackend;
 use VuFindSearch\Backend\EDS\Zend2 as ApiClient;
-use VuFindSearch\Backend\Exception\BackendException;
-use VuFindSearch\ParamBag;
-use VuFindSearch\Query\AbstractQuery;
 use VuFindSearch\Response\RecordCollectionFactoryInterface;
-use VuFindSearch\Response\RecordCollectionInterface;
 use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
 use Zend\Config\Config;
 use Zend\Session\Container as SessionContainer;
 
 class Backend extends \VuFindSearch\Backend\EDS\Backend
 {
-    
-        /**
+    /**
      * List of allowed IPs
-     * 
+     *
      * @var string
      */
     protected $localips = '';
+
     /**
      * Constructor.
      *
@@ -67,12 +61,11 @@ class Backend extends \VuFindSearch\Backend\EDS\Backend
         }
         if (isset($config->EBSCO_Account->local_ip_addresses)) {
             $this->localips = $config->EBSCO_Account->local_ip_addresses;
-        } 
+        }
         // Save default profile value, since profile property may be overriden:
         $this->defaultProfile = $this->profile;
     }
-    
-    
+
     protected function isAuthenticationIP()
     {
         $this->debugPrint("isAuthenticationIP-0 : " . $this->localips);
@@ -80,15 +73,13 @@ class Backend extends \VuFindSearch\Backend\EDS\Backend
         $this->debugPrint("isAuthenticationIP-1 : " . $res);
         return $res;
     }
-    
-    
+
     protected function isGuest()
     {
         // If the user is not logged in, then treat them as a guest. Unless they are
         // using IP Authentication.
         // If IP Authentication is used, then don't treat them as a guest.
 
-        
         if ($this->isAuthenticationIP()) {
             return 'n';
         }
@@ -97,8 +88,8 @@ class Backend extends \VuFindSearch\Backend\EDS\Backend
         }
         return 'y';
     }
-    
-        /**
+
+    /**
      * Determines whether or not the current user session is identifed as a guest
      * session
      *
@@ -136,7 +127,4 @@ class Backend extends \VuFindSearch\Backend\EDS\Backend
         }
         return false;
     }
-    
-    
-
 }

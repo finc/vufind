@@ -16,12 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace Finc\RecordDriver;
 
 use Exception;
-use Interop\Container\ContainerInterface,
-    \VuFind\RecordDriver\SolrDefaultFactory;
+use Interop\Container\ContainerInterface;
+use VuFind\RecordDriver\SolrDefaultFactory;
 
 /**
  * Class Factory
@@ -29,8 +28,8 @@ use Interop\Container\ContainerInterface,
  * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory extends SolrDefaultFactory {
-
+class Factory extends SolrDefaultFactory
+{
     /**
      * Default Factory
      *
@@ -69,7 +68,6 @@ class Factory extends SolrDefaultFactory {
         );
     }
 
-
     /**
      * @param ContainerInterface $container
      * @return SolrIS
@@ -82,5 +80,4 @@ class Factory extends SolrDefaultFactory {
             null
         );
     }
-
 }

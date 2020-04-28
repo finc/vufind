@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz;
+
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -26,16 +26,16 @@ use Zend\ServiceManager\ServiceManager;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory {    
-
+class Factory
+{
     /**
-     * 
+     *
      * @param ServiceManager $sm
      * @param \VuFind\Search\SearchRunner
      * @return Bsz\Bsz\Holding
      */
-    public static function getHolding(ServiceManager $sm) {        
+    public static function getHolding(ServiceManager $sm)
+    {
         return new Holding($sm->get('VuFind\SearchRunner'));
-    }   
-    
+    }
 }

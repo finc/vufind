@@ -17,7 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz;
 
 /**
@@ -25,25 +24,25 @@ namespace Bsz;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Debug  {
-    
+class Debug
+{
     /**
-     * Determine if client IP is an internal one. 
+     * Determine if client IP is an internal one.
      * @return boolean
      */
-    public static function isInternal() {
-        
+    public static function isInternal()
+    {
         $status = false;
-        
+
         $allowedIps = [];
         // VPN
-        $allowedIps[] = '192.168.5.*';     
-        
-        $allowedIps[] = '193.197.29.*';    
-        $allowedIps[] = '193.197.31.*';    
+        $allowedIps[] = '192.168.5.*';
+
+        $allowedIps[] = '193.197.29.*';
+        $allowedIps[] = '193.197.31.*';
         $allowedIps[] = '10.250.6.*';
-        $allowedIps[] = '10.250.5.*';        
-        $allowedIps[] = '10.250.4.*';        
+        $allowedIps[] = '10.250.5.*';
+        $allowedIps[] = '10.250.4.*';
         $allowedIps[] = '127.0.0.1';
         // Uwe Reh
         $allowedIps[] = '141.2.164.*';
@@ -52,40 +51,37 @@ class Debug  {
 //        $allowedIps[] = gethostbyname('efflebach.selfhost.eu');
         // Stefan Lohrum
         $allowedIps[] = '130.73.63.*';
-        
-        
-        
-        $allowedIps[] = '::1';        
-        
+
+        $allowedIps[] = '::1';
+
         foreach ($allowedIps as $key => $ip) {
             // replace dots for regex use
             $allowedIps[$key] = str_replace('.', '\.', $ip);
             $allowedIps[$key] = str_replace('*', '.*', $ip);
         }
-        
-        $regex = '/'.implode('|', $allowedIps).'/';
-        
+
+        $regex = '/' . implode('|', $allowedIps) . '/';
+
         $clientIp = $_SERVER['REMOTE_ADDR'];
-        if(isset($clientIp) && preg_match($regex, $clientIp)) {
+        if (isset($clientIp) && preg_match($regex, $clientIp)) {
             $status = true;
         }
         return $status;
     }
-   
+
     /**
      * Determin if running on Test Server
      * @return boolean
      */
-    
-    public static function isDev() {
-         if(isset($_SERVER['HTTP_HOST'])) {
+    public static function isDev()
+    {
+        if (isset($_SERVER['HTTP_HOST'])) {
             $host = strtolower($_SERVER['HTTP_HOST']);
-            if(strpos($host, 'boss2test') !== FALSE ||
-                   strpos($host, 'bosstest') !== FALSE ) {
+            if (strpos($host, 'boss2test') !== false ||
+                   strpos($host, 'bosstest') !== false) {
                 return true;
-            } 
+            }
         }
         return false;
     }
-
 }

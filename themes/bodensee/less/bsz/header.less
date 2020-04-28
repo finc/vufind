@@ -6,21 +6,21 @@ header {
     #smalllogo {
         margin-top: 8px;
     }
-    .navbar .container{    
+    .navbar .container{
         @media (min-width: @screen-sm-min) {
-            padding-left: 0;    
+            padding-left: 0;
             padding-right: 0;
         }
-        z-index: 10;        
-        margin-bottom: 0;    
+        z-index: 10;
+        margin-bottom: 0;
 
-    } 
+    }
     .navbar-collapse, .navbar-form {
         border: 0 !important;
     }
     .navbar-header {
         @media (min-width: @screen-sm-min) {
-            padding-left: @navbar-padding-horizontal;            
+            padding-left: @navbar-padding-horizontal;
         }
         @media (max-width: @screen-xs-max) {
             margin-left: 0 !important;
@@ -38,7 +38,7 @@ header {
             //display: inline-block;
             font-size: 1.2em;
         }
-     
+
         border: 0;
         padding-top: 0;
         padding-bottom: 0;
@@ -50,24 +50,24 @@ header {
             padding-right: 0;
         }
 
-    } 
+    }
 
     .navbar-toggle {
-        margin: 0 !important; 
+        margin: 0 !important;
         border: 0;
         padding: 4px 10px;
         i {
             font-size: @finger-friendly-size;
         }
-                
+
     }
     @media (max-width: @screen-lg-min) {
         .navbar-form .input-group .input-group-btn {
             // magic - this makes the search bar fill 100% width
-            /*width: 1% !important;*/        
-        }        
+            /*width: 1% !important;*/
+        }
     }
-     
+
 
 }
 body.modal-open header .container.navbar {
@@ -89,26 +89,26 @@ header .nav-tabs {
     border-bottom: 0 !important;
 }
 
-.nav-tabs > li.active > a, 
-.nav-tabs > li.active > a:focus, 
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
 .nav-tabs > li.active > a:hover {
     color: @brand-primary;
     background-color: white;
 }
 .nav-tabs > li:not(.active) > a {
-    background-color: darken(@brand-primary, 10%);    
+    background-color: darken(@brand-primary, 10%);
     color: white
 }
 .nav-tabs > li.active > a {
     background-color: #ffffff;
     font-weight: bold;
-    
+
 }
 .nav-tabs > li.active a:hover, .nav-tabs > li.active a {
     border-top: 1px solid @brand-primary;
     border-left: 1px solid @brand-primary;
     border-right: 1px solid @brand-primary;
-    
+
 }
 
 .nav-tabs > li:not(.active) > a:hover {
@@ -117,13 +117,13 @@ header .nav-tabs {
     border-top: 1px solid @brand-primary;
     border-left: 1px solid @brand-primary;
     border-right: 1px solid @brand-primary;
-    
+
 }
 .advancedSearchLink {
     border-radius: @border-radius-base;
     i.fa {
         //Make the button exactly same size as the main search button
-        font-size: 1.2em; 
+        font-size: 1.2em;
     }
     &:hover {
         text-decoration: none;
@@ -143,9 +143,10 @@ header .nav-tabs {
     }
 }
 
-.navbar-form {
+#searchForm {
     margin-top: 8px !important;
     margin-bottom: 8px !important;
+    .box-shadow(none);
 }
 
 .navbar .dropdown a {

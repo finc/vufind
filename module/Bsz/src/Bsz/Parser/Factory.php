@@ -23,8 +23,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\Parser;
+
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -34,11 +34,10 @@ use Zend\ServiceManager\ServiceManager;
  */
 class Factory
 {
-    public static function getOpenUrlParser(ServiceManager $sm) 
+    public static function getOpenUrlParser(ServiceManager $sm)
     {
-        $config = $sm->get('VuFind\Config')->get('OpenUrlParser');            
+        $config = $sm->get('VuFind\Config')->get('OpenUrlParser');
         $parser = new OpenUrl($config);
         return $parser;
-        
     }
 }

@@ -28,9 +28,9 @@
  */
 namespace Bsz\AjaxHandler;
 
-use VuFind\I18n\Translator\TranslatorAwareInterface,
-    Zend\Mvc\Controller\Plugin\Params,
-    Bsz\Config\Dedup;
+use Bsz\Config\Dedup;
+use VuFind\I18n\Translator\TranslatorAwareInterface;
+use Zend\Mvc\Controller\Plugin\Params;
 
 /**
  * "Get Resolver Links" AJAX handler
@@ -76,7 +76,7 @@ class DedupCheckbox extends \VuFind\AjaxHandler\AbstractBase implements Translat
     {
         $status = $params->fromPost('status');
         $status = $status == 'true' ? true : false;
-        $this->dedup->store(['group' => $status]); 
-        return $this->formatResponse([], 200);    
+        $this->dedup->store(['group' => $status]);
+        return $this->formatResponse([], 200);
     }
 }

@@ -1,19 +1,21 @@
-<?
+<?php
   // Set page title.
-  $this->headTitle($this->translate('Search Home'));
+use Zend\View\Helper\HeadScript;
+
+$this->headTitle($this->translate('Search Home'));
 
   // Disable top search box -- this page has a special layout.
   $this->layout()->searchbox = false;
 
   // Set default value if necessary:
   if (!isset($this->searchClassId)) {
-    $this->searchClassId = 'Solr';
+      $this->searchClassId = 'Solr';
   }
-  
+
     // Set up search box:
   $this->layout()->searchbox = $this->context($this)->renderInContext(
       'search/searchbox.phtml',
-      array(      
+      array(
 
         'searchClassId' => $this->searchClassId,
 
@@ -28,61 +30,49 @@
   $this->layout()->breadcrumbs = false;
 ?>
 <div class="searchHomeContent">
-  <? if ($this->ils()->getOfflineMode() == "ils-offline"): ?>
+  <?php if ($this->ils()->getOfflineMode() == "ils-offline"): ?>
     <div class="alert alert-warning">
       <h2><?=$this->transEsc('ils_offline_title')?></h2>
       <p><strong><?=$this->transEsc('ils_offline_status')?></strong></p>
       <p><?=$this->transEsc('ils_offline_home_message')?></p>
-      <? $supportEmail = $this->escapeHtmlAttr($this->systemEmail()); ?>
+      <?php $supportEmail = $this->escapeHtmlAttr($this->systemEmail()); ?>
       <p><a href="mailto:<?=$supportEmail?>"><?=$supportEmail?></a></p>
     </div>
-  <? endif; ?>
-  <div class="row no-padding">
-      <? if ($this->client()->isIsilSession()): ?>      
-          <div class="col-md-4">
-              <img class="img-responsive" src="<?=$this->imageLink('/logo/default.png')?>" alt="BSZ Logo" />
-          </div>
-          <? else: ?>
-          <div class="col-md-12 hidden-sm hidden-xs">
-              <? if ($this->imageLink($this->clientAsset()->getHeader())): ?>
-              <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" class="img-responsive" alt="Aufmacherbild" />
-              <? endif; ?>
-          </div>
-      <? endif; ?>           
-  </div>
-  <div class="row no-padding">   
-      <div class="col-md-12">
+  <?php endif; ?>
+  <div class="col-md-12 hidden-sm hidden-xs no-padding">
+      <?php if ($this->imageLink($this->clientAsset()->getHeader())): ?>
+      <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" class="img-responsive" alt="Aufmacherbild" />
+      <?php endif; ?>
+ </div>
+ <div class="col-md-12 no-padding">
           <div class="jumbotron">
-              
-          <? if(!empty($this->layout()->userLang)): ?>
+
+          <?php if (!empty($this->layout()->userLang)): ?>
             <?= $this->render('bsz/home/'.$this->layout()->userLang.'.phtml')?>
-          <? endif; ?>
+          <?php endif; ?>
           </div>
       </div>
-  </div>
-  <? if($this->client()->is('list_of_clients')): ?>
+  <?php if ($this->client()->is('list_of_clients')): ?>
     <?=$this->render('bsz/listofclients.phtml')?>
-  <? endif; ?>
-  
-  
+  <?php endif; ?>
 </div>
 
-<? //$facetList = is_object($this->results) ? $this->results->getFacetList() : array(); ?>
-<? if (isset($facetList) && is_array($facetList)): ?>
+<?php //$facetList = is_object($this->results) ? $this->results->getFacetList() : array();?>
+<?php if (isset($facetList) && is_array($facetList)): ?>
   <div class="row">
-    <? foreach ($facetList as $field => $details): ?>
-      <? if (isset($this->hierarchicalFacets) && in_array($field, $this->hierarchicalFacets)): ?>
-        <? $this->headScript()->appendFile('vendor/jsTree/jstree.min.js', null, ['async' => true]); ?>
-        <? $this->headScript()->appendFile('facets.js', null, ['async' => true]); ?>
-        <? $sort = isset($this->hierarchicalFacetSortOptions[$field]) ? $this->hierarchicalFacetSortOptions[$field] : ''; ?>
-        <?
+    <?php foreach ($facetList as $field => $details): ?>
+      <?php if (isset($this->hierarchicalFacets) && in_array($field, $this->hierarchicalFacets)): ?>
+        <?php $this->headScript()->appendFile('vendor/jsTree/jstree.min.js', null, ['async' => true]); ?>
+        <?php $this->headScript()->appendFile('facets.js', null, ['async' => true]); ?>
+        <?php $sort = isset($this->hierarchicalFacetSortOptions[$field]) ? $this->hierarchicalFacetSortOptions[$field] : ''; ?>
+        <?php
         $script = <<<JS
 $(document).ready(function() {
   initFacetTree($('#facet_{$this->escapeHtml($field)}'), false);
 });
 JS;
         ?>
-        <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
+        <?=$this->inlineScript(HeadScript::SCRIPT, $script, 'SET'); ?>
         <div class="facet <?=$field=='callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
           <p class="lead"><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></p>
           <div id="facet_<?=$this->escapeHtml($field)?>" class="jstree-facet"
@@ -95,50 +85,50 @@ JS;
           </div>
         </div>
         <noscript>
-      <? endif; ?>
-      <? $sortedList = $this->sortFacetList($this->results, $field, $details['list'], $basicSearch); ?>
+      <?php endif; ?>
+      <?php $sortedList = $this->sortFacetList($this->results, $field, $details['list'], $basicSearch); ?>
       <div class="<?=$field=='callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
         <p class="lead"><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></p>
         <div class="row">
           <ul class="list-unstyled <?=$field == "callnumber-first" ? 'col-sm-6' : 'col-sm-12' ?>">
-          <? /* Special case: two columns for LC call numbers... */ ?>
-          <? if ($field == "callnumber-first"): ?>
-            <? $i = 0; foreach ($sortedList as $url => $value): ?>
-              <? if (!empty($value)): ?>
+          <?php /* Special case: two columns for LC call numbers... */ ?>
+          <?php if ($field == "callnumber-first"): ?>
+            <?php $i = 0; foreach ($sortedList as $url => $value): ?>
+              <?php if (!empty($value)): ?>
                 <li><a href="<?=$url?>"><?=$this->escapeHtml($value)?></a></li>
-              <? else: $i--; ?>
-              <? endif; ?>
-              <? if (++$i == 10): ?>
+              <?php else: $i--; ?>
+              <?php endif; ?>
+              <?php if (++$i == 10): ?>
                 </ul><ul class="list-unstyled col-sm-6">
-              <? endif; ?>
-            <? endforeach; ?>
-          <? /* Special case: collections */ ?>
-          <? elseif ($field == 'hierarchy_top_title'): ?>
-            <? $i = 0; foreach ($sortedList as $url => $value): ?>
-              <? if (++$i > 10): ?>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          <?php /* Special case: collections */ ?>
+          <?php elseif ($field == 'hierarchy_top_title'): ?>
+            <?php $i = 0; foreach ($sortedList as $url => $value): ?>
+              <?php if (++$i > 10): ?>
                 <li><a href="<?=$this->url('collections-home')?>"><strong><?=$this->transEsc("More options")?>...</strong></a></li>
-                <? break; ?>
-              <? else: ?>
+                <?php break; ?>
+              <?php else: ?>
                 <li><a href="<?=$this->url('collections-bytitle')?>?title=<?=urlencode($value)?>"><?=$this->escapeHtml($value)?></a></li>
-              <? endif; ?>
-            <? endforeach; ?>
-          <? else: ?>
-            <? $i = 0; foreach ($sortedList as $url => $value): ?>
-              <? if (++$i > 10): ?>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <?php $i = 0; foreach ($sortedList as $url => $value): ?>
+              <?php if (++$i > 10): ?>
                 <li><a href="<?=$this->url($advSearch)?>"><strong><?=$this->transEsc("More options")?>...</strong></a></li>
-                <? break; ?>
-              <? elseif (!empty($value)): ?>
+                <?php break; ?>
+              <?php elseif (!empty($value)): ?>
                 <li><a href="<?=$url?>"><?=$this->escapeHtml($value)?></a></li>
-              <? else: $i--; ?>
-              <? endif; ?>
-            <? endforeach; ?>
-          <? endif; ?>
+              <?php else: $i--; ?>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          <?php endif; ?>
           </ul>
         </div>
       </div>
-      <? if (isset($this->hierarchicalFacets) && in_array($field, $this->hierarchicalFacets)): ?>
+      <?php if (isset($this->hierarchicalFacets) && in_array($field, $this->hierarchicalFacets)): ?>
         </noscript>
-      <? endif; ?>
-    <? endforeach; ?>
+      <?php endif; ?>
+    <?php endforeach; ?>
   </div>
-<? endif; ?>
+<?php endif; ?>

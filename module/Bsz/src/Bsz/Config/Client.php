@@ -17,7 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\Config;
 
 use Exception;
@@ -33,7 +32,6 @@ use Zend\Session\Container;
  */
 class Client extends Config
 {
-
     const LOGO_TYPE = '.png';
     const HEADER_TYPE = '.jpg';
     const FAVICON_TYPE = '.ico';
@@ -49,24 +47,26 @@ class Client extends Config
      * @var Libraries;
      */
     protected $libraries;
-    
+
     /**
      *
      * @var Container
      */
     protected $container;
-    
+
     /**
      * This method is used if object is casted to string
-     * 
+     *
      * @return string
      */
-    public function __toString() {
-        $isils = $this->getIsils();        
-        return implode('',$isils);
+    public function __toString()
+    {
+        $isils = $this->getIsils();
+        return implode('', $isils);
     }
-    
-    public function appendContainer(Container $container) {
+
+    public function appendContainer(Container $container)
+    {
         $this->container = $container;
     }
 
@@ -103,40 +103,40 @@ class Client extends Config
      * @param int $boxNo
      * @return array
      */
-    public function getFooterLinks($boxNo) {
-        $boxName = 'box'.(int)$boxNo;
+    public function getFooterLinks($boxNo)
+    {
+        $boxName = 'box' . (int)$boxNo;
         $links = $this->get('FooterLinks')->get($boxName);
         if ($boxNo == 2 && !$links) {
             $links[] = '/Search/History';
             $links[] = '/Search/Advanced';
-        } else if($boxNo == 1 && $this->isIsilSession() && $this->hasIsilSession()) {
+        } elseif ($boxNo == 1 && $this->isIsilSession() && $this->hasIsilSession()) {
             $library = $this->libraries->getFirstActive($this->getIsils());
             if (isset($library) && $library->getHomepage() !== null) {
-                $links[] = isset($library) ? $library->getHomepage() : '';                
+                $links[] = isset($library) ? $library->getHomepage() : '';
             }
             if (isset($library)) {
-                $links[] =  $library->hasCustomUrl() ? $library->getCustomUrl() 
-                    : '/Record/Freeform';                   
+                $links[] =  $library->hasCustomUrl() ? $library->getCustomUrl()
+                    : '/Record/Freeform';
             }
-        } else if ($boxNo == 3) {
+        } elseif ($boxNo == 3) {
             $links[] = '/Bsz/Privacy';
-        }        
-        
+        }
+
         // Clean up urls
         if (is_array($links)) {
-            
             $search = ['[', ']'];
             $replace = ['%5B', '%5D'];
-            
+
             foreach ($links as $k => $link) {
                 $links[$k] = str_replace($search, $replace, $link);
-            }            
+            }
         }
         return $links;
     }
-   
+
     /**
-     * Gibt die Webseite der Institution aus. 
+     * Gibt die Webseite der Institution aus.
      * @param string $mode contactm, imprint, default home page
      * @return string
      */
@@ -149,15 +149,15 @@ class Client extends Config
         } else {
             $mode = 'website_' . $mode;
         }
-        
-        $website = $this->get('Site')->get($mode);            
-        
+
+        $website = $this->get('Site')->get($mode);
+
         return $website;
     }
 
     /**
      * Konfiguriert den linken NewsFeed der Startseite
-     * @param string 
+     * @param string
      * @return string
      */
     public function getRSSFeed()
@@ -166,13 +166,10 @@ class Client extends Config
         $section = $this->get('StartpageNews');
         if ($section !== null) {
             $feed = $section->get('RSSFeed');
-        }            
+        }
         return $feed;
     }
 
-            
-
-    
     /**
      * Returns status of setting
      * @param string $key from config.ini, section BSZSettings
@@ -180,7 +177,6 @@ class Client extends Config
      */
     public function is($key)
     {
-
         $key = trim($key);
         $value = false;
 
@@ -193,7 +189,7 @@ class Client extends Config
                 $value = false;
                 break;
             default:
-                $value = (bool) $tmp;
+                $value = (bool)$tmp;
         }
         return $value;
     }
@@ -216,16 +212,15 @@ class Client extends Config
      */
     public function getIsils()
     {
-        
         $cookie = null;
         if (isset($this->request)) {
-            $cookie = $this->request->getCookie();            
+            $cookie = $this->request->getCookie();
         }
-        
+
         $isils = [];
         if ($this->isIsilSession() && $this->container->offsetExists('isil')) {
-            $isils = (array) $this->container->offsetGet('isil');
-        } elseif($this->isIsilSession() && isset($cookie->isil)) {
+            $isils = (array)$this->container->offsetGet('isil');
+        } elseif ($this->isIsilSession() && isset($cookie->isil)) {
             $isils = explode(',', $cookie->isil);
             // Write isils back to session
             $this->container->offsetSet('isil', $isils);
@@ -234,7 +229,6 @@ class Client extends Config
             if (!empty($raw)) {
                 $isils = explode(',', $raw);
             }
-            
         }
         return $isils;
     }
@@ -249,14 +243,14 @@ class Client extends Config
         $sigel = '';
         if (!$this->isIsilSession()) {
             $sigel = $this->get('OpenURL')->get('sigel');
-        } else if ($this->libraries instanceof Libraries) {
+        } elseif ($this->libraries instanceof Libraries) {
             $sigel = $this->libraries->getFirstActive($this->getIsils())->getSigel();
         }
         return $sigel;
     }
 
     /**
-     * Used on ILL portal do have a set of different isils for availability 
+     * Used on ILL portal do have a set of different isils for availability
      * @return array
      */
     public function getIsilAvailability()
@@ -313,7 +307,7 @@ class Client extends Config
         $networks = $this->getNetworks();
         if (array_key_exists($input, $networks)) {
             $result = $networks[$input];
-        } elseif (in_array($input, $networks )) {
+        } elseif (in_array($input, $networks)) {
             // input is already a mapped network name
             $result = $input;
         }
@@ -341,8 +335,8 @@ class Client extends Config
             'ÖVK' => 'GBV',
             'GVK' => 'GBV',
             'SWB' => 'SWB',
-            // Attention: 
-            // Holdings.php uses array flip. The isils must be at the bottom! 
+            // Attention:
+            // Holdings.php uses array flip. The isils must be at the bottom!
             // Otherwise, holdings won't search correct
             'DE-576' => 'SWB',
             'DE-600' => 'ZDB',
@@ -369,7 +363,7 @@ class Client extends Config
         foreach ($dirs as $dir) {
             try {
                 $config = $Reader->fromFile($dir . '/config/vufind/config.ini');
-                if (strpos($config['Site']['url'], 'dlr-') === FALSE) {
+                if (strpos($config['Site']['url'], 'dlr-') === false) {
                     $tmp = [
                         'title' => $config['Site']['title'],
                         'url' => $config['Site']['url']
@@ -380,15 +374,15 @@ class Client extends Config
                 continue;
             }
         }
-            
+
         return $configs;
     }
-       
+
     /**
      * Reads BOSS2 version number from global config
      * @return string
      */
-    public function getVersion() 
+    public function getVersion()
     {
         $version = $this->get('System')->get('version');
         if (strlen($version) > 0) {
@@ -405,8 +399,8 @@ class Client extends Config
     public function getHelpRegEx()
     {
         return $this->get('Help')->get('regex');
-    }    
-    
+    }
+
     /**
      * Returns Help URL
      * @return string
@@ -414,7 +408,7 @@ class Client extends Config
     public function getHelpUrl()
     {
         return $this->get('Help')->get('url');
-    }    
+    }
 
     /**
      * Returns Help Groups
@@ -423,13 +417,13 @@ class Client extends Config
     public function getHelpGroups()
     {
         return $this->get('Help')->get('groups');
-    }   
-    
-    public function getMaintenanceMessage() {
+    }
+
+    public function getMaintenanceMessage()
+    {
         if (defined('MAINTENANCE_MODE')) {
             return getenv('MAINTENANCE_MODE');
         }
         return '';
     }
 }
-
