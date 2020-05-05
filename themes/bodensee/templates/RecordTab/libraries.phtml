@@ -11,7 +11,7 @@
         <tr>
             <th class="col-sm-1 col-xs-1 hidden-xs"><?=$this->transEsc('Contact')?></th>
             <th><?=$this->transEsc('Library')?></th>
-            <th><?=$this->transEsc('Call Number')?></th>
+            <th><?php if ($this->client()->getTag() == 'bsz'):?><?=$this->transEsc('Volltext')?><?else: ?><?=$this->transEsc('Call Number')?><? endif;?> </th>
             <? if ( $this->client()->is('show_ill_column') ): ?>
                 <th class="col-sm-2 col-xs-2 hidden-xs"><?=$this->transEsc('Interlibrary Loan')?></th>
             <? endif; ?>
@@ -61,8 +61,6 @@
                     <a href="<?=$result['k']?>" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><i class="fa fa-globe"></i><?=$this->escapeHtml($result['g'])?></a>
                 <? elseif(isset($result['k'])): ?>
                     <a href="<?=$result['k']?>" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><i class="fa fa-globe"></i><?=$this->transEsc('E-Book')?></a>
-                <? else: ?>
-                    <?= $this->transEsc('NoCallnumber') ?>
                 <? endif; ?>
             </td>
 
