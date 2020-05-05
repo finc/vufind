@@ -43,18 +43,11 @@
         $titleol = $this->driver->tryMethod('getTitleOl');
         ?>
         <h3 property="name">
-            <? if (is_array($title)): ?>
-                <?= $this->escapeHtml($title[0]) ?><br/><?= $this->string()->cleanEsc($section) ?>
-            <? else: ?>
                 <?= $this->escapeHtml($title) ?><br/><?= $this->string()->cleanEsc($section) ?>
-            <? endif; ?>
         </h3>
         <? if (!empty($titleol)): ?>
             <h4>
-                <?= $this->escapeHtml($titleol) ?>
-                <? if (!empty($sectionol)): ?>
-                    <br/><small><?= $this->escapeHtml($sectionol) ?></small>
-                <? endif; ?>
+                <?= $this->escapeHtml($titleol) ?><br/><?= $this->escapeHtml($sectionol) ?>
             </h4>
         <? endif; ?>
 
