@@ -48,7 +48,6 @@
             <? else: ?>
                 <?= $this->escapeHtml($title) ?><br/><?= $this->string()->cleanEsc($section) ?>
             <? endif; ?>
-            <?= $this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver]) ?>
         </h3>
         <? if (!empty($titleol)): ?>
             <h4>

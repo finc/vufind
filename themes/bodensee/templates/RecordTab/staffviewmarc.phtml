@@ -2,4 +2,12 @@
     //Set page title.
     $this->headTitle($this->translate('Staff View') . ': ' . $this->driver->getBreadcrumb());
 ?>
+<? if(\Bsz\Debug::isInternal() && $this->driver->tryMethod('getGroupField') !== ''): ?>
+    <table class="table citation table-striped">
+        <tr>
+            <th width="15%">Dedup-Key</th>
+            <td><?=$this->escapeHtmlAttr($this->driver->tryMethod('getGroupField'))?></td>
+        </tr>
+    </table>
+<? endif; ?>
 <?=\VuFind\XSLT\Processor::process('record-marc.xsl', $this->driver->getXML('marc21'))?>
