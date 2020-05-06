@@ -12,8 +12,8 @@
 <? endif; ?>
   <? if (!isset($this->layout()->renderingError)): ?>
     <div class="collapse navbar-collapse" id="header-collapse">
-        <? if ($this->client()->is('show_small_logo') && (!$this->templateDir == 'search' && !$this->templateName == 'home' )): ?>
-            <div class="nav navbar-nav navbar-right">
+        <? if ($this->client()->is('show_small_logo') && ($this->templateDir.'/'.$this->templateName != 'search/home' )): ?>
+            <div class="nav navbar-nav navbar-right visible-lg">
                 <a class="navbar-brand external hasicon" href="">
                     <div class="brand-padding">
                         <img src="<?=$this->imageLink($this->clientAsset()->getSmallLogo()) ?>"/>
