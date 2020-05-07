@@ -43,8 +43,8 @@ $content = $this->tab->getContent();
                 </td>
 
                 <td>
-                    <? if (isset($result['adisurl']) && isset($result['name']) && trim($result['adisurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
-                        <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['adisurl']) ?>
+                    <? if (isset($result['opacurl']) && isset($result['name']) && trim($result['opacurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
+                        <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['opacurl']) ?>
                         <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_opac') ?>" href="<?= $opac ?>"
                            class="external hasicon">
                             <i class="fa fa-globe"></i><?= $this->escapeHtml($result['name']) ?>
@@ -58,8 +58,8 @@ $content = $this->tab->getContent();
                     <? if(isset($result['k'])): ?>
                         <a href="<?=$result['k']?>" class="external" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><?=$this->transEsc('Fulltext')?></a>
                     <? else: ?>
-                        <? if (isset($result['adisurl']) && isset($result['name']) && trim($result['adisurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
-                            <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['adisurl']) ?>
+                        <? if (isset($result['opacurl']) && isset($result['name']) && trim($result['opacurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
+                            <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['opacurl']) ?>
                             <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_opac') ?>" href="<?= $opac ?>"
                                class="external hasicon">
                                 <i class="fa fa-globe"></i>OPAC

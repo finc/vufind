@@ -42,7 +42,7 @@ class Library
     protected $places = null;
     protected $daia;
     protected $openurl;
-    protected $adisurl;
+    protected $opacurl;
     protected $idp;
     protected $regex;
     protected $live;
@@ -62,7 +62,7 @@ class Library
         $this->auth = $data['auth_name'] ?? 'adis';
         $this->daia = $data['daiaurl'] ?? null;
         $this->openurl = $data['openurl'] ?? null;
-        $this->adisurl = $data['adisurl'] ?? null;
+        $this->opacurl = $data['opacurl'] ?? null;
         $this->idp = $data['shibboleth_idp'] ?? null;
         $this->regex = $data['regex'] ?? null;
         $this->lend_copy = isset($data['lend_copy']) ? str_split($data['lend_copy'], 1) : [0b1, 0b1];
@@ -249,13 +249,13 @@ class Library
     }
 
     /**
-     * Get aDIS URL
+     * Get Url to OPAC, with placeholder for PPN.
      *
      * @return string|url
      */
-    public function getaDisUrl()
+    public function getOpacUrl()
     {
-        return $this->adisurl;
+        return $this->opacurl;
     }
 
     /**
