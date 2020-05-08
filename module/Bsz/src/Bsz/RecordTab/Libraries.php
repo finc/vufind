@@ -99,7 +99,7 @@ class Libraries extends AbstractBase
             foreach ($libraries as $library) {
                 $this->f924[$library->getIsil()]['name'] = $library->getName();
                 $this->f924[$library->getIsil()]['homepage'] = $library->getHomepage();
-                $this->f924[$library->getIsil()]['adisurl'] = $library->getaDISURl();
+                $this->f924[$library->getIsil()]['opacurl'] = $library->getOpacUrl();
             }
         }
         return $this->f924;

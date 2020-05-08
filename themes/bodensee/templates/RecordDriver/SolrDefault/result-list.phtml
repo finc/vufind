@@ -1,4 +1,4 @@
-<?php     
+<?php
     $hasSubRecords = $this->driver->hasSubRecords();
     $subRecords = $this->driver->getSubRecords();
     $subRecordsCount = 0;
@@ -29,7 +29,7 @@
         <? $thumbnail = ob_get_contents(); ?>
         <? ob_end_clean(); ?>
     <? else: ?>
-        <div class="hidden-print recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">     
+        <div class="hidden-print recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">
             <span class=""></span>
         </div>
     <? endif; ?>
@@ -43,19 +43,18 @@
     <div class="media-body">
         <div class="result-body">
             <div>
-                <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver])?>  
                 <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
-                    <?=$this->record($this->driver)->getTitleHtml()?> 
+                    <?=$this->record($this->driver)->getTitleHtml()?>
                 </a>
                 <? if ($titlesection = $this->driver->getTitleSection()):?>
                     / <?= $titlesection ?>
                 <? endif; ?>
             </div>
-            
+
             <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
                                'driver' => $this->driver,
-                               'hiddenFilterString' => $hiddenFilterString])?>  
-            
+                               'hiddenFilterString' => $hiddenFilterString])?>
+
             <? if(!$this->driver->isCollection()): ?>
               <? if ($snippet = $this->driver->getHighlightedSnippet()): ?>
                 <? if (!empty($snippet['caption'])): ?>
@@ -66,7 +65,7 @@
                 <? endif; ?>
               <? endif; ?>
             <? endif; ?>
-                  
+
             <? /* Display information on duplicate records if available */?>
             <? if ($dedupData = $this->driver->getDedupData()): ?>
                 <div class="dedupInformation">
@@ -76,8 +75,8 @@
                     <span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", [], $source)?></a></span>
                     <? else: ?>
                         <? if ($i == 2): ?>
-                            <span class="otherSources">(<?=$this->transEsc('Other Sources')?>: 
-                        <? else: ?>, 
+                            <span class="otherSources">(<?=$this->transEsc('Other Sources')?>:
+                        <? else: ?>,
                         <? endif; ?>
                         <a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", [], $source)?></a>
                     <? endif; ?>
@@ -90,19 +89,19 @@
             <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
                 <div>
                     <strong><?=$this->transEsc('Edition')?>: </strong>
-                    <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>          
-                </div>      
+                    <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>
+                </div>
             <? endif; ?>
             <? if( $this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
-                <div class="ill-source">                
+                <div class="ill-source">
                     <strong><?=$this->transEsc('Network')?>:</strong>
-                    <span><?=$this->driver->getConsortium() ?></span> 
-                </div>          
-            <? endif; ?>   
+                    <span><?=$this->driver->getConsortium() ?></span>
+                </div>
+            <? endif; ?>
             <?=$this->render('RecordDriver/SolrDefault/parts/links.phtml', [
                 'driver' => $this->driver,
-                'hiddenFilterString' => $hiddenFilterString])?>   
-                  
+                'hiddenFilterString' => $hiddenFilterString])?>
+
             <div class="callnumAndLocation ajax-availability hidden">
                 <? if ($this->driver->supportsAjaxStatus()): ?>
                     <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
@@ -121,19 +120,19 @@
                 <? if (empty($urls) && $this->driver->supportsAjaxStatus()): ?>
                     <span class="status ajax-availability hidden">
                         <span class="label label-default"><?=$this->transEsc('Loading')?>...</span>
-                    </span>   
+                    </span>
                 <? endif; ?>
             </div>
             <div class="result-previews">
                 <?=$this->record($this->driver)->getPreviews()?>
             </div>
         </div> <!-- end result-body -->
-        
+
         <div class="result-links hidden-print">
             <ul class="nav nav-pills nav-stacked">
                 <? if ($this->cart()->isActiveInSearch() && $this->params->getOptions()->supportsCart() && $this->cart()->isActive()): ?>
                   <?=$this->render('record/cart-buttons.phtml', ['id' => $this->driver->getUniqueId(), 'source' => $this->driver->getSourceIdentifier()]); ?>
-                <? endif; ?>            
+                <? endif; ?>
                 <? if ($this->userlist()->getMode() !== 'disabled'): ?>
                     <? if ($this->permission()->allowDisplay('feature.Favorites')): ?>
                         <? /* Add to favorites */ ?>
@@ -141,7 +140,7 @@
                             <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" data-lightbox class="btn save-record result-link-label" data-id="<?=$this->escapeHtmlAttr($this->driver->getUniqueId()) ?>">
                                 <i class="result-link-icon fa fa-fw fa-star" aria-hidden="true"></i>
                                 <?=$this->transEsc('Add to favorites')?>
-                            </a>                 
+                            </a>
                         </li>
                     <? elseif ($block = $this->permission()->getAlternateContent('feature.Favorites')): ?>
                         <?=$block?>
@@ -149,13 +148,13 @@
                     <? /* Saved lists */ ?>
                     <li>
                         <div class="savedLists hidden">
-                            <strong><?=$this->transEsc("Saved in")?>:</strong>                           
+                            <strong><?=$this->transEsc("Saved in")?>:</strong>
                         </div>
-                    </li>               
+                    </li>
                 <? endif; ?>
                 <? /*Dedup button*/ ?>
                 <? if ($hasSubRecords): ?>
-                    <?php 
+                    <?php
                       $rand = rand(1, 10000);
                       $pgid = 'accordion-'.$rand;
                       $pid = 'panel-'.$rand.'-';
@@ -176,14 +175,14 @@
     <div class="row">
         <div class="col-xs-11 col-xs-offset-1">
             <div class="panel-group duplicates collapse" id="<?=$pgid?>">
-                <?php foreach ($subRecords as $count => $sub): ?>      
+                <?php foreach ($subRecords as $count => $sub): ?>
                 <div class="panel panel-default">
-                    <?php 
+                    <?php
                         $dates = $sub->getPublicationDates();
                         $date = array_shift($dates);
                         $edition = $sub->getEdition();
                         $header = [
-                            $this->escapeHtml($sub->getNetwork()),                            
+                            $this->escapeHtml($sub->getNetwork()),
                             //$this->escapeHtml($date),
                             $this->escapeHtml($edition)
                         ];
@@ -199,15 +198,13 @@
                                 <div class="col-xs-4 col-sm-2">
                                     <?php
                                       $subCoverDetails = $this->record($sub)->getCoverDetails('result-list', 'small', $this->recordLink()->getUrl($this->driver));
-                                      $subCover = $subCoverDetails['html'];                            
+                                      $subCover = $subCoverDetails['html'];
 
                                     ?>
                                     <?=$subCover?>
 
                                 </div>
-                                <div class="col-xs-8 col-sm-10">    
-                                    <?=$this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $sub])?>  
-
+                                <div class="col-xs-8 col-sm-10">
                                     <a class="title" href="<?=$this->recordLink()->getUrl($sub)?>">
                                         <?=$this->record($sub)->getTitleHtml()?>
                                     </a>
@@ -216,32 +213,32 @@
                                     <? endif; ?>
                                     <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
                                             'driver' => $sub,
-                                            'hiddenFilterString' => $hiddenFilterString                                            
+                                            'hiddenFilterString' => $hiddenFilterString
                                             ])?>
                                     <?php //$openUrl = $this->openUrl($sub, 'results');
                                      $openUrl = null;
                                      $openUrlActive = null;
-                                     //$openUrlActive = $openUrl->isActive();            
+                                     //$openUrlActive = $openUrl->isActive();
                                      echo $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
                                        'driver' => $sub,
                                        'openUrl' => $openUrl,
                                        'openUrlActive' => $openUrlActive,
-                                       'hiddenFilterString' => $hiddenFilterString                                            
+                                       'hiddenFilterString' => $hiddenFilterString
                                      ])?>
                                     <? if (!empty($edition)): ?>
-                                        <div>                                    
+                                        <div>
                                         <strong><?=$this->transEsc('Edition')?>: </strong>
-                                            <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>          
-                                        </div>      
+                                            <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>
+                                        </div>
                                     <? endif; ?>
                                     <? if (!empty($header[0])): ?>
-                                        <div>                                    
+                                        <div>
                                             <strong><?=$this->transEsc('Network')?>:</strong>
-                                            <span property="network"><?=$this->escapeHtml($header[0])?></span>          
-                                        </div>      
-                                    <? endif; ?>                                    
+                                            <span property="network"><?=$this->escapeHtml($header[0])?></span>
+                                        </div>
+                                    <? endif; ?>
                                     <div class="result-formats">
-                                        <?=$this->record($sub)->getFormatList() ?>            
+                                        <?=$this->record($sub)->getFormatList() ?>
                                     </div>
                                 </div> <!-- end of "content" column -->
                             </div> <!-- end row -->
@@ -249,11 +246,11 @@
                     </div> <!-- end colllappsible part -->
                 </div> <!-- end panel -->
                <?php endforeach; ?>
-            </div> <!-- end panel group -->        
+            </div> <!-- end panel group -->
         </div> <!--end column -->
     </div><!--end row -->
     <!-- end subrecords -->
     <? endif; ?>
 </div> <!-- end media -->
-  
+
 

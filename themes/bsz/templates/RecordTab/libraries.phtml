@@ -1,0 +1,95 @@
+<?
+
+$this->headTitle($this->translate('Libraries') . ': ' . $this->driver->getBreadcrumb());
+$content = $this->tab->getContent();
+$fulltext_key = $this->driver->isFree() ? 'Volltext_frei' : 'Volltext';
+?>
+
+<? if(isset($content) && count($content) > 0): ?>
+
+    <table class="table table-striped table-condensed tablesorter">
+        <thead>
+        <tr>
+            <th class="col-sm-1 col-xs-1 hidden-xs"><?=$this->transEsc('Contact')?></th>
+            <th><?=$this->transEsc('Library')?></th>
+            <th><?=$this->transEsc('access_column_heading')?></th>
+            <? if ( $this->client()->is('show_ill_column') ): ?>
+                <th class="col-sm-2 col-xs-2 hidden-xs"><?=$this->transEsc('Interlibrary Loan')?></th>
+            <? endif; ?>
+            <? if ($this->driver->isJournal()): ?><th><?=$this->transEsc('Collection')?></th><? endif; ?>
+
+        </tr>
+        </thead>
+        <tbody>
+        <? foreach ($content as $result): ?>
+            <tr>
+                <td class="hidden-xs">
+                    <? if (isset($result['b']) && trim($result['b']) != ''): ?>
+                        <? if ($result['b'] !== 'LFER'): ?>
+                            <span class="text-nowrap">
+                            <? if (isset($result['homepage'])): ?>
+                                <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_homepage') ?>"
+                                   href="<?= $result['homepage'] ?>"
+                                   class="external hasicon"><i class="fa fa-globe"></i><?= $this->escapeHtml($result['b']) ?></a>
+                            <? else: ?>
+                                <?=$this->escapeHtml($result['b'])?>
+                            <? endif; ?>
+                        </span>
+                        <? else: ?>
+                            <?=$this->abbrev($result['b'], 'LFER_long')?>
+                        <? endif; ?>
+                    <? else: ?>
+                        <?= isset($result['b']) ? $this->escapeHtml($result['b']) : '' ?>
+                    <? endif; ?>
+                </td>
+
+                <td>
+                    <? if (isset($result['opacurl']) && isset($result['name']) && trim($result['opacurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
+                        <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['opacurl']) ?>
+                        <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_opac') ?>" href="<?= $opac ?>"
+                           class="external hasicon">
+                            <i class="fa fa-globe"></i><?= $this->escapeHtml($result['name']) ?>
+                        </a>
+                    <? else: ?>
+                        <?= isset($result['name']) ? $this->escapeHtml($result['name']) : '' ?>
+                    <? endif; ?>
+                </td>
+
+                <td>
+                    <? if(isset($result['k'])): ?>
+                        <a href="<?=$result['k']?>" class="external" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><?=$this->transEsc($fulltext_key)?></a>
+                    <? else: ?>
+                        <? if (isset($result['opacurl']) && isset($result['name']) && trim($result['opacurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
+                            <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['opacurl']) ?>
+                            <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_opac') ?>" href="<?= $opac ?>"
+                               class="external hasicon">
+                                <i class="fa fa-globe"></i>OPAC
+                            </a>
+                        <? endif; ?>
+                    <? endif; ?>
+                </td>
+
+                <? if ( $this->client()->is('show_ill_column') ): ?>
+                    <td>
+                        <? if (isset($result['ill_icon'])): ?><i class="fa <?= $result['ill_icon'] ?>"></i> <? endif; ?><span
+                            class="text hidden-xs"><?= isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></span>
+                    </td>
+                <? endif; ?>
+
+                <? if ($this->driver->isJournal()): ?>
+                    <td><?= isset($result['z']) ? $this->escapeHtml($result['z']) : '' ?></td>
+                <? endif; ?>
+            </tr>
+        <? endforeach; ?>
+        </tbody>
+    </table>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.tablesorter').tablesorter({
+                sortList : [[0,0]]
+            });
+        });
+    </script>
+<? else: ?>
+    <p><?=$this->transEsc('nohit_heading')?></p>
+<? endif; ?>

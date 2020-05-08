@@ -43,20 +43,14 @@
         $titleol = $this->driver->tryMethod('getTitleOl');
         ?>
         <h3 property="name">
-            <? if (is_array($title)): ?>
-                <?= $this->escapeHtml($title[0]) ?><br/><?= $this->string()->cleanEsc($section) ?>
-            <? else: ?>
-                <?= $this->escapeHtml($title) ?><br/><?= $this->string()->cleanEsc($section) ?>
-            <? endif; ?>
-            <?= $this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver]) ?>
+            <?php if (empty($titleol)): ?>
+            <?=$this->escapeHtml($title) ?><br/><?= $this->string()->cleanEsc($section) ?>
+            <?php else: ?>
+            <?=$this->escapeHtml($titleol) ?><br/><?= $this->escapeHtml($sectionol) ?>
+            <?php endif; ?>
         </h3>
         <? if (!empty($titleol)): ?>
-            <h4>
-                <?= $this->escapeHtml($titleol) ?>
-                <? if (!empty($sectionol)): ?>
-                    <br/><small><?= $this->escapeHtml($sectionol) ?></small>
-                <? endif; ?>
-            </h4>
+            <h4><?=$this->escapeHtml($title) ?><br/><?= $this->string()->cleanEsc($section) ?></h4>
         <? endif; ?>
 
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>
@@ -218,15 +212,15 @@
             if (!empty($physical)): ?>
             <tr>
                 <th><?=$this->transEsc('Physical Description')?>: </th>
-                <td><? foreach ($physical as $k => $field): ?>
-                    <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
-                  <? endforeach; ?>
-                  <? if ($physicalol !== null): ?>
-                    <br/>
-                    <? foreach ($physicalol as $field): ?>
-                      <?=$this->escapeHtml($field)?><br/>
+                <td><? if ($physicalol !== null): ?>
+                        <? foreach ($physicalol as $k => $field): ?>
+                            <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
+                        <? endforeach; ?>
+                        <br/><? endif; ?>
+
+                    <? foreach ($physical as $k => $field): ?>
+                        <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
                     <? endforeach; ?>
-                  <? endif; ?>
                 </td>
             </tr>
             <? endif; ?>
@@ -255,40 +249,23 @@
             </tr>
             <? endif; ?>
 
+            <? $publicationsOl = $this->driver->tryMethod('getPublicationDetailsOl') ?>
             <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
-                <? $publicationsOl = $this->driver->tryMethod('getPublicationDetailsOl') ?>
                 <tr>
                     <th><?= $this->transEsc('Published') ?>:</th>
                     <td>
-                        <? foreach ($publications as $field): ?>
-                            <span property="publisher" typeof="Organization">
-                    <? $pubPlace = $field->getPlace();
-                    if (!empty($pubPlace)): ?>
-                        <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
-                    <? endif; ?>
-                                <? $pubName = $field->getName();
-                                if (!empty($pubName)): ?>
-                                    <span property="name"><?= $this->escapeHtml($pubName) ?></span>
-                                <? endif; ?>
-                    </span>
-                            <? $pubDate = $field->getDate();
-                            if (!empty($pubDate)): ?>
-                                <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
-                            <? endif; ?>
-                            <br/>
-                        <? endforeach; ?>
                         <? if (isset($publicationsOl)): ?>
                             <? foreach ($publicationsOl as $field): ?>
                                 <span property="publisher" typeof="Organization">
-                        <? $pubPlace = $field->getPlace();
-                        if (!empty($pubPlace)): ?>
-                            <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
-                        <? endif; ?>
-                                    <? $pubName = $field->getName();
-                                    if (!empty($pubName)): ?>
-                                        <span property="name"><?= $this->escapeHtml($pubName) ?></span>
-                                    <? endif; ?>
-                        </span>
+                                <? $pubPlace = $field->getPlace();
+                                if (!empty($pubPlace)): ?>
+                                    <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
+                                <? endif; ?>
+                                            <? $pubName = $field->getName();
+                                            if (!empty($pubName)): ?>
+                                                <span property="name"><?= $this->escapeHtml($pubName) ?></span>
+                                            <? endif; ?>
+                                </span>
                                 <? $pubDate = $field->getDate();
                                 if (!empty($pubDate)): ?>
                                     <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
@@ -296,6 +273,23 @@
                                 <br/>
                             <? endforeach; ?>
                         <? endif; ?>
+                        <? foreach ($publications as $field): ?>
+                            <span property="publisher" typeof="Organization">
+                            <? $pubPlace = $field->getPlace();
+                            if (!empty($pubPlace)): ?>
+                                <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
+                            <? endif; ?>
+                                <? $pubName = $field->getName();
+                                if (!empty($pubName)): ?>
+                                    <span property="name"><?= $this->escapeHtml($pubName) ?></span>
+                                <? endif; ?>
+                            </span>
+                            <? $pubDate = $field->getDate();
+                            if (!empty($pubDate)): ?>
+                                <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
+                            <? endif; ?>
+                            <br/>
+                        <? endforeach; ?>
                     </td>
                 </tr>
             <? endif; ?>
@@ -305,9 +299,8 @@
             if (!empty($edition)): ?>
             <tr>
                 <th><?=$this->transEsc('Edition')?>: </th>
-                <td property="bookEdition"><?=$this->escapeHtml($edition)?>
-                    <? if (isset($editionol)): ?><br/><?=$this->escapeHtml($editionol)?><? endif; ?>
-
+                <td property="bookEdition"><? if (isset($editionol)): ?><?=$this->escapeHtml($editionol)?><br/>><? endif; ?>
+                    <?=$this->escapeHtml($edition)?>
                 </td>
             </tr>
             <? endif; ?>
