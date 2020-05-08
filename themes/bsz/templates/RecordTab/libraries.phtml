@@ -2,6 +2,8 @@
 
 $this->headTitle($this->translate('Libraries') . ': ' . $this->driver->getBreadcrumb());
 $content = $this->tab->getContent();
+$fulltext_key = $this->driver->isFree() ? 'Volltext_frei' : 'Volltext';
+var_dump($fulltext_key);
 ?>
 
 <? if(isset($content) && count($content) > 0): ?>
@@ -56,7 +58,7 @@ $content = $this->tab->getContent();
 
                 <td>
                     <? if(isset($result['k'])): ?>
-                        <a href="<?=$result['k']?>" class="external" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><?=$this->transEsc('Fulltext')?></a>
+                        <a href="<?=$result['k']?>" class="external" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><?=$this->transEsc($fulltext_key)?></a>
                     <? else: ?>
                         <? if (isset($result['opacurl']) && isset($result['name']) && trim($result['opacurl']) != '' && $this->driver->getNetwork() !== 'ZDB'): ?>
                             <? $opac = preg_replace('/%PPN%/', $this->driver->getPPN(), $result['opacurl']) ?>
