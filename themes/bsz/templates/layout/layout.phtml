@@ -169,11 +169,13 @@ JS;
     ?>
     <header class="hidden-print">
         <div class="navbar navbar-default navbar-fixed-top">
+            <? if ($this->client()->is('two_row_header')): ?>
             <div class="container white-bg">
                 <div class="navbar-brand" data-toggle="tooltip" title="<?=$this->transEsc('to_bsz_website')?>" data-placement="bottom">
                     <?=$this->clientAsset()->getLogoHtml()?>
                 </div>
             </div>
+            <? endif; ?>
             <div class="container primary-bg">
                 <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
                 <?=$this->render('header.phtml')?>
