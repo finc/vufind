@@ -58,11 +58,15 @@ JS;
               <?php endif; ?>
           </div>
       <?php endif; ?>
+      <? if($this->client()->is('logo_in_search_home')):?>
+      <div class="col-xs-6 col-sm-4 pull-right">
+          <?=$this->clientAsset()->getLogoHtml()?>
+      </div>
+      <? endif; ?>
 
   </div>
   <div class="row ">
       <div class="col-sm-12">
-          <h2><?=$this->transEsc('homepage_heading')?></h2>
           <?php if (($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>
             <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>
           <?php elseif ($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
