@@ -3,7 +3,6 @@
 $this->headTitle($this->translate('Libraries') . ': ' . $this->driver->getBreadcrumb());
 $content = $this->tab->getContent();
 $fulltext_key = $this->driver->isFree() ? 'Volltext_frei' : 'Volltext';
-var_dump($fulltext_key);
 ?>
 
 <? if(isset($content) && count($content) > 0): ?>
