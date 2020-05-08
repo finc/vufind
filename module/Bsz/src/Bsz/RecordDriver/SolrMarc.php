@@ -443,7 +443,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $f856 = $this->getMarcRecord()->getFields(856);
         foreach ($f856 as $field) {
             $z = $field->getSubfield('z');
-            if (isset($z) && is_string($z->getData()) && preg_match('/kostenfrei|kostenlos/i', $z->getData()) && $field->getIndicator(2) == 0) {
+            if (is_object($z) && is_string($z->getData()) && preg_match('/kostenfrei|kostenlos/i', $z->getData()) && $field->getIndicator(2) == 0) {
                 return true;
             }
         }
