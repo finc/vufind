@@ -212,12 +212,11 @@
             if (!empty($physical)): ?>
             <tr>
                 <th><?=$this->transEsc('Physical Description')?>: </th>
-                <td><? if ($physicalol !== null): ?>
+                <td><? if (!empty($physicalol)): ?>
                         <? foreach ($physicalol as $k => $field): ?>
                             <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
                         <? endforeach; ?>
                         <br/><? endif; ?>
-
                     <? foreach ($physical as $k => $field): ?>
                         <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
                     <? endforeach; ?>
@@ -299,7 +298,7 @@
             if (!empty($edition)): ?>
             <tr>
                 <th><?=$this->transEsc('Edition')?>: </th>
-                <td property="bookEdition"><? if (isset($editionol)): ?><?=$this->escapeHtml($editionol)?><br/>><? endif; ?>
+                <td property="bookEdition"><? if (!empty($editionol)): ?><?=$this->escapeHtml($editionol)?><br/>><? endif; ?>
                     <?=$this->escapeHtml($edition)?>
                 </td>
             </tr>
