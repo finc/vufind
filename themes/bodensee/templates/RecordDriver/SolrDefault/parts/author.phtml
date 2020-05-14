@@ -50,7 +50,7 @@
 <? $count = 0 ?>
 <strong><?=$this->transEsc('Published')?>: </strong>
 <? if (!empty($publications[0])): ?>
-    <div class="markjs">
+    <span class="markjs">
     <? foreach ($publications as $field): ?>
         <? if($count > 0):?>; <?endif;?>
             <span property="publisher" typeof="Organization">
@@ -66,7 +66,7 @@
         <? endif; ?>
         <? $count++ ?>
     <? endforeach; ?>
-    </div>
+    </span>
 <? else: ?>
     <? if (!empty($summDate) && isset($summDate[0])): ?>
         <?= $this->escapeHtml($summDate[0])?>
