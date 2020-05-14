@@ -19,7 +19,7 @@
 <?php  if ($this->piwik('siteid') > 0): ?>
 <h3>Matomo</h3>
 <p>Wir benutzen die Tracking-Software Matomo um unsere Benutzer anonym zu zählen. </p>
-<iframe style="border: 0; width: 100%; height: 160px" src="<?=$this->piwik('baseurl')?>/index.php?module=CoreAdminHome&action=optOut&idsite=<?=$this->piwik('siteid')?>&language=<?=$this->layout()->userLang?>"></iframe>
+<iframe style="border: 0; width: 100%; height: 160px" src="<?=$this->piwik('baseurl')?>/index.php?module=CoreAdminHome&action=optOut&idsite=<?=$this->piwik('siteid')?>&language=<?=$this->layout()->userLang?>&fontColor=553333&fontSize=14px&fontFamily=Ubuntu,Helvetica,Arial,sans-serif"></iframe>
 <?php endif; ?>
 
 
