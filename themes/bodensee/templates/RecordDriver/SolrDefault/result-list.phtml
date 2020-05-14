@@ -43,7 +43,7 @@
     <div class="media-body">
         <div class="result-body">
             <div>
-                <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
+                <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull markjs" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
                     <?=$this->record($this->driver)->getTitleHtml()?>
                 </a>
                 <? if ($titlesection = $this->driver->getTitleSection()):?>
@@ -205,7 +205,7 @@
 
                                 </div>
                                 <div class="col-xs-8 col-sm-10">
-                                    <a class="title" href="<?=$this->recordLink()->getUrl($sub)?>">
+                                    <a class="title markjs" href="<?=$this->recordLink()->getUrl($sub)?>">
                                         <?=$this->record($sub)->getTitleHtml()?>
                                     </a>
                                     <? if ($titlesection = $this->driver->getTitleSection()):?>
@@ -228,7 +228,7 @@
                                     <? if (!empty($edition)): ?>
                                         <div>
                                         <strong><?=$this->transEsc('Edition')?>: </strong>
-                                            <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>
+                                            <span property="bookEdition" class="markjs"><?=$this->escapeHtml($edition)?></span>
                                         </div>
                                     <? endif; ?>
                                     <? if (!empty($header[0])): ?>
