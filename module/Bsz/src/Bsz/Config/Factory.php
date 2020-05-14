@@ -49,7 +49,8 @@ class Factory
         $vufindconf = $container->get('VuFind\Config')->get('config')->toArray();
         $bszconf = $container->get('VuFind\Config')->get('bsz')->toArray();
         $sessContainer = new Container(
-            'fernleihe', $container->get('VuFind\SessionManager')
+            'fernleihe',
+            $container->get('VuFind\SessionManager')
         );
         
         $client = new Client(array_merge($vufindconf, $bszconf), true);
@@ -79,18 +80,17 @@ class Factory
         $resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAYOBJECT, new Library());
         $librariesTable = new Libraries('libraries', $adapter, null, $resultSetPrototype);
         return $librariesTable;
-    }  
+    }
     
-    public static function getDedup(ContainerInterface $container) 
+    public static function getDedup(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config')->get('Index');
         $sesscontainer = new Container(
-            'dedup', $container->get('VuFind\SessionManager')
+            'dedup',
+            $container->get('VuFind\SessionManager')
         );
         $response = $container->get('Response');
         $cookie = $container->get('Request')->getCookie();
         return new Dedup($config, $sesscontainer, $response, $cookie);
     }
-    
 }
-

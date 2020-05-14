@@ -36,7 +36,7 @@
     }
     $filterDetails = $this->searchbox()->getFilterDetails($filterList, $checkboxFilters);
     $disabled = '';
-    if ($this->client()->isIsilSession() && !$this->client()->hasIsilSession()) {  
+    if ($this->client()->isIsilSession() && !$this->client()->hasIsilSession()) {
         $disabled = 'disabled';
     }
 ?>
@@ -52,18 +52,18 @@
     <?= $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
     <? $placeholder = $this->searchbox()->getPlaceholderText(isset($tabConfig['selected']['id']) ? $tabConfig['selected']['id'] : null); ?>
     <div class="input-group">
-        <input <?=$disabled?> id="searchForm_lookfor" class="searchForm_lookfor form-control search-query<? if($this->searchbox()->autocompleteEnabled($this->searchClassId)):?> autocomplete searcher:<?=$this->escapeHtmlAttr($this->searchClassId) ?><?=$this->searchbox()->autocompleteAutoSubmit($this->searchClassId) ? ' ac-auto-submit' : '' ?><? endif ?>" type="text" name="lookfor" value="<? if($this->searchType == 'basic'): echo $this->escapeHtmlAttr($this->lookfor);endif; ?>"<? if ($placeholder): ?> placeholder="<?=$this->transEsc($placeholder) ?>"<? endif ?> title="<?=$this->transEsc('empty_search')?>" data-content="<?=$this->transEsc('empty_search_text')?>" autocomplete="on"/>
+        <input <?=$disabled?> id="searchForm_lookfor" class="searchForm_lookfor form-control search-query<? if($this->searchbox()->autocompleteEnabled($this->searchClassId)):?> autocomplete searcher:<?=$this->escapeHtmlAttr($this->searchClassId) ?><?=$this->searchbox()->autocompleteAutoSubmit($this->searchClassId) ? ' ac-auto-submit' : '' ?><? endif ?>" type="text" name="lookfor" value="<?= $this->escapeHtmlAttr($this->searchMemory()->getLastSearchterms()); ?>"<? if ($placeholder): ?> placeholder="<?=$this->transEsc($placeholder) ?>"<? endif ?> title="<?=$this->transEsc('empty_search')?>" data-content="<?=$this->transEsc('empty_search_text')?>" autocomplete="on"/>
         <div class="input-group-btn">
-            <button type="submit" class="btn btn-info <?=$disabled?>"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only"><?=$this->transEsc('Search')?></span></button>            
+            <button type="submit" class="btn btn-info <?=$disabled?>"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only"><?=$this->transEsc('Search')?></span></button>
         </div>
         <? if (!isset($frame) && $advSearch && $this->client()->is('advanced_search_button')): ?>
-            <div class="input-group-btn">            
+            <div class="input-group-btn">
                 <? if ($advSearch): ?>
                     <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="btn btn-primary <?=$disabled?>" rel="nofollow"><i class='fa fa-search-plus'></i>
                         <span class="text hidden-xs"><?=$this->transEsc("Advanced")?></span></a>
-                <? endif; ?>            
+                <? endif; ?>
             </div>
-        <? endif; ?>                    
+        <? endif; ?>
     </div>
     <input type="hidden" name="type" value="<? if(array_key_exists(0, $handlers) && array_key_exists('value', $handlers[0])): ?><?=$this->escapeHtmlAttr($handlers[0]['value'])?><? endif; ?>" />
 

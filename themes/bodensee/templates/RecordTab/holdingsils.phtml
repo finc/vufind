@@ -1,4 +1,4 @@
-<?
+<?php
     // Set up convenience variables:
     $account = $this->auth()->getManager();
     $user = $account->isLoggedIn();
@@ -13,76 +13,76 @@
         $holdings = ['holdings' => []];
         $offlineMode = 'ils-offline';
     }
-    
+
     // Set page title.
-    $this->headTitle($this->translate('Holdings') . ': ' . preg_replace('/|/','', $this->driver->getBreadcrumb()));
+    $this->headTitle($this->translate('Holdings') . ': ' . preg_replace('/|/', '', $this->driver->getBreadcrumb()));
 ?>
 
 <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', ['user' => $this->auth()->isLoggedIn()]); ?>
 
-<? if (!empty($holdings['blocks'])):?>
+<?php if (!empty($holdings['blocks'])):?>
   <div id="account-block-msg" class="alert alert-danger">
     <?=$this->transEsc('account_block_options_missing', ['%%details%%' => implode('; ', $holdings['blocks'])]) ?>
   </div>
-<? endif; ?>
+<?php endif; ?>
 <?=($offlineMode == "ils-offline") ? $this->render('Helpers/ils-offline.phtml') : ''?>
-<? if (($this->ils()->getHoldsMode() == 'driver' && !empty($holdings['holdings'])) || $this->ils()->getTitleHoldsMode() == 'driver'): ?>
-  <? if ($account->loginEnabled() && $offlineMode != 'ils-offline'): ?>
-    <? if (!$user): ?>
+<?php if (($this->ils()->getHoldsMode() == 'driver' && !empty($holdings['holdings'])) || $this->ils()->getTitleHoldsMode() == 'driver'): ?>
+  <?php if ($account->loginEnabled() && $offlineMode != 'ils-offline'): ?>
+    <?php if (!$user): ?>
       <div class="alert alert-info">
         <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'Holdings')?>?login=true&amp;catalogLogin=true" data-lightbox><?=$this->transEsc("hold_login")?></a>
       </div>
-    <? elseif (!$user->cat_username): ?>
+    <?php elseif (!$user->cat_username): ?>
       <div class="alert alert-info">
         <?=$this->translate("hold_profile_html", ['%%url%%' => $this->recordLink()->getTabUrl($this->driver, 'Holdings') . '?catalogLogin=true'])?>
       </div>
-    <? endif; ?>
-  <? endif; ?>
-<? endif; ?>
-<? $holdingTitleHold = $this->driver->tryMethod('getRealTimeTitleHold'); if (!empty($holdingTitleHold)): ?>
+    <?php endif; ?>
+  <?php endif; ?>
+<?php endif; ?>
+<?php $holdingTitleHold = $this->driver->tryMethod('getRealTimeTitleHold'); if (!empty($holdingTitleHold)): ?>
   <a class="placehold" data-lightbox title="<?=$this->transEsc('request_place_text')?>" href="<?=$this->recordLink()->getRequestUrl($holdingTitleHold)?>"><i class="fa fa-flag" aria-hidden="true"></i>&nbsp;<?=$this->transEsc('title_hold_place')?></a>
-<? endif; ?>
+<?php endif; ?>
  <?// removed online access as this is listed in main section ?>
- <? $recallButtonCounter = 0 ?>
-<? if (isset($holdings['holdings'])): ?>
-  
-<? foreach ($holdings['holdings'] as $holding): ?>
-<div class="row">    
-    <div class="col-sm-12">    
-      <h4><? $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
-                <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
+ <?php $recallButtonCounter = 0 ?>
+<?php if (isset($holdings['holdings'])): ?>
+
+<?php foreach ($holdings['holdings'] as $holding): ?>
+<div class="row">
+    <div class="col-sm-12">
+      <h4><?php $locationText = $this->transEsc('location_' . $holding['location'], [], $holding['location']); ?>
+                <?php if (isset($holding['locationhref']) && $holding['locationhref']): ?>
                   <a href="<?=$holding['locationhref']?>" target="_blank"><?=$locationText?></a>
-                <? else: ?>
+                <?php else: ?>
                   <?=$locationText?>
-                <? endif; ?>      
+                <?php endif; ?>
         </h4>
     </div>
 </div>
 
-    
-  <? foreach ($holding['items'] as $row): ?>
-    <? if ($row['status'] != 'For reference' && 
-           $row['status'] != 'Lost' && 
-           $row['status'] != 'Missing' && 
-           $row['status'] != 'Permanent on loan'): 
-           $recallButtonCounter++; 
-       endif; 
+
+  <?php foreach ($holding['items'] as $row): ?>
+    <?php if ($row['status'] != 'For reference' &&
+           $row['status'] != 'Lost' &&
+           $row['status'] != 'Missing' &&
+           $row['status'] != 'Permanent on loan'):
+           $recallButtonCounter++;
+       endif;
     ?>
-    <? if ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIA'): //start of new/adis DAIA code ?>
+    <?php if ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIA'): //start of new/adis DAIA code?>
         <?=$this->render('RecordTab/parts/adisdaia.phtml', ['row' => $row, 'driver' => $this->driver, 'recallButtonCounter' => $recallButtonCounter])?>
-    <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIAbsz'): // start of old DAIA code ?>    
+    <?php elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\DAIAbsz'): // start of old DAIA code?>
         <?=$this->render('RecordTab/parts/olddaia.phtml', ['row' => $row, 'driver' => $this->driver])?>
-    <? elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\NoILS'): // NoILS ?>    
+    <?php elseif ($this->ils()->getDriverClass() == 'Bsz\ILS\Driver\NoILS'): // NoILS?>
         <?=$this->render('RecordTab/parts/noils.phtml', ['row' => $row, 'driver' => $this->driver, 'tab' => $this->tab, 'holding' => $holding])?>
-    <? endif; // End of old DAIA code ?>
-    
-  <? endforeach; ?>
-<? endforeach; ?>
-<? endif; ?>
-  
-<? /* One Recall/Holds-Button for all items */ ?>
-<? if ($this->client()->is('only_one_holds_button')): ?>
-    <? if (isset($row['link']) && ($recallButtonCounter > 0)): ?>
-        <a href="<?=$row['link']?>" class="btn btn-primary recallholdButtonLink <? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external "><?=$this->transEsc('recall/hold')?></a>
-    <? endif; ?>
-<? endif; ?>  
+    <?php endif; // End of old DAIA code?>
+
+  <?php endforeach; ?>
+<?php endforeach; ?>
+<?php endif; ?>
+
+<?php /* One Recall/Holds-Button for all items */ ?>
+<?php if ($this->client()->is('only_one_holds_button')): ?>
+    <?php if (isset($row['link']) && ($recallButtonCounter > 0)): ?>
+        <a href="<?=$row['link']?>" class="btn btn-primary btn-sm recallholdButtonLink <?php if (!$this->client()->is('koha_link')):?>modal-link modal-remote <?php endif; ?> external "><?=$this->transEsc('recall/hold')?></a>
+    <?php endif; ?>
+<?php endif; ?>

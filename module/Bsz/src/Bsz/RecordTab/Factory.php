@@ -66,7 +66,7 @@ class Factory
     /**
      * Factory for articles tab
      *
-     * @param ContainerInterface $container Service manager.
+     * @param ServiceManager $sm Service manager.
      *
      * @return Volumes
      */

@@ -3,7 +3,6 @@
 
 namespace BszTest;
 
-
 use Bsz\FormatMapper;
 use PHPUnit\Framework\TestCase;
 
@@ -30,6 +29,4 @@ class FormatMapperTest extends TestCase
         $this->assertEquals($mapper->marc21leader7('s', '', 'p'), 'Journal');
         $this->assertEquals($mapper->marc21leader7('s', '', 'n'), 'Newspaper');
     }
-
-
 }

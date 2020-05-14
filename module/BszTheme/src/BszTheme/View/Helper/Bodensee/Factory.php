@@ -33,7 +33,6 @@ use Bsz\Exception;
 use Interop\Container\ContainerInterface;
 use VuFind\Config\Locator;
 
-
 /**
  * Factory for Bootstrap view helpers.
  *
@@ -236,5 +235,4 @@ class Factory
             $client->get('Mapongo')
         );
     }
-
 }

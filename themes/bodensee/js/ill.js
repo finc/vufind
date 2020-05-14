@@ -20,7 +20,7 @@ function illFormLogic() {
 
         $('#form-ill').validator('update');
         changeRequiredCopy($('input[name=Bestellform]:checked'));
-        
+
 
         var $errors = $(this).find('.has-error');
         if ($errors.length > 0) {
@@ -31,17 +31,17 @@ function illFormLogic() {
             if ($('.flash-message').length === 0) {
                 $('#form-ill').prepend($('<div>', {
                     class: 'flash-message alert alert-danger',
-                    text: VuFind.translate('ILL::form_error')
+                    text: VuFind.translate('illFormError')
                 }));
             }
         }
         if (!e.isDefaultPrevented()) {
-            
+
             // clear the paper data fields if borrowing an item
             if ($('input[name=Bestellform]:checked').val() === 'Leihen') {
                 $('#panel-paperdata').find('input').val("");
             }
-            
+
             // everything is validated, form to be submitted
             $(this).find('[type=submit]').addClass('disabled')
                     .parent().append('<i class="fa fa-spinner fa-spin"></i>');
@@ -79,11 +79,11 @@ function changeRequiredCopy($actor) {
     }
 
     var requiredCopy = [
-        'AufsatzAutor', 
-        'AufsatzTitel', 
+        'AufsatzAutor',
+        'AufsatzTitel',
         'Seitenangabe'
     ];
-    
+
     requiredCopy.forEach(function (name) {
         // get the form group div surrounding the input
         var $required = $('input[name='+name+']').parent().parent();
@@ -115,7 +115,7 @@ function appendValidator() {
             costs: function($el) {
                 var costs = $el.val();
                 if((costs < 8 && costs > 0) || costs < 0 ) {
-                    return VuFind.translate('ILL::costs_error');
+                    return VuFind.translate('illCostsError');
                 }
             },
             ejahr: function($el) {
@@ -131,10 +131,10 @@ function appendValidator() {
     });
 }
 
-function validateYear($el) {1
+function validateYear($el) {1;
     var year = $el.val();
     if (!/^\d\d\d\d$/g.test(year)) {
-        return VuFind.translate('ILL::error_year')
+        return VuFind.translate('illYearError')
     }
 }
 

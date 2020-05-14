@@ -19,18 +19,22 @@
  */
 
 namespace Bsz\RecordTab;
+use Vu;
+use VuFind\RecordTab\AbstractBase;
 use VuFind\Search\SearchRunner;
+use VuFind\Search\Solr\Results;
 
 /**
- * Tab for Display of other volumes of the same serie
- *
+ * Class Articles
+ * @package Bsz\RecordTab
+ * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Articles extends \VuFind\RecordTab\AbstractBase {
+class Articles extends AbstractBase {
     
     /**
      *
-     * @var \Vu
+     * @var Vu
      */
     protected $runner;
     
@@ -51,15 +55,18 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
      * Constructor
      * @param SearchRunner $runner
      */
-    public function __construct(SearchRunner $runner, $isils = []) {
+    public function __construct(SearchRunner $runner, $isils = [])
+    {
         $this->runner = $runner;
         $this->isils = $isils;
+        $this->accessPermission = 'access.ArticlesViewTab';
     }
     /**
      * Get the on-screen description for this tab
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Articles';
     }
     
@@ -67,7 +74,8 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
      * 
      * @return array|null
      */
-    public function getContent() {
+    public function getContent()
+    {
         if($this->content === null) {
             $relId = $this->driver->tryMethod('getIdsRelatedArticle');   
             $relId[] = $this->driver->getUniqueId();
@@ -93,7 +101,7 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
                 $params['filter'] = $filter; 
                 $results = $this->runner->run($params);   
                 
-                $results instanceof \VuFind\Search\Solr\Results;
+                $results instanceof Results;
                 $this->content = $results->getResults();
             }   
         }
@@ -101,9 +109,10 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
     }
     
     /**
-     * Check if we are in an interlending or ZDB-TAB 
-     **/
-    public function isFL() {
+     * Check if we are in an interlending or ZDB-TAB
+     *      **/
+    public function isFL()
+    {
         $last = '';
         if (isset($_SESSION['Search']['last']) ){
             $last = urldecode($_SESSION['Search']['last']);
@@ -123,17 +132,21 @@ class Articles extends \VuFind\RecordTab\AbstractBase {
      * This Tab is Active for collections or parts of collections only. 
      * @return boolean
      */
-    public function isActive() {
-        //getContents to determine active state
+    public function isActive()
+    {
+
         $this->getContent();
-        if(!empty($this->content)) {
-            
+        if(parent::isActive() && !empty($this->content)) {
             return true;
         }
         return false;
     }
-    
-    public function setSearchClassId($searchClassId) {
+
+    /**
+     * @param $searchClassId
+     */
+    public function setSearchClassId($searchClassId)
+    {
         if(isset($searchClassId) && !empty($searchClassId)) {
             $this->searchClassId = $searchClassId;            
         }

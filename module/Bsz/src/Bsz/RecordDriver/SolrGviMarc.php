@@ -19,6 +19,7 @@
 namespace Bsz\RecordDriver;
 
 use Bsz\Exception;
+use File_MARC_Exception;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
 
@@ -95,8 +96,8 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $headings;
     }
 
-    
-    
+
+
     /**
      * Get an array with DFI classification
      * @returns array
@@ -117,7 +118,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         return array_unique($classificationList);
     }
 
-    
+
     /**
      * Get an array with FIV classification
      * @returns array
@@ -138,7 +139,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         return array_unique($classificationList);
     }
 
-    
+
     /**
      * Get all subjects associated with this item. They are unique.
      *
@@ -150,12 +151,12 @@ class SolrGviMarc extends SolrMarc implements Definition
         return [];
         $rvkchain = [];
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
-            if ($field->getIndicator(1) == 'r' 
+            if ($field->getIndicator(1) == 'r'
                 && $field->getIndicator(2) == 'v'
             ) {
                 foreach ($field->getSubFields('k') as $item) {
                     $rvkchain[] = $item->getData();
-                }                
+                }
             }
         }
         return array_unique($rvkchain);
@@ -187,7 +188,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         }
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
             $suba = $field->getSubField('a');
-            if ($suba && $field->getIndicator(1) == 'r' 
+            if ($suba && $field->getIndicator(1) == 'r'
                 && $field->getIndicator(2) == 'v'
             ) {
                 $title = [];
@@ -243,8 +244,8 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         //isbn = 020az:773z
         $isbn = array_merge(
-                $this->getFieldArray('020', ['a', 'z', '9'], false),
-                $this->getFieldArray('773', ['z'])
+            $this->getFieldArray('020', ['a', 'z', '9'], false),
+            $this->getFieldArray('773', ['z'])
         );
         return $isbn;
     }
@@ -258,15 +259,15 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         // issn = 022a:440x:490x:730x:773x:776x:780x:785x
         $issn = array_merge(
-                $this->getFieldArray('022', ['a']),
-                $this->getFieldArray('029', ['a']),
-                $this->getFieldArray('440', ['x']),
-                $this->getFieldArray('490', ['x']),
-                $this->getFieldArray('730', ['x']),
-                $this->getFieldArray('773', ['x']),
-                $this->getFieldArray('776', ['x']),
-                $this->getFieldArray('780', ['x']),
-                $this->getFieldArray('785', ['x'])
+            $this->getFieldArray('022', ['a']),
+            $this->getFieldArray('029', ['a']),
+            $this->getFieldArray('440', ['x']),
+            $this->getFieldArray('490', ['x']),
+            $this->getFieldArray('730', ['x']),
+            $this->getFieldArray('773', ['x']),
+            $this->getFieldArray('776', ['x']),
+            $this->getFieldArray('780', ['x']),
+            $this->getFieldArray('785', ['x'])
         );
         return $issn;
     }
@@ -290,6 +291,39 @@ class SolrGviMarc extends SolrMarc implements Definition
     public function getNote()
     {
         return $this->getFirstFieldValue('546', ['a']);
+    }
+
+    /**
+     * Get an array of notes "Enthaltene Werke" for the Notes-Tab.
+     *
+     * @return array
+     */
+    public function getNotes()
+    {
+        $notesCodes = ['501', '505'];
+        $notes = [];
+        foreach ($notesCodes as $nc) {
+            $tmp = $this->getFieldArray($nc, ['a', 't', 'r'], true, ', ');
+            $notes = array_merge($notes, $tmp);
+        }
+        return $notes;
+    }
+
+
+    /**
+     * Get an array of notes "Enthaltene Werke" for the Notes-Tab.
+     *
+     * @return array
+     */
+    public function getMusicalCast()
+    {
+        $castCodes = ['937'];
+        $cast = [];
+        foreach ($castCodes as $cc) {
+            $tmp = $this->getFieldArray($cc, ['d', 'e', 'f'], true, ' / ');
+            $cast = array_merge($cast, $tmp);
+        }
+        return $cast;
     }
 
     /**
@@ -327,7 +361,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getPhysicalDescriptions()
     {
-        return $this->getFieldArray('300', ['a', 'b', 'c', 'e', 'f', 'g'], true);
+        return $this->getFieldArray('300', ['a', 'b', 'c', 'e', 'f', 'g'], false);
     }
 
     /**
@@ -361,7 +395,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      *
      * @return array
      */
-    
+
     public function getPlacesOfPublication()
     {
         $fields = [
@@ -410,14 +444,11 @@ class SolrGviMarc extends SolrMarc implements Definition
                     $years[$k] = preg_replace('/[^\d-]|-$/', '', $year);
                 }
             }
-
-
         }
         if (count($years) > 0) {
             $return = array_values(array_unique($years));
         }
         return $return;
-
     }
 
     /**
@@ -427,7 +458,7 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getSummary()
     {
-        $summaryCodes = ['501', '502', '505', '515', '520'];
+        $summaryCodes = ['502', '505', '515', '520'];
         $summary = [];
         foreach ($summaryCodes as $sc) {
             $tmp = $this->getFieldArray($sc, ['a', 'b', 'c', 'd'], true, ', ');
@@ -452,7 +483,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $arr = array();
         $arrSizes = array('small', 'medium', 'large');
         $isbn = $this->getCleanISBN();
-        $ean = $this->getEAN();
+        $ean = $this->getGTIN();
         if (in_array($size, $arrSizes)) {
             $arr['author'] = $this->getPrimaryAuthor();
         }
@@ -520,8 +551,15 @@ class SolrGviMarc extends SolrMarc implements Definition
         //url = 856u:555u
 
         $urls = [];
-        $urlFields = array_merge($this->getMarcRecord()->getFields('856'),
-                $this->getMarcRecord()->getFields('555'));
+        $urlFields = array_merge(
+            $this->getMarcRecord()->getFields('856'),
+            $this->getMarcRecord()->getFields('555')
+        );
+
+        // Special case Proquest eBooks for DE-950
+        $isils = $this->getFieldArray('924', ['b'], false);
+        $is950 = in_array('DE-950', $isils)? true: false;
+
         foreach ($urlFields as $f) {
             $f instanceof File_MARC_Data_Field;
             $url = [];
@@ -534,27 +572,30 @@ class SolrGviMarc extends SolrMarc implements Definition
             //  we don't want to show licensed content
             //  ind1,2 = 4,0 is probably lincensed content.
             //  only if we find a kostenfrei in |z, we use the link
-            if ($ind1 == 4 && $ind2 == 0) {
+            //  special case: DE-950 Proquest links are shown
+            if (!$is950 && $ind1 == 4 && $ind2 == 0 ) {
                 $sfz = $f->getSubField('z');
                 if (is_object($sfz)) {
-                    if (stripos($sfz->getData(), 'Kostenfrei') === false) continue;
+                    if (stripos($sfz->getData(), 'Kostenfrei') === false) {
+                        continue;
+                    }
                 } else {
                     continue;
                 }
             }
-            
+
             $url['url'] = $sf->getData();
-            
+
             // add urn:nbn Resolver baseurl if missing
-            if (strpos($url['url'], 'urn:nbn') !== false && strpos($url['url'], 'http') === false ) {
+            if (strpos($url['url'], 'urn:nbn') !== false && strpos($url['url'], 'http') === false) {
                 $url['desc'] = $url['url'];
                 $url['url'] = 'https://nbn-resolving.org/' . $url['url'];
             }
 
             // add hdl: Resolver baseurl if missing
             $sf2 = $f->getSubField('2');
-            if (is_object($sf2)) {               
-                if ($sf2->getData() === 'hdl' && strpos($url['url'], 'http') === false ) {
+            if (is_object($sf2)) {
+                if ($sf2->getData() === 'hdl' && strpos($url['url'], 'http') === false) {
                     $url['desc'] = $url['url'];
                     $url['url'] = 'https://hdl.handle.net/' . $url['url'];
                 }
@@ -563,7 +604,7 @@ class SolrGviMarc extends SolrMarc implements Definition
             if (($sf = $f->getSubField('3')) && strlen($sf->getData()) > 2) {
                 $url['desc'] = $sf->getData();
             } elseif (($sf = $f->getSubField('y'))) {
-                $url['desc'] = $sf->getData();                
+                $url['desc'] = $sf->getData();
             } elseif (($sf = $f->getSubField('n'))) {
                 $url['desc'] = $sf->getData();
             } elseif ($ind1 == 4 && ($ind2 == 1 || $ind2 == 0)) {
@@ -573,39 +614,38 @@ class SolrGviMarc extends SolrMarc implements Definition
             }
             $urls[] = $url;
         }
-        return $urls;
+        return array_unique($urls, SORT_REGULAR);
     }
 
+
     /**
-     * Returns consortium
-     * @return array
-     * @throws Exception
+     * @return string
      */
     public function getConsortium()
     {
         // determine network based on two different sources
         $consortium1 = $this->getFirstFieldValue(924, ['c']);
         $consortium1 = explode(' ', $consortium1);
-        $consortium2 = $this->fields['consortium']; 
+        $consortium2 = $this->fields['consortium'];
         $consortium = array_merge($consortium1, $consortium2);
-        
+
         foreach ($consortium as $k => $con) {
             if (!empty($con)) {
                 $mapped = $this->mainConfig->mapNetwork($con);
                 if (!empty($mapped)) {
                     $consortium[$k] = $mapped;
-                }                
+                }
             } else {
                 unset($consortium[$k]);
             }
         }
         $consortium_unique = array_unique($consortium);
 
-        $string = implode(", ",$consortium_unique);
-        return $string;        
+        $string = implode(", ", $consortium_unique);
+        return $string;
     }
-       
-  
+
+
 
     /**
      * Get the main corporate author (if any) for the record.
@@ -658,10 +698,8 @@ class SolrGviMarc extends SolrMarc implements Definition
             } else {
                 $retval = $this->fields[$conf];
             }
-
         }
         return $retval;
-
     }
 
     /**
@@ -676,7 +714,8 @@ class SolrGviMarc extends SolrMarc implements Definition
             return [];
         } else {
             return $this->hasILS() ? $this->holdLogic->getHoldings(
-                            $this->getUniqueID(), $this->getConsortialIDs()
+                $this->getUniqueID(),
+                $this->getConsortialIDs()
                     ) : [];
         }
         return ['holdings' => []];
@@ -762,7 +801,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $params['rft.volume'] = $this->getContainerVolume();
         $params['rft.issue'] = $this->getContainerIssue();
         $params['rft.date'] = $this->getContainerYear();
-        if (strpos($this->getContainerPages(), '-') !== FALSE) {
+        if (strpos($this->getContainerPages(), '-') !== false) {
             $params['rft.pages'] = $this->getContainerPages();
         } else {
             $params['rft.spage'] = $this->getContainerPages();
@@ -779,7 +818,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         if (count($langs) > 0) {
             $params['rft.language'] = $langs[0];
         }
-                    // Fallback: add dirty data from 773g to openurl
+        // Fallback: add dirty data from 773g to openurl
         if (empty($params['rft.pages']) && empty($params['rft.spage'])) {
             $params['rft.pages'] = $this->getContainerRaw();
         }
@@ -829,7 +868,6 @@ class SolrGviMarc extends SolrMarc implements Definition
         $holdings = [];
         try {
             foreach ($data as $line) {
-
                 $tmp = explode(' ', $line);
                 $set = [];
                 for ($i = 1; $i < count($tmp); $i++) {
@@ -858,11 +896,10 @@ class SolrGviMarc extends SolrMarc implements Definition
      */
     public function getLibraries()
     {
-
         $libraries = $this->getFieldArray(924, ['b']);
         return $libraries;
     }
-   
+
     /**
      * Return system requirements
      */
@@ -895,9 +932,9 @@ class SolrGviMarc extends SolrMarc implements Definition
                         break;
                     case 't': $label = 'title';
                         break;
-                    case 'w' : $label = 'id';
+                    case 'w': $label = 'id';
                         break;
-                    case 'a' : $label = 'author';
+                    case 'a': $label = 'author';
                         break;
                     default: $label = 'unknown_field';
                 }
@@ -905,14 +942,13 @@ class SolrGviMarc extends SolrMarc implements Definition
                     $tmp[$label] = $subfield->getData();
                 }
                 if (!array_key_exists('description', $tmp)) {
-                       $tmp['description'] = 'Parallelausgabe';
+                    $tmp['description'] = 'Parallelausgabe';
                 }
             }
             // exclude DNB records
-            if (isset($tmp['id']) && strpos($tmp['id'], 'DE-600') === FALSE) {
+            if (isset($tmp['id']) && strpos($tmp['id'], 'DE-600') === false) {
                 $related[] = $tmp;
             }
-
         }
         return $related;
     }
@@ -930,8 +966,8 @@ class SolrGviMarc extends SolrMarc implements Definition
         $volumes = preg_replace("/\/$/", "", $this->getFieldsArray($fields));
         return array_shift($volumes);
     }
-    
-        /**
+
+    /**
      * Returns Volume number
      * @return String
      */
@@ -946,32 +982,13 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
-     * return EAN Code
+     * return GTIN Code
      * @return string
      */
-    public function getEAN()
+    public function getGTIN()
     {
-        $ean = $this->getFieldArray("024", ['a']);
-        return array_shift($ean);
-    }
-
-    /**
-     * Returns unique publication details
-     * @return array
-     */
-    public function getPublicationDetails()
-    {
-        $details = parent::getPublicationDetails();
-        return $details;
-    }
-
-   /**
-     * Is this a DLR-Koha record
-     * @return boolean
-     */
-    public function isDlrKoha()
-    {
-        return false;
+        $gtin = $this->getFieldArray("024", ['a']);
+        return array_shift($gtin);
     }
 
     /**
@@ -1019,6 +1036,20 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
+     * Returns url  from 856|u
+     * @return String
+     */
+    public function getPDALink()
+    {
+        $fields = [
+            830 => ['v'],
+            773 => ['g']
+        ];
+        $volumes = preg_replace("/[\/,]$/", "", $this->getFieldsArray($fields));
+        return array_shift($volumes);
+    }
+
+    /**
      * Has this record holdings in field 924
      *
      * @return boolean
@@ -1027,7 +1058,6 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         $holdings = $this->getLocalHoldings();
         return count($holdings) > 0;
-
     }
 
     /**
@@ -1037,7 +1067,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     public function getLocalHoldings()
     {
         $holdings = [];
-        $f924 = $this->getField924(false,true);
+        $f924 = $this->getField924(false, true);
         $isils = $this->mainConfig->getIsilAvailability();
 
         // Building a regex pattern
@@ -1056,17 +1086,36 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $holdings;
     }
 
+
+    /**
+     * Get an array of remarks for the Details-Tab.
+     *
+     * @return array
+     */
+    public function getRemarks()
+    {
+        $remarkCodes = ['511'];
+        $remarks = [];
+        foreach ($remarkCodes as $rc) {
+            $tmp = $this->getFieldArray($rc, ['a'], true, ', ');
+            $remarks = array_merge($remarks, $tmp);
+        }
+        return $remarks;
+    }
+
+
     /**
      *  Scale of a map
      */
-    public function getScale() {
+    public function getScale()
+    {
         $scale = $this->getFieldArray("255", ['a']);
         if (empty($scale)) {
             $scale = $this->getFieldArray("034", ['b']);
         }
         return array_shift($scale);
     }
-    
+
     /**
      * Get ZDB ID if available
      *
@@ -1084,14 +1133,14 @@ class SolrGviMarc extends SolrMarc implements Definition
                 $zdb = $matches[1];
             }
         }
-        
+
         // Pull ZDB ID out of recurring field 016
         foreach ($this->getMarcRecord()->getFields('016') as $field) {
             $isil = $data = '';
             foreach ($field->getSubfields() as $subfield) {
                 if ($subfield->getCode() == 'a') {
                     $data = $subfield ->getData();
-                } elseif($subfield->getCode() == '2') {
+                } elseif ($subfield->getCode() == '2') {
                     $isil = $subfield->getData();
                 }
             }
@@ -1099,7 +1148,7 @@ class SolrGviMarc extends SolrMarc implements Definition
                 $zdb = $data;
             }
         }
-        
+
         return $zdb;
     }
     /**
@@ -1163,7 +1212,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         return false;
     }
 
-  
+
     /**
      * Get Status/Holdings Information from the internally stored MARC Record
      * (support method used by the NoILS driver).
@@ -1195,24 +1244,24 @@ class SolrGviMarc extends SolrMarc implements Definition
                      $ill_status = 'ILL::status_N';
                      break;
                 case 'l':
-                case 'L':                     
+                case 'L':
                      $ill_status = 'ILL::status_L';
-                     break;                 
+                     break;
                 default: $ill_status = 'ILL::status_d';
             }
             $item['availability'] = $ill_status;
             $return[] = $item;
-
         }
         return $return;
     }
 
     /**
      * get 830|w if it exists with (DE-627)-Prefix
-     * 
+     *
      * @return array
      */
-    public function getSeriesIds() {
+    public function getSeriesIds()
+    {
         $fields = [
             830 => ['w'],
         ];
@@ -1221,10 +1270,48 @@ class SolrGviMarc extends SolrMarc implements Definition
         $array = $this->getFieldsArray($fields);
         foreach ($array as $subfields) {
             $ids = explode(' ', $subfields);
-            if (preg_match('/^((?!DE-576|DE-609|DE-600.*-).)*$/', $ids[0] )  ) {
-                    $array_clean[] = $ids[0];
+            if (preg_match('/^((?!DE-576|DE-609|DE-600.*-).)*$/', $ids[0])) {
+                $array_clean[] = $ids[0];
             }
         }
         return $array_clean;
-    }     
+    }
+
+    /**
+     * This method is basically a duplicate of getAllRecordLinks but
+     * much easier designer and works well with German library links
+     *
+     * @return array
+     * @throws File_MARC_Exception
+     */
+    public function getParallelEditions()
+    {
+        $retval = [];
+        foreach ($this->getMarcRecord()->getfields(776) as $field) {
+
+            $tmp = [];
+            if ($field->getIndicator(1) == 0) {
+                $tmp['ppn']     = $field->getSubfield('w') ? $field->getSubfield('w')->getData() : null;
+
+                if ($field->getSubfield('i')) {
+                    $tmp['prefix'] = $field->getSubfield('i')->getData();
+                }
+                if ($field->getSubfield('t')) {
+                    $tmp['label'] = $field->getSubfield('t')->getData();
+                }
+                if ($field->getSubfield('n')) {
+                    $tmp['postfix'] = $field->getSubfield('n')->getData();
+                }
+            }
+            if (isset($tmp['ppn'], $tmp['label'])) {
+                $retval[] = $tmp;
+            }
+        }
+        return array_filter($retval);
+    }
+
+    public function getNetwork() {
+        return 'NoNetwork';
+    }
+
 }

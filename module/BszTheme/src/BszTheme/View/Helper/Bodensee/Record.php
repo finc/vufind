@@ -30,6 +30,7 @@
 namespace BszTheme\View\Helper\Bodensee;
 
 use Zend\Config\Config;
+
 /**
  * Record driver view helper
  *
@@ -41,7 +42,6 @@ use Zend\Config\Config;
  */
 class Record extends \VuFind\View\Helper\Root\Record
 {
-
     protected $localIsils;
 
     /**
@@ -70,7 +70,8 @@ class Record extends \VuFind\View\Helper\Root\Record
             $format = implode(' ', $format);
         }
         return $this->renderTemplate(
-            'format-class.phtml', ['format' => $format]
+            'format-class.phtml',
+            ['format' => $format]
         );
     }
 
@@ -85,7 +86,7 @@ class Record extends \VuFind\View\Helper\Root\Record
     {
         $sources = parent::getLinkDetails($openUrlActive);
         foreach ($sources as $k => $array) {
-            if (isset($array['desc']) && strlen($array['desc']) > 60 ) {
+            if (isset($array['desc']) && strlen($array['desc']) > 60) {
                 $array['desc'] = substr($array['desc'], 0, 60).'...';
                 $sources[$k] = $array;
             }
@@ -142,8 +143,8 @@ class Record extends \VuFind\View\Helper\Root\Record
      * @author <dku@outermedia.de>
      * @return string the rendered sub record
      */
-    public function getSubRecord() {
-
+    public function getSubRecord()
+    {
         return $this->renderTemplate('result-list.phtml');
     }
 
@@ -187,8 +188,8 @@ class Record extends \VuFind\View\Helper\Root\Record
      *
      */
 
-    public function isAtFirstIsil() {
-
+    public function isAtFirstIsil()
+    {
         $holdings = $this->driver->tryMethod('getLocalHoldings');
         $firstIsil = reset($this->localIsils);
 

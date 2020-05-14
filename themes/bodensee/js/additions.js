@@ -1,7 +1,5 @@
 function   performMark() {
     var lookfor = '';
-    var input_simple = '';
-    var input_adv = '';    
     var input_simple = $('#searchForm_lookfor').val();
     var input_adv = $('li.adv_lookfor').text();
     if (typeof input_simple !== 'undefined' && input_simple.trim() !== '') {
@@ -50,12 +48,12 @@ function showmore() {
 }
 
 function bootstrapTooltip() {
-
-      $('[data-toggle="tooltip"]').tooltip({
+      $('body').tooltip({
           delay: {
               'show': 500,
               'hide': 100
-          }
+          },
+          selector: '[data-toggle="tooltip"]'
       });
 }
 
@@ -203,6 +201,14 @@ function avoidEmptySearch() {
 
 }
 
+function inputLength(selector) {
+    var val = '';
+    $(selector).each(function() {
+        val += $(this).val().replace( /[\*\s]/gi,"" );
+    });
+    return val.length;
+}
+
 function checkAdvSearch() {
     var limit = 2;
     var selector = '.adv-term-input.no-empty-search';
@@ -214,14 +220,6 @@ function checkAdvSearch() {
         return true;
     });
 }
-
-function inputLength(selector) {
-    var val = '';
-    $(selector).each(function() {
-        val += $(this).val().replace( /[\*\s]/gi,"" );
-    });
-    return val.length;
- }
 /*
 * Duplicatea button
 */
@@ -245,7 +243,7 @@ function duplicates() {
                window.location.reload(true);
            }
 
-  })
+  });
      });
  }
 
@@ -303,12 +301,12 @@ function datepicker() {
  *
  */
 function typeaheadLibraries() {
-    
+
     if ($.fn.typeahead) {
-        
+
         var baseurl = VuFind.path + '/AJAX/JSON?method=';
         // Workaround for a bug in typeahead.js
-        setTimeout(() => $('.typeahead').focus(), 0);
+        setTimeout(function () {$('.typeahead').focus();}, 100);
 
         $('.typeahead').typeahead({
             items: 'all',
@@ -338,35 +336,34 @@ function typeaheadLibraries() {
         // if the typeahead is hidden and the button is clicked, set the focus
         $('#library-typeahead').on('shown.bs.collapse', function() {
             $('.typeahead').focus();
-        })
+        });
     }
-    
+
 
 }
 
 /**
  * Switches between texts on collapse control buttons
  * Alternative text should be in the data-alttext attribute
- * 
+ *
  */
 function textToggle() {
-    $(document).on('click', '.text-toggle', function(e) {    
+    $(document).on('click', '.text-toggle', function(e) {
         var oldtext = $(this).text();
         var newtext = $(this).attr('data-alttext');
         $(this).text(newtext);
-        $(this).attr('data-alttext', oldtext);      
+        $(this).attr('data-alttext', oldtext);
     });
 }
 
 /**
- * Opens links in a popup window. Name and width/height can be set via data 
+ * Opens links in a popup window. Name and width/height can be set via data
  * attributes
- * 
+ *
  */
 
 function openInPopup() {
     $(document).on('click', '.open-popup', function(e) {
-        console.log('hier');
         e.preventDefault();
         var href = $(this).attr('href');
 
@@ -378,7 +375,7 @@ function openInPopup() {
 
         var height = $(this).attr('data-height');
         height = height == 'undefined' ? height : '580';
-        
+
         var options = [
             'width='+width,
             'height='+height,
@@ -398,17 +395,32 @@ function openInPopup() {
         ];
 
         window.open(href, name, options.join(',')).focus();
-        
+
     });
 }
 
-function tableSorter() {    
+function tableSorter() {
     if ($.fn.tablesorter) {
         $('.tablesorter').tablesorter({
              sortList : [[1,1]]
-        }); 
+        });
     }
 }
+
+
+/**
+ * Copy text to clipboard
+ */
+function copyToClipboard() {
+
+    var clipboard = new ClipboardJS('.copy-clipboard-toggle');
+    clipboard.on('success', function(e) {
+        console.info('copied to clipboard');
+        $('.copy-clipboard-toggle').find('i').removeClass('fa-copy').addClass('fa-check text-success');
+        e.clearSelection();
+    });
+}
+
 
 /*
 * this is executed after site is loaded
@@ -416,12 +428,13 @@ function tableSorter() {
 */
 
 $(document).ready(function() {
+
     avoidEmptySearch();
     externalLinks();
     bootstrapTooltip();
     modalPopup();
     typeaheadLibraries();
-    tableSorter();        
+    tableSorter();
     keyboardShortcuts();
     remoteModal();
     duplicates();
@@ -437,4 +450,5 @@ $(document).ready(function() {
     checkAdvSearch();
     textToggle();
     openInPopup();
+    copyToClipboard();
 });

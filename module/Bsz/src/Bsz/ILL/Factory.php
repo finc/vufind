@@ -28,8 +28,8 @@ use VuFind\Search\SearchRunner;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory {
-
+class Factory
+{
     public static function getIllLogic(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('ILL');
@@ -47,8 +47,8 @@ class Factory {
      * @param SearchRunner
      * @return Bsz\Bsz\Holding
      */
-    public static function getHolding(ContainerInterface $container) {
+    public static function getHolding(ContainerInterface $container)
+    {
         return new Holding($container->get('VuFind\SearchRunner'));
     }
-
 }

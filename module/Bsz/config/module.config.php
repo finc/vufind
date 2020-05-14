@@ -86,7 +86,7 @@ $config = [
         'plugin_managers' => [
             'auth' => [
                 'factories' => [
-                    'Bsz\Auth\Shibboleth' => 'Bsz\Auth\Factory::getShibboleth'
+                   'Bsz\Auth\Shibboleth' => 'Bsz\Auth\Factory::getShibboleth'
                 ],
                 'aliases' => [
                     'VuFind\Auth\Shibboleth' => 'Bsz\Auth\Shibboleth'
@@ -160,8 +160,10 @@ $config = [
             ],
             'recordtab' => [
                 'factories' => [
+                    'Bsz\RecordTab\HoldingsILS' => 'Bsz\RecordTab\Factory::getHoldingsILS',
                     'Bsz\RecordTab\Volumes' => 'Bsz\RecordTab\Factory::getVolumes',
                     'Bsz\RecordTab\Articles' => 'Bsz\RecordTab\Factory::getArticles',
+                    'Bsz\RecordTab\Notes' => 'Bsz\RecordTab\Factory::getNotes',
                     'Bsz\RecordTab\Libraries' => 'Bsz\RecordTab\Factory::getLibraries',
                     'Bsz\RecordTab\HoldingsILS' => 'Bsz\RecordTab\Factory::getHoldingsILS',
                     'Bsz\RecordTab\InterlibraryLoan' => 'Bsz\RecordTab\Factory::getInterLibraryLoan',
@@ -170,6 +172,8 @@ $config = [
                     'VuFind\RecordTab\HoldingsILS' => 'Bsz\RecordTab\HoldingsILS',
                     'Articles' => 'Bsz\RecordTab\Articles',
                     'Volumes' => 'Bsz\RecordTab\Volumes',
+                    'Articles' => 'Bsz\RecordTab\Articles',
+                    'Notes' => 'Bsz\RecordTab\Notes',
                     'Libraries' => 'Bsz\RecordTab\Libraries',
                     'InterlibraryLoan' => 'Bsz\RecordTab\InterlibraryLoan',
                 ]

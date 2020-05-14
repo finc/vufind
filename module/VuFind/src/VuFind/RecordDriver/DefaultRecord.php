@@ -27,8 +27,11 @@
  */
 namespace VuFind\RecordDriver;
 
+use Exception;
+use SimpleXMLElement;
 use VuFind\View\Helper\Root\RecordLink;
 use VuFindCode\ISBN;
+use Zend\Config\Config;
 
 /**
  * Default model for records
@@ -53,13 +56,15 @@ class DefaultRecord extends AbstractBase
     /**
      * Constructor
      *
-     * @param \Zend\Config\Config $mainConfig     VuFind main configuration (omit for
+     * @param Config $mainConfig     VuFind main configuration (omit for
      * built-in defaults)
-     * @param \Zend\Config\Config $recordConfig   Record-specific configuration file
+     * @param Config $recordConfig   Record-specific configuration file
      * (omit to use $mainConfig as $recordConfig)
-     * @param \Zend\Config\Config $searchSettings Search-specific configuration file
+     * @param Config $searchSettings Search-specific configuration file
      */
-    public function __construct($mainConfig = null, $recordConfig = null,
+    public function __construct(
+        $mainConfig = null,
+        $recordConfig = null,
         $searchSettings = null
     ) {
         // Turn on highlighting as needed:
@@ -474,7 +479,9 @@ class DefaultRecord extends AbstractBase
         // Create a map of de-highlighted valeus => highlighted values.
         foreach ($this->getRawAuthorHighlights() as $current) {
             $dehighlighted = str_replace(
-                ['{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'], '', $current
+                ['{{{{START_HILITE}}}}', '{{{{END_HILITE}}}}'],
+                '',
+                $current
             );
             $highlights[$dehighlighted] = $current;
         }
@@ -553,7 +560,7 @@ class DefaultRecord extends AbstractBase
      *
      * @return array
      */
-    public function getISBNs() : array
+    public function getISBNs()
     {
         // If ISBN is in the index, it should automatically be an array... but if
         // it's not set at all, we should normalize the value to an empty array.
@@ -566,7 +573,7 @@ class DefaultRecord extends AbstractBase
      *
      * @return array
      */
-    public function getISSNs() : array
+    public function getISSNs()
     {
         // If ISSN is in the index, it should automatically be an array... but if
         // it's not set at all, we should normalize the value to an empty array.
@@ -1213,7 +1220,7 @@ class DefaultRecord extends AbstractBase
             'author'     => mb_substr($this->getPrimaryAuthor(), 0, 300, 'utf-8'),
             'callnumber' => $this->getCallNumber(),
             'size'       => $size,
-            //'title'      => mb_substr($this->getTitle(), 0, 300, 'utf-8'),
+            'title'      => mb_substr($this->getTitle(), 0, 300, 'utf-8'),
             'recordid'   => $this->getUniqueID(),
             'source'   => $this->getSourceIdentifier(),
         ];
@@ -1356,7 +1363,7 @@ class DefaultRecord extends AbstractBase
         // Unsupported by default:
         return [];
     }
-    
+
     /**
      * Get an associative array (id => title) of collections containing this record.
      *
@@ -1419,7 +1426,7 @@ class DefaultRecord extends AbstractBase
     public function getUniqueID()
     {
         if (!isset($this->fields['id'])) {
-            throw new \Exception('ID not set!');
+            throw new Exception('ID not set!');
         }
         return $this->fields['id'];
     }
@@ -1442,7 +1449,7 @@ class DefaultRecord extends AbstractBase
         // For OAI-PMH Dublin Core, produce the necessary XML:
         if ($format == 'oai_dc') {
             $dc = 'http://purl.org/dc/elements/1.1/';
-            $xml = new \SimpleXMLElement(
+            $xml = new SimpleXMLElement(
                 '<oai_dc:dc '
                 . 'xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" '
                 . 'xmlns:dc="' . $dc . '" '
@@ -1468,7 +1475,9 @@ class DefaultRecord extends AbstractBase
             }
             foreach ($this->getAllSubjectHeadings() as $subj) {
                 $xml->addChild(
-                    'subject', htmlspecialchars(implode(' -- ', $subj)), $dc
+                    'subject',
+                    htmlspecialchars(implode(' -- ', $subj)),
+                    $dc
                 );
             }
             if (null !== $baseUrl && null !== $recordLink) {
@@ -1496,17 +1505,6 @@ class DefaultRecord extends AbstractBase
         return ['APA', 'Chicago', 'MLA'];
     }
 
-    /**
-     * Get an associative array (id => title) of collections containing this record.
-     *
-     * @return array
-     */
-    public function getCollections()
-    {
-        return isset($this->fields['collection'])
-            ? (array)$this->fields['collection'] : [];
-    }    
-    
     /**
      * Get the title of the item that contains this record (i.e. MARC 773s of a
      * journal).
@@ -1601,25 +1599,25 @@ class DefaultRecord extends AbstractBase
         $types = [];
         foreach ($this->getFormats() as $format) {
             switch ($format) {
-            case 'Book':
-            case 'eBook':
-                $types['Book'] = 1;
-                break;
-            case 'Video':
-            case 'VHS':
-                $types['Movie'] = 1;
-                break;
-            case 'Photo':
-                $types['Photograph'] = 1;
-                break;
-            case 'Map':
-                $types['Map'] = 1;
-                break;
-            case 'Audio':
-                $types['MusicAlbum'] = 1;
-                break;
-            default:
-                $types['CreativeWork'] = 1;
+                case 'Book':
+                case 'eBook':
+                    $types['Book'] = 1;
+                    break;
+                case 'Video':
+                case 'VHS':
+                    $types['Movie'] = 1;
+                    break;
+                case 'Photo':
+                    $types['Photograph'] = 1;
+                    break;
+                case 'Map':
+                    $types['Map'] = 1;
+                    break;
+                case 'Audio':
+                    $types['MusicAlbum'] = 1;
+                    break;
+                default:
+                    $types['CreativeWork'] = 1;
             }
         }
         return array_keys($types);

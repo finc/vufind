@@ -36,24 +36,27 @@ class SolrFindexMarc extends SolrMarc implements Definition
      */
     public function getConsortium()
     {
-        // determine network 
+        // determine network
         // GVK = GBV
         // SWB = SWB
         // ÖVK = GBV
 
-        $consortium = DefaultRecord::getCollections();
-        
-        foreach ($consortium as $k => $con) {
-            $mapped = $this->mainConfig->mapNetwork($con);
-            if (!empty($mapped)) {
-                $consortium[$k] = $mapped;
+        $consortium_unique = [];
 
+        $consortium = DefaultRecord::tryMethod('getCollections');
+
+        if ($consortium != Null) {
+            foreach ($consortium as $k => $con) {
+                $mapped = $this->mainConfig->mapNetwork($con);
+                if (!empty($mapped)) {
+                    $consortium[$k] = $mapped;
+                }
             }
+            $consortium_unique = array_unique($consortium);
         }
-        $consortium_unique = array_unique($consortium);
 
         $string = implode(", ",$consortium_unique);
-        return $string;        
+        return $string;
     }
 
     /**
@@ -102,7 +105,7 @@ class SolrFindexMarc extends SolrMarc implements Definition
         );
         return $issn;
     }
-    
+
         /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
@@ -138,7 +141,7 @@ class SolrFindexMarc extends SolrMarc implements Definition
             if (($sf = $f->getSubField('3')) && strlen($sf->getData()) > 2) {
                 $url['desc'] = $sf->getData();
             } elseif (($sf = $f->getSubField('y'))) {
-                $url['desc'] = $sf->getData();                
+                $url['desc'] = $sf->getData();
             } elseif (($sf = $f->getSubField('n'))) {
                 $url['desc'] = $sf->getData();
             } elseif ($ind1 == 4 && ($ind2 == 1 || $ind2 == 0)) {

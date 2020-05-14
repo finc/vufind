@@ -126,15 +126,15 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function getMultipartLevel()
     {
         $leader = $this->getMarcRecord()->getLeader();
-        $multipartLevel = strtoupper($leader{19});
+        $multipartLevel = $leader{19};
 
         switch ($multipartLevel) {
-            case 'A':
+            case 'a':
                 return static::MULTIPART_COLLECTION;
             //difference between B and C is if they have independend titles
-            case 'B':
+            case 'b':
                 return static::NO_MULTIPART;
-            case 'C':
+            case 'c':
                 return static::MULTIPART_PART;
             default:
                 return static::NO_MULTIPART;
@@ -148,22 +148,22 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function getBibliographicLevel()
     {
         $leader = $this->getMarcRecord()->getLeader();
-        $bibliographicLevel = strtoupper($leader{7});
+        $bibliographicLevel = $leader{7};
         switch ($bibliographicLevel) {
-            case 'A': // Monographic component part
+            case 'a': // Monographic component part
                 return static::BIBLIO_MONO_COMPONENT;
             //difference between B and C is if they have independend titles
-            case 'B': // Serial component part
+            case 'b': // Serial component part
                 return static::BIBLIO_SERIAL_COMPONENT;
-            case 'C': // Collection
+            case 'c': // Collection
                 return static::BIBLIO_COLLECTION;
-            case 'D': //Subunit
+            case 'd': //Subunit
                 return static::BIBLIO_SUBUNIT;
-            case 'I': //Integration resource
+            case 'i': //Integration resource
                 return static::BIBLIO_INTEGRATED;
-            case 'M': //Monograph/Item
+            case 'r': //Monograph/Item
                 return static::BIBLIO_MONOGRAPH;
-            case 'S': //Serial
+            case 's': //Serial
                 return static::BIBLIO_SERIAL;
         }
     }
@@ -239,7 +239,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             //field 007 - physical description
             $f007 = $this->getMarcRecord()->getFields("007", false);
             foreach ($f007 as $field) {
-                $data = strtoupper($field->getData());
+                $data = $field->getData();
                 if (strlen($data) > 0) {
                     $f007_0 = $data{0};
                 }
@@ -249,7 +249,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             }
             $f008 = $this->getMarcRecord()->getFields("008", false);
             foreach ($f008 as $field) {
-                $data = strtoupper($field->getData());
+                $data = $field->getData();
                 if (strlen($data) > 21) {
                     $f008_21 = $data{21};
                 }
@@ -278,10 +278,10 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function isArticle()
     {
         $leader = $this->getMarcRecord()->getLeader();
-        $leader_7 = strtoupper($leader{7});
+        $leader_7 = $leader{7};
         // A = Aufsätze aus Monographien
         // B = Aufsätze aus Zeitschriften (wird aber wohl nicht genutzt))
-        if ($leader_7 === 'A' || $leader_7 === 'B') {
+        if ($leader_7 === 'a' || $leader_7 === 'b') {
             return true;
         }
         return false;
@@ -295,8 +295,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function isSerial()
     {
         $leader = $this->getMarcRecord()->getLeader();
-        $leader_7 = strtoupper($leader{7});
-        if ($leader_7 === 'S') {
+        $leader_7 = $leader{7};
+        if ($leader_7 === 's') {
             return true;
         }
         return false;
@@ -313,12 +313,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $f008 = $this->getMarcRecord()->getFields("008", false);
 
         foreach ($f008 as $field) {
-            $data = strtoupper($field->getData());
+            $data = $field->getData();
             if (strlen($data) >= 21) {
                 $f008_21 = $data{21};
             }
         }
-        if ($this->isSerial() && $f008_21 == 'M') {
+        if ($this->isSerial() && $f008_21 == 'm') {
             return true;
         }
         return false;
@@ -335,7 +335,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $leader_7 = '';
         $f007 = $this->get007();
         $leader = $this->getMarcRecord()->getLeader();
-        $leader_7 = strtoupper($leader{7});
+        $leader_7 = $leader{7};
         if ($leader_7 == 'M') {
             if (preg_match('/^cr/i', $f007)) {
                 return true;
@@ -368,8 +368,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function isBook()
     {
         $leader = $this->getMarcRecord()->getLeader();
-        $leader_7 = strtoupper($leader{7});
-
+        $leader_7 = $leader{7};
         $f007 = $this->get007();
 
         if ($leader_7 == 'M' && preg_match('/^t/i', $f007)) {
@@ -390,12 +389,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $f008 = $this->getMarcRecord()->getFields("008", false);
 
         foreach ($f008 as $field) {
-            $data = strtoupper($field->getData());
+            $data = $field->getData();
             if (strlen($data) >= 21) {
                 $f008_21 = $data{21};
             }
         }
-        if ($this->isSerial() && $f008_21 == 'P') {
+        if ($this->isSerial() && $f008_21 == 'p') {
             return true;
         }
         return false;
@@ -413,12 +412,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $f008 = $this->getMarcRecord()->getFields("008", false);
 
         foreach ($f008 as $field) {
-            $data = strtoupper($field->getData());
+            $data = $field->getData();
             if (strlen($data) >= 21) {
                 $f008_21 = $data{21};
             }
         }
-        if ($this->isSerial() && $f008_21 == 'N') {
+        if ($this->isSerial() && $f008_21 == 'n') {
             return true;
         }
         return false;
@@ -437,13 +436,14 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         foreach ($f856 as $field) {
             $z = $field->getSubfield('z');
             if (is_string($z) && $field->getIndicator(2) == 0
-                && preg_match('/^kostenlos|kostenfrei$/i', $subject)
+                && preg_match('/^kostenlos|kostenfrei$/i', $z)
             ) {
                 return true;
             }
         }
         return false;
     }
+
     /**
      * Get Content of 924 as array: isil => array of subfields
      *

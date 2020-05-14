@@ -39,7 +39,7 @@ trait HelperTrait {
      */
     public function getBreadcrumb() : string
     {
-        return $this->cleanString($this->getShortTitle());
+        return $this->cleanString($this->getTitle());
     }
     
 }

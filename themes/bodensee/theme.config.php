@@ -5,6 +5,7 @@ $config = [
     'js' => [
         'additions.js',
         'vendor/jquery.mark.min.js',
+        'vendor/clipboard.min.js'
     ],     
     'helpers' => [
         'factories' => [

@@ -21,6 +21,7 @@
 
 namespace Bsz\RecordDriver;
 
+use VuFind\RecordDriver\Response\PublicationDetails;
 
 trait OriginalLanguageTrait
 {
@@ -55,6 +56,12 @@ trait OriginalLanguageTrait
         return $this->getOriginalLanguage(245, 'b');
     }
 
+    public function getTitleSectionOl(): string
+    {
+        $array = $this->getOriginalLanguageArray(['245' => ['n', 'p']]);
+        return !empty($array) ? array_shift($array) : '';
+    }
+
     /**
      * GRetrieve the original language string for a given field anf subfield
      *
@@ -62,7 +69,7 @@ trait OriginalLanguageTrait
      * @param $targetSubfield
      * @return string
      */
-    public function getOriginalLanguage($targetField, $targetSubfield) : string
+    public function getOriginalLanguage($targetField, $targetSubfield): string
     {
 
         $return = '';
@@ -72,7 +79,7 @@ trait OriginalLanguageTrait
             $subfield6 = $field->getSubfield('6')->getData();
             $sf = $field->getSubfield($targetSubfield);
             if ($sf !== false) {
-                $data = $sf->getData();
+                $data = trim($sf->getData());
                 if (substr_count($subfield6, $targetField) > 0 && isset($data)) {
                     $return = $data;
                 }
@@ -87,17 +94,23 @@ trait OriginalLanguageTrait
      * @param string $separator
      * @return array
      */
-    public function getOriginalLanguageMulti(array $targets, $separator = ' '): array
+    public function getOriginalLanguageArray(array $targets, $separator = ' '): array
     {
         $return = [];
         foreach ($targets as $tag => $subfields) {
             $returnSub = [];
-            foreach ($subfields as $subfield) {
-                $returnSub[] = $this->getOriginalLanguage($tag, $subfield);
+            if (is_array($subfields)) {
+                foreach ($subfields as $subfield) {
+                    $returnSub[] = $this->getOriginalLanguage($tag, $subfield);
+                }
+            } else {
+                $returnSub[] = $this->getOriginalLanguage($tag, $subfields);
             }
-            $return[] = implode($separator, $returnSub);
+
+            $tmp = implode($separator, $returnSub);
+            $return[] = trim($tmp);
         }
-        return $return;
+        return array_values(array_filter($return));
     }
 
     /**
@@ -109,13 +122,89 @@ trait OriginalLanguageTrait
             260 => 'a',
             264 => 'a',
         ];
-        return $this->getOriginalLanguageMulti($fields);
+        return $this->getOriginalLanguageArray($fields);
     }
 
+    /**
+     * Get the publishers of the record.
+     *
+     * @return array
+     */
+    public function getPublishersOl(): array
+    {
+        $fields = [
+            260 => 'b',
+            264 => 'b',
+        ];
+        return $this->getOriginalLanguageArray($fields);
+    }
+
+    /**
+     * Get an array of publication detail lines combining information from
+     * getPublicationDates(), getPublishers() and getPlacesOfPublication().
+     *
+     * @return array
+     */
+    public function getPublicationDetailsOl(): array
+    {
+        $places = $this->getPlacesOfPublicationOl();
+        $names = $this->getPublishersOl();
+        $dates = $this->getHumanReadablePublicationDates();
+
+        // Do not return year only
+        if (empty($names) && empty($places)) {
+            return [];
+        }
 
 
+        $i = 0;
+        $retval = [];
 
+        while (isset($places[$i]) || isset($names[$i]) || isset($dates[$i])) {
+            // Build objects to represent each set of data; these will
+            // transform seamlessly into strings in the view layer.
+            $retval[] = new PublicationDetails(
+                $places[$i] ?? '',
+                $names[$i] ?? '',
+                $dates[$i] ?? ''
+            );
+            $i++;
+        }
+        return $retval;
+    }
 
+    /**
+     * Get container title in original language
+     *
+     * @return string
+     */
+    public function getSeriesOl(): array
+    {
+        $fields = [
+            '440' => ['a', 'p'],
+            '800' => ['a', 'b', 'c', 'd', 'f', 'p', 'q', 't'],
+            '830' => ['a', 'p'],
+            '490' => 'a'
+        ];
+        return $this->getOriginalLanguageArray($fields);
+
+    }
+
+    /**
+     * @return string
+     */
+    public function getEditionOl()
+    {
+        return $this->getOriginalLanguage(250, 'a');
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhysicalDescriptionsOl()
+    {
+        return $this->getOriginalLanguageArray(['300' => ['a', 'b', 'c', 'e', 'f', 'g']]);
+    }
 
 
 }

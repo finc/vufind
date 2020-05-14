@@ -19,15 +19,20 @@
  */
 
 namespace Bsz\ILL;
+
+use Bsz\RecordDriver\SolrGviMarc;
 use VuFind\Search\SearchRunner as Runner;
+use VuFind\Search\Solr\Results;
+use Zend\Http\Response;
 
 /**
  * class for the BSZ holdings service
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Holding {
-    
+class Holding
+{
+
      /**
      *
      * @var array
@@ -63,29 +68,29 @@ class Holding {
      * @var Runner
      */
     protected $runner;
-    
+
     /**
      *
      * @var bool
      */
     protected $debug;
-    
+
     /**
-     * 
+     *
      * @param Bsz\Config\Client $client
      */
-    public function __construct(Runner $runner) 
+    public function __construct(Runner $runner)
     {
         $this->runner = $runner;
     }
     /**
-     * Set ISBNs 
-     * 
+     * Set ISBNs
+     *
      * @param string $isxns
-     * 
+     *
      * @return \Bsz\Holding
      */
-    public function setIsxns($isxns) 
+    public function setIsxns($isxns)
     {
         if (!is_array($isxns)) {
             $isxns = (array)$isxns;
@@ -100,56 +105,56 @@ class Holding {
         $this->isxns = array_unique($this->isxns);
         return $this;
     }
-    
+
     /**
      * Set title
-     * 
+     *
      * @param string $title
-     * 
+     *
      * @return Bsz\Holding
      */
     public function setTitle($title)
     {
         $this->title = urldecode($title);
-        
+
         return $this;
     }
-    
+
     /**
      * Set primary author
-     * 
+     *
      * @param string $authos
-     * 
+     *
      * @return Bsz\Holding
      */
-    public function setAuthor($authos) 
+    public function setAuthor($authos)
     {
         $this->author = urldecode($authos);
-        
+
         return $this;
     }
-/**
- * Set Network
- * 
- * @param string $network SWB|GBV|KOBV|...
- * 
- * @return \Bsz\Holding
- */
-    public function setNetwork($network) 
+    /**
+     * Set Network
+     *
+     * @param string $network SWB|GBV|KOBV|...
+     *
+     * @return \Bsz\Holding
+     */
+    public function setNetwork($network)
     {
         $this->network = strtoupper($network);
 
         return $this;
     }
-    
+
     /**
      * Set Year
-     * 
+     *
      * @param type $year
-     * 
+     *
      * @return Bsz\Holding
      */
-    public function setYear($year) 
+    public function setYear($year)
     {
         if ((int)$year > 1800) {
             $this->year = (int)$year;
@@ -158,9 +163,9 @@ class Holding {
     }
     /**
      * Set ZDB ID for good journal search results
-     * 
+     *
      * @param string $zdb
-     * 
+     *
      * @return $this
      */
     public function setZdbId($zdb)
@@ -170,21 +175,21 @@ class Holding {
         }
         return $this;
     }
-    
-    
+
+
     /**
      * Query solr
-     * 
+     *
      * @return array
      */
-    public function query() 
+    public function query()
     {
         $orString = '';
         $and = [];
         $params = [];
         if (isset($this->network)) {
             $params['filter'] = 'consortium:' . $this->network;
-        }        
+        }
         if (!empty($this->title)) {
             $and[] = 'title:"'.$this->title.'"';
         }
@@ -197,45 +202,44 @@ class Holding {
         if (!empty($this->zdbId)) {
             $and[] = 'zdb_id:'.$this->zdbId;
         }
-                
+
         if (count($this->isxns) > 0) {
             $or = [];
-            foreach($this->isxns as $isxn) {
-                if(strlen($isxn) <= 9) {
+            foreach ($this->isxns as $isxn) {
+                if (strlen($isxn) <= 9) {
                     $or[] = 'issn:' . $isxn;
                 } elseif (strlen($isxn) > 9) {
                     $or[] = 'isbn:' . $isxn;
                 }
             }
-            $orString = implode(' OR ',$or);
+            $orString = implode(' OR ', $or);
             // add braces to orString if there are ands set
             $and[] = count($and) > 0 ? '(' . $orString . ')' : $orString;
         }
-        $params['lookfor'] = implode(' AND ', $and);        
+        $params['lookfor'] = implode(' AND ', $and);
 
         $results = $this->runner->run($params, 'Solr');
         $results instanceof \Bsz\Search\Solr\Results;
-        
+
         return $this->parse($results);
     }
     /**
      * process the response
-     * 
-     * @param \Zend\Http\Response $response
+     *
+     * @param Response $response
      */
-    public function parse(\VuFind\Search\Solr\Results $results) 
+    public function parse(Results $results)
     {
         $return = [];
         if ($results->getResultTotal() > 0) {
-            
             foreach ($results->getResults() as $record) {
                 $libraries = [];
-                $record instanceof \Bsz\RecordDriver\SolrGviMarc;
+                $record instanceof SolrGviMarc;
                 $ppn = $record->getPPN();
                 $f924 = $record->getField924(true, true);
-                
+
                 // iterate through all found 924 entries
-                // ISILs are unified here - information is being dropped! 
+                // ISILs are unified here - information is being dropped!
                 foreach ($f924 as $isil => $field) {
                     $libraries[] = [
                         'isil' => $isil,
@@ -252,45 +256,41 @@ class Holding {
             }
             $return['numppn'] = count($return['holdings']);
             $return['numfound'] = count($libraries);
-
-        }
-        else {
+        } else {
             $return['numfound'] = 0;
         }
         return $return;
-
     }
     /**
-     * Checks if all needed params are set. 
-     * 
+     * Checks if all needed params are set.
+     *
      * @return boolean
      */
-    public function checkQuery() 
-    { 
+    public function checkQuery()
+    {
         if (isset($this->network)) {
             if (count($this->isxns) > 0 || isset($this->zdbId)) {
                 return true;
-            } else if (!empty($this->title) && !empty($this->author)) {
+            } elseif (!empty($this->title) && !empty($this->author)) {
                 return true;
-            }            
+            }
         }
         return false;
-        
     }
     /**
      * Check whether parallel editions exist
-     * 
+     *
      * @param array $ppns
      * @param array $isil
      * s
      * @return array
      */
-    public function getParallelEditions($ppns, $isils) 
+    public function getParallelEditions($ppns, $isils)
     {
         $params = [];
 
         foreach ($ppns as $k => $ppn) {
-            // escape braces 
+            // escape braces
             $ppns[$k] = 'id:'.str_replace(['(', ')'], ['\(', '\)'], $ppn);
         }
         $orLookfor = implode(' OR ', $ppns);
@@ -300,8 +300,6 @@ class Holding {
         $params['wt'] = 'json';
 
         $results = $this->runner->run($params, 'Solr');
-        return $results;       
-
-    } 
-  
+        return $results;
+    }
 }
