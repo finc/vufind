@@ -1,6 +1,6 @@
-<? 
-    $this->headScript(\Zend\View\Helper\HeadScript::FILE, 'vendor/bootstrap-typeahead.min.js'); 
-  
+<?
+    $this->headScript(\Zend\View\Helper\HeadScript::FILE, 'vendor/bootstrap-typeahead.min.js');
+
 ?>
 <? if ($this->client()->hasIsilSession()):?>
 <p><?=$this->transEsc('ILL::update_library')?>: <a class="textlink" href="#" data-toggle="collapse" data-target="#library-typeahead"><?=$this->transEsc('ILL::button_change_library')?> <i class="fa fa-caret-down"></i></a></p>
@@ -8,8 +8,8 @@
 <div class="well collapse<? if (!$this->client()->hasIsilSession()):?> in<?endif;?>" id="library-typeahead" aria-expanded="<?php if($this->client()->hasIsilSession()):?>false<?php else: ?>true<?php endif; ?>">
     <p><?=$this->translate('ILL::select_library')?></p>
     <form class="form-horizontal" method="POST">
-            <input type="hidden" name="referer" id="typeahead-referer" value="<?=$this->referer ? $this->referer->getUri() : $this->url('home') ?>" />
-            <input type="text" class="form-control typeahead" data-provide="typeahead" autocomplete="off" placeholder="<?=$this->transEsc('ILL::placeholder_typeahead')?>" />     
+            <input type="hidden" name="referer" id="typeahead-referer" value="<?=strpos($this->referer, '.boss') !== false ? $this->referer->getUri() : $this->url('home') ?>" />
+            <input type="text" class="form-control typeahead" data-provide="typeahead" autocomplete="off" placeholder="<?=$this->transEsc('ILL::placeholder_typeahead')?>" />
 
-    </form>      
+    </form>
 </div>
