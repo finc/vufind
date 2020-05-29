@@ -1,12 +1,11 @@
 // intense background gradient
 body:not(.frame) {
-    background-image: linear-gradient(to bottom, #eaeaea 15%, #ddd 90%);
-    background-color: #C0C0C0;
+    background-color: #CACACA;
 }
 
 .navbar-default {
-    background-color: #C0C0C0;
-    border-color: #C0C0C0;
+    background-color: #cacaca;
+    border-color: #cacaca;
 }
 
 .label-default {
@@ -24,4 +23,27 @@ body:not(.frame) {
 
 .white-bg {
     background-color: #fff;
+}
+.primary-bg {
+    background-color: @brand-primary;
+}
+.navbar {
+    background-image: none;
+    .box-shadow(none);
+    border-bottom: 0;
+}
+header {
+    .navbar .container{
+        @media (min-width: @screen-sm-min) {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .navbar-brand {
+            padding: 0;
+            width: 250px;
+            margin-left: -4px;
+            margin-top: 12px
+        }
+    }
 }
