@@ -21,6 +21,13 @@ body:not(.frame) {
     color: white
 }
 
+html body:not(.frame) {
+    padding-top: 123px;
+}
+
+.graybg {
+    background-color: @brand-primary;
+}
 .white-bg {
     background-color: #fff;
 }
@@ -32,6 +39,7 @@ body:not(.frame) {
     .box-shadow(none);
     border-bottom: 0;
 }
+
 header {
     .navbar .container{
         @media (min-width: @screen-sm-min) {
