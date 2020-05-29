@@ -12,11 +12,12 @@ DEPEND=$(patsubst less/%.less,make/%.d,$(SOURCES))
 # for debugging. usage: make print-VARIABLE
 print-%:
 	@echo '$*=$($*)'
-clean:
+clean: 
 	rm -f make/*.d
 	rm -f css/*.css*
 	make all
-css/%.css: less/%.less
+css/%.css: less/%.less 
+	lessc -s -M '$<' '$@' > 'make/$*.d'
 	lessc --source-map --clean-css="--s0 --advanced" -s $< $@
 -include $(DEPEND)
 all: $(TARGETS)
