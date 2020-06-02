@@ -13,7 +13,7 @@ mark {
     margin-bottom: 2px;
 }
 
-.nav-tabs, .navbar-nav {
+.nav-tabs{
     li:not(.active) > a {
         background-color: #f1f2f1;
         color: @black !important;
@@ -30,6 +30,20 @@ mark {
 
 }
 
+.navbar-right {
+    li > a {
+        background-color: @green;
+        color: white !important;
+    }
+    li > a:hover {
+        background-color: darken(@green, 10%) !important;
+    }
+    .navbar-brand {
+        padding: 0;
+        margin-left: 0 !important;
+    }
+}
+
 
 .btn-primary {
   .button-variant(#000; @btn-primary-bg; @btn-primary-border);
@@ -41,7 +55,7 @@ mark {
 }
 
 .navbar-left {
-    margin-left: 0.5em;
+    margin-left: 0;
 }
 
 .navbar-form .input-group {
@@ -108,4 +122,20 @@ h1, h2 {
     i {
         font-size: 24px;
     }
+}
+
+header .brand-padding {
+    background-color: @green;
+    img {
+        width: 40px;
+        height: auto;
+    }
+}
+header .brand-padding:hover {
+    background-color: darken(@green, 10%);
+
+}
+
+.logo-container {
+    margin-left: 0 !important;
 }
