@@ -14,7 +14,7 @@
 @gray-light:             lighten(@gray-base, 60%);   // #999
 @gray-lighter:           lighten(@gray-base, 93.5%); // #eee
 
-@brand-primary:         #0a5075;
+@brand-primary:         #c0c0c0;
 @brand-success:         #73A839;
 @brand-info:            #5087d8;
 @brand-warning:         #DD5600;
@@ -42,7 +42,7 @@
 //
 //## Font, line-height, and color for body text, headings, and more.
 
-@font-family-sans-serif:  Lato, Helvetica, Arial, sans-serif;
+@font-family-sans-serif:  "Ubuntu", Helvetica, Arial, sans-serif;
 @font-family-serif:       Georgia, "Times New Roman", Times, serif;
 //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
 @font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -357,7 +357,7 @@
 //##
 
 // Basics of a navbar
-@navbar-height:                    56px;
+@navbar-height:                    50px;
 @navbar-margin-bottom:             @line-height-computed;
 @navbar-border-radius:             @border-radius-base;
 @navbar-padding-horizontal:        10px;;
@@ -391,7 +391,7 @@
 // Inverted navbar
 // Reset inverted navbar basics
 @navbar-inverse-color:                      #fff;
-@navbar-inverse-bg:                         @brand-primary;
+@navbar-inverse-bg:                         @brand-info;
 @navbar-inverse-border:                     darken(@navbar-inverse-bg, 5%);
 
 // Inverted navbar links
@@ -470,7 +470,7 @@
 
 @pager-bg:                             @pagination-bg;
 @pager-border:                         @pagination-border;
-@pager-border-radius:                  @nav-pills-border-radius;
+@pager-border-radius:                  15px;
 
 @pager-hover-bg:                       @pagination-hover-bg;
 
@@ -792,7 +792,7 @@
 //** Breadcrumb background color
 @breadcrumb-bg:                 #f5f5f5;
 //** Breadcrumb text color
-@breadcrumb-color:              @text-color;
+@breadcrumb-color:              #ccc;
 //** Text color of current page in the breadcrumb
 @breadcrumb-active-color:       @gray-light;
 //** Textual separator for between breadcrumb elements
