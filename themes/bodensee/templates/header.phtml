@@ -14,7 +14,7 @@
     <div class="collapse navbar-collapse" id="header-collapse">
         <? if ($this->client()->is('show_small_logo') && ($this->templateDir.'/'.$this->templateName != 'search/home' )): ?>
             <div class="nav navbar-nav navbar-right visible-lg logo-container">
-                <a class="navbar-brand external hasicon" href="">
+                <a class="navbar-brand external hasicon" href="<?=$this->client()->get('Site')->get('website')?>">
                     <div class="brand-padding">
                         <img src="<?=$this->imageLink($this->clientAsset()->getSmallLogo()) ?>"/>
                     </div>
