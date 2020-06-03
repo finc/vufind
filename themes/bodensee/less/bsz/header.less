@@ -157,3 +157,22 @@ header .nav-tabs {
 .dropdown-header {
   font-size: @font-size-large !important;
 }
+.navbar-brand {
+    background-color: @brand-primary;
+    padding: 5px 5px;
+    height: 50px;
+    width: 50px;
+    img {
+        height: auto;
+        width: 100%;
+    }
+}
+.navbar-brand:hover {
+    background-color: darken(@brand-primary, 10%) !important;
+}
+.navbar-header {
+    &:before {
+        content: '' !important;
+        display: none !important;
+    }
+}

@@ -1,6 +1,12 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
+            <? if (!isset($frame)): ?>
+                <button type="button" class="navbar-toggle btn btn-primary" data-toggle="collapse" data-target="#header-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                </button>
+            <? endif; ?>
             <a class="navbar-brand external hasicon" href="<?=$this->client()->get('Site')->get('website')?>">
                     <img src="<?=$this->imageLink($this->clientAsset()->getSmallLogo()) ?>"/>
             </a>
@@ -9,12 +15,6 @@
         <? $account = $this->auth()->getManager(); ?>
         <? if ($this->layout()->searchbox !== false && !$this->client()->is('disable_searchbar')): ?>
             <div class="navbar-left">
-                <? if (!isset($frame)): ?>
-                    <button type="button" class="navbar-toggle btn btn-primary" data-toggle="collapse" data-target="#header-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <i class="fa fa-bars"></i>
-                    </button>
-                <? endif; ?>
                 <?=$this->layout()->searchbox ?>
             </div>
         <? endif; ?>
