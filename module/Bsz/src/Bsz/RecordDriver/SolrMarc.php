@@ -336,7 +336,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $f007 = $this->get007();
         $leader = $this->getMarcRecord()->getLeader();
         $leader_7 = $leader{7};
-        if ($leader_7 == 'M') {
+        if ($leader_7 == 'm') {
             if (preg_match('/^cr/i', $f007)) {
                 return true;
             }
