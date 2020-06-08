@@ -13,7 +13,7 @@
 <div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
   <div class="col-xs-12 col-sm-3 pull-right">
     <? if ($thumb): ?>
-        <img src="<?=$this->escapeHtmlAttr($thumb)?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
+        <img src="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $thumb))?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
     <? else: ?>
         <span class="recordcover pt-icon pt-<?=$this->driver->getPubTypeId()?>"></span>
     <? endif; ?>
