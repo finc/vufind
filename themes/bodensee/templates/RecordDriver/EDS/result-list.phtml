@@ -112,8 +112,8 @@
                    $name = isset($customLink['Text']) ? $customLink['Text'] : '';
                 ?>
                 <span>
-                    <a href="<?=$this->escapeHtmlAttr(str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $url))?>" title="<?=$mot?>" class="external custom-link hasicon ">
-                        <?php if ($icon): ?><img src="<?=str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $icon)?>" /><?php endif; ?><strong><?=$name?></strong>
+                    <a href="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $url))?>" title="<?=$mot?>" class="external custom-link hasicon ">
+                        <?php if ($icon): ?><img src="<?=str_replace('http://', 'https://', $icon)?>" /><?php endif; ?><strong><?=$name?></strong>
                     </a>
                 </span>
                 <?php if ($this->client()->is('only_first_customlink')): ?>

@@ -138,8 +138,8 @@
         ?>
         <tr>
           <td>
-            <a href="<?=$this->escapeHtmlAttr(str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $url))?>" target="_blank" title="<?=$mot?>" class="custom-link external hasicon">
-              <? if ($icon): ?><img src="<?=str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $icon)?>" /> <? endif; ?><?=$name?>
+            <a href="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $url))?>" target="_blank" title="<?=$mot?>" class="custom-link external hasicon">
+              <? if ($icon): ?><img src="<?=str_replace('http://', 'https://', $icon)?>" /> <? endif; ?><?=$name?>
             </a>
           </td>
         </tr>
