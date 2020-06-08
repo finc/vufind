@@ -174,6 +174,8 @@ class FormatMapper
                 $return = 'vhs';
             } elseif (in_array('newspaper', $formats)) {
                 $return = 'newspaper';
+            }  elseif (in_array('mapmaterial', $formats)) {
+                $return = 'map';
             }
             // fallback: besser neutral als article
             else {
