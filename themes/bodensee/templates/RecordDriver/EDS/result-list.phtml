@@ -97,7 +97,7 @@
       <? endif; ?>
 
       <? $pLink = $this->driver->getPLink(); if($pLink): ?>
-         <a href="<?=$pLink?>" class="external fulltext hasicon">
+         <a href="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $pLink))?>" class="external fulltext hasicon">
             <i class="fa fa-file-pdf-o"></i><?=$this->transEsc('PDF Full Text');?>
          </a>
       <? endif; ?>
