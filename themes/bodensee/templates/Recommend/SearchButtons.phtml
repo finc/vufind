@@ -11,7 +11,7 @@
         <? endif; ?>
         <div class="searchbutton col-12 col-md-<?=$colNumber?> col-xs-<?=$colNumber?>" style="padding-left:2px;padding-right:2px;">
                 <a href="<?=$this->escapeHtmlAttr($url)?>" title="<?=$this->transEsc('Search')?> in <?=$this->escapeHtmlAttr($sourceTitle)?>" target="_blank">
-                    <img class="img-responsive img-rounded" src="<?=$this->imageLink('/searchbuttons/'.$imageName )?>" alt="<?=$this->transEsc('SearchButtons::'.$sourceTitle)?>"  title="<?=$this->transEsc('SearchButtons::'.$sourceTitle)?>"/>
+                    <img class="img-responsive img-rounded" src="<?=$this->imageLink('/searchbuttons/'.$imageName )?>" alt="<?=$this->transEsc('SearchButtons::'.$sourceTitle)?>"  title="<?=$this->transEsc('SearchButtons::'.$sourceTitle)?>" data-toggle="tooltip"/>
                 </a>
         </div>
 <? endif; ?>
