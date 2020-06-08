@@ -2,7 +2,7 @@
   $this->headLink()->appendStylesheet('EDS.css');
   $accessLevel = $this->driver->getAccessLevel();
   $restrictedView = empty($accessLevel) ? false : true;
-  $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'medium', $this->recordLink()->getUrl($this->driver));  
+  $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'medium', $this->recordLink()->getUrl($this->driver));
 ?>
 <?php
       $thumbnail = false;
@@ -49,21 +49,21 @@
         elseif ($restrictedView): ?>
           <div class="resultItemLine1">
           <p>
-              <?=$this->transEsc('This result is not displayed to guests')?>              
+              <?=$this->transEsc('This result is not displayed to guests')?>
           </p>
           </div>
         <?php endif; ?>
-     
-        
+
+
       <? if (!empty($this->driver->getDoi()) && !$this->client()->is('doi_in_customlink') && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable()): ?>
       <div class="resulItemLine1">
         <span><a class="external" href="https://doi.org/<?= $this->driver->getDoi(); ?>" target="_blank"><?=$this->transEsc('getFullTxt');?></a></span>
       </div>
-      <? else: ?>          
-        <? $customFTLinks = $this->driver->getFTCustomLinks(); 
+      <? else: ?>
+        <? $customFTLinks = $this->driver->getFTCustomLinks();
         if ( !empty($customFTLinks)  && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable() ): ?>
             <div class="resulItemLine1">
-            
+
                 <? foreach ($customFTLinks as $customLink): ?>
                     <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
                         $mot = isset($customLink['MouseOverText'])? $customLink['MouseOverText'] : '';
@@ -81,8 +81,8 @@
             </div>
         <? endif; ?>
       <? endif; ?>
-      
-      
+
+
       <? if ($this->driver->hasHTMLFullTextAvailable()): ?>
       <strong><a href="<?= $this->recordLink()->getUrl($this->driver)?>#html" class="fulltext _record_link hasicon text-danger">
             <i class="fa fa-file-text-o"></i><?=$this->transEsc('HTML Full Text')?>
@@ -95,7 +95,12 @@
             <i class="fa fa-file-pdf-o"></i><?=$this->transEsc('PDF Full Text')?>
           </a></strong>
       <? endif; ?>
-      
+
+      <? $pLink = $this->driver->getPLink(); if($pLink): ?>
+         <a href="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $pLink))?>" class="external fulltext hasicon">
+            <i class="fa fa-file-pdf-o"></i><?=$this->transEsc('PDF Full Text');?>
+         </a>
+      <? endif; ?>
 
       <? $customLinks = $this->driver->getCustomLinks(); ?>
       <? if ( !empty($customLinks) && $this->client()->is('show_other_customlinks') && empty($customFTLinks) && empty($this->driver->getDoi()) && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable() ): ?>
@@ -115,10 +120,10 @@
                     <?php break; ?>
                 <?php endif; ?>
             <? endforeach; ?>
-        </div>      
-      <? endif; ?>   
+        </div>
+      <? endif; ?>
     </div>
-          
+
     <div class="result-links hidden-print">
         <ul class="nav nav-pills nav-stacked">
       <? if ($this->cart()->isActiveInSearch() && $this->params->getOptions()->supportsCart() && $this->cart()->isActive()): ?>
@@ -131,17 +136,17 @@
             <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="btn save-record" data-lightbox id="<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('Add to favorites')?>">
                 <i class="fa fa-fw fa-star" aria-hidden="true"></i>
                 <?=$this->transEsc('Add to favorites')?>
-            </a>            
+            </a>
         </li>
 
         <? /* Saved lists */ ?>
         <li>
             <div class="savedLists hidden">
-                <strong><?=$this->transEsc("Saved in")?>:</strong>                           
+                <strong><?=$this->transEsc("Saved in")?>:</strong>
             </div>
         </li>
       <? endif; ?>
-        
+
       <? /* Hierarchy tree link */ ?>
       <? $trees = $this->driver->tryMethod('getHierarchyTrees'); if (!empty($trees)): ?>
         <? foreach ($trees as $hierarchyID => $hierarchyTitle): ?>
@@ -154,7 +159,7 @@
           </div>
         <? endforeach; ?>
       <? endif; ?>
-        </ul>        
+        </ul>
     </div>
   </div>
   <?php if ($thumbnail && $thumbnailAlignment == 'right'): ?>
