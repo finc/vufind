@@ -1,5 +1,6 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
+        <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
         <div class="navbar-header">
             <? if (!isset($frame)): ?>
                 <button type="button" class="navbar-toggle btn btn-primary" data-toggle="collapse" data-target="#header-collapse">
@@ -7,11 +8,13 @@
                     <i class="fa fa-bars"></i>
                 </button>
             <? endif; ?>
+            <? if ($this->client()->is('show_small_logo')): ?>
             <a class="navbar-brand external hasicon" href="<?=$this->client()->get('Site')->get('website')?>">
-                    <img src="<?=$this->imageLink($this->clientAsset()->getSmallLogo()) ?>"/>
+                <img class="img-responsive" src="<?=$this->imageLink($this->clientAsset()->getSmallLogo()) ?>"/>
             </a>
+            <? endif ?>
+
         </div>
-        <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
         <? $account = $this->auth()->getManager(); ?>
         <? if ($this->layout()->searchbox !== false && !$this->client()->is('disable_searchbar')): ?>
             <div class="navbar-left">

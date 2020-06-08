@@ -1,9 +1,9 @@
-<? $url = $this->recommend->getURL(); 
-   $sourceTitle = $this->recommend->getSourceTitle(); 
-   $imageName = $this->recommend->getImageName(); 
+<? $url = $this->recommend->getURL();
+   $sourceTitle = $this->recommend->getSourceTitle();
+   $imageName = $this->recommend->getImageName();
    $colNumber = $this->recommend->getColNumber();
    $label = $this->recommend->getLabel();
-   
+
 ?>
 <? if (!empty($url)): ?>
         <? if (!empty($label)): ?>
@@ -11,7 +11,7 @@
         <? endif; ?>
         <div class="searchbutton col-12 col-md-<?=$colNumber?> col-xs-<?=$colNumber?>" style="padding-left:2px;padding-right:2px;">
                 <a href="<?=$this->escapeHtmlAttr($url)?>" title="<?=$this->transEsc('Search')?> in <?=$this->escapeHtmlAttr($sourceTitle)?>" target="_blank">
-                    <img class="img-responsive img-rounded" src="<?=$this->imageLink('/searchbuttons/'.$imageName )?>" alt="<?=$this->transEsc('Search')?> in <?=$sourceTitle ?>"  title="<?=$this->transEsc('Search')?> in <?=$sourceTitle ?>"/>
+                    <img class="img-responsive img-rounded" src="<?=$this->imageLink('/searchbuttons/'.$imageName )?>" alt="<?=$this->transEsc('SearchButtons::'.$sourceTitle)?>"  title="<?=$this->transEsc('SearchButtons::'.$sourceTitle)?>"/>
                 </a>
         </div>
 <? endif; ?>
