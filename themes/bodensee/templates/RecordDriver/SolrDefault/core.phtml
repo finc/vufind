@@ -183,7 +183,7 @@
             </tr>
             <? endif; ?>
 
-            <? $parallel = $this->driver->tryMethod('getParallelEditions'); if (!empty($parallel)): ?>
+            <? $parallel = $this->driver->tryMethod('getParallelEditions'); if (!empty($parallel) && $this->client()->is('show_other_appearance')): ?>
                 <tr>
                     <th><?=$this->transEsc('other_appearance')?>: </th>
                     <td>
