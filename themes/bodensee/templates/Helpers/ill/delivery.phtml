@@ -118,7 +118,7 @@
         <input type="checkbox" class="" id="ill-copy" name="Kopie" <? if (isset($params['Kopie'])):?>checked=""<? endif; ?>/>
     </div>
 </div>
-<? if (!$this->client()->is('ILL::no_cost')): ?>
+<? if (!$this->client()->is('ill_no_cost')): ?>
 <div class=" form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-costs"><?=$this->transEsc('costs')?>*</label>
     <div class="col-sm-<?=$inputSize?>">
