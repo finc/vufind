@@ -13,7 +13,7 @@
 <div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
   <div class="col-xs-12 col-sm-3 pull-right">
     <? if ($thumb): ?>
-        <img src="<?=$this->escapeHtmlAttr($thumb)?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
+        <img src="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $thumb))?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
     <? else: ?>
         <span class="recordcover pt-icon pt-<?=$this->driver->getPubTypeId()?>"></span>
     <? endif; ?>
@@ -138,8 +138,8 @@
         ?>
         <tr>
           <td>
-            <a href="<?=$this->escapeHtmlAttr(str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $url))?>" target="_blank" title="<?=$mot?>" class="custom-link external hasicon">
-              <? if ($icon): ?><img src="<?=str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $icon)?>" /> <? endif; ?><?=$name?>
+            <a href="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $url))?>" target="_blank" title="<?=$mot?>" class="custom-link external hasicon">
+              <? if ($icon): ?><img src="<?=str_replace('http://', 'https://', $icon)?>" /> <? endif; ?><?=$name?>
             </a>
           </td>
         </tr>
