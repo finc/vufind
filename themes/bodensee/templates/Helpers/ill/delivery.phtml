@@ -1,6 +1,8 @@
-<? $labelSize = 6; ?>
-<? $inputSize = 6; ?>
-
+<?php
+ $labelSize = 6;
+ $inputSize = 6;
+$form = '';
+?>
 <?php $this->libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>
 <?php $this->firstLibrary = $this->libraries()->getFirstActive($this->client()->getIsils())?>
 
@@ -88,23 +90,17 @@
 <div class="form-group form-group-sm">
     <? if (isset($params['Bestellform'])):
         $form = $params['Bestellform'];
-    elseif ($this->firstLibrary->allowsLend() && $this->firstLibrary->allowsCopy() && isset($this->driver) && ($this->driver->isArticle() || $this->driver->isJournal())):
-        $form = 'Kopie';
-    elseif (!isset($this->driver)):
-        $form = 'Kopie';
-    else:
-        $form = 'Kopie';
     endif; ?>
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>?</label>
     <div class="col-sm-3 col-xs-2">
         <? if ($this->firstLibrary->allowsLend()): ?>
-            <input type="radio" id="ill-lend" checked="checked" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> />
+            <input type="radio" id="ill-lend" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> required />
             <span for="ill-copy"><?=$this->transEsc('lend')?></span>
         <? endif; ?>
     </div>
     <div class="col-sm-3 col-xs-2">
         <? if ($this->firstLibrary->allowsCopy()): ?>
-            <input type="radio" id="ill-copy" name="Bestellform" data-bestellform="" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?>/>
+            <input type="radio" id="ill-copy" name="Bestellform" data-bestellform="" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?> required />
             <span for="ill-copy"><?=$this->transEsc('paperdata')?></span>
         <? endif; ?>
     </div>

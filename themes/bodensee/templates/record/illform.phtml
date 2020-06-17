@@ -1,8 +1,8 @@
 <?
   $this->headTitle($this->translate('ILL::request_title'));
-  $this->headScript()->appendFile("vendor/bootstrap-datepicker.js");   
-  $this->headScript()->appendFile("vendor/bootstrap-datepicker.".$this->layout()->userLang.".min.js");    
-  $this->headScript()->appendFile("ill.js");     
+  $this->headScript()->appendFile("vendor/bootstrap-datepicker.js");
+  $this->headScript()->appendFile("vendor/bootstrap-datepicker.".$this->layout()->userLang.".min.js");
+  $this->headScript()->appendFile("ill.js");
 
   $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
     . '<li class="active">' . $this->transEsc('ILL::request_title') . '</li>';
@@ -16,21 +16,21 @@
     elseif ($this->driver->isArticle()){$type = 'article';}
   } else {
     $type = 'free';
-  }  
-  
+  }
+
 ?>
-<div class="col-sm-12">    
+<div class="col-sm-12">
     <h2><?=$this->illform($success, $this->driver)->getText('headline')?></h2>
-    <noscript><p class="alert alert-danger"><?=$this->transEsc('Please enable JavaScript.')?></p></noscript>    
+    <noscript><p class="alert alert-danger"><?=$this->transEsc('Please enable JavaScript.')?></p></noscript>
     <?=$this->flashmessages()?>
     <? if ($success && !empty($this->orderId) && $this->orderId > 0):?>
     <p><?=$this->transEsc('ILL::request_submit_ok_text')?><strong><?=$this->escapeHtml($this->orderId)?></strong></p>
     <p><?=$this->transEsc('ILL::request_submit_ok_text_2')?></p>
     <? endif; ?>
     <? if (!isset($success) || !$success): ?>
-    <form class="<?=$type?> form-horizontal" id="form-ill" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form">
+    <form data-format="<?=$type?>" class="<?=$type?> form-horizontal" id="form-ill" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form">
 
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">   
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <? $content = $this->illform($success, $this->driver)->renderBibliographicFields() ?>
             <?= $this->partial('Helpers/ill/panel.phtml', [
                 'title' => 'Bibliographic Details',
@@ -44,35 +44,35 @@
                 'title' => 'paperdata',
                 'open'  => $this->illform($success, $this->driver)->isVisibleCopies(),
                 'content' => $content,
-            ])?>        
-            <? $content = $this->render('Helpers/ill/delivery.phtml', ['params' => $params, 'driver' => $this->driver])?>        
+            ])?>
+            <? $content = $this->render('Helpers/ill/delivery.phtml', ['params' => $params, 'driver' => $this->driver])?>
             <?= $this->partial('Helpers/ill/panel.phtml', [
                 'title' => 'delivery_conditions',
                 'open'  => true,
                 'content' => $content,
 
-            ])?>        
-            <? $content = $this->render('Helpers/ill/login.phtml', ['params' => $params, 'driver' => $this->driver])?> 
+            ])?>
+            <? $content = $this->render('Helpers/ill/login.phtml', ['params' => $params, 'driver' => $this->driver])?>
             <?= $this->partial('Helpers/ill/panel.phtml', [
                 'title' => 'Benutzerdaten',
                 'open'  => true,
                 'content' => $content,
-            ])?> 
+            ])?>
             <br/>
-            <div class="form-group form-group-sm">                 
+            <div class="form-group form-group-sm">
                 <div class="col-sm-1 col-xs-2">
                     <input type="checkbox" required="true" class="" id="agree-commercial-use" name="agree-commerial-use"/>
                 </div>
                 <label class="control-label col-xs-10 col-sm-11" for="agree-commercial-use">* <?=$this->transEsc('ILL::commercial_use')?></label>
             </div>
-            <div class="form-group form-group-sm"> 
+            <div class="form-group form-group-sm">
                 <div class="col-sm-12">
-                    <input id="ill-submit" type="submit" class="btn btn-primary<?=$this->submitDisabled?' disabled': ''?>" value="<?=$test ? $this->transEsc('Test Order') : $this->transEsc('Order') ?>"/>            
+                    <input id="ill-submit" type="submit" class="btn btn-primary<?=$this->submitDisabled?' disabled': ''?>" value="<?=$test ? $this->transEsc('Test Order') : $this->transEsc('Order') ?>"/>
                     <p>* <?=$this->transEsc('This field is required')?></p>
-                                    
-                </div>  
+
+                </div>
             </div>
         </div>
-    </form> 
+    </form>
     <? endif; ?>
 </div>

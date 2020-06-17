@@ -161,10 +161,28 @@ function validateCopy($el) {
     }
 }
 
-$(document).ready(function(){
+/**
+ * Bestellform is not yet initialized, then choose radio according to the
+ * format
+ */
+function copyLend() {
+
+    if ($('input[name=Bestellform]:checked').length === 0) {
+        var format = $('#form-ill').attr('data-format');
+        if ($.inArray(format, ['book']) > -1) {
+            $('#ill-lend').prop('checked', true);
+        } else if ($.inArray(format, ['journal', 'ejournal', 'ebook', 'article']) > -1){
+            $('#ill-copy').prop('checked', true);
+        }
+    }
+}
+
+$(document).ready(function() {
 
     changeRequiredCopy($("input[name='Bestellform']:checked"));
     appendValidator();
     datepicker();
+    copyLend();
     illFormLogic();
+
 });
