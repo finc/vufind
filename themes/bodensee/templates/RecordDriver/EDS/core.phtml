@@ -8,12 +8,12 @@
     $customLinks = $this->driver->getCustomLinks();
     $accessLevel = $this->driver->getAccessLevel();
     $restrictedView = empty($accessLevel) ? false : true;
-    
+
 ?>
 <div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
   <div class="col-xs-12 col-sm-3 pull-right">
     <? if ($thumb): ?>
-        <img src="<?=$this->escapeHtmlAttr($thumb)?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
+        <img src="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $thumb))?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
     <? else: ?>
         <span class="recordcover pt-icon pt-<?=$this->driver->getPubTypeId()?>"></span>
     <? endif; ?>
@@ -22,11 +22,15 @@
     <? endif; ?>
 
     <div class="external-links">
-      <? $pLink = $this->driver->getPLink();
-          if($pLink): ?>
-      <? endif; ?>
-      
-          <? if ($this->driver->hasPDFAvailable()):
+        <? $pLink = $this->driver->getPLink(); if($pLink): ?>
+            <div class="text-center">
+                <a href="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $pLink))?>" class="external fulltext hasicon">
+                    <i class="fa fa-file-pdf-o"></i><?=$this->transEsc('Fulltext');?>
+                </a>
+            </div>
+        <? endif; ?>
+
+        <? if ($this->driver->hasPDFAvailable()):
           $pdfLink = $this->driver->getPdfLink(); ?>
           <? if (strlen($pdfLink) > 0): ?>
         <div class="text-center">
@@ -49,11 +53,11 @@
 
     <table class="table table-striped" summary="<?=$this->transEsc('Bibliographic Details')?>">
 
-      <? $hiddenItems = ['PublrInfo'] ?> 
+      <? $hiddenItems = ['PublrInfo'] ?>
       <? foreach ($items as $key => $item): ?>
         <? if (!empty($item['Data'])  && !in_array($item['Group'], $hiddenItems)): ?>
         <tr>
-          <th><?=$this->transEsc($item['Label'])?>:</th>          
+          <th><?=$this->transEsc($item['Label'])?>:</th>
             <? if($item['Label'] !== 'DOI' && $item['Label'] !== 'Access URL'): ?>
               <td><?=$this->driver->linkUrls($item['Data'], $item['Label'])?></td>
             <? else: ?>
@@ -67,7 +71,7 @@
         <tr>
           <th><?=$this->transEsc('Format')?>:</th>
           <td><?=$this->transEsc($pubType)?></td>
-            
+
         </tr>
       <? endif; ?>
 
@@ -96,7 +100,7 @@
             </a>
           </td>
         </tr>
-        <? endif; ?>        
+        <? endif; ?>
     <? $customFTLinks = $this->driver->getFTCustomLinks(); ?>
     <? if (!empty($customFTLinks) && !$this->driver->hasHTMLFullTextAvailable() && !$this->driver->hasPdfAvailable() ): ?>
       <? foreach ($customFTLinks as $customLink): ?>        <? $url = isset($customLink['Url']) ? $customLink['Url'] : '';
@@ -108,12 +112,12 @@
           <td>
             <a href="<?=$this->escapeHtmlAttr(str_replace('http://dx.doi.org', 'https://doi.org', $url))?>" target="_blank" title="<?=$mot?>" class="custom-link">
               <? if ($icon): ?><img src="<?=$icon?>" /> <? endif; ?><?=$name?>
-            </a>              
+            </a>
           </td>
         </tr>
         <? if ($this->client()->is('only_first_customlink')): ?>
             <? break; ?>
-        <? endif; ?>      
+        <? endif; ?>
       <? endforeach; ?>
     <? endif; ?>
 
@@ -134,18 +138,18 @@
         ?>
         <tr>
           <td>
-            <a href="<?=$this->escapeHtmlAttr(str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $url))?>" target="_blank" title="<?=$mot?>" class="custom-link external hasicon">
-              <? if ($icon): ?><img src="<?=str_replace('http://www.redi-bw.de', 'https://www.redi-bw.de', $icon)?>" /> <? endif; ?><?=$name?>
-            </a>              
+            <a href="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $url))?>" target="_blank" title="<?=$mot?>" class="custom-link external hasicon">
+              <? if ($icon): ?><img src="<?=str_replace('http://', 'https://', $icon)?>" /> <? endif; ?><?=$name?>
+            </a>
           </td>
         </tr>
         <? if ($this->client()->is('only_first_customlink')): ?>
             <? break; ?>
-        <? endif; ?>        
+        <? endif; ?>
       <? endforeach; ?>
-    <? endif; ?> 
-    
-    </table>    
+    <? endif; ?>
+
+    </table>
   </div>
 </div>
 <div class="nofloat"></div>
