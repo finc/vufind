@@ -14,9 +14,7 @@
     if ($this->driver->isJournal()) { $type = 'journal';}
     elseif ($this->driver->isContainerMonography()) { $type = 'article-book';}
     elseif ($this->driver->isArticle()){$type = 'article';}
-  } else {
-    $type = 'free';
-  }
+  } else { $type = 'free';  }
 
 ?>
 <div class="col-sm-12">
