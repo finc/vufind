@@ -167,11 +167,18 @@ function validateCopy($el) {
  */
 function copyLend() {
 
-    if ($('input[name=Bestellform]:checked').length === 0) {
+    // if there is only one radio available, select this one
+    if ($('input[name=Bestellform]').length === 1) {
+        $('input[name=Bestellform]').prop('checked', true);
+    }
+
+    // if there are two radios and nothing selected yet
+    if ($('input[name=Bestellform]:checked').length === 0
+        && $('input[name=Bestellform]').length === 2) {
         var format = $('#form-ill').attr('data-format');
         if ($.inArray(format, ['book']) > -1) {
             $('#ill-lend').prop('checked', true);
-        } else if ($.inArray(format, ['journal', 'ejournal', 'ebook', 'article']) > -1){
+        } else if ($.inArray(format, ['journal', 'article-book', 'article']) > -1){
             $('#ill-copy').prop('checked', true);
         }
     }
