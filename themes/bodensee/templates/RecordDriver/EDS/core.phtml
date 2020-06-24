@@ -8,6 +8,8 @@
     $customLinks = $this->driver->getCustomLinks();
     $accessLevel = $this->driver->getAccessLevel();
     $restrictedView = empty($accessLevel) ? false : true;
+    // Because we disabled the recordtabs here, we need to set the title here
+    $this->headTitle($this->translate('EDS') . ': ' . $this->driver->getBreadcrumb());
 
 ?>
 <div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
@@ -55,14 +57,20 @@
 
       <? $hiddenItems = ['PublrInfo'] ?>
       <? foreach ($items as $key => $item): ?>
-        <? if (!empty($item['Data'])  && !in_array($item['Group'], $hiddenItems)): ?>
+              <? if (!empty($item['Data'])  && !in_array($item['Group'], $hiddenItems)): ?>
         <tr>
           <th><?=$this->transEsc($item['Label'])?>:</th>
             <? if($item['Label'] !== 'DOI' && $item['Label'] !== 'Access URL'): ?>
-              <td><?=$this->driver->linkUrls($item['Data'], $item['Label'])?></td>
+              <td>
+                  <? if (strpos($item['Data'],'http') !== false): ?>
+                  <a class="external ellipsis-link" href="<?=$item['Data']?>"><?=$this->escapeHtml($item['Data'])?></a>
+                  <? else: ?>
+                  <?=$this->driver->linkUrls($item['Data'], $item['Label'])?>
+                  <? endif; ?>
+              </td>
             <? else: ?>
             <? $link = $this->string()->cleanEbscoLinks($item['Data'])?>
-              <td><a href="<?=$link?>" class="external"><?=$link?></a></td>
+            <td><a href="<?=$link?>" class="external"><?=$link?></a></td>
             <? endif; ?>
         </tr>
         <? endif; ?>
