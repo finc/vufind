@@ -257,10 +257,11 @@
                             <? foreach ($publicationsOl as $field): ?>
                                 <span property="publisher" typeof="Organization">
                                 <? $pubPlace = $field->getPlace();
-                                if (!empty($pubPlace)): ?>
+                                 if (!empty($pubPlace)):
+                                    $pubPlace = preg_replace('/:\s?$/', '', $pubPlace); ?>
                                     <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
                                 <? endif; ?>
-                                            <? $pubName = $field->getName();
+                                            <? $pubN = $field->getName();
                                             if (!empty($pubName)): ?>
                                                 <span property="name"><?= $this->escapeHtml($pubName) ?></span>
                                             <? endif; ?>
@@ -275,7 +276,9 @@
                         <? foreach ($publications as $field): ?>
                             <span property="publisher" typeof="Organization">
                             <? $pubPlace = $field->getPlace();
-                            if (!empty($pubPlace)): ?>
+                            if (!empty($pubPlace)):
+                                $pubPlace = preg_replace('/:\s?$/', '', $pubPlace); ?>
+
                                 <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
                             <? endif; ?>
                                 <? $pubName = $field->getName();

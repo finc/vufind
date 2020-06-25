@@ -322,4 +322,5 @@ class SolrDlrMarc extends SolrMarc implements Definition
         $params['rft.isbn'] = (string)$this->getCleanISBN();
         return array_filter($params);
     }
+
 }
