@@ -323,4 +323,12 @@ class SolrDlrMarc extends SolrMarc implements Definition
         return array_filter($params);
     }
 
+    /**
+     * @return bool
+     */
+    public function supportsAjaxStatus()
+    {
+        return true;
+    }
+
 }
