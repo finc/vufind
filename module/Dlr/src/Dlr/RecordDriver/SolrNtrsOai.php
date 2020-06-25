@@ -346,4 +346,42 @@ class SolrNtrsOai extends SolrDefault
     {
         return true;
     }
+
+    protected function getBookOpenUrlParams()
+    {
+        $params = $this->getDefaultOpenUrlParams();
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
+        $params['rft.genre'] = 'book';
+        $params['rft.btitle'] = $this->getTitle();
+        $params['rft.volume'] = $this->getContainerVolume();
+        $series = $this->getSeries();
+        if (count($series) > 0) {
+            // Handle both possible return formats of getSeries:
+            $params['rft.series'] = is_array($series[0]) ?
+                $series[0]['name'] : $series[0];
+        }
+        $authors = $this->getPrimaryAuthors();
+        $params['rft.au'] = array_shift($authors);
+        $publication = $this->getPublicationDetails();
+        // we drop everything, except first entry
+        $publication = array_shift($publication);
+        if (is_object($publication)) {
+            if ($date = $publication->getDate()) {
+                $params['rft.date'] = preg_replace('/[^0-9]/', '', $date);
+            }
+            if ($place = $publication->getPlace()) {
+                $params['rft.place'] = $place;
+            }
+        }
+        $params['rft.volume'] = $this->getContainerVolume();
+
+        $publishers = $this->getPublishers();
+        if (count($publishers) > 0) {
+            $params['rft.pub'] = $publishers[0];
+        }
+
+        $params['rft.edition'] = $this->getEdition();
+        $params['rft.isbn'] = (string)$this->getCleanISBN();
+        return array_filter($params);
+    }
 }
