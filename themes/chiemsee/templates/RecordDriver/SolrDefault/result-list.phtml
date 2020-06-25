@@ -17,7 +17,7 @@
     </div>
     <div class="col-sm-9 col-xs-8 col-md-10 middle">
       <div>
-        <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title">
+        <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title markjs">
           <?=$this->record($this->driver)->getTitleHtml()?>
         </a>
       </div>
@@ -28,7 +28,7 @@
         <?php else: ?>
           <?php $summAuthor = $this->driver->getPrimaryAuthor(); if (!empty($summAuthor)): ?>
           <?=$this->transEsc('by')?>
-          <a class="author" href="<?=$this->record($this->driver)->getLink('author', $summAuthor, $this->overrideRecordLink)?>"><?php
+          <a class="author markjs" href="<?=$this->record($this->driver)->getLink('author', $summAuthor, $this->overrideRecordLink)?>"><?php
             echo $this->escapeHtml($summAuthor);
           ?></a>
             <?php endif; ?>
