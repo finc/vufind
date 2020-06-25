@@ -93,7 +93,7 @@ class Factory
     {
         $libraries = $container->get('Bsz\Config\Libraries');
         $client = $container->get('Bsz\Config\Client');
-        $swbonly = $client->getTag() === 'bsz' ?? false;
+        $swbonly = $client->getTag() === 'swb' ?? false;
         return new Libraries($libraries, !$client->is('disable_library_tab'), $swbonly);
     }
 
