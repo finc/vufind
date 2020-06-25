@@ -56,6 +56,17 @@ class SolrDlrMarc extends SolrMarc implements Definition
     }
 
     /**
+     * Get PPN of Record
+     *
+     * @return string
+     */
+    public function getPPN(): string
+    {
+        $m001 = $this->getMarcRecord()->getField('001');
+        return $m001 ? $m001->getData() : '';
+    }
+
+    /**
      * Get all subjects associated with this item. They are unique.
      *
      * @return array
