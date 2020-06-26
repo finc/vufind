@@ -439,10 +439,6 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
      */
     public function hasHoldings($id)
     {
-        // we can't query DAIA without an ISIL.
-        if (empty($this->isil)) {
-            return false;
-        }
         $holdings = $this->getHolding($id);
 
         if (isset($holdings) && count($holdings) > 0) {
