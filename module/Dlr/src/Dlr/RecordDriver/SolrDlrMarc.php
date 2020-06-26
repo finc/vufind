@@ -312,11 +312,22 @@ class SolrDlrMarc extends SolrMarc implements Definition
     {
         $languages = [];
         $fields = $this->getMarcRecord()->getFields('041');
+        $m008 = $this->getMarcRecord()->getField('008');
+
         foreach ($fields as $field) {
             foreach ($field->getSubFields('a') as $sf) {
                 $languages[] = $sf->getData();
             }
         }
+
+        if ($m008) {
+            $data = $m008->getData();
+            $language = substr($data, 35, 3);
+            if ($language) {
+                $languages[] = $language;
+            }
+        }
+
         return $languages;
     }
 
