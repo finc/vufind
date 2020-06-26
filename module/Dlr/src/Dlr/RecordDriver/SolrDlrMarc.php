@@ -28,7 +28,9 @@ namespace Dlr\RecordDriver;
 use Bsz\FormatMapper;
 use Bsz\RecordDriver\ContainerTrait;
 use Bsz\RecordDriver\Definition;
+use Bsz\RecordDriver\MarcAuthorTrait;
 use Bsz\RecordDriver\SolrMarc;
+use VuFind\RecordDriver\IlsAwareTrait;
 
 /**
  * Description of SolrDlrmarc
@@ -38,6 +40,8 @@ use Bsz\RecordDriver\SolrMarc;
 class SolrDlrMarc extends SolrMarc implements Definition
 {
     use ContainerTrait;
+    use IlsAwareTrait;
+    use MarcAuthorTrait;
 
     /**
      * @param FormatMapper $mapper
