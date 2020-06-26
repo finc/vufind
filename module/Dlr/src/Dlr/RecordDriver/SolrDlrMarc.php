@@ -23,6 +23,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 namespace Dlr\RecordDriver;
 
 use Bsz\FormatMapper;
@@ -34,7 +35,6 @@ use VuFind\RecordDriver\IlsAwareTrait;
 
 /**
  * Description of SolrDlrmarc
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class SolrDlrMarc extends SolrMarc implements Definition
@@ -61,8 +61,8 @@ class SolrDlrMarc extends SolrMarc implements Definition
 
     /**
      * Get PPN of Record
-     *
      * @return string
+     * @throws \File_MARC_Exception
      */
     public function getPPN(): string
     {
@@ -72,8 +72,8 @@ class SolrDlrMarc extends SolrMarc implements Definition
 
     /**
      * Get all subjects associated with this item. They are unique.
-     *
      * @return array
+     * @throws \File_MARC_Exception
      */
     public function getAllRVKSubjectHeadings()
     {
@@ -128,25 +128,51 @@ class SolrDlrMarc extends SolrMarc implements Definition
     }
 
     /**
-     * Get multipart level from leader 19
-     * @return boolean|string
+     * As out fiels 773 does not contain any further title information we need
+     * to query solr again
+     * @return array
      */
-    public function getMultipartLevel()
+    public function getContainer()
     {
-        $leader = $this->getMarcRecord()->getLeader();
-        $multipartLevel = strtoupper($leader{19});
+        if (null === $this->container &&
+            $this->isPart()) {
+            $relId = $f773 = $this->getFieldArray(773, ['w']);
+            $this->container = [];
+            if (is_array($relId) && count($relId) > 0) {
+                foreach ($relId as $k => $id) {
+                    $relId[$k] = 'ctrlnum:"(Horizon)' . $id . '"';
+                }
+                $params = [
+                    'lookfor' => implode(' OR ', $relId),
+                ];
+                // QnD
+                // We need the searchClassId here to get proper filters
+                $searchClassId = 'Solr';
 
-        switch ($multipartLevel) {
-            case 'A':
-                return static::MULTIPART_COLLECTION;
-            //difference between B and C is if they have independend titles
-            case 'B':
-                return static::NO_MULTIPART;
-            case 'C':
-                return static::MULTIPART_PART;
-            default:
-                return static::NO_MULTIPART;
+                $results = $this->runner->run($params, $searchClassId);
+                $this->container = $results->getResults();
+            }
         }
+        return $this->container;
+    }
+
+    /**
+     * is this item part of a collection?
+     * @return boolean
+     */
+    public function isPart()
+    {
+        $part = [
+            static::MULTIPART_PART,
+            static::BIBLIO_SERIAL,
+            static::BIBLIO_MONO_COMPONENT
+
+        ];
+        if (in_array($this->getBibliographicLevel(), $part) ||
+            in_array($this->getMultipartLevel(), $part)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -177,54 +203,31 @@ class SolrDlrMarc extends SolrMarc implements Definition
     }
 
     /**
-     * is this item part of a collection?
-     * @return boolean
+     * Get multipart level from leader 19
+     * @return boolean|string
      */
-    public function isPart()
+    public function getMultipartLevel()
     {
-        $part = [
-            static::MULTIPART_PART,
-            static::BIBLIO_SERIAL,
-            static::BIBLIO_MONO_COMPONENT
+        $leader = $this->getMarcRecord()->getLeader();
+        $multipartLevel = strtoupper($leader{19});
 
-        ];
-        if (in_array($this->getBibliographicLevel(), $part) ||
-                in_array($this->getMultipartLevel(), $part)) {
-            return true;
+        switch ($multipartLevel) {
+            case 'A':
+                return static::MULTIPART_COLLECTION;
+            //difference between B and C is if they have independend titles
+            case 'B':
+                return static::NO_MULTIPART;
+            case 'C':
+                return static::MULTIPART_PART;
+            default:
+                return static::NO_MULTIPART;
         }
-        return false;
     }
 
     /**
-     * As out fiels 773 does not contain any further title information we need
-     * to query solr again
-     *
      * @return array
+     * @throws \File_MARC_Exception
      */
-    public function getContainer()
-    {
-        if (null === $this->container &&
-            $this->isPart()) {
-            $relId = $f773 = $this->getFieldArray(773, ['w']);
-            $this->container = [];
-            if (is_array($relId) && count($relId) > 0) {
-                foreach ($relId as $k => $id) {
-                    $relId[$k] = 'ctrlnum:"(Horizon)' . $id . '"';
-                }
-                $params = [
-                    'lookfor' => implode(' OR ', $relId),
-                ];
-                // QnD
-                // We need the searchClassId here to get proper filters
-                $searchClassId = 'Solr';
-
-                $results = $this->runner->run($params, $searchClassId);
-                $this->container = $results->getResults();
-            }
-        }
-        return $this->container;
-    }
-
     public function getRelatedItems()
     {
         $related = [];
@@ -234,15 +237,20 @@ class SolrDlrMarc extends SolrMarc implements Definition
             $subfields = $field->getSubfields();
             foreach ($subfields as $subfield) {
                 switch ($subfield->getCode()) {
-                    case 'd': $label = 'edition';
+                    case 'd':
+                        $label = 'edition';
                         break;
-                    case 't': $label = 'title';
+                    case 't':
+                        $label = 'title';
                         break;
-                    case 'w': $label = 'id';
+                    case 'w':
+                        $label = 'id';
                         break;
-                    case 'a': $label = 'author';
+                    case 'a':
+                        $label = 'author';
                         break;
-                    default: $label = 'unknown_field';
+                    default:
+                        $label = 'unknown_field';
                 }
                 if (!array_key_exists($label, $tmp)) {
                     $tmp[$label] = $subfield->getData();
@@ -254,23 +262,7 @@ class SolrDlrMarc extends SolrMarc implements Definition
     }
 
     /**
-     * Get the main corporate author (if any) for the record.
-     *
-     * @return string
-     */
-    public function getCorporateAuthor()
-    {
-        // Try 110 first -- if none found, try 710 next.
-        $main = $this->getFirstFieldValue('110', ['a', 'c', 'b']);
-        if (!empty($main)) {
-            return $main;
-        }
-        return $this->getFirstFieldValue('710', ['a', 'c', 'b']);
-    }
-
-    /**
      * Get an array of all secondary authors (complementing getPrimaryAuthor()).
-     *
      * @return array
      */
     public function getSecondaryAuthors()
@@ -284,11 +276,54 @@ class SolrDlrMarc extends SolrMarc implements Definition
         }
     }
 
+    /**
+     * Get the main corporate author (if any) for the record.
+     * @return string
+     */
+    public function getCorporateAuthor()
+    {
+        // Try 110 first -- if none found, try 710 next.
+        $main = $this->getFirstFieldValue('110', ['a', 'c', 'b']);
+        if (!empty($main)) {
+            return $main;
+        }
+        return $this->getFirstFieldValue('710', ['a', 'c', 'b']);
+    }
+
     public function getNetwork()
     {
         return '';
     }
 
+    /**
+     * @return bool
+     */
+    public function supportsAjaxStatus()
+    {
+        return true;
+    }
+
+    /**
+     * Get an array of all the languages associated with the record.
+     * @return array
+     * @throws \File_MARC_Exception
+     */
+    public function getLanguages(): array
+    {
+        $languages = [];
+        $fields = $this->getMarcRecord()->getFields('041');
+        foreach ($fields as $field) {
+            foreach ($field->getSubFields('a') as $sf) {
+                $languages[] = $sf->getData();
+            }
+        }
+        return $languages;
+    }
+
+    /**
+     *
+     * @return array
+     */
     protected function getBookOpenUrlParams()
     {
         $params = $this->getDefaultOpenUrlParams();
@@ -326,13 +361,4 @@ class SolrDlrMarc extends SolrMarc implements Definition
         $params['rft.isbn'] = (string)$this->getCleanISBN();
         return array_filter($params);
     }
-
-    /**
-     * @return bool
-     */
-    public function supportsAjaxStatus()
-    {
-        return true;
-    }
-
 }

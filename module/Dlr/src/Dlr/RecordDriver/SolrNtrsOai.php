@@ -23,6 +23,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 namespace Dlr\RecordDriver;
 
 use Bsz\FormatMapper;
@@ -33,16 +34,13 @@ use VuFind\Search\SearchRunner;
 
 /**
  * Description of SolrOai
- *
  * @author Stefan Winkler <stefan.winkler@bsz-bw.de>
- *
  */
 class SolrNtrsOai extends SolrDefault
 {
     use IlsAwareTrait;
 
     /**
-     *
      * @var SimpleXMLElement
      */
     protected $xml;
@@ -68,6 +66,7 @@ class SolrNtrsOai extends SolrDefault
      * the driver
      *
      * @param \VuFind\SearchRunner $runner
+     *
      * @return void
      */
     public function attachSearchRunner(SearchRunner $runner)
@@ -84,10 +83,11 @@ class SolrNtrsOai extends SolrDefault
      * Set raw data to initialize the object.
      *
      * @param mixed $data Raw data representing the record; Record Model
-     * objects are normally constructed by Record Driver objects using data
-     * passed in from a Search Results object.  The exact nature of the data may
-     * vary depending on the data source -- the important thing is that the
-     * Record Driver + Search Results objects work together correctly.
+     *                    objects are normally constructed by Record Driver objects
+     *                    using data passed in from a Search Results object.  The
+     *                    exact nature of the data may vary depending on the data
+     *                    source -- the important thing is that the Record Driver +
+     *                    Search Results objects work together correctly.
      *
      * @return void
      */
@@ -95,34 +95,6 @@ class SolrNtrsOai extends SolrDefault
     {
         $this->fields = $data;
         $this->xml = simplexml_load_string($this->fields['fullrecord']);
-    }
-
-    /**
-     * Parse the date out of oai data
-     * @return array
-     */
-    public function getPublicationDates()
-    {
-        $dates = $this->getDcFields('date');
-        // if we got a known format, parse this
-        if (isset($dates[0]) && strlen($dates[0]) == 8) {
-            $year = substr($dates[0], 0, 4);
-            $month = substr($dates[0], 4, 2);
-            $day = substr($dates[0], 6, 2);
-            $date = new DateTime($year . '-' . $month . '-' . $day);
-            return [$date->format('d.m.Y')];
-        }
-        return $dates;
-    }
-
-    /**
-     *
-     * @param string $field
-     * @return array
-     */
-    protected function getDcFields($field)
-    {
-        return $this->xml->xpath('dc:' . $field);
     }
 
     /**
@@ -149,32 +121,20 @@ class SolrNtrsOai extends SolrDefault
         return array_shift($copy);
     }
 
+    /**
+     * @param string $field
+     *
+     * @return array
+     */
+    protected function getDcFields($field)
+    {
+        return $this->xml->xpath('dc:' . $field);
+    }
+
     public function getSource()
     {
         $source = $this->getDcFields('source');
         return array_shift($source);
-    }
-
-    /**
-     * Get default OpenURL parameters.
-     * this is slightly changed compared to VuFind original
-     *
-     * @return array
-     */
-    protected function getDefaultOpenUrlParams()
-    {
-        // Get a representative publication date:
-        $pubDate = $this->getPublicationDates();
-        $pubDate = empty($pubDate) ? '' : $pubDate[0];
-
-        // Start an array of OpenURL parameters:
-        return [
-            'url_ver' => 'Z39.88-2004',
-            'ctx_ver' => 'Z39.88-2004',
-            'ctx_enc' => 'info:ofi/enc:UTF-8',
-            'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator',
-            'rft.date' => $pubDate
-        ];
     }
 
     /**
@@ -197,7 +157,6 @@ class SolrNtrsOai extends SolrDefault
 
     /**
      * get Institutes and Institutions from solr field
-     *
      * @return array
      */
     public function getInstitutes()
@@ -211,35 +170,8 @@ class SolrNtrsOai extends SolrDefault
     }
 
     /**
-     * Source elib?
-     * @return boolean
-     */
-    protected function isElib()
-    {
-        if (isset($this->fields['institution_id']) &&
-                in_array('elib', $this->fields['institution_id'])) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Source NASA?
-     * @return boolean
-     */
-    protected function isNTRS()
-    {
-        if (isset($this->fields['institution_id']) &&
-                in_array('NTRS', $this->fields['institution_id'])) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
-     *
      * <li>
      *   <ul>desc: URL description text to display (optional)</ul>
      *   <ul>url: fully-formed URL (required if 'route' is absent)</ul>
@@ -247,7 +179,6 @@ class SolrNtrsOai extends SolrDefault
      *   <ul>routeParams: Parameters for route (optional)</ul>
      *   <ul>queryString: Query params to append after building route (optional)</ul>
      * </li>
-     *
      * @return array
      */
     public function getURLs()
@@ -260,9 +191,11 @@ class SolrNtrsOai extends SolrDefault
             // different descriptions for elib and NTRS
             if (!array_key_exists('desc', $url) && $this->isElib()) {
                 switch ($key) {
-                    case 0: $url['desc'] = 'to_elib_record';
+                    case 0:
+                        $url['desc'] = 'to_elib_record';
                         break;
-                    default: $url['desc'] = 'More Information';
+                    default:
+                        $url['desc'] = 'More Information';
                 }
             } elseif (!array_key_exists('desc', $url) && $this->isNTRS()) {
                 $url['desc'] = 'Full Text';
@@ -270,6 +203,32 @@ class SolrNtrsOai extends SolrDefault
             $urls[$key] = $url;
         }
         return $urls;
+    }
+
+    /**
+     * Source elib?
+     * @return boolean
+     */
+    protected function isElib()
+    {
+        if (isset($this->fields['institution_id']) &&
+            in_array('elib', $this->fields['institution_id'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Source NASA?
+     * @return boolean
+     */
+    protected function isNTRS()
+    {
+        if (isset($this->fields['institution_id']) &&
+            in_array('NTRS', $this->fields['institution_id'])) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -383,5 +342,44 @@ class SolrNtrsOai extends SolrDefault
         $params['rft.edition'] = $this->getEdition();
         $params['rft.isbn'] = (string)$this->getCleanISBN();
         return array_filter($params);
+    }
+
+    /**
+     * Get default OpenURL parameters.
+     * this is slightly changed compared to VuFind original
+     * @return array
+     */
+    protected function getDefaultOpenUrlParams()
+    {
+        // Get a representative publication date:
+        $pubDate = $this->getPublicationDates();
+        $pubDate = empty($pubDate) ? '' : $pubDate[0];
+
+        // Start an array of OpenURL parameters:
+        return [
+            'url_ver' => 'Z39.88-2004',
+            'ctx_ver' => 'Z39.88-2004',
+            'ctx_enc' => 'info:ofi/enc:UTF-8',
+            'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator',
+            'rft.date' => $pubDate
+        ];
+    }
+
+    /**
+     * Parse the date out of oai data
+     * @return array
+     */
+    public function getPublicationDates()
+    {
+        $dates = $this->getDcFields('date');
+        // if we got a known format, parse this
+        if (isset($dates[0]) && strlen($dates[0]) == 8) {
+            $year = substr($dates[0], 0, 4);
+            $month = substr($dates[0], 4, 2);
+            $day = substr($dates[0], 6, 2);
+            $date = new DateTime($year . '-' . $month . '-' . $day);
+            return [$date->format('d.m.Y')];
+        }
+        return $dates;
     }
 }
