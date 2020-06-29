@@ -382,4 +382,64 @@ class SolrNtrsOai extends SolrDefault
         }
         return $dates;
     }
+
+    /**
+     * Support method for getOpenUrl() -- pick the OpenURL format.
+     *
+     * @return string
+     */
+    protected function getOpenUrlFormat()
+    {
+        // If we have multiple formats, Book, Journal and Article are most
+        // important...
+        $formats = $this->getFormats();
+        if (in_array('Book', $formats)) {
+            return 'Book';
+        } elseif (in_array('Article', $formats)) {
+            return 'Article';
+        } elseif (in_array('Journal', $formats)
+            || in_array('Serial', $formats)
+        ) {
+            return 'Journal';
+        } elseif (isset($formats[0])) {
+            return $formats[0];
+        } elseif (strlen($this->getCleanISSN()) > 0) {
+            return 'Journal';
+        } elseif (strlen($this->getCleanISBN()) > 0) {
+            return 'Book';
+        }
+        return 'UnknownFormat';
+    }
+
+    /**
+     * Get OpenURL parameters for a journal.
+     *
+     * @return array
+     */
+    protected function getJournalOpenUrlParams()
+    {
+        $params = $this->getDefaultOpenUrlParams();
+        $params['rft.title'] = $this->getTitle();
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+        $params['rft.genre'] = 'journal';
+        $params['rft.jtitle'] = $params['rft.title'];
+        $params['rft.issn'] = $this->getCleanISSN();
+        $params['rft.au'] = $this->getPrimaryAuthor();
+        $params['rft.issn'] = (string)$this->getCleanISSN();
+
+        // Including a date in a title-level Journal OpenURL may be too
+        // limiting -- in some link resolvers, it may cause the exclusion
+        // of databases if they do not cover the exact date provided!
+        unset($params['rft.date']);
+
+        // If we're working with the SFX resolver, we should add a
+        // special parameter to ensure that electronic holdings links
+        // are shown even though no specific date or issue is specified:
+        if (isset($this->mainConfig->OpenURL->resolver)
+            && strtolower($this->mainConfig->OpenURL->resolver) == 'sfx'
+        ) {
+            $params['sfx.ignore_date_threshold'] = 1;
+        }
+        return $params;
+    }
 }
