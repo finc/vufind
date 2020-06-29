@@ -160,7 +160,9 @@
                 </td>
             </tr>
             <? endif;?>
-            <?php $source = $this->driver->getPPN(); if (!empty($source)):?>
+            <?php $source = $this->driver->getUniqueId(); if (!empty($source)):
+            $source = preg_replace('/\(.*\)|.*:/', '', $source) ?>
+
                 <tr>
                     <th><?=$this->transEsc('DocumentID')?>: </th>
                     <td><?=$this->escapeHtml($source)?>
