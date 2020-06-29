@@ -28,7 +28,6 @@ namespace Dlr\RecordDriver;
 
 use Bsz\FormatMapper;
 use Bsz\RecordDriver\ContainerTrait;
-use Bsz\RecordDriver\Definition;
 use Bsz\RecordDriver\MarcAuthorTrait;
 use Bsz\RecordDriver\SolrMarc;
 use VuFind\RecordDriver\IlsAwareTrait;
@@ -37,7 +36,7 @@ use VuFind\RecordDriver\IlsAwareTrait;
  * Description of SolrDlrmarc
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrDlrMarc extends SolrMarc implements Definition
+class SolrDlrMarc extends SolrMarc
 {
     use ContainerTrait;
     use IlsAwareTrait;
@@ -123,97 +122,28 @@ class SolrDlrMarc extends SolrMarc implements Definition
      */
     public function getContainer()
     {
-        if (null === $this->container &&
-            $this->isPart()) {
-            $relId = $f773 = $this->getFieldArray(773, ['w']);
-            $this->container = [];
-            if (is_array($relId) && count($relId) > 0) {
-                foreach ($relId as $k => $id) {
-                    $relId[$k] = 'ctrlnum:"(Horizon)' . $id . '"';
-                }
-                $params = [
-                    'lookfor' => implode(' OR ', $relId),
-                ];
-                // QnD
-                // We need the searchClassId here to get proper filters
-                $searchClassId = 'Solr';
+        $relId = $f773 = $this->getFieldArray(773, ['w']);
 
-                $results = $this->runner->run($params, $searchClassId);
-                $this->container = $results->getResults();
+        if (null === $this->container && is_array($relId) && count($relId) > 0) {
+            $this->container = [];
+            foreach ($relId as $k => $id) {
+                $relId[$k] = 'ctrlnum:"(Horizon)' . $id . '"';
             }
+            $params = [
+                'lookfor' => implode(' OR ', $relId),
+            ];
+            // QnD
+            // We need the searchClassId here to get proper filters
+            $searchClassId = 'Solr';
+
+            $results = $this->runner->run($params, $searchClassId);
+            $this->container = $results->getResults();
+
         }
         return $this->container;
     }
 
-    /**
-     * is this item part of a collection?
-     * @return boolean
-     */
-    public function isPart()
-    {
-        $part = [
-            static::MULTIPART_PART,
-            static::BIBLIO_SERIAL,
-            static::BIBLIO_MONO_COMPONENT
-
-        ];
-        if (in_array($this->getBibliographicLevel(), $part) ||
-            in_array($this->getMultipartLevel(), $part)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get bibliographic level from leader 7
-     * @return string
-     */
-    public function getBibliographicLevel()
-    {
-        $leader = $this->getMarcRecord()->getLeader();
-        $bibliographicLevel = strtoupper($leader{7});
-        switch ($bibliographicLevel) {
-            case 'A': // Monographic component part
-                return static::BIBLIO_MONO_COMPONENT;
-            //difference between B and C is if they have independend titles
-            case 'B': // Serial component part
-                return static::BIBLIO_SERIAL_COMPONENT;
-            case 'C': // Collection
-                return static::BIBLIO_COLLECTION;
-            case 'D': //Subunit
-                return static::BIBLIO_SUBUNIT;
-            case 'I': //Integration resource
-                return static::BIBLIO_INTEGRATED;
-            case 'M': //Monograph/Item
-                return static::BIBLIO_MONOGRAPH;
-            case 'S': //Serial
-                return static::BIBLIO_SERIAL;
-        }
-    }
-
-    /**
-     * Get multipart level from leader 19
-     * @return boolean|string
-     */
-    public function getMultipartLevel()
-    {
-        $leader = $this->getMarcRecord()->getLeader();
-        $multipartLevel = strtoupper($leader{19});
-
-        switch ($multipartLevel) {
-            case 'A':
-                return static::MULTIPART_COLLECTION;
-            //difference between B and C is if they have independend titles
-            case 'B':
-                return static::NO_MULTIPART;
-            case 'C':
-                return static::MULTIPART_PART;
-            default:
-                return static::NO_MULTIPART;
-        }
-    }
-
-    /**
+     /**
      * @return array
      * @throws \File_MARC_Exception
      */
@@ -362,6 +292,9 @@ class SolrDlrMarc extends SolrMarc implements Definition
         return array_filter($params);
     }
 
+    /**
+     * @return array
+     */
     public function getHumanReadablePublicationDates()
     {
         $dates = parent::getHumanReadablePublicationDates();

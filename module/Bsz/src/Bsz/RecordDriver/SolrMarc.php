@@ -37,7 +37,7 @@ use VuFindCode\ISBN;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrMarc extends \VuFind\RecordDriver\SolrMarc
+class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
 {
     use IlsAwareTrait;
     use MarcReaderTrait;
