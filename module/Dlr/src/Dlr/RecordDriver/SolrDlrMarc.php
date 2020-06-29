@@ -361,4 +361,14 @@ class SolrDlrMarc extends SolrMarc implements Definition
         $params['rft.isbn'] = (string)$this->getCleanISBN();
         return array_filter($params);
     }
+
+    public function getHumanReadablePublicationDates()
+    {
+        $dates = parent::getHumanReadablePublicationDates();
+        foreach ($dates as $k => $date) {
+            preg_match('/^(\d{4})/', $date, $matches);
+            $dates[$k] = isset($matches[1]) ? $matches[1] : null;
+        }
+        return $dates;
+    }
 }
