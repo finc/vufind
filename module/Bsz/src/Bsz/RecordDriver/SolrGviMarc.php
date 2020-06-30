@@ -392,10 +392,22 @@ class SolrGviMarc extends SolrMarc implements Definition
             260 => 'a',
             264 => 'a',
         ];
-        $places = $this->getFieldsArray($fields);
+
+        $places = [];
+        foreach ($fields as $no => $subfield) {
+            $raw = $this->getFieldArray($no, (array)$subfield, false);
+            if (count($raw) > 0 && !empty($raw[0])) {
+                $places[] = $raw;
+            }
+        }
         foreach ($places as $k => $place) {
             $replace = [' :'];
-            $places[$k] = str_replace($replace, '', $place);
+            if (is_array($place)) {
+                $place = implode(', ', $place);
+                $places[$k] = str_replace($replace, '', $place);
+            } else {
+                $places[$k] = str_replace($replace, '', $place);
+            }
         }
         return array_unique($places);
     }
