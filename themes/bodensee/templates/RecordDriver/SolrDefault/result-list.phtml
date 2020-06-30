@@ -208,7 +208,7 @@
                                     <a class="title markjs" href="<?=$this->recordLink()->getUrl($sub)?>">
                                         <?=$this->record($sub)->getTitleHtml()?>
                                     </a>
-                                    <? if ($titlesection = $this->driver->getTitleSection()):?>
+                                    <? if ($titlesection = $sub->getTitleSection()):?>
                                         / <?= $titlesection ?>
                                     <? endif; ?>
                                     <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
