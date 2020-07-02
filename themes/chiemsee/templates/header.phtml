@@ -4,7 +4,7 @@
 </div>
 <? if ($this->layout()->searchbox !== false && !$this->client()->is('disable_searchbar')): ?>
   <div class="navbar-left">
-    <?=$this->layout()->searchbox ?>    
+    <?=$this->layout()->searchbox ?>
   </div>
 <? endif; ?>
 
@@ -13,7 +13,7 @@
     <ul class="nav navbar-nav navbar-right">
       <? $cart = $this->cart(); if ($cart->isActive()): ?>
         <li id="cartSummary">
-          <a id="cartItems" class="modal-link" title="<?=$this->transEsc('View Book Bag')?>" href="<?=$this->url('cart-home')?>"><i class="fa fa-star"></i> <strong><?=count($cart->getItems())?></strong> <?=$this->transEsc('items')?><?=$cart->isFull() ? ' (' .  $this->transEsc('bookbag_full') . ')' : ''?></a>
+          <a id="cartItems" data-lightbox="" title="<?=$this->transEsc('View Book Bag')?>" href="<?=$this->url('cart-home')?>"><i class="fa fa-star"></i> <strong><?=count($cart->getItems())?></strong> <?=$this->transEsc('items')?><?=$cart->isFull() ? ' (' .  $this->transEsc('bookbag_full') . ')' : ''?></a>
         </li>
       <? endif; ?>
       <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
@@ -29,7 +29,7 @@
           <? else: ?>
             <a href="<?=$this->url('myresearch-userlogin')?>" class="modal-link" title="<?=$this->transEsc("Login")?>"><i class="fa fa-user"></i> <?=$this->transEsc("Login")?></a>
           <? endif; ?>
-        </li>        
+        </li>
       <? endif; ?>
       <? if(strlen($this->client()->getWebsite('adis')) > 0): ?>
       <li>
@@ -73,7 +73,7 @@
           <? endforeach; ?>
           </ul>
         </li>
-      <? endif; ?>             
+      <? endif; ?>
     </ul>
   </div>
 <? endif; ?>
