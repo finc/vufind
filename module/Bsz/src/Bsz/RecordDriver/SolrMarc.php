@@ -694,7 +694,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
      */
     public function getPPN(): string
     {
-        return $this->getMarcRecord()->getField('001')->getData();
+        $m001 = $this->getMarcRecord()->getField('001');
+        return is_object($m001) ? $m001->getData() : '';
     }
 
     /**
