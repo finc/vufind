@@ -6,10 +6,6 @@
     $isbn = $this->driver->getCleanISBN();
 ?>
 <table class="table table-striped" summary="<?=$this->transEsc('Description')?>">
-    <colgroup>
-        <col style="width: 30%;"/>
-        <col style="width: 60%;"/>
-    </colgroup>
   <? $langs = $this->driver->getLanguages(); if (!empty($langs)): ?>
   <? $contentDisplayed = true; ?>
     <tr>
