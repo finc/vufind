@@ -55,14 +55,14 @@
         <? if($count > 0):?>; <?endif;?>
             <span property="publisher" typeof="Organization">
             <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
-            <span property="location"><?=$this->escapeHtml($pubPlace)?></span>
+            <span property="location"><?=$this->escapeHtml($pubPlace)?></span> :
         <? endif; ?>
         <? $pubName = $field->getName(); if (!empty($pubName)): ?>
             <span property="name"><?=$this->escapeHtml($pubName)?></span>
         <? endif; ?>
         </span>
         <? $pubDate = $field->getDate(); if (!empty($pubDate)): ?>
-            <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
+           , <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
         <? endif; ?>
         <? $count++ ?>
     <? endforeach; ?>

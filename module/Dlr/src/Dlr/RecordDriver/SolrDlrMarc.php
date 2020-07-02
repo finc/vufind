@@ -304,4 +304,23 @@ class SolrDlrMarc extends SolrMarc
         }
         return $dates;
     }
+    /**
+     * Get the publishers of the record.
+     *
+     * @return array
+     */
+    public function getPublishers(): array
+    {
+        $fields = [
+            260 => 'b',
+            264 => 'b',
+        ];
+        $publishers = $this->getFieldsArray($fields);
+
+        foreach ($publishers as $k => $publisher) {
+            $publishers[$k] = preg_replace('/ :$/', '', $publisher);
+        }
+        return $publishers;
+    }
+
 }

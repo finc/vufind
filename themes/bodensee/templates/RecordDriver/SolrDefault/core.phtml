@@ -268,7 +268,7 @@
                                 </span>
                                 <? $pubDate = $field->getDate();
                                 if (!empty($pubDate)): ?>
-                                    <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
+                                   , <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
                                 <? endif; ?>
                                 <br/>
                             <? endforeach; ?>
@@ -283,12 +283,10 @@
                             <? endif; ?>
                                 <? $pubName = $field->getName();
                                 if (!empty($pubName)): ?>
-                                    <span property="name"><?= $this->escapeHtml($pubName) ?></span>
-                                <? endif; ?>
-                            </span>
+                                    <span property="name"><?= $this->escapeHtml($pubName) ?></span><? endif; ?></span>
                             <? $pubDate = $field->getDate();
                             if (!empty($pubDate)): ?>
-                                <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
+                                , <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
                             <? endif; ?>
                             <br/>
                         <? endforeach; ?>
