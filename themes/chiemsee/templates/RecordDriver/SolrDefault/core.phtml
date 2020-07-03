@@ -125,7 +125,7 @@
             </tr>
             <? endif; ?>
 
-            <? $authors = $this->driver->getDeduplicatedAuthors(['role', 'gnd', 'live']); ?>
+            <? $authors = $this->driver->getDeduplicatedAuthors(['role', 'gnd', 'live']);?>
 
             <? if (isset($authors['primary']) && !empty($authors['primary'])): ?>
             <tr>

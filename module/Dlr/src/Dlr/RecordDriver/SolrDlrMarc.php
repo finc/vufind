@@ -181,40 +181,6 @@ class SolrDlrMarc extends SolrMarc
     }
 
     /**
-     * Get an array of all secondary authors (complementing getPrimaryAuthor()).
-     * @return array
-     */
-    public function getSecondaryAuthors()
-    {
-        $corporate = $this->getCorporateAuthor();
-        if (empty($corporate)) {
-            return isset($this->fields['author2']) ?
-                $this->fields['author2'] : [];
-        } else {
-            return [];
-        }
-    }
-
-    /**
-     * Get the main corporate author (if any) for the record.
-     * @return string
-     */
-    public function getCorporateAuthor()
-    {
-        // Try 110 first -- if none found, try 710 next.
-        $main = $this->getFirstFieldValue('110', ['a', 'c', 'b']);
-        if (!empty($main)) {
-            return $main;
-        }
-        return $this->getFirstFieldValue('710', ['a', 'c', 'b']);
-    }
-
-    public function getNetwork()
-    {
-        return '';
-    }
-
-    /**
      * @return bool
      */
     public function supportsAjaxStatus()
