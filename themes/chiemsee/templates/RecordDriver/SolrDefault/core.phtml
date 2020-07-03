@@ -174,18 +174,25 @@
                 </tr>
             <?php endif; ?>
 
-            <? $cast = $this->driver->tryMethod('getMusicalCast'); ?>
+            <?php if ($this->driver instanceof \Dlr\RecordDriver\SolrNtrsOai):?>
+                <?php $copyright= $this->driver->getCopyright(); if (!empty($copyright)):?>
+                    <tr>
+                        <th><?=$this->transEsc('Rights')?>: </th>
+                        <td>
+                            <?=$this->escapeHtml($copyright)?>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            <?php endif; ?>
 
-            <? if (isset($cast) && !empty($cast)): ?>
+            <?php $source = $this->driver->getSource(); if (!empty($source)):?>
                 <tr>
-                    <th><?=$this->transEsc('MusicalCast')?>: </th>
-                    <td property="cast" class="markjs">
-                        <? foreach ($cast as $item): ?>
-                            <?= $item ?><br/>
-                        <? endforeach; ?>
+                    <th><?=$this->transEsc('Source')?>: </th>
+                    <td>
+                        <?=$this->escapeHtml($source)?>
                     </td>
                 </tr>
-            <? endif; ?>
+            <?php endif; ?>
 
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
             <tr>
