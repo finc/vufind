@@ -74,11 +74,6 @@ class SolrNtrsOai extends SolrDefault
         $this->runner = $runner;
     }
 
-    public function parseOAI()
-    {
-        $xml = $this->getXML('oai_dc');
-    }
-
     /**
      * Set raw data to initialize the object.
      *
@@ -100,16 +95,17 @@ class SolrNtrsOai extends SolrDefault
     /**
      * Returns an array with url and desc keys to link the document id.
      * @return array
+     * @throws \Exception
      */
-    public function getDokumentLink()
+    public function getDocumentLink()
     {
         $link = [];
         $id = parent::getUniqueID();
         $split = explode(':', $id);
         if (strpos($split[1], 'nasa') !== false) {
-            $link['url'] = 'http://ntrs.nasa.gov/search.jsp?R=' . end($split);
+            $link['url'] = 'https://ntrs.nasa.gov/search.jsp?R=' . end($split);
         } else {
-            $link['url'] = 'http://elib.dlr.de/' . end($split);
+            $link['url'] = 'https://elib.dlr.de/' . end($split);
         }
         $link['desc'] = end($split);
         return $link;

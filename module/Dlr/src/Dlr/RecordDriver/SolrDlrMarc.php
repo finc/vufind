@@ -207,9 +207,10 @@ class SolrDlrMarc extends SolrMarc
 
         if ($m008) {
             $data = $m008->getData();
-            $language = substr($data, 35, 3);
-            if ($language) {
-                $languages[] = $language;
+            preg_match('/.{35}([a-z]{3})/', $m008->getData(), $matches);
+
+            if (isset($matches[1])) {
+                $languages[] = $matches[1];
             }
         }
 
@@ -288,5 +289,4 @@ class SolrDlrMarc extends SolrMarc
         }
         return $publishers;
     }
-
 }

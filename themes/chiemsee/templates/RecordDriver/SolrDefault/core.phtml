@@ -160,13 +160,17 @@
                 </td>
             </tr>
             <? endif;?>
-            <?php $source = $this->driver->getUniqueId(); if (!empty($source)):
-            $source = preg_replace('/\(.*\)|.*:/', '', $source) ?>
-
+            <?php $link = $this->driver->tryMethod('getDocumentLink'); if (!empty($link)): ?>
                 <tr>
                     <th><?=$this->transEsc('DocumentID')?>: </th>
-                    <td><?=$this->escapeHtml($source)?>
-                    </td>
+                    <td><a href="<?=$link['url']?>" class="external"><?=$this->escapeHtml($link['desc'])?></a></td>
+                </tr>
+            <?php else: ?>
+                <? $source = $this->driver->getUniqueId();
+                $source = preg_replace('/\(.*\)|.*:/', '', $source); ?>
+                <tr>
+                    <th><?=$this->transEsc('DocumentID')?>: </th>
+                    <td><?=$this->escapeHtml($source)?></td>
                 </tr>
             <?php endif; ?>
 
