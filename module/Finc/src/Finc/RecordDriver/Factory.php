@@ -59,7 +59,7 @@ class Factory extends SolrDefaultFactory
      * @param ContainerInterface $container
      * @return SolrAI
      */
-    public function getSolrAI(ContainerInterface $container)
+    public static function getSolrAI(ContainerInterface $container)
     {
         return new SolrAI(
             $container->get('VuFind\Config')->get('config'),
@@ -72,7 +72,7 @@ class Factory extends SolrDefaultFactory
      * @param ContainerInterface $container
      * @return SolrIS
      */
-    public function getSolrIS(ContainerInterface $container)
+    public static function getSolrIS(ContainerInterface $container)
     {
         return new SolrIS(
             $container->get('VuFind\Config')->get('config'),
