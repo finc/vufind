@@ -1,5 +1,5 @@
 <div>
-<? $containerId = $this->driver->getContainerId();
+<? $containerId = $this->driver->tryMethod('getContainerId');
    $summDate = $this->driver->getPublicationDates();
    $summAuthors = $this->driver->getDeduplicatedAuthors(['role', 'gnd', 'live']);
    $summDate = $this->driver->getPublicationDates();
