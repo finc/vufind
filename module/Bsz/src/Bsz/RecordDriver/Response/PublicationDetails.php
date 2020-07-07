@@ -110,13 +110,14 @@ class PublicationDetails
      */
     public function __toString()
     {
-        return trim(
-            preg_replace(
-                '/\s+/',
-                ' ',
-                implode(' ', [$this->place, $this->name, $this->date])
-            )
-        );
+        $retval = [
+            $this->getName().
+            ' : ',
+            $this->getPlace(),
+            ', ',
+            $this->getDate()
+        ];
+        return implode('', $retval);
     }
 
     private static function replaceDelimiters(string $input) : string
