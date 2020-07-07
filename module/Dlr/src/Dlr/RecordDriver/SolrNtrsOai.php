@@ -229,16 +229,16 @@ class SolrNtrsOai extends SolrDefault
 
     /**
      * For rticles: get container title
-     * @return type
+     * @return string
      */
     public function getContainerTitle()
     {
-        return '';
+        return $this->getContainerInfo(0);
     }
 
     /**
      * For rticles: get container title
-     * @return type
+     * @return array
      */
     public function getContainer()
     {
@@ -251,7 +251,34 @@ class SolrNtrsOai extends SolrDefault
      */
     public function getContainerIssue()
     {
-        // not supported for OAI data:
+        return $this->getContainerInfo(2);
+    }
+
+    /**
+     * @return string
+     */
+    public function getContainerVolume()
+    {
+        return $this->getContainerInfo(1);
+    }
+
+    /**
+     * @param $arraykey
+     *
+     * @return string
+     */
+    private function getContainerInfo($arraykey)
+    {
+        $array = $this->getDcFields('type');
+        if (is_array($array)) {
+            $raw = array_shift($array);
+            if (!empty($raw)) {
+                $string = $raw->__toString();
+                $parts = explode('; ', $string);
+                return isset($parts[$arraykey]) ? $parts[$arraykey] : '';
+            }
+
+        }
         return '';
     }
 
@@ -261,8 +288,7 @@ class SolrNtrsOai extends SolrDefault
      */
     public function getContainerPages()
     {
-        // not supported for OAI data:
-        return '';
+        return $this->getContainerInfo(3);
     }
 
     /**
@@ -302,6 +328,9 @@ class SolrNtrsOai extends SolrDefault
         return true;
     }
 
+    /**
+     * @return array
+     */
     protected function getBookOpenUrlParams()
     {
         $params = $this->getDefaultOpenUrlParams();
