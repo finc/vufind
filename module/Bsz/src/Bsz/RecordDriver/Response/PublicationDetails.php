@@ -70,7 +70,7 @@ class PublicationDetails
     {
         $this->place = static::replaceDelimiters($place);
         $this->name = static::replaceDelimiters($name);
-        $this->date = static::replaceDelimiters($date);
+        $this->date = static::replaceDelimiters($date, '.');
     }
 
     /**
@@ -112,9 +112,9 @@ class PublicationDetails
     {
         $retval = [
             $this->getName().
-            ' : ',
+            $this->getName() && $this->getPlace() ? ' : ' : '',
             $this->getPlace(),
-            ', ',
+            $this->getPlace() && $this->getDate() ? ', ' : '',
             $this->getDate()
         ];
         return implode('', $retval);
@@ -122,11 +122,13 @@ class PublicationDetails
 
     /**
      * @param string $input
+     * @param string $chars
      *
      * @return string
      */
-    private static function replaceDelimiters(string $input) : string
+    private static function replaceDelimiters(string $input, string $chars = '') : string
     {
-        return preg_replace('/\s?[:,]\s?$/', '', $input);
+
+        return preg_replace('/\s?[:,'.$chars.']\s?$/', '', $input);
     }
 }
