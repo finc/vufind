@@ -51,21 +51,20 @@
 <strong><?=$this->transEsc('Published')?>: </strong>
 <? if (!empty($publications[0])): ?>
     <span class="markjs">
-    <? foreach ($publications as $field): ?>
-        <? if($count > 0):?>; <?endif;?>
-            <span property="publisher" typeof="Organization">
-            <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
-            <span property="location"><?=$this->escapeHtml($pubPlace)?></span> :
-        <? endif; ?>
-        <? $pubName = $field->getName(); if (!empty($pubName)): ?>
-            <span property="name"><?=$this->escapeHtml($pubName)?></span>
-        <? endif; ?>
-        </span>
-        <? $pubDate = $field->getDate(); if (!empty($pubDate)): ?>
-           , <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
-        <? endif; ?>
+        <? foreach ($publications as $field): ?>
+        <?php
+            $pubName = $field->getName();
+            $pubPlace = $field->getPlace();
+            $pubDate = $field->getDate();
+        ?>
+<? if($count > 0):?>; <?endif;?>
+<?php if (!empty($pubName)): ?><span property="name"><?=$this->escapeHtml($pubName)?></span><? endif;?>
+<?php if(!empty($pubName) && !empty($pubPlace)):?> : <?php endif; ?>
+<?php if (!empty($pubPlace)):?><span property="location"><?=$this->escapeHtml($pubPlace)?></span><? endif;?>
+<?php if(!empty($pubPlace) && !empty($pubDate)):?>, <?php endif; ?>
+<?php if (!empty($pubDate)): ?><span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span><? endif;?>
         <? $count++ ?>
-    <? endforeach; ?>
+        <? endforeach; ?>
     </span>
 <? else: ?>
     <? if (!empty($summDate) && isset($summDate[0])): ?>

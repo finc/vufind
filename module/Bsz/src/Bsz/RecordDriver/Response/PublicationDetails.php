@@ -128,7 +128,10 @@ class PublicationDetails
      */
     private static function replaceDelimiters(string $input, string $chars = '') : string
     {
+        $retval = preg_replace('/\s?[:,'.$chars.']\s?$/', '', $input);
+        // remove braces
+        $retval = preg_replace('/[\[\]]/', '', $input);
+        return $retval;
 
-        return preg_replace('/\s?[:,'.$chars.']\s?$/', '', $input);
     }
 }
