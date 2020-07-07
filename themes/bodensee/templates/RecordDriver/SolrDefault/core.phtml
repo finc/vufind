@@ -255,39 +255,12 @@
                     <td>
                         <? if (isset($publicationsOl)): ?>
                             <? foreach ($publicationsOl as $field): ?>
-                                <span property="publisher" typeof="Organization">
-                                <? $pubPlace = $field->getPlace();
-                                 if (!empty($pubPlace)):
-                                    $pubPlace = preg_replace('/:\s?$/', '', $pubPlace); ?>
-                                    <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
-                                <? endif; ?>
-                                            <? $pubN = $field->getName();
-                                            if (!empty($pubName)): ?>
-                                                <span property="name"><?= $this->escapeHtml($pubName) ?></span>
-                                            <? endif; ?>
-                                </span>
-                                <? $pubDate = $field->getDate();
-                                if (!empty($pubDate)): ?>
-                                   , <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
-                                <? endif; ?>
+                                <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/publication.phtml', ['publication' => $field])?>
                                 <br/>
                             <? endforeach; ?>
                         <? endif; ?>
                         <? foreach ($publications as $field): ?>
-                            <span property="publisher" typeof="Organization">
-                            <? $pubPlace = $field->getPlace();
-                            if (!empty($pubPlace)):
-                                $pubPlace = preg_replace('/:\s?$/', '', $pubPlace); ?>
-
-                                <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
-                            <? endif; ?>
-                                <? $pubName = $field->getName();
-                                if (!empty($pubName)): ?>
-                                    <span property="name"><?= $this->escapeHtml($pubName) ?></span><? endif; ?></span>
-                            <? $pubDate = $field->getDate();
-                            if (!empty($pubDate)): ?>
-                                , <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
-                            <? endif; ?>
+                            <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/publication.phtml', ['publication' => $field])?>
                             <br/>
                         <? endforeach; ?>
                     </td>
