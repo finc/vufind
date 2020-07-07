@@ -102,7 +102,8 @@
                 'driver' => $this->driver,
                 'hiddenFilterString' => $hiddenFilterString])?>
 
-            <div class="callnumAndLocation ajax-availability hidden">
+            <? if ($this->client()->getDriver() !== "NoILS"): ?>
+                <div class="callnumAndLocation ajax-availability hidden">
                 <? if ($this->driver->supportsAjaxStatus()): ?>
                     <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
                     <span class="callnumber ajax-availability hidden">
@@ -114,7 +115,9 @@
                     </span>
                     <div class="locationDetails"></div>
                 <? endif; ?>
-            </div>
+                </div>
+            <? endif; ?>
+
             <div class="result-formats">
                 <?=$this->record($this->driver)->getFormatList() ?>
                 <? if (empty($urls) && $this->driver->supportsAjaxStatus()): ?>
