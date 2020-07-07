@@ -846,4 +846,32 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
         $id = $this->getSourceIdentifier();
         return $id == 'Solr' ? 'VuFind' : $id;
     }
+
+    /**
+     * Get an array of publication detail lines combining information from
+     * getPublicationDates(), getPublishers() and getPlacesOfPublication().
+     *
+     * @return array
+     */
+    public function getPublicationDetails()
+    {
+        $places = $this->getPlacesOfPublication();
+        $names = $this->getPublishers();
+        $dates = $this->getHumanReadablePublicationDates();
+
+        $i = 0;
+        $retval = [];
+        while (isset($places[$i]) || isset($names[$i]) || isset($dates[$i])) {
+            // Build objects to represent each set of data; these will
+            // transform seamlessly into strings in the view layer.
+            $retval[] = new Response\PublicationDetails(
+                $places[$i] ?? '',
+                $names[$i] ?? '',
+                $dates[$i] ?? ''
+            );
+            $i++;
+        }
+
+        return $retval;
+    }
 }

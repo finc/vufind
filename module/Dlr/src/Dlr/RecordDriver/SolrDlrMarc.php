@@ -30,6 +30,7 @@ use Bsz\FormatMapper;
 use Bsz\RecordDriver\ContainerTrait;
 use Bsz\RecordDriver\MarcAuthorTrait;
 use Bsz\RecordDriver\SolrMarc;
+use Bsz\RecordDriver\Response\PublicationDetails;
 use VuFind\RecordDriver\IlsAwareTrait;
 
 /**
@@ -270,23 +271,5 @@ class SolrDlrMarc extends SolrMarc
             $dates[$k] = isset($matches[1]) ? $matches[1] : null;
         }
         return $dates;
-    }
-    /**
-     * Get the publishers of the record.
-     *
-     * @return array
-     */
-    public function getPublishers(): array
-    {
-        $fields = [
-            260 => 'b',
-            264 => 'b',
-        ];
-        $publishers = $this->getFieldsArray($fields);
-
-        foreach ($publishers as $k => $publisher) {
-            $publishers[$k] = preg_replace('/ :$/', '', $publisher);
-        }
-        return $publishers;
     }
 }
