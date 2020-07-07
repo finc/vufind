@@ -120,6 +120,11 @@ class PublicationDetails
         return implode('', $retval);
     }
 
+    /**
+     * @param string $input
+     *
+     * @return string
+     */
     private static function replaceDelimiters(string $input) : string
     {
         return preg_replace('/\s?[:,]\s?$/', '', $input);
