@@ -70,7 +70,7 @@ class PublicationDetails
     {
         $this->place = static::replaceDelimiters($place);
         $this->name = static::replaceDelimiters($name);
-        $this->date = static::replaceDelimiters($date, '.\?');
+        $this->date = static::replaceDelimiters($date, ".?");
     }
 
     /**
@@ -128,9 +128,10 @@ class PublicationDetails
      */
     private static function replaceDelimiters(string $input, string $chars = '') : string
     {
-        $retval = preg_replace('/\s?[:,'.$chars.']\s?$/', '', $input);
+        $retval = preg_replace('/[\[\]]/m', '', $input);
+        $pattern = "/\s?[:,".$chars."]\s?$/";
+        $retval = preg_replace($pattern, '', $retval);
         // remove braces
-        $retval = preg_replace('/[\[\]]/', '', $retval);
         return $retval;
 
     }

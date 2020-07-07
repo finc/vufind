@@ -871,7 +871,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
             );
             $i++;
         }
-
         return $retval;
     }
 }

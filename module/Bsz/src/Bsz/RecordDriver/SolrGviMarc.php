@@ -397,7 +397,14 @@ class SolrGviMarc extends SolrMarc implements Definition
         foreach ($fields as $no => $subfield) {
             $raw = $this->getFieldArray($no, (array)$subfield, false);
             if (count($raw) > 0 && !empty($raw[0])) {
-                $places[] = $raw;
+                if (is_array($raw)) {
+                    foreach ($raw as $p) {
+                        $places[] = $p;
+                    }
+                } else {
+                    $places[] = $raw;
+                }
+
             }
         }
         foreach ($places as $k => $place) {
@@ -409,7 +416,7 @@ class SolrGviMarc extends SolrMarc implements Definition
                 $places[$k] = str_replace($replace, '', $place);
             }
         }
-        return array_unique($places);
+        return $places;
     }
 
     /**
