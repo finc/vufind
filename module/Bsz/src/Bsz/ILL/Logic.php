@@ -156,7 +156,7 @@ class Logic
 
     /**
      * Returns the unique status code
-     *
+     * TODO: this method shoudl return something from conffiguration.      *
      * @return int
      */
     public function getStatusCode()
@@ -175,12 +175,27 @@ class Logic
      */
     protected function determineStatus()
     {
-        $this->status[] = !$this->isHebis8();
-        $this->status[] = !$this->isFree();
-        $this->status[] = !$this->isSerialAndCollection();
-        $this->status[] = !$this->isAtCurrentLibrary();
-        $this->status[] = $this->checkFormat();
-        $this->status[] = $this->checkIndicator();
+        $checks = $this->config->get('Checks')->get('methods');
+        $checks = explode(', ', $checks);
+
+        foreach ($checks as $check) {
+
+            $negate = (bool)preg_match('/^!/', $check);
+
+            if ($negate) {
+                $check = preg_replace('/^!/', '', $check);
+            }
+
+            $method = 'check'.$check;
+
+            if (method_exists($this, $method)) {
+               $status = $this->$method();
+               if ($negate) {
+                   $status = ! $status;
+               }
+               $this->status[$check] = $status;
+            }
+        }
         return $this->status;
     }
 
@@ -190,15 +205,13 @@ class Logic
      * @return boolean
      */
 
-    protected function isHebis8()
+    protected function checkHebis8()
     {
         $network = $this->driver->getNetwork();
         $ppn = $this->driver->getPPN();
 
         if ($network == 'HEBIS' && preg_match('/^8/', $ppn)) {
-            $this->messages[] = 'ILL::cond_hebis_8';
             return true;
-
         }
         return false;
 
@@ -210,10 +223,9 @@ class Logic
      * @return boolean
      */
 
-    protected function isFree()
+    protected function checkFree()
     {
         if ($this->driver->isFree()) {
-            $this->messages[] = 'ILL::cond_free';
             return true;
         }
         return false;
@@ -225,10 +237,9 @@ class Logic
      * @return boolean
      */
 
-    protected function isSerialAndCollection()
+    protected function checkSerialOrCollection()
     {
         if ($this->driver->isSerial() && $this->driver->isCollection()) {
-            $this->messages[] = 'ILL::cond_serial_collection';
             return true;
         }
         return false;
@@ -243,7 +254,7 @@ class Logic
      * @return boolean
      */
 
-    protected function isAtCurrentLibrary()
+    protected function checkCurrentLibrary()
     {
         $status = false;
         $network = $this->driver->getNetwork();
@@ -309,7 +320,7 @@ class Logic
             }
         }
         if ($hasParallel) {
-            $this->messages[] = 'ILL::parallel_editions_available';
+            //$this->messages[] = 'ILL::parallel_editions_available';
         }
         return $hasParallel;
     }
@@ -416,7 +427,6 @@ class Logic
             $this->messages[] = 'ILL::cond_format_'.$this->format;
             return false;
         }
-
         return true;
     }
 
@@ -444,21 +454,31 @@ class Logic
                 return true;
             }
         }
-
-        $this->messages[] = 'ILL::cond_indicator';
         return false;
     }
 
     /**
-     * Get all messages that occurrec during processing. Messages are trans-
+     * Get all messages that occurre during processing. Messages are trans-
      * lation keys and should be translated afterwards.
-     *      *
+     *
      * @return array
      */
 
     public function getMessages()
     {
-        return $this->messages;
+        /*
+         * TODO there are still some messages set in methods. These should be
+         * removed to the configuration. It might be neccessary to split those
+         * methods into exactly one task.
+         */
+        $retval = $this->messages;
+        foreach ($this->status as $check => $result) {
+
+            if (!$result && $this->config->get('Messages')->OffsetExists($check)) {
+                $retval[] = $$this->config->get('Messages')->get($check);
+            }
+        }
+        return $retval;
     }
 
     /**
