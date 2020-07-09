@@ -1313,4 +1313,14 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         return 'NoNetwork';
     }
+
+    /**
+     * Get an array of bibliographic relations for the record.
+     *
+     * @return array
+     */
+    public function getBiblioRelations()
+    {
+        return $this->getFieldArray('787', ['i', 'a', 't', 'd']);
+    }
 }
