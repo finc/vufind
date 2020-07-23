@@ -1277,6 +1277,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $array_clean;
     }
 
+
     /**
      * This method is basically a duplicate of getAllRecordLinks but
      * much easier designer and works well with German library links
@@ -1323,4 +1324,25 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         return $this->getFieldArray('787', ['i', 'a', 't', 'd']);
     }
-}
+
+    /**
+     * get 787|w if it exists with (DE-627)-Prefix
+     *
+     * @return array
+     */
+    public function getBiblioRelatonsIds()
+    {
+        $fields = [
+            787 => ['w'],
+        ];
+        $ids = [];
+        $array_clean = [];
+        $array = $this->getFieldsArray($fields);
+        foreach ($array as $subfields) {
+            $ids = explode(' ', $subfields);
+            if (preg_match('/^((?!DE-576|DE-609|DE-600.*-).)*$/', $ids[0])) {
+                $array_clean[] = $ids[0];
+            }
+        }
+        return $array_clean;
+    }}

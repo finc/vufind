@@ -260,6 +260,7 @@
 
     <? $bibliorelations = $this->driver->tryMethod('getBiblioRelations'); if (!empty($bibliorelations)): ?>
         <? $contentDisplayed = true; ?>
+        <? $bibliorelationsids = $this->driver->tryMethod('getBiblioRelationsIds'); ?>
         <tr>
             <th><?=$this->transEsc('Bibliographic Relations')?>: </th>
             <td>

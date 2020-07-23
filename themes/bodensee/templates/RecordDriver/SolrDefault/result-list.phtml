@@ -185,7 +185,7 @@
                         $date = array_shift($dates);
                         $edition = $sub->getEdition();
                         $header = [
-                            $this->escapeHtml($sub->getNetwork()),
+                            $this->escapeHtml($this->driver->tryMethod('$sub->getNetwork()')),
                             //$this->escapeHtml($date),
                             $this->escapeHtml($edition)
                         ];
