@@ -5,37 +5,16 @@
     // Grab clean ISBN for convenience:
     $isbn = $this->driver->getCleanISBN();
 ?>
-<table class="table table-striped">
-  <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn)): ?>
+<table class="table table-striped" summary="<?=$this->transEsc('Description')?>">
+  <? $langs = $this->driver->getLanguages(); if (!empty($langs)): ?>
   <? $contentDisplayed = true; ?>
     <tr>
-      <th><?=$this->abbrev('PPN')?>:</th>
-      <td>
-        <?=$this->recordLink()->linkPPN($this->driver) ?>
+      <th><?=$this->transEsc('Language')?>: </th>
+      <? $count = 0 ?>
+      <td><? foreach ($langs as $lang): ?><? if($count > 0):?>; <?endif;?><?= $this->transEsc($lang)?><? $count++?><? endforeach; ?>
       </td>
     </tr>
   <? endif; ?>
-  <? $zdb = $this->driver->tryMethod('getZdbId'); if(!empty($zdb)): ?>
-  <? $contentDisplayed = true; ?>
-    <tr>
-      <th><?=$this->transEsc('ZDB-ID')?>:</th>
-      <td>
-          <? if (isset($zdb)): ?>
-            <a class="external" href="https://zdb-katalog.de/list.xhtml?t=<?=$this->escapeHtml($zdb)?>&key=zdb"><?=$this->escapeHtml($zdb)?></a>
-          <? endif; ?>
-      </td>
-    </tr>
-  <? endif; ?>
-  <? $note = $this->driver->tryMethod('getNote');
-     if(!empty($note)):
-     $contentDisplayed = true;
-  ?>
-    <tr>
-        <th><?=$this->transEsc('Note')?></th>
-        <td><?=$this->escapeHtml($note)?></td>
-    </tr>
-  <? endif; ?>
-
   <? $summ = $this->driver->getSummary(); if (!empty($summ)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
@@ -52,7 +31,7 @@
      $contentDisplayed = true;
   ?>
     <tr>
-        <th><?=$this->abbrev('GTIN')?>: </th>
+        <th><?=$this->transEsc('EAN')?></th>
         <td><?=$this->escapeHtml($ean)?></td>
     </tr>
   <? endif; ?>
@@ -169,7 +148,7 @@
   <? $isbns = $this->driver->getISBNs(); if (!empty($isbns)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
-      <th><?=$this->abbrev('ISBN', 'ISBN_long')?>: </th>
+      <th><?=$this->transEsc('ISBN')?>: </th>
       <td>
         <? foreach ($isbns as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
@@ -181,7 +160,7 @@
   <? $issns = $this->driver->getISSNs(); if (!empty($issns)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
-      <th><?=$this->abbrev('ISSN', 'ISSN_long')?>: </th>
+      <th><?=$this->transEsc('ISSN')?>: </th>
       <td>
         <? foreach ($issns as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
@@ -246,35 +225,52 @@
     </tr>
   <? endif; ?>
 
-    <? $remarks = $this->driver->tryMethod('getRemarks'); if (!empty($remarks)): ?>
-        <? $contentDisplayed = true; ?>
-        <tr>
-            <th><?=$this->transEsc('remarks')?>: </th>
-            <td>
-                <? foreach ($remarks as $field): ?>
-                    <?=$this->escapeHtml($field)?><br/>
-                <? endforeach; ?>
-            </td>
-        </tr>
-    <? endif; ?>
-
-    <? $bibliorelations = $this->driver->tryMethod('getBiblioRelations'); if (!empty($bibliorelations)): ?>
-        <? $contentDisplayed = true; ?>
-        <? $bibliorelationsids = $this->driver->tryMethod('getBiblioRelationsIds'); ?>
-        <tr>
-            <th><?=$this->transEsc('Bibliographic Relations')?>: </th>
-            <td>
-                <? foreach ($bibliorelations as $field): ?>
-                    <?=$this->escapeHtml($field)?><br/>
-                <? endforeach; ?>
-            </td>
-        </tr>
-    <? endif; ?>
-
+  <? $authorNotes = empty($isbn) ? array() : $this->authorNotes($isbn); if (!empty($authorNotes)): ?>
+    <? $contentDisplayed = true; ?>
+    <tr>
+      <th><?=$this->transEsc('Author Notes')?>: </th>
+      <td>
+        <? foreach ($authorNotes as $provider => $list): ?>
+          <? foreach ($list as $field): ?>
+            <?=$field['Content']?><br/>
+          <? endforeach; ?>
+        <? endforeach; ?>
+      </td>
+    </tr>
+  <? endif; ?>
+    <? $notations = $this->driver->tryMethod('getRVKNotations');
+  if(!empty($notations)): ?>
+  <? $contentDisplayed = true; ?>
+  <tr>
+      <th>RVK-<?=$this->transEsc('Notation')?></th>
+      <? if(is_array($notations)): ?>
+      <td>
+          <? foreach ($notations as $shortcut => $description): ?>
+          <?
+          $descriptionHtml = '<ol>';
+          foreach($description as $item) {
+            $descriptionHtml .= '<li>'.$item.'</li>';
+          }
+          $descriptionHtml .= '</ol>';
+          ?>
+          <div class="notationLine">
+                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('rvknotation', $shortcut, $this->searchClassId)?>" class="searchicon" title="<?=$descriptionHtml?>" ><?=$this->transEsc($shortcut)?></a>
+          </div>
+          <? endforeach; ?>
+      </td>
+      <? endif; ?>
+  </tr>
+  <? endif; ?>
+  <? $abstract = $this->driver->tryMethod('getAbstract');
+     if ($abstract): ?>
+     <? $contentDisplayed = true; ?>
+     <tr>
+         <th><?=$this->transEsc('Abstract')?></th>
+         <td><?=$this->escapeHtml($abstract)?></td>
+     </tr>
+ <? endif; ?>
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
-
-
 
 </table>

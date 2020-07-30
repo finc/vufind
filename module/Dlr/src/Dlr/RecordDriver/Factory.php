@@ -16,14 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace Dlr\RecordDriver;
 
+use Exception;
 use Interop\Container\ContainerInterface;
+use VuFind\ILS\Connection;
+use VuFind\ILS\Logic\Holds;
+use VuFind\ILS\Logic\TitleHolds;
 use VuFind\RecordDriver\SolrDefaultFactory;
 
 /**
  * Factory fo DLR RecordDrivers
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class Factory extends SolrDefaultFactory
@@ -31,22 +35,23 @@ class Factory extends SolrDefaultFactory
     /**
      * Create an object
      *
-     * @param ContainerInterface $container     Service manager
-     * @param string             $requestedName Service being created
-     * @param null|array         $options       Extra options (optional)
+     * @param ContainerInterface $container Service manager
+     * @param string $requestedName         Service being created
+     * @param null|array $options           Extra options (optional)
      *
      * @return object
-     *
      * @throws ServiceNotFoundException if unable to resolve the service.
      * @throws ServiceNotCreatedException if an exception is raised when
      * creating a service.
      * @throws ContainerException if any other error occurs
      */
-    public function __invoke(ContainerInterface $container, $requestedName,
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
         array $options = null
     ) {
         if (!empty($options)) {
-            throw new \Exception('Unexpected options sent to factory.');
+            throw new Exception('Unexpected options sent to factory.');
         }
 
         $requestedName = $requestedName;
@@ -58,9 +63,9 @@ class Factory extends SolrDefaultFactory
             $container->get('VuFind\Config')->get('searches')
         );
         $driver->attachILS(
-            $container->get(\VuFind\ILS\Connection::class),
-            $container->get(\VuFind\ILS\Logic\Holds::class),
-            $container->get(\VuFind\ILS\Logic\TitleHolds::class)
+            $container->get(Connection::class),
+            $container->get(Holds::class),
+            $container->get(TitleHolds::class)
         );
 
         $driver->attachSearchService($container->get('VuFind\Search'));

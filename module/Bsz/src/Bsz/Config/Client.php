@@ -426,4 +426,14 @@ class Client extends Config
         }
         return '';
     }
+
+    /**
+     * Returns driver
+     * @return string
+     */
+    public function getDriver()
+    {
+        return $this->get('Catalog')->get('driver');
+    }
+
 }

@@ -73,41 +73,6 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
     }
 
     /**
-     * Default tab for Solr is holdings, excepts its a collection, then volumes.
-     *
-     * @param AbstractRecordDriver $driver Record driver
-     *
-     * @return string
-     */
-    protected function getDefaultTabForRecord(AbstractRecordDriver $driver)
-    {
-        // Load configuration:
-        $config = $this->getTabConfiguration();
-
-        // Get the current record driver's class name, then start a loop
-        // in case we need to use a parent class' name to find the appropriate
-        // setting.
-        $className = get_class($driver);
-        while (true) {
-            $multipart = $driver->tryMethod('getMultipartLevel');
-            if (isset($multipart)) {
-                if ($multipart == SolrMarc::MULTIPART_COLLECTION) {
-                    return 'Volumes';
-                } else {
-                    return 'Holdings';
-                }
-            } elseif (isset($config[$className]['defaultTab'])) {
-                return $config[$className]['defaultTab'];
-            }
-            $className = get_parent_class($className);
-            if (empty($className)) {
-                // No setting found...
-                return null;
-            }
-        }
-    }
-
-    /**
      * Render ILL form, check password and submit
      */
     public function ILLFormAction()

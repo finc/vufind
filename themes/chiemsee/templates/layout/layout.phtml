@@ -100,9 +100,21 @@
           $this->headScript()->appendFile("keep_alive.js");
       }
     ?>
-    <?=$this->headScript()?>
+      <?php
+      $root = rtrim($this->url('home'), '/');
+      $translations = $this->jsTranslations()->getJSON();
+      $dsb = DEFAULT_SEARCH_BACKEND;
+      $setupJS = <<<JS
+VuFind.path = '{$root}';
+VuFind.defaultSearchBackend = '{$dsb}';
+VuFind.addTranslations({$translations});
+JS;
+      $this->headScript()->appendScript($setupJS);
+      ?>
+      <?=$this->headScript()?>
+
   </head>
-  <body class="<?=$this->layoutClass('offcanvas-row')?><?php if ($this->layout()->rtl): ?> rtl<?php endif; ?>">
+  <body class="template-dir-<?=$this->templateDir?> template-name-<?=$this->templateName?> <?=$this->layoutClass('offcanvas-row')?><?php if ($this->layout()->rtl): ?> rtl<?php endif; ?>">
     <?php // Set up the search box -- there are three possible cases:
       // 1. No search box was set; we should default to the normal box
       // 2. It was set to false; we should display nothing
@@ -168,7 +180,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 id="modalTitle" class="modal-title">...</h4>
+            <h4 id="modalTitle" class="modal-title"></h4>
           </div>
           <div class="modal-body"><?=$this->transEsc('Loading') ?>...</div>
         </div>
@@ -179,5 +191,8 @@
     <?=$this->googleanalytics()?>
     <?=$this->piwik()?>
     <?=$this->render('bsz/browserupdate.phtml')?>
+    <?php if ($this->recaptcha()->active()): ?>
+        <?=$this->inlineScript(\Zend\View\Helper\HeadScript::FILE, "https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit&hl=" . $this->layout()->userLang, 'SET')?>
+    <?php endif; ?>
   </body>
 </html>

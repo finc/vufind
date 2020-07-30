@@ -16,7 +16,7 @@ $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink
                     <label>
                         <input type="checkbox" name="selectAll" class="checkbox-select-all"/>
                         <?=$this->transEsc('select_page')?>
-                    </label>
+                    </label>&nbsp;
                 </div>
                 <?php if ($this->userlist()->getMode() !== 'disabled'): ?>
                     <button type="submit" class="toolbar-btn btn-type-save" name="saveCart" value="1" title="<?=$this->transEsc('bookbag_save')?>" value="1">

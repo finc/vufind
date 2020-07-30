@@ -33,7 +33,15 @@
         <?php endif; ?>
         <?php if (!empty($row['link']) && strpos($row['link'], 'http') === 0): ?>
             <dt><?=$this->transEsc('Link')?>:</dt>
-            <dd><a href="<?=$row['link']?>" class="external"><?=$this->transEsc('Local Online Access')?></a></dd>
+            <dd>
+                <?php $links = explode (' ', $row['link']) ?>
+                <?php if (is_array($links)): ?>
+                    <?php foreach ($links as $linkitem): ?>
+                        <a href="<?=$linkitem?>" class="external"><?=$this->transEsc('Local Online Access')?></a><br/>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <a href="<?=$row['link']?>" class="external"><?=$this->transEsc('Local Online Access')?></a></dd>
+                <?php endif; ?>
         <?php endif; ?>
         <?php if (!empty($row['status'])): ?>
             <dt><?=$this->transEsc('Bestandsangaben')?>:</dt>

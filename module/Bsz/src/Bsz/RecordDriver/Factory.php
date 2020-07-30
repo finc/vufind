@@ -63,7 +63,6 @@ class Factory extends SolrDefaultFactory
         if (!empty($options)) {
             throw new \Exception('Unexpected options sent to factory.');
         }
-
         $requestedName = $requestedName;
 
         $driver = new $requestedName(

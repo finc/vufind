@@ -24,7 +24,13 @@ class SearchController extends \VuFind\Controller\SearchController
         }
         $request = $this->getRequest();
         $referer = $request->getHeader('referer');
-        $view->referer = $referer;
+
+        if (is_object($referer) &&
+            (strpos($referer->getUri(), '.boss') !== false
+                || strpos($referer->getUri(), 'localhost') !== false)
+        ) {
+            $view->referer = $referer;
+        }
         return $view;
     }
 

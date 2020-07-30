@@ -102,7 +102,8 @@
                 'driver' => $this->driver,
                 'hiddenFilterString' => $hiddenFilterString])?>
 
-            <div class="callnumAndLocation ajax-availability hidden">
+            <? if ($this->client()->getDriver() !== "NoILS"): ?>
+                <div class="callnumAndLocation ajax-availability hidden">
                 <? if ($this->driver->supportsAjaxStatus()): ?>
                     <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
                     <span class="callnumber ajax-availability hidden">
@@ -114,7 +115,9 @@
                     </span>
                     <div class="locationDetails"></div>
                 <? endif; ?>
-            </div>
+                </div>
+            <? endif; ?>
+
             <div class="result-formats">
                 <?=$this->record($this->driver)->getFormatList() ?>
                 <? if (empty($urls) && $this->driver->supportsAjaxStatus()): ?>
@@ -182,7 +185,7 @@
                         $date = array_shift($dates);
                         $edition = $sub->getEdition();
                         $header = [
-                            $this->escapeHtml($sub->getNetwork()),
+                            $this->escapeHtml($this->driver->tryMethod('$sub->getNetwork()')),
                             //$this->escapeHtml($date),
                             $this->escapeHtml($edition)
                         ];
@@ -208,7 +211,7 @@
                                     <a class="title markjs" href="<?=$this->recordLink()->getUrl($sub)?>">
                                         <?=$this->record($sub)->getTitleHtml()?>
                                     </a>
-                                    <? if ($titlesection = $this->driver->getTitleSection()):?>
+                                    <? if ($titlesection = $sub->getTitleSection()):?>
                                         / <?= $titlesection ?>
                                     <? endif; ?>
                                     <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [

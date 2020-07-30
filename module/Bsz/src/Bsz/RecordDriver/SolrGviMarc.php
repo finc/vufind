@@ -392,12 +392,31 @@ class SolrGviMarc extends SolrMarc implements Definition
             260 => 'a',
             264 => 'a',
         ];
-        $places = $this->getFieldsArray($fields);
+
+        $places = [];
+        foreach ($fields as $no => $subfield) {
+            $raw = $this->getFieldArray($no, (array)$subfield, false);
+            if (count($raw) > 0 && !empty($raw[0])) {
+                if (is_array($raw)) {
+                    foreach ($raw as $p) {
+                        $places[] = $p;
+                    }
+                } else {
+                    $places[] = $raw;
+                }
+
+            }
+        }
         foreach ($places as $k => $place) {
             $replace = [' :'];
-            $places[$k] = str_replace($replace, '', $place);
+            if (is_array($place)) {
+                $place = implode(', ', $place);
+                $places[$k] = str_replace($replace, '', $place);
+            } else {
+                $places[$k] = str_replace($replace, '', $place);
+            }
         }
-        return array_unique($places);
+        return $places;
     }
 
     /**
@@ -1258,6 +1277,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $array_clean;
     }
 
+
     /**
      * This method is basically a duplicate of getAllRecordLinks but
      * much easier designer and works well with German library links
@@ -1294,4 +1314,35 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         return 'NoNetwork';
     }
-}
+
+    /**
+     * Get an array of bibliographic relations for the record.
+     *
+     * @return array
+     */
+    public function getBiblioRelations()
+    {
+        return $this->getFieldArray('787', ['i', 'a', 't', 'd']);
+    }
+
+    /**
+     * get 787|w if it exists with (DE-627)-Prefix
+     *
+     * @return array
+     */
+    public function getBiblioRelatonsIds()
+    {
+        $fields = [
+            787 => ['w'],
+        ];
+        $ids = [];
+        $array_clean = [];
+        $array = $this->getFieldsArray($fields);
+        foreach ($array as $subfields) {
+            $ids = explode(' ', $subfields);
+            if (preg_match('/^((?!DE-576|DE-609|DE-600.*-).)*$/', $ids[0])) {
+                $array_clean[] = $ids[0];
+            }
+        }
+        return $array_clean;
+    }}

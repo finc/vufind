@@ -8,7 +8,7 @@
 <div class="well collapse<? if (!$this->client()->hasIsilSession()):?> in<?endif;?>" id="library-typeahead" aria-expanded="<?php if($this->client()->hasIsilSession()):?>false<?php else: ?>true<?php endif; ?>">
     <p><?=$this->translate('ILL::select_library')?></p>
     <form class="form-horizontal" method="POST">
-            <input type="hidden" name="referer" id="typeahead-referer" value="<? if (isset($this->referer) && is_object($this->referer) && strpos($this->referer->getUri(), '.boss') !== FALSE):?><?=$this->referer->getUri()?><? else: ?><?=$this->url('home') ?><? endif;?>" />
+            <input type="hidden" name="referer" id="typeahead-referer" value="<? if (isset($this->referer) && is_object($this->referer)):?><?=$this->referer->getUri()?><? else: ?><?=$this->url('home') ?><? endif;?>" />
             <input type="text" class="form-control typeahead" data-provide="typeahead" autocomplete="off" placeholder="<?=$this->transEsc('ILL::placeholder_typeahead')?>" />
 
     </form>

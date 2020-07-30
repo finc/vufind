@@ -30,22 +30,9 @@ mark {
 
 }
 
-.navbar-right {
-    li > a {
-        background-color: @green;
-        color: white !important;
-    }
-    li > a:hover {
-        background-color: darken(@green, 10%) !important;
-    }
-    .navbar-brand {
-        padding: 0;
-        margin-left: 0 !important;
-    }
-}
 
 
-.btn-primary {
+.navbar-toggle {
   .button-variant(#000; @btn-primary-bg; @btn-primary-border);
 }
 
@@ -116,26 +103,7 @@ h1, h2 {
     text-transform: uppercase;
 }
 
-.navbar .home a {
-    padding-top: 13px;
-    padding-bottom: 12px;
-    i {
-        font-size: 24px;
-    }
-}
-
-header .brand-padding {
-    background-color: @green;
-    img {
-        width: 40px;
-        height: auto;
-    }
-}
-header .brand-padding:hover {
-    background-color: darken(@green, 10%);
-
-}
-
-.logo-container {
-    margin-left: 0 !important;
+.navbar-toggle {
+    width: 50px;
+    height: 50px;
 }
