@@ -78,14 +78,11 @@ class InterlibraryLoan extends AbstractBase
     public function getContent()
     {
         $this->logic->attachDriver($this->driver);
-        $status = $this->logic->isAvailable();
-        $messages = $this->logic->getMessages();
-        $ppns = $this->logic->getPPNs();
-
         return [
-            'status' => $status,
-            'messages' => $messages,
-            'ppns' => $ppns,
+            'status' => $this->logic->isAvailable(),
+            'messages' => $this->logic->getMessages(),
+            'ppns' => $this->logic->getPPNs(),
+            'linklabels' => $this->logic->getLinkLabels(),
             'library' => $this->library,
         ];
     }

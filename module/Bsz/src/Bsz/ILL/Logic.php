@@ -58,6 +58,7 @@ class Logic
     protected $localIsils;
     protected $swbppns = [];
     protected $parallelppns = [];
+    protected $linklabels = [];
     protected $messages = [];
     protected $libraries = [];
     /**
@@ -91,6 +92,7 @@ class Logic
         $this->status = [];
         $this->swbppns = [];
         $this->parallelppns = [];
+        $this->linklabels = [];
     }
 
     /**
@@ -333,6 +335,7 @@ class Logic
                 if (in_array($isil, $this->localIsils)) {
                     $hasParallel = true;
                     $this->parallelppns[] = $record->getUniqueId();
+                    $this->linklabels[] = 'ILL::to_parallel_edition';
                 }
             }
         }
@@ -506,9 +509,19 @@ class Logic
         return array_unique($ppns);
     }
 
+    /**
+     * Returns array of local available ISILs
+     *
+     * @return array
+     */
     public function getLocalIsils()
     {
         return $this->localIsils;
+    }
+
+    public function getLinkLabels()
+    {
+        return $this->linklabels;
     }
 
 
