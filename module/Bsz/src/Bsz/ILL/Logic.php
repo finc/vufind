@@ -261,17 +261,9 @@ class Logic
 
         // if we have local holdings, item can't be ordered - except Journals
         if ($this->driver->hasLocalHoldings() && $this->getFormat() != static::FORMAT_JOURNAL) {
-            $this->messages[] = 'ILL::cond_available_at_current_library';
-            $status = true;
-        } elseif ($this->driver->hasLocalHoldings() && $this->getFormat() === static::FORMAT_JOURNAL) {
-            $this->messages[] = 'ILL::cond_available_at_current_library_journal';
             $status = true;
         } elseif ($network !== 'SWB' && $this->queryWebservice()) {
             $status = true;
-        }
-
-        if ($this->driver->hasLocalHoldings() && $network == 'ZDB') {
-            $this->queryWebservice();
         }
         return $status;
 
@@ -287,6 +279,19 @@ class Logic
     {
         $network = $this->driver->getNetwork();
         if ($network == 'SWB' && $this->hasParallelEditions()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if it is a journal and available locally.
+     *
+     * @return bool
+     */
+    protected function checkJournalAvailable() : bool
+    {
+        if ($this->driver->hasLocalHoldings() && $this->getFormat() === static::FORMAT_JOURNAL) {
             return true;
         }
         return false;
@@ -330,9 +335,6 @@ class Logic
                     $this->parallelppns[] = $record->getUniqueId();
                 }
             }
-        }
-        if ($hasParallel) {
-            //$this->messages[] = 'ILL::parallel_editions_available';
         }
         return $hasParallel;
     }
