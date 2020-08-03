@@ -147,7 +147,9 @@ class Factory
         $search = $sm->getStorage()->offsetGet('Search');
         $lastsearch = $search ? $search->offsetGet('last') : '';
         $lastsearch = urldecode($lastsearch);
-        $illmode = false;
+
+        // we still don't have a solution to hide the tab in local view.
+        $illmode = true;
 
         if (substr_count($lastsearch, 'consortium:"FL"') > 0 ||
             substr_count($lastsearch, 'consortium:"ZDB"') > 0
