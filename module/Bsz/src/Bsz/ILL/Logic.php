@@ -205,7 +205,7 @@ class Logic
      * @return boolean
      */
 
-    protected function checkHebis8()
+    protected function checkHebis8() : bool
     {
         $network = $this->driver->getNetwork();
         $ppn = $this->driver->getPPN();
@@ -223,7 +223,7 @@ class Logic
      * @return boolean
      */
 
-    protected function checkFree()
+    protected function checkFree() : bool
     {
         if ($this->driver->isFree()) {
             return true;
@@ -237,7 +237,7 @@ class Logic
      * @return boolean
      */
 
-    protected function checkSerialOrCollection()
+    protected function checkSerialOrCollection() : bool
     {
         if ($this->driver->isSerial() && $this->driver->isCollection()) {
             return true;
@@ -261,15 +261,12 @@ class Logic
 
         // if we have local holdings, item can't be ordered - except Journals
         if ($this->driver->hasLocalHoldings() && $this->getFormat() != static::FORMAT_JOURNAL) {
-            $this->messages[] = 'ILL::available_at_current_library';
+            $this->messages[] = 'ILL::cond_available_at_current_library';
             $status = true;
         } elseif ($this->driver->hasLocalHoldings() && $this->getFormat() === static::FORMAT_JOURNAL) {
-            $this->messages[] = 'ILL::available_at_current_library_journal';
+            $this->messages[] = 'ILL::cond_available_at_current_library_journal';
             $status = true;
-        } elseif ($network == 'SWB' && $this->hasParallelEditions()) {
-            $status = true;
-        } elseif ($network !== 'SWB' && $this->queryWebservice()
-        ) {
+        } elseif ($network !== 'SWB' && $this->queryWebservice()) {
             $status = true;
         }
 
@@ -280,13 +277,28 @@ class Logic
 
     }
 
+
+    /**
+     * Check if there are parallel editions available
+     *
+     * @return bool
+     */
+    protected function checkParallelEditions() : bool
+    {
+        $network = $this->driver->getNetwork();
+        if ($network == 'SWB' && $this->hasParallelEditions()) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Quer< solr for parallel Editions available at local libraries
      * Save the found PPNs in global array
      *
      * @return boolean
      */
-    public function hasParallelEditions()
+    protected function hasParallelEditions()
     {
         if (!$this->holding instanceof Holding) {
             return false;
@@ -475,7 +487,7 @@ class Logic
         foreach ($this->status as $check => $result) {
 
             if (!$result && $this->config->get('Messages')->OffsetExists($check)) {
-                $retval[] = $$this->config->get('Messages')->get($check);
+                $retval[] = $this->config->get('Messages')->get($check);
             }
         }
         return $retval;
