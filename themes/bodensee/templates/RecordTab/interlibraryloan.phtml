@@ -43,7 +43,7 @@ if ($this->customUrl) {
     <?php endif; ?>
 
 </ul>
-<?php if ($authMethod === 'shibboleth' && !$account->isLoggedIn()): ?>
+<?php if ($status && $authMethod === 'shibboleth' && !$account->isLoggedIn()): ?>
     <div class="alert alert-danger">
         <?=$this->transEsc('You must be logged in first')?>
     </div>
