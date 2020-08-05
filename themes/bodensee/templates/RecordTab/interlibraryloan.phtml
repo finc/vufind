@@ -3,6 +3,7 @@ $this->headTitle($this->translate('Interlibrary Loan') . ': ' . $this->driver->g
 $content = $this->tab->getContent();
 $messages = $content['messages'];
 $ppns = $content['ppns'];
+$linklabels = $content['linklabels'];
 $status = $content['status'];
 $library = $content['library'];
 ?>
@@ -30,8 +31,8 @@ if ($this->customUrl) {
         <?php endforeach; ?>
     <?php endif; ?>
     <?php if (count($ppns) > 0): ?>
-            <? foreach ($ppns as $id): ?>
-                <li><a class="" href="<?= '/Record/' . $id ?>"><? if ($this->driver->getNetwork() == 'SWB'):?><?=$this->transEsc('ILL::ILL::to_local_hit') ?><?else: ?><?=$this->transEsc('ILL::to_local_hit')?><?endif ?></a>
+            <? foreach ($ppns as $k => $id): ?>
+                <li><a class="" href="<?= '/Record/' . $id ?>"><?php if(isset($linklabels[$k])): ?><?=$this->transEsc($linklabels[$k])?><?php else: ?><?=$id ?><?php endif; ?></a>
                 </li>
             <? endforeach; ?>
     <?php else: ?>
