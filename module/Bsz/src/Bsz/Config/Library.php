@@ -19,22 +19,23 @@
  */
 
 namespace Bsz\Config;
+
 use Zend\Db\ResultSet\ResultSet;
 
 
 /**
- * Simple Library Object - uses for Interlending view 
+ * Simple Library Object - uses for Interlending view
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Library 
+class Library
 {
 
     /**
      * Used if no custom url is set
      */
     const DAIA_DEFAULT_URL = 'https://daia.ibs-bw.de/isil/%s';
-    
+
     protected $name;
     protected $isil;
     protected $sigel;
@@ -44,12 +45,12 @@ class Library
     protected $places = null;
     protected $daia;
     protected $openurl;
-    protected $adisurl;
+    protected $opacurl;
     protected $idp;
     protected $regex;
     protected $live;
     protected $boss;
- 
+
 
     public function exchangeArray($data)
     {
@@ -61,18 +62,17 @@ class Library
         $this->homepage = $data['homepage'];
         $this->isil_availability = $data['isil_availability'];
         $this->email = $data['email'];
-        $this->auth = isset($data['auth_name']) ? $data['auth_name'] : 'adis';
-        $this->daia = isset($data['daiaurl']) ? $data['daiaurl'] : null;
-        $this->openurl = isset($data['openurl']) ? $data['openurl'] : null;
-        $this->adisurl = isset($data['adisurl']) ? $data['adisurl'] : null;        
-        $this->idp = isset($data['shibboleth_idp']) ? $data['shibboleth_idp'] : null;        
-        $this->regex = isset($data['regex']) ? $data['regex'] : null;
-        
-        
+        $this->auth = $data['auth_name'] ?? 'adis';
+        $this->daia = $data['daiaurl'] ?? null;
+        $this->openurl = $data['openurl'] ?? null;
+        $this->opacurl = $data['opacurl'] ?? null;
+        $this->idp = $data['shibboleth_idp'] ?? null;
+        $this->regex = $data['regex'] ?? null;
+        $this->lend_copy = isset($data['lend_copy']) ? str_split($data['lend_copy'], 1) : [0b1, 0b1];
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function __toString()
@@ -81,7 +81,7 @@ class Library
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function getName()
@@ -90,7 +90,7 @@ class Library
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function getIsil()
@@ -99,7 +99,7 @@ class Library
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function getSigel()
@@ -115,7 +115,7 @@ class Library
     {
         return $this->places;
     }
-    
+
     /**
      * Get authentication method, adis is default
      * @return stringl
@@ -123,20 +123,19 @@ class Library
     public function getAuth()
     {
         return $this->auth;
-        
     }
 
     /**
-     * 
+     *
      * @return int
      */
     public function getCountry()
     {
         return (int) $this->country;
     }
-    
+
     /**
-     * 
+     *
      * @return boolean
      */
     public function hasPlaces()
@@ -153,43 +152,45 @@ class Library
      */
     public function getURLDAIA()
     {
-        if(isset($this->daia)) {
-            return $this->daia;            
+        if (isset($this->daia)) {
+            return $this->daia;
         } else {
             return static::DAIA_DEFAULT_URL;
         }
     }
-    
+
     /**
-     * Determine if this library uses the productive ill link or the dev one. 
+     * Determine if this library uses the productive ill link or the dev one.
      * @return boolean
      */
-    public function isLive() 
+    public function isLive()
     {
         if (isset($this->live) && $this->live === true) {
             return true;
         }
         return false;
     }
-    
-    public function isBoss() 
+
+    public function isBoss()
     {
         if (isset($this->boss) && $this->boss === true) {
             return true;
         }
         return false;
     }
+
     /**
-     * Does this library have a custom URL for ILL form? 
+     * Does this library have a custom URL for ILL form?
      * @return boolean
      */
-    public function hasCustomUrl() 
+    public function hasCustomUrl()
     {
         if (isset($this->openurl) && strlen($this->openurl) > 0) {
             return true;
         }
         return false;
     }
+
     /**
      * Get custom URL for ill form
      * @return string
@@ -201,25 +202,24 @@ class Library
         }
         return '';
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
-    public function getIsilAvailability() 
+    public function getIsilAvailability()
     {
         $isils = [];
         if (isset($this->isil_availability)) {
-            $raw = $this->isil_availability;        
+            $raw = $this->isil_availability;
             if (!empty($raw)) {
-                $isils = explode(',', $raw);                
+                $isils = explode(',', $raw);
             }
         }
         $isils[] = $this->getIsil();
         return array_unique($isils);
+    }
 
-    }  
-    
     /**
      *
      * @param ResultSet $places
@@ -230,53 +230,70 @@ class Library
         $this->places = $places;
         return $this;
     }
+
     /**
      * Returns homepage
      * @return string
      */
-    public function getHomepage() 
+    public function getHomepage()
     {
         return $this->homepage;
     }
+
     /**
      * Returns library logo
      * @return string
      */
-    public function getLogo() {
+    public function getLogo()
+    {
         $sigel = str_replace(' ', '', $this->getSigel());
         $sigel = preg_replace('/\/.*/', '', $sigel);
-        return 'logo/libraries/'.$sigel.'.jpg';
+        return 'logo/libraries/' . $sigel . '.jpg';
     }
-    
+
     /**
-     * Get aDIS URL
-     * 
+     * Get Url to OPAC, with placeholder for PPN.
+     *
      * @return string|url
      */
-    public function getaDisUrl() 
+    public function getOpacUrl()
     {
-        return $this->adisurl;
+        return $this->opacurl;
     }
-    
+
     /**
      * Get Shiboleth IdP
-     * 
+     *
      * @return string|url
      */
-    public function getIdp() 
+    public function getIdp()
     {
         return $this->idp;
     }
-    
+
     /**
      * Get library-specific regex to trim username
-     * 
+     *
      * @return string
      */
-    public function getRegex() 
+    public function getRegex()
     {
         return (string)$this->regex;
     }
-    
 
+    /**
+     * @return bool
+     */
+    public function allowsLend()
+    {
+        return $this->lend_copy[0] == 0b1;
+    }
+
+    /**
+     * @return bool
+     */
+    public function allowsCopy()
+    {
+        return $this->lend_copy[1] == 0b1;
+    }
 }

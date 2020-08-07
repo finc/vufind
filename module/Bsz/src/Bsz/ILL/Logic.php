@@ -295,6 +295,8 @@ class Logic
 
         // if we have local holdings, item can't be ordered - except Journals
         if ($this->driver->hasLocalHoldings() && $this->getFormat() != static::FORMAT_JOURNAL) {
+            $this->swbppns[] = $this->driver->getPPN();
+            $this->linklabels[] = 'ILL::library_opac';
             $status = true;
         } elseif ($network !== 'SWB' && $this->queryWebservice()) {
             $status = true;
@@ -368,7 +370,7 @@ class Logic
             if (count($this->swbppns) < 1 && isset($result['holdings'])) {
                 reset($result['holdings']);
                 $this->swbppns[] = '(DE-627)' . key($result['holdings']);
-                $this->messages[] = 'ILL::no_lokal_hit_go_to_swb';
+                $this->linklabels[] = 'ILL::to_swb_hit';
             }
         }
         // check if any of the isils from webservic matches local isils
