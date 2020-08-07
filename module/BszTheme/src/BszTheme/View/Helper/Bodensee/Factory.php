@@ -136,25 +136,25 @@ class Factory
      *
      * @param ContainerInterface $container Service manager.
      *
-     * @return Record
+     * @return RecordLink
      * @throws Exception
-     *
      */
     public static function getRecordLink(ContainerInterface$container)
     {
         $client = $container->get(Client::class);
         $libraries = $container->get('Bsz\Config\Libraries');
-        $adisUrl = null;
+        $opacUrl = null;
 
         $library = $libraries->getFirstActive($client->getIsils());
         if ($library instanceof Library) {
-            $adisUrl = $library->getAdisUrl() !== null ? $library->getADisUrl() : null;
+            $opacUrl = $library->getOpacUrl() !== null ? $library->getOpacUrl() : null;
         }
 
         return new RecordLink(
             $container->get('VuFind\RecordRouter'),
+
             $container->get('VuFind\Config')->get('bsz'),
-            $adisUrl
+            $opacUrl
         );
     }
 
