@@ -295,6 +295,8 @@ class Logic
 
         // if we have local holdings, item can't be ordered - except Journals
         if ($this->driver->hasLocalHoldings() && $this->getFormat() != static::FORMAT_JOURNAL) {
+            $this->swbppns[] = $this->driver->getPPN();
+            $this->linklabels[] = 'ILL::library_opac';
             $status = true;
         } elseif ($network !== 'SWB' && $this->queryWebservice()) {
             $status = true;

@@ -32,8 +32,12 @@ if ($this->customUrl) {
     <?php endif; ?>
     <?php if (count($ppns) > 0): ?>
             <? foreach ($ppns as $k => $id): ?>
-                <li><a class="" href="<?= '/Record/' . $id ?>"><?php if(isset($linklabels[$k])): ?><?=$this->transEsc($linklabels[$k])?><?php else: ?><?=$id ?><?php endif; ?></a>
-                </li>
+                <? if ($linklabels[$k] != 'ILL::library_opac'):?>
+                    <? $link = '' ?>
+                <? else:?>
+                    <? $link = '/Record/' . $id ?>
+                <? endif ?>
+                <li><a class="" href="<?=$link?>"><?php if(isset($linklabels[$k])): ?><?=$this->transEsc($linklabels[$k])?><?php else: ?><?=$id ?><?php endif; ?></a></li>
             <? endforeach; ?>
     <?php else: ?>
         <? $link = $this->recordLink()->linkPPN($this->driver) ?>
