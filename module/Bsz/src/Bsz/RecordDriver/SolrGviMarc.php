@@ -611,9 +611,9 @@ class SolrGviMarc extends SolrMarc implements Definition
 
             if (($sf = $f->getSubField('3')) && strlen($sf->getData()) > 2) {
                 $url['desc'] = $sf->getData();
-            } elseif (($sf = $f->getSubField('x'))) {
-                $url['desc'] = $sf->getData();
             } elseif (($sf = $f->getSubField('y'))) {
+                $url['desc'] = $sf->getData();
+            } elseif (($sf = $f->getSubField('x'))) {
                 $url['desc'] = $sf->getData();
             } elseif (($sf = $f->getSubField('n'))) {
                 $url['desc'] = $sf->getData();
