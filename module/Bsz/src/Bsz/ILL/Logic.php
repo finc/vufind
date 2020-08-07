@@ -358,6 +358,7 @@ class Logic
                         if (isset($entry['isil']) && in_array($entry['isil'], $this->localIsils)) {
                             // save PPN
                             $this->swbppns[] = '(DE-627)' . $ppn;
+                            $this->linklabels[] = 'ILL::to_local_hit';
                             $this->libraries[] = $entry['isil'];
                         }
                     }
@@ -370,7 +371,6 @@ class Logic
                 $this->messages[] = 'ILL::no_lokal_hit_go_to_swb';
             }
         }
-
         // check if any of the isils from webservic matches local isils
         if (is_array($this->libraries) && count($this->libraries) > 0) {
             return true;
