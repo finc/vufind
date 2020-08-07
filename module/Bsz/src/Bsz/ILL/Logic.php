@@ -160,9 +160,10 @@ class Logic
 
         foreach ($checks as $check) {
             $negate = (bool)preg_match('/^!/', $check);
+            $always = (bool)preg_match('/^~/', $check);
 
-            if ($negate) {
-                $check = preg_replace('/^!/', '', $check);
+            if ($negate || $always) {
+                $check = preg_replace('/^[!~]/', '', $check);
             }
 
             $method = 'check' . $check;
@@ -171,6 +172,8 @@ class Logic
                 $status = $this->$method();
                 if ($negate) {
                     $status = !$status;
+                } elseif ($always) {
+                    $status = true;
                 }
                 $this->status[$check] = $status;
             }
@@ -207,6 +210,14 @@ class Logic
          */
         $retval = $this->messages;
         foreach ($this->status as $check => $result) {
+
+            // always show the hint.
+            if ($check == 'JournalAvailable') {
+                $result = $this->checkJournalAvailable();
+                // false means record is not locally available -> don't show the hint.
+                $result = !$result;
+            }
+
             if (!$result && $this->config->get('Messages')->OffsetExists($check)) {
                 $retval[] = $this->config->get('Messages')->get($check);
             }
@@ -436,7 +447,8 @@ class Logic
     }
 
     /**
-     * Check if it is a journal and available locally.
+     * Check if it is a journal and available locally. Journals can always be ordnered because we can't
+     * evauluate their excat holding dates.
      * @return bool
      */
     protected function checkJournalAvailable(): bool
