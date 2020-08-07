@@ -24,12 +24,10 @@ use Zend\Config\Config;
 
 /**
  * Class to determing availability via inter-library loan
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class Logic
 {
-
     const FORMAT_EJOUNAL = 'Ejournal';
     const FORMAT_JOURNAL = 'Journal';
     const FORMAT_EBOOK = 'Ebook';
@@ -67,7 +65,6 @@ class Logic
     protected $status;
 
     /**
-     *
      * @param Config $config
      * @param Holding $holding
      * @param array $isils
@@ -96,23 +93,12 @@ class Logic
     }
 
     /**
-     *
-     * @param Holding $holding
-     */
-    public function attachHoldings(Holding $holding)
-    {
-        $this->holding = $holding;
-    }
-
-    /**
      * Map the driver formats to more simple ILL formats
-     *
      * @return string
      */
 
     private function getFormat()
     {
-
         $format = static::FORMAT_UNDEFINED;
 
         if ($this->driver->isElectronic()) {
@@ -139,8 +125,15 @@ class Logic
     }
 
     /**
+     * @param Holding $holding
+     */
+    public function attachHoldings(Holding $holding)
+    {
+        $this->holding = $holding;
+    }
+
+    /**
      * Checks if the item can be ordered via ILL
-     *
      * @return boolean
      */
 
@@ -157,6 +150,35 @@ class Logic
     }
 
     /**
+     * Fills the internal status array.
+     * @return array
+     */
+    protected function determineStatus()
+    {
+        $checks = $this->config->get('Checks')->get('methods');
+        $checks = explode(', ', $checks);
+
+        foreach ($checks as $check) {
+            $negate = (bool)preg_match('/^!/', $check);
+
+            if ($negate) {
+                $check = preg_replace('/^!/', '', $check);
+            }
+
+            $method = 'check' . $check;
+
+            if (method_exists($this, $method)) {
+                $status = $this->$method();
+                if ($negate) {
+                    $status = !$status;
+                }
+                $this->status[$check] = $status;
+            }
+        }
+        return $this->status;
+    }
+
+    /**
      * Returns the unique status code
      * TODO: this method shoudl return something from conffiguration.      *
      * @return int
@@ -168,46 +190,60 @@ class Logic
         }
         $binary = implode('', $this->status);
         return bindec($binary);
-
     }
 
     /**
-     * Fills the internal status array.
+     * Get all messages that occurre during processing. Messages are trans-
+     * lation keys and should be translated afterwards.
      * @return array
      */
-    protected function determineStatus()
+
+    public function getMessages()
     {
-        $checks = $this->config->get('Checks')->get('methods');
-        $checks = explode(', ', $checks);
-
-        foreach ($checks as $check) {
-
-            $negate = (bool)preg_match('/^!/', $check);
-
-            if ($negate) {
-                $check = preg_replace('/^!/', '', $check);
-            }
-
-            $method = 'check'.$check;
-
-            if (method_exists($this, $method)) {
-               $status = $this->$method();
-               if ($negate) {
-                   $status = ! $status;
-               }
-               $this->status[$check] = $status;
+        /*
+         * TODO there are still some messages set in methods. These should be
+         * removed to the configuration. It might be neccessary to split those
+         * methods into exactly one task.
+         */
+        $retval = $this->messages;
+        foreach ($this->status as $check => $result) {
+            if (!$result && $this->config->get('Messages')->OffsetExists($check)) {
+                $retval[] = $this->config->get('Messages')->get($check);
             }
         }
-        return $this->status;
+        return $retval;
+    }
+
+    /**
+     * Access the PPNs found via web service
+     * @return array
+     */
+    public function getPPNs()
+    {
+        $ppns = array_merge($this->parallelppns, $this->swbppns);
+        return array_unique($ppns);
+    }
+
+    /**
+     * Returns array of local available ISILs
+     * @return array
+     */
+    public function getLocalIsils()
+    {
+        return $this->localIsils;
+    }
+
+    public function getLinkLabels()
+    {
+        return $this->linklabels;
     }
 
     /**
      * Checks whether record is from HEBIS and it's ID begins with 8
-     *
      * @return boolean
      */
 
-    protected function checkHebis8() : bool
+    protected function checkHebis8(): bool
     {
         $network = $this->driver->getNetwork();
         $ppn = $this->driver->getPPN();
@@ -216,16 +252,14 @@ class Logic
             return true;
         }
         return false;
-
     }
 
     /**
      * Check if the record is available for free
-     *
      * @return boolean
      */
 
-    protected function checkFree() : bool
+    protected function checkFree(): bool
     {
         if ($this->driver->isFree()) {
             return true;
@@ -235,11 +269,10 @@ class Logic
 
     /**
      * Determine is record is a serial or a collection
-     *
      * @return boolean
      */
 
-    protected function checkSerialOrCollection() : bool
+    protected function checkSerialOrCollection(): bool
     {
         if ($this->driver->isSerial() && $this->driver->isCollection()) {
             return true;
@@ -252,7 +285,6 @@ class Logic
      * * 924 entries
      * * Parallel editions in SWB
      * * Similar results from SWB (if network != SWB)     *
-     *
      * @return boolean
      */
 
@@ -268,78 +300,6 @@ class Logic
             $status = true;
         }
         return $status;
-
-    }
-
-
-    /**
-     * Check if there are parallel editions available
-     *
-     * @return bool
-     */
-    protected function checkParallelEditions() : bool
-    {
-        $network = $this->driver->getNetwork();
-        if ($network == 'SWB' && $this->hasParallelEditions()) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Check if it is a journal and available locally.
-     *
-     * @return bool
-     */
-    protected function checkJournalAvailable() : bool
-    {
-        if ($this->driver->hasLocalHoldings() && $this->getFormat() === static::FORMAT_JOURNAL) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Quer< solr for parallel Editions available at local libraries
-     * Save the found PPNs in global array
-     *
-     * @return boolean
-     */
-    protected function hasParallelEditions()
-    {
-        if (!$this->holding instanceof Holding) {
-            return false;
-        }
-        // avoid running the web service twice
-        if (count($this->parallelppns) > 0) {
-            return true;
-        }
-        $ppns = [];
-        $related = $this->driver->tryMethod('getRelatedEditions');
-        $hasParallel = false;
-
-        foreach ($related as $rel) {
-            $ppns[] = $rel['id'];
-        }
-        $parallel = [];
-        if (count($ppns) > 0) {
-            $parallel = $this->holding->getParallelEditions($ppns, $this->localIsils);
-            // check the found records for local available isils
-            $isils = [];
-            foreach ($parallel->getResults() as $record) {
-                $f924 = $record->getField924(true);
-                $recordIsils = array_keys($f924);
-                $isils = array_merge($isils, $recordIsils);
-            }
-            foreach ($isils as $isil) {
-                if (in_array($isil, $this->localIsils)) {
-                    $hasParallel = true;
-                    $this->parallelppns[] = $record->getUniqueId();
-                    $this->linklabels[] = 'ILL::to_parallel_edition';
-                }
-            }
-        }
-        return $hasParallel;
     }
 
     /**
@@ -347,7 +307,6 @@ class Logic
      * ISSN or ISBN (preferred)
      * Title, author and year (optional)
      * Found PPNs are added to ppns array and can be accessed by other methods.
-     *
      * @return boolean
      */
     protected function queryWebservice()
@@ -401,7 +360,6 @@ class Logic
                             $this->swbppns[] = '(DE-627)' . $ppn;
                             $this->libraries[] = $entry['isil'];
                         }
-
                     }
                 }
             }
@@ -410,9 +368,7 @@ class Logic
                 reset($result['holdings']);
                 $this->swbppns[] = '(DE-627)' . key($result['holdings']);
                 $this->messages[] = 'ILL::no_lokal_hit_go_to_swb';
-
             }
-
         }
 
         // check if any of the isils from webservic matches local isils
@@ -423,9 +379,75 @@ class Logic
     }
 
     /**
+     * Check if there are parallel editions available
+     * @return bool
+     */
+    protected function checkParallelEditions(): bool
+    {
+        $network = $this->driver->getNetwork();
+        if ($network == 'SWB' && $this->hasParallelEditions()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Quer< solr for parallel Editions available at local libraries
+     * Save the found PPNs in global array
+     * @return boolean
+     */
+    protected function hasParallelEditions()
+    {
+        if (!$this->holding instanceof Holding) {
+            return false;
+        }
+        // avoid running the web service twice
+        if (count($this->parallelppns) > 0) {
+            return true;
+        }
+        $ppns = [];
+        $related = $this->driver->tryMethod('getRelatedEditions');
+        $hasParallel = false;
+
+        foreach ($related as $rel) {
+            $ppns[] = $rel['id'];
+        }
+        $parallel = [];
+        if (count($ppns) > 0) {
+            $parallel = $this->holding->getParallelEditions($ppns, $this->localIsils);
+            // check the found records for local available isils
+            $isils = [];
+            foreach ($parallel->getResults() as $record) {
+                $f924 = $record->getField924(true);
+                $recordIsils = array_keys($f924);
+                $isils = array_merge($isils, $recordIsils);
+            }
+            foreach ($isils as $isil) {
+                if (in_array($isil, $this->localIsils)) {
+                    $hasParallel = true;
+                    $this->parallelppns[] = $record->getUniqueId();
+                    $this->linklabels[] = 'ILL::to_parallel_edition';
+                }
+            }
+        }
+        return $hasParallel;
+    }
+
+    /**
+     * Check if it is a journal and available locally.
+     * @return bool
+     */
+    protected function checkJournalAvailable(): bool
+    {
+        if ($this->driver->hasLocalHoldings() && $this->getFormat() === static::FORMAT_JOURNAL) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Check if format is enabled for inter-library loan and if it's enabled for
      * the current network
-     *
      * @return boolean
      */
 
@@ -441,7 +463,7 @@ class Logic
             $this->messages[] = 'ILL::cond_format_network';
             return false;
         } elseif (!$section->get('enabled')) {
-            $this->messages[] = 'ILL::cond_format_'.$this->format;
+            $this->messages[] = 'ILL::cond_format_' . $this->format;
             return false;
         }
         return true;
@@ -449,12 +471,10 @@ class Logic
 
     /**
      * Check the ILL indicator - invalid or empty indicators are ignored
-     *
      * @return boolean
      */
     protected function checkIndicator()
     {
-
         $f924 = $this->driver->tryMethod('getField924');
         $section = $this->config->get($this->format);
         $tmp = $section->get('indicator', []);
@@ -473,56 +493,4 @@ class Logic
         }
         return false;
     }
-
-    /**
-     * Get all messages that occurre during processing. Messages are trans-
-     * lation keys and should be translated afterwards.
-     *
-     * @return array
-     */
-
-    public function getMessages()
-    {
-        /*
-         * TODO there are still some messages set in methods. These should be
-         * removed to the configuration. It might be neccessary to split those
-         * methods into exactly one task.
-         */
-        $retval = $this->messages;
-        foreach ($this->status as $check => $result) {
-
-            if (!$result && $this->config->get('Messages')->OffsetExists($check)) {
-                $retval[] = $this->config->get('Messages')->get($check);
-            }
-        }
-        return $retval;
-    }
-
-    /**
-     * Access the PPNs found via web service
-     *
-     * @return array
-     */
-    public function getPPNs()
-    {
-        $ppns = array_merge($this->parallelppns, $this->swbppns);
-        return array_unique($ppns);
-    }
-
-    /**
-     * Returns array of local available ISILs
-     *
-     * @return array
-     */
-    public function getLocalIsils()
-    {
-        return $this->localIsils;
-    }
-
-    public function getLinkLabels()
-    {
-        return $this->linklabels;
-    }
-
-
 }
