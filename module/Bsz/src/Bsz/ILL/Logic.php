@@ -473,10 +473,12 @@ class Logic
         $forbidden = $section->get('excludeNetwork', []);
         $forbidden = is_object($forbidden) ? $forbidden->toArray() : [];
 
-        if (in_array($network, $forbidden)) {
+        $enabled = $section->get('enabled');
+
+        if ($enabled && in_array($network, $forbidden)) {
             $this->messages[] = 'ILL::cond_format_network';
             return false;
-        } elseif (!$section->get('enabled')) {
+        } elseif (!$enabled) {
             $this->messages[] = 'ILL::cond_format_' . $this->format;
             return false;
         }
