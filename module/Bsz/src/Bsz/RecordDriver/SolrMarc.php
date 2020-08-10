@@ -875,4 +875,26 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         }
         return $retval;
     }
+
+    /**
+     * Get the two char code in 007
+     *
+     * @return string
+     */
+    private function get007()
+    {
+        $f007 = null;
+        $f007_0 = $f007_1 = '';
+        $f007 = $this->getMarcRecord()->getFields("007", false);
+        foreach ($f007 as $field) {
+            $data = strtoupper($field->getData());
+            if (strlen($data) > 0) {
+                $f007_0 = $data{0};
+            }
+            if (strlen($data) > 1) {
+                $f007_1 = $data{1};
+            }
+        }
+        return $f007_0.$f007_1;
+    }
 }

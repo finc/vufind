@@ -126,7 +126,7 @@ class Factory
         return new Record(
             $container->get('VuFind\Config')->get('config'),
             $container->get(\Bsz\Config\Client::class),
-            $container->get('Bsz\Holding')
+            $container->get('Bsz\ILL\Holding')
         );
     }
     /**
