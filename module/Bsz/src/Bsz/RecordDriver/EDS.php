@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\RecordDriver;
+
 use Bsz\FormatMapper;
 
 /**
@@ -26,21 +26,21 @@ use Bsz\FormatMapper;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class EDS extends \VuFind\RecordDriver\EDS {
-    
+class EDS extends \VuFind\RecordDriver\EDS
+{
     /**
      *
-     * @var FormatMapper 
+     * @var FormatMapper
      */
     protected $Mapper;
-    
+
     public function __construct(FormatMapper $Mapper, $mainConfig = null, $recordConfig = null,
-        $searchSettings = null) {
-        
+        $searchSettings = null)
+    {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
         $this->Mapper = $Mapper;
     }
-    
+
     /**
      * Get the publication type of the record.
      *
@@ -52,13 +52,13 @@ class EDS extends \VuFind\RecordDriver\EDS {
             ? $this->fields['Header']['PubType'] : '';
         return $type;
     }
-    
+
     public function getFormats()
     {
         $formats = parent::getFormats();
         return $formats;
     }
-    
+
     /**
      * Get the items of the record.
      *
@@ -71,17 +71,17 @@ class EDS extends \VuFind\RecordDriver\EDS {
 //         \Bsz\Debug::Dump($this->fields);
             foreach ($this->fields['Items'] as $item) {
                 $items[] = [
-                    'Label' => isset($item['Label']) ? $item['Label'] : '',
-                    'Group' => isset($item['Group']) ? $item['Group'] : '',
-                    'Data'  => isset($item['Data']) && isset($item['Group']) ? 
+                    'Label' => $item['Label'] ?? '',
+                    'Group' => $item['Group'] ?? '',
+                    'Data'  => isset($item['Data']) && isset($item['Group']) ?
                         $this->toHTML($item['Data'], $item['Group']) : ''
                 ];
             }
         }
         return $items;
     }
-    
-       /**
+
+    /**
      * Get the full text of the record.
      *
      * @return string
@@ -107,8 +107,8 @@ class EDS extends \VuFind\RecordDriver\EDS {
                 '1' == $this->fields['FullText']['Text']['Availability']) ?
                 true : false;
     }
-    
-        /**
+
+    /**
      * Get the PDF availability of the record.
      *
      * @return bool
@@ -126,8 +126,8 @@ class EDS extends \VuFind\RecordDriver\EDS {
         }
         return false;
     }
-    
-        /**
+
+    /**
      * Performs a regex and replaces any url's with links containing themselves
      * as the text
      *
@@ -137,24 +137,23 @@ class EDS extends \VuFind\RecordDriver\EDS {
      */
     public function linkUrls($string)
     {
-        /** 
+        /**
          * "/\b(https?):\/\/([-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)\b/i",
          *       'return "<a href=\'".($matches[0])."\'>".($matches[0])."</a>";'
-        **/
-        
+         **/
         $linkedString = preg_replace_callback(
             "/\b(https?):\/\/(dx\.)?([-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)\b/i",
             function ($matches) {
                 $class = "external";
-                return "<a class='$class' href='".($matches[0])."'>".
-                        htmlentities($matches[0])."</a>";
+                return "<a class='$class' href='" . ($matches[0]) . "'>" .
+                        htmlentities($matches[0]) . "</a>";
             },
             $string
         );
         return $linkedString;
     }
-    
-        /**
+
+    /**
      * Get the OpenURL parameters to represent this record for COinS even if
      * supportsOpenUrl() is false for this RecordDriver.
      *
@@ -165,8 +164,7 @@ class EDS extends \VuFind\RecordDriver\EDS {
         $params = $this->getOpenUrl($this->supportsCoinsOpenUrl());
         return $params;
     }
-    
-    
+
     /**
      * parses Format to OpenURL genre
      * @return string
@@ -174,22 +172,19 @@ class EDS extends \VuFind\RecordDriver\EDS {
     protected function getOpenURLFormat()
     {
         $ptype = $this->getPubType();
-        if (strpos(strtolower($ptype), 'journal') !== FALSE) {
+        if (strpos(strtolower($ptype), 'journal') !== false) {
             $formats = ['Journal'];
-        } elseif (strpos(strtolower($ptype), 'book') !== FALSE) {
-            $formats = ['Book'];            
-        } elseif (strpos(strtolower($ptype), 'articles') !== FALSE) {
-            $formats = ['Article'];            
-        }  else {
-            $formats = ['UnknownFormat'];            
+        } elseif (strpos(strtolower($ptype), 'book') !== false) {
+            $formats = ['Book'];
+        } elseif (strpos(strtolower($ptype), 'articles') !== false) {
+            $formats = ['Article'];
+        } else {
+            $formats = ['UnknownFormat'];
         }
-        return ucfirst(array_shift($formats)); 
+        return ucfirst(array_shift($formats));
     }
-    
-    
 
-    
-        /**
+    /**
      * Get the PDF url of the record. If missing, return false
      *
      * @return string
@@ -199,7 +194,7 @@ class EDS extends \VuFind\RecordDriver\EDS {
         if (isset($this->fields['FullText']['Links'])) {
             foreach ($this->fields['FullText']['Links'] as $link) {
                 if (isset($link['Type'])
-                    && in_array($link['Type'], $this->pdfTypes) 
+                    && in_array($link['Type'], $this->pdfTypes)
                     && isset($link['Url'])
                 ) {
                     return $link['Url']; // return PDF link
@@ -208,8 +203,8 @@ class EDS extends \VuFind\RecordDriver\EDS {
         }
         return false;
     }
-    
-        /**
+
+    /**
      * Indicate whether export is disabled for a particular format.
      *
      * @param string $format Export format
@@ -223,34 +218,34 @@ class EDS extends \VuFind\RecordDriver\EDS {
         // export templates needs to need changed for EDS support
         return strtolower($format) != 'ris';
     }
+
     /**
-     * 
+     *
      * @param array $arrayKeys Key path to the needed value
      * @param int $level only used for recursion
      * @param array $fields only used for recursion
      * @return array|string
      */
-    public function getFieldRecursive($arrayKeys, $level = 0, $fields = null) 
+    public function getFieldRecursive($arrayKeys, $level = 0, $fields = null)
     {
-
         if (!$fields) {
             $fields = $this->fields;
         }
         if (isset($fields[$arrayKeys[$level]])) {
             $newFields = $fields[$arrayKeys[$level]];
-            $level++;                
+            $level++;
             if ($level < count($arrayKeys)) {
-                return $this->getFieldRecursive($arrayKeys, $level, $newFields);     
+                return $this->getFieldRecursive($arrayKeys, $level, $newFields);
             } else {
                 // end of recursion
                 return $newFields;
-            }  
+            }
         }
-        return '';  
+        return '';
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     public function getContainerTitle()
@@ -264,13 +259,13 @@ class EDS extends \VuFind\RecordDriver\EDS {
             'BibEntity',
             'Titles',
             0,
-            'TitleFull' 
+            'TitleFull'
         ];
-        return $this->getFieldRecursive($arrayKeys);        
-
+        return $this->getFieldRecursive($arrayKeys);
     }
+
     /**
-     * 
+     *
      * @return string
      */
     public function getContainerIssue()
@@ -284,19 +279,20 @@ class EDS extends \VuFind\RecordDriver\EDS {
             'BibEntity',
             'Numbering',
         ];
-        
-        $numbering = $this->getFieldRecursive($arrayKeys);   
+
+        $numbering = $this->getFieldRecursive($arrayKeys);
         if (is_array($numbering)) {
             foreach ($numbering as $key => $data) {
                 if (isset($data['Type']) && strtolower($data['Type']) == 'issue') {
-                    return isset($data['Value']) ? $data['Value'] : '';
+                    return $data['Value'] ?? '';
                 }
-            }            
+            }
         }
         return '';
     }
+
     /**
-     * 
+     *
      * @return string
      */
     public function getContainerVolume()
@@ -310,20 +306,20 @@ class EDS extends \VuFind\RecordDriver\EDS {
             'BibEntity',
             'Numbering',
         ];
-        
-        $numbering = $this->getFieldRecursive($arrayKeys);     
+
+        $numbering = $this->getFieldRecursive($arrayKeys);
         if (is_array($numbering)) {
             foreach ($numbering as $key => $data) {
                 if (isset($data['Type']) && strtolower($data['Type']) == 'volume') {
-                    return isset($data['Value']) ? $data['Value'] : '';
+                    return $data['Value'] ?? '';
                 }
-            }            
+            }
         }
         return '';
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     public function getISSNs() : array
@@ -338,23 +334,21 @@ class EDS extends \VuFind\RecordDriver\EDS {
             'BibEntity',
             'Identifiers',
         ];
-        
-        $identifiers = $this->getFieldRecursive($arrayKeys);  
+
+        $identifiers = $this->getFieldRecursive($arrayKeys);
         if (is_array($identifiers)) {
             foreach ($identifiers as $key => $data) {
                 if (isset($data['Type']) && isset($data['Value']) &&
-                        strtolower($data['Type']) == 'issn-print') 
-                {
-                $issns[] = $data['Value'];
+                        strtolower($data['Type']) == 'issn-print') {
+                    $issns[] = $data['Value'];
                 }
-            }            
+            }
         }
         return $issns;
-        
-    }   
-        
+    }
+
     /**
-     * 
+     *
      * @return string
      */
     public function getContainerYear()
@@ -370,11 +364,11 @@ class EDS extends \VuFind\RecordDriver\EDS {
             '0',
             'Y'
         ];
-        return $this->getFieldRecursive($arrayKeys);        
+        return $this->getFieldRecursive($arrayKeys);
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     public function getContainerPages()
@@ -384,11 +378,11 @@ class EDS extends \VuFind\RecordDriver\EDS {
             'BibRecord',
             'BibEntity',
             'PhysicalDescription',
-            'Pagination',            
-            
+            'Pagination',
+
         ];
         $pages = '';
-        $pagination = $this->getFieldRecursive($arrayKeys);  
+        $pagination = $this->getFieldRecursive($arrayKeys);
         if (isset($pagination['StartPage'])) {
             $pages = $pagination['StartPage'];
         }
@@ -396,11 +390,10 @@ class EDS extends \VuFind\RecordDriver\EDS {
 //            $pages .= ', '.$pagination['PageCount']. 'S';
 //        }
         return $pages;
-        
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function getDoi()
@@ -413,8 +406,7 @@ class EDS extends \VuFind\RecordDriver\EDS {
             '0',
             'Value'
         ];
-        $doi =  $this->getFieldRecursive($arrayKeys);        
+        $doi =  $this->getFieldRecursive($arrayKeys);
         return $doi;
-    }    
-    
+    }
 }

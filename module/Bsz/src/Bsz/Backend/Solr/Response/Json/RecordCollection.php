@@ -7,11 +7,10 @@
  * @package  Search
  * @author   <dku@outermedia.de>
  */
-
 namespace Bsz\Backend\Solr\Response\Json;
 
-class RecordCollection extends \VuFindSearch\Backend\Solr\Response\Json\RecordCollection {
-
+class RecordCollection extends \VuFindSearch\Backend\Solr\Response\Json\RecordCollection
+{
     /**
      * Grouping field name if exists.
      *
@@ -26,8 +25,8 @@ class RecordCollection extends \VuFindSearch\Backend\Solr\Response\Json\RecordCo
      *
      * @return void
      */
-    public function __construct(array $response) {
-
+    public function __construct(array $response)
+    {
         $this->response = array_replace_recursive(static::$template, $response);
 
         if (true === $this->isGrouped()) {
@@ -38,17 +37,15 @@ class RecordCollection extends \VuFindSearch\Backend\Solr\Response\Json\RecordCo
             $this->groupFieldName = reset($reset);
 
             $this->offset = 0; // TODO: No "start" info provided
-        }
-        else {
-
+        } else {
             $this->offset = $this->response['response']['start'];
         }
 
         $this->rewind();
     }
 
-    public function isGrouped() {
-
+    public function isGrouped()
+    {
         $groups = $this->getGroups();
 
         return 0 < count($groups);
@@ -59,11 +56,10 @@ class RecordCollection extends \VuFindSearch\Backend\Solr\Response\Json\RecordCo
      *
      * @return int
      */
-    public function getTotal() {
-
+    public function getTotal()
+    {
         return true === $this->isGrouped()
             ? $this->response['stats']['stats_fields'][$this->groupFieldName]['cardinality']
             : $this->response['response']['numFound'];
-        
     }
 }

@@ -79,7 +79,7 @@ class IllForm extends AbstractHelper
      */
     public function isVisibleCopies()
     {
-        $return = falsE;
+        $return = false;
         if ($this->status === static::STATUS_NOT_SENT && isset($this->driver)) {
             // form not yet submitted - open panels according to content
             $article = $this->driver->tryMethod('isArticle');
@@ -89,7 +89,6 @@ class IllForm extends AbstractHelper
             if ($article || $journal || $ebook) {
                 $return =  true;
             }
-
         }
         return $return;
     }
@@ -326,7 +325,7 @@ class IllForm extends AbstractHelper
         return $html;
     }
 
-        /**
+    /**
      * Renders a single Input
      *
      * @param string $label
@@ -338,7 +337,8 @@ class IllForm extends AbstractHelper
      * @param string $type only types that are similar to text inputs
      * @return string
      */
-    public function renderInput($params) {
+    public function renderInput($params)
+    {
         return $this->view->partial('Helpers/ill/form-group', [
             'label' => $params['label'],
             'name' => $params['name'],
@@ -384,8 +384,8 @@ class IllForm extends AbstractHelper
     protected function numericToAssoc($numericFields)
     {
         $assocFields = [];
-        foreach($numericFields as $key => $field) {
-            switch($key) {
+        foreach ($numericFields as $key => $field) {
+            switch ($key) {
                 case 0: $assoc = 'label';
                     break;
                 case 1: $assoc = 'name';
@@ -406,7 +406,13 @@ class IllForm extends AbstractHelper
         return $assocFields;
     }
 
-    public function maxlength($name) {
+    /**
+     * @param $name
+     *
+     * @return string
+     */
+    public function maxlength($name)
+    {
         $maxlength = [
             'Band'      => 119,
             'BandTitel' => 1000,

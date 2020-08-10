@@ -17,10 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz;
-
-use Zend\Config\Reader\Ini;
 
 /**
  * Class FormatMapper
@@ -30,44 +27,6 @@ use Zend\Config\Reader\Ini;
  */
 class FormatMapper
 {
-    protected $_config;
-
-    public function __construct()
-    {
-//        $this->_config = $this->getConfig();
-    }
-
-    /**
-     *
-     * @return array
-     */
-    protected function getConfig()
-    {
-        if (null === $this->_config) {
-            $baseDir = '/usr/local/boss';
-            $Reader = new Ini();
-            $config = $Reader->fromFile($baseDir . '/config/vufind/formats.ini');
-            $this->_config = $config;
-        }
-        return $this->_config;
-    }
-
-
-    /**
-     * Maps an array of format strings
-     * @param array $inputs
-     * @return array
-     */
-    protected function mapArray($inputs)
-    {
-        $formats = array();
-        foreach ($inputs as $i) {
-            $formats[] = $this->map($i);
-        }
-        return array_unique($formats);
-    }
-
-
     /**
      * Maps formats from formats.ini to icon file names
      * @param string $formats
@@ -215,15 +174,15 @@ class FormatMapper
                 $return = 'vhs';
             } elseif (in_array('newspaper', $formats)) {
                 $return = 'newspaper';
+            }  elseif (in_array('mapmaterial', $formats)) {
+                $return = 'map';
             }
             // fallback: besser neutral als article
             else {
                 $return =  'unknown';
             }
         }
-
-
-        return 'bsz bsz-'. $return;
+        return 'bsz bsz-' . $return;
     }
 
     /**
@@ -291,7 +250,6 @@ class FormatMapper
         $mappings['v']['default'] = 'Video';
         $mappings['z']['default'] = 'Kit';
 
-
         if (isset($mappings[$code1])) {
             if (!empty($mappings[$code1][$code2])) {
                 $medium = $mappings[$code1][$code2];
@@ -299,8 +257,6 @@ class FormatMapper
                 $medium = $mappings[$code1]['default'];
             }
         }
-//        var_dump($code1);
-//        var_dump($code2);
         return $medium;
     }
 
@@ -334,9 +290,6 @@ class FormatMapper
                 $format = $mappings[$leader7]['default'];
             }
         }
-//        var_dump($leader7);
-//        var_dump($f007);
-//        var_dump($f008);
         return $format;
     }
 
@@ -349,7 +302,6 @@ class FormatMapper
     public function marc21leader6($leader6)
     {
         $format = '';
-        $leader6 = strtoupper($leader6);
 
         $mappings = [];
         $mappings['c'] = 'MusicalScore';
@@ -365,8 +317,6 @@ class FormatMapper
         $mappings['p'] = 'Kit';
         $mappings['r'] = 'PhysicalObject';
         $mappings['t'] = 'Manuscript';
-
-
 
         if (isset($mappings[$leader6])) {
             $format = $mappings[$leader6];

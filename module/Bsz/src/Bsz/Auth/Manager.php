@@ -1,5 +1,4 @@
 <?php
-
 namespace Bsz\Auth;
 
 /**
@@ -7,21 +6,14 @@ namespace Bsz\Auth;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-
-
+use Bsz\Config\Library;
+use VuFind\Auth\PluginManager;
 use VuFind\Cookie\CookieManager;
-use VuFind\Db\Row\User as UserRow;
 use VuFind\Db\Table\User as UserTable;
-use VuFind\Exception\Auth as AuthException;
 use Zend\Config\Config;
 use Zend\Session\SessionManager;
 use Zend\Validator\Csrf;
-use VuFind\Auth\PluginManager;
-use Bsz\Config\Library;
 
-/**
- * 
- */
 class Manager extends \VuFind\Auth\Manager
     implements \ZfcRbac\Identity\IdentityProviderInterface
 {
@@ -30,7 +22,8 @@ class Manager extends \VuFind\Auth\Manager
      * @var Libraries;
      */
     protected $library;
-      /**
+
+    /**
      * Constructor
      *
      * @param Config         $config         VuFind configuration
@@ -46,6 +39,7 @@ class Manager extends \VuFind\Auth\Manager
         parent::__construct($config, $userTable, $sessionManager, $pm, $cookieManager, $csrf);
         $this->library = $library;
     }
+
     /**
      * login is shown if selected library has shibboleth auth enabled
      *
@@ -53,13 +47,13 @@ class Manager extends \VuFind\Auth\Manager
      */
     public function loginEnabled()
     {
-        if (isset($this->library) && $this->library->getAuth() != 'shibboleth') {            
+        if (isset($this->library) && $this->library->getAuth() != 'shibboleth') {
             return false;
         } else {
-        // Assume login is enabled unless explicitly turned off:
-        return isset($this->config->Authentication->hideLogin)
+            // Assume login is enabled unless explicitly turned off:
+            return isset($this->config->Authentication->hideLogin)
             ? !$this->config->Authentication->hideLogin
-            : true;           
+            : true;
         }
     }
 }

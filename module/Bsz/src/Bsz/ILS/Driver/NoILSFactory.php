@@ -67,8 +67,8 @@ class NoILSFactory implements FactoryInterface
         $isils = $client->getIsilAvailability();
         $libraries = $container->get('Bsz\Config\Libraries');
         return new $requestedName(
-            $container->get(\VuFind\Record\Loader::class), 
-            $libraries, 
+            $container->get(\VuFind\Record\Loader::class),
+            $libraries,
             $isils
         );
     }

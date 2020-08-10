@@ -62,13 +62,12 @@ class Factory
 
         return $volumes;
     }
-
     /**
      * Factory for articles tab
      *
-     * @param ServiceManager $sm Service manager.
+     * @param ContainerInterface $container
      *
-     * @return Volumes
+     * @return Articles
      */
     public static function getArticles(ContainerInterface $container)
     {
@@ -94,28 +93,28 @@ class Factory
      * Factory for libraries tab
      *
      * @param ContainerInterface $container
-     * @return LibrariesTab
+     * @return Libraries
      */
     public static function getLibraries(ContainerInterface $container)
     {
         $libraries = $container->get('Bsz\Config\Libraries');
         $client = $container->get('Bsz\Config\Client');
-        return new Libraries($libraries, !$client->is('disable_library_tab'));
+        $swbonly = $client->getTag() === 'swb' ?? false;
+        return new Libraries($libraries, !$client->is('disable_library_tab'), $swbonly);
     }
 
     /**
      * Factory for description tab
      *
      * @param ContainerInterface $container
-     * @return LibrariesTab
+     * @return Description
      */
     public static function getDescription(ContainerInterface $container)
     {
         $client = $container->get('Bsz\Config\Client');
         return new Description(!$client->is('disable_description_tab'));
     }
-
-    /**
+        /**
      * Factory for HoldingsILS tab plugin.
      *
      * @param ContainerInterface $container Service manager.

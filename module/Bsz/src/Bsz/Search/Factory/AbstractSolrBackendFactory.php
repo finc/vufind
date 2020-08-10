@@ -7,14 +7,13 @@
  * @package  Search
  * @author   <dku@outermedia.de>
  */
-
 namespace Bsz\Search\Factory;
 
-use VuFindSearch\Backend\Solr\Connector;
 use Bsz\Backend\Solr\Backend;
+use VuFindSearch\Backend\Solr\Connector;
 
-abstract class AbstractSolrBackendFactory extends \VuFind\Search\Factory\AbstractSolrBackendFactory {
-
+abstract class AbstractSolrBackendFactory extends \VuFind\Search\Factory\AbstractSolrBackendFactory
+{
     /**
      * Create the SOLR backend.
      *
@@ -22,13 +21,12 @@ abstract class AbstractSolrBackendFactory extends \VuFind\Search\Factory\Abstrac
      *
      * @return Backend
      */
-    protected function createBackend(Connector $connector) {
-
+    protected function createBackend(Connector $connector)
+    {
         $backend = new Backend($connector);
         $backend->setQueryBuilder($this->createQueryBuilder());
 
         if ($this->logger) {
-
             $backend->setLogger($this->logger);
         }
 

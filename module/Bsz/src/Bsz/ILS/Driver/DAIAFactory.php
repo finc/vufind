@@ -23,11 +23,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\ILS\Driver;
 
-use Interop\Container\ContainerInterface,
-    Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Description of Factory
@@ -36,7 +35,6 @@ use Interop\Container\ContainerInterface,
  */
 class DAIAFactory implements FactoryInterface
 {
-
     /**
      *
      * @param ContainerInterface $container
@@ -63,6 +61,5 @@ class DAIAFactory implements FactoryInterface
         }
         $converter = $container->get('VuFind\DateConverter');
         return new $requestedName($converter, $isils, $baseUrl);
-
     }
 }

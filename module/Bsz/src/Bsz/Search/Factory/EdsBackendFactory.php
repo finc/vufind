@@ -9,15 +9,12 @@
  */
 namespace Bsz\Search\Factory;
 
-use VuFindSearch\Backend\BackendInterface;
 use Bsz\Backend\EDS\Backend;
-use VuFindSearch\Backend\EDS\QueryBuilder;
-use VuFindSearch\Backend\EDS\Response\RecordCollectionFactory;
 use VuFindSearch\Backend\EDS\Zend2 as Connector;
 
-class EdsBackendFactory extends \VuFind\Search\Factory\EdsBackendFactory {
-
-        /**
+class EdsBackendFactory extends \VuFind\Search\Factory\EdsBackendFactory
+{
+    /**
      * Create the EDS backend.
      *
      * @param Connector $connector Connector

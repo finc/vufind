@@ -17,10 +17,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\Controller;
+
 use Bsz\Debug;
-use Bsz\Config\Libraries;
 use Zend\Http\Client;
 
 /**
@@ -28,18 +27,17 @@ use Zend\Http\Client;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class TestController extends \VuFind\Controller\AbstractBase {
-    
- 
-   /**
+class TestController extends \VuFind\Controller\AbstractBase
+{
+    /**
      * Action to simply test some methods
      */
-    public function recordAction() {
-        
+    public function recordAction()
+    {
         $runner = $this->serviceLocator->get('VuFind\SearchRunner');
         $ppn = $this->params()->fromQuery('ppn');
         if (!empty($ppn)) {
-            $params['lookfor'] = 'id:'.str_replace(['(', ')'], ['\(', '\)'], $ppn);
+            $params['lookfor'] = 'id:' . str_replace(['(', ')'], ['\(', '\)'], $ppn);
             $results = $runner->run($params, 'Solr');
 
             // now, we can do something with our record
@@ -49,29 +47,27 @@ class TestController extends \VuFind\Controller\AbstractBase {
                 var_dump($authors['primary']);
                 var_dump($authors['secondary']);
                 var_dump($authors['corporate']);
-                
-            }            
+            }
         } else {
             echo 'Param PPN is mandatory';
         }
-        
+
         return $this->getResponse();
-        
-         
     }
-    
-    public function phpinfoAction() {
+
+    public function phpinfoAction()
+    {
         if (Debug::isInternal()) {
             phpinfo();
         }
         return $this->getResponse();
     }
-    
-    public function zflAction() {        
-        
+
+    public function zflAction()
+    {
         $date = new \DateTime();
         $date->add(new \DateInterval('P100D'));
-        
+
         $params = [
             'Verfasser' =>  '',
             'Titel' =>  'BSZ-Testtitel',
@@ -97,14 +93,13 @@ class TestController extends \VuFind\Controller\AbstractBase {
             'TitelId' =>  '479128995',
             'Besteller' =>  'E',
         ];
-       
+
         $urlsToTest = [
             "https://fltest.bsz-bw.de/flcgi/pflauftrag.pl",
             "https://zfl.bsz-bw.de/flcgi/pflauftrag.pl",
         ];
-        foreach ($urlsToTest as $uri)
-        {
-            echo '<h2>Testing: '.$uri.'</h2>';
+        foreach ($urlsToTest as $uri) {
+            echo '<h2>Testing: ' . $uri . '</h2>';
             if (Debug::isInternal()) {
                 $client = new Client();
                 $client->setAdapter('\Zend\Http\Client\Adapter\Curl')
@@ -120,12 +115,11 @@ class TestController extends \VuFind\Controller\AbstractBase {
             }
         }
 
-    //avoid any templates being processed
-    return $this->getResponse();
-        
+        //avoid any templates being processed
+        return $this->getResponse();
     }
-    
-    public function zflAuthAction() {
-        
+
+    public function zflAuthAction()
+    {
     }
 }

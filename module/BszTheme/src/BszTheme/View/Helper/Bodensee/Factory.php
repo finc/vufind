@@ -85,7 +85,6 @@ class Factory
         }
         return new LayoutClass($left, $offcanvas);
     }
-
     /**
      * Construct the OpenUrl helper.
      *
@@ -100,7 +99,7 @@ class Factory
         $isils = $client->getIsils();
         $openUrlRules = json_decode(
             file_get_contents(
-                Locator::getConfigPath('OpenUrlRules.json')
+                \VuFind\Config\Locator::getConfigPath('OpenUrlRules.json')
             ),
             true
         );
@@ -126,11 +125,10 @@ class Factory
     {
         return new Record(
             $container->get('VuFind\Config')->get('config'),
-            $container->get(Client::class)->getIsilAvailability()
-
+            $container->get(\Bsz\Config\Client::class),
+            $container->get('Bsz\Holding')
         );
     }
-
     /**
      * Construct the RecordLink helper.
      *
@@ -152,7 +150,6 @@ class Factory
 
         return new RecordLink(
             $container->get('VuFind\RecordRouter'),
-
             $container->get('VuFind\Config')->get('bsz'),
             $opacUrl
         );
@@ -191,7 +188,7 @@ class Factory
         return new Piwik($url, $siteId, $customVars, $globalSiteId);
     }
 
-    /**
+            /**
      * Construct the SearchTabs helper.
      *
      * @param ContainerInterface$container Service manager.

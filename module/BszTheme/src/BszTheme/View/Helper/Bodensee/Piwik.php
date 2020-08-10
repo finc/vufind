@@ -23,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace BszTheme\View\Helper\Bodensee;
 
 /**
@@ -33,10 +32,9 @@ namespace BszTheme\View\Helper\Bodensee;
  */
 class Piwik extends \VuFind\View\Helper\Root\Piwik
 {
-    
-    protected $globalSiteId ;
-    
-        /**
+    protected $globalSiteId;
+
+    /**
      * Constructor
      *
      * @param string|bool $url        Piwik address (false if disabled)
@@ -54,15 +52,14 @@ class Piwik extends \VuFind\View\Helper\Root\Piwik
         $this->globalSiteId = (int)$globalSiteId;
         $this->customVars = $customVars;
     }
-    
-        /**
+
+    /**
      * Returns Piwik code (if active) or empty string if not.
      *
      * @return string
      */
     public function __invoke($action = '')
     {
-
         if ($action == 'siteid') {
             return $this->getSiteId();
         } elseif ($action == 'globalsiteid') {
@@ -75,18 +72,17 @@ class Piwik extends \VuFind\View\Helper\Root\Piwik
             }
             $params = [
                 'piwikUrl' => $this->url,
-                'globalSiteId'   => $this->globalSiteId, 
-                'siteId'   => $this->siteId 
+                'globalSiteId'   => $this->globalSiteId,
+                'siteId'   => $this->siteId
 
             ];
 
             $view = $this->getView()->partial('Helpers/piwik.phtml', $params);
 
-            return $view;            
+            return $view;
         }
-        
     }
-    
+
     /**
      * Return site id
      * @return int
@@ -95,6 +91,7 @@ class Piwik extends \VuFind\View\Helper\Root\Piwik
     {
         return $this->siteId;
     }
+
     /**
      * Return site id
      * @return int
@@ -103,14 +100,13 @@ class Piwik extends \VuFind\View\Helper\Root\Piwik
     {
         return $this->globalSiteId;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
-    public function getBaseUrl() 
+    public function getBaseUrl()
     {
         return $this->url;
     }
-
 }

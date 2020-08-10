@@ -18,14 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 namespace Bsz\RecordDriver;
 
 use VuFind\RecordDriver\Response\PublicationDetails;
 
 trait OriginalLanguageTrait
 {
-
     /**
      * @return string
      */
@@ -71,7 +69,6 @@ trait OriginalLanguageTrait
      */
     public function getOriginalLanguage($targetField, $targetSubfield): string
     {
-
         $return = '';
         $fields = $this->getMarcRecord()->getFields('880');
 
@@ -156,7 +153,6 @@ trait OriginalLanguageTrait
             return [];
         }
 
-
         $i = 0;
         $retval = [];
 
@@ -187,7 +183,6 @@ trait OriginalLanguageTrait
             '490' => 'a'
         ];
         return $this->getOriginalLanguageArray($fields);
-
     }
 
     /**
@@ -205,6 +200,4 @@ trait OriginalLanguageTrait
     {
         return $this->getOriginalLanguageArray(['300' => ['a', 'b', 'c', 'e', 'f', 'g']]);
     }
-
-
 }

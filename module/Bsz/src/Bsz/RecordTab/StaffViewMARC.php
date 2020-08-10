@@ -39,11 +39,12 @@ namespace Bsz\RecordTab;
 class StaffViewMARC extends \VuFind\RecordTab\AbstractBase
 {
     protected $client;
+
     /**
      * Constructor
      */
     public function __construct()
-    {        
+    {
         $this->accessPermission = 'access.StaffViewTab';
     }
 
@@ -55,5 +56,5 @@ class StaffViewMARC extends \VuFind\RecordTab\AbstractBase
     public function getDescription()
     {
         return 'Staff View';
-    }    
+    }
 }

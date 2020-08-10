@@ -1,12 +1,9 @@
 <?php
-
 namespace Bsz\Search\Solr;
 
-use Bsz\Config\Client;
+use Bsz\Config\Dedup;
 use VuFind\Config\PluginManager;
 use VuFindSearch\ParamBag;
-use Bsz\Config;
-use Bsz\Config\Dedup;
 
 /**
  * Description of Params
@@ -70,8 +67,7 @@ class Params extends \VuFind\Search\Solr\Params
                     $q = $field . ':"' . addcslashes($value, '"\\') . '"';
                 }
                 if ($orFacet) {
-                    $orFilters[$field] = isset($orFilters[$field])
-                        ? $orFilters[$field] : [];
+                    $orFilters[$field] = $orFilters[$field] ?? [];
                     $orFilters[$field][] = $q;
                 } else {
                     $filterQuery[] = $q;
@@ -93,7 +89,7 @@ class Params extends \VuFind\Search\Solr\Params
     public function getBackendParameters()
     {
         $backendParams = new ParamBag();
-        $backendParams->add('year', (int)date('Y')+1);
+        $backendParams->add('year', (int)date('Y') + 1);
 
         $this->restoreFromCookie();
 
@@ -214,7 +210,6 @@ class Params extends \VuFind\Search\Solr\Params
      * So we only need to process session bwlow.
      *
      */
-
     protected function restoreFromCookie()
     {
         if (isset($this->cookie)) {

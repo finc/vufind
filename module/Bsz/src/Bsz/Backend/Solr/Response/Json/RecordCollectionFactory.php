@@ -7,15 +7,14 @@
  * @package  Search
  * @author   <dku@outermedia.de>
  */
-
 namespace Bsz\Backend\Solr\Response\Json;
 
 use VuFindSearch\Backend\Solr\Response\Json\Record;
 use VuFindSearch\Exception\InvalidArgumentException;
 use VuFindSearch\Response\RecordCollectionFactoryInterface;
 
-class RecordCollectionFactory implements RecordCollectionFactoryInterface {
-
+class RecordCollectionFactory implements RecordCollectionFactoryInterface
+{
     /**
      * Constructor.
      *
@@ -27,15 +26,11 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface {
     public function __construct($recordFactory = null,
         $collectionClass = 'Bsz\Backend\Solr\Response\Json\RecordCollection'
     ) {
-
         if (null === $recordFactory) {
-
             $this->recordFactory = function ($data) {
                 return new Record($data);
             };
-
         } else {
-
             $this->recordFactory = $recordFactory;
         }
 
@@ -49,8 +44,8 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface {
      *
      * @return RecordCollection
      */
-    public function factory($response) {
-
+    public function factory($response)
+    {
         if (!is_array($response)) {
             throw new InvalidArgumentException(
                 sprintf(
@@ -71,27 +66,24 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface {
             $groupFieldId = reset($keys);
 
             foreach ($collectionGroups[$groupFieldId]['groups'] as $group) {
-
                 $docs = $group['doclist']['docs'];
 
                 // Get first doc (as parent doc)
                 $docFirst = reset($docs);
-                
 
                 // Do sub records exist?
                 if (1 < count($docs)) {
-                    
-                    // We skip the masterrecord in group list 
+
+                    // We skip the masterrecord in group list
                     array_shift($docs);
 
                     // Create new collection for sub records
                     $collectionSub = new $this->collectionClass($docs);
 
                     // Merge topics of all sub records
-                    $topics = array();
+                    $topics = [];
 
                     foreach ($docs as $doc) {
-
                         $doc['_isSubRecord'] = true;
 
                         // Add each grouped record to sub collection
@@ -111,9 +103,7 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface {
 
                 $collection->add(call_user_func($this->recordFactory, $docFirst));
             }
-        }
-        else {
-
+        } else {
             if (isset($response['response']['docs'])) {
                 foreach ($response['response']['docs'] as $doc) {
                     $collection->add(call_user_func($this->recordFactory, $doc));
@@ -123,5 +113,4 @@ class RecordCollectionFactory implements RecordCollectionFactoryInterface {
 
         return $collection;
     }
-
 }

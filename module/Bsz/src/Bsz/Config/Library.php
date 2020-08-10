@@ -17,11 +17,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\Config;
 
 use Zend\Db\ResultSet\ResultSet;
-
 
 /**
  * Simple Library Object - uses for Interlending view
@@ -30,7 +28,6 @@ use Zend\Db\ResultSet\ResultSet;
  */
 class Library
 {
-
     /**
      * Used if no custom url is set
      */
@@ -50,7 +47,7 @@ class Library
     protected $regex;
     protected $live;
     protected $boss;
-
+    protected $lend_copy;
 
     public function exchangeArray($data)
     {
@@ -131,7 +128,7 @@ class Library
      */
     public function getCountry()
     {
-        return (int) $this->country;
+        return (int)$this->country;
     }
 
     /**

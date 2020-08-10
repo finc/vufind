@@ -133,6 +133,7 @@ class Holding
 
         return $this;
     }
+
     /**
      * Set Network
      *

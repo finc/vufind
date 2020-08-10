@@ -30,6 +30,7 @@
  * @link     https://vufind.org/wiki/development:plugins:record_drivers Wiki
  */
 namespace Finc\RecordDriver;
+
 use VuFind\Log\LoggerAwareTrait;
 use VuFind\Search\SearchRunner;
 use Zend\Config\Config;
@@ -74,8 +75,7 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      */
     public function __construct(Config $mainConfig = null, Config $recordConfig = null,
                                 Config $searchSettings = null
-    )
-    {
+    ) {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
         if (isset($this->mainConfig->CustomIndex->indexExtension)) {
@@ -85,7 +85,6 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
         }
     }
 
-
     /**
      * Return value of the requestes field, null if field ist not set.
      *
@@ -93,7 +92,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      *
      * @return mixed
      */
-    public function getField($field) {
+    public function getField($field)
+    {
         if (isset($this->fields[$field])) {
             return $this->fields[$field];
         }
@@ -134,9 +134,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      */
     public function getConsortium()
     {
-        return;
-    }    
-        
+    }
+
     /**
      * Not implemented in this module
      *
@@ -144,10 +143,11 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      *
      * @return mixed
      */
-    public function getField924() {
+    public function getField924()
+    {
         return null;
-    }    
-    
+    }
+
     /**
      * Attach a Search Results Plugin Manager connection and related logic to
      * the driver
@@ -158,43 +158,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
     public function attachSearchRunner(SearchRunner $runner)
     {
         $this->runner = $runner;
-    }    
-    
-    
-    /**
-     * Not implemented in this module
-     *
-     * @param string $field Name of the field.
-     *
-     * @return mixed
-     */
-    public function getSubRecords() {
-        return null;
-    }
-    
-    /**
-     * Not implemented in this module
-     *
-     * @param string $field Name of the field.
-     *
-     * @return mixed
-     */
-    public function hasSubRecords() {
-        return null;
-    }
-    
-    /**
-     * Not implemented in this module
-     *
-     * @param string $field Name of the field.
-     *
-     * @return mixed
-     */
-    public function isSubRecord() {
-        return null;
     }
 
-    
     /**
      * Not implemented in this module
      *
@@ -202,7 +167,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      *
      * @return mixed
      */
-    public function getContainerId() {
+    public function getSubRecords()
+    {
         return null;
     }
 
@@ -213,7 +179,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      *
      * @return mixed
      */
-    public function getContainerPages() {
+    public function hasSubRecords()
+    {
         return null;
     }
 
@@ -224,7 +191,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      *
      * @return mixed
      */
-    public function getContainerRelParts() {
+    public function isSubRecord()
+    {
         return null;
     }
 
@@ -235,7 +203,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      *
      * @return mixed
      */
-    public function getContainerYear() {
+    public function getContainerId()
+    {
         return null;
     }
 
@@ -246,7 +215,8 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      *
      * @return mixed
      */
-    public function isArticle() {
+    public function getContainerPages()
+    {
         return null;
     }
 
@@ -257,10 +227,46 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      *
      * @return mixed
      */
-    public function getSeriesIds() {
+    public function getContainerRelParts()
+    {
         return null;
     }
 
+    /**
+     * Not implemented in this module
+     *
+     * @param string $field Name of the field.
+     *
+     * @return mixed
+     */
+    public function getContainerYear()
+    {
+        return null;
+    }
+
+    /**
+     * Not implemented in this module
+     *
+     * @param string $field Name of the field.
+     *
+     * @return mixed
+     */
+    public function isArticle()
+    {
+        return null;
+    }
+
+    /**
+     * Not implemented in this module
+     *
+     * @param string $field Name of the field.
+     *
+     * @return mixed
+     */
+    public function getSeriesIds()
+    {
+        return null;
+    }
 
     /**
      * Get an array of notes "Enthaltene Werke" for the Notes-Tab.
@@ -271,6 +277,4 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
     {
         return null;
     }
-
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace Bsz\Resolver\Driver;
 
 /**
@@ -9,8 +8,8 @@ namespace Bsz\Resolver\Driver;
  */
 class Ill extends Ezb
 {
-    
     protected $additions = [];
+
     /**
      * Get Resolver Url
      *
@@ -25,27 +24,26 @@ class Ill extends Ezb
         // Parse OpenURL into associative array:
         $tmp = explode('&', $openURL);
         $parsed = [];
-        
+
         foreach ($tmp as $current) {
             $tmp2 = explode('=', $current, 2);
             $parsed[$tmp2[0]] = $tmp2[1];
         }
         $parsed['sid'] = 'SWB:flportal';
         $parsed = array_merge($parsed, $this->additions);
-        
+
         // Downgrade 1.0 to 0.1
         if ($parsed['ctx_ver'] == 'Z39.88-2004') {
             $openURL = $this->downgradeOpenUrl($parsed);
         }
-        
 
         // Make the call to the EZB and load results
         $url = $this->baseUrl . '?' . $openURL;
 
         return $url;
     }
-    
-         /**
+
+    /**
      * Downgrade an OpenURL from v1.0 to v0.1 for compatibility with EZB.
      *
      * @param array $params Array of parameters parsed from the OpenURL.
@@ -71,7 +69,7 @@ class Ill extends Ezb
             'rft.series' => 'series',
             'rft.edition' => 'edition',
             'rft.atitle' => 'atitle',
-            'rft.btitle' => 'title',            
+            'rft.btitle' => 'title',
             'rft.jtitle' => 'title',
             'rft.au' => 'aulast',
             'rft.date' => 'date',
@@ -84,16 +82,16 @@ class Ill extends Ezb
                 $newParams[$mapping[$key]] = $value;
             }
         }
-        
-        // remove date info for journals because users must choose themselfes. 
+
+        // remove date info for journals because users must choose themselfes.
         if ($newParams['genre'] == 'journal') {
             unset($newParams['date']);
         }
-        
+
         $return = [];
         foreach (array_filter($newParams) as $param => $val) {
-            $return[] = $param.'='.$val;
-        }   
+            $return[] = $param . '=' . $val;
+        }
         return implode('&', $return);
-    }    
+    }
 }

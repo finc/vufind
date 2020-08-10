@@ -60,7 +60,7 @@
   }
   $tabConfig = $this->searchTabs()->getTabConfig($this->searchClassId, $this->lookfor, $this->searchIndex, 'advanced', $hiddenFilters);
   $tabs = $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]);
-  
+
 ?>
 
 <?=$this->flashmessages()?>
@@ -117,7 +117,7 @@
                         <option value="<?=$this->escapeHtml($searchVal)?>"<?if(isset($setQueries[$group][$search]) && $searchVal == $setQueries[$group][$search]->getHandler()):?> selected<?endif;?>><?=$this->transEsc($searchDesc)?></option>
                       <? endforeach; ?>
                     </select>
-                    <a href="#" class="adv-term-remove hidden">&times;</a>
+                    <a href="#" class="adv-term-remove hidden"><i class="fa fa-times text-danger"></i></a>
                   </div>
                   <? if($group == 0 && $search == 0): ?>
                       </div>

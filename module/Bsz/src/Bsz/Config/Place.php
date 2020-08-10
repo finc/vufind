@@ -23,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\Config;
 
 /**
@@ -36,20 +35,20 @@ class Place
     protected $name;
     protected $isil;
     protected $code;
-    
+
     public function exchangeArray($data)
     {
-        $this->name = $data['name'];        
-        $this->isil = $data['library'];#
+        $this->name = $data['name'];
+        $this->isil = $data['library'];
         $this->code = !empty($data['code']) ? $data['code'] : $data['name'];
     }
-    
-    public function __toString() 
+
+    public function __toString()
     {
         return $this->name;
     }
-    
-    public function getCode() 
+
+    public function getCode()
     {
         return $this->code;
     }

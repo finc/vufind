@@ -1,29 +1,29 @@
 <? $subjects = $this->driver->getAllSubjectHeadings();?>
 <? if (!empty($subjects)): ?>
 
-<? $rand = rand(0, 9999)?> 
+<? $rand = rand(0, 9999)?>
   <tr>
     <th><?=$this->transEsc('Subjects')?>:</th>
     <td id="showmore-items-<?=$rand?>">
       <? $count = 0 ?>
-      <? foreach ($subjects as $field): ?>     
+      <? foreach ($subjects as $field): ?>
         <span class="subjectLine" property="keywords">
          <? $subject = ''; ?>
          <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
               <? $subject = trim($subject . ' ' . $subfield); ?>
-              <a class="showmore-item searchicon <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>" 
+              <a class="markjs showmore-item searchicon <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>"
                  href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
               <? $count++ ?>
             <? endforeach; ?>
           <? elseif (is_array($field) && count($field) > 1): ?>
                 <? foreach ($field as $subfield): ?>
-                    <a class="searchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+                    <a class="markjssearchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
                     <? $count++ ?>
                 <? endforeach; ?>
           <? else: ?>
-            <a class="searchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" href="<?=$this->record($this->driver)->getLink('subject', $field, $this->searchClassId)?>"><?=trim($this->escapeHtml($field))?></a>            
+            <a class="markjs searchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" href="<?=$this->record($this->driver)->getLink('subject', $field, $this->searchClassId)?>"><?=trim($this->escapeHtml($field))?></a>
             <? $count++ ?>
           <? endif; ?>
       </span>
@@ -35,10 +35,10 @@
   </tr>
   <? unset($subjects)?>
   <? endif; ?>
-  
-  
+
+
   <? if ($this->client()->is('show_rvk')): ?>
-  <? $notations = $this->driver->tryMethod('getRVKNotations'); 
+  <? $notations = $this->driver->tryMethod('getRVKNotations');
   if(!empty($notations)): ?>
   <? $contentDisplayed = true; ?>
   <tr>
@@ -46,16 +46,16 @@
       <? if(is_array($notations)): ?>
       <td>
           <? foreach ($notations as $shortcut => $description): ?>
-          <? 
+          <?
           $descriptionHtml = '<ol>';
           foreach($description as $item) {
             $descriptionHtml .= '<li>'.$item.'</li>';
           }
           $descriptionHtml .= '</ol>';
           if ($descriptionHtml == '<ol></ol>') {$descriptionHtml = '';}
-          
+
           ?>
-          <span class="notationLine">
+          <span class="notationLine markjs">
                 <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('rvknotation', $shortcut, $this->searchClassId)?>" class="searchicon" title="<?=$descriptionHtml?>" ><?=$this->transEsc($shortcut)?></a>
           </span>
           <? endforeach; ?>
@@ -64,8 +64,8 @@
   </tr>
   <? endif; ?>
   <? endif; ?>
-  
-  <? $fivclassification = $this->driver->tryMethod('getFIVClassification'); 
+
+  <? $fivclassification = $this->driver->tryMethod('getFIVClassification');
   if(!empty($fivclassification)): ?>
   <? $contentDisplayed = true; ?>
   <tr>
@@ -73,16 +73,16 @@
       <? if(is_array($fivclassification)): ?>
       <td>
           <? foreach ($fivclassification as $notation): ?>
-            <span class="notationLine">
+            <span class="notationLine markjs">
                 <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('fivclassification', $notation, $this->searchClassId)?>" class="searchicon" title="<?=$this->transEsc($notation)?>" ><?=$notation?></a>
             </span>
           <? endforeach; ?>
       </td>
   <? endif; ?>
   </tr>
-  <? endif; ?>  
-  
-  <? $dficlassification = $this->driver->tryMethod('getDFIClassification'); 
+  <? endif; ?>
+
+  <? $dficlassification = $this->driver->tryMethod('getDFIClassification');
   if(!empty($dficlassification)): ?>
   <? $contentDisplayed = true; ?>
   <tr>
@@ -90,16 +90,16 @@
       <? if(is_array($fivclassification)): ?>
       <td>
           <? foreach ($dficlassification as $notation): ?>
-            <span class="notationLine">
+            <span class="notationLine markjs">
                 <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('dficlassification', $notation, $this->searchClassId)?>" class="searchicon" title="<?=$this->transEsc($notation)?>" ><?=$notation?></a>
             </span>
           <? endforeach; ?>
       </td>
   <? endif; ?>
   </tr>
-  <? endif; ?>  
-      
-<? if ($this->client()->is('show_rvk')): ?>      
+  <? endif; ?>
+
+<? if ($this->client()->is('show_rvk')): ?>
 <? $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings'); if (!empty($subjects)): ?>
   <tr>
     <th><?=$this->transEsc('RVKSubjects')?>: </th>
@@ -112,16 +112,16 @@
             <? $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
               <? $subject = trim($subject . ' ' . $subfield); ?>
-              <? //Die Links hatten eine Klasse backlink. Diese führt mit einer 
-              // bestimmten Browsererweiterung (uBlock / AdBlock?) zu komischer 
+              <? //Die Links hatten eine Klasse backlink. Diese führt mit einer
+              // bestimmten Browsererweiterung (uBlock / AdBlock?) zu komischer
               // Darstellung beim Hovern
               ?>
-              <a class="searchicon" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+              <a class="markjs searchicon" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
             <? endforeach; ?>
         <? else: ?>
-            <a class="searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" 
+            <a class="markjs searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>"
                href="<?=$this->record($this->driver)->getLink('rvkheading', $field, $this->searchClassId)?>">
-                <?=trim($this->escapeHtml($field))?></a>  
+                <?=trim($this->escapeHtml($field))?></a>
         <? endif; ?>
         <? $count++ ?>
       <? endforeach; ?>
@@ -135,4 +135,3 @@
 <? endif; ?>
 
 
-  

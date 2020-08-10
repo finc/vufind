@@ -17,32 +17,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace BszTheme;
 
 /**
- * BSZ implementation of ThemeInfo, here we load all client specific ressources. 
+ * BSZ implementation of ThemeInfo, here we load all client specific ressources.
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class ThemeInfo extends \VuFindTheme\ThemeInfo {
-    
+class ThemeInfo extends \VuFindTheme\ThemeInfo
+{
     protected $tag;
-    
+
     /**
      * Adapted constructor
      * @param string $baseDir
      * @param string $safeTheme
      * @param \Bsz\Config\Client $Client
      */
-    
     public function __construct($baseDir, $safeTheme, $tag)
     {
         $this->baseDir = $baseDir;
         $this->currentTheme = $this->safeTheme = $safeTheme;
         $this->tag = $tag;
     }
-    
+
     /**
      * Get all the configuration details related to the current theme.
      *
@@ -59,59 +57,58 @@ class ThemeInfo extends \VuFindTheme\ThemeInfo {
                 $this->allThemeInfo[$currentTheme]
                     = include $this->getThemeConfig($currentTheme);
 
-                
-                
                 $currentTheme = $this->allThemeInfo[$currentTheme]['extends'];
             } while ($currentTheme);
-            
+
             // Here, we make the css files dynamic
             $first = array_keys($this->allThemeInfo)[0];
             $second = array_keys($this->allThemeInfo)[1];
             $third = array_keys($this->allThemeInfo)[2];
-            
+
             $this->allThemeInfo[$first]['favicon'] = $this->addClientFavicon();
-            
-            $css = isset($this->allThemeInfo[$first]['css']) ? $this->allThemeInfo[$first]['css'] : [];   
+
+            $css = isset($this->allThemeInfo[$first]['css']) ? $this->allThemeInfo[$first]['css'] : [];
             array_push($css, $this->addClientStylesheet());
-            $this->allThemeInfo[$first]['css'] = $css;   
-            
-            // we then remove the compiled.css because it's included in our dynamic version 
+            $this->allThemeInfo[$first]['css'] = $css;
+
+            // we then remove the compiled.css because it's included in our dynamic version
             if (isset($this->allThemeInfo[$second]['css'])) {
                 foreach ($this->allThemeInfo[$second]['css'] as $key => $value) {
                     if ($value == 'compiled.css') {
                         unset($this->allThemeInfo[$second]['css'][$key]);
                     }
-                }      
+                }
             }
             if (isset($this->allThemeInfo[$third]['css'])) {
                 foreach ($this->allThemeInfo[$third]['css'] as $key => $value) {
                     if ($value == 'compiled.css') {
                         unset($this->allThemeInfo[$third]['css'][$key]);
                     }
-                }      
+                }
             }
         }
         return $this->allThemeInfo;
     }
-    
-    /**
-     * 
-     * @return string
-     */
-    public function addClientStylesheet() {
-        return $this->tag.'.css';
-    }    
-    /**
-     * 
-     * @return string
-     */
-    public function addClientFavicon() {
-        if (file_exists($this->baseDir.'/'.$this->currentTheme.'/images/favicon/'.$this->tag.'.ico')) {
-            return 'favicon/'.$this->tag.'.ico';            
-        } else {
-            return 'favicon/default.ico';                       
-        }
 
+    /**
+     *
+     * @return string
+     */
+    public function addClientStylesheet()
+    {
+        return $this->tag . '.css';
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function addClientFavicon()
+    {
+        if (file_exists($this->baseDir . '/' . $this->currentTheme . '/images/favicon/' . $this->tag . '.ico')) {
+            return 'favicon/' . $this->tag . '.ico';
+        } else {
+            return 'favicon/default.ico';
+        }
     }
 }
-

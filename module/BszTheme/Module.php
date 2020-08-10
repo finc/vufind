@@ -27,7 +27,6 @@
  */
 namespace BszTheme;
 
-
 /**
  * Bsz theme adaption
  *
@@ -50,8 +49,7 @@ class Module
             ],
         ];
     }
-   
-    
+
     /**
      * Here, we override the VuFindTheme module with our own module
      * @return []
@@ -63,9 +61,9 @@ class Module
                 \VuFindTheme\ThemeInfo::class => "\BszTheme\ThemeInfoFactory::getThemeInfo",
             ],
         ];
-    }  
-    
-        /**
+    }
+
+    /**
      * Get view helper configuration.
      *
      * @return array

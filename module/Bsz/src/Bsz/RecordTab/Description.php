@@ -39,11 +39,12 @@ namespace Bsz\RecordTab;
 class Description extends \VuFind\RecordTab\Description
 {
     protected $visible;
-    
+
     public function __construct($visible = true)
     {
-        $this->visible = (bool)$visible;        
+        $this->visible = (bool)$visible;
     }
+
     /**
      * Get the on-screen description for this tab.
      *
@@ -53,8 +54,8 @@ class Description extends \VuFind\RecordTab\Description
     {
         return 'Description';
     }
-    
-    public function isVisible() 
+
+    public function isVisible()
     {
         return $this->visible;
     }

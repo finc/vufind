@@ -944,8 +944,6 @@ class UpgradeController extends AbstractBase
             );
         }
 
-
-
         //$shortlinksTable->update(['hash' => $base62->encode()])
     }
 }

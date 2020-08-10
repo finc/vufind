@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Bsz\RecordDriver;
 
 use Bsz\Exception;
@@ -21,7 +20,6 @@ use VuFind\RecordDriver\MarcReaderTrait;
  */
 class SolrFindexMarc extends SolrMarc implements Definition
 {
-
     use IlsAwareTrait;
     use MarcReaderTrait;
     use MarcAdvancedTrait;
@@ -45,7 +43,7 @@ class SolrFindexMarc extends SolrMarc implements Definition
 
         $consortium = DefaultRecord::tryMethod('getCollections');
 
-        if ($consortium != Null) {
+        if ($consortium != null) {
             foreach ($consortium as $k => $con) {
                 $mapped = $this->mainConfig->mapNetwork($con);
                 if (!empty($mapped)) {
@@ -55,7 +53,7 @@ class SolrFindexMarc extends SolrMarc implements Definition
             $consortium_unique = array_unique($consortium);
         }
 
-        $string = implode(", ",$consortium_unique);
+        $string = implode(", ", $consortium_unique);
         return $string;
     }
 
@@ -67,6 +65,7 @@ class SolrFindexMarc extends SolrMarc implements Definition
     {
         // TODO
     }
+
     /**
      * Get an array of all ISBNs associated with the record (may be empty).
      *
@@ -106,7 +105,7 @@ class SolrFindexMarc extends SolrMarc implements Definition
         return $issn;
     }
 
-        /**
+    /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
      *

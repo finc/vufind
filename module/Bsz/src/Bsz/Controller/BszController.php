@@ -17,33 +17,33 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\Controller;
+
 use Zend\Session\Container as SessionContainer;
+
 /**
- * Für statische Seiten etc. 
+ * Für statische Seiten etc.
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class BszController extends \VuFind\Controller\AbstractBase {
-    
-    
+class BszController extends \VuFind\Controller\AbstractBase
+{
     /**
-     * Write isil into Session 
+     * Write isil into Session
      */
-    public function saveIsilAction() {        
-      
-        $isilsRoute = explode(',', $this->params()->fromRoute('isil'));       
+    public function saveIsilAction()
+    {
+        $isilsRoute = explode(',', $this->params()->fromRoute('isil'));
         $isilsGet = (array)$this->params()->fromQuery('isil');
         $isils = array_merge($isilsRoute, $isilsGet);
 
-        if(!is_array($isils)) {
+        if (!is_array($isils)) {
             $isils = (array)$isils;
         }
         foreach ($isils as $key => $isil) {
             if (strlen($isil) < 1) {
                 unset($isils[$key]);
-            } 
+            }
         }
         if (count($isils) == 0) {
             throw new \Bsz\Exception('parameter isil missing');
@@ -53,86 +53,81 @@ class BszController extends \VuFind\Controller\AbstractBase {
                 'fernleihe',
                 $this->serviceLocator->get(\Zend\Session\SessionManager::class)
             );
-            $session->offsetSet('isil', $isils);     
+            $session->offsetSet('isil', $isils);
             $uri= $this->getRequest()->getUri();
             $cookie = new \Zend\Http\Header\SetCookie(
-                    'isil', 
-                    implode(',', $isils), 
-                    time() + 14 * 24* 60 * 60, 
+                    'isil',
+                    implode(',', $isils),
+                    time() + 14 * 24 * 60 * 60,
                     '/',
-                    $uri->getHost() );
+                    $uri->getHost());
             $header = $this->getResponse()->getHeaders();
             $header->addHeader($cookie);
-        } 
+        }
         $referer = $this->params()->fromQuery('referer');
         // try to get referer from param
         if (empty($referer)) {
-            $referer = $this->params()->fromHeader('Referer');  
-        } 
+            $referer = $this->params()->fromHeader('Referer');
+        }
         if (is_object($referer)) {
             $referer = $referer->getFieldValue();
         }
-        if (!empty($referer) && strpos($referer, 'saveIsil') === FALSE
-                && ( strpos($referer, '.boss') > 0 
+        if (!empty($referer) && strpos($referer, 'saveIsil') === false
+                && (strpos($referer, '.boss') > 0
                     || strpos($referer, '.localhost') > 0)
         ) {
             return $this->redirect()->toUrl($referer);
         } else {
-            return $this->forwardTo('search', 'home');            
+            return $this->forwardTo('search', 'home');
         }
     }
-   
+
     /**
      * Show Privacy information
      */
-    public function privacyAction() {
+    public function privacyAction()
+    {
         // no code needed her, just do the default.
     }
-    
+
     /**
      * Offers a searchbox only layout for iframe embedding
      */
-    public function frameAction() {
-        
-       $view = $this->createViewModel();
-       $view->setTerminal(true);
-       return $view;
-    }   
-    
-    public function dedupAction() {
-        
+    public function frameAction()
+    {
+        $view = $this->createViewModel();
+        $view->setTerminal(true);
+        return $view;
+    }
+
+    public function dedupAction()
+    {
         $params = [];
         $dedup = $this->serviceLocator->get('Bsz\Config\Dedup');
-       
-        $post = $this->params()->fromPost();     
-        
+
+        $post = $this->params()->fromPost();
+
         // store form date in session and cookie
         if (isset($post['submit_dedup_form'])) {
             $params = $dedup->store($post);
             $this->flashMessenger()->addSuccessMessage('dedup_settings_success');
-            
         } else {
             // Load default values from session or config
-            $params = $dedup->getCurrentSettings();       
-        }        
-        
+            $params = $dedup->getCurrentSettings();
+        }
+
         $view = $this->createViewModel();
         $view->setVariables($params);
-        
+
         return $view;
-        
     }
-    
-    
-    public function libraryAction() {
-        
+
+    public function libraryAction()
+    {
         $client = $this->serviceLocator->get(\Bsz\Config\Client::class);
         $libraries = $this->serviceLocator->get(\Bsz\Config\Libraries::class);
         $library = $libraries->getFirstActive($client->getIsils());
         $homepage = $library->getHomepage();
         return $this->redirect()->toUrl($homepage);
-       
     }
-   
 }
-

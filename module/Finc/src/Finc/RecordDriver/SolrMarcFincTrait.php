@@ -27,6 +27,7 @@
  * @link     http://vufind.org/wiki/vufind2:record_drivers Wiki
  */
 namespace Finc\RecordDriver;
+
 use VuFindSearch\Query\Query as Query;
 
 /**
@@ -45,7 +46,6 @@ trait SolrMarcFincTrait
      * Returns true if the record supports real-time AJAX status lookups.
      *
      * @return bool
-     * @access public
      */
     public function supportsAjaxStatus()
     {
@@ -57,7 +57,6 @@ trait SolrMarcFincTrait
      * in 040$e)
      *
      * @return bool
-     * @access public
      */
     public function isRDA()
     {
@@ -96,7 +95,6 @@ trait SolrMarcFincTrait
                     $indicator1 = $url->getIndicator('1');
                     $indicator2 = $url->getIndicator('2');
 
-
                     $isISIL = false;
 
                     if ($isil) {
@@ -104,7 +102,7 @@ trait SolrMarcFincTrait
                         if (true === in_array($isil, $this->isil)) {
                             $isISIL = true;
                         }
-                    } else if (!$this->_isEBLRecord()) {
+                    } elseif (!$this->_isEBLRecord()) {
                         $isISIL = true;
                     }
 
@@ -194,7 +192,6 @@ trait SolrMarcFincTrait
      * LocalMarcFieldOfLibrary $m
      *
      * @return null|string
-     * @access public
      */
     public function getLocalOrderInformation()
     {
@@ -202,7 +199,7 @@ trait SolrMarcFincTrait
         if ($fields = $this->getMarcRecord()->getFields(
             $this->getLocalMarcFieldOfLibrary())
         ) {
-            foreach($fields as $field) {
+            foreach ($fields as $field) {
                 // return the first occurance of $m
                 if ($field->getSubfield('m')) {
                     return $field->getSubfield('m')->getData();
@@ -219,7 +216,6 @@ trait SolrMarcFincTrait
      * @todo Optimization by removing of prefixed isils
      *
      * @return array   Return fields.
-     * @access public
      * @deprecated (Cmp. refs #6324)
      */
     public function getLocalCallnumber()
@@ -234,10 +230,8 @@ trait SolrMarcFincTrait
                 foreach ($this->isil as $isil) {
                     if (isset($itemdata[$isil])) {
                         foreach ($itemdata[$isil] as $val) {
-                            $array[$i]['barcode'] = isset($val['bc'])
-                                ? $val['bc'] : '';
-                            $array[$i]['callnumber'] = isset($val['cn'])
-                                ? $val['cn'] : '';
+                            $array[$i]['barcode'] = $val['bc'] ?? '';
+                            $array[$i]['callnumber'] = $val['cn'] ?? '';
                             $i++;
                         }
                     } // end if
@@ -251,7 +245,6 @@ trait SolrMarcFincTrait
      * Get local callnumbers of a special library. Refs #6324
      *
      * @return array
-     * @access protected
      * @deprecated (Cmp. refs #6324)
      */
     protected function getLocalCallnumbersByLibrary()
@@ -287,7 +280,6 @@ trait SolrMarcFincTrait
      * university library of Freiberg at finc marc 972i.
      *
      * @return string
-     * @access protected
      */
     protected function getLocalGivenCallnumber()
     {
@@ -304,7 +296,6 @@ trait SolrMarcFincTrait
      * Get an array of supplements and special issue entry.
      *
      * @return array
-     * @access public
      * @link   http://www.loc.gov/marc/bibliographic/bd770.html
      */
     public function getSupplements()
@@ -330,7 +321,7 @@ trait SolrMarcFincTrait
                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
                     //$id = $this->checkIfRecordExists($matches[2]);
                     //if ($id != null) {
-                    $array[$key]['record_id'] = $matches[2].$matches[3];
+                    $array[$key]['record_id'] = $matches[2] . $matches[3];
                     if (null != ($sid = $this->getSourceID())) {
                         $array[$key]['source_id'] = $sid;
                     }
@@ -348,7 +339,6 @@ trait SolrMarcFincTrait
      * field 024 indicator 8 subfield $a. Refs #1442
      *
      * @return array
-     * @access public
      */
     public function getIndexOfGermanPrints()
     {
@@ -379,7 +369,6 @@ trait SolrMarcFincTrait
      * of the Petrucci music library subfield 590b
      *
      * @return array
-     * @access public
      */
     public function getInstrumentation()
     {
@@ -390,7 +379,6 @@ trait SolrMarcFincTrait
      * Get the ISSN from a record. Refs #969
      *
      * @return array
-     * @access public
      */
     public function getISSNs() : array
     {
@@ -401,7 +389,6 @@ trait SolrMarcFincTrait
      * Get the ISSN from a the parallel title of a record. Refs #969
      *
      * @return array
-     * @access public
      */
     public function getISSNsParallelTitles()
     {
@@ -635,7 +622,6 @@ trait SolrMarcFincTrait
      * subfield t and (if present) subfield r.
      *
      * @return array
-     * @access public
      */
     public function getWorkPartTitleDetails()
     {
@@ -648,7 +634,7 @@ trait SolrMarcFincTrait
             #return preg_replace(
             #    $titleRegexPattern, '', trim($string)
             #);
-            return rtrim($string," \t\n\r\0\x0B".'.:-/');
+            return rtrim($string, " \t\n\r\0\x0B" . '.:-/');
         };
 
         if ($fields = $this->getMarcRecord()->getFields('505')) {
@@ -678,14 +664,13 @@ trait SolrMarcFincTrait
      * from MARC field 700.
      *
      * @return array
-     * @access public
      */
     public function getWorkTitleDetails()
     {
         $workTitles = [];
 
         $truncateTrail = function ($string) {
-            return rtrim($string," \t\n\r\0\x0B".'.:-/');
+            return rtrim($string, " \t\n\r\0\x0B" . '.:-/');
         };
 
         if ($fields = $this->getMarcRecord()->getFields('700')) {
@@ -778,7 +763,6 @@ trait SolrMarcFincTrait
      * Refs #328
      *
      * @return array
-     * @access public
      */
     public function getJournalHoldings()
     {
@@ -811,9 +795,9 @@ trait SolrMarcFincTrait
                 }
                 $retval[$key]['link'] =
                     '/Record/' . $this->getUniqueID()
-                    .'/HoldJournalCHE?callnumber='
+                    . '/HoldJournalCHE?callnumber='
                     . urlencode($retval[$key]['callnumber'])
-                    .'&barcode=' . $barcode;
+                    . '&barcode=' . $barcode;
                 $key++;
             }
         }
@@ -826,7 +810,6 @@ trait SolrMarcFincTrait
      * Seems to be very extraordinary special case. Refs #1302
      *
      * @return array
-     * @access protected
      */
     protected function getLocalAccessNumber()
     {
@@ -838,14 +821,13 @@ trait SolrMarcFincTrait
         }
         return [];
     }
-    
-     /**
+
+    /**
      * Return a local access number for call number.
      * Marc field depends on library e.g. 986 for GfzK.
      * Seems to be very extraordinary special case. Refs #7924
      *
      * @return array
-     * @access public
      */
     public function getLocalSubject()
     {
@@ -869,7 +851,6 @@ trait SolrMarcFincTrait
      * Get all local class subjects. First realization for HGB. Refs #2626
      *
      * @return array
-     * @access protected
      */
     protected function getLocalClassSubjects()
     {
@@ -892,14 +873,12 @@ trait SolrMarcFincTrait
         return $array;
     }
 
-
     /**
      * Returning local format field of a library using an consortial defined
      * field with subfield $c. Marc field depends on library e.g. 970 for HMT or
      * 972 for TUBAF
      *
      * @return array
-     * @access public
      */
     public function getLocalFormat()
     {
@@ -922,7 +901,6 @@ trait SolrMarcFincTrait
      * settings in config.ini. Refs 7063
      *
      * @return mixed
-     * @access protected
      */
     protected function getLocalMarcFieldOfLibrary()
     {
@@ -937,7 +915,7 @@ trait SolrMarcFincTrait
             $namespace = $this->mainConfig->CustomIndex->localMarcFieldOfLibraryNamespace;
             if (isset($this->mainConfig->CustomIndex->localMarcFieldOfLibraryMapping)) {
                 foreach ($this->mainConfig->CustomIndex->localMarcFieldOfLibraryMapping as $mappingValue) {
-                    list ($ns, $fn) = explode(':', $mappingValue);
+                    list($ns, $fn) = explode(':', $mappingValue);
                     if (trim($ns) == trim($namespace)) {
                         $this->localMarcFieldOfLibrary = $fn;
                         break;
@@ -956,7 +934,6 @@ trait SolrMarcFincTrait
      * Refs #1308
      *
      * @return array
-     * @access protected
      */
     protected function getLocalNotice()
     {
@@ -966,12 +943,11 @@ trait SolrMarcFincTrait
         return [];
     }
 
-     /**
+    /**
      * Return a local signature via an consortial defined field with subfield $f.
      * Marc field depends on library e.g. 986 for GFZK. Refs #8146
      *
      * @return array
-     * @access public
      */
     public function getLocalSignature()
     {
@@ -995,7 +971,6 @@ trait SolrMarcFincTrait
      * subfield $h. Marc field depends on library e.g. 972 for TUF.
      *
      * @return array
-     * @access protected
      */
     protected function getLocalStockSpecification()
     {
@@ -1013,7 +988,6 @@ trait SolrMarcFincTrait
      * at the marc field.
      *
      * @return mixed    null if there's no field or array with results
-     * @access public
      */
     public function getMusicHeading()
     {
@@ -1042,7 +1016,6 @@ trait SolrMarcFincTrait
      * getting previous title of marc field 780.
      *
      * @return array
-     * @access protected
      */
     public function getNewerTitles()
     {
@@ -1080,13 +1053,11 @@ trait SolrMarcFincTrait
         return $this->addFincIDToRecord($array);
     }
 
-
     /**
      * Get notice of a title representing a special case of University
      * library of Chemnitz: MAB field 999l
      *
      * @return string
-     * @access protected
      */
     protected function getNotice()
     {
@@ -1100,7 +1071,6 @@ trait SolrMarcFincTrait
      * mentioned record in 787 $a{t}.
      *
      * @return array|null
-     * @access public
      */
     public function getOtherRelationshipEntry()
     {
@@ -1190,7 +1160,6 @@ trait SolrMarcFincTrait
      * of the Petrucci music library subfield 590a
      *
      * @return array
-     * @access public
      */
     public function getPieceStyle()
     {
@@ -1204,7 +1173,6 @@ trait SolrMarcFincTrait
      * @todo More flexible implementation
      *
      * @return array
-     * @access protected
      */
     protected function getParallelEditions()
     {
@@ -1213,7 +1181,6 @@ trait SolrMarcFincTrait
         $i = 0;
 
         foreach ($fields as $field) {
-
             $related = $this->getMarcRecord()->getFields($field);
             // if no entry break it
             if ($related) {
@@ -1231,7 +1198,7 @@ trait SolrMarcFincTrait
                                 $text = $current->getData();
                                 // Extract parenthetical prefixes:
                                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
-                                    $array[$key]['record_id'] = $matches[2].$matches[3];
+                                    $array[$key]['record_id'] = $matches[2] . $matches[3];
                                     if (null != ($sid = $this->getSourceID())) {
                                         $array[$key]['source_id'] = $sid;
                                     }
@@ -1250,7 +1217,6 @@ trait SolrMarcFincTrait
      * Get an array of previous titles for the record.
      *
      * @return array
-     * @access protected
      */
     public function getPreviousTitles()
     {
@@ -1277,14 +1243,14 @@ trait SolrMarcFincTrait
                 $text = $current->getData();
                 // Extract parenthetical prefixes:
                 if (preg_match(self::BSZ_PATTERN, $text, $matches)) {
-                    $array[$key]['record_id'] = $matches[2].$matches[3];
+                    $array[$key]['record_id'] = $matches[2] . $matches[3];
                     if (null != ($sid = $this->getSourceID())) {
                         $array[$key]['source_id'] = $sid;
                     }
                 }
             } // end foreach
         } // end foreach
-        
+
         return $this->addFincIDToRecord($array);
     }
 
@@ -1296,27 +1262,26 @@ trait SolrMarcFincTrait
      * @todo pass prices by euro currency
      *
      * @return string
-     * @access public
      */
     public function getPrice()
     {
         $currency = $this->getFirstFieldValue('365', ['c']);
         $price = $this->getFirstFieldValue('365', ['b']);
-        if (!empty($currency) && !empty($price) ) {
+        if (!empty($currency) && !empty($price)) {
             // if possible convert it in euro
             if (is_array($converted =
                 json_decode(str_replace(
                     ['lhs','rhs','error','icc'],
                     ['"lhs"','"rhs"','"error"','"icc"'],
-                    file_get_contents("http://www.google.com/ig/calculator?q=".$price.$currency."=?EUR")
-                ),true)
+                    file_get_contents("http://www.google.com/ig/calculator?q=" . $price . $currency . "=?EUR")
+                ), true)
             )) {
-                if(empty($converted['error'])){
+                if (empty($converted['error'])) {
                     $rhs = explode(' ', trim($converted['rhs']));
                     return  money_format('%.2n', $rhs[0]);
                 }
             }
-            return $currency . " ". $price;
+            return $currency . " " . $price;
         }
         return "";
     }
@@ -1325,7 +1290,6 @@ trait SolrMarcFincTrait
      * Get the provenience of a title.
      *
      * @return array
-     * @access public
      */
     public function getProvenience()
     {
@@ -1338,7 +1302,6 @@ trait SolrMarcFincTrait
      * 972 for TUBAF
      *
      * @return bool
-     * @access protected
      */
     protected function getPurchaseInformation()
     {
@@ -1354,7 +1317,6 @@ trait SolrMarcFincTrait
      * Get a short list of series for ISBD citation style
      *
      * @return array
-     * @access protected
      * @link   http://www.loc.gov/marc/bibliographic/bd830.html
      */
     protected function getSeriesWithVolume()
@@ -1367,31 +1329,28 @@ trait SolrMarcFincTrait
      * null by value "0" therefor it doesn't fit properly.
      *
      * @return string|null
-     * @access public
      */
-/* removed erroneous inheritance, this function is present and working in SolrDefaultFincTrait, DM
-    public function getSourceID()
-    {
-        $source_ids = $this->getMarcRecord()->getFields('980');
-        if (!$source_ids) {
-            return null;
+    /* removed erroneous inheritance, this function is present and working in SolrDefaultFincTrait, DM
+        public function getSourceID()
+        {
+            $source_ids = $this->getMarcRecord()->getFields('980');
+            if (!$source_ids) {
+                return null;
+            }
+            return (string)$source_ids[0]->getSubfield('b')->getData();
         }
-        return (string)$source_ids[0]->getSubfield('b')->getData();
-    }
-*/
+    */
 
     /**
      * Get local classification of UDK.
      *
      * @return array
-     * @access protected
      * @deprecated Seems to be only for HTWK in use formerly?
      */
     protected function getUDKs()
     {
         $array = [];
         if (null != $this->getLocalMarcFieldOfLibrary()) {
-
             $udk = $this->getMarcRecord()->getFields(
                 $this->getLocalMarcFieldOfLibrary()
             );
@@ -1437,7 +1396,6 @@ trait SolrMarcFincTrait
      * Get addional entries for personal names.
      *
      * @return array
-     * @access protected
      * @link   http://www.loc.gov/marc/bibliographic/bd700.html
      */
     protected function getAdditionalAuthors()
@@ -1467,7 +1425,6 @@ trait SolrMarcFincTrait
      * for UBL only implemented. Refs. #1315
      *
      * @return array
-     * @access public
      */
     public function getAdditionals()
     {
@@ -1544,9 +1501,9 @@ trait SolrMarcFincTrait
         $fields = [
             '773' => ['a'=>['',''], 't'=>[': ',''], 'g'=>[' ; ','']],
             '490' => ['a'=>['','']],
-            '800' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''] ,'g'=>[' ; ','']],
-            '810' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''] ,'g'=>[' ; ','']],
-            '811' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''] ,'g'=>[' ; ','']],
+            '800' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''],'g'=>[' ; ','']],
+            '810' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''],'g'=>[' ; ','']],
+            '811' => ['a'=>['',': '], 't'=>['',''], 'v'=>[' ; ',''],'g'=>[' ; ','']],
             '830' => ['a'=>['',''], 'v'=>[' ; ','']]
         ];
         $i = 0;
@@ -1565,7 +1522,7 @@ trait SolrMarcFincTrait
                     // lets collect the text
                     // https://intern.finc.info/issues/6896#note-7
                     $text = [];
-                    foreach ($subfields as $subfield => list($l_delim,$r_delim)) {
+                    foreach ($subfields as $subfield => list($l_delim, $r_delim)) {
                         $val = $line->getSubfield($subfield);
                         if ($field == '773' && $subfield == 'a') {
                             if ($line->getIndicator(1) == 1) {
@@ -1577,23 +1534,25 @@ trait SolrMarcFincTrait
                             } elseif (empty($val)) {
                                 continue;
                             } else {
-                                $text[] = $l_delim.$val->getData().$r_delim;
+                                $text[] = $l_delim . $val->getData() . $r_delim;
                             }
                         } else {
-                            if (empty($val)) continue;
+                            if (empty($val)) {
+                                continue;
+                            }
                             if ($field == '490') {
                                 if ($line->getIndicator(1) == 0) {
-                                    $text[] = $l_delim.$val->getData().$r_delim;
+                                    $text[] = $l_delim . $val->getData() . $r_delim;
                                 }
                             } elseif ($subfield == 'v' && in_array($field, ['800', '810', '811'])) {
                                 if (!empty($val)) {
-                                    $text[] = $l_delim.$val->getData().$r_delim;
+                                    $text[] = $l_delim . $val->getData() . $r_delim;
                                     // do not use the next (and last) subfield $g,
                                     // if $v is already set
                                     break;
                                 }
                             } else {
-                                $text[] = $l_delim.$val->getData().$r_delim;
+                                $text[] = $l_delim . $val->getData() . $r_delim;
                             }
                         }
                     }
@@ -1636,7 +1595,6 @@ trait SolrMarcFincTrait
      * Refs. #8509
      *
      * @return array|null
-     * @access public
      */
     public function getAdditionalNotes()
     {
@@ -1655,14 +1613,14 @@ trait SolrMarcFincTrait
         return $retval;
     }
 
-    public function getAllNotes() {
-
+    public function getAllNotes()
+    {
         $notes = array_merge(
-            (array) $this->getGeneralNotes(),
+            (array)$this->getGeneralNotes(),
             (array)$this->getAdditionalNotes()
         );
         foreach ($notes as &$note) {
-            if (preg_match('/(.*)\.\s*$/',$note,$matches)) {
+            if (preg_match('/(.*)\.\s*$/', $note, $matches)) {
                 $note = $matches[1];
             }
         }
@@ -1674,7 +1632,6 @@ trait SolrMarcFincTrait
      * Refs #8369
      *
      * @return array
-     * @access public
      */
     public function getHierarchyParentID()
     {
@@ -1693,7 +1650,7 @@ trait SolrMarcFincTrait
             if (!empty($matches[2])) {
                 $query = 'record_id:' . $matches[2];
                 if ($sid = $this->fields['source_id']) {
-                    $query .= ' AND source_id:'.$sid;
+                    $query .= ' AND source_id:' . $sid;
                 }
                 $result = $this->searchService->search('Solr', new Query($query));
                 if (count($result) === 0) {
@@ -1713,7 +1670,7 @@ trait SolrMarcFincTrait
         foreach ($fieldList as $fieldNumbers) {
             foreach ($fieldNumbers as $fieldNumber) {
                 $fields = $this->getMarcRecord()->getFields($fieldNumber);
-                foreach($fields as $field) {
+                foreach ($fields as $field) {
                     if ($field->getSubfield('w')) {
                         $parentID[] = $idRetrieval(
                             $field->getSubfield('w')->getData()
@@ -1743,7 +1700,6 @@ trait SolrMarcFincTrait
      * Refs #8369
      *
      * @return array
-     * @access public
      */
     public function getHierarchyParentTitle()
     {
@@ -1761,7 +1717,7 @@ trait SolrMarcFincTrait
 
         // start with 490 (https://intern.finc.info/issues/8704)
         $fields = $this->getMarcRecord()->getFields('490');
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             if ($field->getIndicator(1) == 0
                 && $subfield = $field->getSubfield('a')
             ) {
@@ -1772,7 +1728,7 @@ trait SolrMarcFincTrait
         // now check if 773 is available and LDR 7 != (a || s)
         $fields = $this->getMarcRecord()->getFields('773');
         if ($fields && !in_array($this->getMarcRecord()->getLeader()[7], ['a', 's'])) {
-            foreach($fields as $field) {
+            foreach ($fields as $field) {
                 if ($field245 = $this->getMarcRecord()->getField('245')) {
                     $parentTitle[] =
                         ($field245->getSubfield('a') ? $field245->getSubfield('a')->getData() : '') .
@@ -1782,9 +1738,9 @@ trait SolrMarcFincTrait
             }
         } else {
             // build the titles differently if LDR 7 == (a || s)
-            foreach($fields as $field) {
+            foreach ($fields as $field) {
                 $parentTitle[] =
-                    ($field->getSubfield('a') ?        $field->getSubfield('a')->getData() : '') .
+                    ($field->getSubfield('a') ? $field->getSubfield('a')->getData() : '') .
                     ($field->getSubfield('t') ? ': ' . $field->getSubfield('t')->getData() : '') .
                     ($field->getSubfield('g') ? ', ' . $field->getSubfield('g')->getData() : '')
                 ; // {773a}{: 773t}{, g}
@@ -1795,21 +1751,21 @@ trait SolrMarcFincTrait
         $fieldList = ['800', '810', '811'];
         foreach ($fieldList as $fieldNumber) {
             $fields = $this->getMarcRecord()->getFields($fieldNumber);
-            foreach($fields as $field) {
+            foreach ($fields as $field) {
                 $parentTitle[] =
-                    ($field->getSubfield('a') ?        $field->getSubfield('a')->getData() : '') .
+                    ($field->getSubfield('a') ? $field->getSubfield('a')->getData() : '') .
                     ($field->getSubfield('t') ? ': ' . $field->getSubfield('t')->getData() : '') .
-                    ($vgSelect($field)        ? ' ; ' . $vgSelect($field)                  : '')
+                    ($vgSelect($field) ? ' ; ' . $vgSelect($field) : '')
                 ; // {800a: }{800t}{ ; 800v}
             }
         }
 
         // handle field 830 differently
         $fields = $this->getMarcRecord()->getFields('830');
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             $parentTitle[] =
-                ($field->getSubfield('a') ?         $field->getSubfield('a')->getData() : '') .
-                ($vgSelect($field)        ? ' ; ' . $vgSelect($field)                   : '')
+                ($field->getSubfield('a') ? $field->getSubfield('a')->getData() : '') .
+                ($vgSelect($field) ? ' ; ' . $vgSelect($field) : '')
             ; // {830a}{ ; 830v}
         }
 
@@ -1826,7 +1782,6 @@ trait SolrMarcFincTrait
      * the bsz heading subjects chains.
      *
      * @return array
-     * @access public
      */
     public function getAllSubjectHeadingsExtended()
     {
@@ -1838,14 +1793,15 @@ trait SolrMarcFincTrait
         foreach ($fields as $field) {
             $subjectrow = $field->getIndicator('1');
             if ($subjectrow != $firstindicator) {
-                $key = (isset($key) ? $key +1 : 0);
+                $key = (isset($key) ? $key + 1 : 0);
                 $firstindicator = $subjectrow;
             }
             // #5668 #5046 BSZ MARC may contain uppercase subfields but solrmarc set to lowercase them which introduces single char topics
-            if ($subfields = $field->getSubfields('a')){
+            if ($subfields = $field->getSubfields('a')) {
                 foreach ($subfields as $subfield) {
-                    if (strlen($subfield->getData()) > 1)
+                    if (strlen($subfield->getData()) > 1) {
                         $retval[$key]['subject'][] = $subfield->getData();
+                    }
                 }
             }
             if ($subfield = $field->getSubfield('t')) {
@@ -1866,7 +1822,6 @@ trait SolrMarcFincTrait
      * @param boolean $extended If dynamic index extension activated
      *
      * @return array
-     * @access public
      */
     public function getAllSubjectHeadings($extended = false)
     {
@@ -1941,15 +1896,14 @@ trait SolrMarcFincTrait
      * Check if Topics exists. Realized for instance of UBL only.
      *
      * @return boolean      True if topics exist.
-     * @access public
      */
     public function hasTopics()
     {
         $rvk = $this->getRvkWithMetadata();
-        return (
+        return
             parent::hasTopics()
             || (is_array($rvk) && count($rvk) > 0)
-        );
+        ;
     }
 
     /**
@@ -1957,7 +1911,6 @@ trait SolrMarcFincTrait
      * for UBL only implemented.
      *
      * @return array
-     * @access public
      */
     public function getTopics()
     {
@@ -1977,7 +1930,6 @@ trait SolrMarcFincTrait
      */
     public function getBarcode()
     {
-
         $barcodes = [];
 
         //$driver = ConnectionManager::connectToCatalog();
@@ -1995,11 +1947,11 @@ trait SolrMarcFincTrait
                 $retval = [];
                 foreach ($barcodes as $barcode) {
                     if (preg_match('/^\((.*)\)(.*)$/', trim($barcode), $match));
-                    if ( in_array($match[1], $codes) ) {
+                    if (in_array($match[1], $codes)) {
                         $retval[] = $match[2];
                     }
                 } // end foreach
-                if (count($retval) > 0 ) {
+                if (count($retval) > 0) {
                     return $retval;
                 }
             }
@@ -2012,7 +1964,6 @@ trait SolrMarcFincTrait
      * for petrucci music library.
      *
      * @return array
-     * @access protected
      */
     protected function getCatalogueNumber()
     {
@@ -2023,7 +1974,6 @@ trait SolrMarcFincTrait
      * Get the volume number
      *
      * @return array
-     * @access protected
      */
     protected function getVolume()
     {
@@ -2035,9 +1985,9 @@ trait SolrMarcFincTrait
      *
      * @return array    Return multidimensional array with key of 'coordinates'
      *                  and 'scale'
-     * @access public
      */
-    public function getCartographicData() {
+    public function getCartographicData()
+    {
 
         // internal vars
         $retVal = [];
@@ -2046,7 +1996,7 @@ trait SolrMarcFincTrait
         $mapper = ['a' => 'scale', 'c' => 'coordinates'];
 
         $fields = $this->getMarcRecord()->getFields('255');
-        foreach($fields as $f) {
+        foreach ($fields as $f) {
             foreach ($mapper as $subfield => $key) {
                 $sub = $f->getSubField($subfield);
                 if ($sub) {
@@ -2062,7 +2012,6 @@ trait SolrMarcFincTrait
      * Get an array of content notes.
      *
      * @return array
-     * @access protected
      */
     protected function getContentNote()
     {
@@ -2073,7 +2022,6 @@ trait SolrMarcFincTrait
      * Get dissertation notes for the record.
      *
      * @return array $retVal
-     * @access public
      */
     public function getDissertationNote()
     {
@@ -2098,7 +2046,6 @@ trait SolrMarcFincTrait
      * @params boolean $allow_multiple_results
      *
      * @return string|array
-     * @access protected
      */
     protected function getRelatedItems($allow_multiple_results = false)
     {
@@ -2116,17 +2063,17 @@ trait SolrMarcFincTrait
      * @params string   $backend_id     Search engine
      *
      * @return array
-     * @access protected
      */
     protected function getRelatedRecords($limit, $backend_id = 'Solr')
     {
-
         $related = $this->getRelatedItems(true);
 
-        if (empty($related)) return [];
+        if (empty($related)) {
+            return [];
+        }
 
         $query = new Query(
-            'isbn' . ':' . implode(' OR ',$related)
+            'isbn' . ':' . implode(' OR ', $related)
             . ' AND NOT id:' . $this->getUniqueID()
         );
 
@@ -2142,7 +2089,6 @@ trait SolrMarcFincTrait
      * Get RVK classification number with metadata from Marc records. Refs #599
      *
      * @return array
-     * @access public
      */
     public function getRvkWithMetadata()
     {
@@ -2177,7 +2123,6 @@ trait SolrMarcFincTrait
      * Get an array of citations and references notes.
      *
      * @return array
-     * @access public
      */
     public function getReferenceNotes()
     {
@@ -2188,7 +2133,6 @@ trait SolrMarcFincTrait
      * Get the publishers number and source of the record.
      *
      * @return array
-     * @access public
      */
     public function getPublisherNumber()
     {
@@ -2199,7 +2143,6 @@ trait SolrMarcFincTrait
      * Get the musical key of a piece (Marc 384).
      *
      * @return array
-     * @access public
      */
     public function getMusicalKey()
     {
@@ -2211,14 +2154,14 @@ trait SolrMarcFincTrait
      *
      * @returns items internal Bibliotheca-ID called "Mediennummer"
      * @deprecated Remove when Bibliotheca support ends
-     * @access public
      */
-    public function getMediennummer() {
+    public function getMediennummer()
+    {
         // loop through all existing LocalMarcFieldOfLibrary
         if ($fields = $this->getMarcRecord()->getFields(
             $this->getLocalMarcFieldOfLibrary())
         ) {
-            foreach($fields as $field) {
+            foreach ($fields as $field) {
                 // return the first occurance of $m
                 $field = $field->getSubfield('a');
                 if ($field) {
@@ -2231,10 +2174,10 @@ trait SolrMarcFincTrait
         }
     }
 
-    public function getTitleUniform() {
-
+    public function getTitleUniform()
+    {
         $retval = [];
-        foreach (array('130','240') as $pos => $field_name) {
+        foreach (['130','240'] as $pos => $field_name) {
             if ($field = $this->getMarcRecord()->getField($field_name)) {
                 if ($field_name === '240') {
                     if ($field->getIndicator('1') === '0') {
@@ -2242,10 +2185,10 @@ trait SolrMarcFincTrait
                         continue;
                     }
                 }
-                foreach (array(
+                foreach ([
                     'title' => 'a',
                     'lang' => 'g'
-                         ) as $key => $sub_name) {
+                         ] as $key => $sub_name) {
                     if ($line = $field->getSubfield($sub_name)) {
                         $retval[$key] = $line->getData();
                     }

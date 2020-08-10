@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Bsz\RecordDriver;
 
 /**
@@ -15,7 +14,6 @@ namespace Bsz\RecordDriver;
  */
 trait ContainerTrait
 {
-
     /**
      * As out fiels 773 does not contain any further title information we need
      * to query solr again

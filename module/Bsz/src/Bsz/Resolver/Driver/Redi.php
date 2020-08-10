@@ -1,5 +1,4 @@
 <?php
-
 namespace Bsz\Resolver\Driver;
 
 /**
@@ -9,7 +8,6 @@ namespace Bsz\Resolver\Driver;
  */
 class Redi extends \VuFind\Resolver\Driver\Redi
 {
-       
     /**
      * Allows for resolver driver specific enabling/disabling of the more options
      * link which will link directly to the resolver URL. This should return false if

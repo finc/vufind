@@ -1,11 +1,6 @@
 <?php
-
 namespace BszTheme\View\Helper\Bodensee;
 
-use VuFind\Search\Base\Results;
-use VuFind\Search\Results\PluginManager;
-use VuFind\Search\SearchTabsHelper;
-use Zend\Http\Request;
 use Zend\View\Helper\Url;
 
 /**
@@ -15,16 +10,18 @@ use Zend\View\Helper\Url;
  */
 class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
 {
-    public function isILL($searchClassId = 'Solr') {
+    public function isILL($searchClassId = 'Solr')
+    {
         $hiddenFilterStr = urldecode($this->getCurrentHiddenFilterParams($searchClassId));
-        if (strpos($hiddenFilterStr, 'consortium:FL') !== FALSE || 
-                strpos($hiddenFilterStr, 'consortium:ZDB') !== FALSE) {
+        if (strpos($hiddenFilterStr, 'consortium:FL') !== false ||
+                strpos($hiddenFilterStr, 'consortium:ZDB') !== false) {
             return true;
         }
         return false;
     }
-    
-    public function isK10plus($searchClassId = 'Solr') {
+
+    public function isK10plus($searchClassId = 'Solr')
+    {
         $hiddenFilterStr = urldecode($this->getCurrentHiddenFilterParams($searchClassId));
         if (strpos($hiddenFilterStr, 'consortium:K10plus')) {
             return true;
@@ -32,14 +29,15 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return false;
     }
 
-    public function isZDB($searchClassId = 'Solr') {
+    public function isZDB($searchClassId = 'Solr')
+    {
         $hiddenFilterStr = urldecode($this->getCurrentHiddenFilterParams($searchClassId));
-        if (strpos($hiddenFilterStr, 'consortium:ZDB') !== FALSE) {
+        if (strpos($hiddenFilterStr, 'consortium:ZDB') !== false) {
             return true;
         }
         return false;
-    }    
-    
+    }
+
     /**
      * Create information representing a selected tab.
      *
@@ -55,7 +53,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return [
             'id' => $id,
             'class' => $class,
-            'icon' => $this->getIcon($id),            
+            'icon' => $this->getIcon($id),
             'label' => $label,
             'permission' => $permissionName,
             'selected' => true
@@ -78,7 +76,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return [
             'id' => $id,
             'class' => $class,
-            'icon' => $this->getIcon($id),            
+            'icon' => $this->getIcon($id),
             'label' => $label,
             'permission' => $permissionName,
             'selected' => false,
@@ -107,7 +105,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return [
             'id' => $id,
             'class' => $class,
-            'icon' => $this->getIcon($id),            
+            'icon' => $this->getIcon($id),
             'label' => $label,
             'permission' => $permissionName,
             'selected' => false,
@@ -140,20 +138,20 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return [
             'id' => $id,
             'class' => $class,
-            'icon' => $this->getIcon($id),            
+            'icon' => $this->getIcon($id),
             'label' => $label,
             'permission' => $permissionName,
             'selected' => false,
             'url' => $url
         ];
     }
-    
+
     /**
      * Get Font Awesome Icon for tab
      * @param string $id
      * @return string
      */
-    public static function getIcon($id) 
+    public static function getIcon($id)
     {
         switch (strtolower($id)) {
             case 'eds': $icon = 'fa-newspaper-o';
@@ -161,16 +159,16 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
             case 'summon': $icon = 'fa-newspaper-o';
                 break;
             case 'solr:filtered1': $icon = 'fa-book';
-                break;   
+                break;
             case 'solr:filtered2': $icon = 'fa-newspaper-o';
-                break;   
+                break;
             case 'solr': $icon = 'fa-globe';
-                break;    
+                break;
             case 'fis': $icon = 'fa-university';
-                break;    
+                break;
             default: $icon = 'fa-search';
                 break;
         }
         return $icon;
-    }    
+    }
 }

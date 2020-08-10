@@ -27,7 +27,6 @@
  * @link     http://vufind.org/wiki/vufind2:recommendation_modules Wiki
  */
 namespace Bsz\Recommend;
-use Zend\Feed\Reader\Reader as FeedReader;
 
 /**
  * EuropeanaResults Recommendations Module
@@ -109,42 +108,42 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
      * @var array
      */
     protected $results;
-    
+
     /**
      * Source title
-     * 
+     *
      * @var string
      */
     protected $sourceTitle;
 
     /**
      * Image name
-     * 
+     *
      * @var string
      */
-    protected $imageName;    
+    protected $imageName;
 
     /**
      * http / https
-     * 
+     *
      * @var string
      */
-    protected $protocol;    
+    protected $protocol;
 
     /**
      * img column Number for class Attribute
-     * 
+     *
      * @var string
      */
-    protected $colNumber;    
-    
+    protected $colNumber;
+
     /**
      * label for header above searchbutton
-     * 
+     *
      * @var string
      */
     protected $label;
-    
+
     /**
      * type of searchbutton
      *  'link' = do not append searchterms to link
@@ -162,8 +161,6 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
     {
         $this->key = $key;
     }
-    
-    
 
     /**
      * Store the configuration of the recommendation module.
@@ -180,25 +177,24 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
 
         $this->protocol = (isset($params[0]) && !empty($params[0]))
             ? $params[0] : 'http';
-        
+
         $this->baseUrl = (isset($params[1]) && !empty($params[1]))
             ? $params[1] : 'fernleihe.boss2.bsz-bw.de/Search/Results?lookfor=';
-                
+
         $this->sourceTitle = (isset($params[2]) && !empty($params[2]))
             ? $params[2] : 'Search in external source';
 
         $this->imageName = (isset($params[3]) && !empty($params[3]))
-            ? $params[3] : 'default.png';        
-        
+            ? $params[3] : 'default.png';
+
         $this->colNumber = (isset($params[4]) && !empty($params[4]))
-            ? $params[4] : '';        
-        
+            ? $params[4] : '';
+
         $this->label = (isset($params[5]) && !empty($params[5]))
-            ? $params[5] : '';  
-       
+            ? $params[5] : '';
+
         $this->type = (isset($params[6]) && !empty($params[6]))
-            ? $params[6] : '';  
-        
+            ? $params[6] : '';
     }
 
     /**
@@ -206,53 +202,57 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
      *
      * @return string The url to be sent
      */
-    public function getURL() {
-        return $this->targetUrl; 
+    public function getURL()
+    {
+        return $this->targetUrl;
     }
 
     /**
      * Fetch the sourceTitle
-     * 
+     *
      * @return string sourceTitle   The title of the source
      */
-    public function getSourceTitle() {
+    public function getSourceTitle()
+    {
         return $this->sourceTitle;
     }
-    
+
     /**
      * Fetch the filename of the logo
-     * 
+     *
      * @return string imageName   The filename of the image
      */
-    public function getImageName() {
+    public function getImageName()
+    {
         return $this->imageName;
     }
-    
-   
+
     /**
-     * Fetch the number of div-class for image grid-layout 
-     * 
-     * Example: 
+     * Fetch the number of div-class for image grid-layout
+     *
+     * Example:
      * <div class="col-xs-12"> --> number = 12  (one img per row)
      * <div class="col-xs-6"> --> number = 6 (two images per row)
-     * 
-     * @return string pixelHeight  
+     *
+     * @return string pixelHeight
      */
-    public function getColNumber() {
+    public function getColNumber()
+    {
         return $this->colNumber;
     }
 
     /**
      * Fetch the label for header above searchbutton
-     * 
-     * @return string label  
+     *
+     * @return string label
      */
-    public function getLabel() {
+    public function getLabel()
+    {
         return $this->label;
     }
-    
+
     /**
-    }
+     * }
      * Called at the end of the Search Params objects' initFromRequest() method.
      * This method is responsible for setting search parameters needed by the
      * recommendation module and for reading any existing search parameters that may
@@ -264,10 +264,10 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
      *
      * @return void
      */
-    public function init($params, $request) {
-        
+    public function init($params, $request)
+    {
         if ($this->type === 'link') {
-            $this->targetUrl = $this->protocol . '://' .  $this->baseUrl;
+            $this->targetUrl = $this->protocol . '://' . $this->baseUrl;
         } else {
             // Collect the best possible search term(s):
             $this->lookfor = urlencode(trim($this->lookfor));
@@ -275,7 +275,7 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
             if (empty($this->lookfor) && is_object($params)) {
                 $this->lookfor = $params->getQuery()->getAllTerms();
             }
-            $this->targetUrl = $this->protocol . '://' .  $this->baseUrl . $this->lookfor;
+            $this->targetUrl = $this->protocol . '://' . $this->baseUrl . $this->lookfor;
         }
     }
 
@@ -302,4 +302,3 @@ class SearchButtons implements \VuFind\Recommend\RecommendInterface,
         /* return $this->results; */
     }
 }
-

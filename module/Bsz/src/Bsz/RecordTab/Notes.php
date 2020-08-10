@@ -18,12 +18,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
-
 namespace Bsz\RecordTab;
 
 use VuFind\RecordTab\AbstractBase;
-use VuFind\Search\SearchRunner;
 
 /**
  * Tab for Notes ("Enthaltene Werke")
@@ -43,6 +40,7 @@ class Notes extends AbstractBase
         $this->visible = (bool)$visible;
         $this->accessPermission = 'access.NotesViewTab';
     }
+
     /**
      * Get the on-screen description for this tab.
      *
@@ -68,7 +66,7 @@ class Notes extends AbstractBase
         $parent = parent::isActive();
         $content = $this->getContent();
 
-        if($parent && !empty($content)) {
+        if ($parent && !empty($content)) {
             return true;
         }
         return false;

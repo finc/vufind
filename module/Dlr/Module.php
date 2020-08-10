@@ -64,7 +64,7 @@ class Module
             ],
         ];
     }
-    
+
     /**
      * Bootstrap the module
      *
@@ -76,6 +76,6 @@ class Module
     {
         $app = $e->getApplication();
         $sm = $app->getServiceManager();
-        $config = $sm->get('Config');                
+        $config = $sm->get('Config');
     }
 }

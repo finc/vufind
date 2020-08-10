@@ -9,9 +9,8 @@ namespace Bsz\Resolver\Driver;
 
 class Ezb extends \VuFind\Resolver\Driver\Ezb
 {
- 
-    
     protected $pid;
+
     /**
      * Constructor
      *
@@ -22,8 +21,8 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
     {
         parent::__construct($baseUrl, $httpClient);
         $this->pid = $pid;
-       
     }
+
     /**
      * Get Resolver Url
      *
@@ -48,20 +47,20 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             $tmp2 = explode('=', $current, 2);
             $parsed[$tmp2[0]] = $tmp2[1];
         }
-        
+
         // Downgrade 1.0 to 0.1
         if ($parsed['ctx_ver'] == 'Z39.88-2004') {
             $openURL = $this->downgradeOpenUrl($parsed);
         }
-        
-        $openURL .= '&sid=bsz:zdb&pid='.urlencode($this->pid);
+
+        $openURL .= '&sid=bsz:zdb&pid=' . urlencode($this->pid);
 
         // Make the call to the EZB and load results
         $url = $this->baseUrl . '?' . $openURL;
 
         return $url;
     }
-    
+
     public function getResolverImageParams($params)
     {
         $tmp = explode('&', $params);
@@ -76,15 +75,15 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
         if ($parsed['ctx_ver'] == 'Z39.88-2004') {
             $openURL = $this->downgradeOpenUrl($parsed);
         }
-        $openURL .= '&sid=bsz:zdb&pid='.urlencode($this->pid);
-        
+        $openURL .= '&sid=bsz:zdb&pid=' . urlencode($this->pid);
+
         // Make the call to the EZB and load results
         $paramstring = $openURL;
 
-        return $paramstring;;
+        return $paramstring;
     }
-    
-     /**
+
+    /**
      * Downgrade an OpenURL from v1.0 to v0.1 for compatibility with EZB.
      *
      * @param array $params Array of parameters parsed from the OpenURL.
@@ -107,7 +106,7 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             'rft.place' => 'place',
             'rft.title' => 'title',
             'rft.atitle' => 'atitle',
-            'rft.btitle' => 'title',            
+            'rft.btitle' => 'title',
             'rft.jtitle' => 'title',
             'rft.au' => 'aulast',
             'rft.date' => 'date',
@@ -121,19 +120,19 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             }
         }
         if (isset($params['rft.series'])) {
-            $newParams['title'] = $params['rft.series'].': '
-                    .$newParams['title'];
-        }       
+            $newParams['title'] = $params['rft.series'] . ': '
+                    . $newParams['title'];
+        }
 
 //        // for the open url ill form, we need genre = bookitem
 //        if ($this->area == 'illform' && $newParams['genre'] == 'article'
 //                && $this->recordDriver->isContainerMonography()) {
-//            $newParams['genre'] = 'bookitem';           
+//            $newParams['genre'] = 'bookitem';
 //        }
-        
+
         // JOP has a really limited amount of allowed genres
         $allowedJopGenres = ['article', 'journal'];
-        if (!in_array($newParams['genre'], $allowedJopGenres) ) {
+        if (!in_array($newParams['genre'], $allowedJopGenres)) {
             switch ($newParams['genre']) {
                 case 'issue': $newParams['genre'] = 'journal';
                     break;
@@ -146,9 +145,8 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
                     break;
                 // articles are more probably
                 default: $newParams['genre'] = 'article';
- 
+
             }
-                    
         }
         return http_build_query($newParams);
     }

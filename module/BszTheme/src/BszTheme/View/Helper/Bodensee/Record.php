@@ -137,6 +137,28 @@ class Record extends \VuFind\View\Helper\Root\Record
         return $this->renderTemplate('fis.phtml');
     }
 
+
+   /**
+     * Feturn found SWB IDs
+     *
+     * @return array
+     */
+    public function getSwbId()
+    {
+        return array_unique($this->ppns);
+    }
+
+    /**
+     * Do we have a SWB PPN
+     *
+     * @return boolean
+     */
+    public function hasSwbId()
+    {
+        return count($this->ppns) > 0;
+    }
+
+
     /**
      * Render a sub record to be displayed in a search result list.
      *
