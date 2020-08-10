@@ -21,8 +21,10 @@
 namespace Bsz\Config;
 
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+
 
 /**
  * Class for reading library config
@@ -31,6 +33,7 @@ use Zend\Db\TableGateway\TableGateway;
  */
 class Libraries extends TableGateWay
 {
+
     const ID_BAWUE = 1;
     const ID_SAARLAND = 2;
     const ID_SACHSEN = 3;
@@ -52,10 +55,9 @@ class Libraries extends TableGateWay
                 ->join('authentications', 'fk_auth = authentications.id', ['auth_name' => 'name'])
                 ->order('libraries.name')
                 ->order('isil');
-            $select->where->nest
-                ->equalTo('is_ill_active', 1)
-                ->and
-                ->in('isil', $isils);
+            $select->where->and
+                    ->equalTo('is_ill_active', 1)
+                    ->in('isil', $isils);
 
             $results = $this->selectWith($select);
 
@@ -91,7 +93,9 @@ class Libraries extends TableGateWay
             $select->where->and->in('isil', $isils);
         }
         return $this->selectWith($select);
+
     }
+
     /**
      * Get one Library by ISIL
      *
@@ -113,6 +117,7 @@ class Libraries extends TableGateWay
         }
         return null;
     }
+
     /**
      * For some use-cases, we need to get the first selected library
      * @param array $isils
@@ -163,7 +168,12 @@ class Libraries extends TableGateWay
                     ->equalTo('is_ill_active', 1);
         return $this->selectWith($select);
     }
-    
+
+    /**
+     * @param $domain
+     *
+     * @return mixed
+     */
     public function getByIdPDomain($domain)
     {
         $sql = new Sql($this->getAdapter());
@@ -175,14 +185,16 @@ class Libraries extends TableGateWay
                 ->and
                     ->equalTo('is_ill_active', 1)
                     ->or
-                        ->like('shibboleth_idp', '%'.$domain.'%')
-                        ->like('homepage', '%'.$domain.'%');
+                        ->like('shibboleth_idp', '%' . $domain . '%')
+                        ->like('homepage', '%' . $domain . '%');
         return $this->selectWith($select)->current();
     }
 
     /**
      * Does any active library have places
+     *
      * @param string $isils
+     *
      * @return bool
      */
     public function hasActivePlaces($isils)
@@ -203,8 +215,10 @@ class Libraries extends TableGateWay
 
     /**
      * Fetch Places
+     *
      * @param string $singleIsil
-     * @return ResultSet
+     *
+     * @return ResultSetInterface|array
      */
     public function getPlaces($singleIsil)
     {
@@ -232,6 +246,7 @@ class Libraries extends TableGateWay
      */
     public function compareIsils($isils)
     {
+
         if (count($isils) !== count($this->libraries)) {
             return false;
         }
@@ -242,13 +257,14 @@ class Libraries extends TableGateWay
         }
         return true;
     }
+
     /**
      * Returns all active ill libraries that matches the given name
      *
      * @param string    $name
      * @param int       $limit
      *
-     * @return array
+     * @return ResultSetInterface
      */
     public function getActiveByName($name, $limit = 15, $boss)
     {
@@ -260,13 +276,13 @@ class Libraries extends TableGateWay
             ->limit($limit);
         $select->where
                 ->nest
-                    ->like('libraries.name', '%'.$name.'%')
+                    ->like('libraries.name', '%' . $name . '%')
                     ->or
-                    ->like('libraries.isil', '%'.$name.'%')
+                    ->like('libraries.isil', '%' . $name . '%')
                 ->unnest
                 ->and
                     ->equalTo('is_ill_active', 1);
-                
+
         if (isset($boss)) {
             $select->where->and->equalTo('is_boss', (int)$boss);
         }

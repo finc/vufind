@@ -17,7 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz;
 
 /**
@@ -25,6 +24,7 @@ namespace Bsz;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Exception extends \Exception {
+class Exception extends \Exception
+{
     //put your code here
 }

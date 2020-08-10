@@ -1,6 +1,6 @@
 <?php
-
 namespace Bsz\Config;
+
 use Zend\Session\Container as SessionContainer;
 
 /**
@@ -18,7 +18,7 @@ class Dedup
     protected $container;
     protected $response;
     protected $cookiedata;
-    
+
     public function __construct($config, SessionContainer $container,
             $response, $cookiedata)
     {
@@ -29,9 +29,8 @@ class Dedup
         $this->restoreFromCookie();
     }
 
-    public function restoreFromCookie() 
+    public function restoreFromCookie()
     {
-       
         if (isset($this->cookie->group)) {
             $this->container->offsetSet('group', $this->cookie->group);
         }
@@ -42,58 +41,58 @@ class Dedup
             $this->container->offsetSet('group_limit', $this->cookie->group_limit);
         }
     }
-    
+
     public function store($post)
     {
-        $params = $this->getCurrentSettings();  
+        $params = $this->getCurrentSettings();
         if (array_key_exists('group', $post)) {
             $cookie = new \Zend\Http\Header\SetCookie(
-                    'group', 
-                    (int)$post['group'], 
-                    time() + 14 * 24* 60 * 60, 
+                    'group',
+                    (int)$post['group'],
+                    time() + 14 * 24 * 60 * 60,
                     '/');
             $header = $this->response->getHeaders();
-            $header->addHeader($cookie);            
-            $this->container->offsetSet('group', $post['group']);            
+            $header->addHeader($cookie);
+            $this->container->offsetSet('group', $post['group']);
             $params['group'] = $post['group'];
         }
         if (isset($post['group_field'])) {
             $cookie = new \Zend\Http\Header\SetCookie(
-                    'group_field', 
-                    $post['group_field'], 
-                    time() + 14 * 24* 60 * 60, 
+                    'group_field',
+                    $post['group_field'],
+                    time() + 14 * 24 * 60 * 60,
                     '/');
             $header = $this->response->getHeaders();
             $header->addHeader($cookie);
-            $this->container->offsetSet('group_field', $post['group_field']);                 
+            $this->container->offsetSet('group_field', $post['group_field']);
             $params['field'] = $post['group_field'];
         }
         if (isset($post['group_limit'])) {
             $cookie = new \Zend\Http\Header\SetCookie(
-                    'group_limit', 
-                    $post['group_limit'], 
-                    time() + 14 * 24* 60 * 60, 
+                    'group_limit',
+                    $post['group_limit'],
+                    time() + 14 * 24 * 60 * 60,
                     '/');
             $header = $this->response->getHeaders();
             $header->addHeader($cookie);
-            $this->container->offsetSet('group_limit', $post['group_limit']);        
+            $this->container->offsetSet('group_limit', $post['group_limit']);
             $params['limit'] = $post['group_limit'];
         }
         return $params;
     }
-    
-    public function getCurrentSettings() 
+
+    public function getCurrentSettings()
     {
         $params = [
            'group' => $this->container->offsetExists('group') ? (bool)$this->container->offsetGet('group') : (bool)$this->config->get('group'),
            'group_field' => $this->container->offsetExists('group_field') ? $this->container->offsetGet('group_field') : $this->config->get('group.field'),
-           'group_limit' => $this->container->offsetExists('group_limit') ? $this->container->offsetGet('group_limit') : $this->config->get('group.limit'),            
+           'group_limit' => $this->container->offsetExists('group_limit') ? $this->container->offsetGet('group_limit') : $this->config->get('group.limit'),
         ];
         return $params;
     }
-    
-    public function isActive() {
-        
+
+    public function isActive()
+    {
         $conf = $this->getCurrentSettings();
         return $conf['group'] == 1;
     }

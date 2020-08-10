@@ -23,20 +23,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\Recommend;
 
-use VuFind\Solr\Utils as SolrUtils;
 use VuFind\Search\Solr\HierarchicalFacetHelper;
 
 /**
- * BSDZ version of SideFacets to modify selected facets 
+ * BSDZ version of SideFacets to modify selected facets
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class SideFacets extends \VuFind\Recommend\SideFacets
 {
-
     /**
      * array of allowed facets. All other are thrown away
      * @var array
@@ -58,8 +55,7 @@ class SideFacets extends \VuFind\Recommend\SideFacets
      */
     public function __construct(
     \VuFind\Config\PluginManager $configLoader, HierarchicalFacetHelper $facetHelper = null, $isil = null
-    )
-    {
+    ) {
         parent::__construct($configLoader, $facetHelper);
         if (!empty($isil)) {
             $this->addIsil = $isil;
@@ -115,7 +111,6 @@ class SideFacets extends \VuFind\Recommend\SideFacets
                     } else {
                         //Re-number the array
                         $facetSet[$facet]['list'] = array_values($facetSet[$facet]['list']);
-                        
                     }
                 }
             }
@@ -129,13 +124,12 @@ class SideFacets extends \VuFind\Recommend\SideFacets
      */
     public function setConfig($settings)
     {
-
         parent::setConfig($settings);
         // Parse the additional settings:
         $settings = explode(':', $settings);
         $mainSection = empty($settings[0]) ? 'Results' : $settings[0];
-        $checkboxSection = isset($settings[1]) ? $settings[1] : false;
-        $iniName = isset($settings[2]) ? $settings[2] : 'facets';
+        $checkboxSection = $settings[1] ?? false;
+        $iniName = $settings[2] ?? 'facets';
 
         // Load the desired facet information...
         $config = $this->configLoader->get($iniName);
@@ -147,5 +141,4 @@ class SideFacets extends \VuFind\Recommend\SideFacets
             $this->filterFacets['institution_id'] = implode(',', $this->addIsil);
         }
     }
-
 }

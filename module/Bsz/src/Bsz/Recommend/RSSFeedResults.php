@@ -48,7 +48,6 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
     use \VuFind\Log\LoggerAwareTrait;
     use \VuFindHttp\HttpServiceAwareTrait;
 
-
     /**
      * Result limit
      *
@@ -100,8 +99,8 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
 
     /**
      * [StartpageNews] in searches.ini
-     * 
-     * @param string $feed 
+     *
+     * @param string $feed
      */
     public function __construct($feed)
     {
@@ -118,17 +117,17 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
     public function setConfig($settings)
     {
         // We have two possible configs in searches.ini:
-        // 
+        //
         // [StartpageNews]
         // RSSFeed=[url]:[limit]
-        // 
+        //
         // [SideRecommendations]
-        // AllFields[]=RSSFeedResultsDeferred:[url]:[limit]        
-        
+        // AllFields[]=RSSFeedResultsDeferred:[url]:[limit]
+
         if ($settings === null) {
             $settings = $this->feed;
         }
-        
+
         // Parse out parameters:
         $params = explode(':', $settings);
         $this->baseUrl = (isset($params[0]) && !empty($params[0]))
@@ -210,4 +209,3 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
         return $this->results;
     }
 }
-

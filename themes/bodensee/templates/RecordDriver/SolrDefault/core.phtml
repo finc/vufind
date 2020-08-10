@@ -42,21 +42,15 @@
         $sectionol = $this->driver->tryMethod('getTitleSectionOl');
         $titleol = $this->driver->tryMethod('getTitleOl');
         ?>
-        <h3 property="name">
-            <? if (is_array($title)): ?>
-                <?= $this->escapeHtml($title[0]) ?> <small><?= $this->string()->cleanEsc($section) ?></small>
-            <? else: ?>
-                <?= $this->escapeHtml($title) ?> <small><?= $this->string()->cleanEsc($section) ?></small>
-            <? endif; ?>
-            <?= $this->render('RecordDriver/SolrDefault/parts/dedup-tooltip.phtml', ['driver' => $this->driver]) ?>
+        <h3 property="name" class="markjs">
+            <?php if (empty($titleol)): ?>
+            <?=$this->escapeHtml($title) ?><br/><?= $this->string()->cleanEsc($section) ?>
+            <?php else: ?>
+            <?=$this->escapeHtml($titleol) ?><br/><?= $this->escapeHtml($sectionol) ?>
+            <?php endif; ?>
         </h3>
         <? if (!empty($titleol)): ?>
-            <h4>
-                <?= $this->escapeHtml($titleol) ?>
-                <? if (!empty($sectionol)): ?>
-                    <small><?= $this->escapeHtml($sectionol) ?></small>
-                <? endif; ?>
-            </h4>
+            <h4><?=$this->escapeHtml($title) ?><br/><?= $this->string()->cleanEsc($section) ?></h4>
         <? endif; ?>
 
         <? if ($this->userlist()->getMode() !== 'disabled'): ?>
@@ -98,7 +92,7 @@
             if ($this->driver->isArticle() && !empty($journalTitle)): ?>
                  <tr>
                 <th><?=$this->transEsc('Published in')?>: </th>
-                <td>
+                <td class="markjs">
                     <?= $this->string()->cleanEsc($journalTitle)?>
                     <? if (!empty($issue)): ?>
                         <?= $this->string()->cleanEsc($issue) ?>
@@ -136,7 +130,7 @@
             <? if (isset($authors['primary']) && !empty($authors['primary'])): ?>
             <tr>
                 <th><?=$this->transEsc('Main Author')?>: </th>
-                <td property="author">
+                <td property="author" class="markjs">
                     <? foreach ($authors['primary'] as $name => $info): ?>
                         <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
                     <? endforeach; ?>
@@ -147,7 +141,7 @@
             <? if (isset($authors['corporate']) && !empty($authors['corporate'])): ?>
             <tr>
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
-                <td property="creator">
+                <td property="creator" class="markjs">
                 <? foreach ($authors['corporate'] as $name => $info): ?>
                     <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
                     <br/>
@@ -158,7 +152,7 @@
             <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
             <tr>
                 <th><?=$this->transEsc('Other Authors')?>: </th>
-                <td>
+                <td class="markjs">
                     <? foreach ($authors['secondary'] as $name => $info): ?>
                         <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
                         <br/>
@@ -172,7 +166,7 @@
             <? if (isset($cast) && !empty($cast)): ?>
                 <tr>
                     <th><?=$this->transEsc('MusicalCast')?>: </th>
-                    <td property="cast">
+                    <td property="cast" class="markjs">
                         <? foreach ($cast as $item): ?>
                             <?= $item ?><br/>
                         <? endforeach; ?>
@@ -189,7 +183,7 @@
             </tr>
             <? endif; ?>
 
-            <? $parallel = $this->driver->tryMethod('getParallelEditions'); if (!empty($parallel)): ?>
+            <? $parallel = $this->driver->tryMethod('getParallelEditions'); if (!empty($parallel) && $this->client()->is('show_other_appearance')): ?>
                 <tr>
                     <th><?=$this->transEsc('other_appearance')?>: </th>
                     <td>
@@ -218,15 +212,14 @@
             if (!empty($physical)): ?>
             <tr>
                 <th><?=$this->transEsc('Physical Description')?>: </th>
-                <td><? foreach ($physical as $k => $field): ?>
-                    <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
-                  <? endforeach; ?>
-                  <? if ($physicalol !== null): ?>
-                    <br/>
-                    <? foreach ($physicalol as $field): ?>
-                      <?=$this->escapeHtml($field)?><br/>
+                <td><? if (!empty($physicalol)): ?>
+                        <? foreach ($physicalol as $k => $field): ?>
+                            <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
+                        <? endforeach; ?>
+                        <br/><? endif; ?>
+                    <? foreach ($physical as $k => $field): ?>
+                        <?=$this->escapeHtml($field)?><? if (isset($physical[$k+1])):?> ; <?endif?>
                     <? endforeach; ?>
-                  <? endif; ?>
                 </td>
             </tr>
             <? endif; ?>
@@ -237,12 +230,12 @@
                if (!empty($isbn)): ?>
             <tr>
                 <th><?=$this->abbrev('ISBN', 'ISBN_long')?>:</th>
-                <td><?=$this->driver->getCleanISBN()?></td>
+                <td class="markjs"><?=$this->driver->getCleanISBN()?></td>
             </tr>
             <? elseif (!empty($issn)): ?>
             <tr>
                 <th><?=$this->abbrev('ISSN', 'ISSN_long')?>:</th>
-                <td><?=$this->driver->getCleanISSN()?></td>
+                <td class="markjs"><?=$this->driver->getCleanISSN()?></td>
             </tr>
             <? endif; ?>
 
@@ -255,47 +248,21 @@
             </tr>
             <? endif; ?>
 
+            <? $publicationsOl = $this->driver->tryMethod('getPublicationDetailsOl') ?>
             <? $publications = $this->driver->getPublicationDetails(); if (!empty($publications)): ?>
-                <? $publicationsOl = $this->driver->tryMethod('getPublicationDetailsOl') ?>
-                <tr>
+                <tr class="markjs">
                     <th><?= $this->transEsc('Published') ?>:</th>
                     <td>
-                        <? foreach ($publications as $field): ?>
-                            <span property="publisher" typeof="Organization">
-                    <? $pubPlace = $field->getPlace();
-                    if (!empty($pubPlace)): ?>
-                        <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
-                    <? endif; ?>
-                                <? $pubName = $field->getName();
-                                if (!empty($pubName)): ?>
-                                    <span property="name"><?= $this->escapeHtml($pubName) ?></span>
-                                <? endif; ?>
-                    </span>
-                            <? $pubDate = $field->getDate();
-                            if (!empty($pubDate)): ?>
-                                <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
-                            <? endif; ?>
-                            <br/>
-                        <? endforeach; ?>
                         <? if (isset($publicationsOl)): ?>
                             <? foreach ($publicationsOl as $field): ?>
-                                <span property="publisher" typeof="Organization">
-                        <? $pubPlace = $field->getPlace();
-                        if (!empty($pubPlace)): ?>
-                            <span property="location"><?= $this->escapeHtml($pubPlace) ?></span> :
-                        <? endif; ?>
-                                    <? $pubName = $field->getName();
-                                    if (!empty($pubName)): ?>
-                                        <span property="name"><?= $this->escapeHtml($pubName) ?></span>
-                                    <? endif; ?>
-                        </span>
-                                <? $pubDate = $field->getDate();
-                                if (!empty($pubDate)): ?>
-                                    <span property="publicationDate"><?= $this->escapeHtml($pubDate) ?></span>
-                                <? endif; ?>
+                                <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/publication.phtml', ['publication' => $field])?>
                                 <br/>
                             <? endforeach; ?>
                         <? endif; ?>
+                        <? foreach ($publications as $field): ?>
+                            <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/publication.phtml', ['publication' => $field])?>
+                            <br/>
+                        <? endforeach; ?>
                     </td>
                 </tr>
             <? endif; ?>
@@ -305,9 +272,8 @@
             if (!empty($edition)): ?>
             <tr>
                 <th><?=$this->transEsc('Edition')?>: </th>
-                <td property="bookEdition"><?=$this->escapeHtml($edition)?>
-                    <? if (isset($editionol)): ?><br/><?=$this->escapeHtml($editionol)?><? endif; ?>
-
+                <td property="bookEdition" class="markjs"><? if (!empty($editionol)): ?><?=$this->escapeHtml($editionol)?><br/>><? endif; ?>
+                    <?=$this->escapeHtml($edition)?>
                 </td>
             </tr>
             <? endif; ?>

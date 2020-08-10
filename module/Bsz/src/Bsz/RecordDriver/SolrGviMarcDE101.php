@@ -1,5 +1,4 @@
 <?php
-
 namespace Bsz\RecordDriver;
 
 /**
@@ -9,7 +8,8 @@ namespace Bsz\RecordDriver;
  */
 class SolrGviMarcDE101 extends SolrGviMarc
 {
-    public function getNetwork() {
+    public function getNetwork()
+    {
         return 'DNB';
     }
 }

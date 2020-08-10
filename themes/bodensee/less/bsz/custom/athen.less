@@ -13,7 +13,7 @@ mark {
     margin-bottom: 2px;
 }
 
-.nav-tabs, .navbar-nav {
+.nav-tabs{
     li:not(.active) > a {
         background-color: #f1f2f1;
         color: @black !important;
@@ -30,8 +30,18 @@ mark {
 
 }
 
+.navbar-right {
+    li > a {
+        background-color: @green;
+        color: white !important;
+    }
+    li > a:hover {
+        background-color: darken(@green, 10%) !important;
+    }
+}
 
-.btn-primary {
+
+.navbar-toggle {
   .button-variant(#000; @btn-primary-bg; @btn-primary-border);
 }
 
@@ -41,7 +51,7 @@ mark {
 }
 
 .navbar-left {
-    margin-left: 0.5em;
+    margin-left: 0;
 }
 
 .navbar-form .input-group {
@@ -100,4 +110,9 @@ footer {
 
 h1, h2 {
     text-transform: uppercase;
+}
+
+.navbar-toggle {
+    width: 50px;
+    height: 50px;
 }

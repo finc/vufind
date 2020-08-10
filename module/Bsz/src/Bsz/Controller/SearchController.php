@@ -1,8 +1,6 @@
 <?php
-
 namespace Bsz\Controller;
 
-use VuFind\Exception\Mail as MailException;
 /**
  * Add flash messages to search Controller
  *
@@ -11,7 +9,8 @@ use VuFind\Exception\Mail as MailException;
 class SearchController extends \VuFind\Controller\SearchController
 {
     use IsilTrait;
-        /**
+
+    /**
      * Home action
      *
      * @return mixed
@@ -25,10 +24,16 @@ class SearchController extends \VuFind\Controller\SearchController
         }
         $request = $this->getRequest();
         $referer = $request->getHeader('referer');
-        $view->referer = $referer;
+
+        if (is_object($referer) &&
+            (strpos($referer->getUri(), '.boss') !== false
+                || strpos($referer->getUri(), 'localhost') !== false)
+        ) {
+            $view->referer = $referer;
+        }
         return $view;
     }
-    
+
     public function resultsAction()
     {
         $dedup = $this->serviceLocator->get('Bsz\Config\Dedup');
@@ -39,5 +44,5 @@ class SearchController extends \VuFind\Controller\SearchController
         $view = Parent::resultsAction();
         $view->dedup = $dedup->isActive();
         return $view;
-    }    
+    }
 }

@@ -75,8 +75,7 @@ class SolrMarcFinc extends SolrMarc
      */
     public function __construct(Config $mainConfig = null, Config $recordConfig = null,
                                 Config $searchSettings = null
-    )
-    {
+    ) {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
         // get the isil set in InstitutionInfo in config.ini
@@ -87,6 +86,5 @@ class SolrMarcFinc extends SolrMarc
         } else {
             $this->debug('InstitutionInfo setting: isil is missing.');
         }
-
     }
 }

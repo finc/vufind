@@ -28,8 +28,8 @@
  */
 namespace VuFindTest\View\Helper\Root;
 
-use VuFind\View\Helper\Root\OpenUrl;
 use Zend\Config\Config;
+use VuFind\View\Helper\Root\OpenUrl;
 
 /**
  * OpenUrl Test Class
@@ -238,9 +238,9 @@ class OpenUrlTest extends \VuFindTest\Unit\ViewHelperTestCase
      * @return \VuFind\RecordDriver\SolrDefault
      */
     protected function getMockDriver($openUrl = 'fake-data',
-        $class = 'VuFind\RecordDriver\SolrDefault',
-        $formats = ['ElectronicArticle', 'Article'],
-        $issn = '1234-5678'
+                                     $class = 'VuFind\RecordDriver\SolrDefault',
+                                     $formats = ['ElectronicArticle', 'Article'],
+                                     $issn = '1234-5678'
     ) {
         $driver = $this->getMockBuilder($class)
             ->disableOriginalConstructor()->getMock();
@@ -290,9 +290,7 @@ class OpenUrlTest extends \VuFindTest\Unit\ViewHelperTestCase
     protected function getOpenUrl($rules = null, $config = [], $mockContext = null)
     {
         if (null === $rules) {
-            $json = __DIR__
-                . '/../../../../../../../../../config/vufind/OpenUrlRules.json';
-            $rules = json_decode(file_get_contents($json), true);
+            $rules = $this->getFixture('defaults.json');
         }
         if (null === $mockContext) {
             $mockContext = $this->getMockContext();

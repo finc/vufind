@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 namespace Bsz\RecordTab;
+
 use Bsz\Search\Solr\Results;
 use VuFind\RecordTab\AbstractBase;
 use VuFind\Search\SearchRunner;
@@ -29,8 +29,8 @@ use VuFind\Search\SearchRunner;
  * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Volumes extends AbstractBase {
-
+class Volumes extends AbstractBase
+{
     /**
      * @var SearchRunner
      */
@@ -62,6 +62,7 @@ class Volumes extends AbstractBase {
         $this->isils = $isils;
         $this->accessPermission = 'access.VolumesViewTab';
     }
+
     /**
      * Get the on-screen description for this tab
      * @return string
@@ -77,7 +78,7 @@ class Volumes extends AbstractBase {
      */
     public function getContent()
     {
-        if($this->content === null) {
+        if ($this->content === null) {
             $relId = $this->driver->tryMethod('getIdsRelated');
             // add the ID of the current hit, thats usefull if its a
             // Gesamtaufnahme
@@ -85,9 +86,9 @@ class Volumes extends AbstractBase {
             if (is_array($relId)) {
                 array_push($relId, $this->driver->getUniqueID());
                 if (is_array($relId) && count($relId) > 0) {
-                    foreach($relId as $k => $id) {
+                    foreach ($relId as $k => $id) {
 //                      $relId[$k] = 'id_related_host_item:"'.$id.'"';
-                        $relId[$k] = 'id_related:"'.$id.'"';
+                        $relId[$k] = 'id_related:"' . $id . '"';
                     }
                     $params = [
                         'sort' => 'publish_date_sort desc, id desc',
@@ -96,9 +97,9 @@ class Volumes extends AbstractBase {
                     ];
 
                     $filter = [];
-                    if ($this->isFL() === FALSE) {
-                        foreach($this->isils as $isil) {
-                         $filter[] = '~institution_id:'.$isil;
+                    if ($this->isFL() === false) {
+                        foreach ($this->isils as $isil) {
+                            $filter[] = '~institution_id:' . $isil;
                         }
                     }
 
@@ -127,20 +128,19 @@ class Volumes extends AbstractBase {
     public function isFL()
     {
         $last = '';
-        if (isset($_SESSION['Search']['last']) ){
+        if (isset($_SESSION['Search']['last'])) {
             $last = urldecode($_SESSION['Search']['last']);
         }
-        if (strpos($last, 'consortium:FL') !== FALSE
-            || strpos($last, 'consortium:"FL"') !== FALSE
-            || strpos($last, 'consortium:ZDB') !== FALSE
-            || strpos($last, 'consortium:"ZDB"') !== FALSE
+        if (strpos($last, 'consortium:FL') !== false
+            || strpos($last, 'consortium:"FL"') !== false
+            || strpos($last, 'consortium:ZDB') !== false
+            || strpos($last, 'consortium:"ZDB"') !== false
         ) {
-            return TRUE;
+            return true;
         } else {
-            return FALSE;
+            return false;
         }
     }
-
 
     /**
      * This Tab is Active for collections or parts of collections only.
@@ -152,7 +152,7 @@ class Volumes extends AbstractBase {
         $this->getContent();
         $parent = parent::isActive();
         if ($parent && $this->getContent() !== []) {
-            if(($this->driver->isCollection() || $this->driver->isPart()
+            if (($this->driver->isCollection() || $this->driver->isPart()
                 || $this->driver->isMonographicSerial()
                 || $this->driver->isJournal()) && !empty($this->content)) {
                 return true;
@@ -160,5 +160,4 @@ class Volumes extends AbstractBase {
         }
         return false;
     }
-
 }

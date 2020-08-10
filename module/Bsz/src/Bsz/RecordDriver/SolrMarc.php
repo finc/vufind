@@ -33,6 +33,7 @@ use VuFind\RecordDriver\MarcReaderTrait;
 use VuFind\Search\SearchRunner;
 use VuFindCode\ISBN;
 
+
 /**
  * This is the base BSZ SolrMarc class
  *
@@ -40,6 +41,7 @@ use VuFindCode\ISBN;
  */
 class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
+
     use IlsAwareTrait;
     use MarcReaderTrait;
     use MarcAdvancedTrait;
@@ -195,6 +197,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function isPart()
     {
+
         $part = [
             static::MULTIPART_PART,
             static::BIBLIO_SERIAL,
@@ -691,7 +694,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
     public function getPPN(): string
     {
-        return $this->getMarcRecord()->getField('001')->getData();
+        $m001 = $this->getMarcRecord()->getField('001');
+        return is_object($m001) ? $m001->getData() : '';
     }
 
     /**
@@ -743,7 +747,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         }
         // ISSN without dash are treatened as invalid be JOP
         if (strpos($issn, '-') === false) {
-            $issn = substr($issn, 0, 4).'-'.substr($issn, 4, 4);
+            $issn = substr($issn, 0, 4) . '-' . substr($issn, 4, 4);
         }
         return $issn;
     }
@@ -802,7 +806,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function getShortTitle() : string
     {
-        $shortTitle = $this->getFirstFieldValue('245', array('a'), false);
+        $shortTitle = $this->getFirstFieldValue('245', ['a'], false);
 
         // Sortierzeichen weg
         if (strpos($shortTitle, '@') !== false) {
@@ -822,7 +826,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function getSubtitle(): string
     {
-        $subTitle = $this->getFirstFieldValue('245', array('b'), false);
+        $subTitle = $this->getFirstFieldValue('245', ['b'], false);
 
         // Sortierzeichen weg
         if (strpos($subTitle, '@') !== false) {
@@ -843,6 +847,33 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     {
         $id = $this->getSourceIdentifier();
         return $id == 'Solr' ? 'VuFind' : $id;
+    }
+
+    /**
+     * Get an array of publication detail lines combining information from
+     * getPublicationDates(), getPublishers() and getPlacesOfPublication().
+     *
+     * @return array
+     */
+    public function getPublicationDetails()
+    {
+        $places = $this->getPlacesOfPublication();
+        $names = $this->getPublishers();
+        $dates = $this->getHumanReadablePublicationDates();
+
+        $i = 0;
+        $retval = [];
+        while (isset($places[$i]) || isset($names[$i]) || isset($dates[$i])) {
+            // Build objects to represent each set of data; these will
+            // transform seamlessly into strings in the view layer.
+            $retval[] = new Response\PublicationDetails(
+                $places[$i] ?? '',
+                $names[$i] ?? '',
+                $dates[$i] ?? ''
+            );
+            $i++;
+        }
+        return $retval;
     }
 
     /**

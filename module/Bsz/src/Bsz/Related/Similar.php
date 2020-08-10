@@ -38,12 +38,12 @@ namespace Bsz\Related;
  */
 class Similar extends \VuFind\Related\Similar
 {
-    
     /**
      *
      * @var \Bsz\Config\Client
      */
     protected $client;
+
     /**
      * Constructor
      *
@@ -65,24 +65,22 @@ class Similar extends \VuFind\Related\Similar
      */
     public function init($settings, $driver)
     {
-        $tmp = [            
+        $tmp = [
             'mlt.fl' => 'author,title^5,publish_date',
             'mlt.count' => 4,
 //            'mlt.maxqt' => 1,
         ];
         if ($this->client && count($this->client->getIsils()) > 0) {
-           $filter = [];
-           foreach ($this->client->getIsils() as $isil) {
-               $filter[] = 'institution_id:'.$isil;
-           } 
+            $filter = [];
+            foreach ($this->client->getIsils() as $isil) {
+                $filter[] = 'institution_id:' . $isil;
+            }
 
-           $tmp['fq'] = implode (' OR ', $filter); 
+            $tmp['fq'] = implode(' OR ', $filter);
         }
         $params = new \VuFindSearch\ParamBag($tmp);
         $this->results
             = $this->searchService->similar('Solr', $driver->getUniqueId(), $params);
-        
-
     }
 
     /**

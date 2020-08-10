@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Bsz\RecordDriver;
 
 /**
@@ -13,9 +12,8 @@ namespace Bsz\RecordDriver;
  *
  * @author amzar
  */
-class PluginManager extends \VuFind\RecordDriver\PluginManager 
+class PluginManager extends \VuFind\RecordDriver\PluginManager
 {
-    
     /**
      * Convenience method to retrieve a populated Solr record driver.
      *
@@ -32,19 +30,17 @@ class PluginManager extends \VuFind\RecordDriver\PluginManager
             $data['record_format'] ?? $data['recordtype'] ?? $defaultKeySuffix
         );
         $recordType = $this->has($key) ? $key : $keyPrefix . $defaultKeySuffix;
-            
+
         // Findex also sends recordtype=SolrMarc, so, we need to distinguish
-        //  between Findex and other sources. 
-        
-        
+        //  between Findex and other sources.
+
         if (!preg_match('/Gvi|Dlr|Ntrs/i', $recordType)) {
             $recordType = 'SolrFindexMarc';
-        }         
+        }
 
         // Build the object:
-        $driver = $this->get($recordType);        
+        $driver = $this->get($recordType);
         $driver->setRawData($data);
         return $driver;
     }
-    
 }

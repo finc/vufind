@@ -39,7 +39,7 @@ namespace Bsz\Controller;
 class EdsrecordController extends \VuFind\Controller\EdsrecordController
 {
     /**
-     * This action needs to be overwritten as we do not use permissions.ini and 
+     * This action needs to be overwritten as we do not use permissions.ini and
      * have no login at the moment. boss2
      *
      * @return mixed
@@ -47,16 +47,16 @@ class EdsrecordController extends \VuFind\Controller\EdsrecordController
     public function pdfAction()
     {
         $driver = $this->loadRecord();
-        
+
         $url =$driver->getPdfLink();
         // user has no access to url
         if (!$url) {
-            return $this->redirectToRecord('', 'PDFUnavailable');   
+            return $this->redirectToRecord('', 'PDFUnavailable');
         } else {
             return $this->redirect()->toUrl($url);
         }
     }
-    
+
     /**
      * Display a particular tab.
      *
@@ -75,12 +75,13 @@ class EdsrecordController extends \VuFind\Controller\EdsrecordController
         return $view;
     }
 
-    public function getBreadcrumb() {
+    public function getBreadcrumb()
+    {
         return parent::getBreadcrumb();
     }
 
-    public function getUniqueID() {
+    public function getUniqueID()
+    {
         return parent::getUniqueID();
     }
-
 }

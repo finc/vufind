@@ -5,44 +5,43 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Bsz\AjaxHandler;
 
 use Interop\Container\ContainerInterface;
+
 /**
  * Factory for BSZ AjaxHandlers
  *
  * @author amzar
  */
-class Factory {
-    
+class Factory
+{
     /**
-     * 
+     *
      * @param ContainerInterface $container
      * @return \Bsz\AjaxHandler\LibrariesTypeahead
      */
-    
     public static function getLibrariesTypeahead(ContainerInterface $container)
     {
         return new LibrariesTypeahead(
             $container->get('Bsz\Config\Libraries')
         );
     }
-    
+
     /**
-     * 
+     *
      * @param ContainerInterface $container
      * @return \Bsz\AjaxHandler\Dedupcheckbox
      */
-    
     public static function getDedupCheckbox(ContainerInterface $container)
     {
         return new DedupCheckbox(
             $container->get('Bsz\Config\Dedup')
         );
     }
+
     /**
-     * 
+     *
      * @param ContainerInterface $container
      * @return \Bsz\AjaxHandler\SaveIsil
      */
@@ -58,6 +57,4 @@ class Factory {
             $container->get('Request')->getUri()->getHost()
         );
     }
-    
-    
 }

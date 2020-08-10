@@ -23,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\Parser;
 
 /**
@@ -41,36 +40,38 @@ class OpenUrl
      * @var array
      */
     protected $params;
-    
-    public function __construct(\Zend\Config\Config $config) 
-    {      
+
+    public function __construct(\Zend\Config\Config $config)
+    {
         $this->config = $config;
     }
-    
+
     /**
-     * 
+     *
      * @param type $params
      * @return $this
      */
-    public function setParams($params) 
+    public function setParams($params)
     {
-        if (is_array($params)) {'';
+        if (is_array($params)) {
+            '';
             $this->params = $params;
         }
-        return $this;            
-    }   
-       
+        return $this;
+    }
+
     /**
      * Map OpenURL params to ill form field names
-     * 
+     *
      * @return array
      */
-    public function map2Form() {
+    public function map2Form()
+    {
         $mappedParams = [];
-        foreach($this->params as $param => $value) {
+        foreach ($this->params as $param => $value) {
             $key = $this->map('Form', $param);
-                if (!empty($key)) {
-                $mappedParams[$key] = urldecode($value);                 
+            if (!empty($key)) {
+                $mappedParams[$key] = urldecode($value);
             }
         }
         if (isset($params['rft_genre']) && $this->params['rft_genre'] == 'book') {
@@ -79,25 +80,23 @@ class OpenUrl
         }
         return $mappedParams;
     }
-    
+
     /**
      * Map a param from a given section
-     * 
+     *
      * @param string $section
      * @param string $key
-     * 
+     *
      * @return string
      */
     protected function map($section, $key)
     {
         $newKey = '';
-        if ($this->config->get($section) !== null 
-            && $this->config->get($section)->get($key) !== null 
+        if ($this->config->get($section) !== null
+            && $this->config->get($section)->get($key) !== null
         ) {
             $newKey = $this->config->get($section)->get($key);
         }
         return $newKey;
     }
-    
-    
 }

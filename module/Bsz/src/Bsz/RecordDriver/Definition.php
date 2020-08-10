@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Bsz\RecordDriver;
 
 /**
@@ -13,8 +12,8 @@ namespace Bsz\RecordDriver;
  *
  * @author amzar
  */
-interface Definition {
-    
+interface Definition
+{
     const DELIMITER = ' ';
     // Multipart Levels
     const MULTIPART_PART = 'part';
@@ -28,14 +27,13 @@ interface Definition {
     const BIBLIO_MONOGRAPH = 'Monograph';
     const BIBLIO_SERIAL = 'Serial';
     const BIBLIO_INTEGRATED = 'Integrated';
-    // Simple breakdown of above 
+    // Simple breakdown of above
     const INDEPENDENT = 'independent';
     const COLLECTION = 'collection';
     const PART = 'part';
-    
+
     const AUTHOR_GND = 'gnd';
     const AUTHOR_LIVE = 'live';
     const AUTHOR_NOLIVE = 'nolive'; // deprecated, will be removed
     const AUTHOR_NAME = 'name';
-      
 }

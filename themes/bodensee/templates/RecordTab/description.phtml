@@ -11,7 +11,7 @@
     <tr>
       <th><?=$this->abbrev('PPN')?>:</th>
       <td>
-        <?=$this->recordLink()->linkPPN($this->driver) ?>    
+        <?=$this->recordLink()->linkPPN($this->driver) ?>
       </td>
     </tr>
   <? endif; ?>
@@ -27,12 +27,12 @@
     </tr>
   <? endif; ?>
   <? $note = $this->driver->tryMethod('getNote');
-     if(!empty($note)):          
+     if(!empty($note)):
      $contentDisplayed = true;
   ?>
     <tr>
         <th><?=$this->transEsc('Note')?></th>
-        <td><?=$this->escapeHtml($note)?></td>          
+        <td><?=$this->escapeHtml($note)?></td>
     </tr>
   <? endif; ?>
 
@@ -48,14 +48,14 @@
     </tr>
   <? endif; ?>
   <? $ean = $this->driver->tryMethod('getGTIN');
-     if(!empty($ean)):          
+     if(!empty($ean)):
      $contentDisplayed = true;
   ?>
     <tr>
         <th><?=$this->abbrev('GTIN')?>: </th>
-        <td><?=$this->escapeHtml($ean)?></td>          
+        <td><?=$this->escapeHtml($ean)?></td>
     </tr>
-  <? endif; ?>  
+  <? endif; ?>
 
   <? $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
     <? $contentDisplayed = true; ?>
@@ -80,7 +80,7 @@
       </td>
     </tr>
   <? endif; ?>
-  
+
 
   <? $freq = $this->driver->getPublicationFrequency(); if (!empty($freq)): ?>
     <? $contentDisplayed = true; ?>
@@ -258,10 +258,23 @@
         </tr>
     <? endif; ?>
 
+    <? $bibliorelations = $this->driver->tryMethod('getBiblioRelations'); if (!empty($bibliorelations)): ?>
+        <? $contentDisplayed = true; ?>
+        <? $bibliorelationsids = $this->driver->tryMethod('getBiblioRelationsIds'); ?>
+        <tr>
+            <th><?=$this->transEsc('Bibliographic Relations')?>: </th>
+            <td>
+                <? foreach ($bibliorelations as $field): ?>
+                    <?=$this->escapeHtml($field)?><br/>
+                <? endforeach; ?>
+            </td>
+        </tr>
+    <? endif; ?>
+
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>
-  
 
-      
+
+
 </table>

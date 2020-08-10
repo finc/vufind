@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace BszTheme\View\Helper\Bodensee;
 
 /**
@@ -13,14 +12,15 @@ namespace BszTheme\View\Helper\Bodensee;
  *
  * @author amzar
  */
-class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory {
-
+class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory
+{
     /**
      * Use this instead of getLastSearchLink if you don't want any markup.
      *
      * @return string
      */
-    public function getLastSearchUrl() {
+    public function getLastSearchUrl()
+    {
         $last = $this->memory->retrieveSearch();
         if (!empty($last)) {
             $escaper = $this->getView()->plugin('escapeHtml');
@@ -28,16 +28,17 @@ class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory {
         }
         return '';
     }
+
     /**
      *  get searchterms from session
      *
      * @return string
      */
-    public function getLastSearchterms() {
+    public function getLastSearchterms()
+    {
         $url = $this->memory->retrieveSearch();
-        $query_str = parse_url($url,PHP_URL_QUERY);
+        $query_str = parse_url($url, PHP_URL_QUERY);
         parse_str($query_str, $queryArray);
-        return isset($queryArray['lookfor']) ? $queryArray['lookfor'] : null;
+        return $queryArray['lookfor'] ?? null;
     }
-
 }

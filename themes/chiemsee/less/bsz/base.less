@@ -51,16 +51,6 @@ html {
 
     }
 }
-.row .record {
-    table.table {
-        th {
-            width: 25%
-        }
-        td {
-            width: 75%
-        }
-    }
-}
 .pager {
     margin: 0;
 }
@@ -193,4 +183,26 @@ h4, .h4 {
 
 .jumbotron li {
     font-size: @jumbotron-font-size;
+}
+
+.row.main {
+    margin-bottom: @grid-gutter-width;
+}
+
+.cover img{
+    margin: 0 auto;
+}
+
+mark {
+    padding: .2em 0;
+    background: #ff6;
+}
+
+.record table.table-striped, .callnumAndLocation table.table-condensed {
+    th {
+        border-top: 0;
+    }
+    td {
+        border-top: 0;
+    }
 }

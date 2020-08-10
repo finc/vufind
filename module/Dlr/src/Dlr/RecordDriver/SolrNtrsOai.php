@@ -34,16 +34,13 @@ use VuFind\Search\SearchRunner;
 
 /**
  * Description of SolrOai
- *
  * @author Stefan Winkler <stefan.winkler@bsz-bw.de>
- *
  */
 class SolrNtrsOai extends SolrDefault
 {
     use IlsAwareTrait;
 
     /**
-     *
      * @var SimpleXMLElement
      */
     protected $xml;
@@ -69,6 +66,7 @@ class SolrNtrsOai extends SolrDefault
      * the driver
      *
      * @param \VuFind\SearchRunner $runner
+     *
      * @return void
      */
     public function attachSearchRunner(SearchRunner $runner)
@@ -76,19 +74,15 @@ class SolrNtrsOai extends SolrDefault
         $this->runner = $runner;
     }
 
-    public function parseOAI()
-    {
-        $xml = $this->getXML('oai_dc');
-    }
-
     /**
      * Set raw data to initialize the object.
      *
      * @param mixed $data Raw data representing the record; Record Model
-     * objects are normally constructed by Record Driver objects using data
-     * passed in from a Search Results object.  The exact nature of the data may
-     * vary depending on the data source -- the important thing is that the
-     * Record Driver + Search Results objects work together correctly.
+     *                    objects are normally constructed by Record Driver objects
+     *                    using data passed in from a Search Results object.  The
+     *                    exact nature of the data may vary depending on the data
+     *                    source -- the important thing is that the Record Driver +
+     *                    Search Results objects work together correctly.
      *
      * @return void
      */
@@ -99,46 +93,19 @@ class SolrNtrsOai extends SolrDefault
     }
 
     /**
-     * Parse the date out of oai data
-     * @return array
-     */
-    public function getPublicationDates()
-    {
-        $dates = $this->getDcFields('date');
-        // if we got a known format, parse this
-        if (isset($dates[0]) && strlen($dates[0]) == 8) {
-            $year = substr($dates[0], 0, 4);
-            $month = substr($dates[0], 4, 2);
-            $day = substr($dates[0], 6, 2);
-            $date = new DateTime($year . '-' . $month . '-' . $day);
-            return [$date->format('d.m.Y')];
-        }
-        return $dates;
-    }
-
-    /**
-     *
-     * @param string $field
-     * @return array
-     */
-    protected function getDcFields($field)
-    {
-        return $this->xml->xpath('dc:' . $field);
-    }
-
-    /**
      * Returns an array with url and desc keys to link the document id.
      * @return array
+     * @throws \Exception
      */
-    public function getDokumentLink()
+    public function getDocumentLink()
     {
         $link = [];
         $id = parent::getUniqueID();
         $split = explode(':', $id);
         if (strpos($split[1], 'nasa') !== false) {
-            $link['url'] = 'http://ntrs.nasa.gov/search.jsp?R=' . end($split);
+            $link['url'] = 'https://ntrs.nasa.gov/search.jsp?R=' . end($split);
         } else {
-            $link['url'] = 'http://elib.dlr.de/' . end($split);
+            $link['url'] = 'https://elib.dlr.de/' . end($split);
         }
         $link['desc'] = end($split);
         return $link;
@@ -150,32 +117,20 @@ class SolrNtrsOai extends SolrDefault
         return array_shift($copy);
     }
 
+    /**
+     * @param string $field
+     *
+     * @return array
+     */
+    protected function getDcFields($field)
+    {
+        return $this->xml->xpath('dc:' . $field);
+    }
+
     public function getSource()
     {
         $source = $this->getDcFields('source');
         return array_shift($source);
-    }
-
-    /**
-     * Get default OpenURL parameters.
-     * this is slightly changed compared to VuFind original
-     *
-     * @return array
-     */
-    protected function getDefaultOpenUrlParams()
-    {
-        // Get a representative publication date:
-        $pubDate = $this->getPublicationDates();
-        $pubDate = empty($pubDate) ? '' : $pubDate[0];
-
-        // Start an array of OpenURL parameters:
-        return [
-            'url_ver' => 'Z39.88-2004',
-            'ctx_ver' => 'Z39.88-2004',
-            'ctx_enc' => 'info:ofi/enc:UTF-8',
-            'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator',
-            'rft.date' => $pubDate
-        ];
     }
 
     /**
@@ -198,7 +153,6 @@ class SolrNtrsOai extends SolrDefault
 
     /**
      * get Institutes and Institutions from solr field
-     *
      * @return array
      */
     public function getInstitutes()
@@ -212,35 +166,8 @@ class SolrNtrsOai extends SolrDefault
     }
 
     /**
-     * Source elib?
-     * @return boolean
-     */
-    protected function isElib()
-    {
-        if (isset($this->fields['institution_id']) &&
-                in_array('elib', $this->fields['institution_id'])) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Source NASA?
-     * @return boolean
-     */
-    protected function isNTRS()
-    {
-        if (isset($this->fields['institution_id']) &&
-                in_array('NTRS', $this->fields['institution_id'])) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
-     *
      * <li>
      *   <ul>desc: URL description text to display (optional)</ul>
      *   <ul>url: fully-formed URL (required if 'route' is absent)</ul>
@@ -248,7 +175,6 @@ class SolrNtrsOai extends SolrDefault
      *   <ul>routeParams: Parameters for route (optional)</ul>
      *   <ul>queryString: Query params to append after building route (optional)</ul>
      * </li>
-     *
      * @return array
      */
     public function getURLs()
@@ -261,9 +187,11 @@ class SolrNtrsOai extends SolrDefault
             // different descriptions for elib and NTRS
             if (!array_key_exists('desc', $url) && $this->isElib()) {
                 switch ($key) {
-                    case 0: $url['desc'] = 'to_elib_record';
+                    case 0:
+                        $url['desc'] = 'to_elib_record';
                         break;
-                    default: $url['desc'] = 'More Information';
+                    default:
+                        $url['desc'] = 'More Information';
                 }
             } elseif (!array_key_exists('desc', $url) && $this->isNTRS()) {
                 $url['desc'] = 'Full Text';
@@ -274,21 +202,47 @@ class SolrNtrsOai extends SolrDefault
     }
 
     /**
-     * For rticles: get container title
-     * @return type
+     * Source elib?
+     * @return boolean
      */
-    public function getContainerTitle()
+    protected function isElib()
     {
-        return '';
+        if (isset($this->fields['institution_id']) &&
+            in_array('elib', $this->fields['institution_id'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Source NASA?
+     * @return boolean
+     */
+    protected function isNTRS()
+    {
+        if (isset($this->fields['institution_id']) &&
+            in_array('NTRS', $this->fields['institution_id'])) {
+            return true;
+        }
+        return false;
     }
 
     /**
      * For rticles: get container title
-     * @return type
+     * @return string
+     */
+    public function getContainerTitle()
+    {
+        return $this->getContainerInfo(0);
+    }
+
+    /**
+     * For rticles: get container title
+     * @return array
      */
     public function getContainer()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -297,7 +251,34 @@ class SolrNtrsOai extends SolrDefault
      */
     public function getContainerIssue()
     {
-        // not supported for OAI data:
+        return $this->getContainerInfo(2);
+    }
+
+    /**
+     * @return string
+     */
+    public function getContainerVolume()
+    {
+        return $this->getContainerInfo(1);
+    }
+
+    /**
+     * @param $arraykey
+     *
+     * @return string
+     */
+    private function getContainerInfo($arraykey)
+    {
+        $array = $this->getDcFields('type');
+        if (is_array($array)) {
+            $raw = array_shift($array);
+            if (!empty($raw)) {
+                $string = $raw->__toString();
+                $parts = explode('; ', $string);
+                return isset($parts[$arraykey]) ? $parts[$arraykey] : '';
+            }
+
+        }
         return '';
     }
 
@@ -307,8 +288,7 @@ class SolrNtrsOai extends SolrDefault
      */
     public function getContainerPages()
     {
-        // not supported for OAI data:
-        return '';
+        return $this->getContainerInfo(3);
     }
 
     /**
@@ -328,7 +308,7 @@ class SolrNtrsOai extends SolrDefault
     public function getRelatedItems()
     {
         // not supported for OAI data:
-        return array();
+        return [];
     }
 
     /**
@@ -346,5 +326,145 @@ class SolrNtrsOai extends SolrDefault
     public function isArticle()
     {
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getBookOpenUrlParams()
+    {
+        $params = $this->getDefaultOpenUrlParams();
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
+        $params['rft.genre'] = 'book';
+        $params['rft.btitle'] = $this->getTitle();
+        $params['rft.volume'] = $this->getContainerVolume();
+        $series = $this->getSeries();
+        if (count($series) > 0) {
+            // Handle both possible return formats of getSeries:
+            $params['rft.series'] = is_array($series[0]) ?
+                $series[0]['name'] : $series[0];
+        }
+        $authors = $this->getPrimaryAuthors();
+        $params['rft.au'] = array_shift($authors);
+        $publication = $this->getPublicationDetails();
+        // we drop everything, except first entry
+        $publication = array_shift($publication);
+        if (is_object($publication)) {
+            if ($date = $publication->getDate()) {
+                $params['rft.date'] = preg_replace('/[^0-9]/', '', $date);
+            }
+            if ($place = $publication->getPlace()) {
+                $params['rft.place'] = $place;
+            }
+        }
+        $params['rft.volume'] = $this->getContainerVolume();
+
+        $publishers = $this->getPublishers();
+        if (count($publishers) > 0) {
+            $params['rft.pub'] = $publishers[0];
+        }
+
+        $params['rft.edition'] = $this->getEdition();
+        $params['rft.isbn'] = (string)$this->getCleanISBN();
+        return array_filter($params);
+    }
+
+    /**
+     * Get default OpenURL parameters.
+     * this is slightly changed compared to VuFind original
+     * @return array
+     */
+    protected function getDefaultOpenUrlParams()
+    {
+        // Get a representative publication date:
+        $pubDate = $this->getPublicationDates();
+        $pubDate = empty($pubDate) ? '' : $pubDate[0];
+
+        // Start an array of OpenURL parameters:
+        return [
+            'url_ver' => 'Z39.88-2004',
+            'ctx_ver' => 'Z39.88-2004',
+            'ctx_enc' => 'info:ofi/enc:UTF-8',
+            'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator',
+            'rft.date' => $pubDate
+        ];
+    }
+
+    /**
+     * Parse the date out of oai data
+     * @return array
+     */
+    public function getPublicationDates()
+    {
+        $dates = $this->getDcFields('date');
+        // if we got a known format, parse this
+        if (isset($dates[0]) && strlen($dates[0]) == 8) {
+            $year = substr($dates[0], 0, 4);
+            $month = substr($dates[0], 4, 2);
+            $day = substr($dates[0], 6, 2);
+            $date = new DateTime($year . '-' . $month . '-' . $day);
+            return [$date->format('d.m.Y')];
+        }
+        return $dates;
+    }
+
+    /**
+     * Support method for getOpenUrl() -- pick the OpenURL format.
+     *
+     * @return string
+     */
+    protected function getOpenUrlFormat()
+    {
+        // If we have multiple formats, Book, Journal and Article are most
+        // important...
+        $formats = $this->getFormats();
+        if (in_array('Book', $formats)) {
+            return 'Book';
+        } elseif (in_array('Article', $formats)) {
+            return 'Article';
+        } elseif (in_array('Journal', $formats)
+            || in_array('Serial', $formats)
+        ) {
+            return 'Journal';
+        } elseif (isset($formats[0])) {
+            return $formats[0];
+        } elseif (strlen($this->getCleanISSN()) > 0) {
+            return 'Journal';
+        } elseif (strlen($this->getCleanISBN()) > 0) {
+            return 'Book';
+        }
+        return 'UnknownFormat';
+    }
+
+    /**
+     * Get OpenURL parameters for a journal.
+     *
+     * @return array
+     */
+    protected function getJournalOpenUrlParams()
+    {
+        $params = $this->getDefaultOpenUrlParams();
+        $params['rft.title'] = $this->getTitle();
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+        $params['rft.genre'] = 'journal';
+        $params['rft.jtitle'] = $params['rft.title'];
+        $params['rft.issn'] = $this->getCleanISSN();
+        $params['rft.au'] = $this->getPrimaryAuthor();
+        $params['rft.issn'] = (string)$this->getCleanISSN();
+
+        // Including a date in a title-level Journal OpenURL may be too
+        // limiting -- in some link resolvers, it may cause the exclusion
+        // of databases if they do not cover the exact date provided!
+        unset($params['rft.date']);
+
+        // If we're working with the SFX resolver, we should add a
+        // special parameter to ensure that electronic holdings links
+        // are shown even though no specific date or issue is specified:
+        if (isset($this->mainConfig->OpenURL->resolver)
+            && strtolower($this->mainConfig->OpenURL->resolver) == 'sfx'
+        ) {
+            $params['sfx.ignore_date_threshold'] = 1;
+        }
+        return $params;
     }
 }

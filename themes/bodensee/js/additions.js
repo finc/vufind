@@ -25,7 +25,7 @@ function   performMark() {
     }
     lookfor = lookfor.replace(/[\/\[;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
     terms = lookfor.split(' ').filter(function(el) { return el; });
-    $('a.title,a.author,span[property]').mark(terms, {
+    $('.markjs').mark(terms, {
         "wildcards": "enabled",
         "accuracy": "partially",
         "synonyms": {

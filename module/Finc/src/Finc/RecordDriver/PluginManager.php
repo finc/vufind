@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Finc\RecordDriver;
 
 /**
@@ -13,9 +12,8 @@ namespace Finc\RecordDriver;
  *
  * @author amzar
  */
-class PluginManager extends \VuFind\RecordDriver\PluginManager 
+class PluginManager extends \VuFind\RecordDriver\PluginManager
 {
-    
     /**
      * Convenience method to retrieve a populated Solr record driver.
      *
@@ -32,11 +30,10 @@ class PluginManager extends \VuFind\RecordDriver\PluginManager
             $data['record_format'] ?? $data['recordtype'] ?? $defaultKeySuffix
         );
         $recordType = $this->has($key) ? $key : $keyPrefix . $defaultKeySuffix;
-            
+
         // Build the object:
-        $driver = $this->get($recordType);        
+        $driver = $this->get($recordType);
         $driver->setRawData($data);
         return $driver;
     }
-    
 }

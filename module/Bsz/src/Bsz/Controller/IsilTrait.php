@@ -1,5 +1,4 @@
 <?php
-
 namespace Bsz\Controller;
 
 /**
@@ -9,12 +8,12 @@ namespace Bsz\Controller;
  */
 trait IsilTrait
 {
-        /**
+    /**
      * Redirect to saveIsil Action
-     * 
+     *
      * @return redirect
      */
-    public function processIsil() 
+    public function processIsil()
     {
         $isils = $this->params()->fromQuery('isil');
 
@@ -26,17 +25,14 @@ trait IsilTrait
         $referer = sprintf("%s://%s%s?%s", $uri->getScheme(), $uri->getHost(),
             $uri->getPath(), http_build_query($paramsOld));
 
-        $paramsNew = [                
+        $paramsNew = [
             'referer' => $referer,
             'isil' => $isils,
-        ];           
+        ];
         /**
          * TODO: Get this working with toRoute Redirect
          */
-        return $this->redirect()->toUrl('/Bsz/saveIsil?'.
-                http_Build_query($paramsNew));
-
-
-        
+        return $this->redirect()->toUrl('/Bsz/saveIsil?' .
+                http_build_query($paramsNew));
     }
 }
