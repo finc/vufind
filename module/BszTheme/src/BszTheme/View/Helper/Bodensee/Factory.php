@@ -125,10 +125,10 @@ class Factory
     {
         return new Record(
             $container->get('VuFind\Config')->get('config'),
-            $container->get(\Bsz\Config\Client::class),
-            $container->get('Bsz\ILL\Holding')
+            $container->get(Client::class)->getIsilAvailability()
         );
     }
+
     /**
      * Construct the RecordLink helper.
      *
