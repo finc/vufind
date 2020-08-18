@@ -157,6 +157,7 @@ class Client extends Config
 
     /**
      * Konfiguriert den linken NewsFeed der Startseite
+     * @deprecated searches.ini no longer present in this class.
      * @param string
      * @return string
      */
