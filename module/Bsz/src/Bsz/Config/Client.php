@@ -241,6 +241,7 @@ class Client extends Config
 
     /**
      * Returns Sigel for use in OpenUrl
+     * @deprecated not really clear, OpenUrl not used.
      * @return string
      */
     public function getSigel()

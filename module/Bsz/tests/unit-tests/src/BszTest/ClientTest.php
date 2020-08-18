@@ -32,24 +32,60 @@ class ClientTest extends TestCase
     protected function getBasicConfig()
     {
         return [
-            'Site' => [],
+            'Site' => [
+                'isil' => 'DE-666,DE-667',
+                'website' => 'https://www.example.com',
+                'website_google' => 'https://www.google.com',
+                'url' => 'foo.bar.com'
+            ],
             'System' => [],
             'OpenUrl' => [],
-            'Footer' => []
+            'Footer' => [],
+            'Switches' => [
+                'isil_session' => false
+            ]
         ];
     }
 
-    protected function getClient()
+    protected function getClient($config)
     {
-        $config = $this->getBasicConfig();
         return $client = new Client($config);
     }
 
     public function testClient()
     {
-        $client = $this->getClient();
+        $config = $this->getBasicConfig();
+        $client = $this->getClient($config);
         $this->assertEquals(get_class($client), 'Bsz\Config\Client');
     }
+
+    public function testIsils()
+    {
+        $config = $this->getBasicConfig();
+        $client = $this->getClient($config);
+        $this->assertIsArray($client->getIsils());
+    }
+
+    public function testWebsite()
+    {
+        $config = $this->getBasicConfig();
+        $client = $this->getClient($config);
+        $this->assertEquals($client->getWebsite(),'https://www.example.com');
+        $this->assertEquals($client->getWebsite('google'), 'https://www.google.com');
+
+    }
+
+    public function testTag()
+    {
+        $config = $this->getBasicConfig();
+        $client = $this->getClient($config);
+        $this->assertEquals($client->getTag(),'foo');
+        $config['Site']['url'] = 'https://bar.boss.bsz-bw.de';
+        $client = $this->getClient($config);
+        $this->assertEquals($client->getTag(),'bar');
+    }
+
+
 
 
 
