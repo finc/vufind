@@ -110,7 +110,12 @@ class Client extends Config
         if ($boxNo == 2 && !$links) {
             $links[] = '/Search/History';
             $links[] = '/Search/Advanced';
-        } elseif ($boxNo == 1 && $this->isIsilSession() && $this->hasIsilSession()) {
+        } elseif ($boxNo == 1 &&
+            $this->isIsilSession() &&
+            $this->hasIsilSession() &&
+            isset($this->libraries)
+
+        ) {
             $library = $this->libraries->getFirstActive($this->getIsils());
             if (isset($library) && $library->getHomepage() !== null) {
                 $links[] = isset($library) ? $library->getHomepage() : '';
@@ -255,7 +260,7 @@ class Client extends Config
      */
     public function getIsilAvailability()
     {
-        if ($this->isIsilSession()) {
+        if ($this->isIsilSession() && isset($this->libraries)) {
             $localIsils = [];
             foreach ($this->libraries->getActive($this->getIsils()) as $library) {
                 $localIsils = array_merge($localIsils, $library->getIsilAvailability());
@@ -294,6 +299,7 @@ class Client extends Config
     public function attachLibraries(Libraries $libraries)
     {
         $this->libraries = $libraries;
+        return $this;
     }
 
     /**
