@@ -61,7 +61,7 @@ class Factory
         );
 
         $client = new Client(array_merge($vufindconf, $bszconf), true);
-        $client->appendContainer($sessContainer);
+        $client->attachSessionContainer($sessContainer);
         if ($client->isIsilSession()) {
             $libraries = $container->get('Bsz\Config\Libraries');
             $request = $container->get('Request');

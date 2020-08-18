@@ -23,7 +23,7 @@ use Exception;
 use Zend\Config\Config;
 use Zend\Config\Reader\Ini;
 use Zend\Http\PhpEnvironment\Request;
-use Zend\Session\Container;
+use Zend\Session\Container as SessContainer;
 
 /**
  * Client class extends VuFinds configuration to fit our needs.
@@ -50,9 +50,9 @@ class Client extends Config
 
     /**
      *
-     * @var Container
+     * @var SessContainer
      */
-    protected $container;
+    protected $sessContainer;
 
     /**
      * This method is used if object is casted to string
@@ -65,9 +65,9 @@ class Client extends Config
         return implode('', $isils);
     }
 
-    public function appendContainer(Container $container)
+    public function attachSessionContainer(SessContainer $container)
     {
-        $this->container = $container;
+        $this->sessContainer = $container;
     }
 
     /**
@@ -224,12 +224,12 @@ class Client extends Config
         }
 
         $isils = [];
-        if ($this->isIsilSession() && $this->container->offsetExists('isil')) {
-            $isils = (array)$this->container->offsetGet('isil');
+        if ($this->isIsilSession() && $this->sessContainer->offsetExists('isil')) {
+            $isils = (array)$this->sessContainer->offsetGet('isil');
         } elseif ($this->isIsilSession() && isset($cookie->isil)) {
             $isils = explode(',', $cookie->isil);
             // Write isils back to session
-            $this->container->offsetSet('isil', $isils);
+            $this->sessContainer->offsetSet('isil', $isils);
         } else {
             $raw = trim($this->get('Site')->get('isil'));
             if (!empty($raw)) {
