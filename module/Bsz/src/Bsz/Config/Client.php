@@ -199,7 +199,7 @@ class Client extends Config
      * @param Request $request
      * @return Client
      */
-    public function setRequest(Request $request)
+    public function attachRequest(Request $request)
     {
         $this->request = $request;
         return $this;
@@ -290,7 +290,7 @@ class Client extends Config
      * Add Libraries to thie class
      * @param Libraries $libraries
      */
-    public function setLibraries(Libraries $libraries)
+    public function attachLibraries(Libraries $libraries)
     {
         $this->libraries = $libraries;
     }

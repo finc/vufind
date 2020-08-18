@@ -65,8 +65,8 @@ class Factory
         if ($client->isIsilSession()) {
             $libraries = $container->get('Bsz\Config\Libraries');
             $request = $container->get('Request');
-            $client->setLibraries($libraries);
-            $client->setRequest($request);
+            $client->attachLibraries($libraries);
+            $client->attachRequest($request);
         }
         return $client;
     }
