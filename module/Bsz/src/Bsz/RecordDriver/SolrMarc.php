@@ -449,76 +449,58 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
     /**
      * Get Content of 924 as array: isil => array of subfields
-     *
-     * @param boolean $isilAsKey uses ISILs as array keys - be carefull,
-     * information is dropped
-     * @param boolean $recurringSubfields allow recurring subfields
-     *
      * @return array
      *
      */
-    public function getField924($isilAsKey = true, $recurringSubfields = false)
+    public function getField924()
     {
         $f924 = $this->getMarcRecord()->getFields('924');
+
+        $meanings = [
+            'a' => 'local_idn',
+            'b' => 'isil',
+            'c' => 'region',
+            'd' => 'ill_indicator_raw',
+            'g' => 'signature',
+            'k' => 'url',
+            'l' => 'url_label'
+        ];
+
         $result = [];
+
         foreach ($f924 as $field) {
+
             $subfields = $field->getSubfields();
-            $tmpSubfields = [];
-            $isil = null;
+            $output = [];
+
+
             foreach ($subfields as $subfield) {
-                if ($subfield->getCode() == 'b') {
-                    $isil = trim($subfield->getData());
-                    $tmpSubfields[$subfield->getCode()] = $isil;
-                } elseif ($subfield->getCode() == 'd') {
-                    $ill_status = '';
-                    $ill_icon = '';
-                    switch ($subfield->getData()) {
-                        case 'a': $ill_status = 'ILL::status_a';
-                            $ill_icon = 'fa-check text-success    ';
-                            break;
-                        case 'b': $ill_status = 'ILL::status_b';
-                            $ill_icon = 'fa-copy';
-                            break;
-                        case 'c': $ill_status = 'ILL::status_c';
-                            $ill_icon = 'fa-check text-success    ';
-                            break;
-                        case 'd': $ill_status = 'ILL::status_d';
-                            $ill_icon = 'fa-times text-danger';
-                            break;
-                        case 'e': $ill_status = 'ILL::status_e';
-                            $ill_icon = 'fa-network-wired text-success';
-                            break;
-                        case 'n':
-                        case 'N':
-                            $ill_status = 'ILL::status_N';
-                            $ill_icon = 'fa-times text-danger';
-                            break;
-                        case 'l':
-                        case 'L': $ill_status = 'ILL::status_L';
-                            $ill_icon = 'fa-check text-success    ';
-                            break;
-                        default: $ill_status = 'ILL::status_d';
-                            $ill_icon = 'fa_times text-danger';
-                    }
-                    $tmpSubfields['d'] = $subfield->getData();
-                    $tmpSubfields['ill_status'] = $ill_status;
-                    $tmpSubfields['ill_icon'] = $ill_icon;
-                } elseif (!isset($tmpSubfields[$subfield->getCode()])) {
-                    // without $recurringSubfields, only the first occurence is
-                    // included
-                    $tmpSubfields[$subfield->getCode()] = $subfield->getData();
-                } elseif ($recurringSubfields) {
-                    // with §recurringSubfields, all occurences are put together
-                    $tmpSubfields[$subfield->getCode()] .= ' | ' . $subfield->getData();
+
+                $code = $subfield->getCode();
+                $data = $subfield->getData();
+                $arrsub = [];
+
+                if (array_key_exists($code, $meanings)) {
+                    $meaning = $meanings[$code];
+
+                    // deal with repeated subfields
                 }
+
             }
-            if (isset($isil) && $isilAsKey) {
-                $result[$isil] = $tmpSubfields;
-            } else {
-                $result[] = $tmpSubfields;
-            }
+            $result[] = $output;
         }
         return $result;
+    }
+
+    protected function code2icon($code)
+    {
+        switch ($code) {
+            case 'b': $icon = 'fa-copy'; break;
+            case 'd': $icon = 'fa-times text-danger'; break;
+            case 'e': $icon = 'fa-network-wired text-success'; break;
+            default: $icon = 'fa-check text-success';
+        }
+        return $icon;
     }
 
     /**
