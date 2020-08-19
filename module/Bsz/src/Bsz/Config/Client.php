@@ -62,7 +62,7 @@ class Client extends Config
     public function __toString()
     {
         $isils = $this->getIsils();
-        return implode('', $isils);
+        return array_shift($isils);
     }
 
     public function attachSessionContainer(SessContainer $container)
