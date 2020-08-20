@@ -27,8 +27,6 @@ use Zend\Config\Config;
 
 class ClientTest extends TestCase
 {
-
-
     protected function getBasicConfig()
     {
         return [
@@ -70,26 +68,17 @@ class ClientTest extends TestCase
     {
         $config = $this->getBasicConfig();
         $client = $this->getClient($config);
-        $this->assertEquals($client->getWebsite(),'https://www.example.com');
+        $this->assertEquals($client->getWebsite(), 'https://www.example.com');
         $this->assertEquals($client->getWebsite('google'), 'https://www.google.com');
-
     }
 
     public function testTag()
     {
         $config = $this->getBasicConfig();
         $client = $this->getClient($config);
-        $this->assertEquals($client->getTag(),'foo');
+        $this->assertEquals($client->getTag(), 'foo');
         $config['Site']['url'] = 'https://bar.boss.bsz-bw.de';
         $client = $this->getClient($config);
-        $this->assertEquals($client->getTag(),'bar');
+        $this->assertEquals($client->getTag(), 'bar');
     }
-
-
-
-
-
-
-
-
 }
