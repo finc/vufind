@@ -45,7 +45,7 @@ class Factory
     public static function getClient(ContainerInterface $container)
     {
         $tmp = $container->get('VuFind\Config')->get('config')->toArray();
-        $neededSections = ['Site', 'System', 'OpenUrl'];
+        $neededSections = ['Site', 'System', 'OpenUrl', 'Index'];
 
         $vufindconf = [];
         foreach ($tmp as $section => $content) {
