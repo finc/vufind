@@ -68,8 +68,8 @@
 
             <? if ( $this->client()->is('show_ill_column') ): ?>
                 <td>
-                    <? if (isset($result['ill_icon'])): ?><i class="fa <?= $result['ill_icon'] ?>"></i> <? endif; ?><span
-                        class="text hidden-xs"><?= isset($result['ill_status']) ? $this->transEsc($result['ill_status']) : '-' ?></span>
+                    <? if (isset($result['ill_indicator'])): ?><i class="fa <?= $this->record($this->driver)->indicator2icon($result['ill_indicator'])?>"></i> <? endif; ?><span
+                        class="text hidden-xs"><?= isst($result['ill_indicator']) ? $this->transEsc($this->record($this->driver)->indicator2status($result['ill_indicator'])) : '-' ?></span>
                 </td>
             <? endif; ?>
 

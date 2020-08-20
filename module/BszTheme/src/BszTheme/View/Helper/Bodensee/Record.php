@@ -222,4 +222,36 @@ class Record extends \VuFind\View\Helper\Root\Record
         }
         return false;
     }
+
+    /**
+     * @param $indicator
+     *
+     * @return string
+     */
+    public static function indicator2Status($indicator)
+    {
+        return 'ILL::status_'.$indicator;
+    }
+
+    /**
+     * @param $indicator
+     *
+     * @return string
+     */
+    public static function indicator2icon($indicator)
+    {
+        switch ($indicator) {
+            case 'a': $icon = 'fa-check text-success'; break;
+            case 'b': $icon = 'fa-check text-success'; break;
+            case 'c': $icon = 'fa-check text-success'; break;
+            case 'd': $icon = 'fa-times text-danger';  break;
+            case 'e': $icon = 'fa-network-wired text-success'; break;
+            case 'n':
+            case 'N': $icon = 'fa-times text-danger'; break;
+            case 'l':
+            case 'L': $icon = 'fa-check text-success'; break;
+            default: $icon = 'fa_times text-danger';
+        }
+        return $icon;
+    }
 }
