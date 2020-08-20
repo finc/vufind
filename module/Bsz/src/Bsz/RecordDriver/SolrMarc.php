@@ -456,7 +456,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     {
         $f924 = $this->getMarcRecord()->getFields('924');
 
-        $meanings = [
+        // map subfield codes to human-readable descriptions
+        $mappings = [
             'a' => 'local_idn',
             'b' => 'isil',
             'c' => 'region',
@@ -471,23 +472,30 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         foreach ($f924 as $field) {
 
             $subfields = $field->getSubfields();
-            $output = [];
-
+            $arrsub = [];
 
             foreach ($subfields as $subfield) {
 
                 $code = $subfield->getCode();
                 $data = $subfield->getData();
-                $arrsub = [];
 
-                if (array_key_exists($code, $meanings)) {
-                    $meaning = $meanings[$code];
-
-                    // deal with repeated subfields
+                if (array_key_exists($code, $mappings)) {
+                    $mapping = $mappings[$code];
+                    if (array_key_exists($mapping, $arrsub)) {
+                        // recurring subfields are temporarily concatenated to a string
+                        $data = $arrsub[$mapping] .' | '.$data;
+                    }
+                    $arrsub[$mapping] = $data;
                 }
-
             }
-            $result[] = $output;
+            // handle recurring subfields - convert them to array
+            foreach ($arrsub as $k => $sub) {
+                if (strpos($sub, ' | ')) {
+                    $split = explode(' | ', $sub);
+                    $arrsub[$k] = $split;
+                }
+            }
+            $result[] = $arrsub;
         }
         return $result;
     }
