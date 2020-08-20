@@ -411,6 +411,14 @@ class Logic
      */
     protected function hasParallelEditions()
     {
+        $getIsils = function($holdings) {
+            $return = [];
+            foreach($holdings as $holding) {
+                $return[] = $holding['isil'];
+            }
+            return $return;
+        };
+
         if (!$this->holding instanceof Holding) {
             return false;
         }
@@ -431,8 +439,8 @@ class Logic
             // check the found records for local available isils
             $isils = [];
             foreach ($parallel->getResults() as $record) {
-                $f924 = $record->getField924(true);
-                $recordIsils = array_keys($f924);
+                $f924 = $record->getField924();
+                $recordIsils = $getIsils($f924);
                 $isils = array_merge($isils, $recordIsils);
             }
             foreach ($isils as $isil) {
@@ -502,7 +510,7 @@ class Logic
         }
 
         foreach ($f924 as $field) {
-            $code = isset($field['d']) ? $field['d'] : null;
+            $code = isset($field['ill_indicator']) ? $field['ill_indicator'] : null;
             if (isset($code) && in_array($code, $allowedCodes)) {
                 return true;
             }

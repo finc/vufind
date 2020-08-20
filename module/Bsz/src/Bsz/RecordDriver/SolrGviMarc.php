@@ -404,7 +404,6 @@ class SolrGviMarc extends SolrMarc implements Definition
                 } else {
                     $places[] = $raw;
                 }
-
             }
         }
         foreach ($places as $k => $place) {
@@ -1069,7 +1068,7 @@ class SolrGviMarc extends SolrMarc implements Definition
     public function getLocalHoldings()
     {
         $holdings = [];
-        $f924 = $this->getField924(false, true);
+        $f924 = $this->getField924();
         $isils = $this->mainConfig->getIsilAvailability();
 
         // Building a regex pattern
@@ -1080,7 +1079,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $pattern = '/' . str_replace('\*', '.*', $pattern) . '/';
 
         foreach ($f924 as $fields) {
-            if (isset($fields['b']) && preg_match($pattern, $fields['b'])) {
+            if (isset($fields['isil']) && preg_match($pattern, $fields['isil'])) {
                 $holdings[] = $fields;
             }
         }
@@ -1345,4 +1344,5 @@ class SolrGviMarc extends SolrMarc implements Definition
             }
         }
         return $array_clean;
-    }}
+    }
+}
