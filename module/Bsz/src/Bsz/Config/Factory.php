@@ -23,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Bsz\Config;
 
 use Bsz\LibrariesTable;
@@ -38,7 +37,6 @@ use Zend\Session\Container;
  */
 class Factory
 {
-
     /**
      *
      * @param ContainerInterface $container
@@ -46,20 +44,29 @@ class Factory
      */
     public static function getClient(ContainerInterface $container)
     {
-        $vufindconf = $container->get('VuFind\Config')->get('config')->toArray();
+        $tmp = $container->get('VuFind\Config')->get('config')->toArray();
+        $neededSections = ['Site', 'System', 'OpenUrl'];
+
+        $vufindconf = [];
+        foreach ($tmp as $section => $content) {
+            if (in_array($section, $neededSections)) {
+                $vufindconf[$section] = $content;
+            }
+        }
+
         $bszconf = $container->get('VuFind\Config')->get('bsz')->toArray();
         $sessContainer = new Container(
             'fernleihe',
             $container->get('VuFind\SessionManager')
         );
-        
+
         $client = new Client(array_merge($vufindconf, $bszconf), true);
-        $client->appendContainer($sessContainer);
+        $client->attachSessionContainer($sessContainer);
         if ($client->isIsilSession()) {
             $libraries = $container->get('Bsz\Config\Libraries');
             $request = $container->get('Request');
-            $client->setLibraries($libraries);
-            $client->setRequest($request);
+            $client->attachLibraries($libraries);
+            $client->attachRequest($request);
         }
         return $client;
     }
@@ -81,7 +88,7 @@ class Factory
         $librariesTable = new Libraries('libraries', $adapter, null, $resultSetPrototype);
         return $librariesTable;
     }
-    
+
     public static function getDedup(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config')->get('Index');
