@@ -102,7 +102,7 @@
                 'driver' => $this->driver,
                 'hiddenFilterString' => $hiddenFilterString])?>
 
-            <? if ($this->client()->getDriver() !== "NoILS"): ?>
+            <? if ($this->ils()->getDriverClass() !== 'Bsz\ILS\Driver\NoILS'): ?>
                 <div class="callnumAndLocation ajax-availability hidden">
                 <? if ($this->driver->supportsAjaxStatus()): ?>
                     <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
