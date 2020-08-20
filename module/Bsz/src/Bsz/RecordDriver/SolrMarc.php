@@ -458,12 +458,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
         // map subfield codes to human-readable descriptions
         $mappings = [
-            'a' => 'local_idn',
-            'b' => 'isil',
-            'c' => 'region',
-            'd' => 'ill_indicator_raw',
-            'g' => 'signature',
-            'k' => 'url',
+            'a' => 'local_idn',         'b' => 'isil',      'c' => 'region',
+            'd' => 'ill_indicator_raw', 'g' => 'signature', 'k' => 'url',
             'l' => 'url_label'
         ];
 
