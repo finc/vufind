@@ -41,7 +41,9 @@ class ClientTest extends TestCase
             'Footer' => [],
             'Switches' => [
                 'isil_session' => false
-            ]
+            ],
+            'FooterLinks' => []
+
         ];
     }
 
@@ -50,21 +52,23 @@ class ClientTest extends TestCase
         return $client = new Client($config);
     }
 
-    public function testClient()
+    public function testClientCreatedSuccessfull()
     {
         $config = $this->getBasicConfig();
         $client = $this->getClient($config);
         $this->assertEquals(get_class($client), 'Bsz\Config\Client');
     }
 
-    public function testIsils()
+    public function testIsilsParsing()
     {
         $config = $this->getBasicConfig();
         $client = $this->getClient($config);
-        $this->assertIsArray($client->getIsils());
+        $isils = $client->getIsils();
+        $this->assertIsArray($isils);
+        $this->assertEquals((string)$client, array_shift($isils));
     }
 
-    public function testWebsite()
+    public function testDifferentWebsites()
     {
         $config = $this->getBasicConfig();
         $client = $this->getClient($config);
@@ -72,7 +76,7 @@ class ClientTest extends TestCase
         $this->assertEquals($client->getWebsite('google'), 'https://www.google.com');
     }
 
-    public function testTag()
+    public function testTagParsing()
     {
         $config = $this->getBasicConfig();
         $client = $this->getClient($config);
@@ -81,4 +85,18 @@ class ClientTest extends TestCase
         $client = $this->getClient($config);
         $this->assertEquals($client->getTag(), 'bar');
     }
+
+    public function testDefaultFooterLinks()
+    {
+        $config = $this->getBasicConfig();
+        $client = $this->getClient($config);
+        //$links1 = $client->getFooterLinks(1);
+        $links2 = $client->getFooterLinks(2);
+        $links3 = $client->getFooterLinks(3);
+        $this->assertEquals($links2[0], '/Search/History');
+        $this->assertEquals($links2[1], '/Search/Advanced');
+        $this->assertEquals($links3[0], '/Bsz/Privacy');
+    }
+
+
 }
