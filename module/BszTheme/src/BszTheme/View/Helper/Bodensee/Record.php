@@ -216,7 +216,7 @@ class Record extends \VuFind\View\Helper\Root\Record
         $firstIsil = reset($this->localIsils);
 
         foreach ($holdings as $holding) {
-            if (preg_match("/(^$firstIsil\$)|($firstIsil)[-\/\s]+/", $holding['b'])) {
+            if (preg_match("/(^$firstIsil\$)|($firstIsil)[-\/\s]+/", $holding['isil'])) {
                 return true;
             }
         }

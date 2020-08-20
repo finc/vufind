@@ -484,6 +484,11 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                     $arrsub[$mapping] = $data;
                 }
             }
+
+            // fix missing isil fields to avoid upcoming problems
+            if (!isset($arrsub['isil'])) {
+                $arrsub['isil'] = '';
+            }
             // handle recurring subfields - convert them to array
             foreach ($arrsub as $k => $sub) {
                 if (strpos($sub, ' | ')) {

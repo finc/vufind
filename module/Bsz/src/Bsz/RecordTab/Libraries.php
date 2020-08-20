@@ -35,9 +35,9 @@ use VuFind\RecordTab\AbstractBase;
  */
 class Libraries extends AbstractBase
 {
+
     /**
-     *
-     * @var Bsz\Config\Libraries
+     * @var LibConf
      */
     protected $libraries;
     /**
@@ -78,7 +78,7 @@ class Libraries extends AbstractBase
         }
         if ($this->swbonly) {
             foreach ($this->f924 as $k => $field) {
-                if (isset($field['c']) && strtoupper($field['c']) !== 'BSZ') {
+                if (isset($field['region']) && strtoupper($field['region']) !== 'BSZ') {
                     unset($this->f924[$k]);
                 }
             }
@@ -95,11 +95,13 @@ class Libraries extends AbstractBase
             $this->f924 = $this->driver->tryMethod('getField924');
         }
         if (is_array($this->f924)) {
-            $libraries = $this->libraries->getByIsils(array_keys($this->f924));
-            foreach ($libraries as $library) {
-                $this->f924[$library->getIsil()]['name'] = $library->getName();
-                $this->f924[$library->getIsil()]['homepage'] = $library->getHomepage();
-                $this->f924[$library->getIsil()]['opacurl'] = $library->getOpacUrl();
+            foreach ($this->f924 as $k => $f924) {
+                $library = $this->libraries->getByIsil($f924['isil']);
+                if ($library instanceof \Bsz\Config\Library) {
+                    $this->f924[$k]['name'] = $library->getName();
+                    $this->f924[$k]['opacurl'] = $library->getOpacUrl();
+                    $this->f924[$k]['homepage'] = $library->getHomepage();
+                }
             }
         }
         return $this->f924;
@@ -109,4 +111,5 @@ class Libraries extends AbstractBase
     {
         return $this->visible;
     }
+
 }

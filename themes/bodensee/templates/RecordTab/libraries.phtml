@@ -29,7 +29,7 @@
                             <? if (isset($result['homepage'])): ?>
                                 <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_homepage') ?>"
                                     href="<?= $result['homepage'] ?>"
-                                    class="external hasicon"><i class="fa fa-globe"></i><?= $this->escapeHtml($result['b']) ?></a>
+                                    class="external hasicon"><i class="fa fa-globe"></i><?= $this->escapeHtml($result['isil']) ?></a>
                             <? else: ?>
                                 <?=$this->escapeHtml($result['isil'])?>
                             <? endif; ?>
@@ -69,7 +69,7 @@
             <? if ( $this->client()->is('show_ill_column') ): ?>
                 <td>
                     <? if (isset($result['ill_indicator'])): ?><i class="fa <?= $this->record($this->driver)->indicator2icon($result['ill_indicator'])?>"></i> <? endif; ?><span
-                        class="text hidden-xs"><?= isst($result['ill_indicator']) ? $this->transEsc($this->record($this->driver)->indicator2status($result['ill_indicator'])) : '-' ?></span>
+                        class="text hidden-xs"><?= isset($result['ill_indicator']) ? $this->transEsc($this->record($this->driver)->indicator2status($result['ill_indicator'])) : '-' ?></span>
                 </td>
             <? endif; ?>
 
