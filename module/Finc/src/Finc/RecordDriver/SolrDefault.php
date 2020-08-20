@@ -141,11 +141,11 @@ class SolrDefault extends \VuFind\RecordDriver\SolrDefault implements
      *
      * @param string $field Name of the field.
      *
-     * @return mixed
+     * @return array
      */
     public function getField924()
     {
-        return null;
+        return [];
     }
 
     /**
