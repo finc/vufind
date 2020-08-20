@@ -23,22 +23,22 @@
         <? foreach ($content as $result): ?>
         <tr>
             <td class="hidden-xs">
-                <? if (isset($result['b']) && trim($result['b']) != ''): ?>
-                    <? if ($result['b'] !== 'LFER'): ?>
+                <? if (isset($result['isil']) && trim($result['isil']) != ''): ?>
+                    <? if ($result['isil'] !== 'LFER'): ?>
                         <span class="text-nowrap">
                             <? if (isset($result['homepage'])): ?>
                                 <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_homepage') ?>"
                                     href="<?= $result['homepage'] ?>"
                                     class="external hasicon"><i class="fa fa-globe"></i><?= $this->escapeHtml($result['b']) ?></a>
                             <? else: ?>
-                                <?=$this->escapeHtml($result['b'])?>
+                                <?=$this->escapeHtml($result['isil'])?>
                             <? endif; ?>
                         </span>
                     <? else: ?>
-                        <?=$this->abbrev($result['b'], 'LFER_long')?>
+                        <?=$this->abbrev($result['isil'], 'LFER_long')?>
                     <? endif; ?>
                 <? else: ?>
-                    <?= isset($result['b']) ? $this->escapeHtml($result['b']) : '' ?>
+                    <?= isset($result['isil']) ? $this->escapeHtml($result['isil']) : '' ?>
                 <? endif; ?>
             </td>
 
@@ -55,12 +55,12 @@
             </td>
 
             <td>
-                <? if ((isset($result['g']) && (isset($result['k']) !== true))): ?>
-                    <?=$this->escapeHtml($result['g'])?>
-                <? elseif(isset($result['k']) && isset($result['g'])): ?>
-                    <a href="<?=$result['k']?>" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><i class="fa fa-globe"></i><?=$this->escapeHtml($result['g'])?></a>
-                <? elseif(isset($result['k'])): ?>
-                    <a href="<?=$result['k']?>" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><i class="fa fa-globe"></i><?=$this->transEsc('E-Book')?></a>
+                <? if ((isset($result['call_number']) && (isset($result['call_number']) !== true))): ?>
+                    <?=$this->escapeHtml($result['call_number'])?>
+                <? elseif(isset($result['url']) && isset($result['call_number'])): ?>
+                    <a href="<?=$result['url']?>" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><i class="fa fa-globe"></i><?=$this->escapeHtml($result['call_number'])?></a>
+                <? elseif(isset($result['url'])): ?>
+                    <a href="<?=$result['url']?>" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><i class="fa fa-globe"></i><?=$this->transEsc('E-Book')?></a>
                 <? else: ?>
                     <?= $this->transEsc('NoCallnumber') ?>
                 <? endif; ?>
@@ -74,7 +74,7 @@
             <? endif; ?>
 
             <? if ($this->driver->isJournal()): ?>
-                <td><?= isset($result['z']) ? $this->escapeHtml($result['z']) : '' ?></td>
+                <td><?= isset($result['issue']) ? $this->escapeHtml($result['issue']) : '' ?></td>
             <? endif; ?>
         </tr>
         <? endforeach; ?>
