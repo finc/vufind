@@ -41,7 +41,7 @@ if ($this->customUrl) {
     <?php else: ?>
         <? $link = $this->recordLink()->linkPPN($this->driver) ?>
         <? if (!empty($link)): ?>
-            <li><?= $link ?></li>
+            <li><?=$this->transEsc('ILL::to_network_opac')?>: <?=$link ?></li>
         <? endif; ?>
     <?php endif; ?>
 

@@ -98,7 +98,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink
             $url = str_replace('%PPN%', $ppn, $url);
             $label = 'To library OPAC';
         } else {
-            $label = 'To network OPAC';
+            $label = 'ILL::check_availability_network_opac';
             $opacList = $this->config->get('OPAC')->toArray();
             $network = $driver->getNetwork();
             if (array_key_exists($network, $opacList)) {
