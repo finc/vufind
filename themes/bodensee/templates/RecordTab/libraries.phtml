@@ -55,7 +55,11 @@
             </td>
 
             <td>
-                <? if ((isset($result['call_number']) && (isset($result['call_number']) !== true))): ?>
+                <?php if(isset($result['url']) && is_array($result['url'])):
+                    $url = array_shift($result['url']);
+                    $result['url'] = $url;
+                endif; ?>
+                <? if (isset($result['call_number']) && !isset($result['url'])): ?>
                     <?=$this->escapeHtml($result['call_number'])?>
                 <? elseif(isset($result['url']) && isset($result['call_number'])): ?>
                     <a href="<?=$result['url']?>" target="_blank" data-toggle="tooltip" title="<?=$this->transEsc('Fulltext')?>"><i class="fa fa-globe"></i><?=$this->escapeHtml($result['call_number'])?></a>
