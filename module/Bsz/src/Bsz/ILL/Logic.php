@@ -145,6 +145,7 @@ class Logic
         if (in_array(false, $this->status)) {
             return false;
         } else {
+            $this->messages[] = 'ILL::available_for_ill';
             return true;
         }
     }
