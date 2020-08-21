@@ -132,7 +132,7 @@
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author" class="markjs">
                     <? foreach ($authors['primary'] as $name => $info): ?>
-                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person','hiddenFilterString' => $hiddenFilterString])?>
                     <? endforeach; ?>
                 </td>
             </tr>
@@ -143,7 +143,7 @@
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
                 <td property="creator" class="markjs">
                 <? foreach ($authors['corporate'] as $name => $info): ?>
-                    <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                    <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'corporation', 'hiddenFilterString' => $hiddenFilterString])?>
                     <br/>
                 <? endforeach; ?>
                 </td>
@@ -154,7 +154,7 @@
                 <th><?=$this->transEsc('Other Authors')?>: </th>
                 <td class="markjs">
                     <? foreach ($authors['secondary'] as $name => $info): ?>
-                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person', 'hiddenFilterString' => $hiddenFilterString])?>
                         <br/>
                     <? endforeach; ?>
                 </td>
