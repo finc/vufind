@@ -44,26 +44,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
     use MarcAdvancedTrait;
     use HelperTrait;
 
-    protected $mapper;
     protected $formats;
     protected $runner;
     protected $container = [];
-
-    /**
-     *
-     * @param FormatMapper $mapper
-     * @param Client $mainConfig
-     * @param type $recordConfig
-     * @param type $searchSettings
-     */
-    public function __construct(FormatMapper $mapper,
-                                Client $mainConfig = null,
-                                $recordConfig = null,
-                                $searchSettings = null)
-    {
-        parent::__construct($mainConfig, $recordConfig, $searchSettings);
-        $this->mapper = $mapper;
-    }
 
     /**
      * Return an array of non-empty subfield values found in the provided MARC
@@ -255,8 +238,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
             $leader_6 = $leader{6};
             $leader_7 = $leader{7};
 
-            $formats[] = $this->mapper->marc21007($f007_0, $f007_1);
-            $formats[] = $this->mapper->marc21leader7($leader_7, $f007_0, $f008_21);
+            $formats[] = FormatMapper::marc21007($f007_0, $f007_1);
+            $formats[] = FormatMapper::marc21leader7($leader_7, $f007_0, $f008_21);
             if ($this->isCollection() && !$this->isArticle()) {
                 $formats[] = 'Compilation';
             }

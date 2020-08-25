@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright (C) 2020 Bibliotheks-Service Zentrum, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+
 namespace Bsz;
 
 /**
@@ -25,6 +26,7 @@ namespace Bsz;
  * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
+
 class FormatMapper
 {
     /**
@@ -32,11 +34,11 @@ class FormatMapper
      * @param string $formats
      * @return string
      */
-    public function mapIcon($formats)
+    public static function mapIcon($formats)
     {
 
         //this function uses simplifies formats as we can only show one icon
-        $formats = $this->simplify($formats);
+        $formats = static::simplify($formats);
         foreach ($formats as $k => $format) {
             $formats[$k] = strtolower($format);
         }
@@ -191,7 +193,7 @@ class FormatMapper
      * @param char $code2 char 1
      * @return string
      */
-    public function marc21007($code1, $code2)
+    public static function marc21007($code1, $code2)
     {
         $medium = '';
         $mappings = [];
@@ -266,7 +268,7 @@ class FormatMapper
      * @param char $f007
      * @return string
      */
-    public function marc21leader7($leader7, $f007, $f008)
+    public static function marc21leader7($leader7, $f007, $f008)
     {
         $format = '';
         $mappings = [];
@@ -329,7 +331,7 @@ class FormatMapper
      * @param array $formats
      * @return array
      */
-    public function simplify($formats)
+    public static function simplify($formats)
     {
         $formats = array_unique($formats);
         foreach ($formats as$k => $format) {
