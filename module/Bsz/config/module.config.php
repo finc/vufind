@@ -68,7 +68,6 @@ $config = [
         ],
         'invokables' => [
             'Bsz\RecordDriver\Definition' => 'Bsz\RecordDriver\Definition',
-            'Bsz\Mapper'     => 'Bsz\FormatMapper',
             'Bsz\Config\Library'    => 'Bsz\Config\Library',
         ],
         'aliases' => [

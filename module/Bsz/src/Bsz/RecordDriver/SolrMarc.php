@@ -47,28 +47,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     use MarcAdvancedTrait;
     use HelperTrait;
 
-    protected $mapper;
     protected $formats;
     protected $runner;
     protected $container = [];
-
-    /**
-     *
-     * @param FormatMapper $mapper
-     * @param Client $mainConfig
-     * @param type $recordConfig
-     * @param type $searchSettings
-     */
-
-    public function __construct(
-        FormatMapper $mapper,
-        Client $mainConfig = null,
-        $recordConfig = null,
-        $searchSettings = null
-    ) {
-        parent::__construct($mainConfig, $recordConfig, $searchSettings);
-        $this->mapper = $mapper;
-    }
 
     /**
      * Return an array of non-empty subfield values found in the provided MARC

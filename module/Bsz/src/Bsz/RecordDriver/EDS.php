@@ -28,18 +28,6 @@ use Bsz\FormatMapper;
  */
 class EDS extends \VuFind\RecordDriver\EDS
 {
-    /**
-     *
-     * @var FormatMapper
-     */
-    protected $Mapper;
-
-    public function __construct(FormatMapper $Mapper, $mainConfig = null, $recordConfig = null,
-        $searchSettings = null)
-    {
-        parent::__construct($mainConfig, $recordConfig, $searchSettings);
-        $this->Mapper = $Mapper;
-    }
 
     /**
      * Get the publication type of the record.
