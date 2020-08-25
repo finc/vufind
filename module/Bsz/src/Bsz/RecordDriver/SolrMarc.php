@@ -215,8 +215,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function getFormats()
     {
+        $formats = [];
         if ($this->formats === null) {
-            $formats = [];
             $f007 = $f008 = $leader = null;
             $f007_0 = $f007_1 = $f008_21 = $leader_6 = $leader_7 = '';
 
@@ -243,13 +243,16 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             $leader_6 = $leader{6};
             $leader_7 = $leader{7};
 
-            $formats[] = $this->mapper->marc21007($f007_0, $f007_1);
-            $formats[] = $this->mapper->marc21leader7($leader_7, $f007_0, $f008_21);
+            $formats[] = FormatMapper::marc21007($f007_0, $f007_1);
+            $formats[] = FormatMapper::marc21leader7($leader_7, $f007_0, $f008_21);
             if ($this->isCollection() && !$this->isArticle()) {
                 $formats[] = 'Compilation';
             }
 
-            $this->formats = array_filter($formats);
+            $formats = array_filter($formats);
+            $formats = array_unique($formats);
+            $formats = array_values($formats);
+            $this->formats = $formats;
         }
         return $this->formats;
     }
