@@ -21,6 +21,7 @@
 
 namespace BszTest\RecordDriver;
 
+use Bsz\Config\Client;
 use Bsz\RecordDriver\SolrGviMarc;
 use PHPUnit\Framework\TestCase;
 
@@ -28,11 +29,31 @@ class SolrGviMarcTest extends TestCase
 {
     protected function getDefaultRecord()
     {
-        $config = new \Zend\Config\Config([]);
+        $config = $this->getClient();
         $record = new \Bsz\RecordDriver\SolrGviMarc($config);
         $fixture = $this->loadRecordFixture('repetitorium.json');
         $record->setRawData($fixture['response']['docs'][0]);
         return $record;
+    }
+
+    protected function getClient()
+    {
+       $config = [
+            'Site' => [
+                'isil' => 'DE-666,DE-667',
+                'website' => 'https://www.example.com',
+                'website_google' => 'https://www.google.com',
+                'url' => 'foo.bar.com'
+            ],
+            'System' => [],
+            'OpenUrl' => [],
+            'Footer' => [],
+            'Switches' => [
+                'isil_session' => false
+            ],
+            'FooterLinks' => []
+       ];
+       return $client = new Client($config);
     }
 
     /**
@@ -58,8 +79,24 @@ class SolrGviMarcTest extends TestCase
     public function testFormat()
     {
         $driver = $this->getDefaultRecord();
-        $this->assertA($driver->getFormats(), ['Book']);
+        $this->assertEquals($driver->getFormats(), ['Book']);
 
+        $this->assertFalse($driver->isJournal());
+        $this->assertFalse($driver->isArticle());
+        $this->assertFalse($driver->isMonographicSerial());
+        $this->assertFalse($driver->isElectronic());
+        $this->assertFalse($driver->isFree());
+        $this->assertFalse($driver->isNewspaper());
+
+        $this->assertTrue($driver->isBook());
     }
+
+    public function testConsortium()
+    {
+        $driver = $this->getDefaultRecord();
+        $this->assertIsString($driver->getConsortium());
+        $this->assertEquals($driver->getConsortium(), 'GBV, SWB');
+    }
+
 
 }
