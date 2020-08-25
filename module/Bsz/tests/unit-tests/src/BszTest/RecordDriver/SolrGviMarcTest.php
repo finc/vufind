@@ -98,5 +98,36 @@ class SolrGviMarcTest extends TestCase
         $this->assertEquals($driver->getConsortium(), 'GBV, SWB');
     }
 
+    public function testField924NumericKeys()
+    {
+        $driver = $this->getDefaultRecord();
+        $f924 = $driver->getField924();
+        $keys = array_keys($f924);
+        foreach($keys as $key) {
+            $this->assertTrue(is_numeric($key));
+        }
+    }
+
+    public function testField924CheckArrayContent()
+    {
+        $driver = $this->getDefaultRecord();
+        $f924 = $driver->getField924();
+
+        foreach ($f924 as $field) {
+            $this->assertTrue(array_key_exists('isil', $field));
+            $this->assertTrue(strlen($field['ill_indicator']) == 1);
+        }
+
+    }
+
+    public function testPublicationDetails()
+    {
+        $driver = $this->getDefaultRecord();
+        $publications = $driver->getPublicationDetails();
+        foreach ($publications as $publication) {
+            $place = $publication->getPlace();
+            $this->assertFalse(strpos($place, '['));
+        }
+    }
 
 }
