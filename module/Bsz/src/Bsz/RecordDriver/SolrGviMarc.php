@@ -655,18 +655,6 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
-     * Get the main corporate author (if any) for the record.
-     *
-     * @return string
-     */
-    public function getCorporateAuthor()
-    {
-        // Try 110 first -- if none found, try 710 next.
-        $corpAuthors = array_merge($this->getFieldArray('110', ['a', 'b', 'g', '9'], true), $this->getFieldArray('710', ['a', 'b', 'g'], true));
-        return empty($corpAuthors) ? null : $corpAuthors[0];
-    }
-
-    /**
      * Get a sortable title for the record (i.e. no leading articles).
      *
      * @return string
