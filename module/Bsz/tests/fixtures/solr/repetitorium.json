@@ -2,9 +2,9 @@
   "responseHeader": {
     "zkConnected": true,
     "status": 0,
-    "QTime": 6,
+    "QTime": 3,
     "params": {
-      "q": "id:(DE-627)027123073",
+      "q": "id:\\(DE-627\\)027123073",
       "df": "allfields",
       "rows": "10",
       "echoParams": "all",
@@ -12,123 +12,10 @@
     }
   },
   "response": {
-    "numFound": 3,
+    "numFound": 1,
     "start": 0,
-    "maxScore": 17.175657,
+    "maxScore": 17.298704,
     "docs": [
-      {
-        "consortium": [
-          "DE-601",
-          "DE-576"
-        ],
-        "catalog": "DE-627",
-        "collection": "K10PLUS",
-        "id": "(DE-627)111588456",
-        "recordtype": "GviMarcDE627",
-        "test_matchkey_1": "book:albert:leparifrançais:1985",
-        "test_matchkey_2": "book:albert:leparifrançais:1985:seuil",
-        "test_matchkey_3": "book:9782020086547:1985",
-        "cluster_id": "(DE-627)111588456",
-        "material_access": [
-          "Physical"
-        ],
-        "material_pubform": [
-          "Monograph/Item"
-        ],
-        "material_media_type": [
-          "Book"
-        ],
-        "material_content_type": [
-          "Book"
-        ],
-        "ill_flag": [
-          "Undefined"
-        ],
-        "_version_": 1664043343289516032,
-        "index_date": "2020-04-15T12:56:37.824Z",
-        "fullrecord": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><collection xmlns=\"http://www.loc.gov/MARC21/slim\"><record><leader>02069cam a2200529   4500</leader><controlfield tag=\"001\">111588456</controlfield><controlfield tag=\"003\">DE-627</controlfield><controlfield tag=\"005\">20191201003606.0</controlfield><controlfield tag=\"007\">tu</controlfield><controlfield tag=\"008\">921121s1985    xx |||||      00| ||fre c</controlfield><datafield tag=\"020\" ind1=\" \" ind2=\" \"><subfield code=\"a\">2020086549</subfield><subfield code=\"9\">2-02-008654-9</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-627)111588456</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-576)027123073</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-599)GBV111588456</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)12016544</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)12016544</subfield></datafield><datafield tag=\"040\" ind1=\" \" ind2=\" \"><subfield code=\"a\">DE-627</subfield><subfield code=\"b\">ger</subfield><subfield code=\"c\">DE-627</subfield><subfield code=\"e\">rakwb</subfield></datafield><datafield tag=\"041\" ind1=\" \" ind2=\" \"><subfield code=\"a\">fre</subfield></datafield><datafield tag=\"044\" ind1=\" \" ind2=\" \"><subfield code=\"c\">XA-FR</subfield></datafield><datafield tag=\"050\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">HD5775</subfield></datafield><datafield tag=\"082\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">339.5/0944</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">15.65</subfield><subfield code=\"2\">bkl</subfield></datafield><datafield tag=\"100\" ind1=\"1\" ind2=\" \"><subfield code=\"a\">Albert, Michel</subfield><subfield code=\"d\">1930-2015</subfield><subfield code=\"0\">(DE-588)124117392</subfield><subfield code=\"0\">(DE-627)08564868X</subfield><subfield code=\"0\">(DE-576)215326202</subfield><subfield code=\"4\">aut</subfield></datafield><datafield tag=\"245\" ind1=\"1\" ind2=\"3\"><subfield code=\"a\">Le pari français</subfield><subfield code=\"c\">Michel Albert</subfield></datafield><datafield tag=\"250\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Nouv. éd. refondue et augm</subfield></datafield><datafield tag=\"264\" ind1=\" \" ind2=\"1\"><subfield code=\"a\">[Paris]</subfield><subfield code=\"b\">Seuil</subfield><subfield code=\"c\">c1985</subfield></datafield><datafield tag=\"300\" ind1=\" \" ind2=\" \"><subfield code=\"a\">398 S</subfield><subfield code=\"b\">graph. Darst</subfield><subfield code=\"c\">18 cm</subfield></datafield><datafield tag=\"336\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Text</subfield><subfield code=\"b\">txt</subfield><subfield code=\"2\">rdacontent</subfield></datafield><datafield tag=\"337\" ind1=\" \" ind2=\" \"><subfield code=\"a\">ohne Hilfsmittel zu benutzen</subfield><subfield code=\"b\">n</subfield><subfield code=\"2\">rdamedia</subfield></datafield><datafield tag=\"338\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Band</subfield><subfield code=\"b\">nc</subfield><subfield code=\"2\">rdacarrier</subfield></datafield><datafield tag=\"490\" ind1=\"1\" ind2=\" \"><subfield code=\"a\">Points</subfield><subfield code=\"a\">Série politique</subfield><subfield code=\"v\">127</subfield></datafield><datafield tag=\"500\" ind1=\" \" ind2=\" \"><subfield code=\"a\">18 cm. - Includes bibliographical references</subfield></datafield><datafield tag=\"591\" ind1=\" \" ind2=\" \"><subfield code=\"a\">720 ff. (DDC): GBV/LOC ; IMD-Felder und 1131 maschinell ergänzt (SWB)</subfield></datafield><datafield tag=\"653\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Full employment policies</subfield><subfield code=\"x\">France</subfield></datafield><datafield tag=\"653\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Full employment policies</subfield><subfield code=\"x\">European Economic Community countries</subfield></datafield><datafield tag=\"653\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Full employment policies</subfield></datafield><datafield tag=\"830\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Points / Série politique</subfield><subfield code=\"v\">127</subfield><subfield code=\"9\">127</subfield><subfield code=\"w\">(DE-627)167172662</subfield><subfield code=\"w\">(DE-576)006658873</subfield><subfield code=\"w\">(DE-600)423007-3</subfield><subfield code=\"x\">0768-1135</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">927112221</subfield><subfield code=\"b\">DE-1a</subfield><subfield code=\"9\">1a</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">1 A 724836</subfield><subfield code=\"h\">2</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">623477076</subfield><subfield code=\"b\">DE-206</subfield><subfield code=\"9\">206</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">A 156285</subfield><subfield code=\"h\">K:</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">403202442</subfield><subfield code=\"b\">DE-89</subfield><subfield code=\"9\">89</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">TK/680/8371</subfield><subfield code=\"h\">FBL</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">403202442</subfield><subfield code=\"b\">DE-35</subfield><subfield code=\"9\">35</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">TK/680/8371</subfield><subfield code=\"h\">FBL</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">131611887</subfield><subfield code=\"b\">DE-Hil2</subfield><subfield code=\"9\">Hil 2</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">09 : 52812</subfield><subfield code=\"h\">MAGAZIN</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3102157432</subfield><subfield code=\"b\">DE-Sa16-1</subfield><subfield code=\"9\">Sa 16/1</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">310215753X</subfield><subfield code=\"b\">DE-16</subfield><subfield code=\"9\">16</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">85 A 2599</subfield></datafield><datafield tag=\"936\" ind1=\"b\" ind2=\"k\"><subfield code=\"a\">15.65</subfield><subfield code=\"j\">Frankreich</subfield><subfield code=\"x\">Geschichte</subfield><subfield code=\"0\">(DE-627)181571641</subfield></datafield><datafield tag=\"950\" ind1=\"l\" ind2=\" \"><subfield code=\"a\">Arbeitslosigkeit</subfield><subfield code=\"a\">Arbeitsmarkt</subfield><subfield code=\"a\">Arbeitspolitik</subfield><subfield code=\"a\">Vollbeschäftigung</subfield><subfield code=\"a\">Konjunkturpolitik</subfield><subfield code=\"a\">Frankreich</subfield><subfield code=\"2\">26</subfield></datafield><datafield tag=\"951\" ind1=\" \" ind2=\" \"><subfield code=\"a\">BO</subfield></datafield></record></collection>",
-        "publisher_facet": [
-          "Seuil"
-        ],
-        "language": [
-          "fre"
-        ],
-        "subject_topic_facet": [
-          "Full employment policies"
-        ],
-        "institution_id": [
-          "DE-16",
-          "DE-1a",
-          "DE-206",
-          "DE-35",
-          "DE-89",
-          "DE-Hil2",
-          "DE-Sa16-1"
-        ],
-        "subject_all_facet": [
-          "Full employment policies"
-        ],
-        "author_facet": [
-          "Albert, Michel"
-        ],
-        "ill_region": [
-          "BSZ",
-          "GBV"
-        ]
-      },
-      {
-        "consortium": [
-          "DE-602"
-        ],
-        "catalog": "DE-602",
-        "collection": "B3KAT",
-        "id": "(DE-602)gbv_111588456",
-        "recordtype": "GviMarcDE602",
-        "test_matchkey_1": "book:albert:leparifrançais:1985",
-        "test_matchkey_2": "book:albert:leparifrançais:1985:seuil",
-        "test_matchkey_3": "book:9782020086547:1985",
-        "cluster_id": "(DE-602)gbv_111588456",
-        "material_access": [
-          "Physical"
-        ],
-        "material_pubform": [
-          "Monograph/Item"
-        ],
-        "material_media_type": [
-          "Book"
-        ],
-        "material_content_type": [
-          "Book"
-        ],
-        "ill_flag": [
-          "Loan",
-          "Copy"
-        ],
-        "_version_": 1671035845005541377,
-        "index_date": "2020-07-01T17:19:27.033Z",
-        "fullrecord": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><collection xmlns=\"http://www.loc.gov/MARC21/slim\"><record><leader>02069cam a2200529   4500</leader><controlfield tag=\"001\">gbv_111588456</controlfield><controlfield tag=\"003\">DE-602</controlfield><controlfield tag=\"005\">20191201003606.0</controlfield><controlfield tag=\"007\">tu</controlfield><controlfield tag=\"008\">921121s1985    xx |||||      00| ||fre c</controlfield><datafield tag=\"020\" ind1=\" \" ind2=\" \"><subfield code=\"a\">2020086549</subfield><subfield code=\"9\">2-02-008654-9</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-627)111588456</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-576)027123073</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-599)GBV111588456</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)12016544</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)12016544</subfield></datafield><datafield tag=\"040\" ind1=\" \" ind2=\" \"><subfield code=\"a\">DE-627</subfield><subfield code=\"b\">ger</subfield><subfield code=\"c\">DE-627</subfield><subfield code=\"e\">rakwb</subfield></datafield><datafield tag=\"041\" ind1=\" \" ind2=\" \"><subfield code=\"a\">fre</subfield></datafield><datafield tag=\"044\" ind1=\" \" ind2=\" \"><subfield code=\"c\">XA-FR</subfield></datafield><datafield tag=\"050\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">HD5775</subfield></datafield><datafield tag=\"082\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">339.5/0944</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">15.65</subfield><subfield code=\"2\">bkl</subfield></datafield><datafield tag=\"100\" ind1=\"1\" ind2=\" \"><subfield code=\"a\">Albert, Michel</subfield><subfield code=\"d\">1930-2015</subfield><subfield code=\"0\">(DE-588)124117392</subfield><subfield code=\"0\">(DE-627)08564868X</subfield><subfield code=\"0\">(DE-576)215326202</subfield><subfield code=\"4\">aut</subfield></datafield><datafield tag=\"245\" ind1=\"1\" ind2=\"3\"><subfield code=\"a\">Le pari français</subfield><subfield code=\"c\">Michel Albert</subfield></datafield><datafield tag=\"250\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Nouv. éd. refondue et augm</subfield></datafield><datafield tag=\"264\" ind1=\" \" ind2=\"1\"><subfield code=\"a\">[Paris]</subfield><subfield code=\"b\">Seuil</subfield><subfield code=\"c\">c1985</subfield></datafield><datafield tag=\"300\" ind1=\" \" ind2=\" \"><subfield code=\"a\">398 S</subfield><subfield code=\"b\">graph. Darst</subfield><subfield code=\"c\">18 cm</subfield></datafield><datafield tag=\"336\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Text</subfield><subfield code=\"b\">txt</subfield><subfield code=\"2\">rdacontent</subfield></datafield><datafield tag=\"337\" ind1=\" \" ind2=\" \"><subfield code=\"a\">ohne Hilfsmittel zu benutzen</subfield><subfield code=\"b\">n</subfield><subfield code=\"2\">rdamedia</subfield></datafield><datafield tag=\"338\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Band</subfield><subfield code=\"b\">nc</subfield><subfield code=\"2\">rdacarrier</subfield></datafield><datafield tag=\"490\" ind1=\"1\" ind2=\" \"><subfield code=\"a\">Points</subfield><subfield code=\"a\">Série politique</subfield><subfield code=\"v\">127</subfield></datafield><datafield tag=\"500\" ind1=\" \" ind2=\" \"><subfield code=\"a\">18 cm. - Includes bibliographical references</subfield></datafield><datafield tag=\"591\" ind1=\" \" ind2=\" \"><subfield code=\"a\">720 ff. (DDC): GBV/LOC ; IMD-Felder und 1131 maschinell ergänzt (SWB)</subfield></datafield><datafield tag=\"653\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Full employment policies</subfield><subfield code=\"x\">France</subfield></datafield><datafield tag=\"653\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Full employment policies</subfield><subfield code=\"x\">European Economic Community countries</subfield></datafield><datafield tag=\"653\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Full employment policies</subfield></datafield><datafield tag=\"830\" ind1=\" \" ind2=\"0\"><subfield code=\"a\">Points / Série politique</subfield><subfield code=\"v\">127</subfield><subfield code=\"9\">127</subfield><subfield code=\"w\">(DE-627)167172662</subfield><subfield code=\"w\">(DE-576)006658873</subfield><subfield code=\"w\">(DE-600)423007-3</subfield><subfield code=\"x\">0768-1135</subfield></datafield><datafield tag=\"936\" ind1=\"b\" ind2=\"k\"><subfield code=\"a\">15.65</subfield><subfield code=\"j\">Frankreich</subfield><subfield code=\"x\">Geschichte</subfield><subfield code=\"0\">(DE-627)181571641</subfield></datafield><datafield tag=\"950\" ind1=\"l\" ind2=\" \"><subfield code=\"a\">Arbeitslosigkeit</subfield><subfield code=\"a\">Arbeitsmarkt</subfield><subfield code=\"a\">Arbeitspolitik</subfield><subfield code=\"a\">Vollbeschäftigung</subfield><subfield code=\"a\">Konjunkturpolitik</subfield><subfield code=\"a\">Frankreich</subfield><subfield code=\"2\">26</subfield></datafield><datafield tag=\"951\" ind1=\" \" ind2=\" \"><subfield code=\"a\">BO</subfield></datafield><datafield tag=\"049\" ind1=\" \" ind2=\" \"><subfield code=\"a\">DE-1;gbv_111588456</subfield></datafield><datafield tag=\"924\" ind1=\" \" ind2=\" \"><subfield code=\"a\">gbv_111588456</subfield><subfield code=\"b\">DE-1</subfield><subfield code=\"c\">KOBV</subfield><subfield code=\"d\">l</subfield><subfield code=\"c\">KOBV</subfield></datafield></record></collection>",
-        "publisher_facet": [
-          "Seuil"
-        ],
-        "language": [
-          "fre"
-        ],
-        "subject_topic_facet": [
-          "Full employment policies"
-        ],
-        "institution_id": [
-          "DE-1"
-        ],
-        "subject_all_facet": [
-          "Full employment policies"
-        ],
-        "author_facet": [
-          "Albert, Michel"
-        ],
-        "ill_region": [
-          "KOBV"
-        ]
-      },
       {
         "consortium": [
           "DE-601",

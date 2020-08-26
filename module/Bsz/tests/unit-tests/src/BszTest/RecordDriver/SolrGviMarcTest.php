@@ -124,9 +124,14 @@ class SolrGviMarcTest extends TestCase
     {
         $driver = $this->getDefaultRecord();
         $publications = $driver->getPublicationDetails();
+
         foreach ($publications as $publication) {
             $place = $publication->getPlace();
+            $year = $publication->getDate();
+            $string = (string)$publication;
             $this->assertFalse(strpos($place, '['));
+            $this->assertTrue((bool)preg_match('/\d\d\d\d/', $year));
+            $this->assertTrue((bool)preg_match('/.*: .*, .*/', $string));
         }
     }
 
