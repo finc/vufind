@@ -151,10 +151,10 @@ class SolrGviMarcTest extends TestCase
 
     public function testIsMonoSerioal()
     {
-        $driver = $this->getSolrRecord('brockhaus_bd1.json');
-        $this->assertFalse($driver->isMonographicSerial());
-        $driver = $this->getSolrRecord('brockhaus.json');
-        $this->assertFalse($driver->isMonographicSerial());
+        $driver = $this->getSolrRecord('monoserial.json');
+        $this->assertTrue($driver->isMonographicSerial());
+        $this->assertFalse($driver->isCollection());
+        $this->assertFalse($driver->isPart());
     }
 
 

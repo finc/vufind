@@ -27,6 +27,7 @@ use File_MARC;
 use File_MARC_Exception;
 use File_MARCBASE;
 use File_MARCXML;
+use phpDocumentor\Reflection\Types\Boolean;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcAdvancedTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
@@ -103,70 +104,17 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     }
 
     /**
-     * Get multipart level from leader 19
-     * @return boolean|string
-     */
-    public function getMultipartLevel()
-    {
-        $leader = $this->getMarcRecord()->getLeader();
-        $multipartLevel = $leader{19};
-
-        switch ($multipartLevel) {
-            case 'a':
-                return static::MULTIPART_COLLECTION;
-            //difference between B and C is if they have independend titles
-            case 'b':
-                return static::NO_MULTIPART;
-            case 'c':
-                return static::MULTIPART_PART;
-            default:
-                return static::NO_MULTIPART;
-        }
-    }
-
-    /**
-     * Get bibliographic level from leader 7
-     * @return string
-     */
-    public function getBibliographicLevel()
-    {
-        $leader = $this->getMarcRecord()->getLeader();
-        $bibliographicLevel = $leader{7};
-        switch ($bibliographicLevel) {
-            case 'a': // Monographic component part
-                return static::BIBLIO_MONO_COMPONENT;
-            //difference between B and C is if they have independend titles
-            case 'b': // Serial component part
-                return static::BIBLIO_SERIAL_COMPONENT;
-            case 'c': // Collection
-                return static::BIBLIO_COLLECTION;
-            case 'd': //Subunit
-                return static::BIBLIO_SUBUNIT;
-            case 'i': //Integration resource
-                return static::BIBLIO_INTEGRATED;
-            case 'r': //Monograph/Item
-                return static::BIBLIO_MONOGRAPH;
-            case 's': //Serial
-                return static::BIBLIO_SERIAL;
-        }
-    }
-
-    /**
      * is this item a collection
-     * @return boolean
+     * @return bool
+     * @throws File_MARC_Exception
      */
-    public function isCollection()
+    public function isCollection() : bool
     {
-        $collection = [
-            static::MULTIPART_COLLECTION,
-            static::BIBLIO_MONO_COMPONENT,
-            static::BIBLIO_SERIAL_COMPONENT,
-            static::BIBLIO_COLLECTION,
-            static::BIBLIO_SUBUNIT,
-            static::BIBLIO_INTEGRATED,
-        ];
-        if (in_array($this->getBibliographicLevel(), $collection) ||
-            in_array($this->getMultipartLevel(), $collection)) {
+        $leader = $this->getMarcRecord()->getLeader();
+        $leader07 = $leader{7};
+        $leader19 = $leader{19};
+
+        if ($leader07 == 'm' && $leader19 == 'a') {
             return true;
         }
         return false;
@@ -174,23 +122,16 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
     /**
      * is this item part of a collection?
+     *
      * @return boolean
      */
-    public function isPart()
+    public function isPart() : bool
     {
+        $leader = $this->getMarcRecord()->getLeader();
+        $leader07 = $leader{7};
+        $leader19 = $leader{19};
 
-        $part = [
-            static::MULTIPART_PART,
-            static::BIBLIO_SERIAL,
-            static::BIBLIO_MONO_COMPONENT,
-
-        ];
-        $biblio = $this->getBibliographicLevel();
-        $multi = $this->getMultipartLevel();
-
-
-        if (in_array($biblio, $part) ||
-            in_array($multi, $part)) {
+        if ($leader07 == 'm' && $leader19 == 'c') {
             return true;
         }
         return false;
