@@ -727,8 +727,11 @@ class SolrGviMarc extends SolrMarc implements Definition
             return false;
         }
 
-        if ($this->isArticle() || $this->isEBook() || $this->isSerial() ||
-                $this->getMultipartLevel() === static::MULTIPART_COLLECTION) {
+        if ($this->isArticle() ||
+            $this->isEBook() ||
+            $this->isSerial() ||
+            $this->isCollection()
+        ) {
             return false;
         }
         return true;
