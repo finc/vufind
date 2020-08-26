@@ -27,11 +27,11 @@ use PHPUnit\Framework\TestCase;
 
 class SolrGviMarcTest extends TestCase
 {
-    protected function getDefaultRecord()
+    protected function getSolrRecord($file = 'repetitorium.json')
     {
         $config = $this->getClient();
         $record = new \Bsz\RecordDriver\SolrGviMarc($config);
-        $fixture = $this->loadRecordFixture('repetitorium.json');
+        $fixture = $this->loadRecordFixture($file);
         $record->setRawData($fixture['response']['docs'][0]);
         return $record;
     }
@@ -78,7 +78,7 @@ class SolrGviMarcTest extends TestCase
 
     public function testFormat()
     {
-        $driver = $this->getDefaultRecord();
+        $driver = $this->getSolrRecord();
         $this->assertEquals($driver->getFormats(), ['Book']);
 
         $this->assertFalse($driver->isJournal());
@@ -93,14 +93,14 @@ class SolrGviMarcTest extends TestCase
 
     public function testConsortium()
     {
-        $driver = $this->getDefaultRecord();
+        $driver = $this->getSolrRecord();
         $this->assertIsString($driver->getConsortium());
         $this->assertEquals($driver->getConsortium(), 'GBV, SWB');
     }
 
     public function testField924NumericKeys()
     {
-        $driver = $this->getDefaultRecord();
+        $driver = $this->getSolrRecord();
         $f924 = $driver->getField924();
         $keys = array_keys($f924);
         foreach($keys as $key) {
@@ -110,7 +110,7 @@ class SolrGviMarcTest extends TestCase
 
     public function testField924CheckArrayContent()
     {
-        $driver = $this->getDefaultRecord();
+        $driver = $this->getSolrRecord();
         $f924 = $driver->getField924();
 
         foreach ($f924 as $field) {
@@ -122,7 +122,7 @@ class SolrGviMarcTest extends TestCase
 
     public function testPublicationDetails()
     {
-        $driver = $this->getDefaultRecord();
+        $driver = $this->getSolrRecord();
         $publications = $driver->getPublicationDetails();
 
         foreach ($publications as $publication) {
@@ -134,5 +134,28 @@ class SolrGviMarcTest extends TestCase
             $this->assertTrue((bool)preg_match('/.*: .*, .*/', $string));
         }
     }
+
+    public function testIsCollection()
+    {
+        $driver = $this->getSolrRecord('brockhaus.json');
+        $this->assertTrue($driver->isCollection());
+        $this->assertFalse($driver->isPart());
+    }
+
+    public function testIsPart()
+    {
+        $driver = $this->getSolrRecord('brockhaus_bd1.json');
+        $this->assertTrue($driver->isPart());
+        $this->assertFalse($driver->isCollection());
+    }
+
+    public function testIsMonoSerioal()
+    {
+        $driver = $this->getSolrRecord('brockhaus_bd1.json');
+        $this->assertFalse($driver->isMonographicSerial());
+        $driver = $this->getSolrRecord('brockhaus.json');
+        $this->assertFalse($driver->isMonographicSerial());
+    }
+
 
 }
