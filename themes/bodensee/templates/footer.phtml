@@ -25,7 +25,7 @@
 
 </div>
 <div class="row lastline">
-    <small class="pull-left"><?=$this->transEsc('footer_custom_text')?></small>
+    <small class="pull-left"><? if($this->client()->is('show_bw_logo')):?><img src="<?= $this->imageLink('bw.svg')?>" alt="Baden-Württemberg" style="width: 32px;"/><? endif ?><?=$this->transEsc('footer_custom_text')?></small>
     <small class="pull-right" role="contentinfo"><a href="https://wiki.bsz-bw.de/display/BOSS/Roadmap" class="external"><?=$this->escapeHtml($this->client()->getVersion())?></a> &copy; <?=date('Y')?> <a href="https://www.bsz-bw.de" class="external hasicon">BSZ</a>
         powered by <a href="https://vufind.org" class="external">VuFind</a> 6, Covers &copy; <a href="https://Buchhandel.de" class="external">Buchhandel.de</a></small>
 </div>
