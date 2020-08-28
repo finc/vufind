@@ -23,6 +23,7 @@ if ($this->customUrl) {
     $account = $this->auth()->getManager();
 ?>
 
+<?=var_dump($linklabels)?>
 <strong><?= $this->transEsc('ILL::cond_heading') ?></strong>
 <ul class="help-text">
     <?php if (isset($messages) && count($messages) > 0): ?>
@@ -33,7 +34,7 @@ if ($this->customUrl) {
     <?php if (count($ppns) > 0): ?>
             <? foreach ($ppns as $k => $id): ?>
                 <? if ($linklabels[$k] == 'ILL::library_opac'):?>
-                <li><?=$this->recordLink()->linkPPN($this->driver)?></li>
+                <li><?=$this->transEsc('ILL::library_opac')?>: <?=$this->recordLink()->linkPPN($this->driver)?></li>
                 <? else:?>
                 <li><a class="" href="<?='/Record/' . $id?>"><?php if(isset($linklabels[$k])): ?><?=$this->transEsc($linklabels[$k])?><?php else: ?><?=$id ?><?php endif; ?></a></li>
                 <? endif ?>
