@@ -246,11 +246,14 @@ class Client extends Config
      */
     public function getSigel()
     {
-        //Wenn nicht die Fernleihesicht, dann nehmen wir das Sigel aus der Konfig
+        $sigel = '';
         if (!$this->isIsilSession()) {
             $sigel = $this->get('OpenURL')->get('sigel');
         } elseif ($this->libraries instanceof Libraries) {
-            $sigel = $this->libraries->getFirstActive($this->getIsils())->getSigel();
+            $library = $this->libraries->getFirstActive($this->getIsils());
+            if ($library instanceof Bsz\Config\Library) {
+                $sigel = $library->getSigel();
+            }
         }
         return $sigel;
     }

@@ -54,7 +54,10 @@ class Factory
             if ($client->isIsilSession() && $client->hasIsilSession()) {
                 $isils = $client->getIsils();
                 $library = $libraries->getFirstActive($isils);
-                $website = $library->getHomepage();
+
+                if ($library instanceof Bsz\Config\Library) {
+                    $website = $library->getHomepage();
+                }
             }
         }
         return new ClientAsset($tag, $website, $library);

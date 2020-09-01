@@ -19,7 +19,9 @@
  */
 namespace Bsz\Controller;
 
+use Bsz\Exception;
 use Zend\Session\Container as SessionContainer;
+use Zend\ServiceManager\ServiceManager as ServiceManager;
 
 /**
  * Für statische Seiten etc.
@@ -28,11 +30,18 @@ use Zend\Session\Container as SessionContainer;
  */
 class BszController extends \VuFind\Controller\AbstractBase
 {
+
+    protected $libraries;
+
     /**
      * Write isil into Session
      */
     public function saveIsilAction()
     {
+        if ($this->libraries === null) {
+            $this->libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
+        }
+
         $isilsRoute = explode(',', $this->params()->fromRoute('isil'));
         $isilsGet = (array)$this->params()->fromQuery('isil');
         $isils = array_merge($isilsRoute, $isilsGet);
@@ -40,14 +49,17 @@ class BszController extends \VuFind\Controller\AbstractBase
         if (!is_array($isils)) {
             $isils = (array)$isils;
         }
-        foreach ($isils as $key => $isil) {
-            if (strlen($isil) < 1) {
-                unset($isils[$key]);
-            }
-        }
+
+        // handle errors
         if (count($isils) == 0) {
-            throw new \Bsz\Exception('parameter isil missing');
+            throw new \Bsz\Exception('parameter isil missing', 532);
         }
+
+        $active = $this->libraries->getActive($isils);
+        if (count($active) == 0) {
+            throw new Exception('Your ISILs are not valid or inactive', 533);
+        }
+
         if (count($isils) > 0) {
             $session = new SessionContainer(
                 'fernleihe',
@@ -56,11 +68,12 @@ class BszController extends \VuFind\Controller\AbstractBase
             $session->offsetSet('isil', $isils);
             $uri= $this->getRequest()->getUri();
             $cookie = new \Zend\Http\Header\SetCookie(
-                    'isil',
-                    implode(',', $isils),
-                    time() + 14 * 24 * 60 * 60,
-                    '/',
-                    $uri->getHost());
+                'isil',
+                implode(',', $isils),
+                time() + 14 * 24 * 60 * 60,
+                '/',
+                $uri->getHost()
+            );
             $header = $this->getResponse()->getHeaders();
             $header->addHeader($cookie);
         }
