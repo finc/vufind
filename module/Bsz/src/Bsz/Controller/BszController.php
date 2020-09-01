@@ -43,6 +43,7 @@ class BszController extends \VuFind\Controller\AbstractBase
         foreach ($isils as $key => $isil) {
             if (strlen($isil) < 1) {
                 unset($isils[$key]);
+
             }
         }
         if (count($isils) == 0) {
