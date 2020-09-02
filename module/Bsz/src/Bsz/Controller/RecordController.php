@@ -403,11 +403,14 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
         } elseif (count($isils) > 0) {
             $isil = array_shift($isils);
             $library = $this->serviceLocator->get('Bsz\Config\Libraries')->getByIsil($isil);
-            $view->authMethod = $library->getAuth();
+            if ($library instanceof Bsz\Config\Library) {
+                $view->authMethod = $library->getAuth();
+            }
         }
 
         return $view;
     }
+
 
     /**
      * We override this method to get rid of the driver dependency (for the free form)
