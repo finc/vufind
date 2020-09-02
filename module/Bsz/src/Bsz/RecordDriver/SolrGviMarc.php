@@ -1062,6 +1062,10 @@ class SolrGviMarc extends SolrMarc implements Definition
         $f924 = $this->getField924();
         $isils = $this->mainConfig->getIsilAvailability();
 
+        if (count($isils) == 0) {
+            return [];
+        }
+
         // Building a regex pattern
         foreach ($isils as $k => $isil) {
             $isils[$k] = '^' . preg_quote($isil, '/') . '$';
