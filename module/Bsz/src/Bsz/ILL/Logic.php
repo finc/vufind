@@ -179,6 +179,8 @@ class Logic
                 $this->status[$check] = $status;
             }
         }
+        // Avoid users to access the form if no library selected
+        $this->status[] = count($this->localIsils) > 0;
         return $this->status;
     }
 
