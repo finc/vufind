@@ -39,6 +39,7 @@ class FormatMapper
 
         //this function uses simplifies formats as we can only show one icon
         $formats = static::simplify($formats);
+
         foreach ($formats as $k => $format) {
             $formats[$k] = strtolower($format);
         }
@@ -56,7 +57,7 @@ class FormatMapper
                 $return = 'disc';
             } elseif (in_array('cd', $formats) && in_array('soundrecording', $formats)) {
                 $return = 'music-disc';
-            } elseif (in_array('book', $formats) && in_array('compilation', $formats)) {
+            } elseif (in_array('compilation', $formats)) {
                 $return = 'serial';
             }
             // single formats:
