@@ -178,7 +178,7 @@
             <tr>
                 <th><?=$this->transEsc('Format')?>: </th>
                 <td><? foreach($this->mapper()->simplify($this->driver->getFormats()) as $format): ?>
-                    <span><?=$this->transEsc($format)?></span>
+                    <span class="format"><?=$this->transEsc($format)?></span>
                     <? endforeach; ?></td>
             </tr>
             <? endif; ?>
