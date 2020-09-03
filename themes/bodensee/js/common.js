@@ -411,11 +411,11 @@ function manageActiveTab() {
 
   var id = $('.searchForm .nav-tabs li.active').attr('id');
 
-  if (id === 'solr' || 'solr:filtered2') {
-    $('.record-tabs a.interlibraryloan').parent().hide();
-
+  if (id === 'solr' || id === 'solr:filtered2') {
+    console.info('ILL tab is active');
   } else if (id === 'solr:filtered1') {
-    // wee are in local tab
+    console.info('Local tab is active');
+    $('.record-tabs a.interlibraryloan').parent().hide();
   }
 }
 
