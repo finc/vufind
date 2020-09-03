@@ -2,7 +2,7 @@
   <ul class="nav nav-tabs" role="menu">
     <? foreach ($searchTabs as $tab): ?>
         <? if ($this->permission()->allowDisplay($tab['permission'])): ?>
-          <li<?=$tab['selected'] ? ' class="active"' : ''?> id="<?=$this->transEsc($tab['id'])?>" role="none presentation">
+          <li<?=$tab['selected'] ? ' class="active"' : ''?> id="<?=$this->transEsc(strtolower($tab['id']))?>" role="none presentation">
             <a <?=$tab['selected'] ? '' : 'href="' . $this->escapeHtmlAttr($tab['url']) . '"' ?>>
                 <i class="fa <?=$this->escapeHtmlAttr($tab['icon'])?>"></i>
                 <span class="text"><?=$this->transEsc($tab['label']); ?></span></a>

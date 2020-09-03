@@ -407,6 +407,18 @@ function setupJumpMenus(_container) {
   container.find('select.jumpMenu').change(function jumpMenu(){ $(this).parent().parent('form').submit(); });
 }
 
+function manageActiveTab() {
+
+  var id = $('.searchForm .nav-tabs li.active').attr('id');
+
+  if (id === 'solr' || 'solr:filtered2') {
+    $('.record-tabs a.interlibraryloan').parent().hide();
+
+  } else if (id === 'solr:filtered1') {
+    // wee are in local tab
+  }
+}
+
 $(document).ready(function commonDocReady() {
   // Start up all of our submodules
   VuFind.init();
@@ -416,6 +428,7 @@ $(document).ready(function commonDocReady() {
   setupOffcanvas();
   // Keyboard shortcuts in detail view
   keyboardShortcuts();
+  manageActiveTab();
 
   // support "jump menu" dropdown boxes
   setupJumpMenus();
