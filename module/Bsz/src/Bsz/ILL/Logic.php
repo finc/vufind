@@ -307,8 +307,13 @@ class Logic
         $status = false;
         $network = $this->driver->getNetwork();
 
-        // if we have local holdings, item can't be ordered - except Journals
-        if ($this->driver->hasLocalHoldings() && $this->getFormat() != static::FORMAT_JOURNAL) {
+        // if we have local holdings, item can't be ordered - except
+        // Journals and MonoSerials
+        $formats = [static::FORMAT_JOURNAL, static::FORMAT_MONOSERIAL];
+
+        if ($this->driver->hasLocalHoldings() &&
+            !in_array($this->getFormat(), $formats)
+        ) {
             $this->swbppns[] = $this->driver->getPPN();
             $this->linklabels[] = 'ILL::library_opac';
             $status = true;
