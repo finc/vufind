@@ -26,11 +26,9 @@
 
 namespace Dlr\RecordDriver;
 
-use Bsz\FormatMapper;
 use Bsz\RecordDriver\ContainerTrait;
 use Bsz\RecordDriver\MarcAuthorTrait;
 use Bsz\RecordDriver\SolrMarc;
-use Bsz\RecordDriver\Response\PublicationDetails;
 use VuFind\RecordDriver\IlsAwareTrait;
 
 /**
@@ -43,21 +41,6 @@ class SolrDlrMarc extends SolrMarc
     use IlsAwareTrait;
     use MarcAuthorTrait;
 
-    /**
-     * @param FormatMapper $mapper
-     * @param type $mainConfig
-     * @param type $recordConfig
-     * @param type $searchSettings
-     */
-    public function __construct(
-        FormatMapper $mapper,
-        $mainConfig = null,
-        $recordConfig = null,
-        $searchSettings = null
-    ) {
-        parent::__construct($mapper, $mainConfig, $recordConfig, $searchSettings);
-        $this->mapper = $mapper;
-    }
 
     /**
      * Get all subjects associated with this item. They are unique.

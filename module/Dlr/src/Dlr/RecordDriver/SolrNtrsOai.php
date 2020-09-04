@@ -26,7 +26,6 @@
 
 namespace Dlr\RecordDriver;
 
-use Bsz\FormatMapper;
 use DateTime;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\SolrDefault;
@@ -45,21 +44,6 @@ class SolrNtrsOai extends SolrDefault
      */
     protected $xml;
 
-    /**
-     * @param FormatMapper $mapper
-     * @param type $mainConfig
-     * @param type $recordConfig
-     * @param type $searchSettings
-     */
-    public function __construct(
-        FormatMapper $mapper,
-        $mainConfig = null,
-        $recordConfig = null,
-        $searchSettings = null
-    ) {
-        parent::__construct($mapper, $mainConfig, $recordConfig, $searchSettings);
-        $this->mapper = $mapper;
-    }
 
     /**
      * Attach a Search Results Plugin Manager connection and related logic to

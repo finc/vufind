@@ -54,10 +54,7 @@ class Factory extends SolrDefaultFactory
             throw new Exception('Unexpected options sent to factory.');
         }
 
-        $requestedName = $requestedName;
-
         $driver = new $requestedName(
-            $container->get('Bsz\Mapper'),
             $container->get('Bsz\Config\Client'),
             null,
             $container->get('VuFind\Config')->get('searches')
