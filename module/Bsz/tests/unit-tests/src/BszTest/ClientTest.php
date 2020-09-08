@@ -34,6 +34,7 @@ class ClientTest extends TestCase
                 'isil' => 'DE-666,DE-667',
                 'website' => 'https://www.example.com',
                 'website_google' => 'https://www.google.com',
+                'website_lang' => 'https://foo.bar/%lang%',
                 'url' => 'foo.bar.com'
             ],
             'System' => [],
@@ -74,6 +75,7 @@ class ClientTest extends TestCase
         $client = $this->getClient($config);
         $this->assertEquals($client->getWebsite(), 'https://www.example.com');
         $this->assertEquals($client->getWebsite('google'), 'https://www.google.com');
+        $this->assertEquals($client->getWebsite('lang', 'en'), 'https://foo.bar/en');
     }
 
     public function testTagParsing()

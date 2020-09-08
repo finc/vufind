@@ -9,7 +9,7 @@
                 </button>
             <? endif; ?>
             <? if ($this->client()->is('show_small_logo')): ?>
-            <a class="navbar-brand external hasicon" href="<?=$this->client()->getWebsite()?>">
+            <a class="navbar-brand external hasicon" href="<?=$this->client()->getWebsite('', $this->layout()->userLang)?>">
                 <img class="img-responsive" src="<?=$this->imageLink($this->clientAsset()->getSmallLogo()) ?>"/>
             </a>
             <? endif ?>
