@@ -181,15 +181,16 @@ function copyLend() {
         } else if ($.inArray(format, ['journal', 'article-book', 'article']) > -1){
             $('#ill-copy').prop('checked', true);
         }
+
     }
 }
 
 $(document).ready(function() {
 
-    changeRequiredCopy($("input[name='Bestellform']:checked"));
     appendValidator();
     datepicker();
     copyLend();
     illFormLogic();
+    changeRequiredCopy($("input[name='Bestellform']:checked"));
 
 });
