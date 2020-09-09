@@ -142,13 +142,14 @@ class Client extends Config
 
     /**
      * Gibt die Webseite der Institution aus.
+     *
      * @param string $mode contactm, imprint, default home page
+     * @param null $lang
+     *
      * @return string
      */
-    public function getWebsite($mode = '')
+    public function getWebsite($mode = '', $lang = null)
     {
-        $website = '';
-        $return = '';
         if (strlen($mode) == 0) {
             $mode = 'website';
         } else {
@@ -156,6 +157,10 @@ class Client extends Config
         }
 
         $website = $this->get('Site')->get($mode);
+
+        if (isset($lang) && strpos($website, '%lang%') !== false) {
+            $website = str_replace('%lang%', $lang, $website);
+        }
 
         return $website;
     }
