@@ -24,22 +24,22 @@ $fulltext_key = $this->driver->isFree() ? 'Volltext_frei' : 'Volltext';
         <? foreach ($content as $result): ?>
             <tr>
                 <td class="hidden-xs">
-                    <? if (isset($result['b']) && trim($result['b']) != ''): ?>
-                        <? if ($result['b'] !== 'LFER'): ?>
+                    <? if (isset($result['isil']) && trim($result['isil']) != ''): ?>
+                        <? if ($result['isil'] !== 'LFER'): ?>
                             <span class="text-nowrap">
                             <? if (isset($result['homepage'])): ?>
                                 <a data-toggle="tooltip" title="<?= $this->transEsc('ILL::library_homepage') ?>"
                                    href="<?= $result['homepage'] ?>"
-                                   class="external hasicon"><i class="fa fa-globe"></i><?= $this->escapeHtml($result['b']) ?></a>
+                                   class="external hasicon"><i class="fa fa-globe"></i><?= $this->escapeHtml($result['isil']) ?></a>
                             <? else: ?>
-                                <?=$this->escapeHtml($result['b'])?>
+                                <?=$this->escapeHtml($result['isil'])?>
                             <? endif; ?>
                         </span>
                         <? else: ?>
-                            <?=$this->abbrev($result['b'], 'LFER_long')?>
+                            <?=$this->abbrev($result['isil'], 'LFER_long')?>
                         <? endif; ?>
                     <? else: ?>
-                        <?= isset($result['b']) ? $this->escapeHtml($result['b']) : '' ?>
+                        <?= isset($result['isil']) ? $this->escapeHtml($result['isil']) : '' ?>
                     <? endif; ?>
                 </td>
 
@@ -77,7 +77,7 @@ $fulltext_key = $this->driver->isFree() ? 'Volltext_frei' : 'Volltext';
                 <? endif; ?>
 
                 <? if ($this->driver->isJournal()): ?>
-                    <td><?= isset($result['z']) ? $this->escapeHtml($result['z']) : '' ?></td>
+                    <td><?= isset($result['issue']) ? $this->escapeHtml($result['issue']) : '' ?></td>
                 <? endif; ?>
             </tr>
         <? endforeach; ?>
