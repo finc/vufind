@@ -426,7 +426,13 @@ class SolrMarc extends SolrDefault
     {
         $matches = [];
 
-        // First check the 440, 800 and 830 fields for series information:
+        //  First try Solr-based method
+        $series = parent::getSeries();
+        if (!empty($series)) {
+            return $series;
+        }
+
+        // If nothing found in Solr, check the 440, 800 and 830 fields for series information:
         $primaryFields = [
             '440' => ['a', 'p'],
             '800' => ['a', 'b', 'c', 'd', 'f', 'p', 'q', 't'],
@@ -439,12 +445,7 @@ class SolrMarc extends SolrDefault
         // Now check 490 and display it only if 440/800/830 were empty:
         $secondaryFields = ['490' => ['a']];
         $matches = $this->getSeriesFromMARC($secondaryFields);
-        if (!empty($matches)) {
-            return $matches;
-        }
-
-        // Still no results found?  Resort to the Solr-based method just in case!
-        return parent::getSeries();
+        return $matches;
     }
 
     /**
