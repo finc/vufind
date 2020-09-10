@@ -380,7 +380,7 @@ trait SolrDefaultFincTrait
     /*    protected function getFormatIcon()
         {
             global $configArray;
-    
+
             $format = $this->getFormats();
             // check which method to build the css class is chosen
             if (isset($this->mainConfig->Site->combinedIcons) && true == $this->mainConfig->Site->combinedIcons) {
@@ -624,11 +624,11 @@ trait SolrDefaultFincTrait
         // use self:: referenced methods to make sure we are not using SolrMarc
         // methods
         $authors = [
-            'main' => self::getAuthorRolesArray(
+            'primary' => self::getAuthorRolesArray(
                 self::getPrimaryAuthors(),
                 self::getPrimaryAuthorsRoles()
             ),
-            'main_orig' => self::getAuthorOrigArray(
+            'primary_orig' => self::getAuthorOrigArray(
                 self::getPrimaryAuthors(),
                 self::getPrimaryAuthorsOrig()
             ),
@@ -685,15 +685,15 @@ trait SolrDefaultFincTrait
         };
 
         $dedup($authors['corporate'], $authors['corporate_secondary']);
-        $dedup($authors['main'], $authors['corporate']);
+        $dedup($authors['primary'], $authors['corporate']);
         $dedup($authors['secondary'], $authors['corporate']);
-        $dedup($authors['main'], $authors['secondary']);
+        $dedup($authors['primary'], $authors['secondary']);
 
         // do the same dedup for author arrays with orig names
         $dedup($authors['corporate_orig'], $authors['corporate_secondary_orig']);
-        $dedup($authors['main_orig'], $authors['corporate_orig']);
+        $dedup($authors['primary_orig'], $authors['corporate_orig']);
         $dedup($authors['secondary_orig'], $authors['corporate_orig']);
-        $dedup($authors['main_orig'], $authors['secondary_orig']);
+        $dedup($authors['primary_orig'], $authors['secondary_orig']);
 
         $dedup_roles = function (&$array) {
             foreach ($array as $author => $roles) {
@@ -703,14 +703,14 @@ trait SolrDefaultFincTrait
             }
         };
 
-        $dedup_roles($authors['main']);
+        $dedup_roles($authors['primary']);
         $dedup_roles($authors['secondary']);
         $dedup_roles($authors['corporate']);
         $dedup_roles($authors['corporate_secondary']);
 
         // we can use $dedup_roles to dedup the orig names as both arrays have the
         // same structure
-        $dedup_roles($authors['main_orig']);
+        $dedup_roles($authors['primary_orig']);
         $dedup_roles($authors['secondary_orig']);
         $dedup_roles($authors['corporate_orig']);
         $dedup_roles($authors['corporate_secondary_orig']);
