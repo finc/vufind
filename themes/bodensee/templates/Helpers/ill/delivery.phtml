@@ -3,9 +3,6 @@
  $inputSize = 6;
 $form = '';
 ?>
-<?php $this->libraries = $this->libraries()->getActive($this->client()->getIsils()) ?>
-<?php $this->firstLibrary = $this->libraries()->getFirstActive($this->client()->getIsils())?>
-
 <div class="form-group form-group-sm">
     <label class="control-label col-sm-<?=$labelSize?>"><?=$this->transEsc('Library')?>*</label>
     <div class="col-sm-<?=$inputSize ?>">
@@ -85,27 +82,6 @@ $form = '';
     <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_language"><?=$this->transEsc('other_language')?></label>
     <div class="col-sm-<?=$inputSize?> col-xs-1">
         <input type="checkbox" class="" id="ill-other_language" name="AndereSprache" <? if (isset($params['AndereSprache'])):?>checked=""<? endif; ?>/>
-    </div>
-</div>
-<div class="form-group form-group-sm">
-    <? if (isset($params['Bestellform'])):
-        $form = $params['Bestellform'];
-    endif; ?>
-    <label class="control-label col-sm-<?=$labelSize?>" for="ill-other_edition"><?=$this->transEsc('paperdata')?>? *</label>
-    <div class="col-sm-3 col-xs-2">
-        <? if ($this->firstLibrary->allowsLend()): ?>
-            <input type="radio" id="ill-lend" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> required />
-            <span for="ill-copy"><?=$this->transEsc('lend')?></span>
-        <? endif; ?>
-    </div>
-    <div class="col-sm-3 col-xs-2">
-        <? if ($this->firstLibrary->allowsCopy()): ?>
-            <input type="radio" id="ill-copy" name="Bestellform" data-bestellform="" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?> required />
-            <span for="ill-copy"><?=$this->transEsc('paperdata')?></span>
-        <? endif; ?>
-    </div>
-    <div class="col-sm-6 col-sm-offset-6 col-xs-8 col-xs-offset-4">
-        <span class="help-block"><?=$this->transEsc('ILL::help_copie_rent')?></span>
     </div>
 </div>
 <div class=" form-group form-group-sm">
