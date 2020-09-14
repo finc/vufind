@@ -413,7 +413,7 @@ function manageActiveTab() {
 
   if (id === 'solr' || id === 'solr:filtered2') {
     console.info('ILL tab is active');
-  } else if (id === 'solr:filtered1') {
+  } else if (id === 'solr:filtered1' || id === 'solr:unfiltered' ) {
     console.info('Local tab is active');
     $('.record-tabs a.interlibraryloan').parent().hide();
   }
