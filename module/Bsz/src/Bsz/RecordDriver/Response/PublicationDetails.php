@@ -114,7 +114,7 @@ class PublicationDetails
             $this->getName().
             $this->getName() && $this->getPlace() ? ' : ' : '',
             $this->getPlace(),
-            $this->getPlace() && $this->getDate() ? ', ' : '',
+            ($this->getPlace() || $this->getName()) && $this->getDate() ? ', ' : '',
             $this->getDate()
         ];
         return implode('', $retval);
@@ -126,12 +126,15 @@ class PublicationDetails
      *
      * @return string
      */
-    private static function replaceDelimiters(string $input, string $chars = '') : string
+    private static function replaceDelimiters($input, string $chars = '') : string
     {
-        $retval = preg_replace('/[\[\]]/m', '', $input);
-        $pattern = "/\s?[:,".$chars."]\s?$/";
-        $retval = preg_replace($pattern, '', $retval);
-        // remove braces
+        $retval = '';
+        if (is_string($input)) {
+            $retval = preg_replace('/[\[\]]/m', '', $input);
+            $pattern = "/\s?[:,".$chars."]\s?$/";
+            $retval = preg_replace($pattern, '', $retval);
+            // remove braces
+        }
         return $retval;
 
     }
