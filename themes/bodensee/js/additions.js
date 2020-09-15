@@ -440,7 +440,7 @@ function copyToClipboard() {
 */
 
 $(document).ready(function() {
-    manageActiveTabs();
+    manageActiveTab();
     avoidEmptySearch();
     externalLinks();
     bootstrapTooltip();
