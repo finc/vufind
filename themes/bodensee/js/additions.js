@@ -296,6 +296,18 @@ function datepicker() {
 
 }
 
+function manageActiveTab() {
+
+    var id = $('.searchForm .nav-tabs li.active').attr('id');
+
+    if (id === 'solr' || id === 'solr:filtered2') {
+        console.info('ILL tab is active');
+    } else if (id === 'solr:filtered1' || id === 'solr:unfiltered' ) {
+        console.info('Local tab is active');
+        $('.record-tabs a.interlibraryloan').parent().hide();
+    }
+}
+
 /**
  * Typeahead selection of libraries in home page of ill portal.
  *
@@ -428,7 +440,7 @@ function copyToClipboard() {
 */
 
 $(document).ready(function() {
-
+    manageActiveTabs();
     avoidEmptySearch();
     externalLinks();
     bootstrapTooltip();
