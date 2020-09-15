@@ -36,6 +36,20 @@ class SolrGviMarcTest extends TestCase
         return $record;
     }
 
+    protected function getSolrRecords($file = '56records.json')
+    {
+        $config = $this->getClient();
+        $fixture = $this->loadRecordFixture($file);
+        $records = [];
+
+        foreach ($fixture['response']['docs'] as $tmp) {
+            $record = new \Bsz\RecordDriver\SolrGviMarc($config);
+            $record->setRawData($tmp);
+            $records[] = $record;
+        }
+        return $records;
+    }
+
     protected function getClient()
     {
        $config = [
@@ -93,9 +107,10 @@ class SolrGviMarcTest extends TestCase
 
     public function testConsortium()
     {
-        $driver = $this->getSolrRecord();
-        $this->assertIsString($driver->getConsortium());
-        $this->assertEquals($driver->getConsortium(), 'GBV, SWB');
+        foreach ($this->getSolrRecords() as $driver) {
+            $this->assertIsString($driver->getConsortium());
+            $this->assertIsString($driver->getConsortium());
+        }
     }
 
     public function testField924NumericKeys()
@@ -122,16 +137,17 @@ class SolrGviMarcTest extends TestCase
 
     public function testPublicationDetails()
     {
-        $driver = $this->getSolrRecord();
-        $publications = $driver->getPublicationDetails();
+        foreach ($this->getSolrRecords() as $driver) {
 
-        foreach ($publications as $publication) {
-            $place = $publication->getPlace();
-            $year = $publication->getDate();
-            $string = (string)$publication;
-            $this->assertFalse(strpos($place, '['));
-            $this->assertTrue((bool)preg_match('/\d\d\d\d/', $year));
-            $this->assertTrue((bool)preg_match('/.*: .*, .*/', $string));
+            $publications = $driver->getPublicationDetails();
+
+            foreach ($publications as $publication) {
+                $place = $publication->getPlace();
+                $year = $publication->getDate();
+                $string = (string)$publication;
+                $this->assertFalse(strpos($place, '['));
+                $this->assertTrue((bool)preg_match('/\d\d\d\d/', $year));
+            }
         }
     }
 
