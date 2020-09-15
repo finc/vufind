@@ -785,7 +785,7 @@ class SolrAI extends SolrDefault implements
      */
     public function isArticle()
     {
-        if ($this->aiRecord['rft.genre'] === "article") {
+        if (isset($this->aiRecord['rft.genre']) && $this->aiRecord['rft.genre'] === "article") {
             return true;
         } else {
             return false;
