@@ -9,7 +9,9 @@
                 </button>
             <? endif; ?>
             <? if ($this->client()->is('show_small_logo')): ?>
-            <a class="navbar-brand external hasicon" href="<?=$this->client()->getWebsite()?>">
+            <? $lang = $this->layout()->userLang?>
+            <? if ($this->client()->getTag() == 'athen' && $lang == 'en'): $lang= 'de'; endif; ?>
+            <a class="navbar-brand external hasicon" href="<?=$this->client()->getWebsite('', $lang)?>">
                 <img class="img-responsive" src="<?=$this->imageLink($this->clientAsset()->getSmallLogo()) ?>"/>
             </a>
             <? endif ?>
