@@ -1,6 +1,6 @@
 // Switch on/off highlighting visibility using
-// background color in alpha channel 
-// rgba(255,255,0,0) = off, 
+// background color in alpha channel
+// rgba(255,255,0,0) = off,
 // rgba(255,255,0,1) = maximum saturation
 
 
@@ -13,4 +13,19 @@ body:not(.frame) {
 .specialhome {
     margin-top: -20px;
     font-size: 16px;
+}
+
+.searchForm {
+    .btn-info {
+        &:extend(.btn-primary);
+        &:hover {
+            &:extend(.btn-primary:hover);
+        }
+    }
+    .btn-primary {
+        &:extend(.btn-default);
+        &:hover {
+            &:extend(.btn-default:hover);
+        }
+    }
 }
