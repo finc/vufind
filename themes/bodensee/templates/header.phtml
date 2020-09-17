@@ -1,4 +1,12 @@
 <div class="navbar navbar-default navbar-fixed-top">
+    <? if ($this->client()->is('two_row_header')): ?>
+        <div class="container white-bg">
+            <div class="navbar-brand logo-top">
+                <h3>Katalog<sup>+</sup></h3>
+            </div>
+        </div>
+    <? endif; ?>
+
     <div class="container">
         <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
         <div class="navbar-header">

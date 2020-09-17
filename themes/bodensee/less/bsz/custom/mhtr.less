@@ -1,6 +1,6 @@
 // Switch on/off highlighting visibility using
-// background color in alpha channel 
-// rgba(255,255,0,0) = off, 
+// background color in alpha channel
+// rgba(255,255,0,0) = off,
 // rgba(255,255,0,1) = maximum saturation
 
 
@@ -13,4 +13,15 @@ body:not(.frame) {
 .specialhome {
     margin-top: -20px;
     font-size: 16px;
+}
+
+.navbar-brand.logo-top {
+    height: 50px !important;
+    h3, h2 {
+        margin-top: 0;
+        margin-bottom:0;
+    }
+    &:hover {
+        background-color: @brand-primary !important;
+    }
 }
