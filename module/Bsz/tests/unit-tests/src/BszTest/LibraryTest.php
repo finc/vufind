@@ -20,46 +20,38 @@
  */
 namespace BszTest;
 
-use Bsz\Config\Libraries;
+use Bsz\Config\Library;
 use PHPUnit\Framework\TestCase;
-use VuFind\UrlShortener\Database;
 
 class LibraryTest extends TestCase
 {
-    /**
-     * Get the object to test.
-     *
-     * @param  object $table Database table object/mock
-     *
-     * @return Database
-     */
-    public function getDatabase($table)
+    private function getLibrary()
     {
-        return new Libraries($table);
+        $library = new Library();
+        $data = $this->getDefaultData();
+        $library->exchangeArray($data);
+        return $library;
     }
 
-    /**
-     * Get the mock table object.
-     *
-     * @param  array $methods Methods to mock.
-     *
-     * @return object
-     */
-    public function getMockTable($methods)
+    private function getDefaultData()
     {
-        return $this->getMockBuilder(Libraries::class)
-            ->disableOriginalConstructor()
-            ->setMethods($methods)
-            ->getMock();
+        return [
+            'isil' => 'DE-16',
+            'name' => 'Testbibliothek',
+            'sigel' => 16,
+            'is_live' => false,
+            'is_boss' => true,
+            'homepage' => 'http://foo.bar.com',
+            'email' => '',
+            'isil_availability' => 'DE-16-1'
+        ];
     }
 
-    public function testAllowsLend()
+    public function testBasicLibrary()
     {
-        $this->assertEquals(true, true);
-    }
-
-    public function testAllowsCopy()
-    {
-        $this->assertEquals(true, true);
+        $library = $this->getLibrary();
+        $this->assertEquals($library->getIsil(), 'DE-16');
+        $this->assertFileExists('themes/bodensee/images/'.$library->getLogo());
+        $this->assertIsArray($library->getIsilAvailability());
     }
 }
