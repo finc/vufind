@@ -15,7 +15,7 @@
 <?=$this->transEsc('Kind regards')?>
 
 <?php if ($this->client()->getTag == 'swb' || $this->client()->getTag() == 'k10plus' || $this->client()->getTag() == 'k10plusdiscovery'): ?>
-<?=$this->transEsc('SWB')?>
+<?=$this->transEsc('BSZ')?>
 <?php else: ?>
 <?=$this->client()->get('Site')->get('title')?>
 <?php endif; ?>
