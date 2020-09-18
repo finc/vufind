@@ -18,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 namespace BszTest\RecordDriver;
 
 use Bsz\Config\Client;
@@ -30,7 +29,7 @@ class SolrGviMarcTest extends TestCase
     protected function getSolrRecord($file = 'repetitorium.json')
     {
         $config = $this->getClient();
-        $record = new \Bsz\RecordDriver\SolrGviMarc($config);
+        $record = new SolrGviMarc($config);
         $fixture = $this->loadRecordFixture($file);
         $record->setRawData($fixture['response']['docs'][0]);
         return $record;
@@ -43,7 +42,7 @@ class SolrGviMarcTest extends TestCase
         $records = [];
 
         foreach ($fixture['response']['docs'] as $tmp) {
-            $record = new \Bsz\RecordDriver\SolrGviMarc($config);
+            $record = new SolrGviMarc($config);
             $record->setRawData($tmp);
             $records[] = $record;
         }
@@ -52,7 +51,7 @@ class SolrGviMarcTest extends TestCase
 
     protected function getClient()
     {
-       $config = [
+        $config = [
             'Site' => [
                 'isil' => 'DE-666,DE-667',
                 'website' => 'https://www.example.com',
@@ -67,7 +66,7 @@ class SolrGviMarcTest extends TestCase
             ],
             'FooterLinks' => []
        ];
-       return $client = new Client($config);
+        return $client = new Client($config);
     }
 
     /**
@@ -88,7 +87,6 @@ class SolrGviMarcTest extends TestCase
             true
         );
     }
-
 
     public function testFormat()
     {
@@ -118,7 +116,7 @@ class SolrGviMarcTest extends TestCase
         $driver = $this->getSolrRecord();
         $f924 = $driver->getField924();
         $keys = array_keys($f924);
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $this->assertTrue(is_numeric($key));
         }
     }
@@ -132,13 +130,11 @@ class SolrGviMarcTest extends TestCase
             $this->assertTrue(array_key_exists('isil', $field));
             $this->assertTrue(strlen($field['ill_indicator']) == 1);
         }
-
     }
 
     public function testPublicationDetails()
     {
         foreach ($this->getSolrRecords() as $driver) {
-
             $publications = $driver->getPublicationDetails();
 
             foreach ($publications as $publication) {
@@ -172,6 +168,4 @@ class SolrGviMarcTest extends TestCase
         $this->assertFalse($driver->isCollection());
         $this->assertFalse($driver->isPart());
     }
-
-
 }

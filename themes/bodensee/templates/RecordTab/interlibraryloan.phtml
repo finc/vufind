@@ -1,4 +1,24 @@
 <?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 $this->headTitle($this->translate('Interlibrary Loan') . ': ' . $this->driver->getBreadcrumb());
 $content = $this->tab->getContent();
 $messages = $content['messages'];
@@ -18,7 +38,7 @@ if ($this->customUrl) {
 }
 ?>
 
-<?
+<?php
     $authMethod = $library ? $library->getAuth() : '';
     $account = $this->auth()->getManager();
 ?>
@@ -31,18 +51,21 @@ if ($this->customUrl) {
         <?php endforeach; ?>
     <?php endif; ?>
     <?php if (count($ppns) > 0): ?>
-            <? foreach ($ppns as $k => $id): ?>
-                <? if ($linklabels[$k] == 'ILL::library_opac'):?>
-                <li><?=$this->transEsc('ILL::library_opac')?>: <?=$this->recordLink()->linkPPN($this->driver)?></li>
-                <? else:?>
-                <li><a class="" href="<?='/Record/' . $id?>"><?php if(isset($linklabels[$k])): ?><?=$this->transEsc($linklabels[$k])?><?php else: ?><?=$id ?><?php endif; ?></a></li>
-                <? endif ?>
-            <? endforeach; ?>
+        <?php foreach ($ppns as $k => $id): ?>
+            <?php if ($linklabels[$k] == 'ILL::library_opac'): ?>
+                <li><?= $this->transEsc('ILL::library_opac') ?>
+                    : <?= $this->recordLink()->linkPPN($this->driver) ?></li>
+            <?php else: ?>
+                <li><a class=""
+                       href="<?= '/Record/' . $id ?>"><?php if (isset($linklabels[$k])): ?><?= $this->transEsc($linklabels[$k]) ?><?php else: ?><?= $id ?><?php endif; ?></a>
+                </li>
+            <?php endif ?>
+        <?php endforeach; ?>
     <?php else: ?>
-        <? $link = $this->recordLink()->linkPPN($this->driver) ?>
-        <? if (!empty($link)): ?>
-            <li><?=$this->transEsc('ILL::to_network_opac')?>: <?=$link ?></li>
-        <? endif; ?>
+        <?php $link = $this->recordLink()->linkPPN($this->driver) ?>
+        <?php if (!empty($link)): ?>
+            <li><?= $this->transEsc('ILL::to_network_opac') ?>: <?= $link ?></li>
+        <?php endif; ?>
     <?php endif; ?>
 
 </ul>
@@ -51,8 +74,9 @@ if ($this->customUrl) {
         <?=$this->transEsc('You must be logged in first')?>
     </div>
 <?php elseif ($status): ?>
-    <a title="<?= $this->transEsc('Interlibrary Loan') ?>" accesskey="" href="<?= $url ?>"
+    <a title="<?= $this->transEsc('Interlibrary Loan') ?>" accesskey=""
+       href="<?= $url ?>"
        id="illform"
-       class="<?= $this->escapeHtmlAttr($class) ?> btn btn-success btn-sm <? if ($this->customUrl): ?>external hasicon<? endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
+       class="<?= $this->escapeHtmlAttr($class) ?> btn btn-success btn-sm <?php if ($this->customUrl): ?>external hasicon<?php endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
 <?php endif; ?>
 

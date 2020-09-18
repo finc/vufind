@@ -1,4 +1,4 @@
-<?
+<?php
   // Set up page title:
   $lookfor = $this->results->getUrlQuery()->isQuerySuppressed() ? '' : $this->params->getDisplayQuery();
   if (isset($this->overrideTitle)) {
@@ -29,10 +29,9 @@
 
   // Set up breadcrumbs:
   if (isset($this->overrideTitle)) {
-    $this->layout()->breadcrumbs .= '<li class="active">' . $this->escapeHtml($this->overrideTitle) . '</li>';
+      $this->layout()->breadcrumbs .= '<li class="active">' . $this->escapeHtml($this->overrideTitle) . '</li>';
   } else {
-    $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('Search') . '</li>' . '<li class="adv_lookfor hidden">' . $this->escapeHtml($lookfor) . '</li>';
-    
+      $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('Search') . '</li>' . '<li class="adv_lookfor hidden">' . $this->escapeHtml($lookfor) . '</li>';
   }
 
   // Enable cart if appropriate:
@@ -45,8 +44,8 @@
 
   // Load Javascript only if list view parameter is NOT full:
   if ($this->params->getOptions()->getListViewOption() != "full") {
-    $this->headScript()->appendFile("record.js");
-    $this->headScript()->appendFile("embedded_record.js");
+      $this->headScript()->appendFile("record.js");
+      $this->headScript()->appendFile("embedded_record.js");
   }
 
   // Load Javascript dependencies into header:
@@ -56,60 +55,60 @@
 ?>
   
 <div class="<?=$this->layoutClass('mainbody')?> results-container">
-    <? if (($recordTotal = $this->results->getResultTotal()) > 0): // only display these at very top if we have results ?>
-      <? foreach ($this->results->getRecommendations('top') as $current): ?>
+    <?php if (($recordTotal = $this->results->getResultTotal()) > 0): // only display these at very top if we have results?>
+      <?php foreach ($this->results->getRecommendations('top') as $current): ?>
         <?=$this->recommend($current)?>
-      <? endforeach; ?>
-    <? endif; ?>
+      <?php endforeach; ?>
+    <?php endif; ?>
     <?=$this->flashmessages()?>
     <nav class="search-header hidden-print row">      
         <div class="search-stats col-sm-6">
-            <? if ($recordTotal > 0): ?>
+            <?php if ($recordTotal > 0): ?>
             <?=$this->context()->renderInContext('search/controls/showing.phtml', ['lookfor' => $lookfor, 'recordTotal' => $recordTotal]) ?>
-            <? else: ?>
+            <?php else: ?>
             <h2><?=$this->transEsc('nohit_heading')?></h2>
-            <? endif; ?>
+            <?php endif; ?>
         </div>
 
-        <? if ($recordTotal > 0): ?>
+        <?php if ($recordTotal > 0): ?>
         <div class="search-controls col-sm-6">
             <?=$this->render('search/controls/limit.phtml')?>
-            <? if ($this->searchTabs()->isILL($this->searchClassId) && !$this->searchTabs()->isZDB($this->searchClassId)): ?>           
+            <?php if ($this->searchTabs()->isILL($this->searchClassId) && !$this->searchTabs()->isZDB($this->searchClassId)): ?>           
                 <?= $this->render('search/controls/dedup.phtml'); ?>
-            <? endif; ?>
+            <?php endif; ?>
             <?=$this->render('search/controls/sort.phtml')?>
             <?=$this->render('search/controls/view.phtml')?>
         </div>
-        <? endif; ?>
+        <?php endif; ?>
   </nav>
-    <? /* End Listing Options */ ?>
+    <?php /* End Listing Options */ ?>
 
-    <? if ($recordTotal < 1): ?>
+    <?php if ($recordTotal < 1): ?>
       <p>
-        <? if (isset($this->overrideEmptyMessage)): ?>
+        <?php if (isset($this->overrideEmptyMessage)): ?>
           <?=$this->overrideEmptyMessage?>
-        <? else: ?>
-        <? $this->layout()->srmessage = $this->translate('nohit_lookfor_html', ['%%lookfor%%' => $this->escapeHtml($lookfor)]); ?>
+        <?php else: ?>
+        <?php $this->layout()->srmessage = $this->translate('nohit_lookfor_html', ['%%lookfor%%' => $this->escapeHtml($lookfor)]); ?>
         <?=$this->layout()->srmessage ?>
-        <? endif; ?>
+        <?php endif; ?>
       </p>
-      <? if (isset($this->parseError)): ?>
+      <?php if (isset($this->parseError)): ?>
         <p class="alert alert-danger"><?=$this->transEsc('nohit_parse_error')?></p>
-      <? endif; ?>
-    <? foreach (($top = $this->results->getRecommendations('top')) as $current): ?>
+      <?php endif; ?>
+    <?php foreach (($top = $this->results->getRecommendations('top')) as $current): ?>
         <?=$this->recommend($current)?>
-      <? endforeach; ?>
-      <? foreach ($this->results->getRecommendations('noresults') as $current): ?>
-        <? if (!in_array($current, $top)): ?>
+      <?php endforeach; ?>
+      <?php foreach ($this->results->getRecommendations('noresults') as $current): ?>
+        <?php if (!in_array($current, $top)): ?>
             <?=$this->recommend($current)?>
-        <? endif; ?>
-      <? endforeach; ?>
-    <? else: ?>
+        <?php endif; ?>
+      <?php endforeach; ?>
+    <?php else: ?>
     <form id="search-cart-form" method="post" action="<?=$this->url('cart-searchresultsbulk')?>" data-lightbox data-lightbox-onsubmit="bulkFormHandler">
       <?=$this->context($this)->renderInContext('search/bulk-action-buttons.phtml', ['idPrefix' => ''])?>    
         <?=$this->render('search/list-' . $this->params->getView() . '.phtml')?>
-        <?=$this->context($this)->renderInContext('search/bulk-action-buttons.phtml', array('idPrefix' => 'bottom_'))?>
-        <?=$this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results))?>
+        <?=$this->context($this)->renderInContext('search/bulk-action-buttons.phtml', ['idPrefix' => 'bottom_'])?>
+        <?=$this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', ['results' => $this->results])?>
      </form>
 
       <div class="searchtools hidden-print finger-friendly-icons">
@@ -118,29 +117,29 @@
         <!--&mdash;-->
         <a href="<?=$this->url('search-email')?>" class="mailSearch modal-link" id="mailSearch<?=$this->escapeHtmlAttr($this->results->getSearchId())?>" title="<?=$this->transEsc('Email this Search')?>"><i class="fa fa-envelope"></i><span class="text"><?=$this->transEsc('Email this Search')?></span></a>
 <!--        &mdash;-->
-        <? if (false && is_numeric($this->results->getSearchId())): ?>
-          <? if ($this->results->isSavedSearch()): ?>
+        <?php if (false && is_numeric($this->results->getSearchId())): ?>
+          <?php if ($this->results->isSavedSearch()): ?>
         <a href="<?=$this->url('myresearch-savesearch')?>?delete=<?=urlencode($this->results->getSearchId())?>"><i class="fa fa-minus-square"></i><span class="text"><?=$this->transEsc('save_search_remove')?></span></a>
-          <? else: ?>
+          <?php else: ?>
         <a href="<?=$this->url('myresearch-savesearch')?>?save=<?=urlencode($this->results->getSearchId())?>"><i class="fa fa-plus-square"></i><span class="text"><?=$this->transEsc('save_search')?></span></a>
-          <? endif; ?>
-        <? endif; ?>
-        <? $library = $this->libraries()->getFirstActive($this->client()->getIsils()); ?>
-        <? if ($this->client()->isIsilSession() && is_object($library)): 
-            $url =  $library->hasCustomUrl() ? $library->getCustomUrl() 
+          <?php endif; ?>
+        <?php endif; ?>
+        <?php $library = $this->libraries()->getFirstActive($this->client()->getIsils()); ?>
+        <?php if ($this->client()->isIsilSession() && is_object($library)):
+            $url = $library->hasCustomUrl() ? $library->getCustomUrl()
                : $this->url('record-freeform');
          ?>
-        <? endif; ?>
-        <? if ($this->searchTabs()->isILL($this->searchClassId) && $library !== null): ?>
-            <? $url =  $library->hasCustomUrl() ? $library->getCustomUrl() : $this->url('record-freeform'); ?>
+        <?php endif; ?>
+        <?php if ($this->searchTabs()->isILL($this->searchClassId) && $library !== null): ?>
+            <?php $url = $library->hasCustomUrl() ? $library->getCustomUrl() : $this->url('record-freeform'); ?>
             <a data-toggle="tooltip" title="<?=$this->transEsc('ILL::free_form_tooltip')?>" class="<?=$library->hasCustomUrl()? 'external' : 'internal' ?> hasicon" href="<?=$url?>"><i class="fa fa-file-o"></i><span class="text"><?=$this->transEsc('ILL::request_free_form')?></span></a>            
-        <? endif; ?>
+        <?php endif; ?>
 
       </div>
-    <? endif; ?>
+    <?php endif; ?>
 </div>
 <div class="<?=$this->layoutClass('sidebar')?>">
-  <? foreach ($this->results->getRecommendations('side') as $current): ?>
+  <?php foreach ($this->results->getRecommendations('side') as $current): ?>
     <?=$this->recommend($current)?>
-  <? endforeach; ?>
+  <?php endforeach; ?>
 </div>

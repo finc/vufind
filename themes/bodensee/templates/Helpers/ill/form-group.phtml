@@ -1,26 +1,27 @@
-<? $labelSize = 3; ?>
-<? $inputSize = 9; ?>
-<? $id = rand(0, 10000)?>
+<?php $labelSize = 3; ?>
+<?php $inputSize = 9; ?>
+<?php $id = rand(0, 10000) ?>
 
-<div class="form-group form-group-sm <? if ($required):?>show required<? endif; ?>">
-    <label class="control-label col-sm-<?=$labelSize?>" for="ill-<?=$id?>"><?=$this->transEsc($label)?></label>
-    <div class="col-sm-<?=$inputSize?>"> 
-      <? $title = is_array($value) ? implode(',',$value) : $value?>
-      <input type="text" class="form-control" 
-             id="ill-<?=$this->escapeHtmlAttr($id)?>" 
-             value="<?= preg_replace('/|/','', $this->string()->cleanEsc($value));?>"
-             name="<?=$this->escapeHtmlAttr($name)?>" 
-             data-validate="<?=$required ? 'true' : 'false'?>"
-             data-<?=strtolower($this->escapeHtmlAttr($name))?>="true"
-             placeholder="<?=$this->transEsc($placeholder)?>"
-             <?=$this->illform($this->status, $this->driver)->maxlength($name)?>
-             <? if ($required):?> required="true"<? endif; ?>
-             <? if (!empty($error)):?> 
-                data-error="<?=$this->transEsc($error)?>"
-             <? else: ?>
-                data-error="<?=$this->transEsc('ILL::form_error')?>"
-             <? endif; ?>/>
-             <span class="help-block with-errors">
-             </span>             
+<div class="form-group form-group-sm <?php if ($required): ?>show required<?php endif; ?>">
+    <label class="control-label col-sm-<?= $labelSize ?>"
+           for="ill-<?= $id ?>"><?= $this->transEsc($label) ?></label>
+    <div class="col-sm-<?= $inputSize ?>">
+        <?php $title = is_array($value) ? implode(',', $value) : $value ?>
+        <input type="text" class="form-control"
+               id="ill-<?= $this->escapeHtmlAttr($id) ?>"
+               value="<?= preg_replace('/|/', '', $this->string()->cleanEsc($value)); ?>"
+               name="<?= $this->escapeHtmlAttr($name) ?>"
+               data-validate="<?= $required ? 'true' : 'false' ?>"
+               data-<?= strtolower($this->escapeHtmlAttr($name)) ?>="true"
+               placeholder="<?= $this->transEsc($placeholder) ?>"
+            <?= $this->illform($this->status, $this->driver)->maxlength($name) ?>
+            <?php if ($required): ?> required="true"<?php endif; ?>
+            <?php if (!empty($error)): ?>
+                data-error="<?= $this->transEsc($error) ?>"
+            <?php else: ?>
+                data-error="<?= $this->transEsc('ILL::form_error') ?>"
+            <?php endif; ?>/>
+        <span class="help-block with-errors">
+             </span>
     </div>
 </div>

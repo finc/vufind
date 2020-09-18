@@ -1,29 +1,61 @@
-<? $url = $this->recommend->getURL();
-   $sourceTitle = $this->recommend->getSourceTitle();
-   $imageName = $this->recommend->getImageName();
-   $colNumber = $this->recommend->getColNumber();
-   $label = $this->recommend->getLabel();
+<?php $url = $this->recommend->getURL();
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+$sourceTitle = $this->recommend->getSourceTitle();
+$imageName = $this->recommend->getImageName();
+$colNumber = $this->recommend->getColNumber();
+$label = $this->recommend->getLabel();
 
 ?>
-<? if (!empty($url)): ?>
-        <? if (!empty($label)): ?>
-            <h4><?=$this->transEsc($label)?></h4>
-        <? endif; ?>
-        <div class="searchbutton col-sm-12 col-md-<?=$colNumber?> col-xs-<?=$colNumber?>" style="padding-left:2px;padding-right:2px;">
-                <? if ($this->client()->getTag() === 'athen'):
-                    $lang = $this->layout()->userLang;
-                    switch($lang) {
-                        case 'de': $lang = 'de-DE'; break;
-                        case 'el': $lang = 'el-GR'; break;
-                        default: $lang = 'en-US';
-                    }
-                    $url = str_replace('%lang%', $lang, $url);
-                endif; ?>
+<?php if (!empty($url)): ?>
+    <?php if (!empty($label)): ?>
+        <h4><?= $this->transEsc($label) ?></h4>
+    <?php endif; ?>
+    <div class="searchbutton col-sm-12 col-md-<?= $colNumber ?> col-xs-<?= $colNumber ?>"
+         style="padding-left:2px;padding-right:2px;">
+        <?php if ($this->client()->getTag() === 'athen'):
+            $lang = $this->layout()->userLang;
+            switch ($lang) {
+                case 'de':
+                    $lang = 'de-DE';
+                    break;
+                case 'el':
+                    $lang = 'el-GR';
+                    break;
+                default:
+                    $lang = 'en-US';
+            }
+            $url = str_replace('%lang%', $lang, $url);
+        endif; ?>
 
 
-                <a href="<?=$this->escapeHtmlAttr($url)?>" title="<?=$this->transEsc('Search')?> in <?=$this->escapeHtmlAttr($sourceTitle)?>" target="_blank">
-                    <img class="img-responsive img-rounded" src="<?=$this->imageLink('/searchbuttons/'.$imageName )?>" alt="<?=$this->transEsc('SearchButtons::'.$sourceTitle)?>"  title="<?=$this->transEsc('SearchButtons::'.$sourceTitle)?>" data-toggle="tooltip"/>
-                </a>
-        </div>
-<? endif; ?>
+        <a href="<?= $this->escapeHtmlAttr($url) ?>"
+           title="<?= $this->transEsc('Search') ?> in <?= $this->escapeHtmlAttr($sourceTitle) ?>"
+           target="_blank">
+            <img class="img-responsive img-rounded"
+                 src="<?= $this->imageLink('/searchbuttons/' . $imageName) ?>"
+                 alt="<?= $this->transEsc('SearchButtons::' . $sourceTitle) ?>"
+                 title="<?= $this->transEsc('SearchButtons::' . $sourceTitle) ?>"
+                 data-toggle="tooltip"/>
+        </a>
+    </div>
+<?php endif; ?>
 

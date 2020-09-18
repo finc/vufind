@@ -1,10 +1,29 @@
-<?
+<?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
   // Set up standard record scripts:
   $this->headScript()->appendFile("record.js");
   $this->headScript()->appendFile("check_save_statuses.js");
   $this->headScript()->appendFile("vendor/jquery.tablesorter.min.js");
-  
-  
+
   // Activate Syndetics Plus if necessary:
   if ($this->syndeticsPlus()->isActive()) {
     $this->headScript()->appendFile($this->syndeticsPlus()->getScript());
@@ -15,110 +34,144 @@
     $this->headLink()->appendAlternate($this->recordLink()->getActionUrl($this->driver, 'RDF'), 'application/rdf+xml', 'RDF Representation');
   }
 
-  // Set up breadcrumbs:
-  /*
-    $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ') .
-    '<li class="active">' . $this->recordLink()->getBreadcrumb($this->driver) . '</li> ';
-  */
-  $this->layout()->title = $this->driver->getShortTitle();
+// Set up breadcrumbs:
+/*
+  $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ') .
+  '<li class="active">' . $this->recordLink()->getBreadcrumb($this->driver) . '</li> ';
+*/
+$this->layout()->title = $this->driver->getShortTitle();
 
-use Zend\View\Helper\HeadScript; ?>
+use Zend\View\Helper\HeadScript;
 
-<? if (isset($this->scrollData) && ($this->scrollData['previousRecord'] || $this->scrollData['nextRecord'])): ?>
-  <ul class="pager hidden-print">
-       <li>
-          <a class="backtosearch btn btn-primary" title="<?=$this->transEsc('Back to Search')?>" href="<?=$this->searchMemory()->getLastSearchUrl('', '', '', false)?>" class="backtosearch btn btn-info"><i class="fa fa-list-ol"></i></a>
-      </li>
-    <? if ($this->scrollData['previousRecord']): ?>
-      <? if ($this->scrollData['firstRecord']): ?>
+?>
+
+<?php if (isset($this->scrollData) && ($this->scrollData['previousRecord'] || $this->scrollData['nextRecord'])): ?>
+    <ul class="pager hidden-print">
         <li>
-          <a class="btn btn-primary" href="<?=$this->recordLink()->getUrl($this->scrollData['firstRecord'])?>" title="<?=$this->transEsc('First Search Result')?>" rel="nofollow"><i class="fa fa-caret-left"></i><i class="fa fa-caret-left"></i></a>
+            <a class="backtosearch btn btn-primary"
+               title="<?= $this->transEsc('Back to Search') ?>"
+               href="<?= $this->searchMemory()->getLastSearchUrl('', '', '', false) ?>"
+               class="backtosearch btn btn-info"><i class="fa fa-list-ol"></i></a>
         </li>
-      <? endif; ?>
-      <li>
-        <a class="previous btn btn-primary" href="<?=$this->recordLink()->getUrl($this->scrollData['previousRecord'])?>" title="<?=$this->transEsc('Previous Search Result')?>" rel="nofollow"><i class="fa fa-caret-left"></i></a>
-      </li>
-    <? else: ?>
-      <? if ($this->scrollData['firstRecord']): ?>
-      <li class="disabled"><a href="#" class="btn btn-primary disabled"><i class="fa fa-caret-left"></i><i class="fa fa-caret-left"></i></a></li>
-      <? endif; ?>
-      <li class="disabled"><a class="btn btn-primary disabled" href="#"><i class="fa fa-caret-left"></i></a></li>
-    <? endif; ?>
-    <?=$this->transEsc('of_num_results', [
-      '%%position%%' => $this->localizedNumber($this->scrollData['currentPosition']),
-      '%%total%%' => $this->localizedNumber($this->scrollData['resultTotal'])
-    ]) ?>
-    <? if ($this->scrollData['nextRecord']): ?>
-      <li>
-        <a class="next btn btn-primary" class="next" href="<?=$this->recordLink()->getUrl($this->scrollData['nextRecord'])?>" title="<?=$this->transEsc('Next Search Result')?>" rel="nofollow"><i class="fa fa-caret-right"></i></a>
-      </li>
-      <? if ($this->scrollData['lastRecord']): ?>
-        <li>
-          <a class="btn btn-primary" href="<?=$this->recordLink()->getUrl($this->scrollData['lastRecord'])?>" title="<?=$this->transEsc('Last Search Result')?>" rel="nofollow"><i class="fa fa-caret-right"></i><i class="fa fa-caret-right"></i></a>
-        </li>
-      <? endif; ?>
-     <? else: ?>
-     <li class="disabled"><a class="btn btn-primary disabled" href="#"><i class="fa fa-caret-right"></i></a></li>
-      <? if ($this->scrollData['lastRecord']): ?>
-        <li class="disabled"><a class="btn btn-primary disabled" href="#"><i class="fa fa-caret-right"></i><i class="fa fa-caret-right"></i></a></li>
-      <? endif; ?>
-    <? endif; ?>
-  </ul>
-<? endif; ?>
-
-<?=$this->record($this->driver)->getToolbar()?>
-
-<div class="record source<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>">
-  <div class="<?=$this->layoutClass('mainbody_details')?>">
-    <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" class="hiddenId" />
-    <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier()) ?>" class="hiddenSource" />
-    <?=$this->flashmessages()?>
-    <?=$this->record($this->driver)->getCoreMetadata()?>
-
-    <? if (count($this->tabs) > 0): ?>
-      <a name="tabnav"></a>
-      <div class="record-tabs">
-        <ul class="nav nav-tabs">
-          <? foreach ($this->tabs as $tab => $obj): ?>
-            <? // add current tab to breadcrumbs if applicable:
-              $desc = $obj->getDescription();
-              $tab_classes = [];
-              if (0 === strcasecmp($this->activeTab, $tab)) {
-                if (!$this->loadInitialTabWithAjax || !$obj->supportsAjax()) {
-                  $tab_classes[] = 'active';
-                }
-                $tab_classes[] = 'initiallyActive';
-                $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ') .
-                      '<li class="active">' . $this->recordLink()->getBreadcrumb($this->driver) . '</li> ';
-                $activeTabObj = $obj;
-              }
-          
-              if (!$obj->isVisible()) { $tab_classes[] = 'hidden'; }
-              if (!$obj->supportsAjax()) { $tab_classes[] = 'noajax'; }
-            ?>
-            <li <?=count($tab_classes) > 0 ? ' class="' . implode(' ', $tab_classes) . '"' : ''?>>
-              <a class="<?=strtolower($tab) ?>" href="<?=$this->recordLink()->getTabUrl($this->driver, $tab)?>#tabnav"<? if ($obj->supportsAjax() && in_array($tab, $this->backgroundTabs)):?> data-background<? endif ?>><?=$this->transEsc($desc)?></a>
+        <?php if ($this->scrollData['previousRecord']): ?>
+            <?php if ($this->scrollData['firstRecord']): ?>
+                <li>
+                    <a class="btn btn-primary"
+                       href="<?= $this->recordLink()->getUrl($this->scrollData['firstRecord']) ?>"
+                       title="<?= $this->transEsc('First Search Result') ?>"
+                       rel="nofollow"><i class="fa fa-caret-left"></i><i
+                                class="fa fa-caret-left"></i></a>
+                </li>
+            <?php endif; ?>
+            <li>
+                <a class="previous btn btn-primary"
+                   href="<?= $this->recordLink()->getUrl($this->scrollData['previousRecord']) ?>"
+                   title="<?= $this->transEsc('Previous Search Result') ?>"
+                   rel="nofollow"><i class="fa fa-caret-left"></i></a>
             </li>
-          <? endforeach; ?>
-        </ul>
+        <?php else: ?>
+            <?php if ($this->scrollData['firstRecord']): ?>
+                <li class="disabled"><a href="#" class="btn btn-primary disabled"><i
+                                class="fa fa-caret-left"></i><i
+                                class="fa fa-caret-left"></i></a></li>
+            <?php endif; ?>
+            <li class="disabled"><a class="btn btn-primary disabled" href="#"><i
+                            class="fa fa-caret-left"></i></a></li>
+        <?php endif; ?>
+        <?= $this->transEsc('of_num_results', [
+            '%%position%%' => $this->localizedNumber($this->scrollData['currentPosition']),
+            '%%total%%' => $this->localizedNumber($this->scrollData['resultTotal'])
+        ]) ?>
+        <?php if ($this->scrollData['nextRecord']): ?>
+            <li>
+                <a class="next btn btn-primary" class="next"
+                   href="<?= $this->recordLink()->getUrl($this->scrollData['nextRecord']) ?>"
+                   title="<?= $this->transEsc('Next Search Result') ?>"
+                   rel="nofollow"><i class="fa fa-caret-right"></i></a>
+            </li>
+            <?php if ($this->scrollData['lastRecord']): ?>
+                <li>
+                    <a class="btn btn-primary"
+                       href="<?= $this->recordLink()->getUrl($this->scrollData['lastRecord']) ?>"
+                       title="<?= $this->transEsc('Last Search Result') ?>"
+                       rel="nofollow"><i class="fa fa-caret-right"></i><i
+                                class="fa fa-caret-right"></i></a>
+                </li>
+            <?php endif; ?>
+        <?php else: ?>
+            <li class="disabled"><a class="btn btn-primary disabled" href="#"><i
+                            class="fa fa-caret-right"></i></a></li>
+            <?php if ($this->scrollData['lastRecord']): ?>
+                <li class="disabled"><a class="btn btn-primary disabled" href="#"><i
+                                class="fa fa-caret-right"></i><i
+                                class="fa fa-caret-right"></i></a></li>
+            <?php endif; ?>
+        <?php endif; ?>
+    </ul>
+<?php endif; ?>
 
-        <div class="tab-content">
-          <? if (!$this->loadInitialTabWithAjax || !isset($activeTabObj) || !$activeTabObj->supportsAjax()): ?>
-            <div class="tab-pane active <?=$this->activeTab ?>-tab">
-              <?=isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : '' ?>
+<?= $this->record($this->driver)->getToolbar() ?>
+
+<div class="record source<?= $this->escapeHtmlAttr($this->driver->getSourceIdentifier()) ?>">
+    <div class="<?= $this->layoutClass('mainbody_details') ?>">
+        <input type="hidden"
+               value="<?= $this->escapeHtmlAttr($this->driver->getUniqueId()) ?>"
+               class="hiddenId"/>
+        <input type="hidden"
+               value="<?= $this->escapeHtmlAttr($this->driver->getSourceIdentifier()) ?>"
+               class="hiddenSource"/>
+        <?= $this->flashmessages() ?>
+        <?= $this->record($this->driver)->getCoreMetadata() ?>
+
+        <?php if (count($this->tabs) > 0): ?>
+            <a name="tabnav"></a>
+            <div class="record-tabs">
+                <ul class="nav nav-tabs">
+                    <?php foreach ($this->tabs as $tab => $obj): ?>
+                        <?php // add current tab to breadcrumbs if applicable:
+                        $desc = $obj->getDescription();
+                        $tab_classes = [];
+                        if (0 === strcasecmp($this->activeTab, $tab)) {
+                            if (!$this->loadInitialTabWithAjax || !$obj->supportsAjax()) {
+                                $tab_classes[] = 'active';
+                            }
+                            $tab_classes[] = 'initiallyActive';
+                            $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ') .
+                                '<li class="active">' . $this->recordLink()->getBreadcrumb($this->driver) . '</li> ';
+                            $activeTabObj = $obj;
+                        }
+
+                        if (!$obj->isVisible()) {
+                            $tab_classes[] = 'hidden';
+                        }
+                        if (!$obj->supportsAjax()) {
+                            $tab_classes[] = 'noajax';
+                        }
+                        ?>
+                        <li <?= count($tab_classes) > 0 ? ' class="' . implode(' ', $tab_classes) . '"' : '' ?>>
+                            <a class="<?= strtolower($tab) ?>"
+                               href="<?= $this->recordLink()->getTabUrl($this->driver, $tab) ?>#tabnav"<?php if ($obj->supportsAjax() && in_array($tab, $this->backgroundTabs)): ?> data-background<?php endif ?>><?= $this->transEsc($desc) ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+
+                <div class="tab-content">
+                    <?php if (!$this->loadInitialTabWithAjax || !isset($activeTabObj) || !$activeTabObj->supportsAjax()): ?>
+                        <div class="tab-pane active <?= $this->activeTab ?>-tab">
+                            <?= isset($activeTabObj) ? $this->record($this->driver)->getTab($activeTabObj) : '' ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
-          <? endif; ?>
-        </div>
-      </div>
-    <? endif; ?>
+        <?php endif; ?>
 
-    <?=$this->driver->supportsCoinsOpenURL()?'<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenURL()) . '"></span>':''?>
-  </div>
+        <?= $this->driver->supportsCoinsOpenURL() ? '<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenURL()) . '"></span>' : '' ?>
+    </div>
 
-  <div class="<?=$this->layoutClass('sidebar')?>">
-    <? foreach ($this->related()->getList($this->driver) as $current): ?>
-      <?=$this->related()->render($current)?>
-    <? endforeach; ?>
-  </div>
+    <div class="<?= $this->layoutClass('sidebar') ?>">
+        <?php foreach ($this->related()->getList($this->driver) as $current): ?>
+            <?= $this->related()->render($current) ?>
+        <?php endforeach; ?>
+    </div>
 </div>
-<?=$this->inlineScript(HeadScript::SCRIPT, '$(document).ready(recordDocReady);', 'SET'); ?>
+<?= $this->inlineScript(HeadScript::SCRIPT, '$(document).ready(recordDocReady);', 'SET'); ?>

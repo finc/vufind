@@ -1,38 +1,75 @@
+<?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+use Zend\View\Helper\HeadScript;
+
+?>
 <div class="facet">
     <div class="row">
-        
-  <form name="<?=$this->escapeHtmlAttr($this->title)?>Filter" id="<?=$this->escapeHtmlAttr($this->title)?>Filter">
-    <?=$results->getUrlQuery()->asHiddenFields(['page' => "/./", 'filter' => "/^{$this->title}:.*/"])?>
-    <input type="hidden" name="<?=$this->escapeHtmlAttr($this->facet['type'])?>range[]" value="<?=$this->escapeHtmlAttr($this->title)?>"/>
-    <div class="date-fields">
-      <? $extraInputAttribs = ($this->facet['type'] == 'date') ? 'maxlength="4" ' : ''; ?>
-      <div class="date-from col-sm-6">
-        <label for="<?=$this->escapeHtmlAttr($this->title)?>from">
-          <?=$this->transEsc('date_from')?>:
-        </label>
-        <input type="text" class="form-control" name="<?=$this->escapeHtmlAttr($this->title)?>from" id="<?=$this->escapeHtmlAttr($this->title)?>from" value="<?=isset($this->facet['values'][0])?$this->escapeHtmlAttr($this->facet['values'][0]):''?>" <?=$extraInputAttribs?>/>
-      </div>
-      <div class="date-to col-sm-6">
-        <label for="<?=$this->escapeHtmlAttr($this->title)?>to">
-          <?=$this->transEsc('date_to')?>:
-        </label>
-        <input type="text" class="form-control" name="<?=$this->escapeHtmlAttr($this->title)?>to" id="<?=$this->escapeHtmlAttr($this->title)?>to" value="<?=isset($this->facet['values'][1])?$this->escapeHtmlAttr($this->facet['values'][1]):''?>" <?=$extraInputAttribs?>/>
-      </div>
+
+        <form name="<?= $this->escapeHtmlAttr($this->title) ?>Filter"
+              id="<?= $this->escapeHtmlAttr($this->title) ?>Filter">
+            <?= $results->getUrlQuery()->asHiddenFields(['page' => "/./", 'filter' => "/^{$this->title}:.*/"]) ?>
+            <input type="hidden"
+                   name="<?= $this->escapeHtmlAttr($this->facet['type']) ?>range[]"
+                   value="<?= $this->escapeHtmlAttr($this->title) ?>"/>
+            <div class="date-fields">
+                <?php $extraInputAttribs = ($this->facet['type'] == 'date') ? 'maxlength="4" ' : ''; ?>
+                <div class="date-from col-sm-6">
+                    <label for="<?= $this->escapeHtmlAttr($this->title) ?>from">
+                        <?= $this->transEsc('date_from') ?>:
+                    </label>
+                    <input type="text" class="form-control"
+                           name="<?= $this->escapeHtmlAttr($this->title) ?>from"
+                           id="<?= $this->escapeHtmlAttr($this->title) ?>from"
+                           value="<?= isset($this->facet['values'][0]) ? $this->escapeHtmlAttr($this->facet['values'][0]) : '' ?>" <?= $extraInputAttribs ?>/>
+                </div>
+                <div class="date-to col-sm-6">
+                    <label for="<?= $this->escapeHtmlAttr($this->title) ?>to">
+                        <?= $this->transEsc('date_to') ?>:
+                    </label>
+                    <input type="text" class="form-control"
+                           name="<?= $this->escapeHtmlAttr($this->title) ?>to"
+                           id="<?= $this->escapeHtmlAttr($this->title) ?>to"
+                           value="<?= isset($this->facet['values'][1]) ? $this->escapeHtmlAttr($this->facet['values'][1]) : '' ?>" <?= $extraInputAttribs ?>/>
+                </div>
+            </div>
+            <div class="col-sm-12">
+
+                <?php if ($this->facet['type'] == 'date'): ?>
+                    <div class="slider-container col-sm-12"><input type="text"
+                                                                   class="hidden"
+                                                                   id="<?= $this->escapeHtmlAttr($this->title) ?><?= $this->escapeHtml($this->facet['type']) ?>Slider"/>
+                    </div>
+                <?php endif; ?>
+                <input class="btn btn-primary btn-xs" type="submit"
+                       value="<?= $this->transEsc('Set') ?>"/>
+            </div>
+        </form>
     </div>
-    <div class="col-sm-12">
-        
-    <? if ($this->facet['type'] == 'date'): ?>
-      <div class="slider-container col-sm-12"><input type="text" class="hidden" id="<?=$this->escapeHtmlAttr($this->title)?><?=$this->escapeHtml($this->facet['type'])?>Slider"/></div>
-    <? endif; ?>
-    <input class="btn btn-primary btn-xs" type="submit" value="<?=$this->transEsc('Set')?>"/>
-    </div>
-  </form>
-  </div>
 </div>
-<? if ($this->facet['type'] == 'date'): ?>
-  <? $this->headScript()->appendFile('vendor/bootstrap-slider.min.js'); ?>
-  <? $this->headLink()->appendStylesheet('vendor/bootstrap-slider.min.css'); ?>
-  <?
+<?php if ($this->facet['type'] == 'date'): ?>
+    <?php $this->headScript()->appendFile('vendor/bootstrap-slider.min.js'); ?>
+    <?php $this->headLink()->appendStylesheet('vendor/bootstrap-slider.min.css'); ?>
+    <?php
     $min = !empty($this->facet['values'][0]) ? min($this->facet['values'][0], 1400) : 1400;
     $future = date('Y', time() + 31536000); // next year
     $max = !empty($this->facet['values'][1]) ? max($future, $this->facet['values'][1]) : $future;
@@ -67,9 +104,9 @@ $('#{$this->escapeHtmlAttr($this->title)}from, #{$this->escapeHtmlAttr($this->ti
       isNaN(toValue) || toValue <= 0 ? {$max} : toValue
     ],
     true
-  );
+  )
 });
 JS;
-  ?>
-  <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
-<? endif; ?>
+    ?>
+    <?= $this->inlineScript(HeadScript::SCRIPT, $script, 'SET'); ?>
+<?php endif; ?>

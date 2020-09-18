@@ -28,8 +28,12 @@
  */
 namespace VuFindTest\View\Helper\Root;
 
-use Zend\Config\Config;
+use InvalidArgumentException;
+use VuFind\RecordDriver\SolrDefault;
+use VuFind\Resolver\Driver\PluginManager;
+use VuFind\View\Helper\Root\Context;
 use VuFind\View\Helper\Root\OpenUrl;
+use Zend\Config\Config;
 
 /**
  * OpenUrl Test Class
@@ -141,7 +145,10 @@ class OpenUrlTest extends \VuFindTest\Unit\ViewHelperTestCase
     public function testCheckExcludedRecordsRulesFalseDueToWildcardFailure()
     {
         $driver = $this->getMockDriver(
-            'fake-data', 'VuFind\RecordDriver\SolrMarc', ['Article'], false
+            'fake-data',
+            'VuFind\RecordDriver\SolrMarc',
+            ['Article'],
+            false
         );
         $openUrl = $this
             ->getOpenUrl($this->getFixture("rule5.json"), $this->rulesConfig)
@@ -173,7 +180,9 @@ class OpenUrlTest extends \VuFindTest\Unit\ViewHelperTestCase
     public function testCheckSupportedRecordsRulesWithWildcardStillFalse()
     {
         $driver = $this->getMockDriver(
-            'fake-openurl', 'VuFind\RecordDriver\SolrDefault', ['CrazyFormat']
+            'fake-openurl',
+            'VuFind\RecordDriver\SolrDefault',
+            ['CrazyFormat']
         );
         $openUrl = $this
             ->getOpenUrl($this->getFixture("rule5.json"), $this->rulesConfig)
@@ -205,10 +214,14 @@ class OpenUrlTest extends \VuFindTest\Unit\ViewHelperTestCase
     {
         $formats = ['Article'];
         $defaultDriver = $this->getMockDriver(
-            'fake-data', 'VuFind\RecordDriver\SolrDefault', $formats
+            'fake-data',
+            'VuFind\RecordDriver\SolrDefault',
+            $formats
         );
         $marcDriver = $this->getMockDriver(
-            'fake-data', 'VuFind\RecordDriver\SolrMarc', $formats
+            'fake-data',
+            'VuFind\RecordDriver\SolrMarc',
+            $formats
         );
         $openUrl = $this
             ->getOpenUrl($this->getFixture("rule1.json"), $this->rulesConfig);
@@ -219,11 +232,11 @@ class OpenUrlTest extends \VuFindTest\Unit\ViewHelperTestCase
     /**
      * Get mock context helper.
      *
-     * @return \VuFind\View\Helper\Root\Context
+     * @return Context
      */
     protected function getMockContext()
     {
-        return $this->getMockBuilder(\VuFind\View\Helper\Root\Context::class)
+        return $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()->getMock();
     }
 
@@ -235,12 +248,13 @@ class OpenUrlTest extends \VuFindTest\Unit\ViewHelperTestCase
      * @param array  $formats Formats to return from getFormats
      * @param string $issn    ISSN to return from getCleanISSN
      *
-     * @return \VuFind\RecordDriver\SolrDefault
+     * @return SolrDefault
      */
-    protected function getMockDriver($openUrl = 'fake-data',
-                                     $class = 'VuFind\RecordDriver\SolrDefault',
-                                     $formats = ['ElectronicArticle', 'Article'],
-                                     $issn = '1234-5678'
+    protected function getMockDriver(
+        $openUrl = 'fake-data',
+        $class = 'VuFind\RecordDriver\SolrDefault',
+        $formats = ['ElectronicArticle', 'Article'],
+        $issn = '1234-5678'
     ) {
         $driver = $this->getMockBuilder($class)
             ->disableOriginalConstructor()->getMock();
@@ -268,7 +282,7 @@ class OpenUrlTest extends \VuFindTest\Unit\ViewHelperTestCase
                 '/../../../../../../../tests/fixtures/openurlrules/' . $fixture
             );
             if (!is_string($file) || !file_exists($file) || !is_readable($file)) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     sprintf('Unable to load fixture file: %s ', $fixture)
                 );
             }
@@ -295,7 +309,7 @@ class OpenUrlTest extends \VuFindTest\Unit\ViewHelperTestCase
         if (null === $mockContext) {
             $mockContext = $this->getMockContext();
         }
-        $mockPm = $this->getMockBuilder(\VuFind\Resolver\Driver\PluginManager::class)
+        $mockPm = $this->getMockBuilder(PluginManager::class)
             ->disableOriginalConstructor()->getMock();
         $openUrl = new OpenUrl($mockContext, $rules, $mockPm, new Config($config));
         $openUrl->setView($this->getPhpRenderer());

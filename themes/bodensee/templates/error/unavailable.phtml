@@ -1,4 +1,24 @@
-<?
+<?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
   // Set page title.
   $this->headTitle($this->translate('System Unavailable'));
 
@@ -7,18 +27,19 @@
 
   $this->layout()->breadcrumbs = '<li class="active">Error</li>';
 ?>
-<div class="col-sm-12">    
+<div class="col-sm-12">
     <div class="alert alert-warning">
-      <h2><?=$this->transEsc('System Unavailable')?></h2>
-      <p>
-        <?=$this->transEsc('The system is currently unavailable due to system maintenance')?>.
-        <?=$this->transEsc('Please check back soon')?>.
-      </p>
-      <p>
-        <?=$this->transEsc('Please contact the Library Reference Department for assistance')?>
-        <br/>
-        <? $supportEmail = $this->escapeHtmlAttr($this->systemEmail()); ?>
-        <a href="mailto:<?=$supportEmail?>"><?=$supportEmail?></a>
-      </p>
+        <h2><?= $this->transEsc('System Unavailable') ?></h2>
+        <p>
+            <?= $this->transEsc('The system is currently unavailable due to system maintenance') ?>
+            .
+            <?= $this->transEsc('Please check back soon') ?>.
+        </p>
+        <p>
+            <?= $this->transEsc('Please contact the Library Reference Department for assistance') ?>
+            <br/>
+            <?php $supportEmail = $this->escapeHtmlAttr($this->systemEmail()); ?>
+            <a href="mailto:<?= $supportEmail ?>"><?= $supportEmail ?></a>
+        </p>
     </div>
 </div>

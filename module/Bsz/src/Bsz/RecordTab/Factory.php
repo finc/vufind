@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,15 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
-
 namespace Bsz\RecordTab;
 
 use Bsz\Config\Client;
 use Bsz\ILL\Logic;
 use Interop\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request;
-use Zend\Session\Container as SessionContainer;
 use Zend\Session\SessionManager as SessionManager;
 
 /**
@@ -34,7 +34,6 @@ use Zend\Session\SessionManager as SessionManager;
  */
 class Factory
 {
-
     /**
      * Factory for volumes tab
      *
@@ -56,12 +55,11 @@ class Factory
             $isils = $client->getIsils();
         }
 
-
         $volumes = new Volumes($container->get('VuFind\SearchRunner'), $isils);
-
 
         return $volumes;
     }
+
     /**
      * Factory for articles tab
      *
@@ -114,7 +112,8 @@ class Factory
         $client = $container->get('Bsz\Config\Client');
         return new Description(!$client->is('disable_description_tab'));
     }
-        /**
+
+    /**
      * Factory for HoldingsILS tab plugin.
      *
      * @param ContainerInterface $container Service manager.

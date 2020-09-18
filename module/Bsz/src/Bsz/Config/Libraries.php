@@ -19,14 +19,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 namespace Bsz\Config;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-
 
 /**
  * Class for reading library config
@@ -35,7 +33,6 @@ use Zend\Db\TableGateway\TableGateway;
  */
 class Libraries extends TableGateway
 {
-
     const ID_BAWUE = 1;
     const ID_SAARLAND = 2;
     const ID_SACHSEN = 3;
@@ -95,7 +92,6 @@ class Libraries extends TableGateway
             $select->where->and->in('isil', $isils);
         }
         return $this->selectWith($select);
-
     }
 
     /**
@@ -150,6 +146,7 @@ class Libraries extends TableGateway
 
         return $this->selectWith($select);
     }
+
     /**
      * Get Libraries with Shibboleth IDP entry
      *
@@ -248,7 +245,6 @@ class Libraries extends TableGateway
      */
     public function compareIsils($isils)
     {
-
         if (count($isils) !== count($this->libraries)) {
             return false;
         }

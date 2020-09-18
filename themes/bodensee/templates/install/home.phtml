@@ -1,19 +1,43 @@
-<?
-  // Set page title.
-  $this->headTitle($this->translate('auto_configure_title'));
+<?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
 
-  // Set up breadcrumbs:
-  $this->layout()->breadcrumbs = '<li class="active">' . $this->transEsc('auto_configure_title') . '</li>';
+// Set page title.
+$this->headTitle($this->translate('auto_configure_title'));
+
+// Set up breadcrumbs:
+$this->layout()->breadcrumbs = '<li class="active">' . $this->transEsc('auto_configure_title') . '</li>';
 ?>
-<div class="col-sm-12">    
-    <h2><?=$this->transEsc('auto_configure_title')?></h2>
-    <?=$this->flashmessages()?>
-    <? $errors = 0; foreach ($this->checks as $check): ?>
-    <? if (!$check['status']) $errors++; ?>
-      <div class="alert alert-<?=$check['status'] ? 'success':'danger'?>"><?=$this->escapeHtml($check['title'])?>... <?=$check['status'] ? $this->transEsc('test_ok') : $this->transEsc('test_fail') . ' <a class="btn btn-danger" href="' . $this->url('install-' . strtolower($check['fix'])) . '">' . $this->transEsc('test_fix') . '</a>' ?></div>
-    <? endforeach; ?>
+<div class="col-sm-12">
+    <h2><?= $this->transEsc('auto_configure_title') ?></h2>
+    <?= $this->flashmessages() ?>
+    <?php $errors = 0;
+    foreach ($this->checks as $check): ?>
+        <?php if (!$check['status']) $errors++; ?>
+        <div class="alert alert-<?= $check['status'] ? 'success' : 'danger' ?>"><?= $this->escapeHtml($check['title']) ?>
+            ... <?= $check['status'] ? $this->transEsc('test_ok') : $this->transEsc('test_fail') . ' <a class="btn btn-danger" href="' . $this->url('install-' . strtolower($check['fix'])) . '">' . $this->transEsc('test_fix') . '</a>' ?></div>
+    <?php endforeach; ?>
 
-    <? if ($errors == 0): ?>
-      <p>No problems were found.  You may wish to <a href="<?=$this->url('install-done')?>">Disable Auto Configuration</a> at this time.</p>
-    <? endif; ?>
+    <?php if ($errors == 0): ?>
+        <p>No problems were found. You may wish to <a
+                    href="<?= $this->url('install-done') ?>">Disable Auto
+                Configuration</a> at this time.</p>
+    <?php endif; ?>
 </div>

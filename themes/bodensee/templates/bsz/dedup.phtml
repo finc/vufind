@@ -1,55 +1,87 @@
-<? 
-  $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('dedup_settings') . '</li>';
+<?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+$this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('dedup_settings') . '</li>';
   $this->headTitle()->setPrefix($this->transEsc('dedup_settings'));
 ?>
 <div class="col-sm-12">
-    <?=$this->flashmessages()?>    
+    <?=$this->flashmessages()?>
 </div>
 <div class="col-sm-6">
-    
-    <h1><?=$this->transEsc('dedup_settings')?></h1>
-    <p><?=$this->transEsc('dedup_settings_text')?></p>
-    
-    <form method="POST" action="#"  class="form-horizontal" data-toggle="validator">
+
+    <h1><?= $this->transEsc('dedup_settings') ?></h1>
+    <p><?= $this->transEsc('dedup_settings_text') ?></p>
+
+    <form method="POST" action="#" class="form-horizontal" data-toggle="validator">
         <div class="form-group">
-            <label class="control-label col-sm-6"><?=$this->transEsc('dedup_settings_switch')?></label>
+            <label class="control-label col-sm-6"><?= $this->transEsc('dedup_settings_switch') ?></label>
             <div class="col-sm-6">
                 <label class="radio-inline" for="dedup-on">
-                    <input required type="radio" name="group" value="1" id="dedup-on" <? if ($this->group == '1'):?> checked <? endif; ?> />An
-                </label>   
+                    <input required type="radio" name="group" value="1"
+                           id="dedup-on" <?php if ($this->group == '1'): ?> checked <?php endif; ?> />An
+                </label>
                 <label class="radio-inline" for="dedup-off">
-                    <input required type="radio" name="group" value="0" id="dedup-off" <? if ($this->group == '0'):?> checked <? endif; ?>/>Aus
-                </label>  
-            </div>            
+                    <input required type="radio" name="group" value="0"
+                           id="dedup-off" <?php if ($this->group == '0'): ?> checked <?php endif; ?>/>Aus
+                </label>
+            </div>
         </div>
         <div class="form-group has-info">
-            <label for="group.field" class="control-label col-sm-6"><?=$this->transEsc('dedup_settings_field')?></label>
+            <label for="group.field"
+                   class="control-label col-sm-6"><?= $this->transEsc('dedup_settings_field') ?></label>
             <div class="col-sm-6">
                 <select required name="group_field" id="group_field">
-                    <? for ($i = 1; $i <= 3; $i++): ?>
-                    <option value="test_matchkey_<?=$i?>" <? if ('test_matchkey_'.$i == $this->field):?>selected<? endif; ?>>test_matchkey_<?=$i?></option>
-                    <? endfor; ?>
-                    <option value="cluster_id" <? if ('cluster_id' == $this->field):?>selected<? endif; ?>>cluster_id</option>
-                    
-                </select><span class="help-block"><?=$this->transEsc('dedup_settings_field_hint')?></span>
+                    <?php for ($i = 1; $i <= 3; $i++): ?>
+                        <option value="test_matchkey_<?= $i ?>"
+                                <?php if ('test_matchkey_' . $i == $this->field): ?>selected<?php endif; ?>>
+                            test_matchkey_<?= $i ?></option>
+                    <?php endfor; ?>
+                    <option value="cluster_id"
+                            <?php if ('cluster_id' == $this->field): ?>selected<?php endif; ?>>
+                        cluster_id
+                    </option>
+
+                </select><span
+                        class="help-block"><?= $this->transEsc('dedup_settings_field_hint') ?></span>
             </div>
         </div>
         <div class="form-group">
-            <label for="group.limit" class="control-label col-sm-6"><?=$this->transEsc('dedup_settings_limit')?></label>
+            <label for="group.limit"
+                   class="control-label col-sm-6"><?= $this->transEsc('dedup_settings_limit') ?></label>
             <div class="col-sm-6">
-                <input required type="number" min="3" max="100" id="group_limit" name="group_limit" value="<?=$this->escapeHtmlAttr($this->limit)?>"/>
+                <input required type="number" min="3" max="100" id="group_limit"
+                       name="group_limit"
+                       value="<?= $this->escapeHtmlAttr($this->limit) ?>"/>
             </div>
         </div>
-        
-        <div class="form-group">        
+
+        <div class="form-group">
             <div class="col-sm-offset-6 col-sm-6">
               <button type="submit" name="submit_dedup_form" value="1" class="btn btn-primary"><?=$this->transEsc('Submit')?></button>
             </div>
         </div>
-        
-        
+
+
     </form>
-    
+
 
 </div>
 

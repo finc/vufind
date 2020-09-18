@@ -1,43 +1,35 @@
 <?php
 
 /*
- * The MIT License
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
- * Copyright 2016 Cornelius Amzar <cornelius.amzar@bsz-bw.de>.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
  */
-
 namespace BszTheme\View\Helper\Bodensee;
 
-use Zend\View\Helper\AbstractHelper,
-    Bsz\RecordDriver\SolrMarc;
-;
+use Bsz\RecordDriver\SolrMarc;
+use Zend\View\Helper\AbstractHelper;
 
 /**
  * View helper for ill form
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class IllForm extends AbstractHelper
 {
-
     const STATUS_NOT_SENT = -1;
     const STATUS_SENT_SUCCESS = 0;
     const STATUS_SENT_FAILURE = 1;
@@ -140,15 +132,17 @@ class IllForm extends AbstractHelper
         return $texts[$key];
     }
 
-    public function renderBibliographicFields() {
+    public function renderBibliographicFields()
+    {
         if ($this->driver !== null) {
-            if ($this->driver->isArticle()){
+            if ($this->driver->isArticle()) {
                 return $this->renderBibliographicFieldsArticle();
-            } else if ($this->driver->isJournal()
-                    || $this->driver->isNewspaper()) {
+            } elseif ($this->driver->isJournal()
+                || $this->driver->isNewspaper()) {
                 return $this->renderBibliographicFieldsJournal();
-            } if ($this->driver->isBook() || $this->driver->isEBook()
-                   || $this->driver->isMonographicSerial()
+            }
+            if ($this->driver->isBook() || $this->driver->isEBook()
+                || $this->driver->isMonographicSerial()
             ) {
                 return $this->renderBibliographicFieldsBook();
             }
@@ -181,8 +175,8 @@ class IllForm extends AbstractHelper
             ['ISBN', 'Isbn', $this->getFromDriver('getCleanISBN')],
         ];
         return $this->renderFormFields($fields);
-
     }
+
     /**
      * Renders Bibliographic Fields in form
      * @return string|html
@@ -220,6 +214,7 @@ class IllForm extends AbstractHelper
 
         return $this->renderFormFields($fields);
     }
+
     /**
      * Renders Bibliographic Fields in form
      * @return string|html
@@ -259,9 +254,7 @@ class IllForm extends AbstractHelper
             ['ISBN', 'Isbn', ''],
         ];
         return $this->renderFormFields($fields);
-
     }
-
 
     /**
      * Render copy section
@@ -297,9 +290,7 @@ class IllForm extends AbstractHelper
                 ['article title', 'AufsatzTitel', ''],
                 ['pages', 'Seitenangabe', '', '', false, 'ILL::error_pages'],
             ];
-
         }
-
 
         return $this->renderFormFields($fields);
     }
@@ -318,7 +309,7 @@ class IllForm extends AbstractHelper
             $field = array_replace($null, $field);
             // if form was already sent, take values from params array
             if (array_key_exists($field[1], $this->params)) {
-                  $field[2] = $this->params[$field[1]];
+                $field[2] = $this->params[$field[1]];
             }
             $html .= $this->renderInput($this->numericToAssoc($field));
         }
@@ -420,10 +411,8 @@ class IllForm extends AbstractHelper
             'Bemerkung'    => 1500
         ];
         if (array_key_exists($name, $maxlength)) {
-            return 'maxlength="'.$maxlength[$name].'"';
+            return 'maxlength="' . $maxlength[$name] . '"';
         }
         return '';
     }
-
-
 }

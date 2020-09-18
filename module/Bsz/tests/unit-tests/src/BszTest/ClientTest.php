@@ -18,12 +18,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 namespace BszTest;
 
 use Bsz\Config\Client;
 use PHPUnit\Framework\TestCase;
-use Zend\Config\Config;
 
 class ClientTest extends TestCase
 {
@@ -99,6 +97,4 @@ class ClientTest extends TestCase
         $this->assertEquals($links2[1], '/Search/Advanced');
         $this->assertEquals($links3[0], '/Bsz/Privacy');
     }
-
-
 }

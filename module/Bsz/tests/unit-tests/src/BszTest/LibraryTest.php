@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
  * Württemberg, Konstanz, Germany
  *
@@ -18,23 +18,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 namespace BszTest;
 
-use Bsz\Config\Library;
-use PHPUnit\Framework\TestCase;
-use Exception;
-use VuFind\Db\Table\Shortlinks;
-use VuFind\UrlShortener\Database;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\Driver\ConnectionInterface;
-use Zend\Db\Adapter\Driver\DriverInterface;
-use Zend\Db\ResultSet;
 use Bsz\Config\Libraries;
+use PHPUnit\Framework\TestCase;
+use VuFind\UrlShortener\Database;
 
 class LibraryTest extends TestCase
 {
-
     /**
      * Get the object to test.
      *

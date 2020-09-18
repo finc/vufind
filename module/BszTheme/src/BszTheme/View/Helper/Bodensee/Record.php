@@ -1,15 +1,13 @@
 <?php
 
-/**
- * Record driver view helper
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
- * PHP version 5
- *
- * Copyright (C) Villanova University 2010.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,15 +16,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * @category VuFind2
- * @package  View_Helpers
- * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
-
 namespace BszTheme\View\Helper\Bodensee;
 
 use Zend\Config\Config;
@@ -87,7 +79,7 @@ class Record extends \VuFind\View\Helper\Root\Record
         $sources = parent::getLinkDetails($openUrlActive);
         foreach ($sources as $k => $array) {
             if (isset($array['desc']) && strlen($array['desc']) > 60) {
-                $array['desc'] = substr($array['desc'], 0, 60).'...';
+                $array['desc'] = substr($array['desc'], 0, 60) . '...';
                 $sources[$k] = $array;
             }
         }
@@ -127,7 +119,6 @@ class Record extends \VuFind\View\Helper\Root\Record
         return $thumb;
     }
 
-
     /**
      * Renders FIS Logo with link
      * @return string
@@ -137,10 +128,8 @@ class Record extends \VuFind\View\Helper\Root\Record
         return $this->renderTemplate('fis.phtml');
     }
 
-
-   /**
+    /**
      * Feturn found SWB IDs
-     *
      * @return array
      */
     public function getSwbId()
@@ -157,7 +146,6 @@ class Record extends \VuFind\View\Helper\Root\Record
     {
         return count($this->ppns) > 0;
     }
-
 
     /**
      * Render a sub record to be displayed in a search result list.
@@ -200,7 +188,6 @@ class Record extends \VuFind\View\Helper\Root\Record
         return $transEsc('Title not available');
     }
 
-
     /**
      * Determine if a record is available at the first ISIL or at it's
      * institutes. In opposite to isAtCurrentLibrary, we do not include other
@@ -209,7 +196,6 @@ class Record extends \VuFind\View\Helper\Root\Record
      * @return boolean
      *
      */
-
     public function isAtFirstIsil()
     {
         $holdings = $this->driver->tryMethod('getLocalHoldings');
@@ -230,7 +216,7 @@ class Record extends \VuFind\View\Helper\Root\Record
      */
     public static function indicator2Status($indicator)
     {
-        return 'ILL::status_'.$indicator;
+        return 'ILL::status_' . $indicator;
     }
 
     /**

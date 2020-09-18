@@ -1,12 +1,13 @@
 <?php
 
 /*
- * Copyright (C) 2019 Bibliotheksservice Zentrum Baden-Württemberg, Konstanz
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,9 +15,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
-
 namespace Bsz\ILL;
 
 use Bsz\RecordDriver\SolrMarc;
@@ -69,7 +71,6 @@ class Logic
      * @param Holding $holding
      * @param array $isils
      */
-
     public function __construct(Config $config, $isils = [])
     {
         $this->config = $config;
@@ -96,7 +97,6 @@ class Logic
      * Map the driver formats to more simple ILL formats
      * @return string
      */
-
     private function getFormat()
     {
         $format = static::FORMAT_UNDEFINED;
@@ -136,7 +136,6 @@ class Logic
      * Checks if the item can be ordered via ILL
      * @return boolean
      */
-
     public function isAvailable()
     {
         if (empty($this->status)) {
@@ -203,7 +202,6 @@ class Logic
      * lation keys and should be translated afterwards.
      * @return array
      */
-
     public function getMessages()
     {
         /*
@@ -256,7 +254,6 @@ class Logic
      * Checks whether record is from HEBIS and it's ID begins with 8
      * @return boolean
      */
-
     protected function checkHebis8(): bool
     {
         $network = $this->driver->getNetwork();
@@ -272,7 +269,6 @@ class Logic
      * Check if the record is available for free
      * @return boolean
      */
-
     protected function checkFree(): bool
     {
         if ($this->driver->isFree()) {
@@ -285,7 +281,6 @@ class Logic
      * Determine is record is a serial or a collection
      * @return boolean
      */
-
     protected function checkSerialOrCollection(): bool
     {
         if ($this->driver->isSerial() && $this->driver->isCollection()) {
@@ -301,7 +296,6 @@ class Logic
      * * Similar results from SWB (if network != SWB)     *
      * @return boolean
      */
-
     protected function checkCurrentLibrary()
     {
         $status = false;
@@ -419,9 +413,9 @@ class Logic
      */
     protected function hasParallelEditions()
     {
-        $getIsils = function($holdings) {
+        $getIsils = function ($holdings) {
             $return = [];
-            foreach($holdings as $holding) {
+            foreach ($holdings as $holding) {
                 $return[] = $holding['isil'];
             }
             return $return;
@@ -480,7 +474,6 @@ class Logic
      * the current network
      * @return boolean
      */
-
     protected function checkFormat()
     {
         $section = $this->config->get($this->format);
@@ -518,7 +511,7 @@ class Logic
         }
 
         foreach ($f924 as $field) {
-            $code = isset($field['ill_indicator']) ? $field['ill_indicator'] : null;
+            $code = $field['ill_indicator'] ?? null;
             if (isset($code) && in_array($code, $allowedCodes)) {
                 return true;
             }
