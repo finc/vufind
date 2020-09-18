@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 
 namespace Bsz\Config;
@@ -31,7 +33,7 @@ use Zend\Db\TableGateway\TableGateway;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Libraries extends TableGateWay
+class Libraries extends TableGateway
 {
 
     const ID_BAWUE = 1;
