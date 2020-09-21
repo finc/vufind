@@ -19,8 +19,11 @@
  *
  */
 
-  // Set page title.
-  $this->headTitle($this->translate('email_selected_favorites'));
+
+// Set page title.
+use Zend\View\Helper\HeadScript;
+
+$this->headTitle($this->translate('email_selected_favorites'));
 
 // Set up breadcrumbs:
 $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
@@ -62,6 +65,6 @@ $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink
     $('#itemhide').removeClass('in');
 JS;
     ?>
-    <?= $this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET') ?>
-<div class="nofloat"></div>
+    <?= $this->inlineScript(HeadScript::SCRIPT, $script, 'SET') ?>
+    <div class="nofloat"></div>
 </div>

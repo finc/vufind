@@ -1,26 +1,10 @@
 <?php
-/*
- * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
- * Württemberg, Konstanz, Germany
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
+
 
     // Set page title.
-    $this->headTitle($this->translate('Export Favorites'));
+use Zend\View\Helper\HeadScript;
+
+$this->headTitle($this->translate('Export Favorites'));
 
 // Set up breadcrumbs:
 $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
@@ -64,7 +48,9 @@ $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink
             <select name="format" id="format" class="form-control">
                 <?php $firstOption = null; ?>
                 <?php foreach ($this->exportOptions as $exportOption): ?>
-                    <?php if ($firstOption == null) $firstOption = $exportOption; ?>
+                    <?php if ($firstOption == null) {
+    $firstOption = $exportOption;
+} ?>
                     <option value="<?= $this->escapeHtmlAttr($exportOption) ?>"<?php if ($this->export()->needsRedirect($exportOption)): ?> data-redirect<?php endif; ?>><?= $this->transEsc($this->export()->getLabelForFormat($exportOption)) ?></option>
                 <?php endforeach; ?>
             </select>
@@ -95,4 +81,4 @@ $script = <<<JS
   }).trigger('change');
 JS;
 ?>
-<?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET') ?>
+<?=$this->inlineScript(HeadScript::SCRIPT, $script, 'SET') ?>

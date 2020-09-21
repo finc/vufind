@@ -52,7 +52,7 @@ $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('Shibbol
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        var isilsSession = new Array();
+        var isilsSession = [];
         <?php foreach ($this->client()->getIsils() as $isil): ?>
         isilsSession.push('<?=$this->escapeHtml($isil)?>');
         <?php endforeach; ?>
