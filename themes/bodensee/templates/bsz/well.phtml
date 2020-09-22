@@ -36,7 +36,7 @@
             <?php if ($settings->offsetExists('image_link')):?>
                 <a href="<?=$settings->offsetGet('image_link')?>" class="external">
             <?php endif; ?>
-            <img class="pull-right img-responsive" src="<?=$this->imageLink($img)?>" alt="<?=$this->transEsc($settings->offsetGet('image_alt'))?>"/>
+            <img class="pull-right img-responsive grayscale" src="<?=$this->imageLink($img)?>" alt="<?=$this->transEsc($settings->offsetGet('image_alt'))?>"/>
             <?php if ($settings->offsetExists('image_link')):?>
                 </a>
             <?php endif; ?>
