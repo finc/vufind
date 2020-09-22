@@ -1,4 +1,24 @@
 <?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
   // Set page title.
 use Zend\View\Helper\HeadScript;
 
@@ -15,11 +35,11 @@ $this->headTitle($this->translate('Search Home'));
     // Set up search box:
   $this->layout()->searchbox = $this->context($this)->renderInContext(
       'search/searchbox.phtml',
-      array(
+      [
 
         'searchClassId' => $this->searchClassId,
 
-      )
+      ]
   );
 
   // Load search actions and settings (if any):
@@ -48,7 +68,7 @@ $this->headTitle($this->translate('Search Home'));
           <div class="jumbotron">
 
           <?php if (!empty($this->layout()->userLang)): ?>
-            <?= $this->render('bsz/home/'.$this->layout()->userLang.'.phtml')?>
+              <?= $this->render('bsz/home/' . $this->layout()->userLang . '.phtml') ?>
           <?php endif; ?>
           </div>
       </div>
@@ -63,41 +83,46 @@ $this->headTitle($this->translate('Search Home'));
     <?php foreach ($facetList as $field => $details): ?>
       <?php if (isset($this->hierarchicalFacets) && in_array($field, $this->hierarchicalFacets)): ?>
         <?php $this->headScript()->appendFile('vendor/jsTree/jstree.min.js', null, ['async' => true]); ?>
-        <?php $this->headScript()->appendFile('facets.js', null, ['async' => true]); ?>
-        <?php $sort = isset($this->hierarchicalFacetSortOptions[$field]) ? $this->hierarchicalFacetSortOptions[$field] : ''; ?>
-        <?php
-        $script = <<<JS
+            <?php $this->headScript()->appendFile('facets.js', null, ['async' => true]); ?>
+            <?php $sort = isset($this->hierarchicalFacetSortOptions[$field]) ? $this->hierarchicalFacetSortOptions[$field] : ''; ?>
+            <?php
+            $script = <<<JS
 $(document).ready(function() {
   initFacetTree($('#facet_{$this->escapeHtml($field)}'), false);
 });
 JS;
-        ?>
-        <?=$this->inlineScript(HeadScript::SCRIPT, $script, 'SET'); ?>
-        <div class="facet <?=$field=='callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
-          <p class="lead"><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></p>
-          <div id="facet_<?=$this->escapeHtml($field)?>" class="jstree-facet"
-              data-facet="<?=$this->escapeHtml($field)?>"
-              data-path="<?=$this->url($basicSearch)?>"
-              data-exclude="0"
-              data-operator="AND"
-              data-exclude-title="<?=$this->transEsc('exclude_facet')?>"
-              data-sort="all">
-          </div>
-        </div>
-        <noscript>
-      <?php endif; ?>
-      <?php $sortedList = $this->sortFacetList($this->results, $field, $details['list'], $basicSearch); ?>
-      <div class="<?=$field=='callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
-        <p class="lead"><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></p>
-        <div class="row">
-          <ul class="list-unstyled <?=$field == "callnumber-first" ? 'col-sm-6' : 'col-sm-12' ?>">
-          <?php /* Special case: two columns for LC call numbers... */ ?>
-          <?php if ($field == "callnumber-first"): ?>
-            <?php $i = 0; foreach ($sortedList as $url => $value): ?>
-              <?php if (!empty($value)): ?>
-                <li><a href="<?=$url?>"><?=$this->escapeHtml($value)?></a></li>
-              <?php else: $i--; ?>
-              <?php endif; ?>
+            ?>
+            <?= $this->inlineScript(HeadScript::SCRIPT, $script, 'SET'); ?>
+            <div class="facet <?= $field == 'callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
+                <p class="lead"><?= $this->transEsc('home_browse') . ' ' . $this->transEsc($details['label']) ?></p>
+                <div id="facet_<?= $this->escapeHtml($field) ?>" class="jstree-facet"
+                     data-facet="<?= $this->escapeHtml($field) ?>"
+                     data-path="<?= $this->url($basicSearch) ?>"
+                     data-exclude="0"
+                     data-operator="AND"
+                     data-exclude-title="<?= $this->transEsc('exclude_facet') ?>"
+                     data-sort="all">
+                </div>
+            </div>
+            <noscript>
+        <?php endif; ?>
+        <?php $sortedList = $this->sortFacetList($this->results, $field, $details['list'], $basicSearch); ?>
+        <div class="<?= $field == 'callnumber-first' ? 'col-sm-6' : 'col-sm-3' ?>">
+            <p class="lead"><?= $this->transEsc('home_browse') . ' ' . $this->transEsc($details['label']) ?></p>
+            <div class="row">
+                <ul class="list-unstyled <?= $field == "callnumber-first" ? 'col-sm-6' : 'col-sm-12' ?>">
+                    <?php /* Special case: two columns for LC call numbers... */ ?>
+                    <?php if ($field == "callnumber-first"): ?>
+                    <?php $i = 0;
+                    foreach ($sortedList
+
+                    as $url => $value): ?>
+                    <?php if (!empty($value)): ?>
+                        <li>
+                            <a href="<?= $url ?>"><?= $this->escapeHtml($value) ?></a>
+                        </li>
+                    <?php else: $i--; ?>
+                    <?php endif; ?>
               <?php if (++$i == 10): ?>
                 </ul><ul class="list-unstyled col-sm-6">
               <?php endif; ?>

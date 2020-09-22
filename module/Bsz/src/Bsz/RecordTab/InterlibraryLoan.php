@@ -1,6 +1,7 @@
 <?php
-/**
- * Copyright 2020 (C)5 Bibliotheksservice Zentrum, Konstanz, Germany
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,13 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 namespace Bsz\RecordTab;
 
 use Bsz\Config\Library;
+use Bsz\ILL\Logic;
 use Exception;
 use VuFind\RecordTab\AbstractBase;
-use Bsz\ILL\Logic;
 
 class InterlibraryLoan extends AbstractBase
 {
@@ -36,7 +36,6 @@ class InterlibraryLoan extends AbstractBase
      * @var array
      */
     protected $library;
-
 
     /**
      * InterlibraryLoan constructor.

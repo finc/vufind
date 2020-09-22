@@ -1,6 +1,9 @@
 <?php
   // Set page title.
-  $this->headTitle($this->translate('Search Home'));
+use Zend\View\Helper\HeadScript;
+use Zend\View\Helper\InlineScript;
+
+$this->headTitle($this->translate('Search Home'));
 
   // Disable top search box -- this page has a special layout.
   $this->layout()->searchbox = $this->render('search/searchbox.phtml');
@@ -16,7 +19,6 @@
   $advSearch = $options->getAdvancedSearchAction();
 
   $this->layout()->breadcrumbs = false;
-
 
   $library = $this->libraries()->getFirstActive($this->client()->getIsils());
 
@@ -52,17 +54,17 @@ JS;
               <img class="img-responsive" src="<?=$this->imageLink('logo/bsz.svg')?>" alt="BSZ Logo" />
           </div>
       <?php else: ?>
-          <div class="<? if($this->client()->getTag() == "athen"):?>col-md-12<? else: ?>col-md-8<? endif; ?>  hidden-sm hidden-xs">
+          <div class="<?php if ($this->client()->getTag() == "athen"):?>col-md-12<?php else: ?>col-md-8<?php endif; ?>  hidden-sm hidden-xs">
               <?php if ($this->imageLink($this->clientAsset()->getHeader())): ?>
               <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" class="img-responsive" alt="Aufmacherbild" />
               <?php endif; ?>
           </div>
       <?php endif; ?>
-      <? if($this->client()->getTag() != 'athen'):?>
+      <?php if ($this->client()->getTag() != 'athen'):?>
       <div class="col-xs-6 col-sm-4 pull-right">
           <?=$this->clientAsset()->getLogoHtml()?>
       </div>
-      <? endif; ?>
+      <?php endif; ?>
   </div>
   <div class="row ">
       <div class="col-sm-12">
@@ -88,7 +90,7 @@ JS;
             <?=$this->flashmessages()?>
             <div class="specialhome">
                 <?php if ($this->client()->is('special_home')): ?>
-                    <?= $this->render('bsz/'.$this->client()->getTag().'/'.$this->layout()->userLang.'.phtml')?>
+                    <?= $this->render('bsz/' . $this->client()->getTag() . '/' . $this->layout()->userLang . '.phtml')?>
                 <?php endif; ?>
             </div>
         </div>
@@ -97,14 +99,14 @@ JS;
     <?php if ($this->client()->is('show_rss_feed_home')): ?>
         <div id="RSSFeedResultsDeferred" class="col-sm-6">
             <p><?=$this->transEsc("Loading")?>... <img src="<?=$this->imageLink('ajax_loading.gif')?>" /></p>
-            <?=$this->inlineScript(\Zend\View\Helper\InlineScript::SCRIPT, "var url = VuFind.path + '/AJAX/Recommend?mod=StartPageNews';$('#RSSFeedResultsDeferred').load(url);", 'SET')?></div>
+            <?=$this->inlineScript(InlineScript::SCRIPT, "var url = VuFind.path + '/AJAX/Recommend?mod=StartPageNews';$('#RSSFeedResultsDeferred').load(url);", 'SET')?></div>
     <?php endif; ?>
 
 
-  <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $ilsStatusScript, 'SET'); ?>
+  <?=$this->inlineScript(HeadScript::SCRIPT, $ilsStatusScript, 'SET'); ?>
 
   <?//$this->context($this)->renderInContext("search/searchbox.phtml", ['ignoreHiddenFilterMemory' => true])?>
-  <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, '$("#searchForm_lookfor").focus();', 'SET'); ?>
+  <?=$this->inlineScript(HeadScript::SCRIPT, '$("#searchForm_lookfor").focus();', 'SET'); ?>
 </div>
 
 <?php if (isset($facetList) && is_array($facetList)): ?>
@@ -121,7 +123,7 @@ $(document).ready(function() {
 });
 JS;
         ?>
-        <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $script, 'SET'); ?>
+        <?=$this->inlineScript(HeadScript::SCRIPT, $script, 'SET'); ?>
         <div class="home-facet <?=$this->escapeHtmlAttr($field) ?>">
           <h2><?=$this->transEsc('home_browse') . ' ' . $this->transEsc($details['label'])?></h2>
           <div id="facet_<?=$this->escapeHtml($field)?>" class="jstree-facet"

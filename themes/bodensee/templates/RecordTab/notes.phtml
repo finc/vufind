@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
  * Württemberg, Konstanz, Germany
@@ -23,18 +23,18 @@
 $this->headTitle($this->translate('ContainedNotes') . ': ' . $this->driver->getBreadcrumb());
 
 ?>
-    <? $notes = $this->driver->getNotes(); if (!empty($notes)): ?>
-        <? $contentDisplayed = true; ?>
+    <?php $notes = $this->driver->getNotes(); if (!empty($notes)): ?>
+        <?php $contentDisplayed = true; ?>
         <ul>
-            <? foreach ($notes as $field): ?>
+            <?php foreach ($notes as $field): ?>
                 <li>
                     <?=$this->escapeHtml($field)?>
                 </li>
-            <? endforeach; ?>
+            <?php endforeach; ?>
         </ul>
-    <? endif; ?>
+    <?php endif; ?>
 
-    <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
+    <?php if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above?>
         <tr><td><?=$this->transEsc('NoContainedNotes')?></td></tr>
-    <? endif; ?>
+    <?php endif; ?>
 

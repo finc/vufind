@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,8 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
-
 namespace Bsz\ILL;
 
 use Bsz\RecordDriver\SolrGviMarc;
@@ -32,9 +33,7 @@ use Zend\Http\Response;
  */
 class Holding
 {
-
-     /**
-     *
+    /**
      * @var array
      */
     protected $isxns = [];
@@ -83,6 +82,7 @@ class Holding
     {
         $this->runner = $runner;
     }
+
     /**
      * Set ISBNs
      *
@@ -162,6 +162,7 @@ class Holding
         }
         return $this;
     }
+
     /**
      * Set ZDB ID for good journal search results
      *
@@ -177,7 +178,6 @@ class Holding
         return $this;
     }
 
-
     /**
      * Query solr
      *
@@ -192,16 +192,16 @@ class Holding
             $params['filter'] = 'consortium:' . $this->network;
         }
         if (!empty($this->title)) {
-            $and[] = 'title:"'.$this->title.'"';
+            $and[] = 'title:"' . $this->title . '"';
         }
         if (!empty($this->author)) {
-            $and[] = 'author:"'.$this->author.'"';
+            $and[] = 'author:"' . $this->author . '"';
         }
         if (!empty($this->year)) {
-            $and[] = 'publish_date:'.$this->year;
+            $and[] = 'publish_date:' . $this->year;
         }
         if (!empty($this->zdbId)) {
-            $and[] = 'zdb_id:'.$this->zdbId;
+            $and[] = 'zdb_id:' . $this->zdbId;
         }
 
         if (count($this->isxns) > 0) {
@@ -224,6 +224,7 @@ class Holding
 
         return $this->parse($results);
     }
+
     /**
      * process the response
      *
@@ -242,8 +243,8 @@ class Holding
                 foreach ($f924 as $field) {
                     $libraries[] = [
                         'isil' => $field['isil'],
-                        'callnumber' => isset($field['call_number']) ? $field['call_number'] : '',
-                        'issue' => isset($field['issue']) ? $field['issue'] : ''
+                        'callnumber' => $field['call_number'] ?? '',
+                        'issue' => $field['issue'] ?? ''
                     ];
                 }
 
@@ -260,9 +261,9 @@ class Holding
         }
         return $return;
     }
+
     /**
      * Checks if all needed params are set.
-     *
      * @return boolean
      */
     public function checkQuery()
@@ -276,12 +277,14 @@ class Holding
         }
         return false;
     }
+
     /**
      * Check whether parallel editions exist
      *
      * @param array $ppns
      * @param array $isil
      * s
+     *
      * @return array
      */
     public function getParallelEditions($ppns, $isils)
@@ -290,7 +293,7 @@ class Holding
 
         foreach ($ppns as $k => $ppn) {
             // escape braces
-            $ppns[$k] = 'id:'.str_replace(['(', ')'], ['\(', '\)'], $ppn);
+            $ppns[$k] = 'id:' . str_replace(['(', ')'], ['\(', '\)'], $ppn);
         }
         $orLookfor = implode(' OR ', $ppns);
         $lookfor[] = $orLookfor;

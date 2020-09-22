@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,11 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
-
 namespace Bsz\RecordDriver;
 
-use Bsz\Config\Client;
 use Bsz\FormatMapper;
 use Exception;
 use File_MARC;
@@ -34,7 +34,6 @@ use VuFind\RecordDriver\MarcReaderTrait;
 use VuFind\Search\SearchRunner;
 use VuFindCode\ISBN;
 
-
 /**
  * This is the base BSZ SolrMarc class
  *
@@ -42,7 +41,6 @@ use VuFindCode\ISBN;
  */
 class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
-
     use IlsAwareTrait;
     use MarcReaderTrait;
     use MarcAdvancedTrait;
@@ -351,7 +349,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         return false;
     }
 
-
     /**
      * Determine  if a record is freely available.
      * Indicator 2 references to the record itself.
@@ -391,12 +388,10 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $result = [];
 
         foreach ($f924 as $field) {
-
             $subfields = $field->getSubfields();
             $arrsub = [];
 
             foreach ($subfields as $subfield) {
-
                 $code = $subfield->getCode();
                 $data = $subfield->getData();
 
@@ -404,7 +399,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                     $mapping = $mappings[$code];
                     if (array_key_exists($mapping, $arrsub)) {
                         // recurring subfields are temporarily concatenated to a string
-                        $data = $arrsub[$mapping] .' | '.$data;
+                        $data = $arrsub[$mapping] . ' | ' . $data;
                     }
                     $arrsub[$mapping] = $data;
                 }
@@ -446,7 +441,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function getFieldsArray($fields)
     {
         foreach ($fields as $no => $subfield) {
-            $raw = $this->getFieldArray($no, (array) $subfield, true);
+            $raw = $this->getFieldArray($no, (array)$subfield, true);
             if (count($raw) > 0 && !empty($raw[0])) {
                 return $raw;
             }
@@ -607,7 +602,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      *
      * @return string
      */
-
     public function getPPN(): string
     {
         $m001 = $this->getMarcRecord()->getField('001');
@@ -753,12 +747,10 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         return $this->cleanString($subTitle);
     }
 
-
     /**
      * Used in ResultScroller Class. Does not work when string is interlending
      * @return string
      */
-
     public function getResourceSource()
     {
         $id = $this->getSourceIdentifier();
@@ -811,6 +803,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
                 $f007_1 = $data{1};
             }
         }
-        return $f007_0.$f007_1;
+        return $f007_0 . $f007_1;
     }
 }

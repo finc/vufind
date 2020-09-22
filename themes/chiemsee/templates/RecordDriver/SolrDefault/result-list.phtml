@@ -1,4 +1,24 @@
 <?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
 $hiddenFilterString = '';
 foreach ($hiddenFilters as $key => $filter) {
@@ -69,14 +89,16 @@ foreach ($hiddenFilters as $key => $filter) {
         $i = 0;
         foreach ($dedupData as $source => $current) {
             if (++$i == 1) {
-                ?><span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", array(), $source)?></a></span><?php
-            } else {
-                if ($i == 2) {
-                    ?> <span class="otherSources">(<?=$this->transEsc('Other Sources')?>: <?php
-                } else {
-                    ?>, <?php
-                } ?><a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", array(), $source)?></a><?php
-            }
+          ?><span class="currentSource"><a
+                  href="<?= $this->recordLink()->getUrl($this->driver) ?>"><?= $this->transEsc("source_$source", [], $source) ?></a>
+          </span><?php
+      } else {
+      if ($i == 2) {
+      ?> <span class="otherSources">(<?= $this->transEsc('Other Sources') ?>: <?php
+              } else {
+                  ?>, <?php
+              } ?><a href="<?= $this->recordLink()->getUrl($current['id']) ?>"><?= $this->transEsc("source_$source", [], $source) ?></a><?php
+              }
         }
         if ($i > 1) {
             ?>)</span><?php
@@ -113,12 +135,12 @@ foreach ($hiddenFilters as $key => $filter) {
       $openUrlActive = $openUrl->isActive();
       $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
       if (!is_array($urls)) {
-          $urls = array();
+          $urls = [];
       } ?>
 
       <?php  if (!empty($urls)): ?>
         <?php if (!is_array($urls)) {
-          $urls = array();
+              $urls = [];
       }
           if (!$this->driver->isCollection()):
             foreach ($urls as $current): ?>
@@ -142,7 +164,7 @@ foreach ($hiddenFilters as $key => $filter) {
       <?php if ($QRCode = $this->record($this->driver)->getQRCode("results")): ?>
         <?php
           // Add JS Variables for QrCode
-          $this->jsTranslations()->addStrings(array('qrcode_hide' => 'qrcode_hide', 'qrcode_show' => 'qrcode_show'));
+          $this->jsTranslations()->addStrings(['qrcode_hide' => 'qrcode_hide', 'qrcode_show' => 'qrcode_show']);
         ?>
         <span class="hidden-xs">
           <i class="fa fa-fw fa-qrcode"></i> <a href="<?=$this->escapeHtmlAttr($QRCode);?>" class="qrcodeLink"><?=$this->transEsc('qrcode_show')?></a>
@@ -168,17 +190,21 @@ foreach ($hiddenFilters as $key => $filter) {
       <?php /* Hierarchy tree link */ ?>
       <?php $trees = $this->driver->tryMethod('getHierarchyTrees'); if (!empty($trees)): ?>
         <?php foreach ($trees as $hierarchyID => $hierarchyTitle): ?>
-          <div class="hierarchyTreeLink">
-            <input type="hidden" value="<?=$this->escapeHtmlAttr($hierarchyID)?>" class="hiddenHierarchyId" />
-            <i class="fa fa-fw fa-sitemap"></i>
-            <a class="hierarchyTreeLinkText modal-link" href="<?=$this->recordLink()->getTabUrl($this->driver, 'HierarchyTree')?>?hierarchy=<?=urlencode($hierarchyID)?>#tabnav" title="<?=$this->transEsc('hierarchy_tree')?>">
-              <?=$this->transEsc('hierarchy_view_context')?><?php if (count($trees) > 1): ?>: <?=$this->escapeHtml($hierarchyTitle)?><?php endif; ?>
-            </a>
-          </div>
-        <?php endforeach; ?>
+              <div class="hierarchyTreeLink">
+                  <input type="hidden"
+                         value="<?= $this->escapeHtmlAttr($hierarchyID) ?>"
+                         class="hiddenHierarchyId"/>
+                  <i class="fa fa-fw fa-sitemap"></i>
+                  <a class="hierarchyTreeLinkText modal-link"
+                     href="<?= $this->recordLink()->getTabUrl($this->driver, 'HierarchyTree') ?>?hierarchy=<?= urlencode($hierarchyID) ?>#tabnav"
+                     title="<?= $this->transEsc('hierarchy_tree') ?>">
+                      <?= $this->transEsc('hierarchy_view_context') ?><?php if (count($trees) > 1): ?>: <?= $this->escapeHtml($hierarchyTitle) ?><?php endif; ?>
+                  </a>
+              </div>
+          <?php endforeach; ?>
       <?php endif; ?>
 
-      <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
+        <?= $this->driver->supportsCoinsOpenUrl() ? '<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()) . '"></span>' : '' ?>
     </div>
   </div>
 </div>

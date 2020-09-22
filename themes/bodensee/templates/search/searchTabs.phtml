@@ -1,15 +1,17 @@
-<? if (count($searchTabs) > 0): ?>
-  <ul class="nav nav-tabs" role="menu">
-    <? foreach ($searchTabs as $tab): ?>
-        <? if ($this->permission()->allowDisplay($tab['permission'])): ?>
-          <li<?=$tab['selected'] ? ' class="active"' : ''?> id="<?=$this->transEsc(strtolower($tab['id']))?>" role="none presentation">
-            <a <?=$tab['selected'] ? '' : 'href="' . $this->escapeHtmlAttr($tab['url']) . '"' ?>>
-                <i class="fa <?=$this->escapeHtmlAttr($tab['icon'])?>"></i>
-                <span class="text"><?=$this->transEsc($tab['label']); ?></span></a>
-          </li>
-        <? elseif ($block = $this->permission()->getAlternateContent($tab['permission'])): ?>
-            <?=$block?>
-        <? endif; ?>
-    <? endforeach; ?>
-  </ul>
-<? endif; ?>
+<?php if (count($searchTabs) > 0): ?>
+    <ul class="nav nav-tabs" role="menu">
+        <?php foreach ($searchTabs as $tab): ?>
+            <?php if ($this->permission()->allowDisplay($tab['permission'])): ?>
+                <li<?= $tab['selected'] ? ' class="active"' : '' ?>
+                        id="<?= $this->transEsc(strtolower($tab['id'])) ?>"
+                        role="none presentation">
+                    <a <?= $tab['selected'] ? '' : 'href="' . $this->escapeHtmlAttr($tab['url']) . '"' ?>>
+                        <i class="fa <?= $this->escapeHtmlAttr($tab['icon']) ?>"></i>
+                        <span class="text"><?= $this->transEsc($tab['label']); ?></span></a>
+                </li>
+            <?php elseif ($block = $this->permission()->getAlternateContent($tab['permission'])): ?>
+                <?= $block ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>

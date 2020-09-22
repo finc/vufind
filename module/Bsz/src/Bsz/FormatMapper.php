@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2020 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,8 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
-
 namespace Bsz;
 
 /**
@@ -26,7 +27,6 @@ namespace Bsz;
  * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-
 class FormatMapper
 {
     /**
@@ -177,12 +177,11 @@ class FormatMapper
                 $return = 'vhs';
             } elseif (in_array('newspaper', $formats)) {
                 $return = 'newspaper';
-            }  elseif (in_array('mapmaterial', $formats)) {
+            } elseif (in_array('mapmaterial', $formats)) {
                 $return = 'map';
-            }
-            // fallback: besser neutral als article
+            } // fallback: besser neutral als article
             else {
-                $return =  'unknown';
+                $return = 'unknown';
             }
         }
         return 'bsz bsz-' . $return;

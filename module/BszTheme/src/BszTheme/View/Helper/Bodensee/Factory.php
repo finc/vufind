@@ -1,14 +1,12 @@
 <?php
-/**
- * Factory for Bootstrap view helpers.
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
- * PHP version 5
- *
- * Copyright (C) Villanova University 2014.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,13 +15,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * @category VuFind2
- * @package  View_Helpers
- * @author   Demian Katz <demian.katz@villanova.edu>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
 namespace BszTheme\View\Helper\Bodensee;
 
@@ -31,7 +24,6 @@ use Bsz\Config\Client;
 use Bsz\Config\Library;
 use Bsz\Exception;
 use Interop\Container\ContainerInterface;
-use VuFind\Config\Locator;
 
 /**
  * Factory for Bootstrap view helpers.
@@ -53,7 +45,7 @@ class Factory
      *
      * @return Flashmessages
      */
-    public static function getFlashmessages(ContainerInterface$container)
+    public static function getFlashmessages(ContainerInterface $container)
     {
         $messenger = $container->get('ControllerPluginManager')
             ->get('FlashMessenger');
@@ -67,7 +59,7 @@ class Factory
      *
      * @return LayoutClass
      */
-    public static function getLayoutClass(ContainerInterface$container)
+    public static function getLayoutClass(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config');
         $left = !isset($config->Site->sidebarOnLeft)
@@ -85,6 +77,7 @@ class Factory
         }
         return new LayoutClass($left, $offcanvas);
     }
+
     /**
      * Construct the OpenUrl helper.
      *
@@ -92,7 +85,7 @@ class Factory
      *
      * @return OpenUrl
      */
-    public static function getOpenUrl(ContainerInterface$container)
+    public static function getOpenUrl(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config');
         $client = $container->get('Bsz\Config\Client');
@@ -121,7 +114,7 @@ class Factory
      *
      * @return Record
      */
-    public static function getRecord(ContainerInterface$container)
+    public static function getRecord(ContainerInterface $container)
     {
         return new Record(
             $container->get('VuFind\Config')->get('config'),
@@ -137,7 +130,7 @@ class Factory
      * @return RecordLink
      * @throws Exception
      */
-    public static function getRecordLink(ContainerInterface$container)
+    public static function getRecordLink(ContainerInterface $container)
     {
         $client = $container->get(Client::class);
         $libraries = $container->get('Bsz\Config\Libraries');
@@ -162,7 +155,7 @@ class Factory
      *
      * @return GetLastSearchLink
      */
-    public static function getSearchMemory(ContainerInterface$container)
+    public static function getSearchMemory(ContainerInterface $container)
     {
         return new SearchMemory(
             $container->get('VuFind\Search\Memory')
@@ -176,7 +169,7 @@ class Factory
      *
      * @return Piwik
      */
-    public static function getPiwik(ContainerInterface$container)
+    public static function getPiwik(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config');
         $url = isset($config->Piwik->url) ? $config->Piwik->url : false;
@@ -188,14 +181,14 @@ class Factory
         return new Piwik($url, $siteId, $customVars, $globalSiteId);
     }
 
-            /**
+    /**
      * Construct the SearchTabs helper.
      *
      * @param ContainerInterface$container Service manager.
      *
      * @return SearchTabs
      */
-    public static function getSearchTabs(ContainerInterface$container)
+    public static function getSearchTabs(ContainerInterface $container)
     {
         return new SearchTabs(
             $container->get('VuFind\SearchResultsPluginManager'),
@@ -204,12 +197,11 @@ class Factory
         );
     }
 
-
     /**
      * @param ContainerInterface $container
      * @return IllForm
      */
-    public static function getIllForm(ContainerInterface$container)
+    public static function getIllForm(ContainerInterface $container)
     {
         $request = $container->get('request');
         // params from form submission

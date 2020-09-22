@@ -1,11 +1,11 @@
-<?
+<?php
     // Set page title.
     $this->headTitle($this->translate('Volumes') . ': ' . $this->driver->getBreadcrumb());
 
-    $content = $this->tab->getContent();        
+    $content = $this->tab->getContent();
 ?>
-<? if(isset($content) && count($content) > 0): ?>
-<? $rand = rand(0, 9999)?>
+<?php if (isset($content) && count($content) > 0): ?>
+<?php $rand = rand(0, 9999)?>
 <table class="table table-striped table-condensed tablesorter tablesorter-bootstrap">
     <thead>
         <tr>
@@ -17,16 +17,16 @@
     </thead>
     <tbody>
         
-    <? $count = 1; foreach ($content as $result): ?>
-        <tr <? if ($count > 10): ?> class="showmore-<?=$rand?> collapse multi-collapse"<? endif; ?>>
+    <?php $count = 1; foreach ($content as $result): ?>
+        <tr <?php if ($count > 10): ?> class="showmore-<?=$rand?> collapse multi-collapse"<?php endif; ?>>
             <td><a class="internal"  href="<?=$this->recordLink()->getUrl($result)?>"><?=$this->string()->cleanEsc($result->getTitle())?> <?=$this->string()->cleanEsc($result->getTitleSection())?></a></td>
-            <td><?=implode(', ',$result->getPublicationDates())?></td>
+            <td><?=implode(', ', $result->getPublicationDates())?></td>
             <td><?=$this->string()->cleanEsc($result->getVolumeNumber())?></td>            
             <td><?=$result->getPrimaryAuthor()?></td>
         </tr>
-        <? $count++ ?>  
-    <? endforeach; ?>    
-    <? if ($count > 10): ?>
+        <?php $count++ ?>  
+    <?php endforeach; ?>    
+    <?php if ($count > 10): ?>
     </tbody>
     <tfoot>
         <tr><td>
@@ -35,7 +35,7 @@
             </button>    
         </td></tr>
     </tfoot>
-    <? endif; ?>        
+    <?php endif; ?>        
 </table>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -44,6 +44,6 @@
        }); 
     });
 </script>
-<? else: ?>
+<?php else: ?>
 <p><?=$this->transEsc('nohit_heading')?></p>
-<? endif; ?>
+<?php endif; ?>

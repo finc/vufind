@@ -1,16 +1,20 @@
 <div class="row" vocab="http://schema.org/" resource="#record">
     <div class="col-xs-10 col-sm-3 pull-right">
-        <?php /* Display thumbnail if appropriate: */ ?>
+
+        use
+        Bsz\RecordDriver\SolrNtrsoai;<?php /* Display thumbnail if appropriate: */ ?>
         <?php $formats = $this->driver->getFormats();
 
-           $format = array_shift($formats);
-           //$this->format = $this->mapper()->mapIcon($format);
+        $format = array_shift($formats);
+        //$this->format = $this->mapper()->mapIcon($format);
         ?>
         <?php $mediumThumb = $this->record($this->driver)->getThumbnail('medium');
-           $largeThumb = $this->record($this->driver)->getThumbnail('large'); ?>
+        $largeThumb = $this->record($this->driver)->getThumbnail('large'); ?>
         <?php if ($mediumThumb): ?>
-          <?php if ($largeThumb): ?>
-          <a class="modal-popup cover" data-toggle="modal" href="#" data-img-url="<?=$this->escapeHtmlAttr($largeThumb);?>" data-title="<?= $this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection()) ?>">
+    <?php if ($largeThumb): ?>
+        <a class="modal-popup cover" data-toggle="modal" href="#"
+           data-img-url="<?= $this->escapeHtmlAttr($largeThumb); ?>"
+           data-title="<?= $this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection()) ?>">
           <?php endif; ?>
             <img alt="" class="recordcover <?=$this->
                   mapper()->mapIcon($this->driver->getFormats())?>" src="<?=$this->escapeHtmlAttr($mediumThumb);?>"/>
@@ -120,54 +124,63 @@
       </tr>
       <?php endif; ?>
 
-      <?php if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
-      <tr>
-        <th><?=$this->transEsc('Other Authors')?>: </th>
-        <td>
-          <?php $i = 0; foreach ($authors['secondary'] as $field): ?><?=($i++ == 0)?'':', '?><span property="contributor"><a class="author" href="<?=$this->record($this->driver)->getLink('author', $field, $this->overrideRecordLink)?>"><?=$this->escapeHtml($field)?></a></span><?php endforeach; ?>
-        </td>
-      </tr>
-      <?php endif; ?>
-
-      <?php if ($this->driver instanceof \Bsz\RecordDriver\SolrNtrsoai):?>
-        <?php $institutes = $this->driver->getInstitutes() ?>
-        <?php if (isset($institutes) && !empty($institutes)): ?>
+        <?php if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
             <tr>
-                <th><?=$this->transEsc('Institute')?>: </th>
-                <td property="institute">
-                    <?php foreach ($institutes as $institute): ?>
-                        <div>
-                            <a class="author" href="<?=$this->record($this->driver)->getLink('institute', $institute, $this->overrideRecordLink)?>"><?=$this->transEsc($institute)?></a>
-                        </div>
-                    <?php endforeach; ?>
-                </td>
-            </tr>
-        <?php endif; ?>
-      <?php endif; ?>
-
-      <?php if ($this->driver instanceof \Bsz\RecordDriver\SolrNtrsoai):?>
-        <?php $documentLink = $this->driver->getDokumentLink(); if (!empty($documentLink)):?>
-        <tr>
-          <th><?=$this->transEsc('DocumentID')?>: </th>
-          <td>
-              <a href="<?=$documentLink['url']?>" class="external"><?=$this->escapeHtml($documentLink['desc'])?></a>
-          </td>
-        </tr>
-        <?php endif; ?>
-      <?php endif; ?>
-
-      <?php if ($this->driver instanceof \Bsz\RecordDriver\SolrNtrsoai):?>
-          <?php $copyright= $this->driver->getCopyright(); if (!empty($copyright)):?>
-            <tr>
-                <th><?=$this->transEsc('Rights')?>: </th>
+                <th><?= $this->transEsc('Other Authors') ?>:</th>
                 <td>
-                    <?=$this->escapeHtml($copyright)?>
+                    <?php $i = 0;
+                    foreach ($authors['secondary'] as $field): ?><?= ($i++ == 0) ? '' : ', ' ?>
+                        <span property="contributor"><a class="author"
+                                                        href="<?= $this->record($this->driver)->getLink('author', $field, $this->overrideRecordLink) ?>"><?= $this->escapeHtml($field) ?></a>
+                        </span><?php endforeach; ?>
                 </td>
             </tr>
-          <?php endif; ?>
-      <?php endif; ?>
+        <?php endif; ?>
 
-      <?php $source = $this->driver->getSource(); if (!empty($source)):?>
+        <?php if ($this->driver instanceof SolrNtrsoai): ?>
+            <?php $institutes = $this->driver->getInstitutes() ?>
+            <?php if (isset($institutes) && !empty($institutes)): ?>
+                <tr>
+                    <th><?= $this->transEsc('Institute') ?>:</th>
+                    <td property="institute">
+                        <?php foreach ($institutes as $institute): ?>
+                            <div>
+                                <a class="author"
+                                   href="<?= $this->record($this->driver)->getLink('institute', $institute, $this->overrideRecordLink) ?>"><?= $this->transEsc($institute) ?></a>
+                            </div>
+                        <?php endforeach; ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if ($this->driver instanceof SolrNtrsoai): ?>
+            <?php $documentLink = $this->driver->getDokumentLink();
+            if (!empty($documentLink)): ?>
+                <tr>
+                    <th><?= $this->transEsc('DocumentID') ?>:</th>
+                    <td>
+                        <a href="<?= $documentLink['url'] ?>"
+                           class="external"><?= $this->escapeHtml($documentLink['desc']) ?></a>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if ($this->driver instanceof SolrNtrsoai): ?>
+            <?php $copyright = $this->driver->getCopyright();
+            if (!empty($copyright)): ?>
+                <tr>
+                    <th><?= $this->transEsc('Rights') ?>:</th>
+                    <td>
+                        <?= $this->escapeHtml($copyright) ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        <?php endif; ?>
+
+        <?php $source = $this->driver->getSource();
+        if (!empty($source)): ?>
         <tr>
           <th><?=$this->transEsc('Source')?>: </th>
           <td>
@@ -276,12 +289,12 @@
       <?php endif; ?>
 
       <?php $childRecordCount = $this->driver->tryMethod('getChildRecordCount'); if ($childRecordCount): ?>
-      <tr>
-        <th><?=$this->transEsc('child_records')?>: </th>
-        <td>
-          <a href="<?=$this->recordLink()->getChildRecordSearchUrl($this->driver)?>"><?=$this->transEsc('child_record_count', array('%%count%%' => $childRecordCount))?></a>
-        </td>
-      </tr>
+          <tr>
+              <th><?= $this->transEsc('child_records') ?>:</th>
+              <td>
+                  <a href="<?= $this->recordLink()->getChildRecordSearchUrl($this->driver) ?>"><?= $this->transEsc('child_record_count', ['%%count%%' => $childRecordCount]) ?></a>
+              </td>
+          </tr>
       <?php endif; ?>
 
       <?=$this->render('RecordDriver/SolrDefault/parts/series.phtml')?>

@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,8 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
-
 namespace Bsz\Config;
 
 use Zend\Db\ResultSet\ResultSet;
@@ -25,15 +26,13 @@ use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-
 /**
  * Class for reading library config
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Libraries extends TableGateWay
+class Libraries extends TableGateway
 {
-
     const ID_BAWUE = 1;
     const ID_SAARLAND = 2;
     const ID_SACHSEN = 3;
@@ -93,7 +92,6 @@ class Libraries extends TableGateWay
             $select->where->and->in('isil', $isils);
         }
         return $this->selectWith($select);
-
     }
 
     /**
@@ -148,6 +146,7 @@ class Libraries extends TableGateWay
 
         return $this->selectWith($select);
     }
+
     /**
      * Get Libraries with Shibboleth IDP entry
      *
@@ -246,7 +245,6 @@ class Libraries extends TableGateWay
      */
     public function compareIsils($isils)
     {
-
         if (count($isils) !== count($this->libraries)) {
             return false;
         }

@@ -1,4 +1,6 @@
 <?php
+
+
 $this->headTitle($this->translate('Interlibrary Loan') . ': ' . $this->driver->getBreadcrumb());
 $content = $this->tab->getContent();
 $messages = $content['messages'];
@@ -18,7 +20,7 @@ if ($this->customUrl) {
 }
 ?>
 
-<?
+<?php
     $authMethod = $library ? $library->getAuth() : '';
     $account = $this->auth()->getManager();
 ?>
@@ -31,18 +33,21 @@ if ($this->customUrl) {
         <?php endforeach; ?>
     <?php endif; ?>
     <?php if (count($ppns) > 0): ?>
-            <? foreach ($ppns as $k => $id): ?>
-                <? if ($linklabels[$k] == 'ILL::library_opac'):?>
-                <li><?=$this->transEsc('ILL::library_opac')?>: <?=$this->recordLink()->linkPPN($this->driver)?></li>
-                <? else:?>
-                <li><a class="" href="<?='/Record/' . $id?>"><?php if(isset($linklabels[$k])): ?><?=$this->transEsc($linklabels[$k])?><?php else: ?><?=$id ?><?php endif; ?></a></li>
-                <? endif ?>
-            <? endforeach; ?>
+        <?php foreach ($ppns as $k => $id): ?>
+            <?php if ($linklabels[$k] == 'ILL::library_opac'): ?>
+                <li><?= $this->transEsc('ILL::library_opac') ?>
+                    : <?= $this->recordLink()->linkPPN($this->driver) ?></li>
+            <?php else: ?>
+                <li><a class=""
+                       href="<?= '/Record/' . $id ?>"><?php if (isset($linklabels[$k])): ?><?= $this->transEsc($linklabels[$k]) ?><?php else: ?><?= $id ?><?php endif; ?></a>
+                </li>
+            <?php endif ?>
+        <?php endforeach; ?>
     <?php else: ?>
-        <? $link = $this->recordLink()->linkPPN($this->driver) ?>
-        <? if (!empty($link)): ?>
-            <li><?=$this->transEsc('ILL::to_network_opac')?>: <?=$link ?></li>
-        <? endif; ?>
+        <?php $link = $this->recordLink()->linkPPN($this->driver) ?>
+        <?php if (!empty($link)): ?>
+            <li><?= $this->transEsc('ILL::to_network_opac') ?>: <?= $link ?></li>
+        <?php endif; ?>
     <?php endif; ?>
 
 </ul>
@@ -51,8 +56,9 @@ if ($this->customUrl) {
         <?=$this->transEsc('You must be logged in first')?>
     </div>
 <?php elseif ($status): ?>
-    <a title="<?= $this->transEsc('Interlibrary Loan') ?>" accesskey="" href="<?= $url ?>"
+    <a title="<?= $this->transEsc('Interlibrary Loan') ?>" accesskey=""
+       href="<?= $url ?>"
        id="illform"
-       class="<?= $this->escapeHtmlAttr($class) ?> btn btn-success btn-sm <? if ($this->customUrl): ?>external hasicon<? endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
+       class="<?= $this->escapeHtmlAttr($class) ?> btn btn-success btn-sm <?php if ($this->customUrl): ?>external hasicon<?php endif; ?>"><?= $this->transEsc('Recall as Interlibrary Loan') ?></a>
 <?php endif; ?>
 
