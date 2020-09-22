@@ -17,9 +17,13 @@ class ThemeInfoFactory extends \VuFindTheme\ThemeInfoFactory
      */
     public static function getThemeInfo(ServiceManager $sm)
     {
-        $host = $sm->get('Request')->getHeaders()->get('host')->getFieldValue();
-        $parts = explode('.', $host);
-        $tag = $parts[0] ?? 'swb';
+        $request = $sm->get('Request');
+        $tag = 'swb';
+        if ($request instanceof \Zend\Http\Request ) {
+            $host = $request->getHeaders()->get('host')->getFieldValue();
+            $parts = explode('.', $host);
+            $tag = $parts[0] ?? 'swb';
+        }
         return new ThemeInfo(realpath(APPLICATION_PATH . '/themes'), 'bodensee', $tag);
     }
 }
