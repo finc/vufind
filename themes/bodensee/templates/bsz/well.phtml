@@ -9,7 +9,7 @@
         <h5><?=$this->escapeHtml($heading)?></h5>
         <?php endif; ?>
         <?php if ($settings->offsetExists('link') && count($settings->get('link')) > 0): ?>
-        <ul>            
+        <ul>
             <?php foreach ($settings->get('link') as $k => $link): ?>
             <?php
                 if (strpos($link, '://') === false) {
@@ -31,7 +31,18 @@
         <?php if ($settings->get('text_' . $lang)): ?>
         <small style="margin-left: 0"><?=$this->escapeHtml($settings->get('text_' . $lang))?></small>
         <?php endif; ?>
+        <?php if ($settings->offsetExists('image') && $settings->offsetExists('image_alt')):?>
+            <? $img = $settings->offsetGet('image')?>
+            <?php if ($settings->offsetExists('image_link')):?>
+                <a href="<?=$settings->offsetGet('image_link')?>" class="external">
+            <?php endif; ?>
+            <img class="pull-right img-responsive" src="<?=$this->imageLink($img)?>" alt="<?=$this->transEsc($settings->offsetGet('image_alt'))?>"/>
+            <?php if ($settings->offsetExists('image_link')):?>
+                </a>
+            <?php endif; ?>
+        <?php endif; ?>
+
     </div>
-    
-    
+
+
 </div>
