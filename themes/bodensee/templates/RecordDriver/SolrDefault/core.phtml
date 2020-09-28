@@ -12,11 +12,9 @@
 <?
   $coverDetails = $this->record($this->driver)->getCoverDetails('core', 'medium', '#');
   $cover = $coverDetails['html'];
-  $thumbnail = false;
   $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
   if ($cover): ?>
     <? if ($coverDetails['html'] !== ''): ?>
-
           <?= $cover ?>
       <? endif; ?>
   <? else: ?>
