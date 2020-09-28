@@ -23,9 +23,11 @@
                     <? $count++ ?>
                 <? endforeach; ?>
           <? else: ?>
-            <a class="markjs searchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>" href="<?=$this->record($this->driver)->getLink('subject', $field, $this->searchClassId)?>"><?=trim($this->escapeHtml($field))?></a>
-            <? $count++ ?>
-          <? endif; ?>
+             <a class="markjs searchicon showmore-item <? if ($count >= 5): ?>hidden <? endif; ?>"
+                title="<?= $this->escapeHtmlAttr($field) ?>"
+                href="<?= $this->record($this->driver)->getLink('subject', $field, $this->searchClassId) ?>"><?= trim($this->escapeHtml($field)) ?></a>
+             <? $count++ ?>
+         <? endif; ?>
       </span>
       <? endforeach; ?>
       <? if($count > 5): ?>
