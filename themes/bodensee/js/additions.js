@@ -302,6 +302,9 @@ function manageActiveTab() {
 
     if (id === 'solr' || id === 'solr:filtered2') {
         console.info('ILL tab is active');
+        // jquery can't trigger a click on a bare text node.
+        // Pure javaSCript can.
+        $('.record-tabs a.interlibraryloan')[0].click();
     } else if (id === 'solr:filtered1' || id === 'solr:unfiltered' ) {
         console.info('Local tab is active');
         $('.record-tabs a.interlibraryloan').parent().hide();
