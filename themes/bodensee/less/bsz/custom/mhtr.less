@@ -17,14 +17,26 @@ body:not(.frame) {
 
 .navbar-brand.logo-top {
     height: 65px !important;
-    h1, h2, h4 {
-        margin-top: 0;
-        margin-bottom:0;
-        small {
-            color: white;
-        }
+    font-size: 18px;
+    line-height: 45px;
+    span {
+        font-size: 48px;
+    }
+    small {
+        white-space: nowrap;
     }
     &:hover {
         background-color: @brand-primary !important;
     }
+}
+
+.searchHomeContent {
+    div.row {
+        margin-top: -20px;
+        margin-bottom: 30px;
+    }
+}
+
+footer .well img:last-child {
+    margin-top: 15px;
 }
