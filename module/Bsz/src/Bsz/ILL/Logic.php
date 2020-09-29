@@ -158,9 +158,14 @@ class Logic
     /**
      * Fills the internal status array.
      * @return array
+     * @throws Exception
      */
     protected function determineStatus()
     {
+        if (null === $this->driver) {
+            throw new Exception('No driver set. Please attach a driver before use. ');
+        }
+
         $checks = $this->config->get('Checks')->get('methods');
         $checks = explode(', ', $checks);
 
