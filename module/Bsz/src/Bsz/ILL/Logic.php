@@ -21,6 +21,7 @@
  */
 namespace Bsz\ILL;
 
+use Bsz\Exception;
 use Bsz\RecordDriver\SolrMarc;
 use Zend\Config\Config;
 
@@ -96,10 +97,15 @@ class Logic
     /**
      * Map the driver formats to more simple ILL formats
      * @return string
+     * @throws Exception
      */
     private function getFormat()
     {
         $format = static::FORMAT_UNDEFINED;
+
+        if (null === $this->driver) {
+            throw new Exception('No driver set. Please attach a driver before use. ');
+        }
 
         if ($this->driver->isElectronic()) {
             if ($this->driver->isJournal() || $this->driver->isNewspaper()) {
