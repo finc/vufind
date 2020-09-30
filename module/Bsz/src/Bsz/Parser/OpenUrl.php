@@ -64,9 +64,14 @@ class OpenUrl
      * Map OpenURL params to ill form field names
      *
      * @return array
+     *
+     * qthrows Bsz\Exception
      */
     public function map2Form()
     {
+        if (null === $this->params) {
+            throw new \Bsz\Exception('Use setParams to assign the parameters first.');
+        }
         $mappedParams = [];
         foreach ($this->params as $param => $value) {
             $key = $this->map('Form', $param);
@@ -74,8 +79,8 @@ class OpenUrl
                 $mappedParams[$key] = urldecode($value);
             }
         }
-        if (isset($params['rft_genre']) && $this->params['rft_genre'] == 'book') {
-            $mappedParams['Verfasser'] = $mappedParams['AufsatzAutor    '];
+        if (isset($this->params['rft_genre']) && $this->params['rft_genre'] == 'book') {
+            $mappedParams['Verfasser'] = $mappedParams['AufsatzAutor'];
             unset($mappedParams['AufsatzAutor']);
         }
         return $mappedParams;
@@ -92,8 +97,8 @@ class OpenUrl
     protected function map($section, $key)
     {
         $newKey = '';
-        if ($this->config->get($section) !== null
-            && $this->config->get($section)->get($key) !== null
+        if ($this->config->offsetExists($section)
+            && $this->config->get($section)->offsetExists($key)
         ) {
             $newKey = $this->config->get($section)->get($key);
         }
