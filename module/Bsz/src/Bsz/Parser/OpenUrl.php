@@ -48,15 +48,19 @@ class OpenUrl
 
     /**
      *
-     * @param type $params
+     * @param array $params
      * @return $this
      */
-    public function setParams($params)
+    public function setParams(array $params)
     {
-        if (is_array($params)) {
-            '';
-            $this->params = $params;
+        foreach ($params as $k => $value) {
+            if (preg_match('/\./', $k)) {
+                $newk = str_replace('.', '_', $k);
+                $params[$newk] = $value;
+                unset($params[$k]);
+            }
         }
+        $this->params = $params;
         return $this;
     }
 
