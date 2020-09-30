@@ -75,8 +75,7 @@ class Holding
     protected $debug;
 
     /**
-     *
-     * @param Bsz\Config\Client $client
+     * @param Runner $runner
      */
     public function __construct(Runner $runner)
     {
@@ -88,7 +87,7 @@ class Holding
      *
      * @param string $isxns
      *
-     * @return \Bsz\Holding
+     * @return Holding
      */
     public function setIsxns($isxns)
     {
@@ -111,7 +110,7 @@ class Holding
      *
      * @param string $title
      *
-     * @return Bsz\Holding
+     * @return Holding
      */
     public function setTitle($title)
     {
@@ -125,7 +124,7 @@ class Holding
      *
      * @param string $authos
      *
-     * @return Bsz\Holding
+     * @return Holding
      */
     public function setAuthor($authos)
     {
@@ -139,7 +138,7 @@ class Holding
      *
      * @param string $network SWB|GBV|KOBV|...
      *
-     * @return \Bsz\Holding
+     * @return Holding
      */
     public function setNetwork($network)
     {
@@ -153,7 +152,7 @@ class Holding
      *
      * @param type $year
      *
-     * @return Bsz\Holding
+     * @return Holding
      */
     public function setYear($year)
     {
@@ -220,7 +219,6 @@ class Holding
         $params['lookfor'] = implode(' AND ', $and);
 
         $results = $this->runner->run($params, 'Solr');
-        $results instanceof \Bsz\Search\Solr\Results;
 
         return $this->parse($results);
     }
@@ -285,7 +283,7 @@ class Holding
      * @param array $isil
      * s
      *
-     * @return array
+     * @return \VuFind\Search\Base\Results
      */
     public function getParallelEditions($ppns, $isils)
     {

@@ -50,7 +50,11 @@ class Library
     protected $live;
     protected $boss;
     protected $lend_copy;
+    protected $country;
 
+    /**
+     * @param $data
+     */
     public function exchangeArray($data)
     {
         $this->name = $data['name'];
@@ -117,7 +121,7 @@ class Library
 
     /**
      * Get authentication method, adis is default
-     * @return stringl
+     * @return string
      */
     public function getAuth()
     {
@@ -126,18 +130,9 @@ class Library
 
     /**
      *
-     * @return int
-     */
-    public function getCountry()
-    {
-        return (int)$this->country;
-    }
-
-    /**
-     *
      * @return boolean
      */
-    public function hasPlaces()
+    public function hasPlaces() : bool
     {
         if (!empty($this->places)) {
             return true;
@@ -162,7 +157,7 @@ class Library
      * Determine if this library uses the productive ill link or the dev one.
      * @return boolean
      */
-    public function isLive()
+    public function isLive() : bool
     {
         if (isset($this->live) && $this->live === true) {
             return true;
@@ -170,7 +165,7 @@ class Library
         return false;
     }
 
-    public function isBoss()
+    public function isBoss() : bool
     {
         if (isset($this->boss) && $this->boss === true) {
             return true;
@@ -261,9 +256,9 @@ class Library
     }
 
     /**
-     * Get Shiboleth IdP
+     * Get Shibboleth IdP
      *
-     * @return string|url
+     * @return string
      */
     public function getIdp()
     {
