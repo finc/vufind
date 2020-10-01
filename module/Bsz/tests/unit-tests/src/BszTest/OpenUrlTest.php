@@ -23,12 +23,13 @@ namespace BszTest;
 
 use Bsz\Parser\OpenUrl;
 use PHPUnit\Framework\TestCase;
+use Zend\Config\Config;
 
 class OpenUrlTest extends TestCase
 {
-    private function getBaseConfig() : \Zend\Config\Config
+    private function getBaseConfig(): Config
     {
-        $config = new \Zend\Config\Config([
+        $config = new Config([
             'Form' => [
                 'rft_au' => 'AufsatzAutor',
                 'rft_aucorp' => 'Verfasser',
@@ -75,7 +76,6 @@ class OpenUrlTest extends TestCase
         $params = ['rft.au' => 'Max Mustermann'];
         $parser->setParams($params);
         $result = $parser->map2Form();
-        var_dump($result);
 
         $this->assertArrayHasKey('AufsatzAutor', $result);
 

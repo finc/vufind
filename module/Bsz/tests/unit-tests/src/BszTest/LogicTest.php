@@ -40,13 +40,11 @@ class LogicTest extends TestCase
         return $logic;
     }
 
-    public function testLogic()
+    public function testBasicLogic()
     {
         $logic = $this->getLogic();
         $this->assertInstanceOf(Logic::class, $logic);
         $this->expectException(Exception::class);
         $logic->isAvailable();
-
-
     }
 }
