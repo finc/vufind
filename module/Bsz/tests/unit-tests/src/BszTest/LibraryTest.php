@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 
 class LibraryTest extends TestCase
 {
-    private function getLibrary()
+    private function getLibrary() : Library
     {
         $library = new Library();
         $data = $this->getDefaultData();
@@ -33,7 +33,7 @@ class LibraryTest extends TestCase
         return $library;
     }
 
-    private function getDefaultData()
+    private function getDefaultData() : array
     {
         return [
             'isil' => 'DE-16',
@@ -43,7 +43,8 @@ class LibraryTest extends TestCase
             'is_boss' => true,
             'homepage' => 'http://foo.bar.com',
             'email' => '',
-            'isil_availability' => 'DE-16-1'
+            'isil_availability' => 'DE-16-1',
+            'regex' => '/@[a-zA-z0-9\.-]*/',
         ];
     }
 
@@ -53,5 +54,12 @@ class LibraryTest extends TestCase
         $this->assertEquals($library->getIsil(), 'DE-16');
         $this->assertFileExists('themes/bodensee/images/'.$library->getLogo());
         $this->assertIsArray($library->getIsilAvailability());
+    }
+
+    public function testRegex()
+    {
+        $library = $this->getLibrary();
+        $regex = $library->getRegex();
+        $this->assertEquals(preg_replace($regex,'', 'foo.bar@institution.com'), 'foo.bar');
     }
 }

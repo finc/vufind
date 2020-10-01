@@ -128,9 +128,9 @@ class Libraries extends TableGateway
     }
 
     /**
-     *
      * @param int $id
-     * @return ResultSet
+     *
+     * @return ResultSetInterface
      */
     public function getByCountryId($id)
     {
@@ -152,7 +152,7 @@ class Libraries extends TableGateway
      *
      * @param int $id
      *
-     * @return ResultSet
+     * @return ResultSetInterface
      */
     public function getByShib()
     {
