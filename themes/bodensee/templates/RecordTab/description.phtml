@@ -1,8 +1,9 @@
 <?php
     // Set page title.
     $this->headTitle($this->translate('Description') . ': ' . $this->driver->getBreadcrumb());
+$rand = rand(0, 2000);
 
-    // Grab clean ISBN for convenience:
+// Grab clean ISBN for convenience:
     $isbn = $this->driver->getCleanISBN();
 ?>
 <table class="table table-striped">
@@ -21,7 +22,9 @@
       <th><?=$this->transEsc('ZDB-ID')?>:</th>
       <td>
           <?php if (isset($zdb)): ?>
-            <a class="external" href="https://zdb-katalog.de/list.xhtml?t=<?=$this->escapeHtml($zdb)?>&key=zdb"><?=$this->escapeHtml($zdb)?></a>
+              <a id="clipboard-zdb-<?= $rand ?>" class="external"
+                 href="https://zdb-katalog.de/list.xhtml?t=<?= $this->escapeHtml($zdb) ?>&key=zdb"><?= $this->escapeHtml($zdb) ?></a>
+              <?= $this->clipboard('', 'clipboard-zdb-' . $rand) ?>
           <?php endif; ?>
       </td>
     </tr>
@@ -49,13 +52,13 @@
   <?php endif; ?>
   <?php $ean = $this->driver->tryMethod('getGTIN');
      if (!empty($ean)):
-     $contentDisplayed = true;
-  ?>
-    <tr>
-        <th><?=$this->abbrev('GTIN')?>: </th>
-        <td><?=$this->escapeHtml($ean)?></td>
-    </tr>
-  <?php endif; ?>
+         $contentDisplayed = true;
+         ?>
+         <tr>
+             <th><?= $this->abbrev('GTIN') ?>:</th>
+             <td><?= $this->clipboard($ean) ?></td>
+         </tr>
+     <?php endif; ?>
 
   <?php $dateSpan = $this->driver->getDateSpan(); if (!empty($dateSpan)): ?>
     <?php $contentDisplayed = true; ?>
@@ -184,18 +187,22 @@
       <th><?=$this->abbrev('ISSN', 'ISSN_long')?>: </th>
       <td>
         <?php foreach ($issns as $field): ?>
-          <?=$this->escapeHtml($field)?><br/>
+            <?= $this->clipboard($field) ?><br/>
         <?php endforeach; ?>
       </td>
     </tr>
   <?php endif; ?>
 
   <?php $doi = $this->driver->tryMethod('getCleanDOI'); if (!empty($doi)): ?>
-    <?php $contentDisplayed = true; ?>
-    <tr>
-      <th><?=$this->transEsc('DOI')?>: </th>
-      <td><a href="https://doi.org/<?=$this->escapeHtml($doi)?>" target="_blank">https://doi.org/<?=$this->escapeHtml($doi)?></a></td>
-    </tr>
+      <?php $contentDisplayed = true; ?>
+      <tr>
+          <th><?= $this->transEsc('DOI') ?>:</th>
+          <td><a id="clipboard-doi-<?= $rand ?>"
+                 href="https://doi.org/<?= $this->escapeHtml($doi) ?>"
+                 target="_blank">https://doi.org/<?= $this->escapeHtml($doi) ?></a>
+              <?= $this->clipboard('', 'clipboard-doi-' . $rand) ?>
+          </td>
+      </tr>
   <?php endif; ?>
 
   <?php $related = $this->driver->getRelationshipNotes(); if (!empty($related)): ?>

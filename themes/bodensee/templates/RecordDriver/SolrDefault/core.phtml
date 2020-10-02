@@ -225,16 +225,16 @@
                $isbn = $this->driver->getCleanISBN();
                $issn = $this->driver->getCleanISSN();
                if (!empty($isbn)): ?>
-            <tr>
-                <th><?=$this->abbrev('ISBN', 'ISBN_long')?>:</th>
-                <td class="markjs"><?=$this->driver->getCleanISBN()?></td>
-            </tr>
-            <? elseif (!empty($issn)): ?>
-            <tr>
-                <th><?=$this->abbrev('ISSN', 'ISSN_long')?>:</th>
-                <td class="markjs"><?=$this->driver->getCleanISSN()?></td>
-            </tr>
-            <? endif; ?>
+                   <tr>
+                       <th><?= $this->abbrev('ISBN', 'ISBN_long') ?>:</th>
+                       <td class="markjs"><?= $this->clipboard($this->driver->getCleanISBN()) ?></td>
+                   </tr>
+               <? elseif (!empty($issn)): ?>
+                   <tr>
+                       <th><?= $this->abbrev('ISSN', 'ISSN_long') ?>:</th>
+                       <td class="markjs"><?= $this->clipboard($this->driver->getCleanISSN()) ?></td>
+                   </tr>
+               <? endif; ?>
 
             <? $langs = $this->driver->getLanguages(); if (!empty($langs)): ?>
             <tr>
