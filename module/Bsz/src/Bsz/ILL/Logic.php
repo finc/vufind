@@ -251,12 +251,12 @@ class Logic
      * Returns array of local available ISILs
      * @return array
      */
-    public function getLocalIsils()
+    public function getLocalIsils(): array
     {
         return $this->localIsils;
     }
 
-    public function getLinkLabels()
+    public function getLinkLabels(): array
     {
         return $this->linklabels;
     }
@@ -307,7 +307,7 @@ class Logic
      * * Similar results from SWB (if network != SWB)     *
      * @return boolean
      */
-    protected function checkCurrentLibrary()
+    protected function checkCurrentLibrary(): bool
     {
         $status = false;
         $network = $this->driver->getNetwork();
@@ -335,7 +335,7 @@ class Logic
      * Found PPNs are added to ppns array and can be accessed by other methods.
      * @return boolean
      */
-    protected function queryWebservice()
+    protected function queryWebservice(): bool
     {
         if (!$this->holding instanceof Holding) {
             return false;
@@ -485,7 +485,7 @@ class Logic
      * the current network
      * @return boolean
      */
-    protected function checkFormat()
+    protected function checkFormat(): bool
     {
         $section = $this->config->get($this->format);
         $network = $this->driver->getNetwork();
@@ -509,7 +509,7 @@ class Logic
      * Check the ILL indicator - invalid or empty indicators are ignored
      * @return boolean
      */
-    protected function checkIndicator()
+    protected function checkIndicator(): bool
     {
         $f924 = $this->driver->tryMethod('getField924');
         $section = $this->config->get($this->format);
