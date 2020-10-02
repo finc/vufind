@@ -430,8 +430,9 @@ function copyToClipboard() {
 
     var clipboard = new ClipboardJS('.copy-clipboard-toggle');
     clipboard.on('success', function(e) {
-        console.info('copied to clipboard');
-        $('.copy-clipboard-toggle').find('i').removeClass('fa-copy').addClass('fa-check text-success');
+        console.info(e.text + ' copied to clipboard');
+        $('.copy-clipboard-toggle i').removeClass('fa-check text-success').addClass('fa-copy');
+        $('#' + e.trigger.id + ' i').removeClass('fa-copy').addClass('fa-check text-success');
         e.clearSelection();
     });
 }

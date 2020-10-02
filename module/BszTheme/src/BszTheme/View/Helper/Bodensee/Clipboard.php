@@ -32,14 +32,16 @@ use Zend\View\Helper\AbstractHelper;
 class Clipboard extends AbstractHelper
 {
     /**
-     * @param string $content
+     * @param string $content content to be copied on click
+     * @param string $id      ID of an already created element
      *
      * @return string
      */
-    public function __invoke(string $content)
+    public function __invoke(string $content, string $id = '')
     {
         return $this->getView()->render('Helpers/clipboard.phtml', [
-            'content' => $content
+            'content' => $content,
+            'id' => $id
         ]);
     }
 }
