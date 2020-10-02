@@ -294,7 +294,7 @@ class Logic
      */
     protected function checkSerialOrCollection(): bool
     {
-        if ($this->driver->isSerial() && $this->driver->isCollection()) {
+        if ($this->driver->isSerial() || $this->driver->isCollection()) {
             return true;
         }
         return false;
@@ -468,8 +468,8 @@ class Logic
     }
 
     /**
-     * Check if it is a journal and available locally. Journals can always be ordnered because we can't
-     * evauluate their excat holding dates.
+     * Check if it is a journal and available locally. Journals can always be
+     * ordnered because we can't evauluate their exact holding dates.
      * @return bool
      */
     protected function checkJournalAvailable(): bool
