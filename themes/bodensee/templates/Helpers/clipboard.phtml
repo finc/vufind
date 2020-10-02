@@ -1,0 +1,5 @@
+<?php $rand = rand(0, 10000)?>
+<?php if (!empty($content)): ?>
+    <span id="clipboard-<?=$rand?>"><?=$this->escapeHtml($content)?></span>
+    <span class="copy-clipboard-toggle" data-toggle="tooltip" title="<?=$this->transEsc('clipboard')?>" data-clipboard-target="#clipboard-<?=$rand?>"><i class="fa fa-copy"></i></span>
+<?php endif; ?>

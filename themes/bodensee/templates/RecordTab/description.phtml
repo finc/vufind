@@ -172,7 +172,7 @@
       <th><?=$this->abbrev('ISBN', 'ISBN_long')?>: </th>
       <td>
         <?php foreach ($isbns as $field): ?>
-          <?=$this->escapeHtml($field)?><br/>
+            <?= $this->clipboard($field) ?><br/>
         <?php endforeach; ?>
       </td>
     </tr>
