@@ -24,9 +24,21 @@ use Bsz\Config\Client;
 use Bsz\RecordDriver\SolrGviMarc;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class SolrGviMarcTest
+ * @package  BszTest\RecordDriver
+ * @category boss
+ * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
+ */
 class SolrGviMarcTest extends TestCase
 {
-    protected function getSolrRecord($file = 'repetitorium.json')
+
+    /**
+     * @param string $file
+     *
+     * @return SolrGviMarc
+     */
+    public function getSolrRecord($file = 'repetitorium.json'): SolrGviMarc
     {
         $config = $this->getClient();
         $record = new SolrGviMarc($config);
@@ -35,7 +47,12 @@ class SolrGviMarcTest extends TestCase
         return $record;
     }
 
-    protected function getSolrRecords($file = '56records.json')
+    /**
+     * @param string $file
+     *
+     * @return array
+     */
+    protected function getSolrRecords($file = '56records.json'): array
     {
         $config = $this->getClient();
         $fixture = $this->loadRecordFixture($file);
@@ -49,7 +66,7 @@ class SolrGviMarcTest extends TestCase
         return $records;
     }
 
-    protected function getClient()
+    protected function getClient(): Client
     {
         $config = [
             'Site' => [

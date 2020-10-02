@@ -1,0 +1,104 @@
+{
+  "responseHeader": {
+    "zkConnected": true,
+    "status": 0,
+    "QTime": 3,
+    "params": {
+      "q": "id:\\(DE-627\\)639420648",
+      "df": "allfields",
+      "rows": "10",
+      "echoParams": "all",
+      "spellcheck": "false"
+    }
+  },
+  "response": {
+    "numFound": 1,
+    "start": 0,
+    "maxScore": 16.793953,
+    "docs": [
+      {
+        "consortium": [
+          "DE-601",
+          "DE-576"
+        ],
+        "catalog": "DE-627",
+        "collection": "K10PLUS",
+        "id": "(DE-627)639420648",
+        "recordtype": "GviMarcDE627",
+        "test_matchkey_1": "journal::neuejuristischewochenschrift:2010",
+        "test_matchkey_2": "journal::neuejuristischewochenschrift:2010:beck",
+        "test_matchkey_3": "journal::neuejuristischewochenschrift:2010:beck",
+        "cluster_id": "(DE-627)639420648",
+        "material_access": [
+          "Physical"
+        ],
+        "material_pubform": [
+          "Serial"
+        ],
+        "material_media_type": [
+          "Book"
+        ],
+        "material_content_type": [
+          "Journal/Magazine",
+          "Periodical",
+          "Journal/Magazine"
+        ],
+        "musical_presentation_facet": [
+          "Zeitschrift"
+        ],
+        "ill_flag": [
+          "Undefined"
+        ],
+        "_version_": 1678632728468127744,
+        "index_date": "2020-09-23T13:48:39.317Z",
+        "fullrecord": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><collection xmlns=\"http://www.loc.gov/MARC21/slim\"><record><leader>04187cas a2200817   4500</leader><controlfield tag=\"001\">639420648</controlfield><controlfield tag=\"003\">DE-627</controlfield><controlfield tag=\"005\">20200706105957.0</controlfield><controlfield tag=\"007\">tu</controlfield><controlfield tag=\"008\">101110c20109999gw z| p|      0   |0ger c</controlfield><datafield tag=\"015\" ind1=\" \" ind2=\" \"><subfield code=\"a\">11,A02</subfield><subfield code=\"2\">dnb</subfield></datafield><datafield tag=\"016\" ind1=\"7\" ind2=\" \"><subfield code=\"a\">100808865X</subfield><subfield code=\"2\">DE-101</subfield></datafield><datafield tag=\"016\" ind1=\"7\" ind2=\" \"><subfield code=\"a\">2580243-4</subfield><subfield code=\"2\">DE-600</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-627)639420648</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-576)333715500</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(DE-599)ZDB2580243-4</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)724509710</subfield></datafield><datafield tag=\"035\" ind1=\" \" ind2=\" \"><subfield code=\"a\">(OCoLC)724509710</subfield></datafield><datafield tag=\"040\" ind1=\" \" ind2=\" \"><subfield code=\"a\">DE-627</subfield><subfield code=\"b\">ger</subfield><subfield code=\"c\">DE-627</subfield><subfield code=\"e\">rakwb</subfield></datafield><datafield tag=\"041\" ind1=\" \" ind2=\" \"><subfield code=\"a\">ger</subfield></datafield><datafield tag=\"044\" ind1=\" \" ind2=\" \"><subfield code=\"c\">XA-DE</subfield></datafield><datafield tag=\"082\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">349.4305</subfield><subfield code=\"q\">DE-101</subfield></datafield><datafield tag=\"082\" ind1=\"0\" ind2=\"4\"><subfield code=\"a\">340</subfield><subfield code=\"a\">360</subfield><subfield code=\"q\">DE-101</subfield></datafield><datafield tag=\"082\" ind1=\"0\" ind2=\"4\"><subfield code=\"a\">340</subfield><subfield code=\"a\">360</subfield><subfield code=\"q\">DE-600</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">INTRECHT</subfield><subfield code=\"q\">DE-1a</subfield><subfield code=\"2\">fid</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">2</subfield><subfield code=\"2\">ssgn</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">PA 1000</subfield><subfield code=\"q\">DE-24/20sred</subfield><subfield code=\"2\">rvk</subfield><subfield code=\"0\">(DE-625)rvk/134985:</subfield></datafield><datafield tag=\"084\" ind1=\" \" ind2=\" \"><subfield code=\"a\">86.00</subfield><subfield code=\"2\">bkl</subfield></datafield><datafield tag=\"245\" ind1=\"1\" ind2=\"0\"><subfield code=\"a\">Neue Juristische Wochenschrift</subfield><subfield code=\"p\">Beilage</subfield></datafield><datafield tag=\"246\" ind1=\"1\" ind2=\" \"><subfield code=\"i\">Ansetzungssachtitel</subfield><subfield code=\"a\">Neue Juristische Wochenschrift / Beilage</subfield></datafield><datafield tag=\"264\" ind1=\"3\" ind2=\"1\"><subfield code=\"a\">[München]</subfield><subfield code=\"b\">Beck</subfield><subfield code=\"c\">2010-</subfield></datafield><datafield tag=\"300\" ind1=\" \" ind2=\" \"><subfield code=\"c\">30 cm</subfield></datafield><datafield tag=\"336\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Text</subfield><subfield code=\"b\">txt</subfield><subfield code=\"2\">rdacontent</subfield></datafield><datafield tag=\"337\" ind1=\" \" ind2=\" \"><subfield code=\"a\">ohne Hilfsmittel zu benutzen</subfield><subfield code=\"b\">n</subfield><subfield code=\"2\">rdamedia</subfield></datafield><datafield tag=\"338\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Band</subfield><subfield code=\"b\">nc</subfield><subfield code=\"2\">rdacarrier</subfield></datafield><datafield tag=\"362\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2010,[1]; 2010,2 -</subfield></datafield><datafield tag=\"363\" ind1=\"0\" ind2=\"1\"><subfield code=\"i\">2010</subfield></datafield><datafield tag=\"515\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Ersch. unregelmäßig</subfield></datafield><datafield tag=\"591\" ind1=\" \" ind2=\" \"><subfield code=\"a\">Sortierzählung bei Bänden maschinell geändert (GBV)</subfield></datafield><datafield tag=\"655\" ind1=\" \" ind2=\"7\"><subfield code=\"a\">Zeitschrift</subfield><subfield code=\"0\">(DE-588)4067488-5</subfield><subfield code=\"0\">(DE-627)10454466X</subfield><subfield code=\"0\">(DE-576)20917000X</subfield><subfield code=\"2\">gnd-content</subfield></datafield><datafield tag=\"689\" ind1=\"0\" ind2=\"0\"><subfield code=\"D\">g</subfield><subfield code=\"0\">(DE-588)4011882-4</subfield><subfield code=\"0\">(DE-627)104704861</subfield><subfield code=\"0\">(DE-576)208896155</subfield><subfield code=\"a\">Deutschland</subfield><subfield code=\"2\">gnd</subfield></datafield><datafield tag=\"689\" ind1=\"0\" ind2=\"1\"><subfield code=\"D\">s</subfield><subfield code=\"0\">(DE-588)4048737-4</subfield><subfield code=\"0\">(DE-627)106189719</subfield><subfield code=\"0\">(DE-576)20907907X</subfield><subfield code=\"a\">Recht</subfield><subfield code=\"2\">gnd</subfield></datafield><datafield tag=\"689\" ind1=\"0\" ind2=\"2\"><subfield code=\"A\">f</subfield><subfield code=\"2\">gnd</subfield><subfield code=\"a\">Zeitschrift</subfield></datafield><datafield tag=\"689\" ind1=\"0\" ind2=\" \"><subfield code=\"5\">DE-101</subfield></datafield><datafield tag=\"773\" ind1=\"0\" ind2=\"8\"><subfield code=\"i\">Beil. zu</subfield><subfield code=\"t\">Neue juristische Wochenschrift</subfield><subfield code=\"d\">München : Beck, 1947</subfield><subfield code=\"w\">(DE-627)129457922</subfield><subfield code=\"w\">(DE-600)200146-9</subfield><subfield code=\"w\">(DE-576)01482132X</subfield><subfield code=\"x\">0341-1915</subfield></datafield><datafield tag=\"776\" ind1=\"0\" ind2=\"8\"><subfield code=\"i\">Erscheint auch als</subfield><subfield code=\"n\">Online-Ausgabe</subfield><subfield code=\"t\">Neue Juristische Wochenschrift / Beilage</subfield><subfield code=\"d\">München : Beck, 2010</subfield><subfield code=\"h\">Online-Ressource</subfield><subfield code=\"w\">(DE-627)73076639X</subfield><subfield code=\"w\">(DE-600)2691734-8</subfield><subfield code=\"w\">(DE-576)49010827X</subfield></datafield><datafield tag=\"787\" ind1=\"0\" ind2=\"8\"><subfield code=\"i\">2010,[1]=2010; 2011,1=2011; 2012,1=2012; 2013,1=2013 von</subfield><subfield code=\"t\">Nutzungsausfallentschädigung ...</subfield><subfield code=\"d\">München : Beck, 2008</subfield><subfield code=\"w\">(DE-627)559839979</subfield><subfield code=\"w\">(DE-600)2414417-4</subfield><subfield code=\"w\">(DE-576)278242804</subfield></datafield><datafield tag=\"787\" ind1=\"0\" ind2=\"8\"><subfield code=\"i\">2010,2=2010,1; 2011,2=2011,1; 2011,3=2011,2; 2012,2=2012,1; 2012,4=2012,2; 2013,2=2013,1; 2013,3=2013,2; 2014,1=2014,1;2014,3=2014,2; 2015,1=2015,1; 2015,2=2015,2 u.a. von</subfield><subfield code=\"t\">Versorgungsausgleich-Tabellen für das ... Halbjahr ...</subfield><subfield code=\"d\">München : Beck, 1994</subfield><subfield code=\"w\">(DE-627)211587672</subfield><subfield code=\"w\">(DE-600)1319758-7</subfield><subfield code=\"w\">(DE-576)055946038</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">1264399022</subfield><subfield code=\"b\">DE-1a</subfield><subfield code=\"9\">1a</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">b</subfield><subfield code=\"g\">HB 10 Ea 110</subfield><subfield code=\"g\">Zsn 269</subfield><subfield code=\"h\">2:HB10</subfield><subfield code=\"q\">2010</subfield><subfield code=\"x\">-</subfield><subfield code=\"z\">2010 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">1222867710</subfield><subfield code=\"b\">DE-89</subfield><subfield code=\"9\">89</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">jur 001 za 4-4</subfield><subfield code=\"h\">FBR Z</subfield><subfield code=\"z\">2010,2 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">1472310179</subfield><subfield code=\"b\">DE-35</subfield><subfield code=\"9\">35</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">Angebunden an:!ZEN FH!recht (Zs 1085)</subfield><subfield code=\"g\">recht (Zs 1085)</subfield><subfield code=\"g\">(Zs 1085)</subfield><subfield code=\"h\">ZEN FH</subfield><subfield code=\"h\">ZEN</subfield><subfield code=\"z\">2010 - 2013</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">1264991800</subfield><subfield code=\"b\">DE-354</subfield><subfield code=\"9\">354</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">H 001285</subfield><subfield code=\"h\">OE0400</subfield><subfield code=\"z\">2010 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">1254056904</subfield><subfield code=\"b\">DE-546</subfield><subfield code=\"9\">546</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"d\">b</subfield><subfield code=\"g\">PA 4900</subfield><subfield code=\"h\">MAG</subfield><subfield code=\"q\">2010</subfield><subfield code=\"x\">-</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3462503391</subfield><subfield code=\"b\">DE-101</subfield><subfield code=\"9\">101</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"g\">ZB 51193</subfield><subfield code=\"h\">101a</subfield><subfield code=\"q\">2010</subfield><subfield code=\"x\">-</subfield><subfield code=\"z\">2010,2 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3462503405</subfield><subfield code=\"b\">DE-101</subfield><subfield code=\"9\">101</subfield><subfield code=\"c\">GBV</subfield><subfield code=\"g\">DZb 516</subfield><subfield code=\"h\">101b</subfield><subfield code=\"q\">2010</subfield><subfield code=\"x\">-</subfield><subfield code=\"z\">2010,2 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2721141872</subfield><subfield code=\"b\">DE-291</subfield><subfield code=\"9\">291</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">4 Z 51-111:an:63-69</subfield><subfield code=\"q\">2010</subfield><subfield code=\"w\">;</subfield><subfield code=\"q\">2010</subfield><subfield code=\"r\">2016</subfield><subfield code=\"z\">2010,[1]; 2010,2 - 2016,3</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2830793099</subfield><subfield code=\"b\">DE-24</subfield><subfield code=\"9\">24</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">Za 429</subfield><subfield code=\"q\">2010</subfield><subfield code=\"z\">2010 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2718326832</subfield><subfield code=\"b\">DE-16</subfield><subfield code=\"9\">16</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">ZSA 22 C</subfield><subfield code=\"q\">2010</subfield><subfield code=\"z\">2010,[1] -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">274186781X</subfield><subfield code=\"b\">DE-16-13</subfield><subfield code=\"9\">16/13</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">Z 106</subfield><subfield code=\"q\">2010</subfield><subfield code=\"z\">2010 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2769015540</subfield><subfield code=\"b\">DE-93</subfield><subfield code=\"9\">93</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">2Za 2987</subfield><subfield code=\"q\">2010</subfield><subfield code=\"z\">2010 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2702584624</subfield><subfield code=\"b\">DE-31</subfield><subfield code=\"9\">31</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield><subfield code=\"g\">in ZB 291</subfield><subfield code=\"q\">2010</subfield><subfield code=\"z\">2010 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2664330160</subfield><subfield code=\"b\">DE-Ka26</subfield><subfield code=\"9\">Ka 26</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">b</subfield><subfield code=\"g\">ZO 71</subfield><subfield code=\"q\">2010</subfield><subfield code=\"z\">2010,[1] -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">3027413902</subfield><subfield code=\"b\">DE-B208</subfield><subfield code=\"9\">B 208</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">b</subfield><subfield code=\"g\">D: III: 20</subfield><subfield code=\"q\">1993</subfield><subfield code=\"z\">1993 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2701395860</subfield><subfield code=\"b\">DE-100</subfield><subfield code=\"9\">100</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">c</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2664337246</subfield><subfield code=\"b\">DE-208</subfield><subfield code=\"9\">208</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">b</subfield><subfield code=\"g\">PA 0005</subfield><subfield code=\"q\">2010</subfield><subfield code=\"w\">;</subfield><subfield code=\"q\">2010</subfield><subfield code=\"z\">2010,[1]; 2010,2 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2671238304</subfield><subfield code=\"b\">DE-Sp3</subfield><subfield code=\"9\">Sp 3</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">A XIII 11</subfield><subfield code=\"q\">2010</subfield><subfield code=\"z\">2010 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2803673010</subfield><subfield code=\"b\">DE-Frei85</subfield><subfield code=\"9\">Frei 85</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">b</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2660912831</subfield><subfield code=\"b\">DE-B212</subfield><subfield code=\"9\">B 212</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">d</subfield><subfield code=\"g\">Deutschl. 2171</subfield><subfield code=\"q\">2010</subfield><subfield code=\"z\">2010,2 -</subfield></datafield><datafield tag=\"924\" ind1=\"0\" ind2=\" \"><subfield code=\"a\">2717471391</subfield><subfield code=\"b\">DE-951</subfield><subfield code=\"9\">951</subfield><subfield code=\"c\">BSZ</subfield><subfield code=\"d\">b</subfield></datafield><datafield tag=\"936\" ind1=\"b\" ind2=\"k\"><subfield code=\"a\">86.00</subfield><subfield code=\"j\">Recht: Allgemeines</subfield><subfield code=\"0\">(DE-627)106416456</subfield></datafield><datafield tag=\"951\" ind1=\" \" ind2=\" \"><subfield code=\"a\">JT</subfield></datafield></record></collection>",
+        "subject_genre_facet": [
+          "Zeitschrift"
+        ],
+        "publisher_facet": [
+          "Beck"
+        ],
+        "language": [
+          "ger"
+        ],
+        "subject_topic_facet": [
+          "Recht"
+        ],
+        "institution_id": [
+          "DE-100",
+          "DE-101",
+          "DE-16",
+          "DE-16-13",
+          "DE-1a",
+          "DE-208",
+          "DE-24",
+          "DE-291",
+          "DE-31",
+          "DE-35",
+          "DE-354",
+          "DE-546",
+          "DE-89",
+          "DE-93",
+          "DE-951",
+          "DE-B208",
+          "DE-B212",
+          "DE-Frei85",
+          "DE-Ka26",
+          "DE-Sp3"
+        ],
+        "subject_all_facet": [
+          "Deutschland",
+          "Recht",
+          "Zeitschrift"
+        ],
+        "subject_geogname_facet": [
+          "Deutschland"
+        ],
+        "ill_region": [
+          "BSZ",
+          "GBV"
+        ]
+      }
+    ]
+  }
+}
