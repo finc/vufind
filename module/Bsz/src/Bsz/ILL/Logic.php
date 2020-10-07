@@ -294,7 +294,9 @@ class Logic
      */
     protected function checkSerialOrCollection(): bool
     {
-        if ($this->driver->isSerial() || $this->driver->isCollection()) {
+        if ($this->driver->isJournal() && !$this->driver->isNewspaper() &&
+            $this->driver->isSerial() || $this->driver->isCollection()
+        ) {
             return true;
         }
         return false;
