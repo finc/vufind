@@ -26,18 +26,20 @@ namespace BszTheme;
  */
 class ThemeInfo extends \VuFindTheme\ThemeInfo
 {
+
     protected $tag;
 
     /**
      * Adapted constructor
+     *
      * @param string $baseDir
      * @param string $safeTheme
-     * @param \Bsz\Config\Client $Client
+     * @param string $tag
      */
+
     public function __construct($baseDir, $safeTheme, $tag)
     {
-        $this->baseDir = $baseDir;
-        $this->currentTheme = $this->safeTheme = $safeTheme;
+        parent::__construct($baseDir, $safeTheme);
         $this->tag = $tag;
     }
 
