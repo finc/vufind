@@ -31,7 +31,7 @@ use Zend\Config\Config;
  */
 class Logic
 {
-    const FORMAT_EJOUNAL = 'Ejournal';
+    const FORMAT_EJOURNAL = 'Ejournal';
     const FORMAT_JOURNAL = 'Journal';
     const FORMAT_EBOOK = 'Ebook';
     const FORMAT_BOOK = 'Book';
@@ -109,7 +109,7 @@ class Logic
 
         if ($this->driver->isElectronic()) {
             if ($this->driver->isJournal() || $this->driver->isNewspaper()) {
-                $format = static::FORMAT_EJOUNAL;
+                $format = static::FORMAT_EJOURNAL;
             } elseif ($this->driver->isEBook()) {
                 $format = static::FORMAT_EBOOK;
             }
@@ -317,7 +317,11 @@ class Logic
 
         // if we have local holdings, item can't be ordered - except
         // Journals and MonoSerials
-        $formats = [static::FORMAT_JOURNAL, static::FORMAT_MONOSERIAL];
+        $formats = [
+            static::FORMAT_JOURNAL,
+            static::FORMAT_EJOURNAL,
+            static::FORMAT_MONOSERIAL
+        ];
 
         if ($this->driver->hasLocalHoldings() &&
             !in_array($this->getFormat(), $formats)
@@ -325,7 +329,9 @@ class Logic
             $this->swbppns[] = $this->driver->getPPN();
             $this->linklabels[] = 'ILL::library_opac';
             $status = true;
-        } elseif ($network !== 'SWB' && $this->queryWebservice()) {
+        } elseif ($network !== 'SWB' && $network !== 'ZDB'
+            && $this->queryWebservice()
+        ) {
             $status = true;
         }
         return $status;
@@ -477,7 +483,11 @@ class Logic
      */
     protected function checkJournalAvailable(): bool
     {
-        if ($this->driver->hasLocalHoldings() && $this->getFormat() === static::FORMAT_JOURNAL) {
+        if ($this->driver->hasLocalHoldings() && (
+            $this->getFormat() === static::FORMAT_JOURNAL ||
+                $this->getFormat() === static::FORMAT_EJOURNAL
+        )
+            ) {
             return true;
         }
         return false;
