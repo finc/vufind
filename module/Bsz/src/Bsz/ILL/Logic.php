@@ -290,11 +290,12 @@ class Logic
 
     /**
      * Determine is record is a serial or a collection
+     * Journals and Newspaers are serials, too, but not included here
      * @return boolean
      */
     protected function checkSerialOrCollection(): bool
     {
-        if ($this->driver->isJournal() && !$this->driver->isNewspaper() &&
+        if (!$this->driver->isJournal() && !$this->driver->isNewspaper() &&
             $this->driver->isSerial() || $this->driver->isCollection()
         ) {
             return true;
