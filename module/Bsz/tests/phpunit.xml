@@ -1,7 +1,9 @@
-<phpunit bootstrap="./bootstrap.php" strict="true">
+<phpunit bootstrap="./bootstrap.php">
     <testsuites>
         <testsuite name="BszUnitTests">
-            <directory>src</directory>
+            <directory>../../Bsz/tests/unit-tests/src</directory>
+            <directory>../../BszTheme/tests/unit-tests/src</directory>
+            <directory>../../Dlr/tests/unit-tests/src</directory>
         </testsuite>
     </testsuites>
 </phpunit>

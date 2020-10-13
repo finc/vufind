@@ -1,4 +1,4 @@
-<phpunit bootstrap="bootstrap.php" strict="true">
+<phpunit bootstrap="bootstrap.php">
     <testsuites>
         <testsuite name="BszThemeUnitTests">
             <directory>src</directory>
