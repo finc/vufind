@@ -95,10 +95,10 @@ class SolrGviMarcTest extends TestCase
      */
     protected function loadRecordFixture($file)
     {
+        $path = APPLICATION_PATH.'/module/Bsz/tests/fixtures/solr/';
         return json_decode(
             file_get_contents(
-                realpath(
-                    VUFIND_PHPUNIT_MODULE_PATH . '/fixtures/solr/' . $file
+                realpath($path.$file
                 )
             ),
             true
