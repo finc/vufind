@@ -305,7 +305,11 @@ function manageActiveTab() {
         if ($('.record-tabs a.interlibraryloan').length > 0) {
             // jquery can't trigger a click on a bare text node.
             // Pure javaSCript can.
-            $('.record-tabs a.interlibraryloan')[0].click();
+            //$('.record-tabs a.interlibraryloan')[0].click();
+            var tabid = 'interlibraryloan';
+            var setHash = !$('.record-tabs').parent().hasClass('initiallyActive')
+            var newTab = getNewRecordTab(tabid).addClass('active');
+            ajaxLoadTab(newTab, tabid, setHash);
         }
     } else if (id === 'solr:filtered1' || id === 'solr:unfiltered' ) {
         console.info('Local tab is active');
