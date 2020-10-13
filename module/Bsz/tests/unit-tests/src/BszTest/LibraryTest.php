@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 
 class LibraryTest extends TestCase
 {
-    private function getLibrary() : Library
+    public function getLibrary() : Library
     {
         $library = new Library();
         $data = $this->getDefaultData();

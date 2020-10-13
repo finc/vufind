@@ -21,6 +21,7 @@
 
 namespace BszTheme\View\Helper;
 
+use Bsz\Config\Library;
 use Zend\View\Helper\AbstractHelper;
 
 /**
@@ -42,6 +43,8 @@ class ClientAsset extends AbstractHelper
      * The first part of the domain name
      *
      * @param string $tag
+     * @param $website
+     * @param null $library
      */
     public function __construct($tag, $website, $library = null)
     {
@@ -50,6 +53,10 @@ class ClientAsset extends AbstractHelper
         $this->website = $website;
     }
 
+
+    /**
+     * @return $this
+     */
     public function __invoke()
     {
         return $this;
@@ -73,7 +80,7 @@ class ClientAsset extends AbstractHelper
         $filename = '';
         if ($this->library === null) {
             $filename = 'logo/' . $this->tag . '-small.png';
-        } elseif ($this->library instanceof \Bsz\Config\Library) {
+        } elseif ($this->library instanceof Library) {
             $filename = $this->library->getLogo();
         }
 
@@ -94,7 +101,7 @@ class ClientAsset extends AbstractHelper
             $filename = 'logo/' . $this->tag . '.svg';
         } elseif ($this->library === null) {
             $filename = 'logo/' . $this->tag . '.png';
-        } elseif ($this->library instanceof \Bsz\Config\Library) {
+        } elseif ($this->library instanceof Library) {
             $filename = $this->library->getLogo();
         }
 
@@ -104,6 +111,10 @@ class ClientAsset extends AbstractHelper
         return '';
     }
 
+
+    /**
+     * @return string
+     */
     public function getLogoHtml()
     {
         return $this->getView()->render('bsz/logo.phtml', [
