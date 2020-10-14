@@ -2,7 +2,7 @@
 <?php  $formats = $this->driver->getFormats();
     $icon = $this->mapper()->mapIcon($formats);
 ?>
-<?php if ($cover): ?>
+<?php if ($this->cover): ?>
   <?php if (isset($this->link) && $this->link != '#'): ?>
     <a href="<?=$this->escapeHtmlAttr($this->link)?>" >
   <?php elseif (isset($this->link) && $this->link == '#'): ?>

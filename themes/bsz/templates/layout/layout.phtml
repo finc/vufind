@@ -1,29 +1,48 @@
 <?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
 
 use Zend\View\Helper\HeadScript;
 
 ?>
 <?=$this->doctype('HTML5')?>
-<html lang="<?=$this->layout()->userLang?>">
-  <head>
-    <?$this->headThemeResources()?>
+<html lang="<?= $this->layout()->userLang ?>">
+<head>
+    <? $this->headThemeResources() ?>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="robots" content="noindex, nofollow" />
+    <meta name="robots" content="noindex, nofollow"/>
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-    <?$this->headMeta()->appendName('author', 'Bibliotheksservice-Zentrum Baden-Württemberg (BSZ)')?>
-    <?$this->headMeta()->appendName('keywords', 'boss4, boss, bsz, bibliothek, bücher, zeitschriften, aufsätze')?>
-    <?$this->headMeta()->appendName('application-name', 'BSZ - One Step Search (BOSS) v4')?>
+    <? $this->headMeta()->appendName('author', 'Bibliotheksservice-Zentrum Baden-Württemberg (BSZ)') ?>
+    <? $this->headMeta()->appendName('keywords', 'boss4, boss, bsz, bibliothek, bücher, zeitschriften, aufsätze') ?>
+    <? $this->headMeta()->appendName('application-name', 'BSZ - One Step Search (BOSS) v4') ?>
 
-    <?php $this->headTitle()->setPostfix(' - '.$this->client()->getTitle());?>
-    <?=$this->headTitle()?>
+    <?php $this->headTitle()->setPostfix(' - ' . $this->client()->getTitle()); ?>
+    <?= $this->headTitle() ?>
     <?php
-      // Set up OpenSearch link:
-      $this->headLink(
-          [
-          'href' => $this->url('search-opensearch') . '?method=describe',
-          'type' => 'application/opensearchdescription+xml',
-          'title' => $this->transEsc('Library Catalog Search'),
-          'rel' => 'search'
+    // Set up OpenSearch link:
+    $this->headLink(
+        [
+            'href' => $this->url('search-opensearch') . '?method=describe',
+            'type' => 'application/opensearchdescription+xml',
+            'title' => $this->transEsc('Library Catalog Search'),
+            'rel' => 'search'
         ]
       );
     ?>
@@ -159,26 +178,27 @@ JS;
   <body class="template-dir-<?=$this->templateDir?> template-name-<?=$this->templateName?> <?=$this->layoutClass('offcanvas-row')?><?php if ($this->layout()->rtl): ?> rtl<?php endif; ?>">
     <?php // Set up the search box -- there are three possible cases:
       // 1. No search box was set; we should default to the normal box
-      // 2. It was set to false; we should display nothing
-      // 3. It is set to a custom string; we should display the provided version
-      // Set up default search box if no data was provided from the template;
-      // this covers case 1.  Cases 2 and 3 are then covered by logic below.
-      if (!isset($this->layout()->searchbox)) {
-          $this->layout()->searchbox = $this->render('search/searchbox.phtml');
-      }
+    // 2. It was set to false; we should display nothing
+    // 3. It is set to a custom string; we should display the provided version
+    // Set up default search box if no data was provided from the template;
+    // this covers case 1.  Cases 2 and 3 are then covered by logic below.
+    if (!isset($this->layout()->searchbox)) {
+        $this->layout()->searchbox = $this->render('search/searchbox.phtml');
+    }
     ?>
     <header class="hidden-print">
         <div class="navbar navbar-default navbar-fixed-top">
-            <? if ($this->client()->is('two_row_header')): ?>
-            <div class="container white-bg">
-                <div class="navbar-brand" data-toggle="tooltip" title="<?=$this->transEsc('to_bsz_website')?>" data-placement="bottom">
-                    <?=$this->clientAsset()->getLogoHtml()?>
+            <?php if ($this->client()->is('two_row_header')): ?>
+                <div class="container white-bg">
+                    <div class="navbar-brand">
+                        <?= $this->clientAsset()->getLogoHtml() ?>
+                    </div>
                 </div>
-            </div>
-            <? endif; ?>
+            <?php endif; ?>
             <div class="container primary-bg">
-                <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
-                <?=$this->render('header.phtml')?>
+                <a class="sr-only"
+                   href="#content"><?= $this->transEsc('Skip to content') ?></a>
+                <?= $this->render('header.phtml') ?>
             </div>
         </div>
     </header>

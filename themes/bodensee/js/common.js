@@ -407,6 +407,7 @@ function setupJumpMenus(_container) {
   container.find('select.jumpMenu').change(function jumpMenu(){ $(this).parent().parent('form').submit(); });
 }
 
+
 $(document).ready(function commonDocReady() {
   // Start up all of our submodules
   VuFind.init();

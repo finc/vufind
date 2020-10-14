@@ -1,33 +1,28 @@
 <?php
 
 /*
- * The MIT License
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
- * Copyright 2016 Cornelius Amzar <cornelius.amzar@bsz-bw.de>.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
  */
-
 namespace Dlr\RecordDriver;
 
-use Bsz\FormatMapper;
 use DateTime;
+use Exception;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\SolrDefault;
 use VuFind\Search\SearchRunner;
@@ -44,22 +39,6 @@ class SolrNtrsOai extends SolrDefault
      * @var SimpleXMLElement
      */
     protected $xml;
-
-    /**
-     * @param FormatMapper $mapper
-     * @param type $mainConfig
-     * @param type $recordConfig
-     * @param type $searchSettings
-     */
-    public function __construct(
-        FormatMapper $mapper,
-        $mainConfig = null,
-        $recordConfig = null,
-        $searchSettings = null
-    ) {
-        parent::__construct($mapper, $mainConfig, $recordConfig, $searchSettings);
-        $this->mapper = $mapper;
-    }
 
     /**
      * Attach a Search Results Plugin Manager connection and related logic to
@@ -95,7 +74,7 @@ class SolrNtrsOai extends SolrDefault
     /**
      * Returns an array with url and desc keys to link the document id.
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getDocumentLink()
     {
@@ -275,9 +254,8 @@ class SolrNtrsOai extends SolrDefault
             if (!empty($raw)) {
                 $string = $raw->__toString();
                 $parts = explode('; ', $string);
-                return isset($parts[$arraykey]) ? $parts[$arraykey] : '';
+                return $parts[$arraykey] ?? '';
             }
-
         }
         return '';
     }

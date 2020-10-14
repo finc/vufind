@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 namespace Bsz\Config;
 
@@ -48,7 +50,11 @@ class Library
     protected $live;
     protected $boss;
     protected $lend_copy;
+    protected $country;
 
+    /**
+     * @param $data
+     */
     public function exchangeArray($data)
     {
         $this->name = $data['name'];
@@ -115,7 +121,7 @@ class Library
 
     /**
      * Get authentication method, adis is default
-     * @return stringl
+     * @return string
      */
     public function getAuth()
     {
@@ -124,18 +130,9 @@ class Library
 
     /**
      *
-     * @return int
-     */
-    public function getCountry()
-    {
-        return (int)$this->country;
-    }
-
-    /**
-     *
      * @return boolean
      */
-    public function hasPlaces()
+    public function hasPlaces() : bool
     {
         if (!empty($this->places)) {
             return true;
@@ -147,7 +144,7 @@ class Library
      * Returns DAIA  URL
      * @return string
      */
-    public function getURLDAIA()
+    public function getUrlDaia()
     {
         if (isset($this->daia)) {
             return $this->daia;
@@ -160,7 +157,7 @@ class Library
      * Determine if this library uses the productive ill link or the dev one.
      * @return boolean
      */
-    public function isLive()
+    public function isLive() : bool
     {
         if (isset($this->live) && $this->live === true) {
             return true;
@@ -168,7 +165,7 @@ class Library
         return false;
     }
 
-    public function isBoss()
+    public function isBoss() : bool
     {
         if (isset($this->boss) && $this->boss === true) {
             return true;
@@ -259,9 +256,9 @@ class Library
     }
 
     /**
-     * Get Shiboleth IdP
+     * Get Shibboleth IdP
      *
-     * @return string|url
+     * @return string
      */
     public function getIdp()
     {

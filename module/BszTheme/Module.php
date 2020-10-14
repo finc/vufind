@@ -79,9 +79,10 @@ class Module
                 'mapongo' =>      'BszTheme\View\Helper\Bodensee\Factory::getMapongo',
             ],
             'invokables' => [
-                'mapper'        => 'BszTheme\View\Helper\FormatMapper',
-                'string'        => 'BszTheme\View\Helper\StringHelper',
-                'abbrev'        => 'BszTheme\View\Helper\Bodensee\Abbrev'
+                'mapper' => 'BszTheme\View\Helper\FormatMapper',
+                'string' => 'BszTheme\View\Helper\StringHelper',
+                'abbrev' => 'BszTheme\View\Helper\Bodensee\Abbrev',
+                'clipboard' => 'BszTheme\View\Helper\Bodensee\Clipboard'
             ],
         ];
     }

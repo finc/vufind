@@ -1,4 +1,6 @@
 <?php
+
+
 $form = $this->form;
 $form->prepare();
 
@@ -40,8 +42,6 @@ $helpPost = isset($help['post']) ? $this->translate($help['post']) : null;
         <?php $currentGroup = null; ?>
         <?php foreach($form->getElements() as $el): ?>
         <?php
-
-
 
         $formElement = $form->get($el['name']);
 

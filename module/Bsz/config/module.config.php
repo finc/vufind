@@ -1,18 +1,41 @@
 <?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 namespace Bsz\Module\Config;
+
+use Bsz\Controller\Factory;
+use Bsz\Route\RouteGenerator;
 
 $config = [
 
     'controllers' => [
         'factories' => [
-            'Bsz\Controller\SearchController' => \Bsz\Controller\Factory::class,
+            'Bsz\Controller\SearchController' => Factory::class,
             'Bsz\Controller\RecordController' => 'Bsz\Controller\Factory::getRecordController',
-            'Bsz\Controller\EdsrecordController' => \Bsz\Controller\Factory::class,
-            'Bsz\Controller\MyResearchController' => \Bsz\Controller\Factory::class,
-            'Bsz\Controller\HoldingController' =>   \Bsz\Controller\Factory::class,
-            'Bsz\Controller\ShibController' =>      \Bsz\Controller\Factory::class,
-            'Bsz\Controller\BszController' =>       \Bsz\Controller\Factory::class,
-            'Bsz\Controller\TestController' =>      \Bsz\Controller\Factory::class,
+            'Bsz\Controller\EdsrecordController' => Factory::class,
+            'Bsz\Controller\MyResearchController' => Factory::class,
+            'Bsz\Controller\HoldingController' => Factory::class,
+            'Bsz\Controller\ShibController' => Factory::class,
+            'Bsz\Controller\BszController' => Factory::class,
+            'Bsz\Controller\TestController' => Factory::class,
         ],
         'aliases' => [
             // shortcuts for our own controllers
@@ -54,16 +77,16 @@ $config = [
             'Bsz\Config\Dedup'  => 'Bsz\Config\Factory::getDedup',
             'LibrariesTableGateway' => 'Bsz\Config\Factory::getLibrariesTableGateway',
             'PlacesTableGateway' => 'Bsz\Config\Factory::getPlacesTableGateway',
-            'Bsz\Holding'    => 'Bsz\Factory::getHolding',
+            'Bsz\ILL\Holding'    => 'Bsz\ILL\Factory::getHolding',
             'Bsz\Parser\OpenUrl' => 'Bsz\Parser\Factory::getOpenUrlParser',
             'Bsz\SearchTabsHelper' => 'Bsz\Service\Factory::getSearchTabsHelper',
             'Bsz\Auth\Manager' => 'Bsz\Auth\Factory::getManager',
             'Bsz\RecordDriver\PluginManager' => 'Bsz\RecordDriver\PluginManagerFactory',
+            'Bsz\ILL\Logic' => 'Bsz\ILL\Factory::getIllLogic',
 
         ],
         'invokables' => [
             'Bsz\RecordDriver\Definition' => 'Bsz\RecordDriver\Definition',
-            'Bsz\Mapper'     => 'Bsz\FormatMapper',
             'Bsz\Config\Library'    => 'Bsz\Config\Library',
         ],
         'aliases' => [
@@ -163,13 +186,17 @@ $config = [
                     'Bsz\RecordTab\Articles' => 'Bsz\RecordTab\Factory::getArticles',
                     'Bsz\RecordTab\Notes' => 'Bsz\RecordTab\Factory::getNotes',
                     'Bsz\RecordTab\Libraries' => 'Bsz\RecordTab\Factory::getLibraries',
+                    'Bsz\RecordTab\HoldingsILS' => 'Bsz\RecordTab\Factory::getHoldingsILS',
+                    'Bsz\RecordTab\InterlibraryLoan' => 'Bsz\RecordTab\Factory::getInterLibraryLoan',
                 ],
                 'aliases' => [
                     'VuFind\RecordTab\HoldingsILS' => 'Bsz\RecordTab\HoldingsILS',
+                    'Articles' => 'Bsz\RecordTab\Articles',
                     'Volumes' => 'Bsz\RecordTab\Volumes',
                     'Articles' => 'Bsz\RecordTab\Articles',
                     'Notes' => 'Bsz\RecordTab\Notes',
                     'Libraries' => 'Bsz\RecordTab\Libraries',
+                    'InterlibraryLoan' => 'Bsz\RecordTab\InterlibraryLoan',
                 ]
             ],
             'search_backend' => [
@@ -201,9 +228,9 @@ $config = [
             ],
             'ajaxhandler' => [
                 'factories' => [
-                     'Bsz\AjaxHandler\DedupCheckbox' =>      'Bsz\AjaxHandler\Factory::getDedupCheckbox',
-                     'Bsz\AjaxHandler\SaveIsil' =>           'Bsz\AjaxHandler\Factory::getSaveIsil',
-                     'Bsz\AjaxHandler\LibrariesTypeahead' => 'Bsz\AjaxHandler\Factory::getLibrariesTypeahead',
+                    'Bsz\AjaxHandler\DedupCheckbox' =>      'Bsz\AjaxHandler\Factory::getDedupCheckbox',
+                    'Bsz\AjaxHandler\SaveIsil' =>           'Bsz\AjaxHandler\Factory::getSaveIsil',
+                    'Bsz\AjaxHandler\LibrariesTypeahead' => 'Bsz\AjaxHandler\Factory::getLibrariesTypeahead',
 
                 ],
                 'aliases' => [
@@ -242,7 +269,7 @@ $recordRoutes = [
     'record' => 'Record',
 ];
 
-$routeGenerator = new \Bsz\Route\RouteGenerator();
+$routeGenerator = new RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
 //$routeGenerator->addDynamicRoutes($config, $dynamicRoutes);
 $routeGenerator->addStaticRoutes($config, $staticRoutes);

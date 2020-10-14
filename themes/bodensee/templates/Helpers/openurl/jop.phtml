@@ -1,42 +1,49 @@
-<?
-  $this->headScript()->appendFile("openurl.js");
+<?php
+
+
+$this->headScript()->appendFile("openurl.js");
   $classes = '';
   if ($this->openUrlEmbed) {
-    $classes = "fulltext";
+      $classes = "fulltext";
   } elseif ($this->openUrlWindow) {
-    $classes = 'fulltext openUrlWindow window_settings:' . $this->escapeHtmlAttr($this->openUrlWindow);
+      $classes = 'fulltext openUrlWindow window_settings:' . $this->escapeHtmlAttr($this->openUrlWindow);
   }
-  if (!empty($classes)) {
+if (!empty($classes)) {
     $class = ' class="' . $classes . '"';
     $class_ib = ' class="imagebased ' . $classes . '"';
-  } else {
+} else {
     $class = $class_ib = '';
-  }
+}
 ?>
-<? if (!empty($this->openUrl) && !empty($this->openUrlBase)): ?>
-    <span class="openUrlControls<? if ($this->openUrlEmbed): ?> openUrlEmbed<? if ($this->openUrlEmbedAutoLoad): ?> openUrlEmbedAutoLoad<? endif; ?><? endif; ?>">
-      <? if (!$this->openUrlImageBasedSrc || $this->openUrlImageBasedMode == 'both'): ?>
-      <a href="<?=$this->escapeHtmlAttr($this->openUrlBase . '?' . $this->openUrl)?>"<?=$class?>>
-        <? /* put the openUrl here in a span (COinS almost) so we can retrieve it later */ ?>
-        <span title="<?=$this->escapeHtmlAttr($this->openUrl)?>" class="openUrl"></span>
-        <? if ($this->openUrlGraphic): ?>
-          <img class="open-url-icon" src=<?=$this->escapeHtmlAttr($this->openUrlGraphic)?>><br/>
-        <? else: ?>
-          <?=$this->transEsc('Get full text')?>
-        <? endif; ?>
+<?php if (!empty($this->openUrl) && !empty($this->openUrlBase)): ?>
+    <span class="openUrlControls<?php if ($this->openUrlEmbed): ?> openUrlEmbed<?php if ($this->openUrlEmbedAutoLoad): ?> openUrlEmbedAutoLoad<?php endif; ?><?php endif; ?>">
+      <?php if (!$this->openUrlImageBasedSrc || $this->openUrlImageBasedMode == 'both'): ?>
+          <a href="<?= $this->escapeHtmlAttr($this->openUrlBase . '?' . $this->openUrl) ?>"<?= $class ?>>
+        <?php /* put the openUrl here in a span (COinS almost) so we can retrieve it later */ ?>
+        <span title="<?= $this->escapeHtmlAttr($this->openUrl) ?>"
+              class="openUrl"></span>
+        <?php if ($this->openUrlGraphic): ?>
+            <img class="open-url-icon"
+                 src=<?= $this->escapeHtmlAttr($this->openUrlGraphic) ?>><br/>
+        <?php else: ?>
+            <?= $this->transEsc('Get full text') ?>
+        <?php endif; ?>
       </a>
-      <? endif; ?>
+      <?php endif; ?>
 
-      <? if ($this->openUrlImageBasedSrc): ?>
-        <? $ibOpenUrl = $this->openUrlImageBasedOverride ? $this->openUrlImageBasedOverride : $this->openUrl; ?>
-        <a href="<?=$this->escapeHtmlAttr($this->openUrlBase . '?' . $ibOpenUrl)?>"<?=$class_ib?>>
-          <span title="<?=$this->escapeHtmlAttr($ibOpenUrl)?>" class="openUrl"></span>
-          <img data-recordid="<?=$this->escapeHtmlAttr($this->driver->getUniqueId())?>" src="<?=$this->escapeHtmlAttr($this->openUrlImageBasedSrc)?>" alt="<?=$this->transEsc('Get full text')?>" />
+        <?php if ($this->openUrlImageBasedSrc): ?>
+            <?php $ibOpenUrl = $this->openUrlImageBasedOverride ? $this->openUrlImageBasedOverride : $this->openUrl; ?>
+            <a href="<?= $this->escapeHtmlAttr($this->openUrlBase . '?' . $ibOpenUrl) ?>"<?= $class_ib ?>>
+          <span title="<?= $this->escapeHtmlAttr($ibOpenUrl) ?>"
+                class="openUrl"></span>
+          <img data-recordid="<?= $this->escapeHtmlAttr($this->driver->getUniqueId()) ?>"
+               src="<?= $this->escapeHtmlAttr($this->openUrlImageBasedSrc) ?>"
+               alt="<?= $this->transEsc('Get full text') ?>"/>
         </a>
-    <? endif; ?>
+        <?php endif; ?>
     </span>
 
-    <? if ($this->openUrlEmbed): ?>
-      <div class="resolver hidden"><?=$this->transEsc('Loading')?>...</div>
-    <? endif; ?>
-<? endif; ?>
+    <?php if ($this->openUrlEmbed): ?>
+        <div class="resolver hidden"><?= $this->transEsc('Loading') ?>...</div>
+    <?php endif; ?>
+<?php endif; ?>

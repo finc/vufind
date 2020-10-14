@@ -1,29 +1,29 @@
 <div class="media" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
    <div class="col-xs-4 col-sm-3 col-xs-offset-4 col-sm-offset-0 pull-right-sm" >
-    <?
+    <?php
         $coverDetails = $this->record($this->driver)->getCoverDetails('core', 'medium', '#');
         $cover = $coverDetails['html'];
-        $thumbnail = false;
-        $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
-        if ($cover): ?>
-            <? if ($coverDetails['html'] !== ''): ?> 
-                <?=$cover ?>
-            <? endif; ?>
-        <? else: ?>
-            <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?>">     
-                <span class=""></span>
-            </div>
-        <? endif; ?>   
-    </div>
-    
-    <div class="col-xs-12 col-sm-9">        
+    $thumbnail = false;
+    $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
+    if ($cover): ?>
+        <?php if ($coverDetails['html'] !== ''): ?>
+            <?= $cover ?>
+        <?php endif; ?>
+    <?php else: ?>
+        <div class="recordcover unavailable <?= $this->mapper()->mapIcon($this->driver->getFormats()) ?>">
+            <span class=""></span>
+        </div>
+    <?php endif; ?>
+   </div>
+
+    <div class="col-xs-12 col-sm-9">
         <div class="media-body">
 
-    <h3 property="name"><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h3>
+            <h3 property="name"><?= $this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection()) ?></h3>
 
-    <?php if(!empty($this->extraControls)): ?>
-      <?=$this->extraControls['actionControls'] ?? ''?>
-      <?=$this->extraControls['availabilityInfo'] ?? ''?>
+            <?php if (!empty($this->extraControls)): ?>
+                <?= $this->extraControls['actionControls'] ?? '' ?>
+                <?= $this->extraControls['availabilityInfo'] ?? '' ?>
     <?php endif; ?>
 
     <?php $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $this->escapeHtml($summary[0]) : false; ?>

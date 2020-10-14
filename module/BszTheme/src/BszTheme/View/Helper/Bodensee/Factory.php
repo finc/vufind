@@ -1,14 +1,12 @@
 <?php
-/**
- * Factory for Bootstrap view helpers.
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
- * PHP version 5
- *
- * Copyright (C) Villanova University 2014.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,16 +15,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * @category VuFind2
- * @package  View_Helpers
- * @author   Demian Katz <demian.katz@villanova.edu>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org/wiki/vufind2:developer_manual Wiki
  */
 namespace BszTheme\View\Helper\Bodensee;
 
+use Bsz\Config\Client;
+use Bsz\Config\Library;
+use Bsz\Exception;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -122,28 +118,26 @@ class Factory
     {
         return new Record(
             $container->get('VuFind\Config')->get('config'),
-            $container->get(\Bsz\Config\Client::class),
-            $container->get('Bsz\Holding')
+            $container->get(Client::class)->getIsilAvailability()
         );
     }
 
     /**
      * Construct the RecordLink helper.
      *
-     * @param ContainerInterface$container Service manager.
+     * @param ContainerInterface $container Service manager.
      *
-     * @throws \Bsz\Exception
-     *
-     * @return Record
+     * @return RecordLink
+     * @throws Exception
      */
     public static function getRecordLink(ContainerInterface $container)
     {
-        $client = $container->get(\Bsz\Config\Client::class);
+        $client = $container->get(Client::class);
         $libraries = $container->get('Bsz\Config\Libraries');
         $opacUrl = null;
 
         $library = $libraries->getFirstActive($client->getIsils());
-        if ($library instanceof \Bsz\Config\Library) {
+        if ($library instanceof Library) {
             $opacUrl = $library->getOpacUrl() !== null ? $library->getOpacUrl() : null;
         }
 
@@ -204,8 +198,8 @@ class Factory
     }
 
     /**
-     * @param ContainerInterface$container
-     * @return \BszTheme\View\Helper\Bodensee\IllForm
+     * @param ContainerInterface $container
+     * @return IllForm
      */
     public static function getIllForm(ContainerInterface $container)
     {

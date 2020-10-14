@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 namespace Bsz\Config;
 
@@ -23,7 +25,7 @@ use Exception;
 use Zend\Config\Config;
 use Zend\Config\Reader\Ini;
 use Zend\Http\PhpEnvironment\Request;
-use Zend\Session\Container;
+use Zend\Session\Container as SessContainer;
 
 /**
  * Client class extends VuFinds configuration to fit our needs.
@@ -50,9 +52,9 @@ class Client extends Config
 
     /**
      *
-     * @var Container
+     * @var SessContainer
      */
-    protected $container;
+    protected $sessContainer;
 
     /**
      * This method is used if object is casted to string
@@ -62,12 +64,12 @@ class Client extends Config
     public function __toString()
     {
         $isils = $this->getIsils();
-        return implode('', $isils);
+        return array_shift($isils);
     }
 
-    public function appendContainer(Container $container)
+    public function attachSessionContainer(SessContainer $container)
     {
-        $this->container = $container;
+        $this->sessContainer = $container;
     }
 
     /**
@@ -110,7 +112,12 @@ class Client extends Config
         if ($boxNo == 2 && !$links) {
             $links[] = '/Search/History';
             $links[] = '/Search/Advanced';
-        } elseif ($boxNo == 1 && $this->isIsilSession() && $this->hasIsilSession()) {
+        } elseif ($boxNo == 1 &&
+            $this->isIsilSession() &&
+            $this->hasIsilSession() &&
+            isset($this->libraries)
+
+        ) {
             $library = $this->libraries->getFirstActive($this->getIsils());
             if (isset($library) && $library->getHomepage() !== null) {
                 $links[] = isset($library) ? $library->getHomepage() : '';
@@ -162,6 +169,7 @@ class Client extends Config
 
     /**
      * Konfiguriert den linken NewsFeed der Startseite
+     * @deprecated searches.ini no longer present in this class.
      * @param string
      * @return string
      */
@@ -204,7 +212,7 @@ class Client extends Config
      * @param Request $request
      * @return Client
      */
-    public function setRequest(Request $request)
+    public function attachRequest(Request $request)
     {
         $this->request = $request;
         return $this;
@@ -223,12 +231,12 @@ class Client extends Config
         }
 
         $isils = [];
-        if ($this->isIsilSession() && $this->container->offsetExists('isil')) {
-            $isils = (array)$this->container->offsetGet('isil');
+        if ($this->isIsilSession() && $this->sessContainer->offsetExists('isil')) {
+            $isils = (array)$this->sessContainer->offsetGet('isil');
         } elseif ($this->isIsilSession() && isset($cookie->isil)) {
             $isils = explode(',', $cookie->isil);
             // Write isils back to session
-            $this->container->offsetSet('isil', $isils);
+            $this->sessContainer->offsetSet('isil', $isils);
         } else {
             $raw = trim($this->get('Site')->get('isil'));
             if (!empty($raw)) {
@@ -240,6 +248,7 @@ class Client extends Config
 
     /**
      * Returns Sigel for use in OpenUrl
+     * @deprecated not really clear, OpenUrl not used.
      * @return string
      */
     public function getSigel()
@@ -249,7 +258,10 @@ class Client extends Config
         if (!$this->isIsilSession()) {
             $sigel = $this->get('OpenURL')->get('sigel');
         } elseif ($this->libraries instanceof Libraries) {
-            $sigel = $this->libraries->getFirstActive($this->getIsils())->getSigel();
+            $library = $this->libraries->getFirstActive($this->getIsils());
+            if ($library instanceof Bsz\Config\Library) {
+                $sigel = $library->getSigel();
+            }
         }
         return $sigel;
     }
@@ -260,7 +272,7 @@ class Client extends Config
      */
     public function getIsilAvailability()
     {
-        if ($this->isIsilSession()) {
+        if ($this->isIsilSession() && isset($this->libraries)) {
             $localIsils = [];
             foreach ($this->libraries->getActive($this->getIsils()) as $library) {
                 $localIsils = array_merge($localIsils, $library->getIsilAvailability());
@@ -296,9 +308,10 @@ class Client extends Config
      * Add Libraries to thie class
      * @param Libraries $libraries
      */
-    public function setLibraries(Libraries $libraries)
+    public function attachLibraries(Libraries $libraries)
     {
         $this->libraries = $libraries;
+        return $this;
     }
 
     /**
@@ -424,6 +437,9 @@ class Client extends Config
         return $this->get('Help')->get('groups');
     }
 
+    /**
+     * @return string
+     */
     public function getMaintenanceMessage()
     {
         if (defined('MAINTENANCE_MODE')) {
@@ -431,14 +447,4 @@ class Client extends Config
         }
         return '';
     }
-
-    /**
-     * Returns driver
-     * @return string
-     */
-    public function getDriver()
-    {
-        return $this->get('Catalog')->get('driver');
-    }
-
 }

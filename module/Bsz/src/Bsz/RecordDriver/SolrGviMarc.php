@@ -1,6 +1,7 @@
 <?php
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 namespace Bsz\RecordDriver;
 
@@ -404,7 +406,6 @@ class SolrGviMarc extends SolrMarc implements Definition
                 } else {
                     $places[] = $raw;
                 }
-
             }
         }
         foreach ($places as $k => $place) {
@@ -655,18 +656,6 @@ class SolrGviMarc extends SolrMarc implements Definition
     }
 
     /**
-     * Get the main corporate author (if any) for the record.
-     *
-     * @return string
-     */
-    public function getCorporateAuthor()
-    {
-        // Try 110 first -- if none found, try 710 next.
-        $corpAuthors = array_merge($this->getFieldArray('110', ['a', 'b', 'g', '9'], true), $this->getFieldArray('710', ['a', 'b', 'g'], true));
-        return empty($corpAuthors) ? null : $corpAuthors[0];
-    }
-
-    /**
      * Get a sortable title for the record (i.e. no leading articles).
      *
      * @return string
@@ -740,8 +729,11 @@ class SolrGviMarc extends SolrMarc implements Definition
             return false;
         }
 
-        if ($this->isArticle() || $this->isEBook() || $this->isSerial() ||
-                $this->getMultipartLevel() === static::MULTIPART_COLLECTION) {
+        if ($this->isArticle() ||
+            $this->isEBook() ||
+            $this->isSerial() ||
+            $this->isCollection()
+        ) {
             return false;
         }
         return true;
@@ -1069,8 +1061,12 @@ class SolrGviMarc extends SolrMarc implements Definition
     public function getLocalHoldings()
     {
         $holdings = [];
-        $f924 = $this->getField924(false, true);
+        $f924 = $this->getField924();
         $isils = $this->mainConfig->getIsilAvailability();
+
+        if (count($isils) == 0) {
+            return [];
+        }
 
         // Building a regex pattern
         foreach ($isils as $k => $isil) {
@@ -1080,7 +1076,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $pattern = '/' . str_replace('\*', '.*', $pattern) . '/';
 
         foreach ($f924 as $fields) {
-            if (isset($fields['b']) && preg_match($pattern, $fields['b'])) {
+            if (isset($fields['isil']) && preg_match($pattern, $fields['isil'])) {
                 $holdings[] = $fields;
             }
         }
@@ -1277,7 +1273,6 @@ class SolrGviMarc extends SolrMarc implements Definition
         return $array_clean;
     }
 
-
     /**
      * This method is basically a duplicate of getAllRecordLinks but
      * much easier designer and works well with German library links
@@ -1345,4 +1340,5 @@ class SolrGviMarc extends SolrMarc implements Definition
             }
         }
         return $array_clean;
-    }}
+    }
+}

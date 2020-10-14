@@ -1,6 +1,27 @@
 <?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 namespace BszTheme\View\Helper;
 
+use Bsz\Config\Library;
 use Zend\View\Helper\AbstractHelper;
 
 /**
@@ -22,6 +43,8 @@ class ClientAsset extends AbstractHelper
      * The first part of the domain name
      *
      * @param string $tag
+     * @param $website
+     * @param null $library
      */
     public function __construct($tag, $website, $library = null)
     {
@@ -30,6 +53,10 @@ class ClientAsset extends AbstractHelper
         $this->website = $website;
     }
 
+
+    /**
+     * @return $this
+     */
     public function __invoke()
     {
         return $this;
@@ -53,7 +80,7 @@ class ClientAsset extends AbstractHelper
         $filename = '';
         if ($this->library === null) {
             $filename = 'logo/' . $this->tag . '-small.png';
-        } elseif ($this->library instanceof \Bsz\Config\Library) {
+        } elseif ($this->library instanceof Library) {
             $filename = $this->library->getLogo();
         }
 
@@ -72,10 +99,9 @@ class ClientAsset extends AbstractHelper
         $filename = '';
         if ($this->library === null && ($this->tag === 'swb' || $this->tag === 'k10plus')) {
             $filename = 'logo/' . $this->tag . '.svg';
-
         } elseif ($this->library === null) {
             $filename = 'logo/' . $this->tag . '.png';
-        } elseif ($this->library instanceof \Bsz\Config\Library) {
+        } elseif ($this->library instanceof Library) {
             $filename = $this->library->getLogo();
         }
 
@@ -85,6 +111,10 @@ class ClientAsset extends AbstractHelper
         return '';
     }
 
+
+    /**
+     * @return string
+     */
     public function getLogoHtml()
     {
         return $this->getView()->render('bsz/logo.phtml', [

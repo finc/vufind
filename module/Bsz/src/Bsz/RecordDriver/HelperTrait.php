@@ -25,7 +25,7 @@ trait HelperTrait
     public function cleanString(?string $string = '') : string
     {
         $string = trim($string);
-        $string = preg_replace('/:$|\/$/', '', $string);
+        $string = preg_replace('/^:\s|:$|\/$/', '', $string);
 //        $string = strip_tags($string);
         $string = trim($string);
         return $string;

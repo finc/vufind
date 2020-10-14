@@ -1,5 +1,5 @@
 
-// prevent incredible long lings from breaking the layout. 
+// prevent incredible long lings from breaking the layout.
 .tab-pane.details-tab {
     overflow: hidden;
 }
@@ -7,5 +7,17 @@
 .record-nav > li > a {
     padding: 5px 10px;
 }
+
+.format:last-child {
+    &:after {
+        content: '';
+    }
+}
+.format {
+    &:after {
+        content: ', ';
+    }
+}
+
 
 

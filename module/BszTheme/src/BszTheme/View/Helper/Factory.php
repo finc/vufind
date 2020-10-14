@@ -30,8 +30,10 @@ class Factory
 {
     /**
      * Get Client View Helper
+     *
      * @param ContainerInterface $container
-     * @return \Bsz\View\Helper\Client
+     *
+     * @return Client
      */
     public static function getClient(ContainerInterface $container)
     {
@@ -39,6 +41,11 @@ class Factory
         return new Client($client);
     }
 
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return ClientAsset
+     */
     public static function getClientAsset(ContainerInterface $container)
     {
         $client = $container->get(\Bsz\Config\Client::class);
@@ -54,7 +61,10 @@ class Factory
             if ($client->isIsilSession() && $client->hasIsilSession()) {
                 $isils = $client->getIsils();
                 $library = $libraries->getFirstActive($isils);
-                $website = $library->getHomepage();
+
+                if ($library instanceof Bsz\Config\Library) {
+                    $website = $library->getHomepage();
+                }
             }
         }
         return new ClientAsset($tag, $website, $library);
@@ -62,8 +72,10 @@ class Factory
 
     /**
      * Get Interlending View Helper
+     *
      * @param ContainerInterface $container
-     * @return \Bsz\View\Helper\Bsz\View\Helper\Interlending
+     *
+     * @return Libraries
      */
     public static function getLibraries(ContainerInterface $container)
     {

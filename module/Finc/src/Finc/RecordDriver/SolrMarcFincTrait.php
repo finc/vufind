@@ -543,14 +543,14 @@ trait SolrMarcFincTrait
 
                         // Build objects to represent each set of data; these will
                         // transform seamlessly into strings in the view layer.
-                        $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
+                        $retval[] = new \Bsz\RecordDriver\Response\PublicationDetails(
                             $place, $name, $date
                         );
 
                         // Build the publication details with additional graphical notations
                         // for the current set of publication details
                         if ($linkedField = $this->getLinkedField($current, $i)) {
-                            $retval[] = new \VuFind\RecordDriver\Response\PublicationDetails(
+                            $retval[] = new \Bsz\RecordDriver\Response\PublicationDetails(
                                 $linkedField->getSubfield('a')
                                     ? $linkedField->getSubfield('a')->getData() : null,
                                 $linkedField->getSubfield('b')
@@ -563,7 +563,6 @@ trait SolrMarcFincTrait
                 }
             }
         }
-
         return $retval;
     }
 

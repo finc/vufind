@@ -12,11 +12,9 @@
 <?
   $coverDetails = $this->record($this->driver)->getCoverDetails('core', 'medium', '#');
   $cover = $coverDetails['html'];
-  $thumbnail = false;
   $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
   if ($cover): ?>
     <? if ($coverDetails['html'] !== ''): ?>
-
           <?= $cover ?>
       <? endif; ?>
   <? else: ?>
@@ -72,7 +70,6 @@
                         <? endforeach; ?></td>
                 </tr>
             <? endif; ?>
-
 
             <?=$this->render('RecordDriver/SolrDefault/parts/series.phtml')?>
 
@@ -132,7 +129,7 @@
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author" class="markjs">
                     <? foreach ($authors['primary'] as $name => $info): ?>
-                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person','hiddenFilterString' => $hiddenFilterString])?>
                     <? endforeach; ?>
                 </td>
             </tr>
@@ -143,7 +140,7 @@
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
                 <td property="creator" class="markjs">
                 <? foreach ($authors['corporate'] as $name => $info): ?>
-                    <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                    <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'corporation', 'hiddenFilterString' => $hiddenFilterString])?>
                     <br/>
                 <? endforeach; ?>
                 </td>
@@ -154,7 +151,7 @@
                 <th><?=$this->transEsc('Other Authors')?>: </th>
                 <td class="markjs">
                     <? foreach ($authors['secondary'] as $name => $info): ?>
-                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'hiddenFilterString' => $hiddenFilterString])?>
+                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person', 'hiddenFilterString' => $hiddenFilterString])?>
                         <br/>
                     <? endforeach; ?>
                 </td>
@@ -178,7 +175,7 @@
             <tr>
                 <th><?=$this->transEsc('Format')?>: </th>
                 <td><? foreach($this->mapper()->simplify($this->driver->getFormats()) as $format): ?>
-                    <span><?=$this->transEsc($format)?></span>
+                    <span class="format"><?=$this->transEsc($format)?></span>
                     <? endforeach; ?></td>
             </tr>
             <? endif; ?>
@@ -228,16 +225,16 @@
                $isbn = $this->driver->getCleanISBN();
                $issn = $this->driver->getCleanISSN();
                if (!empty($isbn)): ?>
-            <tr>
-                <th><?=$this->abbrev('ISBN', 'ISBN_long')?>:</th>
-                <td class="markjs"><?=$this->driver->getCleanISBN()?></td>
-            </tr>
-            <? elseif (!empty($issn)): ?>
-            <tr>
-                <th><?=$this->abbrev('ISSN', 'ISSN_long')?>:</th>
-                <td class="markjs"><?=$this->driver->getCleanISSN()?></td>
-            </tr>
-            <? endif; ?>
+                   <tr>
+                       <th><?= $this->abbrev('ISBN', 'ISBN_long') ?>:</th>
+                       <td class="markjs"><?= $this->clipboard($this->driver->getCleanISBN()) ?></td>
+                   </tr>
+               <? elseif (!empty($issn)): ?>
+                   <tr>
+                       <th><?= $this->abbrev('ISSN', 'ISSN_long') ?>:</th>
+                       <td class="markjs"><?= $this->clipboard($this->driver->getCleanISSN()) ?></td>
+                   </tr>
+               <? endif; ?>
 
             <? $langs = $this->driver->getLanguages(); if (!empty($langs)): ?>
             <tr>
@@ -361,9 +358,6 @@
             </td>
         </tr>
         <? endif; ?>
-              <? if ($this->searchTabs()->isILL($this->searchClassId)): ?>
-        <?=$this->render('RecordDriver/SolrDefault/parts/illbutton.phtml')?>
-      <? endif; ?>
     </table>
     <?/* End Main Details */?>
     </div>

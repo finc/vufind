@@ -1,28 +1,28 @@
-<?=$this->doctype('HTML5')?>
-<html lang="<?=$this->layout()->userLang?>">
-  <head>
-    <?$this->headThemeResources()?>
+<?= $this->doctype('HTML5') ?>
+<html lang="<?= $this->layout()->userLang ?>">
+<head>
+    <? $this->headThemeResources() ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="robots" content="noindex, nofollow" />
-    <?php $this->headTitle()->setPostfix(' - '.$this->client()->getTitle());
-     echo $this->headTitle()
+    <meta name="robots" content="noindex, nofollow"/>
+    <?php $this->headTitle()->setPostfix(' - ' . $this->client()->getTitle());
+    echo $this->headTitle()
     ?>
 
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-    <?$this->headMeta()->appendName('author', 'Bibliotheks Service Zentrum Baden Württemberg (BSZ)')?>
-    <?$this->headMeta()->appendName('keywords', 'boss2, boss, bsz, bibliothek, bücher, zeitschriften')?>
-    <?$this->headMeta()->appendName('applcation-name', 'BSZ One Step Search (BOSS) v2')?>
-    <?=$this->headMeta()?>
+    <? $this->headMeta()->appendName('author', 'Bibliotheks Service Zentrum Baden Württemberg (BSZ)') ?>
+    <? $this->headMeta()->appendName('keywords', 'boss2, boss, bsz, bibliothek, bücher, zeitschriften') ?>
+    <? $this->headMeta()->appendName('applcation-name', 'BSZ One Step Search (BOSS) v2') ?>
+    <?= $this->headMeta() ?>
     <?php
-      // Set up OpenSearch link:
+    // Set up OpenSearch link:
       $this->headLink(
-          array(
+          [
           'href' => $this->url('search-opensearch') . '?method=describe',
           'type' => 'application/opensearchdescription+xml',
           'title' => $this->transEsc('Library Catalog Search'),
           'rel' => 'search'
-        )
+          ]
       );
     ?>
     <!-- RTL styling -->
@@ -38,7 +38,7 @@
       // Deal with cart stuff:
       if (!isset($this->renderingError)) {
           $this->jsTranslations()->addStrings(
-            array(
+              [
             'add_tag_success' => 'add_tag_success',
             'bulk_email_success' => 'bulk_email_success',
             'bulk_noitems_advice' => 'bulk_noitems_advice',
@@ -54,7 +54,7 @@
             'loading' => 'Loading',
             'sms_success' => 'sms_success',
             'number_thousands_separator' => ['number_thousands_separator', null, ',']
-          )
+              ]
         );
           $cart = $this->cart();
           $this->jsTranslations()->addStrings([
@@ -73,7 +73,7 @@
               'var cartCookieDomain = ' . (!empty($domain) ? "'$domain'" : 'false') . ';'
           );
               $this->jsTranslations()->addStrings(
-              array(
+                  [
               'addBookBag' => 'Add to Book Bag',
               'bookbagFull' => 'bookbag_full_msg',
               'bookbagMax' => $cart->getMaxSize(),
@@ -84,7 +84,7 @@
               'itemsInBag' => 'items_already_in_bookbag',
               'removeBookBag' => 'Remove from Book Bag',
               'viewBookBag' => 'View Book Bag'
-            )
+                  ]
           );
           }
           $this->headScript()->appendScript($this->jsTranslations()->getScript());

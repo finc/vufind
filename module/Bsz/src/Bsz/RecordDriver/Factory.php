@@ -38,7 +38,7 @@ class Factory extends SolrDefaultFactory
     public static function getEDS(ContainerInterface $container)
     {
         $eds = $container->get('VuFind\Config')->get('EDS');
-        return new EDS($container->get('Bsz\Mapper'),
+        return new EDS(
             $container->get('VuFind\Config')->get('config'), $eds, $eds
         );
     }
@@ -66,7 +66,6 @@ class Factory extends SolrDefaultFactory
         $requestedName = $requestedName;
 
         $driver = new $requestedName(
-            $container->get('Bsz\Mapper'),
             $container->get('Bsz\Config\Client'),
             null,
             $container->get('VuFind\Config')->get('searches')

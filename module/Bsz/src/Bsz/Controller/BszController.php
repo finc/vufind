@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,23 +17,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 namespace Bsz\Controller;
 
+use Bsz\Config\Client;
+use Bsz\Config\Libraries;
+use Bsz\Exception;
+use VuFind\Controller\AbstractBase;
+use Zend\Http\Header\SetCookie;
 use Zend\Session\Container as SessionContainer;
+use Zend\Session\SessionManager;
 
 /**
  * Für statische Seiten etc.
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class BszController extends \VuFind\Controller\AbstractBase
+class BszController extends AbstractBase
 {
+    protected $libraries;
+
     /**
      * Write isil into Session
      */
     public function saveIsilAction()
     {
+        if ($this->libraries === null) {
+            $this->libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
+        }
+
         $isilsRoute = explode(',', $this->params()->fromRoute('isil'));
         $isilsGet = (array)$this->params()->fromQuery('isil');
         $isils = array_merge($isilsRoute, $isilsGet);
@@ -40,27 +53,31 @@ class BszController extends \VuFind\Controller\AbstractBase
         if (!is_array($isils)) {
             $isils = (array)$isils;
         }
-        foreach ($isils as $key => $isil) {
-            if (strlen($isil) < 1) {
-                unset($isils[$key]);
-            }
-        }
+
+        // handle errors
         if (count($isils) == 0) {
-            throw new \Bsz\Exception('parameter isil missing');
+            throw new Exception('parameter isil missing', 532);
         }
+
+        $active = $this->libraries->getActive($isils);
+        if (count($active) == 0) {
+            throw new Exception('Your ISILs are not valid or inactive', 533);
+        }
+
         if (count($isils) > 0) {
             $session = new SessionContainer(
                 'fernleihe',
-                $this->serviceLocator->get(\Zend\Session\SessionManager::class)
+                $this->serviceLocator->get(SessionManager::class)
             );
             $session->offsetSet('isil', $isils);
             $uri= $this->getRequest()->getUri();
-            $cookie = new \Zend\Http\Header\SetCookie(
-                    'isil',
-                    implode(',', $isils),
-                    time() + 14 * 24 * 60 * 60,
-                    '/',
-                    $uri->getHost());
+            $cookie = new SetCookie(
+                'isil',
+                implode(',', $isils),
+                time() + 14 * 24 * 60 * 60,
+                '/',
+                $uri->getHost()
+            );
             $header = $this->getResponse()->getHeaders();
             $header->addHeader($cookie);
         }
@@ -73,8 +90,8 @@ class BszController extends \VuFind\Controller\AbstractBase
             $referer = $referer->getFieldValue();
         }
         if (!empty($referer) && strpos($referer, 'saveIsil') === false
-                && (strpos($referer, '.boss') > 0
-                    || strpos($referer, '.localhost') > 0)
+            && (strpos($referer, '.boss') > 0
+                || strpos($referer, '.localhost') > 0)
         ) {
             return $this->redirect()->toUrl($referer);
         } else {
@@ -124,8 +141,8 @@ class BszController extends \VuFind\Controller\AbstractBase
 
     public function libraryAction()
     {
-        $client = $this->serviceLocator->get(\Bsz\Config\Client::class);
-        $libraries = $this->serviceLocator->get(\Bsz\Config\Libraries::class);
+        $client = $this->serviceLocator->get(Client::class);
+        $libraries = $this->serviceLocator->get(Libraries::class);
         $library = $libraries->getFirstActive($client->getIsils());
         $homepage = $library->getHomepage();
         return $this->redirect()->toUrl($homepage);

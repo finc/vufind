@@ -296,6 +296,27 @@ function datepicker() {
 
 }
 
+function manageActiveTab() {
+
+    var id = $('.searchForm .nav-tabs li.active').attr('id');
+
+    if (id === 'solr' || id === 'solr:filtered2') {
+        console.info('ILL tab is active');
+        if ($('.record-tabs a.interlibraryloan').length > 0) {
+            // jquery can't trigger a click on a bare text node.
+            // Pure javaSCript can.
+            //$('.record-tabs a.interlibraryloan')[0].click();
+            var tabid = 'interlibraryloan';
+            var setHash = !$('.record-tabs').parent().hasClass('initiallyActive')
+            var newTab = getNewRecordTab(tabid).addClass('active');
+            ajaxLoadTab(newTab, tabid, setHash);
+        }
+    } else if (id === 'solr:filtered1' || id === 'solr:unfiltered' ) {
+        console.info('Local tab is active');
+        $('.record-tabs a.interlibraryloan').parent().hide();
+    }
+}
+
 /**
  * Typeahead selection of libraries in home page of ill portal.
  *
@@ -415,8 +436,9 @@ function copyToClipboard() {
 
     var clipboard = new ClipboardJS('.copy-clipboard-toggle');
     clipboard.on('success', function(e) {
-        console.info('copied to clipboard');
-        $('.copy-clipboard-toggle').find('i').removeClass('fa-copy').addClass('fa-check text-success');
+        console.info(e.text + ' copied to clipboard');
+        $('.copy-clipboard-toggle i').removeClass('fa-check text-success').addClass('fa-copy');
+        $('#' + e.trigger.id + ' i').removeClass('fa-copy').addClass('fa-check text-success');
         e.clearSelection();
     });
 }
@@ -428,7 +450,7 @@ function copyToClipboard() {
 */
 
 $(document).ready(function() {
-
+    manageActiveTab();
     avoidEmptySearch();
     externalLinks();
     bootstrapTooltip();

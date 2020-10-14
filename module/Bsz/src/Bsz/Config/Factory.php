@@ -44,20 +44,29 @@ class Factory
      */
     public static function getClient(ContainerInterface $container)
     {
-        $vufindconf = $container->get('VuFind\Config')->get('config')->toArray();
+        $tmp = $container->get('VuFind\Config')->get('config')->toArray();
+        $neededSections = ['Site', 'System', 'OpenUrl', 'Index'];
+
+        $vufindconf = [];
+        foreach ($tmp as $section => $content) {
+            if (in_array($section, $neededSections)) {
+                $vufindconf[$section] = $content;
+            }
+        }
+
         $bszconf = $container->get('VuFind\Config')->get('bsz')->toArray();
-        $searchconf = $container->get('VuFind\Config')->get('searches')->toArray();
         $sessContainer = new Container(
-            'fernleihe', $container->get('VuFind\SessionManager')
+            'fernleihe',
+            $container->get('VuFind\SessionManager')
         );
 
-        $client = new Client(array_merge($vufindconf, $bszconf, $searchconf), true);
-        $client->appendContainer($sessContainer);
+        $client = new Client(array_merge($vufindconf, $bszconf), true);
+        $client->attachSessionContainer($sessContainer);
         if ($client->isIsilSession()) {
             $libraries = $container->get('Bsz\Config\Libraries');
             $request = $container->get('Request');
-            $client->setLibraries($libraries);
-            $client->setRequest($request);
+            $client->attachLibraries($libraries);
+            $client->attachRequest($request);
         }
         return $client;
     }
@@ -84,7 +93,8 @@ class Factory
     {
         $config = $container->get('VuFind\Config')->get('config')->get('Index');
         $sesscontainer = new Container(
-            'dedup', $container->get('VuFind\SessionManager')
+            'dedup',
+            $container->get('VuFind\SessionManager')
         );
         $response = $container->get('Response');
         $cookie = $container->get('Request')->getCookie();

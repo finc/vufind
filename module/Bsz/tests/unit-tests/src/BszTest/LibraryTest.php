@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
  * Württemberg, Konstanz, Germany
  *
@@ -18,57 +18,48 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 namespace BszTest;
 
 use Bsz\Config\Library;
 use PHPUnit\Framework\TestCase;
-use Exception;
-use VuFind\Db\Table\Shortlinks;
-use VuFind\UrlShortener\Database;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\Driver\ConnectionInterface;
-use Zend\Db\Adapter\Driver\DriverInterface;
-use Zend\Db\ResultSet;
-use Bsz\Config\Libraries;
 
 class LibraryTest extends TestCase
 {
-
-    /**
-     * Get the object to test.
-     *
-     * @param  object $table Database table object/mock
-     *
-     * @return Database
-     */
-    public function getDatabase($table)
+    public function getLibrary() : Library
     {
-        return new Libraries($table);
+        $library = new Library();
+        $data = $this->getDefaultData();
+        $library->exchangeArray($data);
+        return $library;
     }
 
-    /**
-     * Get the mock table object.
-     *
-     * @param  array $methods Methods to mock.
-     *
-     * @return object
-     */
-    public function getMockTable($methods)
+    private function getDefaultData() : array
     {
-        return $this->getMockBuilder(Libraries::class)
-            ->disableOriginalConstructor()
-            ->setMethods($methods)
-            ->getMock();
+        return [
+            'isil' => 'DE-16',
+            'name' => 'Testbibliothek',
+            'sigel' => 16,
+            'is_live' => false,
+            'is_boss' => true,
+            'homepage' => 'http://foo.bar.com',
+            'email' => '',
+            'isil_availability' => 'DE-16-1',
+            'regex' => '/@[a-zA-z0-9\.-]*/',
+        ];
     }
 
-    public function testAllowsLend()
+    public function testBasicLibrary()
     {
-        $this->assertEquals(true, true);
+        $library = $this->getLibrary();
+        $this->assertEquals($library->getIsil(), 'DE-16');
+        $this->assertFileExists('themes/bodensee/images/'.$library->getLogo());
+        $this->assertIsArray($library->getIsilAvailability());
     }
 
-    public function testAllowsCopy()
+    public function testRegex()
     {
-        $this->assertEquals(true, true);
+        $library = $this->getLibrary();
+        $regex = $library->getRegex();
+        $this->assertEquals(preg_replace($regex,'', 'foo.bar@institution.com'), 'foo.bar');
     }
 }

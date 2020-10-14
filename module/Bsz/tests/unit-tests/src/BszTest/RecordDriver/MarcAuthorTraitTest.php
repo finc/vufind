@@ -1,7 +1,7 @@
 <?php
-
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,26 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
-namespace Bsz;
-
-use Zend\ServiceManager\ServiceManager;
-
-/**
- * Factory for BSZ objects
  *
- * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Factory
+namespace BszTest\RecordDriver;
+
+use PHPUnit\Framework\TestCase;
+
+class MarcAuthorTraitTest extends TestCase
 {
-    /**
-     *
-     * @param ServiceManager $sm
-     * @param \VuFind\Search\SearchRunner
-     * @return Bsz\Bsz\Holding
-     */
-    public static function getHolding(ServiceManager $sm)
+    public function testPlaceholder()
     {
-        return new Holding($sm->get('VuFind\SearchRunner'));
+        $this->assertTrue(true);
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,16 +17,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 namespace Bsz\RecordDriver;
 
-use Bsz\Config\Client;
 use Bsz\FormatMapper;
 use Exception;
 use File_MARC;
 use File_MARC_Exception;
 use File_MARCBASE;
 use File_MARCXML;
+use phpDocumentor\Reflection\Types\Boolean;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcAdvancedTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
@@ -37,33 +39,16 @@ use VuFindCode\ISBN;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
+class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
     use IlsAwareTrait;
     use MarcReaderTrait;
     use MarcAdvancedTrait;
     use HelperTrait;
 
-    protected $mapper;
     protected $formats;
     protected $runner;
     protected $container = [];
-
-    /**
-     *
-     * @param FormatMapper $mapper
-     * @param Client $mainConfig
-     * @param type $recordConfig
-     * @param type $searchSettings
-     */
-    public function __construct(FormatMapper $mapper,
-                                Client $mainConfig = null,
-                                $recordConfig = null,
-                                $searchSettings = null)
-    {
-        parent::__construct($mainConfig, $recordConfig, $searchSettings);
-        $this->mapper = $mapper;
-    }
 
     /**
      * Return an array of non-empty subfield values found in the provided MARC
@@ -117,70 +102,17 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
     }
 
     /**
-     * Get multipart level from leader 19
-     * @return boolean|string
-     */
-    public function getMultipartLevel()
-    {
-        $leader = $this->getMarcRecord()->getLeader();
-        $multipartLevel = $leader{19};
-
-        switch ($multipartLevel) {
-            case 'a':
-                return static::MULTIPART_COLLECTION;
-            //difference between B and C is if they have independend titles
-            case 'b':
-                return static::NO_MULTIPART;
-            case 'c':
-                return static::MULTIPART_PART;
-            default:
-                return static::NO_MULTIPART;
-        }
-    }
-
-    /**
-     * Get bibliographic level from leader 7
-     * @return string
-     */
-    public function getBibliographicLevel()
-    {
-        $leader = $this->getMarcRecord()->getLeader();
-        $bibliographicLevel = $leader{7};
-        switch ($bibliographicLevel) {
-            case 'a': // Monographic component part
-                return static::BIBLIO_MONO_COMPONENT;
-            //difference between B and C is if they have independend titles
-            case 'b': // Serial component part
-                return static::BIBLIO_SERIAL_COMPONENT;
-            case 'c': // Collection
-                return static::BIBLIO_COLLECTION;
-            case 'd': //Subunit
-                return static::BIBLIO_SUBUNIT;
-            case 'i': //Integration resource
-                return static::BIBLIO_INTEGRATED;
-            case 'r': //Monograph/Item
-                return static::BIBLIO_MONOGRAPH;
-            case 's': //Serial
-                return static::BIBLIO_SERIAL;
-        }
-    }
-
-    /**
      * is this item a collection
-     * @return boolean
+     * @return bool
+     * @throws File_MARC_Exception
      */
-    public function isCollection()
+    public function isCollection() : bool
     {
-        $collection = [
-            static::MULTIPART_COLLECTION,
-            static::BIBLIO_MONO_COMPONENT,
-            static::BIBLIO_SERIAL_COMPONENT,
-            static::BIBLIO_COLLECTION,
-            static::BIBLIO_SUBUNIT,
-            static::BIBLIO_INTEGRATED,
-        ];
-        if (in_array($this->getBibliographicLevel(), $collection) ||
-            in_array($this->getMultipartLevel(), $collection)) {
+        $leader = $this->getMarcRecord()->getLeader();
+        $leader07 = $leader{7};
+        $leader19 = $leader{19};
+
+        if ($leader07 == 'm' && $leader19 == 'a') {
             return true;
         }
         return false;
@@ -188,21 +120,16 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
 
     /**
      * is this item part of a collection?
+     *
      * @return boolean
      */
-    public function isPart()
+    public function isPart() : bool
     {
-        $part = [
-            static::MULTIPART_PART,
-            static::BIBLIO_SERIAL,
-            static::BIBLIO_MONO_COMPONENT,
+        $leader = $this->getMarcRecord()->getLeader();
+        $leader07 = $leader{7};
+        $leader19 = $leader{19};
 
-        ];
-        $biblio = $this->getBibliographicLevel();
-        $multi = $this->getMultipartLevel();
-
-        if (in_array($biblio, $part) ||
-            in_array($multi, $part)) {
+        if ($leader07 == 'm' && $leader19 == 'c') {
             return true;
         }
         return false;
@@ -227,8 +154,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
      */
     public function getFormats()
     {
+        $formats = [];
         if ($this->formats === null) {
-            $formats = [];
             $f007 = $f008 = $leader = null;
             $f007_0 = $f007_1 = $f008_21 = $leader_6 = $leader_7 = '';
 
@@ -255,13 +182,16 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
             $leader_6 = $leader{6};
             $leader_7 = $leader{7};
 
-            $formats[] = $this->mapper->marc21007($f007_0, $f007_1);
-            $formats[] = $this->mapper->marc21leader7($leader_7, $f007_0, $f008_21);
+            $formats[] = FormatMapper::marc21007($f007_0, $f007_1);
+            $formats[] = FormatMapper::marc21leader7($leader_7, $f007_0, $f008_21);
             if ($this->isCollection() && !$this->isArticle()) {
                 $formats[] = 'Compilation';
             }
 
-            $this->formats = array_filter($formats);
+            $formats = array_filter($formats);
+            $formats = array_unique($formats);
+            $formats = array_values($formats);
+            $this->formats = $formats;
         }
         return $this->formats;
     }
@@ -328,21 +258,12 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
     public function isEBook()
     {
         $f007 = $leader = null;
-        $f007_0 = $f007_1 = $leader_7 = '';
-        $f007 = $this->getMarcRecord()->getFields("007", false);
-        foreach ($f007 as $field) {
-            $data = $field->getData();
-            if (strlen($data) > 0) {
-                $f007_0 = $data{0};
-            }
-            if (strlen($data) > 1) {
-                $f007_1 = $data{1};
-            }
-        }
+        $leader_7 = '';
+        $f007 = $this->get007();
         $leader = $this->getMarcRecord()->getLeader();
         $leader_7 = $leader{7};
         if ($leader_7 == 'm') {
-            if ($f007_0 == 'c' && $f007_1 == 'r') {
+            if (preg_match('/^cr/i', $f007)) {
                 return true;
             }
         }
@@ -357,15 +278,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
     public function isElectronic()
     {
         $f007 = $leader = null;
-        $f007_0 = '';
-        $f007 = $this->getMarcRecord()->getFields("007", false);
-        foreach ($f007 as $field) {
-            $data = $field->getData();
-            if (strlen($data) > 0) {
-                $f007_0 = $data{0};
-            }
-        }
-        if ($f007_0 == 'c') {
+        $f007 = $this->get007();
+
+        if (preg_match('/^c/i', $f007)) {
             return true;
         }
         return false;
@@ -380,7 +295,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
     {
         $leader = $this->getMarcRecord()->getLeader();
         $leader_7 = $leader{7};
-        if ($leader_7 == 'm') {
+        $f007 = $this->get007();
+
+        if ($leader_7 == 'm' && preg_match('/^t/i', $f007)) {
             return true;
         }
         return false;
@@ -443,7 +360,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
         $f856 = $this->getMarcRecord()->getFields(856);
         foreach ($f856 as $field) {
             $z = $field->getSubfield('z');
-            if (is_object($z) && is_string($z->getData()) && preg_match('/kostenfrei|kostenlos/i', $z->getData()) && $field->getIndicator(2) == 0) {
+            if (is_string($z) && $field->getIndicator(2) == 0
+                && preg_match('/^kostenlos|kostenfrei$/i', $z)
+            ) {
                 return true;
             }
         }
@@ -452,76 +371,65 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
 
     /**
      * Get Content of 924 as array: isil => array of subfields
-     *
-     * @param boolean $isilAsKey uses ISILs as array keys - be carefull,
-     * information is dropped
-     * @param boolean $recurringSubfields allow recurring subfields
-     *
      * @return array
      *
      */
-    public function getField924($isilAsKey = true, $recurringSubfields = false)
+    public function getField924()
     {
         $f924 = $this->getMarcRecord()->getFields('924');
+
+        // map subfield codes to human-readable descriptions
+        $mappings = [
+            'a' => 'local_idn',         'b' => 'isil',      'c' => 'region',
+            'd' => 'ill_indicator', 'g' => 'call_number', 'k' => 'url',
+            'l' => 'url_label', 'z' => 'issue'
+        ];
+
         $result = [];
+
         foreach ($f924 as $field) {
             $subfields = $field->getSubfields();
-            $tmpSubfields = [];
-            $isil = null;
+            $arrsub = [];
+
             foreach ($subfields as $subfield) {
-                if ($subfield->getCode() == 'b') {
-                    $isil = trim($subfield->getData());
-                    $tmpSubfields[$subfield->getCode()] = $isil;
-                } elseif ($subfield->getCode() == 'd') {
-                    $ill_status = '';
-                    $ill_icon = '';
-                    switch ($subfield->getData()) {
-                        case 'a': $ill_status = 'ILL::status_a';
-                            $ill_icon = 'fa-check text-success    ';
-                            break;
-                        case 'b': $ill_status = 'ILL::status_b';
-                            $ill_icon = 'fa-copy';
-                            break;
-                        case 'c': $ill_status = 'ILL::status_c';
-                            $ill_icon = 'fa-check text-success    ';
-                            break;
-                        case 'd': $ill_status = 'ILL::status_d';
-                            $ill_icon = 'fa-times text-danger';
-                            break;
-                        case 'e': $ill_status = 'ILL::status_e';
-                            $ill_icon = 'fa-network-wired text-success';
-                            break;
-                        case 'n':
-                        case 'N':
-                            $ill_status = 'ILL::status_N';
-                            $ill_icon = 'fa-times text-danger';
-                            break;
-                        case 'l':
-                        case 'L': $ill_status = 'ILL::status_L';
-                            $ill_icon = 'fa-check text-success    ';
-                            break;
-                        default: $ill_status = 'ILL::status_d';
-                            $ill_icon = 'fa_times text-danger';
+                $code = $subfield->getCode();
+                $data = $subfield->getData();
+
+                if (array_key_exists($code, $mappings)) {
+                    $mapping = $mappings[$code];
+                    if (array_key_exists($mapping, $arrsub)) {
+                        // recurring subfields are temporarily concatenated to a string
+                        $data = $arrsub[$mapping] . ' | ' . $data;
                     }
-                    $tmpSubfields['d'] = $subfield->getData();
-                    $tmpSubfields['ill_status'] = $ill_status;
-                    $tmpSubfields['ill_icon'] = $ill_icon;
-                } elseif (!isset($tmpSubfields[$subfield->getCode()])) {
-                    // without $recurringSubfields, only the first occurence is
-                    // included
-                    $tmpSubfields[$subfield->getCode()] = $subfield->getData();
-                } elseif ($recurringSubfields) {
-                    // with §recurringSubfields, all occurences are put together
-                    $tmpSubfields[$subfield->getCode()] .= ' | ' . $subfield->getData();
+                    $arrsub[$mapping] = $data;
                 }
             }
-            if (isset($isil) && $isilAsKey) {
-                $result[$isil] = $tmpSubfields;
-            } else {
-                $result[] = $tmpSubfields;
+
+            // fix missing isil fields to avoid upcoming problems
+            if (!isset($arrsub['isil'])) {
+                $arrsub['isil'] = '';
             }
+            // handle recurring subfields - convert them to array
+            foreach ($arrsub as $k => $sub) {
+                if (strpos($sub, ' | ')) {
+                    $split = explode(' | ', $sub);
+                    $arrsub[$k] = $split;
+                }
+            }
+            $result[] = $arrsub;
         }
         return $result;
+    }
+
+    protected function code2icon($code)
+    {
+        switch ($code) {
+            case 'b': $icon = 'fa-copy'; break;
+            case 'd': $icon = 'fa-times text-danger'; break;
+            case 'e': $icon = 'fa-network-wired text-success'; break;
+            default: $icon = 'fa-check text-success';
+        }
+        return $icon;
     }
 
     /**
@@ -572,7 +480,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
                 // When indexing over HTTP, SolrMarc may use entities instead of
                 // certain control characters; we should normalize these:
                 $marc = str_replace(
-                    ['#29;', '#30;', '#31;'], ["\x1D", "\x1E", "\x1F"], $marc
+                    ['#29;', '#30;', '#31;'],
+                    ["\x1D", "\x1E", "\x1F"],
+                    $marc
                 );
                 $marc = new File_MARC($marc, File_MARC::SOURCE_STRING);
             }
@@ -872,5 +782,27 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements Definition
             $i++;
         }
         return $retval;
+    }
+
+    /**
+     * Get the two char code in 007
+     *
+     * @return string
+     */
+    private function get007()
+    {
+        $f007 = null;
+        $f007_0 = $f007_1 = '';
+        $f007 = $this->getMarcRecord()->getFields("007", false);
+        foreach ($f007 as $field) {
+            $data = strtoupper($field->getData());
+            if (strlen($data) > 0) {
+                $f007_0 = $data{0};
+            }
+            if (strlen($data) > 1) {
+                $f007_1 = $data{1};
+            }
+        }
+        return $f007_0 . $f007_1;
     }
 }

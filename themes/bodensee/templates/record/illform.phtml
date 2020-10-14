@@ -1,20 +1,26 @@
-<?
-  $this->headTitle($this->translate('ILL::request_title'));
-  $this->headScript()->appendFile("vendor/bootstrap-datepicker.js");
-  $this->headScript()->appendFile("vendor/bootstrap-datepicker.".$this->layout()->userLang.".min.js");
-  $this->headScript()->appendFile("ill.js");
+<?php
+    $this->headTitle($this->translate('ILL::request_title'));
+    $this->headScript()->appendFile("vendor/bootstrap-datepicker.js");
+    $this->headScript()->appendFile("vendor/bootstrap-datepicker.".$this->layout()->userLang.".min.js");
+    $this->headScript()->appendFile("ill.js");
 
-  $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
+    $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
     . '<li class="active">' . $this->transEsc('ILL::request_title') . '</li>';
-  $collapse = 'panel-collapse collapse';
-  // avoid notices when using free form
-  $params = !isset($params) ? [] : $params;
-  $type = 'book';
-  if (isset($this->driver)) {
+    $collapse = 'panel-collapse collapse';
+    // avoid notices when using free form
+    $params = !isset($params) ? [] : $params;
+    $type = 'book';
+    if (isset($this->driver)) {
     if ($this->driver->isJournal()) { $type = 'journal';}
     elseif ($this->driver->isContainerMonography()) { $type = 'article-book';}
     elseif ($this->driver->isArticle()){$type = 'article';}
-  } else { $type = 'free';  }
+    } else { $type = 'free';  }
+
+    $form = '';
+
+    $this->libraries = $this->libraries()->getActive($this->client()->getIsils());
+    $this->firstLibrary = $this->libraries()->getFirstActive($this->client()->getIsils());
+
 
 ?>
 <div class="col-sm-12">
@@ -26,8 +32,28 @@
     <p><?=$this->transEsc('ILL::request_submit_ok_text_2')?></p>
     <? endif; ?>
     <? if (!isset($success) || !$success): ?>
-    <form data-format="<?=$type?>" class="<?=$type?> form-horizontal" id="form-ill" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form">
 
+        <form data-format="<?=$type?>" class="<?=$type?> form-horizontal" id="form-ill" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form">
+        <div class="form-group form-group-sm">
+            <? if (isset($params['Bestellform'])):
+                $form = $params['Bestellform'];
+            endif; ?>
+            <div class="col-sm-2">
+                <? if ($this->firstLibrary->allowsLend()): ?>
+                    <input type="radio" id="ill-lend" name="Bestellform" data-bestellform=""  value="Leihen" <? if($form == 'Leihen'):?>checked<?endif; ?> required />
+                    <span for="ill-copy"><strong><?=$this->transEsc('lend')?></strong></span>
+                <? endif; ?>
+            </div>
+            <div class="col-sm-2">
+                <? if ($this->firstLibrary->allowsCopy()): ?>
+                    <input type="radio" id="ill-copy" name="Bestellform" data-bestellform="" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?> required />
+                    <span for="ill-copy"><strong><?=$this->transEsc('paperdata')?></strong></span>
+                <? endif; ?>
+            </div>
+            <div class="col-sm-12">
+                <span class="help-block"><?=$this->transEsc('ILL::help_copie_rent')?></span>
+            </div>
+        </div>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <? $content = $this->illform($success, $this->driver)->renderBibliographicFields() ?>
             <?= $this->partial('Helpers/ill/panel.phtml', [
@@ -43,7 +69,7 @@
                 'open'  => $this->illform($success, $this->driver)->isVisibleCopies(),
                 'content' => $content,
             ])?>
-            <? $content = $this->render('Helpers/ill/delivery.phtml', ['params' => $params, 'driver' => $this->driver])?>
+            <? $content = $this->context($this)->renderInContext('Helpers/ill/delivery.phtml', ['params' => $params, 'driver' => $this->driver])?>
             <?= $this->partial('Helpers/ill/panel.phtml', [
                 'title' => 'delivery_conditions',
                 'open'  => true,

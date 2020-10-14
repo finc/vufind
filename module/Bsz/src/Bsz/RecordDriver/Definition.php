@@ -15,25 +15,7 @@ namespace Bsz\RecordDriver;
 interface Definition
 {
     const DELIMITER = ' ';
-    // Multipart Levels
-    const MULTIPART_PART = 'part';
-    const MULTIPART_COLLECTION = 'collection';
-    const NO_MULTIPART = 'no_multipart';
-    // Bibliographic Levels
-    const BIBLIO_MONO_COMPONENT = 'MonographPart';
-    const BIBLIO_SERIAL_COMPONENT = 'SerialPart';
-    const BIBLIO_COLLECTION = 'Collection';
-    const BIBLIO_SUBUNIT = 'Subunit';
-    const BIBLIO_MONOGRAPH = 'Monograph';
-    const BIBLIO_SERIAL = 'Serial';
-    const BIBLIO_INTEGRATED = 'Integrated';
-    // Simple breakdown of above
-    const INDEPENDENT = 'independent';
-    const COLLECTION = 'collection';
-    const PART = 'part';
-
     const AUTHOR_GND = 'gnd';
     const AUTHOR_LIVE = 'live';
-    const AUTHOR_NOLIVE = 'nolive'; // deprecated, will be removed
     const AUTHOR_NAME = 'name';
 }

@@ -1,14 +1,12 @@
 <?php
-/**
- * Class encapsulating publication details.
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
- * PHP version 7
- *
- * Copyright (C) Villanova University 2010.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,13 +15,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * @category VuFind
- * @package  RecordDrivers
- * @author   Demian Katz <demian.katz@villanova.edu>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development:plugins:record_drivers Wiki
  */
 namespace Bsz\RecordDriver\Response;
 
@@ -111,10 +104,10 @@ class PublicationDetails
     public function __toString()
     {
         $retval = [
-            $this->getName().
+            $this->getName() .
             $this->getName() && $this->getPlace() ? ' : ' : '',
             $this->getPlace(),
-            $this->getPlace() && $this->getDate() ? ', ' : '',
+            ($this->getPlace() || $this->getName()) && $this->getDate() ? ', ' : '',
             $this->getDate()
         ];
         return implode('', $retval);
@@ -126,13 +119,15 @@ class PublicationDetails
      *
      * @return string
      */
-    private static function replaceDelimiters(string $input, string $chars = '') : string
+    private static function replaceDelimiters($input, string $chars = '') : string
     {
-        $retval = preg_replace('/[\[\]]/m', '', $input);
-        $pattern = "/\s?[:,".$chars."]\s?$/";
-        $retval = preg_replace($pattern, '', $retval);
-        // remove braces
+        $retval = '';
+        if (is_string($input)) {
+            $retval = preg_replace('/[\[\]]/m', '', $input);
+            $pattern = "/\s?[:," . $chars . "]\s?$/";
+            $retval = preg_replace($pattern, '', $retval);
+            // remove braces
+        }
         return $retval;
-
     }
 }

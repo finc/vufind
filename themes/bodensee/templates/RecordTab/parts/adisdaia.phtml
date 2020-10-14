@@ -1,56 +1,56 @@
-<?
+<?php
     $status = isset($row['status']) ? strtolower($row['status']) : 'unknown';
-    $duedate = isset($row['duedate']) ? $row['duedate'] : '';
+    $duedate = $row['duedate'] ?? '';
     $message = '';
     if (is_array($row['message']) && array_key_exists('en', $row['message'])) {
         $message = isset($row['message'][$this->layout()->userLang]) ? $row['message'][$this->layout()->userLang] : $row['message']['en'];
     }
-    
+
     $class = 'text-success';
     $icon = 'fa-check';
-   
+
     if ($status == 'on loan' || $status == 'permanent on loan' || $status == 'unavailable') {
         $class = "text-danger";
         $icon = 'fa-times';
     }
-        
-    $isStorageReadingroom = strpos($row['location'],'Lesesaal');
+
+    $isStorageReadingroom = strpos($row['location'], 'Lesesaal');
 ?>
 <div class="row">    
     <div class="col-xs-9 col-sm-6">    
         <dl class="dl-horizontal">
-            <? if (!empty($row['callnumber']) && $row['callnumber'] != 'Unknown'): ?>
+            <?php if (!empty($row['callnumber']) && $row['callnumber'] != 'Unknown'): ?>
             <dt><?=$this->transEsc("Call Number")?>:</dt>   
             <dd><?=$this->escapeHtml($row['callnumber'])?></dd>
-            <? endif; ?>    
+            <?php endif; ?>    
 
-            <? if (is_array($row['message'])): ?>
+            <?php if (is_array($row['message'])): ?>
                 <dt><?=$this->transEsc('live_status')?>:</dt>
                 <dd class="<?=$this->escapeHtmlAttr($class)?>">
                     <i class="fa <?=$this->escapeHtmlAttr($icon)?>"></i>
                     <?=$this->escapeHtml($message)?>            
                 </dd>
-            <? endif; ?>
+            <?php endif; ?>
             <dd>
-                <? if($status == 'on loan' && !empty($duedate)): ?>
+                <?php if ($status == 'on loan' && !empty($duedate)): ?>
                     <?=$this->transEsc('Due')?> <?=$this->escapeHtml($duedate)?>
-                    <? if ( !empty($row['link']) && !$this->client()->is('only_one_holds_button') ): ?>
+                    <?php if (!empty($row['link']) && !$this->client()->is('only_one_holds_button')): ?>
                         &ndash; 
                         <a class="open-popup" data-name="KIOSK" href="<?=$row['link']?>"><?=$this->transEsc('Recall This')?></a>
-                    <? endif; ?>
-                <? elseif($status == 'unavailable'): ?>
-                    <?=$this->transEsc('daia-'.strtolower($row['status']))?>
-                    <? if (!empty($row['link']) && !$this->client()->is('only_one_holds_button') ): ?>
-                        &ndash; <? /* <a href="<?=$row['link']?>" class="<? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external"><?=$this->transEsc('Recall This')?></a> */?>
+                    <?php endif; ?>
+                <?php elseif ($status == 'unavailable'): ?>
+                    <?=$this->transEsc('daia-' . strtolower($row['status']))?>
+                    <?php if (!empty($row['link']) && !$this->client()->is('only_one_holds_button')): ?>
+                        &ndash; <?php /* <a href="<?=$row['link']?>" class="<? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external"><?=$this->transEsc('Recall This')?></a> */?>
                         <a class="open-popup" data-name="KIOSK" href="<?=$row['link']?>"><?=$this->transEsc('Recall This')?></a>
-                    <? endif; ?>
-                <? else: ?>
-                    <?=$this->transEsc('daia-'.strtolower($row['status']))?>
-                    <? if (!empty($row['link']) && !$this->client()->is('only_one_holds_button') && $this->client()->is('always_place_hold') && ( $status != 'for reference') || $this->client()->is('show_readingroom_link') && !$isStorageReadingroom  ) : ?>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <?=$this->transEsc('daia-' . strtolower($row['status']))?>
+                    <?php if (!empty($row['link']) && !$this->client()->is('only_one_holds_button') && $this->client()->is('always_place_hold') && ($status != 'for reference') || $this->client()->is('show_readingroom_link') && !$isStorageReadingroom) : ?>
                         &ndash; 
                         <a class="open-popup" data-name="KIOSK" href="<?=$row['link']?>"><?=$this->transEsc('Place a Hold')?></a>
-                    <? endif; ?>            
-                <? endif; ?>
+                    <?php endif; ?>            
+                <?php endif; ?>
             </dd>
         </dl>
     </div>

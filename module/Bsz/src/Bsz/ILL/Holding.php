@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
-namespace Bsz;
+namespace Bsz\ILL;
 
+use Bsz\RecordDriver\SolrGviMarc;
 use VuFind\Search\SearchRunner as Runner;
+use VuFind\Search\Solr\Results;
+use Zend\Http\Response;
 
 /**
  * class for the BSZ holdings service
@@ -29,7 +34,6 @@ use VuFind\Search\SearchRunner as Runner;
 class Holding
 {
     /**
-     *
      * @var array
      */
     protected $isxns = [];
@@ -71,8 +75,7 @@ class Holding
     protected $debug;
 
     /**
-     *
-     * @param Bsz\Config\Client $client
+     * @param Runner $runner
      */
     public function __construct(Runner $runner)
     {
@@ -84,7 +87,7 @@ class Holding
      *
      * @param string $isxns
      *
-     * @return \Bsz\Holding
+     * @return Holding
      */
     public function setIsxns($isxns)
     {
@@ -107,7 +110,7 @@ class Holding
      *
      * @param string $title
      *
-     * @return Bsz\Holding
+     * @return Holding
      */
     public function setTitle($title)
     {
@@ -121,7 +124,7 @@ class Holding
      *
      * @param string $authos
      *
-     * @return Bsz\Holding
+     * @return Holding
      */
     public function setAuthor($authos)
     {
@@ -135,7 +138,7 @@ class Holding
      *
      * @param string $network SWB|GBV|KOBV|...
      *
-     * @return \Bsz\Holding
+     * @return Holding
      */
     public function setNetwork($network)
     {
@@ -149,7 +152,7 @@ class Holding
      *
      * @param type $year
      *
-     * @return Bsz\Holding
+     * @return Holding
      */
     public function setYear($year)
     {
@@ -216,7 +219,6 @@ class Holding
         $params['lookfor'] = implode(' AND ', $and);
 
         $results = $this->runner->run($params, 'Solr');
-        $results instanceof \Bsz\Search\Solr\Results;
 
         return $this->parse($results);
     }
@@ -224,25 +226,23 @@ class Holding
     /**
      * process the response
      *
-     * @param \Zend\Http\Response $response
+     * @param Response $response
      */
-    public function parse(\VuFind\Search\Solr\Results $results)
+    public function parse(Results $results)
     {
         $return = [];
         if ($results->getResultTotal() > 0) {
             foreach ($results->getResults() as $record) {
                 $libraries = [];
-                $record instanceof \Bsz\RecordDriver\SolrGviMarc;
+                $record instanceof SolrGviMarc;
                 $ppn = $record->getPPN();
-                $f924 = $record->getField924(true, true);
+                $f924 = $record->getField924();
 
-                // iterate through all found 924 entries
-                // ISILs are unified here - information is being dropped!
-                foreach ($f924 as $isil => $field) {
+                foreach ($f924 as $field) {
                     $libraries[] = [
-                        'isil' => $isil,
-                        'callnumber' => $field['g'] ?? '',
-                        'issue' => $field['z'] ?? ''
+                        'isil' => $field['isil'],
+                        'callnumber' => $field['call_number'] ?? '',
+                        'issue' => $field['issue'] ?? ''
                     ];
                 }
 
@@ -262,7 +262,6 @@ class Holding
 
     /**
      * Checks if all needed params are set.
-     *
      * @return boolean
      */
     public function checkQuery()
@@ -283,7 +282,8 @@ class Holding
      * @param array $ppns
      * @param array $isil
      * s
-     * @return array
+     *
+     * @return \VuFind\Search\Base\Results
      */
     public function getParallelEditions($ppns, $isils)
     {

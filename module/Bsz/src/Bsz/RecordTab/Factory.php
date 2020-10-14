@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2015 Bibliotheks-Service Zentrum, Konstanz, Germany
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 namespace Bsz\RecordTab;
 
+use Bsz\Config\Client;
+use Bsz\ILL\Logic;
 use Interop\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request;
-use Zend\Session\Container;
+use Zend\Session\SessionManager as SessionManager;
 
 /**
  * Description of Factory
@@ -33,7 +37,7 @@ class Factory
     /**
      * Factory for volumes tab
      *
-     * @param ContainerInterface $container
+     * @param ContainerInterface $container Service manager.
      *
      * @return Volumes
      */
@@ -129,5 +133,31 @@ class Factory
             $catalog = false;
         }
         return new HoldingsILS($catalog);
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return InterlibraryLoan
+     */
+    public static function getInterlibraryLoan(ContainerInterface $container)
+    {
+        $sm = $container->get(SessionManager::class);
+        $search = $sm->getStorage()->offsetGet('Search');
+        $lastsearch = $search ? $search->offsetGet('last') : '';
+        $lastsearch = urldecode($lastsearch);
+
+        // we still don't have a solution to hide the tab in local view.
+        $illmode = true;
+
+        if (substr_count($lastsearch, 'consortium:"FL"') > 0 ||
+            substr_count($lastsearch, 'consortium:"ZDB"') > 0
+        ) {
+            $illmode = true;
+        }
+        $libraries = $container->get(\Bsz\Config\Libraries::class);
+        $client = $container->get(Client::class);
+        $library = $libraries->getFirstActive($client->getIsils());
+
+        return new InterlibraryLoan($container->get(Logic::class), $library, $illmode);
     }
 }

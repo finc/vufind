@@ -1,4 +1,24 @@
 <?php
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
   // Set page title.
   $this->headTitle($this->translate('Search Home'));
 
@@ -16,7 +36,6 @@
   $advSearch = $options->getAdvancedSearchAction();
 
   $this->layout()->breadcrumbs = false;
-
 
   $library = $this->libraries()->getFirstActive($this->client()->getIsils());
 
@@ -49,30 +68,34 @@ JS;
   <div class="row">
       <?php if ($this->client()->isIsilSession()): ?>
           <div class="col-xs-5 col-sm-4 col-md-3">
-              <img class="img-responsive" src="<?=$this->imageLink('logo/bsz.svg')?>" alt="BSZ Logo" />
+              <img class="img-responsive"
+                   src="<?= $this->imageLink('logo/bsz.svg') ?>" alt="BSZ Logo"/>
           </div>
       <?php else: ?>
           <div class="col-md-12 col-xs-12  hidden-sm hidden-xs">
               <?php if ($this->imageLink($this->clientAsset()->getHeader())): ?>
-              <img src="<?=$this->imageLink($this->clientAsset()->getHeader()) ?>" class="img-responsive" alt="Aufmacherbild" />
+                  <img src="<?= $this->imageLink($this->clientAsset()->getHeader()) ?>"
+                       class="img-responsive" alt="Aufmacherbild"/>
               <?php endif; ?>
           </div>
       <?php endif; ?>
-      <? if($this->client()->is('logo_in_search_home')):?>
-      <div class="col-xs-6 col-sm-4 pull-right">
-          <?=$this->clientAsset()->getLogoHtml()?>
-      </div>
-      <? endif; ?>
+      <?php if ($this->client()->is('logo_in_search_home')): ?>
+          <div class="col-xs-6 col-sm-4 pull-right">
+              <?= $this->clientAsset()->getLogoHtml() ?>
+          </div>
+      <?php endif; ?>
 
   </div>
-  <div class="row ">
-      <div class="col-sm-12">
-          <?php if (($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>
-            <h2><?=$this->transEsc('homepage_heading')?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>
-          <?php elseif ($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
-            <h2><?=$this->escapeHtml((string)$library)?> <small><?=$this->transEsc('homepage_subheading')?></small></h2>
-          <?php endif; ?>
-          <?php if (strpos($this->translate('homepage_text'), '<') !== false): ?>
+    <div class="row ">
+        <div class="col-sm-12">
+            <?php if (($this->client()->isIsilSession() && empty($this->client()->getIsils())) || !$this->client()->isIsilSession()): ?>
+                <h2><?= $this->transEsc('homepage_heading') ?>
+                    <small><?= $this->transEsc('homepage_subheading') ?></small></h2>
+            <?php elseif ($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
+                <h2><?= $this->escapeHtml((string)$library) ?>
+                    <small><?= $this->transEsc('homepage_subheading') ?></small></h2>
+            <?php endif; ?>
+            <?php if (strpos($this->translate('homepage_text'), '<') !== false): ?>
                 <?=$this->translate('homepage_text')?>
           <?php else: ?>
                 <?=$this->transEsc('homepage_text')?>
@@ -89,7 +112,7 @@ JS;
           <?=$this->flashmessages()?>
           <div class="specialhome">
           <?php if ($this->client()->is('special_home')): ?>
-                    <?= $this->render('bsz/'.$this->client()->getTag().'/'.$this->layout()->userLang.'.phtml')?>
+              <?= $this->render('bsz/' . $this->client()->getTag() . '/' . $this->layout()->userLang . '.phtml') ?>
           <?php endif; ?>
           </div>
       </div>

@@ -1,14 +1,12 @@
 <?php
-/**
- * Record Controller
+/*
+ * Copyright 2020 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
  *
- * PHP version 5
- *
- * Copyright (C) Villanova University 2010.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,25 +15,18 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * @category VuFind2
- * @package  Controller
- * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     http://vufind.org   Main Site
  */
 namespace Bsz\Controller;
 
 use Bsz\Config\Library;
-use Bsz\RecordDriver\SolrMarc;
 use Exception;
 use VuFind\Controller\HoldsTrait;
 use VuFind\Controller\ILLRequestsTrait;
 use VuFind\Controller\StorageRetrievalRequestsTrait;
 use VuFind\Log\Logger;
 use VuFind\Log\LoggerAwareTrait;
-use VuFind\RecordDriver\AbstractBase as AbstractRecordDriver;
 use Zend\Config\Config as Config;
 use Zend\Dom\Query;
 use Zend\Http\Client;
@@ -403,7 +394,9 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
         } elseif (count($isils) > 0) {
             $isil = array_shift($isils);
             $library = $this->serviceLocator->get('Bsz\Config\Libraries')->getByIsil($isil);
-            $view->authMethod = $library->getAuth();
+            if ($library instanceof Bsz\Config\Library) {
+                $view->authMethod = $library->getAuth();
+            }
         }
 
         return $view;
