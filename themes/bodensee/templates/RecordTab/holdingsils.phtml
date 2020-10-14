@@ -83,6 +83,6 @@
 <?php /* One Recall/Holds-Button for all items */ ?>
 <?php if ($this->client()->is('only_one_holds_button')): ?>
     <?php if (isset($row['link']) && ($recallButtonCounter > 0)): ?>
-        <a href="<?=$row['link']?>" class="btn btn-primary btn-sm recallholdButtonLink <?php if (!$this->client()->is('koha_link')):?>modal-link modal-remote <?php endif; ?> external "><?=$this->transEsc('recall/hold')?></a>
+        <a href="<?=$row['link']?>" class="btn btn-primary btn-sm recallholdButtonLink external "><?=$this->transEsc('recall/hold')?></a>
     <?php endif; ?>
 <?php endif; ?>
