@@ -18,25 +18,33 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+namespace BszTest\View\Helper;
 
-namespace BszThemeTest;
-
-use BszTheme\ThemeInfo;
+use BszTest\LibraryTest;
+use BszTheme\View\Helper\ClientAsset;
 use PHPUnit\Framework\TestCase;
 
-class ThemeInfoTest extends TestCase
+/**
+ * Class ClientAssetTest
+ * @category boss
+ * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
+ */
+class ClientAssetTest extends TestCase
 {
-    public function testBszExtensions()
+    public function testSimpleLogo()
     {
-        $ti = new ThemeInfo(APPLICATION_PATH . '/themes', 'bodensee', 'wlb');
-        $info = $ti->getThemeInfo();
+        $asset = new ClientAsset('swb', 'http://foo.bar');
+        $this->assertEquals($asset->getLogo(), 'logo/swb.svg');
+    }
 
-        $this->assertArrayHasKey('bodensee', $info);
-        $this->assertArrayHasKey('css', $info['bodensee']);
-        $this->assertArrayHasKey('favicon', $info['bodensee']);
-        $this->assertEquals(count($info['bodensee']['css']), 1);
-        $this->assertEquals($info['bodensee']['css'][0], 'wlb.css');
-        $this->assertArrayHasKey('js', $info['bodensee']);
-        $this->assertTrue(in_array('additions.js', $info['bodensee']['js']));
+    public function testLibraryLogoViaSigel()
+    {
+        $libraryTest = new LibraryTest();
+        $library = $libraryTest->getLibrary();
+        $asset = new ClientAsset('swb', 'http://foo.bar', $library);
+        $this->assertEquals($asset->getLogo(), 'logo/libraries/16.jpg');
+
     }
 }
+
+

@@ -18,32 +18,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-namespace BszTheme\View\Helper;
 
-use BszTheme\View\Helper\ClientAsset;
+namespace BszTest;
+
+use BszTheme\ThemeInfo;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class ClientAssetTest
- * @category boss
- * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
- */
-class ClientAssetTest extends TestCase
+class ThemeInfoTest extends TestCase
 {
-    public function testSimpleLogo()
+    public function testBszExtensions()
     {
-        $asset = new ClientAsset('swb', 'http://foo.bar');
-        $this->assertEquals($asset->getLogo(), 'logo/swb.svg');
-    }
+        $ti = new ThemeInfo(APPLICATION_PATH . '/themes', 'bodensee', 'wlb');
+        $info = $ti->getThemeInfo();
 
-    public function testLibraryLogoViaSigel()
-    {
-        $libraryTest = new \BszTest\LibraryTest();
-        $library = $libraryTest->getLibrary();
-        $asset = new ClientAsset('swb', 'http://foo.bar', $library);
-        $this->assertEquals($asset->getLogo(), 'logo/libraries/16.jpg');
-
+        $this->assertArrayHasKey('bodensee', $info);
+        $this->assertArrayHasKey('css', $info['bodensee']);
+        $this->assertArrayHasKey('favicon', $info['bodensee']);
+        $this->assertEquals(count($info['bodensee']['css']), 1);
+        $this->assertEquals($info['bodensee']['css'][0], 'wlb.css');
+        $this->assertArrayHasKey('js', $info['bodensee']);
+        $this->assertTrue(in_array('additions.js', $info['bodensee']['js']));
     }
 }
-
-
