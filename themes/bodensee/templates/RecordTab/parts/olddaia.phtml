@@ -3,8 +3,8 @@
     <?php $checkStorageRetrievalRequest = (isset($row['checkStorageRetrievalRequest']) && $row['checkStorageRetrievalRequest']); ?>
     <?php $checkILLRequest = (isset($row['checkILLRequest']) && $row['checkILLRequest']); ?>
     <?php if (isset($row['barcode']) && $row['barcode'] != "" && !$this->driver->isEBook()): ?>
- <div class="row">    
-    <div class="col-sm-12">       
+ <div class="row">
+    <div class="col-sm-12">
     <dl class="dl-horizontal">
         <?php if (isset($row['callnumber'])): ?>
         <dt><?=$this->transEsc('Call Number')?>:</dt>
@@ -22,17 +22,17 @@
                     <dd>
                   <?// output of link removed because there were no link text - see history ?>
                   <?php if (isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
-                    <a class="hasicon <?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> <?php if (!$this->client()->is('koha_link')): ?>modal-link modal-remote<?php endif; ?> external hasicon placeStorageRetrievalRequest" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
+                    <a class="hasicon <?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?> external hasicon placeStorageRetrievalRequest" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
                   <?php endif; ?>
                   <?php if (isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
-                    <a class="hasicon <?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock <?php if (!$this->client()->is('koha_link')): ?>modal-link modal-remote<?php endif; ?> external placeILLRequest" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
+                    <a class="hasicon <?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock external placeILLRequest" data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
                   <?php endif; ?>
                   <?php if ($this->client()->is('always_place_hold')): ?>
-                    <a class="<?=$check ? 'checkRequest' : ''?> <?php if (!$this->client()->is('koha_link')): ?>modal-link modal-remote<?php endif; ?> external hasicon inlineblock " data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
-                  <?php endif; ?> 
+                    <a class="<?=$check ? 'checkRequest' : ''?> external hasicon inlineblock " data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
+                  <?php endif; ?>
                    </dd>
                 <?php else: ?>
-                  <?php /* Begin Unavailable Items (Recalls) */ ?>                            
+                  <?php /* Begin Unavailable Items (Recalls) */ ?>
                   <dd class="text-danger"><?php if (strlen($row['status']) > 0):?> <?= $this->transEsc($row['status']) ?> <?php else: ?> <?= $this->transEsc("unavailable") ?> <?php endif; ?>
                   <?php if (isset($row['returnDate']) && $row['returnDate']): ?>&ndash; <span class="small"><?=$this->escapeHtml($row['returnDate'])?></span><?php endif; ?>
                   <?php if (isset($row['duedate']) && $row['duedate']): ?>
@@ -45,11 +45,11 @@
                   <?php if (isset($row['link']) && $row['link']): ?>
                     <!-- Vormerken / Möglichkeit einer Vormerkung prüfen -->
                     <dd>
-                        <a class="<?=$check ? 'checkRequest' : ''?> <?php if (!$this->client()->is('koha_link')): ?>modal-link modal-remote<?php endif; ?> external hasicon inlineblock " data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>                   
+                        <a class="<?=$check ? 'checkRequest' : ''?> external hasicon inlineblock " data-name="aDIS BOSS2" data-size="md" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa fa-flag"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
                     </dd>
                   <?php endif; ?>
                 <?php endif; ?>
-              <?php endif; ?>   
+              <?php endif; ?>
 
             <dd>
             </dd>
@@ -57,7 +57,7 @@
                 <dd><?=$this->escapeHtml($row['part'])?></dd>
             <?php endif; ?>
             <?php if (isset($row['about']) && count($row['about']) > 0): ?>
-                <dd> <?=$this->escapeHtml(implode(', ', $row['about']))?></dd>        
+                <dd> <?=$this->escapeHtml(implode(', ', $row['about']))?></dd>
             <?php endif; ?>
           </dl>
     </div>

@@ -54,38 +54,38 @@
             </span>
             <?php if (isset($item['duedate']) && $item['duedate']): ?>
                 &ndash; <span class="small"><?=$this->transEsc("Due")?>: <?=$this->escapeHtml($item['duedate'])?></span>
-            <?php endif; ?>            
+            <?php endif; ?>
         <?php else: ?>
           <span class="text-danger text-nowrap">
             <i class="fa <?=$this->escapeHtmlAttr($icon)?> <?=$class?>"></i>
             <?=$this->escapeHtml($message)?>
-          </span>          
+          </span>
         <?php endif; ?>
       <?php if ($this->client()->is('hold_links_result_list')): ?>
            <br/>
             <?php // no idea why this is necessary here?>
-            <?php $item['ilslink'] = str_replace('SOPAC', 'SMOPAC', $item['ilslink'])?> 
+            <?php $item['ilslink'] = str_replace('SOPAC', 'SMOPAC', $item['ilslink'])?>
             <?php $status = strtolower($item['status'])?>
             <?php if ($status == 'on loan' && !empty($duedate)): ?>
                 <?=$this->transEsc('Due')?> <?=$this->escapeHtml($duedate)?>
                 <?php if (!empty($item['ilslink']) && !$this->client()->is('only_one_holds_button')): ?>
-                    &ndash; 
+                    &ndash;
                     <a class="open-popup" data-name="KIOSK" href="<?=$item['ilslink']?>"><?=$this->transEsc('Recall This')?></a>
                 <?php endif; ?>
             <?php elseif ($status == 'unavailable'): ?>
                 <?=$this->transEsc('daia-' . $status)?>
                 <?php if (!empty($item['ilslink']) && !$this->client()->is('only_one_holds_button')): ?>
-                    &ndash; <?php /* <a href="<?=$item['ilslink']?>" class="<? if (!$this->client()->is('koha_link')):?>modal-link modal-remote <? endif; ?> external"><?=$this->transEsc('Recall This')?></a> */?>
+                    &ndash;
                     <a class="open-popup" data-name="KIOSK" href="<?=$item['ilslink']?>"><?=$this->transEsc('Recall This')?></a>
                 <?php endif; ?>
             <?php else: ?>
                 <?=$this->transEsc('daia-' . $status)?>
                 <?php if (!empty($item['ilslink']) && !$this->client()->is('only_one_holds_button') && $this->client()->is('always_place_hold') && (strtolower($item['status']) != 'for reference') || $this->client()->is('show_readingroom_link') && !$isStorageReadingroom) : ?>
-                    &ndash; 
+                    &ndash;
                     <a class="open-popup" data-name="KIOSK" href="<?=$item['ilslink']?>"><?=$this->transEsc('Place a Hold')?></a>
-                <?php endif; ?>            
+                <?php endif; ?>
             <?php endif; ?>
-           
+
         <?php endif; ?>
       </td>
     </tr>
