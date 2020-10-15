@@ -28,6 +28,7 @@
  */
 namespace Finc\RecordDriver;
 
+use Bsz\RecordDriver\HelperTrait;
 use VuFindSearch\Query\Query as Query;
 
 /**
@@ -42,6 +43,7 @@ use VuFindSearch\Query\Query as Query;
  */
 trait SolrMarcFincTrait
 {
+    use HelperTrait;
     /**
      * Returns true if the record supports real-time AJAX status lookups.
      *
@@ -575,12 +577,12 @@ trait SolrMarcFincTrait
     public function getTitleDetails()
     {
         $title = '';
-
         if ($field = $this->getMarcRecord()->getField('245')) {
             if ($subfield = $field->getSubfield('a')) {
                 // modified due to #13670
                 // > Titel: 245$a $n $p $h $b $c
                 $title = $subfield->getData();
+                $title = $this->cleanString($title);
                 foreach (['n', 'p', 'h', 'b', 'c'] as $subkey) {
                     if ($subfield = $field->getSubfield($subkey)) {
                         $title .= ' ' . $subfield->getData();
@@ -613,6 +615,45 @@ trait SolrMarcFincTrait
             [$title],
             $this->getLinkedFieldArray('245', ['a', 'b', 'c'])
         );
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getTitle() : string
+    {
+        $tmp = [
+            $this->getTitleShort(),
+            ' : ',
+            $this->getSubtitle()
+        ];
+        $title = implode('', $tmp);
+        return $this->cleanString($title);
+    }
+
+    /**
+     * Title from 245a
+     * @return string
+     */
+    public function getTitleShort() : string
+    {
+        $field = $this->getMarcRecord()->getField('245');
+        $subfield = $field->getSubfield('a');
+        $title = $subfield ? $subfield->getData() : '';
+        return $this->cleanString($title);
+    }
+
+    /**
+     * Subtitle from 245b
+     * @return string
+     */
+    public function getSubtitle() : string
+    {
+        $field = $this->getMarcRecord()->getField('245');
+        $subfield = $field->getSubfield('b');
+        $title = $subfield ? $subfield->getData() : '';
+        return $this->cleanString($title);
     }
 
     /**
@@ -693,7 +734,8 @@ trait SolrMarcFincTrait
      */
     public function getTitleStatementOrig()
     {
-        return array_pop($this->getLinkedFieldArray('245', ['c']));
+        $array = $this->getLinkedFieldArray('245', ['c']);
+        return array_pop($array);
     }
 
     /**
