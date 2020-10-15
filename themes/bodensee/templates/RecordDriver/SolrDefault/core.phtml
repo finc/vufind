@@ -332,9 +332,10 @@
             ?>
             <tr>
                 <th><?=$this->transEsc('Network')?>:</th>
-                <td><? foreach ($consortiums as $con): ?>
-                <?=$this->abbrev($con)?>
-                <? endforeach; ?>
+                <td><?$count = 0; foreach ($consortiums as $con): ?>
+<?php if($count>0):?>, <?php endif?><?=$this->abbrev($con)?>
+<?php $count++?>
+<? endforeach; ?>
                 </td>
             </tr>
         <? endif; ?>
