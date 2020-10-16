@@ -153,23 +153,4 @@ class SolrFindexMarc extends SolrMarc implements Definition
         return $urls;
     }
 
-    /**
-     * Get an array of playing times for the record (if applicable).
-     *
-     * @return array
-     */
-    public function getPlayingTimes()
-    {
-        $times = $this->getFieldArray('306', ['a'], false);
-
-        // Format the times to include colons ("HH:MM:SS" format).
-        foreach ($times as $x => $time) {
-            if ( ! preg_match('/\d\d:\d\d:\d\d/', $time)) {
-                $times[$x] = substr($time, 0, 2) . ':' .
-                    substr($time, 2, 2) . ':' .
-                    substr($time, 4, 2);
-            }
-        }
-        return $times;
-    }
 }
