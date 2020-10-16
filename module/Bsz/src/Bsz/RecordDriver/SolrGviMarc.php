@@ -243,7 +243,7 @@ class SolrGviMarc extends SolrMarc implements Definition
             $this->getFieldArray('020', ['a', 'z', '9'], false),
             $this->getFieldArray('773', ['z'])
         );
-        return $isbn;
+        return array_unique($isbn);
     }
 
     /**
@@ -265,7 +265,7 @@ class SolrGviMarc extends SolrMarc implements Definition
             $this->getFieldArray('780', ['x']),
             $this->getFieldArray('785', ['x'])
         );
-        return $issn;
+        return array_unique($issn);
     }
 
     /**

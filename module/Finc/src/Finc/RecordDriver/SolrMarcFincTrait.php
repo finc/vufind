@@ -636,7 +636,7 @@ trait SolrMarcFincTrait
      * Title from 245a
      * @return string
      */
-    protected function getTitleShort() : string
+    public function getTitleShort() : string
     {
         $field = $this->getMarcRecord()->getField('245');
         $subfield = $field->getSubfield('a');
@@ -648,7 +648,7 @@ trait SolrMarcFincTrait
      * Subtitle from 245b
      * @return string
      */
-    protected function getSubtitle() : string
+    public function getSubtitle() : string
     {
         $field = $this->getMarcRecord()->getField('245');
         $subfield = $field->getSubfield('b');
@@ -734,7 +734,8 @@ trait SolrMarcFincTrait
      */
     public function getTitleStatementOrig()
     {
-        return array_pop($this->getLinkedFieldArray('245', ['c']));
+        $array = $this->getLinkedFieldArray('245', ['c']);
+        return array_pop($array);
     }
 
     /**
