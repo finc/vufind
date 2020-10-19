@@ -83,6 +83,7 @@ class InterlibraryLoan extends AbstractBase
             'ppns' => $this->logic->getPPNs(),
             'linklabels' => $this->logic->getLinkLabels(),
             'library' => $this->library,
+            'customUrl' => $this->library->hasCustomUrl()
         ];
     }
 }
