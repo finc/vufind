@@ -998,22 +998,18 @@ class SolrGviMarc extends SolrMarc implements Definition
     public function getLocalUrls()
     {
         $localUrls = [];
-        $field = '924'; // Bestandangaben, SWB only
-        // take only the first ISIL from config
-        $isilsconfig = $this->mainConfig->getIsils();
-        $isilcurrent = '';
         $addedurls = [];
 
         $holdings = $this->getLocalHoldings();
 
         foreach ($holdings as $holding) {
-            $isilcurrent = $holding['b'] ?? null;
+            $isilcurrent = $holding['isil'] ?? null;
             $isils = $this->mainConfig->getIsils();
             // we assume the first isil in config.ini is the most important one
             $firstIsil = array_shift($isils);
 
-            $address = $holding['k'] ?? null;
-            $label = $holding['l'] ?? null;
+            $address = $holding['url'] ?? null;
+            $label = $holding['url_label'] ?? null;
             // Is there a label?  If not, just use the URL itself.
             if (empty($label)) {
                 $label = $address;
