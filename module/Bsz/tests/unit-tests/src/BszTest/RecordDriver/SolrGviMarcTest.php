@@ -22,7 +22,9 @@ namespace BszTest\RecordDriver;
 
 use Bsz\Config\Client;
 use Bsz\RecordDriver\SolrGviMarc;
+use BszTest\ClientTest;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * Class SolrGviMarcTest
@@ -66,24 +68,11 @@ class SolrGviMarcTest extends TestCase
         return $records;
     }
 
-    protected function getClient(): Client
+    protected function getClient() : Client
     {
-        $config = [
-            'Site' => [
-                'isil' => 'DE-666,DE-667',
-                'website' => 'https://www.example.com',
-                'website_google' => 'https://www.google.com',
-                'url' => 'foo.bar.com'
-            ],
-            'System' => [],
-            'OpenUrl' => [],
-            'Footer' => [],
-            'Switches' => [
-                'isil_session' => false
-            ],
-            'FooterLinks' => []
-       ];
-        return $client = new Client($config);
+        $clienttest = new ClientTest();
+        $config = $clienttest->getBasicConfig();
+        return $clienttest->getClient($config);
     }
 
     /**
@@ -98,7 +87,8 @@ class SolrGviMarcTest extends TestCase
         $path = APPLICATION_PATH.'/module/Bsz/tests/fixtures/solr/';
         return json_decode(
             file_get_contents(
-                realpath($path.$file
+                realpath(
+                    $path.$file
                 )
             ),
             true
@@ -184,5 +174,20 @@ class SolrGviMarcTest extends TestCase
         $this->assertTrue($driver->isMonographicSerial());
         $this->assertFalse($driver->isCollection());
         $this->assertFalse($driver->isPart());
+    }
+
+    public function testLocalHoldings()
+    {
+        $clienttest = new ClientTest();
+        $config = $clienttest->getBasicConfig();
+        $config->Site->isil = 'DE-3';
+        $record = new SolrGviMarc($config);
+        $fixture = $this->loadRecordFixture('repetitorium.json');
+        $record->setRawData($fixture['response']['docs'][0]);
+        $holdings = $record->getLocalHoldings();
+        $this->assertEquals(count($holdings), 2);
+        foreach ($holdings as $holding) {
+            $this->assertEquals($holding['isil'], 'DE-3');
+        }
     }
 }
