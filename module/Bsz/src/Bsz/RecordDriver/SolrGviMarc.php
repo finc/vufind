@@ -1032,9 +1032,6 @@ class SolrGviMarc extends SolrMarc implements Definition
             }
             $addedUrls[] = $link;
             return $tmp;
-
-
-
         };
 
         foreach ($holdings as $holding) {
