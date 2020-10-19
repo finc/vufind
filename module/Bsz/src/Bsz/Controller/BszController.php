@@ -49,6 +49,7 @@ class BszController extends AbstractBase
         $isilsRoute = explode(',', $this->params()->fromRoute('isil'));
         $isilsGet = (array)$this->params()->fromQuery('isil');
         $isils = array_merge($isilsRoute, $isilsGet);
+        $isils = array_filter($isils);
 
         if (!is_array($isils)) {
             $isils = (array)$isils;

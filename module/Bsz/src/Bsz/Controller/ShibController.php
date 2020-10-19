@@ -25,12 +25,14 @@
  */
 namespace Bsz\Controller;
 
+use Bsz\Exception;
+use VuFind\Controller\AbstractBase;
+
 /**
  * Shibboleth Actions
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class ShibController extends \VuFind\Controller\AbstractBase
+class ShibController extends AbstractBase
 {
     /**
      * This action let's you choose IdP
@@ -43,23 +45,23 @@ class ShibController extends \VuFind\Controller\AbstractBase
         $libraries = $this->serviceLocator->get('Bsz\Config\Libraries');
         $client = $this->serviceLocator->get('Bsz\Config\Client');
         $isils = $client->getIsils();
-        $library = $libraries->getByIsil($client->getIsils());
+        $library = $libraries->getByIsil($isils);
 
         if (isset($library) && $library->getAuth() === 'shibboleth') {
             return $this->redirect()->toRoute(
-                    'shib-redirect',
-                    [
-                        'controller' => 'Shib',
-                        'action' => 'Redirect',
-                    ],
-                    [
-                        'query' => [
-                            'isil' => array_shift($isils)
-                        ]
+                'shib-redirect',
+                [
+                    'controller' => 'Shib',
+                    'action' => 'Redirect',
+                ],
+                [
+                    'query' => [
+                        'isil' => array_shift($isils)
                     ]
+                ]
             );
         } else {
-            throw new \Bsz\Exception('Accessed WAYF for non Shibboleth library');
+            throw new Exception('Accessed WAYF for non Shibboleth library');
         }
     }
 
@@ -76,7 +78,7 @@ class ShibController extends \VuFind\Controller\AbstractBase
 
         $target = $baseUrl . $action . '?auth_method=Shibboleth';
         $config = $this->serviceLocator->get('VuFind\Config')
-                ->get('config')->get('Shibboleth');
+            ->get('config')->get('Shibboleth');
         // build actual url
         try {
             $isil = $this->params()->fromQuery('isil');
@@ -95,7 +97,7 @@ class ShibController extends \VuFind\Controller\AbstractBase
             $url = $baseUrl . '/Shibboleth.sso/Login?' . http_build_query($params);
             return $this->redirect()->toUrl($url);
         } catch (\Exception $ex) {
-            throw new \Bsz\Exception('Could not redirect');
+            throw new Exception('Could not redirect');
         }
     }
 }
