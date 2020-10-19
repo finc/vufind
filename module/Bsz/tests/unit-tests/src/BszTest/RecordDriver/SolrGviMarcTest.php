@@ -190,4 +190,22 @@ class SolrGviMarcTest extends TestCase
             $this->assertEquals($holding['isil'], 'DE-3');
         }
     }
+
+    public function testRepeatedSubfields924()
+    {
+        $clienttest = new ClientTest();
+        $config = $clienttest->getBasicConfig();
+        $config->Site->isil = 'DE-N1';
+        $record = new SolrGviMarc($config);
+        $fixture = $this->loadRecordFixture('repeatedsubfields924.json');
+        $record->setRawData($fixture['response']['docs'][0]);
+        $localurls = $record->getLocalUrls();
+        $this->assertEquals(count($localurls), 2);
+        $holdings = $record->getLocalHoldings();
+        $this->assertEquals(count($holdings), 1);
+        $this->assertIsArray($holdings[0]['url']);
+        $this->assertEquals($localurls[0]['label'], 'EZB');
+        $this->assertEquals($localurls[1]['label'], 'Volltext');
+
+    }
 }
