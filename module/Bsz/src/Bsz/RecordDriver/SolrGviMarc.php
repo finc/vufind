@@ -22,6 +22,7 @@ namespace Bsz\RecordDriver;
 
 use Bsz\Exception;
 use File_MARC_Exception;
+use PHP_CodeSniffer\Standards\PEAR\Sniffs\Functions\ValidDefaultValueSniff;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
 
@@ -998,29 +999,57 @@ class SolrGviMarc extends SolrMarc implements Definition
     public function getLocalUrls()
     {
         $localUrls = [];
-        $addedurls = [];
+        $addedUrls = [];
 
         $holdings = $this->getLocalHoldings();
+        $isils = $this->mainConfig->getIsils();
+        // we assume the first isil in config.ini is the most important one
+        $firstIsil = array_shift($isils);
+
+        /**
+         * Anonymous functino, called bellow. It handles ONE url.
+         *
+         * @param $link
+         * @param $label
+         */
+        $handler = function($isil, $link, $label) use (&$addedUrls, $firstIsil) {
+
+            // Is there a label?  If not, just use the URL itself.
+            if (empty($label)) {
+                $label = $link;
+            }
+            $tmp = [];
+
+            // Prevent adding the same url multiple times
+            if (!in_array($link, $addedUrls) && !empty($link)
+                && $firstIsil == $isil
+            ) {
+                $tmp = [
+                    'isil' => $isil,
+                    'url' => $link,
+                    'label' => $label
+                ];
+            }
+            $addedUrls[] = $link;
+            return $tmp;
+
+
+
+        };
 
         foreach ($holdings as $holding) {
-            $isilcurrent = $holding['isil'] ?? null;
-            $isils = $this->mainConfig->getIsils();
-            // we assume the first isil in config.ini is the most important one
-            $firstIsil = array_shift($isils);
 
             $address = $holding['url'] ?? null;
             $label = $holding['url_label'] ?? null;
-            // Is there a label?  If not, just use the URL itself.
-            if (empty($label)) {
-                $label = $address;
+            $isilcurrent = $holding['isil'] ?? null;
+
+            if (is_array($address)) {
+                for ($i = 0; $i < count($address); $i++) {
+                    $localUrls[] = $handler($isilcurrent, $address[$i], $label[$i] ?? null);
+                }
+            } else {
+                $localUrls[] = $handler($isilcurrent, $address, $label);
             }
-            // Prevent adding the same url multiple times
-            if (!in_array($address, $addedurls) && !empty($address)
-                    && $firstIsil == $isilcurrent
-            ) {
-                $localUrls[] = ['isil' => $isilcurrent, 'url' => $address, 'label' => $label];
-            }
-            $addedurls[] = $address;
         }
         return $localUrls;
     }
