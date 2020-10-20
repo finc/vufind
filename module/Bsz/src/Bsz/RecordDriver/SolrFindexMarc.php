@@ -18,7 +18,7 @@ use VuFind\RecordDriver\MarcReaderTrait;
  *
  * @author amzar
  */
-class SolrFindexMarc extends SolrMarc implements Definition
+class SolrFindexMarc extends SolrMarc implements Constants
 {
     use IlsAwareTrait;
     use MarcReaderTrait;

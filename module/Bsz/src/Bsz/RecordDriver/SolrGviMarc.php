@@ -22,7 +22,6 @@ namespace Bsz\RecordDriver;
 
 use Bsz\Exception;
 use File_MARC_Exception;
-use PHP_CodeSniffer\Standards\PEAR\Sniffs\Functions\ValidDefaultValueSniff;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
 
@@ -30,7 +29,7 @@ use VuFind\RecordDriver\MarcReaderTrait;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGviMarc extends SolrMarc implements Definition
+class SolrGviMarc extends SolrMarc implements Constants
 {
     use IlsAwareTrait;
     use MarcReaderTrait;

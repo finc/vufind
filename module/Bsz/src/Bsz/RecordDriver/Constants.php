@@ -12,7 +12,7 @@ namespace Bsz\RecordDriver;
  *
  * @author amzar
  */
-interface Definition
+interface Constants
 {
     const DELIMITER = ' ';
     const AUTHOR_GND = 'gnd';

@@ -19,7 +19,7 @@
  */
 namespace BszTheme\View\Helper\Bodensee;
 
-use Bsz\RecordDriver\Definition as Def;
+use Bsz\RecordDriver\Constants as Def;
 use Bsz\RecordDriver\SolrMarc;
 
 /**
