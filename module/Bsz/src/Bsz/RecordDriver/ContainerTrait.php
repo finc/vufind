@@ -53,10 +53,10 @@ trait ContainerTrait
         $ids = [];
         $array = $this->getFieldsArray($fields);
         foreach ($array as $subfields) {
-            $ids = explode(' ', $subfields);
-            foreach ($ids as $id) {
-                // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
-                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id)) {
+            $tmp = explode(' ', $subfields);
+            foreach ($tmp as $id) {
+                // match all PPNs except old SWB PPNs and ZDB-IDs
+                if ( !preg_match('/^\(DE-576|DE-600\)/', $id)) {
                     $ids[] = $id;
                 }
             }
