@@ -23,7 +23,8 @@ trait ContainerTrait
     public function getContainer()
     {
         if (count($this->container) == 0 &&
-            $this->isPart()) {
+            ($this->isArticle() || $this->isPart())
+        ) {
             $relId = $this->getContainerIds();
 
             $this->container = [];
