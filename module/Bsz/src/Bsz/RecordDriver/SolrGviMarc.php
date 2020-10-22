@@ -241,7 +241,7 @@ class SolrGviMarc extends SolrMarc implements Constants
         //isbn = 020az:773z
         $isbn = array_merge(
             $this->getFieldArray('020', ['a', 'z', '9'], false),
-            $this->getFieldArray('773', ['z'])
+            $this->getFieldArray('773', ['z'], false)
         );
         return array_unique($isbn);
     }
@@ -255,15 +255,15 @@ class SolrGviMarc extends SolrMarc implements Constants
     {
         // issn = 022a:440x:490x:730x:773x:776x:780x:785x
         $issn = array_merge(
-            $this->getFieldArray('022', ['a']),
-            $this->getFieldArray('029', ['a']),
-            $this->getFieldArray('440', ['x']),
-            $this->getFieldArray('490', ['x']),
-            $this->getFieldArray('730', ['x']),
-            $this->getFieldArray('773', ['x']),
-            $this->getFieldArray('776', ['x']),
-            $this->getFieldArray('780', ['x']),
-            $this->getFieldArray('785', ['x'])
+            $this->getFieldArray('022', ['a'], false),
+            $this->getFieldArray('029', ['a'], false),
+            $this->getFieldArray('440', ['x'], false),
+            $this->getFieldArray('490', ['x'], false),
+            $this->getFieldArray('730', ['x'], false),
+            $this->getFieldArray('773', ['x'], false),
+            $this->getFieldArray('776', ['x'], false),
+            $this->getFieldArray('780', ['x'], false),
+            $this->getFieldArray('785', ['x'], false)
         );
         return array_unique($issn);
     }
