@@ -24,7 +24,6 @@ use Bsz\Config\Client;
 use Bsz\RecordDriver\SolrGviMarc;
 use BszTest\ClientTest;
 use PHPUnit\Framework\TestCase;
-use Throwable;
 
 /**
  * Class SolrGviMarcTest
@@ -207,5 +206,17 @@ class SolrGviMarcTest extends TestCase
         $this->assertEquals($localurls[0]['label'], 'EZB');
         $this->assertEquals($localurls[1]['label'], 'Volltext');
 
+    }
+
+    public function testContainerIds()
+    {
+        foreach ($this->getSolrRecords() as $driver) {
+            $ids = $driver->getContainerIds();
+            foreach($ids as $id) {
+                $this->assertNotRegExp('/\(DE-576\)/', $id);
+                $this->assertNotRegExp('/\(DE-600\)/', $id);
+                $this->assertRegExp('/\(DE-/', $id);
+            }
+        }
     }
 }

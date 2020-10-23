@@ -7,9 +7,10 @@
  */
 namespace Bsz\RecordDriver;
 
+use Bsz\Exception;
+
 /**
  * Trait for all the Container methods
- *
  * @author amzar
  */
 trait ContainerTrait
@@ -19,6 +20,7 @@ trait ContainerTrait
      * to query solr again
      *
      * @return array
+     * @throws Exception
      */
     public function getContainer()
     {
@@ -35,6 +37,9 @@ trait ContainerTrait
                 $params = [
                     'lookfor' => implode(' OR ', $relId),
                 ];
+                if (null === $this->runner) {
+                    throw new Exception('Please attach a search runner first');
+                }
                 $results = $this->runner->run($params, 'Solr');
                 $this->container = $results->getResults();
             }
