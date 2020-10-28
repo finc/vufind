@@ -1036,7 +1036,7 @@ class SolrGviMarc extends SolrMarc implements Constants
         foreach ($holdings as $holding) {
 
             $address = $holding['url'] ?? null;
-            $label = $holding['url_label'][0] ?? null;
+            $label = $holding['url_label'] ?? null;
             $isilcurrent = $holding['isil'] ?? null;
 
             if (is_array($address)) {

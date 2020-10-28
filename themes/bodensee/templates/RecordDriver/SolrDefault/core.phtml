@@ -297,8 +297,8 @@
                     <th><?=$this->transEsc('Local Online Access')?>: </th>
                     <td>
                         <? foreach ($localUrls as $current):  ?>
-                            <? $pos = strpos($current['label'], ' | '); ?>
-                            <? $len = strlen($current['label']); ?>
+                            <? $pos = strpos(implode($current['label']), ' | '); ?>
+                            <? $len = strlen(implode($current['label'])); ?>
                             <? if ($this->client()->is('local_url_help_regex')): ?>
                                 <a class="external localUrls" href="<?=str_replace('http://dx.doi.org', 'https://doi.org', $current['url'])?>"><?=$pos ? $this->transEsc(substr($current['label'], 0, $pos)) : $this->transEsc($current['label'])?></a>  <?=$pos ? preg_replace($this->client()->getHelpRegEx(), "<a class='external' href='".$this->client()->getHelpUrl()."'>".$this->client()->getHelpGroups()."</a>",  $this->transEsc(substr($current['label'], $pos+3, $len)) ): ''?><br/>
                             <? else: ?>
