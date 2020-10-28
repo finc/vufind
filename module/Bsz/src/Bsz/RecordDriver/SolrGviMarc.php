@@ -1006,7 +1006,7 @@ class SolrGviMarc extends SolrMarc implements Constants
         $firstIsil = array_shift($isils);
 
         /**
-         * Anonymous functino, called bellow. It handles ONE url.
+         * Anonymous function, called bellow. It handles ONE url.
          *
          * @param $link
          * @param $label
@@ -1036,7 +1036,7 @@ class SolrGviMarc extends SolrMarc implements Constants
         foreach ($holdings as $holding) {
 
             $address = $holding['url'] ?? null;
-            $label = $holding['url_label'] ?? null;
+            $label = $holding['url_label'][0] ?? null;
             $isilcurrent = $holding['isil'] ?? null;
 
             if (is_array($address)) {
