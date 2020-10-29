@@ -19,6 +19,7 @@ body:not(.frame) {
     height: 65px !important;
     font-size: 18px;
     line-height: 45px;
+    padding-left: 22px;
     span {
         font-size: 48px;
     }
@@ -28,6 +29,20 @@ body:not(.frame) {
     &:hover {
         background-color: @brand-primary !important;
     }
+}
+
+.navbar-brand.logo-right {
+    height: 70px;
+    img {
+        float: right;
+        height: 50px;
+        margin-right: -5px;
+    }
+}
+
+.navbar-nav > li > a {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .searchHomeContent {
