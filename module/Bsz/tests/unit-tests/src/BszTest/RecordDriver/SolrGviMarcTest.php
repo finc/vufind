@@ -98,21 +98,18 @@ class SolrGviMarcTest extends TestCase
     {
         $driver = $this->getSolrRecord();
         $this->assertEquals($driver->getFormats(), ['Book']);
-
         $this->assertFalse($driver->isJournal());
         $this->assertFalse($driver->isArticle());
         $this->assertFalse($driver->isMonographicSerial());
         $this->assertFalse($driver->isElectronic());
         $this->assertFalse($driver->isFree());
         $this->assertFalse($driver->isNewspaper());
-
         $this->assertTrue($driver->isBook());
     }
 
     public function testConsortium()
     {
         foreach ($this->getSolrRecords() as $driver) {
-            $this->assertIsString($driver->getConsortium());
             $this->assertIsString($driver->getConsortium());
         }
     }
@@ -146,9 +143,12 @@ class SolrGviMarcTest extends TestCase
             foreach ($publications as $publication) {
                 $place = $publication->getPlace();
                 $year = $publication->getDate();
-                $string = (string)$publication;
                 $this->assertFalse(strpos($place, '['));
-                $this->assertTrue((bool)preg_match('/\d\d\d\d/', $year));
+
+                // for multiple places, the year might be empty for the latter ones.
+                if (!empty($year)) {
+                    $this->assertRegExp('/\d{4}/', $year);
+                }
             }
         }
     }
@@ -216,6 +216,37 @@ class SolrGviMarcTest extends TestCase
                 $this->assertNotRegExp('/\(DE-576\)/', $id);
                 $this->assertNotRegExp('/\(DE-600\)/', $id);
                 $this->assertRegExp('/\(DE-/', $id);
+            }
+        }
+    }
+
+    /**
+     * this method uses date from 008, too.
+     */
+    public function testPublicationDates()
+    {
+        foreach ($this->getSolrRecords() as $driver) {
+            $dates = $driver->getPublicationDates();
+            foreach($dates as $date) {
+                $this->assertRegExp('/\d{4}/', $date);
+            }
+        }
+    }
+
+    public function testOpenUrl()
+    {
+        foreach ($this->getSolrRecords() as $driver) {
+            $url = $driver->getOpenUrl();
+            $this->assertStringContainsString('rft.genre', $url);
+        }
+    }
+
+    public function testFormat924()
+    {
+        foreach ($this->getSolrRecords() as $driver) {
+            $f924 = $driver->getField924();
+            foreach($f924 as $field) {
+                $this->assertRegExp('/^DE-|^AT-|^LFER|^CH-/', $field['isil']);
             }
         }
     }
