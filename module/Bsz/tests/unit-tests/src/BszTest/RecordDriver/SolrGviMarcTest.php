@@ -250,4 +250,19 @@ class SolrGviMarcTest extends TestCase
             }
         }
     }
+
+    public function testOriginalLanguage()
+    {
+        $driver = $this->getSolrRecords()[0];
+        $oltitle = $driver->getOriginalLanguage('245', 'a');
+        $this->assertNotEmpty($oltitle);
+        $olfields = $driver->getOriginalLanguageArray([245 => ['a', 'b', 'c'], 264 => ['a', 'b', 'c']], ' + ');
+        $this->assertIsArray($olfields);
+        $this->assertEquals(count($olfields), 2);
+
+        foreach ($olfields as $field) {
+            $this->assertStringContainsString(' + ', $field);
+        }
+
+    }
 }
