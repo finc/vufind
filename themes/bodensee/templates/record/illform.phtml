@@ -30,6 +30,13 @@
     <? if ($success && !empty($this->orderId) && $this->orderId > 0):?>
     <p><?=$this->transEsc('ILL::request_submit_ok_text')?><strong><?=$this->escapeHtml($this->orderId)?></strong></p>
     <p><?=$this->transEsc('ILL::request_submit_ok_text_2')?></p>
+    <? if ($this->client->getIsil() == 'DE-31' ): ?>
+        <div class="alert alert-info">
+            <p><?=$this->transEsc('ILL::request_submit_ok_text_3')?></p>
+        </div>
+
+    <? endif ?>
+
     <? endif; ?>
     <? if (!isset($success) || !$success): ?>
 
