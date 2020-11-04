@@ -29,6 +29,7 @@
  */
 namespace BszTheme\View\Helper\Bodensee;
 
+use VuFind\RecordDriver\AbstractBase;
 use VuFind\Resolver\Driver\PluginManager;
 use VuFind\View\Helper\Root\Context;
 
@@ -49,13 +50,18 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
     /**
      * Constructor
      *
-     * @param \VuFind\View\Helper\Root\Context $context      Context helper
-     * @param array                            $openUrlRules VuFind OpenURL rules
-     * @param \Zend\Config\Config              $config       VuFind OpenURL config
-     * @param string                           $isil         ISIL, if possible
+     * @param \VuFind\View\Helper\Root\Context $context Context helper
+     * @param array $openUrlRules                       VuFind OpenURL rules
+     * @param PluginManager $pluginManager
+     * @param null $config                              VuFind OpenURL config
+     * @param null $isil                                ISIL, if possible
      */
-    public function __construct(Context $context,
-        $openUrlRules, PluginManager $pluginManager, $config = null, $isil = null
+    public function __construct(
+        Context $context,
+        $openUrlRules,
+        PluginManager $pluginManager,
+        $config = null,
+        $isil = null
     ) {
         $this->context = $context;
         $this->openUrlRules = $openUrlRules;
@@ -67,7 +73,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
     /**
      * Render appropriate UI controls for an OpenURL link.
      *
-     * @param \VuFind\RecordDriver $driver The current recorddriver
+     * @param AbstractBase $driver The current recorddriver
      * @param string               $area   OpenURL context ('results', 'record'
      *  or 'holdings'
      *
@@ -125,7 +131,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         // instantiate the resolver plugin to get a proper resolver link
         $resolver = isset($this->config->resolver)
             ? $this->config->resolver : 'other';
-        $openurl = $this->recordDriver->getOpenUrl();
+        $openurl = $this->params;
         if ($this->resolverPluginManager->has($resolver)) {
             $resolverObj = new \VuFind\Resolver\Connection(
                 $this->resolverPluginManager->get($resolver)
@@ -154,7 +160,8 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
 
         // Render the subtemplate:
         return $this->context->__invoke($this->getView())->renderInContext(
-            'Helpers/openurl.phtml', $params
+            'Helpers/openurl.phtml',
+            $params
         );
     }
 
@@ -165,7 +172,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
      * should be displayed or not (null for system default)
      * @param array $params     OpenUrl parameters set so far
      *
-     * @return void
+     * @return array
      */
     protected function addImageBasedParams($imagebased, & $params)
     {
@@ -232,7 +239,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
                 ? $this->config->resolver : 'other';
         }
 
-        $openurl = $this->recordDriver->getOpenUrl();
+        $openurl = $this->params;
         if ($this->resolverPluginManager->has($resolver)) {
             $resolverObj = new \VuFind\Resolver\Connection(
                 $this->resolverPluginManager->get($resolver)
@@ -248,7 +255,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
 
     /**
      * This returns an historiy xml-like url param needed for UB Heidelbergs
-     * custom form
+     * custom form! EZB/Job resolvers have their own pid zone parameters.
      *
      * @return string
      */
@@ -265,6 +272,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
                 $pidZoneString .= '<' . $key . '>' . $value . '</' . $key . '>';
             }
         }
+
         return $pidZoneString;
     }
 }
