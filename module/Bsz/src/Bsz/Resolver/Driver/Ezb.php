@@ -103,7 +103,7 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             'rft.spage' => 'spage',
             'rft.epage' => 'epage',
             'rft.pages' => 'pages',
-            'rft.place' => 'place',
+            //'rft.place' => 'place',
             'rft.title' => 'title',
             'rft.atitle' => 'atitle',
             'rft.btitle' => 'title',
