@@ -75,7 +75,7 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
         if ($parsed['ctx_ver'] == 'Z39.88-2004') {
             $openURL = $this->downgradeOpenUrl($parsed);
         }
-        $openURL .= '&sid=bsz:zdb&pid=' . urlencode($this->pid);
+
 
         // Make the call to the EZB and load results
         $paramstring = $openURL;
@@ -111,8 +111,6 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             'rft.au' => 'aulast',
             'rft.date' => 'date',
             'rft.format' => false,
-//            'sid' => 'sid',
-//            'rfr_id' => 'sid'
         ];
         foreach ($params as $key => $value) {
             if (isset($mapping[$key]) && $mapping[$key] !== false) {
@@ -123,12 +121,6 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             $newParams['title'] = $params['rft.series'] . ': '
                     . $newParams['title'];
         }
-
-//        // for the open url ill form, we need genre = bookitem
-//        if ($this->area == 'illform' && $newParams['genre'] == 'article'
-//                && $this->recordDriver->isContainerMonography()) {
-//            $newParams['genre'] = 'bookitem';
-//        }
 
         // JOP has a really limited amount of allowed genres
         $allowedJopGenres = ['article', 'journal'];
@@ -148,6 +140,18 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
 
             }
         }
+        // create the pid zone parameter
+        $pid[] = $this->pid;
+        if (isset($params['pid']) && strpos($params['pid'], '%3D') !== FALSE) {
+            $pid[] = urldecode($params['pid']);
+        }
+        $newParams['sid'] = urlencode('bsz:zdb');
+        // inside the pid param, parameters must be separated with & :-/
+        $newParams['pid'] = (implode('&', $pid));
+
+
         return http_build_query($newParams);
     }
+
+
 }
