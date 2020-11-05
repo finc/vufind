@@ -114,27 +114,6 @@ class SolrGviMarcTest extends TestCase
         }
     }
 
-    public function testField924NumericKeys()
-    {
-        $driver = $this->getSolrRecord();
-        $f924 = $driver->getField924();
-        $keys = array_keys($f924);
-        foreach ($keys as $key) {
-            $this->assertTrue(is_numeric($key));
-        }
-    }
-
-    public function testField924CheckArrayContent()
-    {
-        $driver = $this->getSolrRecord();
-        $f924 = $driver->getField924();
-
-        foreach ($f924 as $field) {
-            $this->assertTrue(array_key_exists('isil', $field));
-            $this->assertTrue(strlen($field['ill_indicator']) == 1);
-        }
-    }
-
     public function testPublicationDetails()
     {
         foreach ($this->getSolrRecords() as $driver) {
@@ -190,24 +169,6 @@ class SolrGviMarcTest extends TestCase
         }
     }
 
-    public function testRepeatedSubfields924()
-    {
-        $clienttest = new ClientTest();
-        $config = $clienttest->getBasicConfig();
-        $config->Site->isil = 'DE-N1';
-        $record = new SolrGviMarc($config);
-        $fixture = $this->loadRecordFixture('repeatedsubfields924.json');
-        $record->setRawData($fixture['response']['docs'][0]);
-        $localurls = $record->getLocalUrls();
-        $this->assertEquals(count($localurls), 2);
-        $holdings = $record->getLocalHoldings();
-        $this->assertEquals(count($holdings), 1);
-        $this->assertIsArray($holdings[0]['url']);
-        $this->assertEquals($localurls[0]['label'], 'EZB');
-        $this->assertEquals($localurls[1]['label'], 'Volltext');
-
-    }
-
     public function testContainerIds()
     {
         foreach ($this->getSolrRecords() as $driver) {
@@ -241,16 +202,6 @@ class SolrGviMarcTest extends TestCase
         }
     }
 
-    public function testFormat924()
-    {
-        foreach ($this->getSolrRecords() as $driver) {
-            $f924 = $driver->getField924();
-            foreach($f924 as $field) {
-                $this->assertRegExp('/^DE-|^AT-|^LFER|^CH-/', $field['isil']);
-            }
-        }
-    }
-
     public function testOriginalLanguage()
     {
         $driver = $this->getSolrRecords()[0];
@@ -263,6 +214,54 @@ class SolrGviMarcTest extends TestCase
         foreach ($olfields as $field) {
             $this->assertStringContainsString(' + ', $field);
         }
+    }
+
+    public function testField924NumericKeys()
+    {
+        $driver = $this->getSolrRecord();
+        $f924 = $driver->getField924();
+        $keys = array_keys($f924);
+        foreach ($keys as $key) {
+            $this->assertTrue(is_numeric($key));
+        }
+    }
+
+    public function testField924CheckArrayContent()
+    {
+        $driver = $this->getSolrRecord();
+        $f924 = $driver->getField924();
+
+        foreach ($f924 as $field) {
+            $this->assertTrue(array_key_exists('isil', $field));
+            $this->assertTrue(strlen($field['ill_indicator']) == 1);
+        }
+    }
+
+    public function testField924IsilFormat()
+    {
+        foreach ($this->getSolrRecords() as $driver) {
+            $f924 = $driver->getField924();
+            foreach($f924 as $field) {
+                $this->assertRegExp('/^DE-|^AT-|^LFER|^CH-/', $field['isil']);
+            }
+        }
+    }
+
+    public function testField924RepeatedSubfields()
+    {
+        $clienttest = new ClientTest();
+        $config = $clienttest->getBasicConfig();
+        $config->Site->isil = 'DE-N1';
+        $record = new SolrGviMarc($config);
+        $fixture = $this->loadRecordFixture('repeatedsubfields924.json');
+        $record->setRawData($fixture['response']['docs'][0]);
+        $localurls = $record->getLocalUrls();
+        $this->assertEquals(count($localurls), 2);
+        $holdings = $record->getLocalHoldings();
+        $this->assertEquals(count($holdings), 1);
+        $this->assertIsArray($holdings[0]['url']);
+        $this->assertEquals($localurls[0]['label'], 'EZB');
+        $this->assertEquals($localurls[1]['label'], 'Volltext');
 
     }
 }
