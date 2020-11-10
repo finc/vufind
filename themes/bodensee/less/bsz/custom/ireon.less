@@ -1,11 +1,15 @@
 // Switch on/off highlighting visibility using
-// background color in alpha channel 
-// rgba(255,255,0,0) = off, 
+// background color in alpha channel
+// rgba(255,255,0,0) = off,
 // rgba(255,255,0,1) = maximum saturation
 
-// intense background gradient
-body:not(.frame):not(.frame) {
-    #gradient.vertical(darken(@brand-primary, 30%); @brand-primary; 15%; 90%);
+mark {
+    background: rgba(255,255,0,0.5) ;
+}
+
+// decent gray gradient
+body:not(.frame) {
+    #gradient.vertical(@gray-light; darken(@gray-lighter, 5%); 15%; 90%);
 }
 
 .searchbutton {
