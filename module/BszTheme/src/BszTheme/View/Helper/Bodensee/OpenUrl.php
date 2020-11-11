@@ -29,7 +29,9 @@
  */
 namespace BszTheme\View\Helper\Bodensee;
 
+use Exception;
 use VuFind\RecordDriver\AbstractBase;
+use VuFind\Resolver\Connection;
 use VuFind\Resolver\Driver\PluginManager;
 use VuFind\View\Helper\Root\Context;
 
@@ -50,11 +52,11 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
     /**
      * Constructor
      *
-     * @param \VuFind\View\Helper\Root\Context $context Context helper
-     * @param array $openUrlRules                       VuFind OpenURL rules
+     * @param Context $context    Context helper
+     * @param array $openUrlRules VuFind OpenURL rules
      * @param PluginManager $pluginManager
-     * @param null $config                              VuFind OpenURL config
-     * @param null $isil                                ISIL, if possible
+     * @param null $config        VuFind OpenURL config
+     * @param null $isil          ISIL, if possible
      */
     public function __construct(
         Context $context,
@@ -63,10 +65,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
         $config = null,
         $isil = null
     ) {
-        $this->context = $context;
-        $this->openUrlRules = $openUrlRules;
-        $this->config = $config;
-        $this->resolverPluginManager = $pluginManager;
+        parent::__construct($context, $openUrlRules, $pluginManager, $config);
         $this->isil = $isil;
     }
 
@@ -133,7 +132,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
             ? $this->config->resolver : 'other';
         $openurl = $this->params;
         if ($this->resolverPluginManager->has($resolver)) {
-            $resolverObj = new \VuFind\Resolver\Connection(
+            $resolverObj = new Connection(
                 $this->resolverPluginManager->get($resolver)
             );
             $resolverUrl = $resolverObj->getResolverUrl($openurl);
@@ -187,7 +186,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
             if (!isset($this->config->dynamic_graphic)) {
                 // if imagebased linking is forced by the template, but it is not
                 // configured properly, throw an exception
-                throw new \Exception(
+                throw new Exception(
                     'Template tries to display OpenURL as image based link, but
                      Image based linking is not configured! Please set parameter
                      dynamic_graphic in config file.'
@@ -207,7 +206,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
             $base = $this->config->dynamic_graphic;
 
             if ($this->resolverPluginManager->has($resolver)) {
-                $resolverObj = new \VuFind\Resolver\Connection(
+                $resolverObj = new Connection(
                     $this->resolverPluginManager->get($resolver)
                 );
                 $imageOpenUrl = $resolverObj->getResolverImageParams($params['openUrl']);
@@ -241,7 +240,7 @@ class OpenUrl extends \VuFind\View\Helper\Root\OpenUrl
 
         $openurl = $this->params;
         if ($this->resolverPluginManager->has($resolver)) {
-            $resolverObj = new \VuFind\Resolver\Connection(
+            $resolverObj = new Connection(
                 $this->resolverPluginManager->get($resolver)
             );
             $resolverUrl = $resolverObj->getResolverUrl($openurl);
