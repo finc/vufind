@@ -16,17 +16,22 @@ $localUrls = $this->driver->tryMethod('getLocalUrls'); ?>
 <?php if (!empty($localUrls[0]['url'])): ?>
     <div>
         <?php foreach ($localUrls as $current): ?>
-            <?php $pos = strpos($current['label'], ' | '); ?>
-            <?php $len = strlen($current['label']); ?>
-            <?php if ($this->client()->is('local_url_help_regex')): ?>
-                <a class="external"
-                   href="<?= str_replace('http://dx.doi.org', 'https://doi.org', $current['url']) ?>"><?= $pos ? $this->transEsc(substr($current['label'], 0, $pos)) : $this->transEsc($current['label']) ?></a>  <?= $pos ? preg_replace($this->client()->getHelpRegEx(), "<a class='external' href='" . $this->client()->getHelpUrl() . "'>" . $this->client()->getHelpGroups() . "</a>", $this->transEsc(substr($current['label'], $pos + 3, $len))) : '' ?>
-                <br/>
+            <?php if (is_array($current['label'])):?>
+                <a class="external <?php if ($this->area == 'record'):?>localUrls<?php endif ?>" href="<?=$current['url']?>"><?=$this->transEsc($current['label'][0])?></a>
+                <?php if ($this->client()->is('local_url_help_regex') && isset($current['label'][1])): ?>
+                    <?php $htmllink =  preg_replace(
+    $this->client()->getHelpRegEx(),
+    "<a class='external' href='" . $this->client()->getHelpUrl() . "'>" . $this->client()->getHelpGroups() . "</a>",
+    $this->transEsc($current['label'][1])
+                    )?>
+                    <?=$htmllink?>
+                <?php elseif (isset($current['label'][1])): ?>
+                    <?=$this->transEsc($current['label'][1])?>
+                    <br/>
+                <?php endif; ?>
             <?php else: ?>
-                <a class="external"
-                   href="<?= str_replace('http://dx.doi.org', 'https://doi.org', $current['url']) ?>"><?= $pos ? $this->transEsc(substr($current['label'], 0, $pos)) : $this->transEsc($current['label']) ?></a> <?= $pos ? $this->transEsc(substr($current['label'], $pos + 3, $len)) : '' ?>
-                <br/>
-            <?php endif; ?>
+                <a class="external" href="<?=$current['url']?>"><?=$this->transEsc($current['label'])?></a>
+            <?php endif ?>
         <?php endforeach; ?>
     </div>
 <?php else: ?>

@@ -94,23 +94,25 @@
             <?php endif; ?>
             <?php if ($this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
                 <div class="ill-source">
-                    <strong><?=$this->transEsc('Network')?>:</strong>
-                    <span><?=$this->driver->getConsortium() ?></span>
+                    <strong><?= $this->transEsc('Network') ?>:</strong>
+                    <span><?= $this->driver->getConsortium() ?></span>
                 </div>
             <?php endif; ?>
-            <?=$this->render('RecordDriver/SolrDefault/parts/links.phtml', [
+            <?= $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
                 'driver' => $this->driver,
-                'hiddenFilterString' => $hiddenFilterString])?>
+                'hiddenFilterString' => $hiddenFilterString,
+                'area' => 'results']) ?>
 
             <?php if ($this->ils()->getDriverClass() !== 'Bsz\ILS\Driver\NoILS'): ?>
                 <div class="callnumAndLocation ajax-availability hidden">
-                <?php if ($this->driver->supportsAjaxStatus()): ?>
-                    <strong class="hideIfDetailed"><?=$this->transEsc('Call Number')?>:</strong>
-                    <span class="callnumber ajax-availability hidden">
-                        <?=$this->transEsc('Loading')?>...<br/>
+                    <?php if ($this->driver->supportsAjaxStatus()): ?>
+                        <strong class="hideIfDetailed"><?= $this->transEsc('Call Number') ?>
+                            :</strong>
+                        <span class="callnumber ajax-availability hidden">
+                        <?= $this->transEsc('Loading') ?>...<br/>
                     </span>
-                    <strong><?=$this->transEsc('Located')?>:</strong>
-                    <span class="location ajax-availability hidden">
+                        <strong><?= $this->transEsc('Located') ?>:</strong>
+                        <span class="location ajax-availability hidden">
                         <?=$this->transEsc('Loading')?>...
                     </span>
                     <div class="locationDetails"></div>
