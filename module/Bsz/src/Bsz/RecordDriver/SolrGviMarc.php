@@ -1018,10 +1018,10 @@ class SolrGviMarc extends SolrMarc implements Definition
             if (empty($label)) {
                 $label = $link;
             }
-            // handle multiple labels for one link disabled because of implode in core.phtml
-//            if (is_array($label)) {
-//                $label = implode(' | ', $label);
-//            }
+            // handle multiple labels for one link
+            if (is_array($label)) {
+                $label = implode(' | ', $label);
+            }
             $tmp = null;
 
             // Prevent adding the same url multiple times
