@@ -1011,13 +1011,17 @@ class SolrGviMarc extends SolrMarc implements Constants
          * @param $link
          * @param $label
          */
-        $handler = function($isil, $link, $label) use (&$addedUrls, $firstIsil) {
+        $handler = function ($isil, $link, $label) use (&$addedUrls, $firstIsil) {
 
             // Is there a label?  If not, just use the URL itself.
             if (empty($label)) {
                 $label = $link;
             }
-            $tmp = [];
+            // handle multiple labels for one link disabled because of implode in core.phtml
+//            if (is_array($label)) {
+//                $label = implode(' | ', $label);
+//            }
+            $tmp = null;
 
             // Prevent adding the same url multiple times
             if (!in_array($link, $addedUrls) && !empty($link)
@@ -1034,7 +1038,6 @@ class SolrGviMarc extends SolrMarc implements Constants
         };
 
         foreach ($holdings as $holding) {
-
             $address = $holding['url'] ?? null;
             $label = $holding['url_label'] ?? null;
             $isilcurrent = $holding['isil'] ?? null;
@@ -1047,7 +1050,7 @@ class SolrGviMarc extends SolrMarc implements Constants
                 $localUrls[] = $handler($isilcurrent, $address, $label);
             }
         }
-        return $localUrls;
+        return array_filter($localUrls);
     }
 
     /**
