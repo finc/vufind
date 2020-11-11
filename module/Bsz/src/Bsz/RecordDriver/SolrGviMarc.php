@@ -1017,11 +1017,13 @@ class SolrGviMarc extends SolrMarc implements Constants
             if (empty($label)) {
                 $label = $link;
             }
-            // handle multiple labels for one link
-            if (is_array($label)) {
-                $label = implode(' | ', $label);
-            }
             $tmp = null;
+
+            $link = str_replace(
+                'http://dx.doi.org',
+                'https://doi.org',
+                $link
+            );
 
             // Prevent adding the same url multiple times
             if (!in_array($link, $addedUrls) && !empty($link)
