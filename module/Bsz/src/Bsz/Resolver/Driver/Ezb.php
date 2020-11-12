@@ -76,11 +76,7 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             $openURL = $this->downgradeOpenUrl($parsed);
         }
 
-
-        // Make the call to the EZB and load results
-        $paramstring = $openURL;
-
-        return $paramstring;
+        return $openURL;
     }
 
     /**
@@ -97,7 +93,7 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
             'rft_val_fmt' => false,
             'rft.genre' => 'genre',
             'rft.issn' => 'issn',
-            'rft.isbn' => 'isbn',
+            //'rft.isbn' => 'isbn',
             'rft.volume' => 'volume',
             'rft.issue' => 'issue',
             'rft.spage' => 'spage',
@@ -140,6 +136,11 @@ class Ezb extends \VuFind\Resolver\Driver\Ezb
 
             }
         }
+        // issn or zdb id must be present
+        if (!isset($params['rft.issn']) && !isset($params['pid'])) {
+            return '';
+        }
+
         // create the pid zone parameter
         $pid[] = $this->pid;
         if (isset($params['pid']) && strpos($params['pid'], '%3D') !== FALSE) {
