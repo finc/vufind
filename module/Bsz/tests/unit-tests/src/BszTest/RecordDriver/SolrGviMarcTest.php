@@ -263,5 +263,17 @@ class SolrGviMarcTest extends TestCase
         $this->assertEquals($localurls[0]['label'], 'EZB');
         $this->assertEquals($localurls[1]['label'], 'Volltext');
 
+        $config->Site->isil = 'DE-Fn1';
+        $record = new SolrGviMarc($config);
+        $fixture = $this->loadRecordFixture('repeatedsubfields924-DE-Fn1.json');
+        $record->setRawData($fixture['response']['docs'][0]);
+        $localurls = $record->getLocalUrls();
+        $this->assertEquals(count($localurls), 1);
+        $this->assertIsArray($localurls[0]['label']);
+        $this->assertEquals(count($localurls[0]['label']), 2);
+
+
+
+
     }
 }
