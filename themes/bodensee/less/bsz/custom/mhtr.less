@@ -21,7 +21,12 @@ body:not(.frame) {
     line-height: 45px;
     padding-left: 22px;
     span {
-        font-size: 48px;
+        @media (max-width: 450px) {
+            font-size:35px;
+        }
+        @media (min-width: 451px) {
+            font-size: 48px;
+        }
     }
     small {
         white-space: nowrap;
@@ -63,5 +68,11 @@ footer .well img:last-child {
 
     &:hover {
         border-right: 1px solid white;
+    }
+}
+
+.hidden-xxs {
+    @media (max-width: 450px) {
+        display: none;
     }
 }
