@@ -64,7 +64,7 @@ footer .well img:last-child {
 .nav-tabs > li:not(.active) > a {
     background-color: transparent !important;
     color: white;
-    border-right: 1px solid white;
+    border-right: 1px solid @gray-dark;
 
     &:hover {
         border-right: 1px solid @gray-dark;
@@ -75,4 +75,7 @@ footer .well img:last-child {
     @media (max-width: 450px) {
         display: none;
     }
+}
+.nav-tabs > li {
+    margin-right: 0 !important;
 }
