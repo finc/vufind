@@ -17,16 +17,18 @@ $localUrls = $this->driver->tryMethod('getLocalUrls'); ?>
     <div>
         <?php foreach ($localUrls as $current): ?>
             <?php if (is_array($current['label'])):?>
-                <a class="external <?php if ($this->area == 'record'):?>localUrls<?php endif ?>" href="<?=$current['url']?>"><?=$this->transEsc($current['label'][0])?></a>
+                <a class="external"
+                   href="<?= $current['url'] ?>"
+                   <?php if (!$this->client()->is('local_url_help_regex') && isset($current['label'][1])): ?>title="<?= $this->transEsc($current['label'][1]) ?>"
+                   data-toggle="tooltip"<?php endif ?>
+                ><?= $this->transEsc($current['label'][0]) ?></a>
                 <?php if ($this->client()->is('local_url_help_regex') && isset($current['label'][1])): ?>
-                    <?php $htmllink =  preg_replace(
-    $this->client()->getHelpRegEx(),
-    "<a class='external' href='" . $this->client()->getHelpUrl() . "'>" . $this->client()->getHelpGroups() . "</a>",
-    $this->transEsc($current['label'][1])
-                    )?>
-                    <?=$htmllink?>
-                <?php elseif (isset($current['label'][1])): ?>
-                    <?=$this->transEsc($current['label'][1])?>
+                    <?php $htmllink = preg_replace(
+                        $this->client()->getHelpRegEx(),
+                        "<a class='external' href='" . $this->client()->getHelpUrl() . "'>" . $this->client()->getHelpGroups() . "</a>",
+                        $this->transEsc($current['label'][1])
+                    ) ?>
+                    <?= $htmllink ?>
                     <br/>
                 <?php endif; ?>
             <?php else: ?>
