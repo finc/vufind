@@ -58,4 +58,14 @@
         <?=$this->mapongo($row['callnumber'], $this->layout()->userLang)?>
     </div>
 </div>
+<?php /* One Recall/Holds-Button for all items */ ?>
+<?php if ($this->client()->is('only_one_holds_button')): ?>
+    <?php if (isset($row['link']) && ($recallButtonCounter > 0)): ?>
+        <div class="row">
+            <div class="col-sm-12">
+            <a href="<?=$row['link']?>" class="btn btn-primary btn-sm recallholdButtonLink external "><?=$this->transEsc('recall/hold')?></a>
+            </div>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
 
