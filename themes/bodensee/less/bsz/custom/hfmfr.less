@@ -29,11 +29,16 @@ body:not(.frame) {
         }
     }
 }
-.navbar .nav-tabs > li:not(.active) > a {
+
+.nav-tabs > li:not(.active) > a {
     background-color: @brand-primary !important;
-    color: white;
+    color: white
 }
 
+.nav-tabs > li:not(.active) > a:hover {
+    background-color: darken(@brand-primary, 10%) !important;
+    color: white
+}
 .navbar-brand.logo-top {
     height: 65px !important;
     font-size: 18px;
