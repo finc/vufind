@@ -1236,48 +1236,6 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
-     * Get Status/Holdings Information from the internally stored MARC Record
-     * (support method used by the NoILS driver).
-     *
-     * @param array $field The MARC Field to retrieve
-     * @param array $data  A keyed array of data to retrieve from subfields
-     *
-     * @return array
-     */
-    public function getFormattedMarcDetails($field, $data)
-    {
-        $parent = parent::getFormattedMarcDetails($field, $data);
-        $return = [];
-        foreach ($parent as $k => $item) {
-            $ill_status = '';
-            switch ($item['availability']) {
-                case 'a': $ill_status = 'ILL::status_a';
-                     break;
-                case 'b': $ill_status = 'ILL::status_b';
-                     break;
-                case 'c': $ill_status = 'ILL::status_c';
-                     break;
-                case 'd': $ill_status = 'ILL::status_d';
-                     break;
-                case 'e': $ill_status = 'ILL::status_e';
-                     break;
-                case 'n':
-                case 'N':
-                     $ill_status = 'ILL::status_N';
-                     break;
-                case 'l':
-                case 'L':
-                     $ill_status = 'ILL::status_L';
-                     break;
-                default: $ill_status = 'ILL::status_d';
-            }
-            $item['availability'] = $ill_status;
-            $return[] = $item;
-        }
-        return $return;
-    }
-
-    /**
      * get 830|w if it exists with (DE-627)-Prefix
      *
      * @return array
