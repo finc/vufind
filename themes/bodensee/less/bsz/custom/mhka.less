@@ -43,6 +43,8 @@ footer {
     img {
         float: right;
         margin-right: -5px;
-        max-width: 170px;
+        @media (min-width: @screen-md-min) {
+            max-width: 170px;
+        }
     }
 }

@@ -31,7 +31,9 @@
     img {
         float: right;
         margin-right: -5px;
-        max-width: 190px;
+        @media (min-width: @screen-md-min) {
+            max-width: 190px;
+        }
     }
 }
 
