@@ -48,10 +48,8 @@
             <dd><?=$this->escapeHtml($row['status'])?></dd>
         <? endif; ?>
         </dl>
-        <? if (!empty($row['status']) && !$this->client()->is('only_one_holds_button')): ?>
-            <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial())): ?>
-                <?=$this->recordLink()->linkPPNButton($this->driver) ?>
-            <? endif; ?>
+        <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn)): ?>
+            <?=$this->recordLink()->linkPPNButton($this->driver) ?>
         <? endif; ?>
     </div>
 </div>
