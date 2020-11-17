@@ -48,7 +48,7 @@
             <dd><?=$this->escapeHtml($row['status'])?></dd>
         <? endif; ?>
         </dl>
-        <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn)): ?>
+        <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial())): ?>
             <?=$this->recordLink()->linkPPNButton($this->driver) ?>
         <? endif; ?>
     </div>
