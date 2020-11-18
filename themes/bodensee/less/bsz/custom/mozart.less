@@ -67,9 +67,15 @@ body:not(.frame) {
   }
 }
 
-footer .well img:last-child {
-  margin-top: 15px;
+footer .well img {
+  max-width: 150px !important;
+
+  &:last-child {
+    margin: 15px 0;
+  }
 }
+
+
 
 .hidden-xxs {
   @media (max-width: 450px) {
