@@ -264,7 +264,7 @@ class IllForm extends AbstractHelper
     {
         if (isset($this->driver) && $this->driver->isJournal()) {
             $fields = [
-                ['article author', 'AufsatzAutor', '', '', true],
+                ['article author', 'AufsatzAutor', '', 'article author placeholder', true],
                 ['article title', 'AufsatzTitel', '', '', true],
                 ['pages', 'Seitenangabe', '', '', true, 'ILL::error_pages']
             ];
@@ -273,14 +273,14 @@ class IllForm extends AbstractHelper
             }
         } elseif (isset($this->driver) && $this->driver->isArticle()) {
             $fields = [
-                ['article author', 'AufsatzAutor', $this->getFromDriver('getPrimaryAuthor'), '', true],
+                ['article author', 'AufsatzAutor', $this->getFromDriver('getPrimaryAuthor'), 'article author placeholder', true],
                 ['article title', 'AufsatzTitel', $this->getFromDriver('getTitle'), '', true],
                 ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true, 'ILL::error_year'],
                 ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ILL::error_pages'],
             ];
         } elseif (isset($this->driver) && $this->driver->isBook()) {
             $fields = [
-                ['article author', 'AufsatzAutor', ''],
+                ['article author', 'AufsatzAutor', '', 'article author placeholder'],
                 ['article title', 'AufsatzTitel', ''],
                 ['pages', 'Seitenangabe', '', '', false, 'ILL::error_pages'],
             ];
