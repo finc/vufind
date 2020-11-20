@@ -15,7 +15,7 @@ $form = '';
                 <? else: ?>
                     <div class="radio">
                         <label for="ill-library-<?=$libkey?>">
-                            <? if ($params['Sigel']):?>
+                            <? if (isset($params['Sigel'])):?>
                                 <? if ($params['Sigel'] == $library->getSigel()):?>
                                     <? $checked = 'checked="checked"'?>
                                 <? endif ?>
