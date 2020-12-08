@@ -3,16 +3,19 @@
     $icon = $this->mapper()->mapIcon($formats);
 ?>
 <?php if ($this->cover): ?>
-  <?php if (isset($this->link) && $this->link != '#'): ?>
-    <a href="<?=$this->escapeHtmlAttr($this->link)?>" >
-  <?php elseif (isset($this->link) && $this->link == '#'): ?>
-    <a href="#" class="modal-popup cover" data-toggle="modal" data-img-url="<?=$this->escapeHtmlAttr($cover); ?>">
-  <?php endif; ?>
-  <img loading="lazy" <?php if ($this->linkPreview): ?>data-linkpreview="true" <?php endif; ?>class="img-responsive hidden-print <?=$icon?>" src="<?=$this->escapeHtmlAttr($cover); ?>"/>
-  <?php if ($this->link): ?>
+<?php if (isset($this->link) && $this->link != '#'): ?>
+<a href="<?= $this->escapeHtmlAttr($this->link) ?>">
+    <?php elseif (isset($this->link) && $this->link == '#'): ?>
+    <a href="#" class="modal-popup cover" data-toggle="modal"
+       data-img-url="<?= $this->escapeHtmlAttr($cover); ?>">
+        <?php endif; ?>
+        <img loading="lazy" <?php if ($this->linkPreview): ?>data-linkpreview="true"
+             <?php endif; ?>class="img-responsive hidden-print recordcover <?= $icon ?>"
+             src="<?= $this->escapeHtmlAttr($cover); ?>"/>
+        <?php if ($this->link): ?>
     </a>
-  <?php endif; ?>
-<?php else: ?>
+<?php endif; ?>
+    <?php else: ?>
     <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
         <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?> medium"></div>
     </a>

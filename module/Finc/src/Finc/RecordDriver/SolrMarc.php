@@ -21,6 +21,8 @@
 namespace Finc\RecordDriver;
 
 use VuFind\RecordDriver\IlsAwareTrait;
+use VuFind\RecordDriver\MarcAdvancedTrait;
+use VuFind\RecordDriver\MarcBasicTrait;
 use VuFind\View\Helper\Root\RecordLink;
 use VuFind\XSLT\Processor as XSLTProcessor;
 
@@ -37,6 +39,8 @@ use VuFind\XSLT\Processor as XSLTProcessor;
 class SolrMarc extends SolrDefault
 {
     use IlsAwareTrait;
+    use MarcBasicTrait;
+    use MarcAdvancedTrait;
     /**
      * MARC record. Access only via getMarcRecord() as this is initialized lazily.
      *
@@ -342,24 +346,6 @@ class SolrMarc extends SolrDefault
         return $this->getPublicationInfo();
     }
 
-    /**
-     * Get an array of playing times for the record (if applicable).
-     *
-     * @return array
-     */
-    public function getPlayingTimes()
-    {
-        $times = $this->getFieldArray('306', ['a'], false);
-
-        // Format the times to include colons ("HH:MM:SS" format).
-        for ($x = 0; $x < count($times); $x++) {
-            $times[$x] = substr($times[$x], 0, 2) . ':' .
-                substr($times[$x], 2, 2) . ':' .
-                substr($times[$x], 4, 2);
-        }
-
-        return $times;
-    }
 
     /**
      * Get an array of previous titles for the record.

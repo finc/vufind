@@ -7,9 +7,10 @@
  */
 namespace Bsz\RecordDriver;
 
+use Bsz\Exception;
+
 /**
  * Trait for all the Container methods
- *
  * @author amzar
  */
 trait ContainerTrait
@@ -19,11 +20,13 @@ trait ContainerTrait
      * to query solr again
      *
      * @return array
+     * @throws Exception
      */
     public function getContainer()
     {
         if (count($this->container) == 0 &&
-            $this->isPart()) {
+            ($this->isArticle() || $this->isPart())
+        ) {
             $relId = $this->getContainerIds();
 
             $this->container = [];
@@ -34,6 +37,9 @@ trait ContainerTrait
                 $params = [
                     'lookfor' => implode(' OR ', $relId),
                 ];
+                if (null === $this->runner) {
+                    throw new Exception('Please attach a search runner first');
+                }
                 $results = $this->runner->run($params, 'Solr');
                 $this->container = $results->getResults();
             }
@@ -53,10 +59,10 @@ trait ContainerTrait
         $ids = [];
         $array = $this->getFieldsArray($fields);
         foreach ($array as $subfields) {
-            $ids = explode(' ', $subfields);
-            foreach ($ids as $id) {
-                // match all PPNs except old SWB PPNs and ZDB-IDs (with dash)
-                if (preg_match('/^((?!DE-576|DE-600.*-).)*$/', $id)) {
+            $tmp = explode(' ', $subfields);
+            foreach ($tmp as $id) {
+                // match all PPNs except old SWB PPNs and ZDB-IDs
+                if ( !preg_match('/^\(DE-576|DE-600\)/', $id)) {
                     $ids[] = $id;
                 }
             }

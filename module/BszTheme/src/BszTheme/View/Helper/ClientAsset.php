@@ -83,11 +83,7 @@ class ClientAsset extends AbstractHelper
         } elseif ($this->library instanceof Library) {
             $filename = $this->library->getLogo();
         }
-
-        if ($this->fileExists($filename)) {
-            return $filename;
-        }
-        return '';
+        return $filename;
     }
 
     /**
@@ -104,11 +100,7 @@ class ClientAsset extends AbstractHelper
         } elseif ($this->library instanceof Library) {
             $filename = $this->library->getLogo();
         }
-
-        if ($this->fileExists($filename)) {
-            return $filename;
-        }
-        return '';
+        return $filename;
     }
 
 
@@ -123,19 +115,4 @@ class ClientAsset extends AbstractHelper
         ]);
     }
 
-    /**
-     * TODO: QnD implementation
-     * @param string $filename
-     * @return boolean
-     */
-    private function fileExists($filename)
-    {
-        $result = false;
-        if ('/usr/local/boss/themes/bodensee/images/' . $filename) {
-            $result = true;
-        } elseif ('/usr/local/boss/themes/chiemsee/images/' . $filename) {
-            $result = true;
-        }
-        return $result;
-    }
 }

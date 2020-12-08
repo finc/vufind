@@ -22,7 +22,6 @@ namespace Bsz\RecordDriver;
 
 use Bsz\Exception;
 use File_MARC_Exception;
-use PHP_CodeSniffer\Standards\PEAR\Sniffs\Functions\ValidDefaultValueSniff;
 use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
 
@@ -30,7 +29,7 @@ use VuFind\RecordDriver\MarcReaderTrait;
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class SolrGviMarc extends SolrMarc implements Definition
+class SolrGviMarc extends SolrMarc implements Constants
 {
     use IlsAwareTrait;
     use MarcReaderTrait;
@@ -242,9 +241,9 @@ class SolrGviMarc extends SolrMarc implements Definition
         //isbn = 020az:773z
         $isbn = array_merge(
             $this->getFieldArray('020', ['a', 'z', '9'], false),
-            $this->getFieldArray('773', ['z'])
+            $this->getFieldArray('773', ['z'], false)
         );
-        return $isbn;
+        return array_unique($isbn);
     }
 
     /**
@@ -256,17 +255,17 @@ class SolrGviMarc extends SolrMarc implements Definition
     {
         // issn = 022a:440x:490x:730x:773x:776x:780x:785x
         $issn = array_merge(
-            $this->getFieldArray('022', ['a']),
-            $this->getFieldArray('029', ['a']),
-            $this->getFieldArray('440', ['x']),
-            $this->getFieldArray('490', ['x']),
-            $this->getFieldArray('730', ['x']),
-            $this->getFieldArray('773', ['x']),
-            $this->getFieldArray('776', ['x']),
-            $this->getFieldArray('780', ['x']),
-            $this->getFieldArray('785', ['x'])
+            $this->getFieldArray('022', ['a'], false),
+            $this->getFieldArray('029', ['a'], false),
+            $this->getFieldArray('440', ['x'], false),
+            $this->getFieldArray('490', ['x'], false),
+            $this->getFieldArray('730', ['x'], false),
+            $this->getFieldArray('773', ['x'], false),
+            $this->getFieldArray('776', ['x'], false),
+            $this->getFieldArray('780', ['x'], false),
+            $this->getFieldArray('785', ['x'], false)
         );
-        return $issn;
+        return array_unique($issn);
     }
 
     /**
@@ -1007,7 +1006,7 @@ class SolrGviMarc extends SolrMarc implements Definition
         $firstIsil = array_shift($isils);
 
         /**
-         * Anonymous functino, called bellow. It handles ONE url.
+         * Anonymous function, called bellow. It handles ONE url.
          *
          * @param $link
          * @param $label
@@ -1234,48 +1233,6 @@ class SolrGviMarc extends SolrMarc implements Definition
             return true;
         }
         return false;
-    }
-
-    /**
-     * Get Status/Holdings Information from the internally stored MARC Record
-     * (support method used by the NoILS driver).
-     *
-     * @param array $field The MARC Field to retrieve
-     * @param array $data  A keyed array of data to retrieve from subfields
-     *
-     * @return array
-     */
-    public function getFormattedMarcDetails($field, $data)
-    {
-        $parent = parent::getFormattedMarcDetails($field, $data);
-        $return = [];
-        foreach ($parent as $k => $item) {
-            $ill_status = '';
-            switch ($item['availability']) {
-                case 'a': $ill_status = 'ILL::status_a';
-                     break;
-                case 'b': $ill_status = 'ILL::status_b';
-                     break;
-                case 'c': $ill_status = 'ILL::status_c';
-                     break;
-                case 'd': $ill_status = 'ILL::status_d';
-                     break;
-                case 'e': $ill_status = 'ILL::status_e';
-                     break;
-                case 'n':
-                case 'N':
-                     $ill_status = 'ILL::status_N';
-                     break;
-                case 'l':
-                case 'L':
-                     $ill_status = 'ILL::status_L';
-                     break;
-                default: $ill_status = 'ILL::status_d';
-            }
-            $item['availability'] = $ill_status;
-            $return[] = $item;
-        }
-        return $return;
     }
 
     /**

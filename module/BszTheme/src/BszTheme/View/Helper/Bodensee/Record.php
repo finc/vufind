@@ -214,7 +214,7 @@ class Record extends \VuFind\View\Helper\Root\Record
      *
      * @return string
      */
-    public static function indicator2Status($indicator)
+    public static function indicator2status($indicator)
     {
         return 'ILL::status_' . $indicator;
     }

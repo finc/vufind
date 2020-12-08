@@ -25,9 +25,9 @@ use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
 {
-    protected function getBasicConfig()
+    public function getBasicConfig()
     {
-        return [
+        return new Client([
             'Site' => [
                 'isil' => 'DE-666,DE-667',
                 'website' => 'https://www.example.com',
@@ -42,13 +42,12 @@ class ClientTest extends TestCase
                 'isil_session' => false
             ],
             'FooterLinks' => []
-
-        ];
+        ], true);
     }
 
-    protected function getClient($config)
+    public function getClient($config)
     {
-        return $client = new Client($config);
+        return $client = new Client($config->toArray());
     }
 
     public function testClientCreatedSuccessfull()

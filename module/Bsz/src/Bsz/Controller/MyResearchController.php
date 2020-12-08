@@ -1,9 +1,12 @@
 <?php
 namespace Bsz\Controller;
 
+use Zend\Http\Header\SetCookie;
+use Zend\Session\Container as SessionContainer;
+use Zend\Session\SessionManager;
+
 /**
  * Bsz adaption of MyResearchController
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class MyResearchController extends \VuFind\Controller\MyResearchController
@@ -61,5 +64,29 @@ class MyResearchController extends \VuFind\Controller\MyResearchController
             return $this->forwardTo('Search', 'History');
         }
         return $this->forwardTo('MyResearch', $page);
+    }
+
+    /**
+     * First destroys the selected ISIL in session and cookie, then usual logout.
+     *
+     * @return mixed
+     */
+    public function logoutAction()
+    {
+        $session = new SessionContainer(
+            'fernleihe',
+            $this->serviceLocator->get(SessionManager::class)
+        );
+        $session->offsetUnset('isil');
+        $uri= $this->getRequest()->getUri();
+        $cookie = new SetCookie(
+            'isil',
+            '',
+            // destroy cookie by setting its life time to yesterday
+            time() - 24*60*60,
+            '/',
+            $uri->getHost()
+        );
+        return parent::logoutAction();
     }
 }

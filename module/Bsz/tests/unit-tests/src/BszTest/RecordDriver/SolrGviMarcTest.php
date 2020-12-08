@@ -22,6 +22,7 @@ namespace BszTest\RecordDriver;
 
 use Bsz\Config\Client;
 use Bsz\RecordDriver\SolrGviMarc;
+use BszTest\ClientTest;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -66,24 +67,11 @@ class SolrGviMarcTest extends TestCase
         return $records;
     }
 
-    protected function getClient(): Client
+    protected function getClient() : Client
     {
-        $config = [
-            'Site' => [
-                'isil' => 'DE-666,DE-667',
-                'website' => 'https://www.example.com',
-                'website_google' => 'https://www.google.com',
-                'url' => 'foo.bar.com'
-            ],
-            'System' => [],
-            'OpenUrl' => [],
-            'Footer' => [],
-            'Switches' => [
-                'isil_session' => false
-            ],
-            'FooterLinks' => []
-       ];
-        return $client = new Client($config);
+        $clienttest = new ClientTest();
+        $config = $clienttest->getBasicConfig();
+        return $clienttest->getClient($config);
     }
 
     /**
@@ -98,7 +86,8 @@ class SolrGviMarcTest extends TestCase
         $path = APPLICATION_PATH.'/module/Bsz/tests/fixtures/solr/';
         return json_decode(
             file_get_contents(
-                realpath($path.$file
+                realpath(
+                    $path.$file
                 )
             ),
             true
@@ -109,14 +98,12 @@ class SolrGviMarcTest extends TestCase
     {
         $driver = $this->getSolrRecord();
         $this->assertEquals($driver->getFormats(), ['Book']);
-
         $this->assertFalse($driver->isJournal());
         $this->assertFalse($driver->isArticle());
         $this->assertFalse($driver->isMonographicSerial());
         $this->assertFalse($driver->isElectronic());
         $this->assertFalse($driver->isFree());
         $this->assertFalse($driver->isNewspaper());
-
         $this->assertTrue($driver->isBook());
     }
 
@@ -124,28 +111,6 @@ class SolrGviMarcTest extends TestCase
     {
         foreach ($this->getSolrRecords() as $driver) {
             $this->assertIsString($driver->getConsortium());
-            $this->assertIsString($driver->getConsortium());
-        }
-    }
-
-    public function testField924NumericKeys()
-    {
-        $driver = $this->getSolrRecord();
-        $f924 = $driver->getField924();
-        $keys = array_keys($f924);
-        foreach ($keys as $key) {
-            $this->assertTrue(is_numeric($key));
-        }
-    }
-
-    public function testField924CheckArrayContent()
-    {
-        $driver = $this->getSolrRecord();
-        $f924 = $driver->getField924();
-
-        foreach ($f924 as $field) {
-            $this->assertTrue(array_key_exists('isil', $field));
-            $this->assertTrue(strlen($field['ill_indicator']) == 1);
         }
     }
 
@@ -157,9 +122,12 @@ class SolrGviMarcTest extends TestCase
             foreach ($publications as $publication) {
                 $place = $publication->getPlace();
                 $year = $publication->getDate();
-                $string = (string)$publication;
                 $this->assertFalse(strpos($place, '['));
-                $this->assertTrue((bool)preg_match('/\d\d\d\d/', $year));
+
+                // for multiple places, the year might be empty for the latter ones.
+                if (!empty($year)) {
+                    $this->assertRegExp('/\d{4}/', $year);
+                }
             }
         }
     }
@@ -184,5 +152,128 @@ class SolrGviMarcTest extends TestCase
         $this->assertTrue($driver->isMonographicSerial());
         $this->assertFalse($driver->isCollection());
         $this->assertFalse($driver->isPart());
+    }
+
+    public function testLocalHoldings()
+    {
+        $clienttest = new ClientTest();
+        $config = $clienttest->getBasicConfig();
+        $config->Site->isil = 'DE-3';
+        $record = new SolrGviMarc($config);
+        $fixture = $this->loadRecordFixture('repetitorium.json');
+        $record->setRawData($fixture['response']['docs'][0]);
+        $holdings = $record->getLocalHoldings();
+        $this->assertEquals(count($holdings), 2);
+        foreach ($holdings as $holding) {
+            $this->assertEquals($holding['isil'], 'DE-3');
+        }
+    }
+
+    public function testContainerIds()
+    {
+        foreach ($this->getSolrRecords() as $driver) {
+            $ids = $driver->getContainerIds();
+            foreach($ids as $id) {
+                $this->assertNotRegExp('/\(DE-576\)/', $id);
+                $this->assertNotRegExp('/\(DE-600\)/', $id);
+                $this->assertRegExp('/\(DE-/', $id);
+            }
+        }
+    }
+
+    /**
+     * this method uses date from 008, too.
+     */
+    public function testPublicationDates()
+    {
+        foreach ($this->getSolrRecords() as $driver) {
+            $dates = $driver->getPublicationDates();
+            foreach($dates as $date) {
+                $this->assertRegExp('/\d{4}/', $date);
+            }
+        }
+    }
+
+    public function testOpenUrl()
+    {
+        foreach ($this->getSolrRecords() as $driver) {
+            $url = $driver->getOpenUrl();
+            $this->assertStringContainsString('rft.genre', $url);
+        }
+    }
+
+    public function testOriginalLanguage()
+    {
+        $driver = $this->getSolrRecords()[0];
+        $oltitle = $driver->getOriginalLanguage('245', 'a');
+        $this->assertNotEmpty($oltitle);
+        $olfields = $driver->getOriginalLanguageArray([245 => ['a', 'b', 'c'], 264 => ['a', 'b', 'c']], ' + ');
+        $this->assertIsArray($olfields);
+        $this->assertEquals(count($olfields), 2);
+
+        foreach ($olfields as $field) {
+            $this->assertStringContainsString(' + ', $field);
+        }
+    }
+
+    public function testField924NumericKeys()
+    {
+        $driver = $this->getSolrRecord();
+        $f924 = $driver->getField924();
+        $keys = array_keys($f924);
+        foreach ($keys as $key) {
+            $this->assertTrue(is_numeric($key));
+        }
+    }
+
+    public function testField924CheckArrayContent()
+    {
+        $driver = $this->getSolrRecord();
+        $f924 = $driver->getField924();
+
+        foreach ($f924 as $field) {
+            $this->assertTrue(array_key_exists('isil', $field));
+            $this->assertTrue(strlen($field['ill_indicator']) == 1);
+        }
+    }
+
+    public function testField924IsilFormat()
+    {
+        foreach ($this->getSolrRecords() as $driver) {
+            $f924 = $driver->getField924();
+            foreach($f924 as $field) {
+                $this->assertRegExp('/^DE-|^AT-|^LFER|^CH-/', $field['isil']);
+            }
+        }
+    }
+
+    public function testField924RepeatedSubfields()
+    {
+        $clienttest = new ClientTest();
+        $config = $clienttest->getBasicConfig();
+        $config->Site->isil = 'DE-N1';
+        $record = new SolrGviMarc($config);
+        $fixture = $this->loadRecordFixture('repeatedsubfields924.json');
+        $record->setRawData($fixture['response']['docs'][0]);
+        $localurls = $record->getLocalUrls();
+        $this->assertEquals(count($localurls), 2);
+        $holdings = $record->getLocalHoldings();
+        $this->assertEquals(count($holdings), 1);
+        $this->assertIsArray($holdings[0]['url']);
+        $this->assertEquals($localurls[0]['label'], 'EZB');
+        $this->assertEquals($localurls[1]['label'], 'Volltext');
+
+        $config->Site->isil = 'DE-Fn1';
+        $record = new SolrGviMarc($config);
+        $fixture = $this->loadRecordFixture('repeatedsubfields924-DE-Fn1.json');
+        $record->setRawData($fixture['response']['docs'][0]);
+        $localurls = $record->getLocalUrls();
+        $this->assertEquals(count($localurls), 1);
+        $this->assertIsArray($localurls[0]['label']);
+        $this->assertEquals(count($localurls[0]['label']), 2);
+
+
+
+
     }
 }

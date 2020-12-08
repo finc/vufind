@@ -19,7 +19,7 @@
  */
 namespace BszTheme\View\Helper\Bodensee;
 
-use Bsz\RecordDriver\Definition as Def;
+use Bsz\RecordDriver\Constants as Def;
 use Bsz\RecordDriver\SolrMarc;
 
 /**
@@ -96,7 +96,7 @@ class RecordLink extends \VuFind\View\Helper\Root\RecordLink
 
         if ($driver->getNetwork() == 'SWB' && $recordHelper->isAtFirstIsil()) {
             $url = str_replace('%PPN%', $ppn, $url);
-            $label = 'ILL::library_opac';
+            $label = 'ILL::library_opac';;
         } else {
             $label = 'ILL::check_availability_network_opac';
             $opacList = $this->config->get('OPAC')->toArray();
