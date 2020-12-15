@@ -1,67 +1,17 @@
-// Switch on/off highlighting visibility using
-// background color in alpha channel
-// rgba(255,255,0,0) = off,
-// rgba(255,255,0,1) = maximum saturation
-
-
-// intense background gradient
-body:not(.frame) {
-    /*#gradient.vertical(darken(@brand-primary, 30%); @brand-primary; 15%; 90%);*/
-    background-color: darken(white, 5%);
-}
-
-.specialhome {
-    margin-top: -20px;
-    font-size: 16px;
-}
-
-.navbar-brand.logo-top {
-    height: 65px !important;
-    font-size: 18px;
-    line-height: 45px;
-    padding-left: 22px;
-    span {
-        font-size: 48px;
-    }
-    small {
-        white-space: nowrap;
-    }
-    &:hover {
-        background-color: @brand-primary !important;
-    }
-}
 
 .navbar-brand.logo-right {
-    height: 70px;
-    img {
-        float: right;
-        height: 50px;
-        margin-right: -5px;
+  height: auto;
+  img {
+    float: right;
+    margin-right: -5px;
+    @media (min-width: @screen-md-min) {
+      max-width: 110px;
     }
-}
-
-.navbar-nav > li > a {
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-.searchHomeContent {
-    div.row {
-        margin-top: -20px;
-        margin-bottom: 30px;
+    @media (max-width: @screen-sm-max) {
+      max-width: 110px;
+      margin-right: 15px;
     }
-}
 
-footer .well img:last-child {
-    margin-top: 15px;
-}
 
-.nav-tabs > li:not(.active) > a {
-    background-color: transparent !important;
-    color: white;
-    border-right: 1px solid white;
-
-    &:hover {
-        border-right: 1px solid white;
-    }
+  }
 }

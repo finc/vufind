@@ -25,7 +25,7 @@
         <?php endif; ?>
         <?php if (!empty($row['availability'])): ?>
             <dt><?=$this->transEsc('ILL::indicator')?>:</dt>
-            <dd><?=$this->transEsc($row['availability'])?></dd>
+            <dd><i class="fa <?=$this->record($this->driver)->indicator2icon($row['availability'])?>"></i> <?=$this->transEsc($this->record($this->driver)->indicator2status($row['availability']))?></dd>
         <?php endif; ?>
         <?php if (!empty($row['notes'])): ?>
             <dt><?=$this->transEsc('Note')?>:</dt>
@@ -48,10 +48,8 @@
             <dd><?=$this->escapeHtml($row['status'])?></dd>
         <? endif; ?>
         </dl>
-        <? if (!empty($row['status'])): ?>
-            <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial())): ?>
-                <?=$this->recordLink()->linkPPNButton($this->driver) ?>
-            <? endif; ?>
+        <? $ppn = $this->driver->tryMethod('getPPN'); if(!empty($ppn) && ($this->driver->isJournal() || $this->driver->isSerial())): ?>
+            <?=$this->recordLink()->linkPPNButton($this->driver) ?>
         <? endif; ?>
     </div>
 </div>

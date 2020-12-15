@@ -1,9 +1,13 @@
 <?php
    $lang = $this->layout()->userLang;
    $heading = $settings->get('heading_' . $lang) !== null ? $settings->get('heading_' . $lang) : '';
+   $xswidth = 'col-xs-12';
+   if ($settings->offsetExists('image') && count($settings->offsetGet('image')) > 0) {
+       $xswidth = 'col-xs-6 col-xs-offset-6 col-sm-offset-0';
+   }
 ?>
 
-<div class="col-sm-<?=(12 / $count)?>">
+<div class="<?=$xswidth?> col-sm-<?=(12 / $count)?>">
     <div class="well clearfix">
         <?php if (!empty($heading)): ?>
         <h5><?=$this->escapeHtml($heading)?></h5>
