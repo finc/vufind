@@ -24,6 +24,7 @@ use Bsz\Config\Client;
 use Bsz\Config\Library;
 use Bsz\Exception;
 use Interop\Container\ContainerInterface;
+use VuFind\Config\Locator;
 
 /**
  * Factory for Bootstrap view helpers.
@@ -92,7 +93,7 @@ class Factory
         $isils = $client->getIsils();
         $openUrlRules = json_decode(
             file_get_contents(
-                \VuFind\Config\Locator::getConfigPath('OpenUrlRules.json')
+                Locator::getConfigPath('OpenUrlRules.json')
             ),
             true
         );
@@ -171,14 +172,21 @@ class Factory
      */
     public static function getPiwik(ContainerInterface $container)
     {
-        $config = $container->get('VuFind\Config')->get('config');
-        $url = isset($config->Piwik->url) ? $config->Piwik->url : false;
-        $siteId = isset($config->Piwik->site_id) ? $config->Piwik->site_id : 1;
-        $globalSiteId = isset($config->Piwik->site_id_global) ? $config->Piwik->site_id_global : 0;
-        $customVars = isset($config->Piwik->custom_variables)
-            ? $config->Piwik->custom_variables
+        $config = $container->get('VuFind\Config')->get('config')->get('Piwik');
+        $url = isset($config->url) ? $config->url : false;
+        $siteId = isset($config->site_id) ? $config->site_id : 1;
+        $globalSiteId = isset($config->site_id_global) ? $config->site_id_global : 0;
+        $groupSiteId = isset($config->site_id_group) ? $config->site_id_group : 0;
+        $customVars = isset($config->custom_variables)
+            ? $config->custom_variables
             : false;
-        return new Piwik($url, $siteId, $customVars, $globalSiteId);
+        return new Piwik(
+            $url,
+            $siteId,
+            $customVars,
+            $globalSiteId,
+            $groupSiteId
+        );
     }
 
     /**

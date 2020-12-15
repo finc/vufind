@@ -33,6 +33,7 @@ namespace BszTheme\View\Helper\Bodensee;
 class Piwik extends \VuFind\View\Helper\Root\Piwik
 {
     protected $globalSiteId;
+    protected $groupSiteId;
 
     /**
      * Constructor
@@ -42,7 +43,7 @@ class Piwik extends \VuFind\View\Helper\Root\Piwik
      * @param bool        $customVars Whether to track additional information in
      * custom variables
      */
-    public function __construct($url, $siteId, $customVars, $globalSiteId = 0)
+    public function __construct($url, $siteId, $customVars, $globalSiteId = 0, $groupSiteId = 0)
     {
         $this->url = $url;
         if ($url && substr($url, -1) != '/') {
@@ -50,6 +51,7 @@ class Piwik extends \VuFind\View\Helper\Root\Piwik
         }
         $this->siteId = (int)$siteId;
         $this->globalSiteId = (int)$globalSiteId;
+        $this->groupSiteId = (int)$groupSiteId;
         $this->customVars = $customVars;
     }
 
@@ -63,7 +65,9 @@ class Piwik extends \VuFind\View\Helper\Root\Piwik
         if ($action == 'siteid') {
             return $this->getSiteId();
         } elseif ($action == 'globalsiteid') {
-            return $this->getglobalSiteId();
+            return $this->getGlobalSiteId();
+        } elseif ($action == 'groupsiteid') {
+            return $this->getGroupSiteId();
         } elseif ($action == 'baseurl') {
             return $this->getBaseUrl();
         } else {
@@ -73,6 +77,7 @@ class Piwik extends \VuFind\View\Helper\Root\Piwik
             $params = [
                 'piwikUrl' => $this->url,
                 'globalSiteId'   => $this->globalSiteId,
+                'groupSiteId'   => $this->groupSiteId,
                 'siteId'   => $this->siteId
 
             ];
@@ -100,6 +105,16 @@ class Piwik extends \VuFind\View\Helper\Root\Piwik
     {
         return $this->globalSiteId;
     }
+
+    /**
+     * Return site id
+     * @return int
+     */
+    public function getGroupSiteId()
+    {
+        return $this->groupSiteId;
+    }
+
 
     /**
      *
