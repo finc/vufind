@@ -77,7 +77,7 @@
           <? foreach ($fivclassification as $notation): ?>
             <? if (preg_match('/^[RS]/', $notation)): $trans = 'FIV::'.str_replace('.', '', strtolower($notation))?>
               <span class="notationLine markjs">
-                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('fivclassification', $notation, $this->searchClassId)?>" class="searchicon" title="<?=$this->escapeHtml($notation)?>"><?=$this->escapeHtml($notation)?> <?=$this->transEsc($trans)?></a>
+                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('fivclassification', $notation, $this->searchClassId)?>" class="searchicon" title="<?=$this->escapeHtml($notation)?>"><?=$this->transEsc($trans)?></a>
             </span>
             <? endif; ?>
           <? endforeach; ?>
