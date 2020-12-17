@@ -75,10 +75,10 @@
       <? if(is_array($fivclassification)): ?>
       <td>
           <? foreach ($fivclassification as $notation): ?>
-            <? if (preg_match('/^[RS]/', $notation)): $trans = 'FIV::'.str_replace('.', '', strtolower($notation))?>
-              <span class="notationLine markjs">
-                <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('fivclassification', $notation, $this->searchClassId)?>" class="searchicon" title="<?=$this->escapeHtml($notation)?>"><?=$this->transEsc($trans)?></a>
-            </span>
+            <? if (preg_match('/^[RS]/i', $notation)): $trans = 'FIV::'.preg_replace('/\.|\s.*/', '', strtolower($notation))?>
+                <span class="notationLine markjs">
+                    <a href="<?=$this->record($this->driver)->getLink('fivclassification', $notation, $this->searchClassId)?>" class="searchicon"><?=$this->transEsc($trans)?></a>
+                </span>
             <? endif; ?>
           <? endforeach; ?>
       </td>
