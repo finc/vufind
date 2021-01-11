@@ -98,9 +98,9 @@ class SideFacets extends \VuFind\Recommend\SideFacets
         if (isset($this->filterFacets)) {
             foreach ($this->filterFacets as $facet => $filter) {
                 if (isset($facetSet[$facet])) {
-                    $allowed = explode(',', $filter);
+
                     foreach ($facetSet[$facet]['list'] as $key => $originalFacet) {
-                        if (!in_array($originalFacet['value'], $allowed)) {
+                        if (!$this->checkFilter($filter, $originalFacet['value'])) {
                             //unset facet values we do not want
                             unset($facetSet[$facet]['list'][$key]);
                         }
@@ -116,6 +116,18 @@ class SideFacets extends \VuFind\Recommend\SideFacets
             }
         }
         return $facetSet;
+    }
+
+    private function checkFilter($filter, $value)
+    {
+        $allowed = explode(',', $filter);
+        foreach ($allowed as $a) {
+            $a = '/^'.$a.'/i';
+            if (preg_match($a, $value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

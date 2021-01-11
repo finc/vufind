@@ -40,8 +40,12 @@
     <? endif; ?>
     <? if (!isset($success) || !$success): ?>
 
+        <p><?=$this->transEsc('ILL::help_intro1')?></p>
+        <p><?=$this->transEsc('ILL::help_intro2')?></p>
+        <p><?=$this->transEsc('ILL::help_intro3')?></p>
+
         <form data-format="<?=$type?>" class="<?=$type?> form-horizontal" id="form-ill" action="<?=$this->recordLink()->getUrl($this->driver)?>/ILLForm" method="POST" role="form">
-        <div class="form-group form-group-sm">
+            <div class="form-group form-group-sm">
             <? if (isset($params['Bestellform'])):
                 $form = $params['Bestellform'];
             endif; ?>
@@ -56,9 +60,6 @@
                     <input type="radio" id="ill-copy" name="Bestellform" data-bestellform="" value="Kopie" <? if($form == 'Kopie'):?>checked<?endif; ?> required />
                     <span for="ill-copy"><strong><?=$this->transEsc('paperdata')?></strong></span>
                 <? endif; ?>
-            </div>
-            <div class="col-sm-12">
-                <span class="help-block"><?=$this->transEsc('ILL::help_copie_rent')?></span>
             </div>
         </div>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
