@@ -1,41 +1,41 @@
 <script type="text/javascript">
 
-    window.piwikAsyncInit = function () {
+    window.matomoAsyncInit = function () {
         try {
             <?php if ($this->siteId > 0): ?>
-            var piwikTracker = Piwik.getTracker("<?=$this->piwikUrl?>piwik.php", <?=$this->siteId?>);
-            piwikTracker.trackPageView();
+            var matomoTracker = Matomo.getTracker("<?=$this->piwikUrl?>matomo.php", <?=$this->siteId?>);
+            matomoTracker.trackPageView();
             <?php endif; ?>
             <?php if ($this->globalSiteId > 0): ?>
-            var piwik2 = Piwik.getTracker("<?=$this->piwikUrl?>piwik.php", 28);
+            var matomoTracker2 = Matomo.getTracker("<?=$this->piwikUrl?>matomo.php", 28);
             <?php if ($this->client()->isIsilSession() && $this->client()->hasIsilSession()): ?>
-            piwik2.setCustomVariable(1, "sigel", '<?=$this->escapeHtml($this->client()->getSigel())?>', "visit");
+            matomoTracker2.setCustomVariable(1, "sigel", '<?=$this->escapeHtml($this->client()->getSigel())?>', "visit");
             <?php endif; ?>
-            piwik2.trackPageView();
+            matomoTracker2.trackPageView();
             <?php endif; ?>
             <?php if ($this->groupSiteId > 0): ?>
-            var piwik3 = Piwik.getTracker("<?=$this->piwikUrl?>piwik.php", <?=$this->groupSiteId?>);
-            piwik3.trackPageView();
+            var matomoTracker3 = Matomo.getTracker("<?=$this->piwikUrl?>natomo.php", <?=$this->groupSiteId?>);
+            matomoTracker3.trackPageView();
             <?php endif; ?>
         } catch (err) {
             console.error(err.toString());
         }
     };
 </script>
-<script type="text/javascript" src="<?= $this->piwikUrl ?>piwik.js"></script>
+<script type="text/javascript" src="<?= $this->piwikUrl ?>matomo.js"></script>
 <noscript>
     <?php if ($this->siteId > 0): ?>
-        <p><img src="<?= $this->piwikUrl ?>piwik.php?idsite=<?= $this->siteId ?>"
+        <p><img src="<?= $this->piwikUrl ?>matomo.php?idsite=<?= $this->siteId ?>"
                 style="border:0;" alt=""/></p>
     <?php endif; ?>
     <?php if ($this->globalSiteId > 0): ?>
         <p>
-            <img src="<?= $this->piwikUrl ?>piwik.php?idsite=<?= $this->globalSiteId ?>"
+            <img src="<?= $this->piwikUrl ?>matomo.php?idsite=<?= $this->globalSiteId ?>"
                  style="border:0;" alt=""/></p>
     <?php endif; ?>
     <?php if ($this->groupSiteId > 0): ?>
         <p>
-            <img src="<?= $this->piwikUrl ?>piwik.php?idsite=<?= $this->groupSiteId ?>"
+            <img src="<?= $this->piwikUrl ?>matomo.php?idsite=<?= $this->groupSiteId ?>"
                  style="border:0;" alt=""/></p>
     <?php endif; ?>
 </noscript>
