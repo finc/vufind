@@ -112,6 +112,7 @@ JS;
       $this->headScript()->appendScript($setupJS);
       ?>
       <?=$this->headScript()?>
+      <?=$this->piwik()?>
 
   </head>
   <body class="template-dir-<?=$this->templateDir?> template-name-<?=$this->templateName?> <?=$this->layoutClass('offcanvas-row')?><?php if ($this->layout()->rtl): ?> rtl<?php endif; ?>">
@@ -189,7 +190,6 @@ JS;
     <div class="offcanvas-toggle" data-toggle="offcanvas"><i class="fa"></i></div>
     <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
     <?=$this->googleanalytics()?>
-    <?=$this->piwik()?>
     <?=$this->render('bsz/browserupdate.phtml')?>
     <?php if ($this->recaptcha()->active()): ?>
         <?=$this->inlineScript(\Zend\View\Helper\HeadScript::FILE, "https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit&hl=" . $this->layout()->userLang, 'SET')?>
