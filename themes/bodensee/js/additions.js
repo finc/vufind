@@ -443,6 +443,13 @@ function copyToClipboard() {
     });
 }
 
+function deleteInput() {
+    $('.delete-input').click(function() {
+        var target = $(this).attr('data-target');
+        $(target).val('');
+    })
+}
+
 
 /*
 * this is executed after site is loaded
@@ -473,4 +480,5 @@ $(document).ready(function() {
     textToggle();
     openInPopup();
     copyToClipboard();
+    deleteInput();
 });
