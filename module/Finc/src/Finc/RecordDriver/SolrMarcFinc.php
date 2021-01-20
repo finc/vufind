@@ -28,6 +28,7 @@
  */
 namespace Finc\RecordDriver;
 
+use Bsz\FormatMapper;
 use Zend\Config\Config;
 
 /**
@@ -86,5 +87,54 @@ class SolrMarcFinc extends SolrMarc
         } else {
             $this->debug('InstitutionInfo setting: isil is missing.');
         }
+    }
+
+    /**
+     * Get an array of all the formats associated with the record.
+     *
+     * @return array
+     */
+    public function getFormats()
+    {
+        $formats = [];
+        if ($this->formats === null) {
+            $f007 = $f008 = $leader = null;
+            $f007_0 = $f007_1 = $f008_21 = $leader_6 = $leader_7 = '';
+
+            //field 007 - physical description
+            $f007 = $this->getMarcRecord()->getFields("007", false);
+            foreach ($f007 as $field) {
+                $data = $field->getData();
+                if (strlen($data) > 0) {
+                    $f007_0 = $data{0};
+                }
+                if (strlen($data) > 1) {
+                    $f007_1 = $data{1};
+                }
+            }
+            $f008 = $this->getMarcRecord()->getFields("008", false);
+            foreach ($f008 as $field) {
+                $data = $field->getData();
+                if (strlen($data) > 21) {
+                    $f008_21 = $data{21};
+                }
+            }
+
+            $leader = $this->getMarcRecord()->getLeader();
+            $leader_6 = $leader{6};
+            $leader_7 = $leader{7};
+
+            $formats[] = FormatMapper::marc21007($f007_0, $f007_1);
+            $formats[] = FormatMapper::marc21leader7($leader_7, $f007_0, $f008_21);
+            if ($this->isCollection() && !$this->isArticle()) {
+                $formats[] = 'Compilation';
+            }
+
+            $formats = array_filter($formats);
+            $formats = array_unique($formats);
+            $formats = array_values($formats);
+            $this->formats = $formats;
+        }
+        return $this->formats;
     }
 }
