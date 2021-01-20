@@ -127,10 +127,14 @@ class SolrMarcFinc extends SolrMarc
                 }
             }
 
+            $f500 = $this->getMarcRecord()->getField(500);
+            $suba = $f500->getSubfield('a');
+
+            $formats[] = FormatMapper::marc21500($suba->getData());
+
             if ($this->isCollection() && ! $this->isArticle()) {
                 $formats[] = 'Compilation';
             }
-
             $formats = array_filter($formats);
             $formats = array_unique($formats);
             $formats = array_values($formats);

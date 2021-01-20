@@ -51,6 +51,8 @@ class FormatMapper
                 $return = 'ebook';
             } elseif (in_array('videodisc', $formats) && in_array('video', $formats)) {
                 $return = 'movie';
+            } elseif (in_array('music streaming', $formats)) {
+                $return = 'music';
             } elseif (in_array('electronicresource', $formats) && in_array('journal', $formats)) {
                 $return = 'ejournal';
             } elseif (in_array('opticaldisc', $formats) && in_array('e-book', $formats)) {
@@ -179,11 +181,12 @@ class FormatMapper
                 $return = 'newspaper';
             } elseif (in_array('mapmaterial', $formats)) {
                 $return = 'map';
-            } // fallback: besser neutral als article
+            }  // fallback: besser neutral als article
             else {
                 $return = 'unknown';
             }
         }
+
         return 'bsz bsz-' . $return;
     }
 
@@ -347,6 +350,8 @@ class FormatMapper
             return ['mapmaterial'];
         } elseif (in_array('Platter', $formats) && in_array('SoundRecording', $formats)) {
             return ['Platter'];
+        } elseif (in_array('SoundRecording', $formats) && in_array('E-Book', $formats)) {
+            return ['Music Streaming'];
         } elseif (in_array('E-Journal', $formats) && in_array('E-Book', $formats)) {
             return ['E-Book'];
         } elseif (in_array('E-Journal on Disc', $formats) && in_array('Journal', $formats)) {
@@ -383,5 +388,14 @@ class FormatMapper
         }
 
         return $formats;
+    }
+
+    public function marc21500($data) {
+        $data = preg_replace('/[.,;]/', '', $data);
+
+        if ('Streaming audio' == $data) {
+            return 'SoundRecording';
+        }
+        return '';
     }
 }
