@@ -119,7 +119,7 @@ class SolrMarcFinc extends SolrMarc
 
             // Field 008 - not repeatable
             $f008 = $this->getMarcRecord()->getField("008");
-            if (isset($f008)) {
+            if (is_object($f008)) {
                 $data = $f008->getData();
                 if (strlen($data) > 21) {
                     // this takes into account only the last 007
