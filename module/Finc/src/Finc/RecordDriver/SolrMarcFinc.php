@@ -90,19 +90,22 @@ class SolrMarcFinc extends SolrMarc
     }
 
     /**
-     * Get an array of all the formats associated with the record.
+     * Get an array of all the formats associated with the record. The array is
+     *  already simplified and unified.
      *
      * @return array
      */
+
     public function getFormats()
     {
         $formats = [];
         if ($this->formats === null) {
-            $f007 = $f008 = $leader = null;
-            $f007_0 = $f007_1 = $f008_21 = $leader_6 = $leader_7 = '';
 
-            //field 007 - physical description
-            $f007 = $this->getMarcRecord()->getFields("007", false);
+            $leader = $this->getMarcRecord()->getLeader();;
+            $leader_7 = $leader{7};
+
+            // field 007 - physical description - repeatable
+            $f007 = $this->getMarcRecord()->getFields("007");
             foreach ($f007 as $field) {
                 $data = $field->getData();
                 if (strlen($data) > 0) {
@@ -111,22 +114,20 @@ class SolrMarcFinc extends SolrMarc
                 if (strlen($data) > 1) {
                     $f007_1 = $data{1};
                 }
+                $formats[] = FormatMapper::marc21007($f007_0, $f007_1);
             }
-            $f008 = $this->getMarcRecord()->getFields("008", false);
-            foreach ($f008 as $field) {
-                $data = $field->getData();
+
+            // Field 008 - not repeatable
+            $f008 = $this->getMarcRecord()->getField("008");
+            if (isset($f008)) {
+                $data = $f008->getData();
                 if (strlen($data) > 21) {
-                    $f008_21 = $data{21};
+                    // this takes into account only the last 007
+                    $formats[] = FormatMapper::marc21leader7($leader_7, $f007_0, $data{21});
                 }
             }
 
-            $leader = $this->getMarcRecord()->getLeader();
-            $leader_6 = $leader{6};
-            $leader_7 = $leader{7};
-
-            $formats[] = FormatMapper::marc21007($f007_0, $f007_1);
-            $formats[] = FormatMapper::marc21leader7($leader_7, $f007_0, $f008_21);
-            if ($this->isCollection() && !$this->isArticle()) {
+            if ($this->isCollection() && ! $this->isArticle()) {
                 $formats[] = 'Compilation';
             }
 
