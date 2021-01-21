@@ -354,6 +354,8 @@ class FormatMapper
             return ['Music Streaming'];
         } elseif (in_array('MusicalScore', $formats) && in_array('E-Book', $formats)) {
             return ['MusicalScore'];
+        } elseif (in_array('MusicalScore', $formats) && in_array('E-Journal', $formats)) {
+            return ['MusicalScore'];
         } elseif (in_array('E-Journal', $formats) && in_array('E-Book', $formats)) {
             return ['E-Book'];
         } elseif (in_array('E-Journal on Disc', $formats) && in_array('Journal', $formats)) {
