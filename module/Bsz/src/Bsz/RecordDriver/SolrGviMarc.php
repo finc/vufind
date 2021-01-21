@@ -614,8 +614,9 @@ class SolrGviMarc extends SolrMarc implements Constants
                 $url['desc'] = $sf->getData();
             } elseif (($sf = $f->getSubField('y'))) {
                 $url['desc'] = $sf->getData();
-            } elseif (($sf = $f->getSubField('x'))) {
-                $url['desc'] = $sf->getData();
+            } elseif (($sf = $f->getSubField('z')) && strpos('Kostenfrei', $sf->getData()) !== false) {
+                // x is marked as nonpublic!
+                $url['desc'] = 'Full Text';
             } elseif (($sf = $f->getSubField('n'))) {
                 $url['desc'] = $sf->getData();
             } elseif ($ind1 == 4 && ($ind2 == 1 || $ind2 == 0)) {
