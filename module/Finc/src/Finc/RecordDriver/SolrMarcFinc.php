@@ -74,8 +74,10 @@ class SolrMarcFinc extends SolrMarc
      * (omit to use $mainConfig as $recordConfig)
      * @param Config $searchSettings Search-specific configuration file
      */
-    public function __construct(Config $mainConfig = null, Config $recordConfig = null,
-                                Config $searchSettings = null
+    public function __construct(
+        Config $mainConfig = null,
+        Config $recordConfig = null,
+        Config $searchSettings = null
     ) {
         parent::__construct($mainConfig, $recordConfig, $searchSettings);
 
@@ -100,8 +102,7 @@ class SolrMarcFinc extends SolrMarc
     {
         $formats = [];
         if ($this->formats === null) {
-
-            $leader = $this->getMarcRecord()->getLeader();;
+            $leader = $this->getMarcRecord()->getLeader();
             $leader_7 = $leader{7};
 
             // field 007 - physical description - repeatable
@@ -131,6 +132,11 @@ class SolrMarcFinc extends SolrMarc
             if (is_object($f500)) {
                 $suba = $f500->getSubfield('a');
                 $formats[] = FormatMapper::marc21500($suba->getData());
+            }
+            $f336 = $this->getMarcRecord()->getField(336);
+            if (is_object($f336)) {
+                $subb = $f336->getSubfield('b');
+                $formats[] = FormatMapper::marc21336($subb->getData());
             }
 
 

@@ -352,6 +352,8 @@ class FormatMapper
             return ['Platter'];
         } elseif (in_array('SoundRecording', $formats) && in_array('E-Book', $formats)) {
             return ['Music Streaming'];
+        } elseif (in_array('MusicalScore', $formats) && in_array('E-Book', $formats)) {
+            return ['MusicalScore'];
         } elseif (in_array('E-Journal', $formats) && in_array('E-Book', $formats)) {
             return ['E-Book'];
         } elseif (in_array('E-Journal on Disc', $formats) && in_array('Journal', $formats)) {
@@ -390,11 +392,21 @@ class FormatMapper
         return $formats;
     }
 
-    public function marc21500($data) {
+    public function marc21500($data)
+    {
         $data = preg_replace('/[.,;]/', '', $data);
 
         if ('Streaming audio' == $data) {
             return 'SoundRecording';
+        }
+        return '';
+    }
+
+    public function marc21336($data)
+    {
+        $data = preg_replace('/[.,;]/', '', $data);
+        if ('ntm' == $data) {
+            return 'MusicalScore';
         }
         return '';
     }
