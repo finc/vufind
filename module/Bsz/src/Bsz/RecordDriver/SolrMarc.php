@@ -21,7 +21,6 @@
  */
 namespace Bsz\RecordDriver;
 
-use Bsz\FormatMapper;
 use Exception;
 use File_MARC;
 use File_MARC_Exception;
@@ -155,45 +154,18 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      * @return array
      */
 
-    public function getFormats()
+    public function getFormats() : array
     {
-        $formats = [];
-        if ($this->formats === null) {
+        if ($this->formats === null && isset($this->formatConfig)) {
+            $this->formats = [];
 
-            $leader = $this->getMarcRecord()->getLeader();;
-            $leader_7 = $leader{7};
-
-            // field 007 - physical description - repeatable
-            $f007 = $this->getMarcRecord()->getFields("007");
-            foreach ($f007 as $field) {
-                $data = $field->getData();
-                if (strlen($data) > 0) {
-                    $f007_0 = $data{0};
-                }
-                if (strlen($data) > 1) {
-                    $f007_1 = $data{1};
-                }
-                $formats[] = FormatMapper::marc21007($f007_0, $f007_1);
+            $f007 = $this->get007();
+            $f008 = $this->get008();
+            xdebug_var_dump($this->formatConfig->get('Atlas'));
+            foreach ($this->formatConfig as $result => $rules) {
+                xdebug_var_dump($rules);
             }
 
-            // Field 008 - not repeatable
-            $f008 = $this->getMarcRecord()->getField("008");
-            if (is_object($f008)) {
-                $data = $f008->getData();
-                if (strlen($data) > 21) {
-                    // this takes into account only the last 007
-                    $formats[] = FormatMapper::marc21leader7($leader_7, $f007_0, $data{21});
-                }
-            }
-
-            if ($this->isCollection() && ! $this->isArticle()) {
-                $formats[] = 'Compilation';
-            }
-
-            $formats = array_filter($formats);
-            $formats = array_unique($formats);
-            $formats = array_values($formats);
-            $this->formats = $formats;
         }
         return $this->formats;
     }

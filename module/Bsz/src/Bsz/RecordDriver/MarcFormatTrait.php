@@ -21,8 +21,11 @@
 
 namespace Bsz\RecordDriver;
 
+use Zend\Config\Config;
+
 trait MarcFormatTrait
 {
+    protected $formatConfig;
 
     /**
      * Is this record an electronic item
@@ -130,13 +133,13 @@ trait MarcFormatTrait
      * @return string
      */
 
-    private function get008(int $pos) : string
+    private function get008(int $pos = null) : string
     {
         $f008 = $this->getMarcRecord()->getField("008", false);
         $data = $f008->getData();
         $retval = $data ?? '';
 
-        if (strlen($data) >= $pos + 1) {
+        if (isset($pos) && strlen($data) >= $pos + 1) {
             $retval = $data{$pos};
         }
         return strtolower($retval);
@@ -234,7 +237,6 @@ trait MarcFormatTrait
      */
     public function isPhysicalBook()
     {
-
         $f007 = $this->get007('/^t/i');
         $leader = $this->getLeader(7);
 
@@ -268,7 +270,7 @@ trait MarcFormatTrait
     {
         $f008 = $this->get008(21);
 
-       if ($this->isSerial() && $f008 == 'n') {
+        if ($this->isSerial() && $f008 == 'n') {
             return true;
         }
         return false;
@@ -292,5 +294,10 @@ trait MarcFormatTrait
             }
         }
         return false;
+    }
+
+    public function attachFormatConfig(Config $config)
+    {
+        $this->formatConfig = $config;
     }
 }
