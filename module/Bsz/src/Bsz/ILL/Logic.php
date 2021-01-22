@@ -117,7 +117,7 @@ class Logic
             // Print items
             if ($this->driver->isMonographicSerial()) {
                 $format = static::FORMAT_MONOSERIAL;
-            } elseif ($this->driver->isBook()) {
+            } elseif ($this->driver->isPhysicalBook()) {
                 $format = static::FORMAT_BOOK;
             } elseif ($this->driver->isArticle()) {
                 $format = static::FORMAT_ARTICLE;

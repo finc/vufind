@@ -104,7 +104,7 @@ class SolrGviMarcTest extends TestCase
         $this->assertFalse($driver->isElectronic());
         $this->assertFalse($driver->isFree());
         $this->assertFalse($driver->isNewspaper());
-        $this->assertTrue($driver->isBook());
+        $this->assertTrue($driver->isPhysicalBook());
     }
 
     public function testConsortium()
