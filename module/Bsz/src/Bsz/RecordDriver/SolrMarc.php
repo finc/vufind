@@ -159,13 +159,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         if ($this->formats === null && isset($this->formatConfig)) {
             $this->formats = [];
 
-            $f007 = $this->get007();
-            $f008 = $this->get008();
-            xdebug_var_dump($this->formatConfig->get('Atlas'));
-            foreach ($this->formatConfig as $result => $rules) {
-                xdebug_var_dump($rules);
-            }
-
         }
         return $this->formats;
     }

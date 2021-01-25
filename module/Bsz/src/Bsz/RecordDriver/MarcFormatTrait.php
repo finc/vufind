@@ -26,6 +26,19 @@ use Zend\Config\Config;
 trait MarcFormatTrait
 {
     protected $formatConfig;
+    protected $formatConfigRda;
+
+    public function getFormatMarc()
+    {
+        foreach ($this->formatConfig as $key) {
+            xdebug_var_dump($key);
+        }
+    }
+
+    public function getFormatRda()
+    {
+
+    }
 
     /**
      * Is this record an electronic item
@@ -296,8 +309,14 @@ trait MarcFormatTrait
         return false;
     }
 
-    public function attachFormatConfig(Config $config)
+    /**
+     * @param Config $marc
+     * @param Config $rda
+     */
+    public function attachFormatConfig(Config $marc, Config $rda)
     {
-        $this->formatConfig = $config;
+        $this->formatConfig = $marc;
+        $this->formatConfigRda = $rda;
+
     }
 }
