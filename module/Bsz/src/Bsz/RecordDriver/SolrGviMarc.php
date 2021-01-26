@@ -1100,9 +1100,8 @@ class SolrGviMarc extends SolrMarc implements Constants
         }
         $pattern = implode('|', $isils);
         $pattern = '/' . str_replace('\*', '.*', $pattern) . '/';
-
         foreach ($f924 as $fields) {
-            if (isset($fields['isil']) && preg_match($pattern, $fields['isil'])) {
+            if (is_string($fields['isil']) && preg_match($pattern, $fields['isil'])) {
                 $holdings[] = $fields;
             }
         }
