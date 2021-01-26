@@ -98,7 +98,7 @@ $content = $this->tab->getContent();
                 <?php endif; ?>
 
                 <?php if ($this->driver->isJournal()): ?>
-                    <?php if (is_array($result['issue'])): ?>
+                    <?php if (isset($result['issue']) && is_array($result['issue'])): ?>
                         <td><?= isset($result['issue']) ? $this->escapeHtml(implode(' | ', $result['issue'])) : '' ?></td>
                     <?php else: ?>
                         <td><?= isset($result['issue']) ? $this->escapeHtml($result['issue']) : '' ?></td>
