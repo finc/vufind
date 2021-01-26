@@ -21,6 +21,7 @@
 
 namespace Bsz\RecordDriver;
 
+use Bsz\Exception;
 use Zend\Config\Config;
 
 trait MarcFormatTrait
@@ -28,16 +29,67 @@ trait MarcFormatTrait
     protected $formatConfig;
     protected $formatConfigRda;
 
+    /**
+     * @param Config $marc
+     * @param Config $rda
+     */
+    public function attachFormatConfig(array $marc, array $rda)
+    {
+        $this->formatConfig = $marc;
+        $this->formatConfigRda = $rda;
+    }
+
     public function getFormatMarc()
     {
-        foreach ($this->formatConfig as $key) {
-            xdebug_var_dump($key);
+        foreach ($this->formatConfig as $format => $settings) {
+            foreach ($settings as $setting) {
+                if (!isset($setting['field'])) {
+                    throw new Exception('Format mappings must have a field entry.');
+                }
+
+                $params = isset($setting['position']) ? [$setting['position']] : [];
+                $method = 'get'.$setting['field'];
+
+
+                $result = $this->tryMethod($method, $params);
+
+                if ($this->checkValue($result, $setting['value'])) {
+                    return $format;
+                }
+            }
         }
+        return '';
+    }
+
+    /**
+     * Recursive method to determine if a value matches the given strings
+     *
+     * @param $value
+     * @param $allowedValues
+     *
+     * @return bool
+     */
+    protected function checkValue($value, $allowedValues)
+    {
+        $allowed = explode(', ', $allowedValues);
+        if (is_array($value)) {
+            $result = [];
+            foreach ($value as $v) {
+                $result[] = $this->checkValues($v);
+            }
+            return in_array(true, $result);
+        }
+        foreach ($allowed as $a) {
+            $regex = '/^'.$a.'$/';
+            if (preg_match($regex, $value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getFormatRda()
     {
-
     }
 
     /**
@@ -76,7 +128,7 @@ trait MarcFormatTrait
      * @return array
      */
 
-    private function get007(string $pattern = '/.*/') : array
+    protected function get007($pattern = '/.*/') : array
     {
         $f007 = $this->getMarcRecord()->getFields("007");
         $retval = [];
@@ -96,7 +148,7 @@ trait MarcFormatTrait
      * @return string
      */
 
-    private function getRdaContent() : string
+    protected function getRdaContent() : string
     {
         $sub = '';
         $field = $this->getMarcRecord()->getField(336);
@@ -112,7 +164,7 @@ trait MarcFormatTrait
      * @return string
      */
 
-    private function getRdaMedia() : string
+    protected function getRdaMedia() : string
     {
         $sub = '';
         $field = $this->getMarcRecord()->getField(337);
@@ -128,7 +180,7 @@ trait MarcFormatTrait
      * @return string
      */
 
-    private function getRdaCarrier(): string
+    protected function getRdaCarrier(): string
     {
         $sub = '';
         $field = $this->getMarcRecord()->getField(338);
@@ -146,7 +198,7 @@ trait MarcFormatTrait
      * @return string
      */
 
-    private function get008(int $pos = null) : string
+    protected function get008(int $pos = null) : string
     {
         $f008 = $this->getMarcRecord()->getField("008", false);
         $data = $f008->getData();
@@ -165,7 +217,7 @@ trait MarcFormatTrait
      *
      * @return string
      */
-    private function getLeader(int $pos) : string
+    protected function getLeader(int $pos) : string
     {
         $leader = $this->getMarcRecord()->getLeader();
         $retval= $leader ?? '';
@@ -307,16 +359,5 @@ trait MarcFormatTrait
             }
         }
         return false;
-    }
-
-    /**
-     * @param Config $marc
-     * @param Config $rda
-     */
-    public function attachFormatConfig(Config $marc, Config $rda)
-    {
-        $this->formatConfig = $marc;
-        $this->formatConfigRda = $rda;
-
     }
 }

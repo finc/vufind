@@ -79,8 +79,9 @@ class Factory extends SolrDefaultFactory
         if (method_exists($driver, 'attachFormatConfig')) {
             $yamlReader = $container->get(\VuFind\Config\YamlReader::class);
             $formatConfig = $yamlReader->get('MarcFormats.yaml');
-            $formatConfigRDA = $yamlReader->get('MarcFormatsRDA.yaml');
-            $driver->attachFormatConfig($formatConfig, $formatConfigRDA);
+            $formatConfigRda = $yamlReader->get('MarcFormatsRDA.yaml');
+
+            $driver->attachFormatConfig($formatConfig, $formatConfigRda);
         }
 
         $driver->attachSearchService($container->get('VuFind\Search'));
