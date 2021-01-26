@@ -274,12 +274,19 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
             if ($authManager->loginEnabled() && $authManager->isLoggedIn()) {
                 return true;
             }
+
+            $pw = '';
+            if ($library->getAuth() == 'tan' && isset($params['TAN'])) {
+                $pw = $params['TAN'];
+            } elseif (isset($params['Passwort'])) {
+                $pw = $params['Paswort'];
+            }
+
             $authParams = [
                 'sigel' => $params['Sigel'],
                 'auth_typ' => $library->getAuth(),
                 'user' => $params['BenutzerNummer'],
-                'passwort' => $library->getAuth() == 'tan' ?
-                        $params['TAN'] : $params['Passwort'],
+                'passwort' => $pw
             ];
 
             $response = $this->doRequest($this->baseUrlAuth . '/flcgi/endnutzer_auth.pl', $authParams);
