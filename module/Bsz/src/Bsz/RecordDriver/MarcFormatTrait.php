@@ -242,8 +242,8 @@ trait MarcFormatTrait
             if (isset($pos) && strlen($data) >= $pos + 1) {
                 $retval = $data{$pos};
             }
-            return strtolower($retval);
         }
+        return strtolower($retval);
     }
 
     /**
