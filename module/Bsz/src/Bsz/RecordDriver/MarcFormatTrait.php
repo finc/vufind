@@ -153,7 +153,6 @@ trait MarcFormatTrait
             $formats = $this->removeFromArray($formats, 'Book');
         }
 
-        xdebug_var_dump($formats);
         return (array)$formats;
     }
 
