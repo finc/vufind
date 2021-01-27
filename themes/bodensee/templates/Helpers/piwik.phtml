@@ -14,7 +14,7 @@
             matomoTracker2.trackPageView();
             <?php endif; ?>
             <?php if ($this->groupSiteId > 0): ?>
-            var matomoTracker3 = Matomo.getTracker("<?=$this->piwikUrl?>natomo.php", <?=$this->groupSiteId?>);
+            var matomoTracker3 = Matomo.getTracker("<?=$this->piwikUrl?>matomo.php", <?=$this->groupSiteId?>);
             matomoTracker3.trackPageView();
             <?php endif; ?>
         } catch (err) {

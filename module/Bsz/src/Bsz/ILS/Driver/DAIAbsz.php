@@ -256,6 +256,8 @@ class DAIAbsz extends \VuFind\ILS\Driver\DAIA
     {
         $doc_id = null;
         $doc_href = null;
+        $result = [];
+
         if (array_key_exists('id', $daiaArray)) {
             $doc_id = $daiaArray['id'];
         }
