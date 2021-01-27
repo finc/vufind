@@ -234,13 +234,17 @@ trait MarcFormatTrait
     protected function get008(int $pos = null) : string
     {
         $f008 = $this->getMarcRecord()->getField("008", false);
-        $data = $f008->getData();
-        $retval = $data ?? '';
+        $retval = '';
 
-        if (isset($pos) && strlen($data) >= $pos + 1) {
-            $retval = $data{$pos};
+        if (is_object($f008)) {
+            $data = $f008->getData();
+            $retval = $data ?? '';
+
+            if (isset($pos) && strlen($data) >= $pos + 1) {
+                $retval = $data{$pos};
+            }
+            return strtolower($retval);
         }
-        return strtolower($retval);
     }
 
     /**
