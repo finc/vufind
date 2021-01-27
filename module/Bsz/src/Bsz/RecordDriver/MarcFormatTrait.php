@@ -92,9 +92,7 @@ trait MarcFormatTrait
                     throw new Exception('RDA format mappings must have a method entry. ');
                 }
 
-                $method = $setting['method'];
-
-                $content = $this->tryMethod($method);
+                $content = $this->tryMethod($setting['method']);
                 $results[] = $this->checkValue($content, $setting['value']);
 
                 // Better performance, stop checking if first test failed
@@ -148,10 +146,14 @@ trait MarcFormatTrait
         // Convenience
         if (in_array('Online', $formats)
             && in_array('Book', $formats)
+            && count($formats) == 2
         ) {
             $formats = ['EBook'];
+        } elseif (count($formats) >= 3 && in_array('Book', $formats)) {
+            $formats = $this->removeFromArray($formats, 'Book');
         }
 
+        xdebug_var_dump($formats);
         return (array)$formats;
     }
 
@@ -215,10 +217,12 @@ trait MarcFormatTrait
     {
         $sub = '';
         $field = $this->getMarcRecord()->getField(336);
+        $retval = '';
         if (is_object($field)) {
             $sub = $field->getSubfield('b');
+            $retval = is_object($sub) ? $sub->getData() : '';
         }
-        return strtolower($sub);
+        return strtolower($retval);
     }
 
     /**
@@ -231,10 +235,12 @@ trait MarcFormatTrait
     {
         $sub = '';
         $field = $this->getMarcRecord()->getField(337);
+        $retval = '';
         if (is_object($field)) {
             $sub = $field->getSubfield('b');
+            $retval = is_object($sub) ? $sub->getData() : '';
         }
-        return strtolower($sub);
+        return strtolower($retval);
     }
 
     /**
@@ -247,10 +253,12 @@ trait MarcFormatTrait
     {
         $sub = '';
         $field = $this->getMarcRecord()->getField(338);
+        $retval = '';
         if (is_object($field)) {
             $sub = $field->getSubfield('b');
+            $retval = is_object($sub) ? $sub->getData() : '';
         }
-        return strtolower($sub);
+        return strtolower($retval);
     }
 
     /**
@@ -454,5 +462,21 @@ trait MarcFormatTrait
             }
         }
         return '';
+    }
+
+    /**
+     * @param array $array
+     * @param $remove
+     *
+     * @return array
+     */
+    protected function removeFromArray(array $array, $remove)
+    {
+        foreach ($array as $k => $v) {
+            if ($v == $remove) {
+                unset($array[$k]);
+            }
+        }
+        return $array;
     }
 }
