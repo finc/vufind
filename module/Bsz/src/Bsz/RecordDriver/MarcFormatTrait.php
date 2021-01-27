@@ -50,7 +50,6 @@ trait MarcFormatTrait
                 $params = isset($setting['position']) ? [$setting['position']] : [];
                 $method = 'get'.$setting['field'];
 
-
                 $result = $this->tryMethod($method, $params);
 
                 if ($this->checkValue($result, $setting['value'])) {
@@ -86,6 +85,26 @@ trait MarcFormatTrait
             }
         }
         return false;
+    }
+
+    public function simplifyFormats(array $formats)
+    {
+        if ($this->isElectronic()) {
+            $formats[] = 'Online';
+        }
+
+        $formats = array_filter($formats);
+        $formats = array_unique($formats);
+        $formats = array_values($formats);
+
+        // Convenience
+        if (in_array('Online', $formats)
+            && in_array('Book', $formats)
+        ) {
+            $formats = ['EBook'];
+        }
+
+        return $formats;
     }
 
     public function getFormatRda()
