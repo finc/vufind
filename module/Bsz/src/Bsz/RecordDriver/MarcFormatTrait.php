@@ -73,6 +73,41 @@ trait MarcFormatTrait
         return '';
     }
 
+
+    /**
+     * Evaluate RDA format fields as configured in MarcFormatsRDA.yaml
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    public function getFormatRda()
+    {
+        foreach ($this->formatConfigRda as $format => $settings) {
+
+            $results = [];
+
+            foreach ($settings as $setting) {
+                if (!isset($setting['method'])) {
+                    throw new Exception('RDA format mappings must have a method entry. ');
+                }
+
+                $method = $setting['method'];
+
+                $content = $this->tryMethod($method);
+                $results[] = $this->checkValue($content, $setting['value']);
+
+                // Better performance, stop checking if first test failed
+                if (end($results) == false) {
+                    continue;
+                } elseif (count($results) == count($settings) && !in_array(false, $results)) {
+                    return $format;
+                }
+            }
+        }
+        return '';
+    }
+
     /**
      * Recursive method to determine if a value matches the given strings
      *
@@ -118,10 +153,6 @@ trait MarcFormatTrait
         }
 
         return (array)$formats;
-    }
-
-    public function getFormatRda()
-    {
     }
 
     /**
@@ -395,5 +426,33 @@ trait MarcFormatTrait
             }
         }
         return false;
+    }
+
+    protected function getFormatFromConfig($rda = false)
+    {
+        foreach ($this->formatConfig as $format => $settings) {
+
+            $results = [];
+
+            foreach ($settings as $setting) {
+                if (!isset($setting['field'])) {
+                    throw new Exception('Marc format mappings must have a field entry. ');
+                }
+
+                $params = isset($setting['position']) ? [$setting['position']] : [];
+                $method = 'get'.$setting['field'];
+
+                $content = $this->tryMethod($method, $params);
+                $results[] = $this->checkValue($content, $setting['value']);
+
+                // Better performance, stop checking if first test failed
+                if (end($results) == false) {
+                    continue;
+                } elseif (count($results) == count($settings) && !in_array(false, $results)) {
+                    return $format;
+                }
+            }
+        }
+        return '';
     }
 }
