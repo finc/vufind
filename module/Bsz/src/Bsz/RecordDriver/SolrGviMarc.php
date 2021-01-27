@@ -39,6 +39,7 @@ class SolrGviMarc extends SolrMarc implements Constants
     use ContainerTrait;
     use MarcAuthorTrait;
     use OriginalLanguageTrait;
+    use MarcFormatTrait;
 
     /**
      * Get subject headings associated with this record.  Each heading is

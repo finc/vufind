@@ -39,20 +39,34 @@ trait MarcFormatTrait
         $this->formatConfigRda = $rda;
     }
 
+    /**
+     * Evaluate marc format fields as configured in MarcFormats.yaml
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
     public function getFormatMarc()
     {
         foreach ($this->formatConfig as $format => $settings) {
+
+            $results = [];
+
             foreach ($settings as $setting) {
                 if (!isset($setting['field'])) {
-                    throw new Exception('Format mappings must have a field entry.');
+                    throw new Exception('Marc format mappings must have a field entry. ');
                 }
 
                 $params = isset($setting['position']) ? [$setting['position']] : [];
                 $method = 'get'.$setting['field'];
 
-                $result = $this->tryMethod($method, $params);
+                $content = $this->tryMethod($method, $params);
+                $results[] = $this->checkValue($content, $setting['value']);
 
-                if ($this->checkValue($result, $setting['value'])) {
+                // Better performance, stop checking if first test failed
+                if (end($results) == false) {
+                    continue;
+                } elseif (count($results) == count($settings) && !in_array(false, $results)) {
                     return $format;
                 }
             }
@@ -74,7 +88,7 @@ trait MarcFormatTrait
         if (is_array($value)) {
             $result = [];
             foreach ($value as $v) {
-                $result[] = $this->checkValues($v);
+                $result[] = $this->checkValue($v, $allowedValues);
             }
             return in_array(true, $result);
         }
