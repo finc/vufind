@@ -97,6 +97,11 @@ class SolrGviMarcTest extends TestCase
     public function testFormat()
     {
         $driver = $this->getSolrRecord();
+
+        $yamlReader = new \VuFind\Config\YamlReader();
+        $formatConfig = $yamlReader->get('MarcFormats.yaml');
+        $driver->attachFormatConfig($formatConfig);
+
         $this->assertEquals($driver->getFormats(), ['Book']);
         $this->assertFalse($driver->isJournal());
         $this->assertFalse($driver->isArticle());
@@ -197,6 +202,7 @@ class SolrGviMarcTest extends TestCase
     public function testOpenUrl()
     {
         foreach ($this->getSolrRecords() as $driver) {
+
             $url = $driver->getOpenUrl();
             $this->assertStringContainsString('rft.genre', $url);
         }

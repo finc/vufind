@@ -22,7 +22,6 @@
 namespace Bsz\RecordDriver;
 
 use Bsz\Exception;
-use Zend\Config\Config;
 
 trait MarcFormatTrait
 {
@@ -30,10 +29,10 @@ trait MarcFormatTrait
     protected $formatConfigRda;
 
     /**
-     * @param Config $marc
-     * @param Config $rda
+     * @param array $marc
+     * @param array $rda
      */
-    public function attachFormatConfig(array $marc, array $rda)
+    public function attachFormatConfig(array $marc, array $rda = [])
     {
         $this->formatConfig = $marc;
         $this->formatConfigRda = $rda;
@@ -118,7 +117,7 @@ trait MarcFormatTrait
             $formats = ['EBook'];
         }
 
-        return $formats;
+        return (array)$formats;
     }
 
     public function getFormatRda()
