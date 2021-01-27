@@ -164,6 +164,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
             // field 007 - physical description - repeatable
             $f007 = $this->getMarcRecord()->getFields("007");
+            $f007_0 = '';
+            $f007_1 = '';
             foreach ($f007 as $field) {
                 $data = $field->getData();
                 if (strlen($data) > 0) {
