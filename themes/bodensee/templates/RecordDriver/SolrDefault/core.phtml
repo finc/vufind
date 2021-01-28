@@ -174,9 +174,10 @@
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
             <tr>
                 <th><?=$this->transEsc('Format')?>: </th>
-                <td><? foreach($this->mapper()->simplify($this->driver->getFormats()) as $format): ?>
-                    <span class="format"><?=$this->transEsc($format)?></span>
-                    <? endforeach; ?></td>
+                <td><? foreach($formats as $format): ?>
+                    <span class="format"><?=$this->transEsc('Formats::'.$format)?></span>
+                    <? endforeach; ?>
+                </td>
             </tr>
             <? endif; ?>
 

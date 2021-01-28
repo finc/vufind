@@ -1,3 +1,8 @@
-<?php foreach ($this->mapper()->simplify($this->driver->getFormats()) as $format): ?>
-    <span class="label label-info <?= $this->record($this->driver)->getFormatClass($format) ?>"><?= $this->transEsc($format) ?></span>
+<?php foreach ($this->driver->getFormats() as $format): ?>
+    <?php if ($format == 'Online' || $format = 'E-Book'): ?>
+        <?php $labelclass = "label-success"?>
+    <?php else: ?>
+        <?php $labelclass="label-info"?>
+    <?php endif ?>
+    <span class="label <?=$labelclass?> <?= $this->record($this->driver)->getFormatClass($format) ?>"><?= $this->transEsc('Formats::'.$format) ?></span>
 <?php endforeach; ?>
