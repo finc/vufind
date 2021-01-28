@@ -47,6 +47,10 @@ trait MarcFormatTrait
      */
     public function getFormatMarc()
     {
+        if ($this->isElectronic()) {
+            $formats[] = 'Online';
+        }
+
         foreach ($this->formatConfig as $format => $settings) {
 
             $results = [];
@@ -135,10 +139,6 @@ trait MarcFormatTrait
 
     public function simplifyFormats(array $formats)
     {
-        if ($this->isElectronic()) {
-            $formats[] = 'Online';
-        }
-
         $formats = array_filter($formats);
         $formats = array_unique($formats);
         $formats = array_values($formats);
