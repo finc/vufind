@@ -158,6 +158,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     {
         if ($this->formats === null && isset($this->formatConfig)) {
             $formats = [];
+            if ($this->isElectronic()) {
+                $formats[] = 'Online';
+            }
             $formats[] = $this->getFormatMarc();
             $formats[] = $this->getFormatRda();
 

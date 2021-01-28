@@ -135,9 +135,6 @@ trait MarcFormatTrait
 
     public function simplifyFormats(array $formats)
     {
-        if ($this->isElectronic()) {
-            $formats[] = 'Online';
-        }
 
         $formats = array_filter($formats);
         $formats = array_unique($formats);
