@@ -20,7 +20,7 @@
           <?= $cover ?>
       <? endif; ?>
   <? else: ?>
-      <div class="recordcover unavailable <?= $this->mapper()->mapIcon($this->driver->getFormats()) ?>">
+      <div class="recordcover unavailable <?= $this->record($this->driver)->getFormatIcon() ?>">
           <span class=""></span>
       </div>
   <? endif; ?>
@@ -197,7 +197,7 @@
             <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
             <tr>
                 <th><?=$this->transEsc('Format')?>: </th>
-                <td><? foreach($this->mapper()->simplify($this->driver->getFormats()) as $format): ?>
+                <td><? foreach($this->driver->getFormats() as $format): ?>
                     <span><?=$this->transEsc($format)?></span>
                     <? endforeach; ?></td>
             </tr>

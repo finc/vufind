@@ -35,9 +35,7 @@ foreach ($hiddenFilters as $key => $filter) {
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
       <a href="<?=$this->recordLink()->getUrl($this->driver, $this->overrideRecordLink)?>">
-      <?php $formats = $this->driver->getFormats();
-       $icon = $this->mapper()->mapIcon($formats);
-      ?>
+      <?php $icon = $this->record($this->driver)->getFormatIcon();      ?>
         <?php if ($summThumb = $this->record($this->driver)->getThumbnail('medium')): ?>
               <img class="recordcover <?=$icon?> img-responsive" src="<?=$this->escapeHtmlAttr($summThumb)?>" alt=""/>
         <?php else: ?>

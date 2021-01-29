@@ -6,7 +6,6 @@
         <?php $formats = $this->driver->getFormats();
 
         $format = array_shift($formats);
-        //$this->format = $this->mapper()->mapIcon($format);
         ?>
         <?php $mediumThumb = $this->record($this->driver)->getThumbnail('medium');
         $largeThumb = $this->record($this->driver)->getThumbnail('large'); ?>
@@ -16,8 +15,7 @@
            data-img-url="<?= $this->escapeHtmlAttr($largeThumb); ?>"
            data-title="<?= $this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection()) ?>">
           <?php endif; ?>
-            <img alt="" class="recordcover <?=$this->
-                  mapper()->mapIcon($this->driver->getFormats())?>" src="<?=$this->escapeHtmlAttr($mediumThumb);?>"/>
+            <img alt="" class="recordcover <?=$this->record($this->driver)->getFormatIcon()?>" src="<?=$this->escapeHtmlAttr($mediumThumb);?>"/>
         <?php else: ?>
            <?=$this->render('RecordDriver/SolrDefault/parts/cover.phtml')?>
         <?php endif; ?>
@@ -192,7 +190,7 @@
         <tr>
           <th><?=$this->transEsc('Format')?>: </th>
           <td>
-              <?php foreach ($this->mapper()->simplify($this->driver->getFormats()) as $format): ?>
+              <?php foreach ($this->driver->getFormats() as $format): ?>
               <span><?=$this->transEsc($format)?></span>
               <?php endforeach; ?>
           </td>
