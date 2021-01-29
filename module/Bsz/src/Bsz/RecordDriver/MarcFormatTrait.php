@@ -149,7 +149,10 @@ trait MarcFormatTrait
         } elseif (count($formats) >= 3 && in_array('Book', $formats)) {
             $formats = $this->removeFromArray($formats, 'Book');
         }
-
+        if (empty($formats)) {
+            $formats[] = 'UnknownFormat';
+        }
+        sort($formats);
         return (array)$formats;
     }
 

@@ -63,6 +63,9 @@ class Record extends \VuFind\View\Helper\Root\Record
      */
     public function getFormatClass($formats = [])
     {
+        if (empty($formats)) {
+            $formats = $this->driver->getFormats();
+        }
         if (is_array($formats)) {
             $formats = implode(' ', $formats);
         }
@@ -72,9 +75,30 @@ class Record extends \VuFind\View\Helper\Root\Record
         );
     }
 
+    /**
+     * Get the icon CSS class from
+     *
+     * @param array $formats
+     *
+     * @return string
+     */
     public function getFormatIcon($formats = [])
     {
-        return '';
+        if (empty($formats)) {
+            $formats = $this->driver->getFormats();
+        }
+        $retval = 'bsz bsz-unknown ';
+
+        $formatStr = implode('_', $formats);
+
+        if (isset($this->iconconfig) && $this->iconconfig->offsetExists($formatStr)) {
+            $retval = $this->iconconfig->get($formatStr);
+        }
+        if (in_array('Online', $formats)) {
+            $retval .= ' online';
+        }
+        return $retval;
+
     }
 
     /**
