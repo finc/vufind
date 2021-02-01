@@ -97,11 +97,9 @@ JS;
     </div>
 
     <?php if ($this->client()->is('show_rss_feed_home')): ?>
-    <div class="row">
-        <div id="RSSFeedResultsDeferred" class="col-sm-12">
+        <div id="RSSFeedResultsDeferred" class="col-sm-6">
             <p><?=$this->transEsc("Loading")?>... <img src="<?=$this->imageLink('ajax_loading.gif')?>" /></p>
             <?=$this->inlineScript(InlineScript::SCRIPT, "var url = VuFind.path + '/AJAX/Recommend?mod=StartPageNews';$('#RSSFeedResultsDeferred').load(url);", 'SET')?></div>
-    </div>
     <?php endif; ?>
 
 

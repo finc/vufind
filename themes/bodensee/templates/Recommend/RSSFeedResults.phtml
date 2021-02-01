@@ -1,23 +1,21 @@
 <?php $data = $this->recommend->getResults(); if (is_array($data)): ?>
   <div class="sidegroup rssResults">
     <div class="suggestionHeader">
-
-        <h4><?=$this->transEsc($data['feedTitle'])?></h4>
-
+    <a href="https://www.bsz-bw.de/index.html" title="Latest News" target="_blank">
+        <h4><?=$this->transEsc('Latest News')?></h4>
+    </a>
     </div>
     <div>
       <ul class="list-group">
         <?php $i = 0; foreach ($data['worksArray'] as $workKey => $work): ?>
           <li class="list-group-item suggestedResult <?php (++$i % 2) ? 'alt ' : ''?>record<?=$i?>">
-              <?//xdebug_var_dump($data)?>
             <div class="resultitem clearfix">
-                <a href="<?=$this->escapeHtmlAttr($work['link'])?>" class="external hasicon" target="_blank">
+              <?php if (isset($work['enclosure'])): ?>
+                <span class="europeanaImg"><img src="<?=$this->escapeHtmlAttr($work['enclosure'])?>" id="europeanaImage<?=$this->escapeHtmlAttr($workKey)?>"/></span>
+              <?php endif; ?>
+              <a href="<?=$this->escapeHtmlAttr($work['link'])?>" target="_blank">
                 <span><?=$this->escapeHtml($this->truncate($work['title'], 90))?></span>
-                </a>
-                <?php if (isset($work['description'])):?>
-                <?php // TODO: very dangerous, no escaping! ?>
-                <p><?=$work['description']?></p>
-                <?php endif;?>
+              </a>
             </div>
           </li>
         <?php endforeach; ?>

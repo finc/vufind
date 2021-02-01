@@ -129,10 +129,12 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
         }
 
         // Parse out parameters:
-        list($url, $limit, $title) = explode(':', $settings);
-        $this->baseUrl = $url;
-        $this->limit = $limit ?? 5;
-        $this->searchSite = $title ?? 'Latest News';
+        $params = explode(':', $settings);
+        $this->baseUrl = (isset($params[0]) && !empty($params[0]))
+            ? $params[0] : 'www.bsz-bw.de/rss/v';
+        $this->limit = isset($params[1]) && is_numeric($params[1])
+                        && $params[1] > 0 ? intval($params[1]) : 5;
+        $this->searchSite = "SWB-News";
     }
 
     /**
@@ -150,7 +152,7 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
     public function init($params, $request)
     {
         $this->sitePath = 'https://www.bsz-bw.de/index.html';
-        $this->targetUrl = 'https://' . $this->baseUrl;
+        $this->targetUrl = 'http://' . $this->baseUrl;
     }
 
     /**
@@ -178,10 +180,7 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
                 $resultsProcessed[] = [
                     'title' => $value->getTitle(),
                     'link' => $link,
-                    'enclosure' => $value->getEnclosure()['url'],
-                    'description' => $value->getDescription(),
-                    'date' => $value->getDateCreated(),
-                    'author' => $value->getAuthor()
+                    'enclosure' => $value->getEnclosure()['url']
                 ];
             }
             if (count($resultsProcessed) == $this->limit) {
