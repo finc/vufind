@@ -176,8 +176,10 @@ trait MarcFormatTrait
         $f007 = $this->get007('/^c/i');
         $f008 = $this->get008(23);
         $f338 = $this->getRdaCarrier();
+        $f300 = $this->get300('a');
 
-        if (count($f007) > 0 || $f008 === 'o' || $f338 == 'cr') {
+
+        if (count($f007) > 0 || $f008 === 'o' || $f338 == 'cr' || $f300 = '1 online resource') {
             return true;
         }
         return false;
@@ -268,6 +270,23 @@ trait MarcFormatTrait
         $retval = '';
         if (is_object($field)) {
             $sub = $field->getSubfield('b');
+            $retval = is_object($sub) ? $sub->getData() : '';
+        }
+        return strtolower($retval);
+    }
+
+    /**
+     * @param string $subfield
+     *
+     * @return string
+     */
+    protected function get300($subfield = 'a'): string
+    {
+        $sub = '';
+        $field = $this->getMarcRecord()->getField(300);
+        $retval = '';
+        if (is_object($field)) {
+            $sub = $field->getSubfield($subfield);
             $retval = is_object($sub) ? $sub->getData() : '';
         }
         return strtolower($retval);
