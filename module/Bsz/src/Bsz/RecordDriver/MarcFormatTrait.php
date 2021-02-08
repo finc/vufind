@@ -133,7 +133,7 @@ trait MarcFormatTrait
             return in_array(true, $result);
         }
         foreach ($allowed as $a) {
-            $a = str_replace(['.', '?', '/', '[', ']'], '', $a);
+            $a = str_replace(['/', '[', ']'], '', $a);
             $regex = '/^'.$a.'/i';
             if (preg_match($regex, $value)) {
                 return true;
