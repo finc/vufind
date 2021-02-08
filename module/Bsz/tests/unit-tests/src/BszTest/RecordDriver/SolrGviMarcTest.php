@@ -94,7 +94,7 @@ class SolrGviMarcTest extends TestCase
         );
     }
 
-    public function testFormat()
+    public function testFormatSimple()
     {
         $driver = $this->getSolrRecord();
 
@@ -111,6 +111,24 @@ class SolrGviMarcTest extends TestCase
         $this->assertFalse($driver->isNewspaper());
         $this->assertTrue($driver->isPhysicalBook());
     }
+
+    public function testFormatExtended()
+    {
+        $driver = $this->getSolrRecord('repeated007.json');
+
+        $yamlReader = new \VuFind\Config\YamlReader();
+        $formatConfig = $yamlReader->get('MarcFormats.yaml');
+        $formatConfigRda = $yamlReader->get('MarcFormatsRDA.yaml');
+        $driver->attachFormatConfig($formatConfig, $formatConfigRda);
+        $this->assertTrue($driver->isElectronic());
+        $formatmarc = $driver->getFormatMarc();
+        $formatrda = $driver->getFormatRda();
+        $this->assertEquals($formatmarc, $formatrda);
+
+    }
+
+
+
 
     public function testConsortium()
     {
