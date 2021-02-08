@@ -56,7 +56,13 @@ trait MarcFormatTrait
                     throw new Exception('Marc format mappings must have a field entry. ');
                 }
 
-                $params = isset($setting['position']) ? [$setting['position']] : [];
+                $params = [];
+                if (isset($setting['position'])) {
+                    $params = [$setting['position']];
+                } elseif (isset($setting['subfield'])) {
+                    $params = [$setting['subfield']];
+                }
+
                 $method = 'get'.$setting['field'];
 
                 $content = $this->tryMethod($method, $params);
@@ -66,6 +72,7 @@ trait MarcFormatTrait
                 if (end($results) == false) {
                     continue;
                 } elseif (count($results) == count($settings) && !in_array(false, $results)) {
+                    $format = preg_replace('/\d/', '', $format);
                     return $format;
                 }
             }
@@ -99,6 +106,7 @@ trait MarcFormatTrait
                 if (end($results) == false) {
                     continue;
                 } elseif (count($results) == count($settings) && !in_array(false, $results)) {
+                    $format = preg_replace('/\d/', '', $format);
                     return $format;
                 }
             }
@@ -125,7 +133,8 @@ trait MarcFormatTrait
             return in_array(true, $result);
         }
         foreach ($allowed as $a) {
-            $regex = '/^'.$a.'$/';
+            $a = str_replace(['.', '?', '/', '[', ']'], '', $a);
+            $regex = '/^'.$a.'/i';
             if (preg_match($regex, $value)) {
                 return true;
             }
@@ -262,6 +271,27 @@ trait MarcFormatTrait
             $retval = is_object($sub) ? $sub->getData() : '';
         }
         return strtolower($retval);
+    }
+
+    /**
+     * @param $subfield
+     *
+     * @return array
+     */
+    protected function get500($subfield = 'a'): array
+    {
+        $sub = '';
+        $fields = $this->getMarcRecord()->getFields(500);
+        $retval = [];
+
+        foreach ($fields as $field) {
+            if (is_object($field)) {
+                $sub = $field->getSubfield($subfield);
+                $retval[] = is_object($sub) ? strtolower($sub->getData()) : '';
+            }
+
+        }
+        return $retval;
     }
 
     /**
