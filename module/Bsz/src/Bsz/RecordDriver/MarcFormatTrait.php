@@ -32,7 +32,7 @@ trait MarcFormatTrait
      * @param array $marc
      * @param array $rda
      */
-    public function attachFormatConfig(array $marc, array $rda = [])
+    public function attachFormatConfig(array $marc = [], array $rda = [])
     {
         $this->formatConfig = $marc;
         $this->formatConfigRda = $rda;
@@ -209,19 +209,23 @@ trait MarcFormatTrait
     /**
      * GEt RDA carrier code (field 336)
      *
-     * @return string
+     * @return array
      */
 
-    protected function getRdaContent() : string
+    protected function getRdaContent() : array
     {
         $sub = '';
-        $field = $this->getMarcRecord()->getField(336);
-        $retval = '';
-        if (is_object($field)) {
-            $sub = $field->getSubfield('b');
-            $retval = is_object($sub) ? $sub->getData() : '';
+        $fields = $this->getMarcRecord()->getFields(336);
+        $retval = [];
+
+        foreach ($fields as $field) {
+            if (is_object($field)) {
+                $sub = $field->getSubfield('b');
+                $retval[] = is_object($sub) ? strtolower($sub->getData()) : '';
+            }
+
         }
-        return strtolower($retval);
+        return $retval;
     }
 
     /**
