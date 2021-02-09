@@ -179,7 +179,7 @@ trait MarcFormatTrait
         $f300 = $this->get300('a');
 
 
-        if (count($f007) > 0 || $f008 === 'o' || $f338 == 'cr' || $f300 = '1 online resource') {
+        if (count($f007) > 0 || $f008 === 'o' || $f338 == 'cr' || $f300 == '1 online resource') {
             return true;
         }
         return false;
