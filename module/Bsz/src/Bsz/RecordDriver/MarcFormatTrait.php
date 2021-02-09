@@ -149,13 +149,7 @@ trait MarcFormatTrait
         $formats = array_unique($formats);
         $formats = array_values($formats);
 
-        // Convenience
-        if (in_array('Online', $formats)
-            && in_array('Book', $formats)
-            && count($formats) == 2
-        ) {
-            $formats = ['EBook'];
-        } elseif (count($formats) >= 3 && in_array('Book', $formats)) {
+        if (count($formats) >= 3 && in_array('Book', $formats)) {
             $formats = $this->removeFromArray($formats, 'Book');
         }
         if (empty($formats)) {
