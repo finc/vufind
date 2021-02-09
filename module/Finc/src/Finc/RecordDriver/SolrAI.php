@@ -830,4 +830,24 @@ class SolrAI extends SolrDefault implements
         }
         return $summary;
     }
+
+    /**
+     * Adjust FincAI formats so they better fit to our solr formats
+     *
+     * @return array
+     */
+    public function getFormats() : array
+    {
+        $parent = parent::getFormats();
+        foreach ($parent as $k => $p) {
+            $regex = '/Electronic|E-/i';
+            if (preg_match($regex, $p)) {
+                $p = preg_replace($regex, '', $p);
+                $parent[$k] = $p;
+                $parent[] = 'Online';
+            }
+        }
+        return $parent;
+    }
+
 }
