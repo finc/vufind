@@ -205,6 +205,7 @@ trait MarcFormatTrait
             $tmp = $field->getData();
             $tmp = substr($tmp, 0, 2);
             if (preg_match($pattern, $tmp)) {
+                $tmp = str_pad($tmp, 2, STR_PAD_RIGHT);
                 $retval[] = strtolower($tmp);
             }
         }
