@@ -847,7 +847,10 @@ class SolrAI extends SolrDefault implements
                 $parent[] = 'Online';
             }
         }
-        return $parent;
+        if (in_array('Online', $this->fields['facet_avail'])) {
+            $parent[] = 'Online';
+        }
+        return array_unique($parent);
     }
 
 }
