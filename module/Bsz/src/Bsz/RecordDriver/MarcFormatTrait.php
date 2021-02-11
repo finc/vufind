@@ -167,7 +167,7 @@ trait MarcFormatTrait
 
     public function isElectronic() : bool
     {
-        $f007 = $this->get007('/^c/i');
+        $f007 = $this->get007('/^cr/i');
         $f008 = $this->get008(23);
         $f338 = $this->getRdaCarrier();
         $f300 = $this->get300('a');
