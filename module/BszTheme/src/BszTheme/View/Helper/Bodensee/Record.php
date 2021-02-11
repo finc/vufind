@@ -35,6 +35,7 @@ use Zend\Config\Config;
 class Record extends \VuFind\View\Helper\Root\Record
 {
     protected $localIsils;
+    protected $iconconfig;
 
     /**
      * Constructor
@@ -42,10 +43,14 @@ class Record extends \VuFind\View\Helper\Root\Record
      * @param Config $config VuFind configuration
      * @param array $localIsils
      */
-    public function __construct($config = null, $localIsils = [])
-    {
+    public function __construct(
+        $config = null,
+        Config $iconconfig = null,
+        $localIsils = []
+    ) {
         parent::__construct($config);
         $this->localIsils = $localIsils;
+        $this->iconconfig = $iconconfig;
     }
 
     /**
@@ -56,15 +61,44 @@ class Record extends \VuFind\View\Helper\Root\Record
      *
      * @return string
      */
-    public function getFormatClass($format)
+    public function getFormatClass($formats = [])
     {
-        if (is_array($format)) {
-            $format = implode(' ', $format);
+        if (empty($formats)) {
+            $formats = $this->driver->getFormats();
+        }
+        if (is_array($formats)) {
+            $formats = implode(' ', $formats);
         }
         return $this->renderTemplate(
             'format-class.phtml',
-            ['format' => $format]
+            ['format' => $formats]
         );
+    }
+
+    /**
+     * Get the icon CSS class from
+     *
+     * @param array $formats
+     *
+     * @return string
+     */
+    public function getFormatIcon($formats = [])
+    {
+        if (empty($formats)) {
+            $formats = $this->driver->getFormats();
+        }
+        $retval = 'bsz bsz-unknown ';
+
+        $formatStr = implode('_', $formats);
+
+        if (isset($this->iconconfig) && $this->iconconfig->offsetExists($formatStr)) {
+            $retval = $this->iconconfig->get($formatStr);
+        }
+        if (in_array('Online', $formats)) {
+            $retval .= ' online';
+        }
+        return $retval;
+
     }
 
     /**

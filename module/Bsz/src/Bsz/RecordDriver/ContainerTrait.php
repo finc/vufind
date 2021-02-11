@@ -125,7 +125,7 @@ trait ContainerTrait
 
                 if (is_array($containers)) {
                     $container = array_shift($containers);
-                    return isset($container) ? $container->isBook() : false;
+                    return isset($container) ? $container->isPhysicalBook() : false;
                 }
             }
         }

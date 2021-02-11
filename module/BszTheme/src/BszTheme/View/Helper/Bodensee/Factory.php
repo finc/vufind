@@ -119,6 +119,7 @@ class Factory
     {
         return new Record(
             $container->get('VuFind\Config')->get('config'),
+            $container->get('VuFind\Config')->get('FormatIcons'),
             $container->get(Client::class)->getIsilAvailability()
         );
     }

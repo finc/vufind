@@ -21,7 +21,6 @@
  */
 namespace Bsz\RecordDriver;
 
-use Bsz\FormatMapper;
 use Exception;
 use File_MARC;
 use File_MARC_Exception;
@@ -41,6 +40,7 @@ use VuFindCode\ISBN;
  */
 class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
+    use MarcFormatTrait;
     use IlsAwareTrait;
     use MarcReaderTrait;
     use MarcAdvancedTrait;
@@ -154,49 +154,19 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      * @return array
      */
 
-    public function getFormats()
+    public function getFormats() : array
     {
-        $formats = [];
-        if ($this->formats === null) {
-
-            $leader = $this->getMarcRecord()->getLeader();;
-            $leader_7 = $leader{7};
-
-            // field 007 - physical description - repeatable
-            $f007 = $this->getMarcRecord()->getFields("007");
-            $f007_0 = '';
-            $f007_1 = '';
-            foreach ($f007 as $field) {
-                $data = $field->getData();
-                if (strlen($data) > 0) {
-                    $f007_0 = $data{0};
-                }
-                if (strlen($data) > 1) {
-                    $f007_1 = $data{1};
-                }
-                $formats[] = FormatMapper::marc21007($f007_0, $f007_1);
+        if ($this->formats === null && isset($this->formatConfig)) {
+            $formats = [];
+            if ($this->isElectronic()) {
+                $formats[] = 'Online';
             }
+            $formats[] = $this->getFormatMarc();
+            $formats[] = $this->getFormatRda();
 
-            // Field 008 - not repeatable
-            $f008 = $this->getMarcRecord()->getField("008");
-            if (is_object($f008)) {
-                $data = $f008->getData();
-                if (strlen($data) > 21) {
-                    // this takes into account only the last 007
-                    $formats[] = FormatMapper::marc21leader7($leader_7, $f007_0, $data{21});
-                }
-            }
-
-            if ($this->isCollection() && ! $this->isArticle()) {
-                $formats[] = 'Compilation';
-            }
-
-            $formats = array_filter($formats);
-            $formats = array_unique($formats);
-            $formats = array_values($formats);
-            $this->formats = $formats;
+            $this->formats = $this->simplifyFormats($formats);
         }
-        return $this->formats;
+        return $this->formats ?? [];
     }
 
     /**

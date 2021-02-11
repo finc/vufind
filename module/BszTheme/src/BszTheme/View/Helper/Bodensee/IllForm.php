@@ -141,7 +141,7 @@ class IllForm extends AbstractHelper
                 || $this->driver->isNewspaper()) {
                 return $this->renderBibliographicFieldsJournal();
             }
-            if ($this->driver->isBook() || $this->driver->isEBook()
+            if ($this->driver->isPhysicalBook() || $this->driver->isEBook()
                 || $this->driver->isMonographicSerial()
             ) {
                 return $this->renderBibliographicFieldsBook();
@@ -278,7 +278,7 @@ class IllForm extends AbstractHelper
                 ['storage_retrieval_request_year', 'Jahrgang', $this->getFromDriver('getPublicationDates'),'',  true, 'ILL::error_year'],
                 ['pages', 'Seitenangabe', $this->getFromDriver('getContainerPages'),'',  true, 'ILL::error_pages'],
             ];
-        } elseif (isset($this->driver) && $this->driver->isBook()) {
+        } elseif (isset($this->driver) && $this->driver->isPhysicalBook()) {
             $fields = [
                 ['article author', 'AufsatzAutor', '', 'article author placeholder'],
                 ['article title', 'AufsatzTitel', ''],

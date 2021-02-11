@@ -1,6 +1,6 @@
 <?php /* Display thumbnail if appropriate: */ ?>
 <?php  $formats = $this->driver->getFormats();
-    $icon = $this->mapper()->mapIcon($formats);
+    $icon = $this->record($this->driver)->getFormatIcon($formats);
 ?>
 <?php if ($this->cover): ?>
 <?php if (isset($this->link) && $this->link != '#'): ?>
@@ -17,6 +17,6 @@
 <?php endif; ?>
     <?php else: ?>
     <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
-        <div class="recordcover unavailable <?=$this->mapper()->mapIcon($this->driver->getFormats())?> medium"></div>
+        <div class="recordcover unavailable <?=$this->record($this->driver)->getFormatIcon()?> medium"></div>
     </a>
 <?php endif; ?>

@@ -23,6 +23,7 @@ namespace Bsz;
 
 /**
  * Class FormatMapper
+ * @deprecated Only for reference, do not use thios code anymore
  * @package Bsz
  * @category boss
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
