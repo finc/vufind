@@ -1,31 +1,31 @@
 <?php $data = $this->recommend->getResults(); if (is_array($data)): ?>
-  <div class="sidegroup rssResults">
-    <div class="suggestionHeader">
-    <a href="https://www.bsz-bw.de/index.html" title="Latest News" target="_blank">
-        <h4><?=$this->transEsc('Latest News')?></h4>
-    </a>
-    </div>
-    <div>
-      <ul class="list-group">
-        <?php $i = 0; foreach ($data['worksArray'] as $workKey => $work): ?>
-          <li class="list-group-item suggestedResult <?php (++$i % 2) ? 'alt ' : ''?>record<?=$i?>">
-            <div class="resultitem clearfix">
-              <?php if (isset($work['enclosure'])): ?>
-                <span class="europeanaImg"><img src="<?=$this->escapeHtmlAttr($work['enclosure'])?>" id="europeanaImage<?=$this->escapeHtmlAttr($workKey)?>"/></span>
-              <?php endif; ?>
-              <a href="<?=$this->escapeHtmlAttr($work['link'])?>" target="_blank">
-                <span><?=$this->escapeHtml($this->truncate($work['title'], 90))?></span>
-              </a>
+    <h4><?= $this->transEsc($data['feedTitle']) ?></h4>
+    <div class="panel-group">
+        <?php foreach ($data['worksArray'] as $workKey => $work): ?>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <?= $this->escapeHtml($work['date']->format('d.m.Y h:m')) ?>
+                    <strong><?= $this->escapeHtml($this->truncate($work['title'], 120)) ?></strong>
+                </div>
+                <div class="panel-body">
+                    <?php if (isset($work['description'])): ?><?= $work['description'] ?><?php endif; ?>
+                    <?php if (isset($work['link'])): ?>
+                        <a href="<?= $this->escapeHtmlAttr($work['link']) ?>"
+                           class="external hasicon"
+                           target="_blank"><?= $this->transEsc('More Information') ?>
+                            ></a>
+                    <?php endif ?>
+                    <?php if (isset($work['author'])): ?>
+                        <p class="small"><?= implode(', ', $work['author']) ?></p>
+                    <? endif ?>
+                </div>
             </div>
-          </li>
         <?php endforeach; ?>
-      </ul>
+    </div>
     <p class="olSubjectMore">
-        <a href="<?=$this->escapeHtmlAttr($data['sourceLink'])?>" title="<?=$this->escapeHtmlAttr($data['feedTitle'])?>" target="_blank">
-            <?=$this->transEsc('more')?>...
+        <a href="<?= $this->escapeHtmlAttr($data['sourceLink']) ?>"
+           title="<?= $this->escapeHtmlAttr($data['feedTitle']) ?>" target="_blank">
+            <?= $this->transEsc('more') ?>...
         </a>
     </p>
-  </div>
-  </div>
-  <div class="clearfix"></div>
 <?php endif; ?>
