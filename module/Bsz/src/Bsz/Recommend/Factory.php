@@ -94,8 +94,20 @@ class Factory
     public static function getStartpageNews(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('searches');
-        return new RSSFeedResults(
+
+        $rss = new RSSFeedResults(
             $config->get('StartpageNews')->get('RSSFeed')
         );
+        $config = \HTMLPurifier_Config::createDefault();
+        $config->set('HTML.Allowed', 'p, a, br, strong, em, ul, ol, li, b, i');
+        $config->set('HTML.AllowedAttributes', 'a.href');
+        $config->set('HTML.TargetBlank', true);
+        $config->set('HTML.Linkify', true);
+        $config->set('HTML.AutoParagraph', true);
+        $purifier = new \HTMLPurifier($config);
+
+        $rss->attachHtmlPurifier($purifier);
+
+        return $rss;
     }
 }

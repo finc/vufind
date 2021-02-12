@@ -10,7 +10,10 @@
                 <div class="panel-body">
                     <?php if (isset($work['description'])):?><?=$work['description']?><?php endif;?>
                     <?php if (isset($work['link'])):?>
-                        <a href="<?=$this->escapeHtmlAttr($work['link'])?>" class="external hasicon" target="_blank"><?=$this->transEsc('More Information')?>></a>
+                        <p><a href="<?= $this->escapeHtmlAttr($work['link']) ?>"
+                              class="external hasicon"
+                              target="_blank"><?= $this->transEsc('More Information') ?>
+                                ></a></p>
                     <?php endif ?>
                     <?php if (isset($work['author'])): ?>
                         <p class="small"><?=implode(', ', $work['author'])?></p>
@@ -19,9 +22,4 @@
             </div>
         <?php endforeach; ?>
     </div>
-    <p class="olSubjectMore">
-        <a href="<?=$this->escapeHtmlAttr($data['sourceLink'])?>" title="<?=$this->escapeHtmlAttr($data['feedTitle'])?>" target="_blank">
-            <?=$this->transEsc('more')?>...
-        </a>
-    </p>
 <?php endif; ?>

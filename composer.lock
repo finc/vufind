@@ -1,20 +1,20 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "b6d18efdcac68d3bc9289b9713b5177e",
-    "packages": [
-        {
-            "name": "ahand/mobileesp",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ahand/mobileesp.git",
-                "reference": "c02055dbe9baee63aab11438f4d7b5d25075d347"
-            },
-            "dist": {
+  "_readme": [
+    "This file locks the dependencies of your project to a known state",
+    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+    "This file is @generated automatically"
+  ],
+  "content-hash": "6b7718852bcd229f8626a18563d168b1",
+  "packages": [
+    {
+      "name": "ahand/mobileesp",
+      "version": "dev-master",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/ahand/mobileesp.git",
+        "reference": "c02055dbe9baee63aab11438f4d7b5d25075d347"
+      },
+      "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/ahand/mobileesp/zipball/c02055dbe9baee63aab11438f4d7b5d25075d347",
                 "reference": "c02055dbe9baee63aab11438f4d7b5d25075d347",
@@ -315,26 +315,76 @@
             "description": "Endroid QR Code",
             "homepage": "https://github.com/endroid/qr-code",
             "keywords": [
-                "bundle",
-                "code",
-                "endroid",
-                "php",
-                "qr",
-                "qrcode"
+              "bundle",
+              "code",
+              "endroid",
+              "php",
+              "qr",
+              "qrcode"
             ],
-            "time": "2019-04-03T21:14:10+00:00"
+          "time": "2019-04-03T21:14:10+00:00"
         },
+    {
+      "name": "ezyang/htmlpurifier",
+      "version": "v4.13.0",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/ezyang/htmlpurifier.git",
+        "reference": "08e27c97e4c6ed02f37c5b2b20488046c8d90d75"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/08e27c97e4c6ed02f37c5b2b20488046c8d90d75",
+        "reference": "08e27c97e4c6ed02f37c5b2b20488046c8d90d75",
+        "shasum": ""
+      },
+      "require": {
+        "php": ">=5.2"
+      },
+      "require-dev": {
+        "simpletest/simpletest": "dev-master#72de02a7b80c6bb8864ef9bf66d41d2f58f826bd"
+      },
+      "type": "library",
+      "autoload": {
+        "psr-0": {
+          "HTMLPurifier": "library/"
+        },
+        "files": [
+          "library/HTMLPurifier.composer.php"
+        ],
+        "exclude-from-classmap": [
+          "/library/HTMLPurifier/Language/"
+        ]
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "LGPL-2.1-or-later"
+      ],
+      "authors": [
         {
-            "name": "filp/whoops",
-            "version": "2.9.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/filp/whoops.git",
-                "reference": "df7933820090489623ce0be5e85c7e693638e536"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/df7933820090489623ce0be5e85c7e693638e536",
+          "name": "Edward Z. Yang",
+          "email": "admin@htmlpurifier.org",
+          "homepage": "http://ezyang.com"
+        }
+      ],
+      "description": "Standards compliant HTML filter written in PHP",
+      "homepage": "http://htmlpurifier.org/",
+      "keywords": [
+        "html"
+      ],
+      "time": "2020-06-29T00:56:53+00:00"
+    },
+    {
+      "name": "filp/whoops",
+      "version": "2.9.2",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/filp/whoops.git",
+        "reference": "df7933820090489623ce0be5e85c7e693638e536"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/filp/whoops/zipball/df7933820090489623ce0be5e85c7e693638e536",
                 "reference": "df7933820090489623ce0be5e85c7e693638e536",
                 "shasum": ""
             },
@@ -395,9 +445,9 @@
             "name": "ghislainf/zf2-whoops",
             "version": "dev-master",
             "source": {
-                "type": "git",
-                "url": "https://github.com/ghislainf/zf2-whoops.git",
-                "reference": "2649cf7caf400409942ddc3f8fe15b89381fc74e"
+              "type": "git",
+              "url": "git@github.com:ghislainf/zf2-whoops.git",
+              "reference": "2649cf7caf400409942ddc3f8fe15b89381fc74e"
             },
             "dist": {
                 "type": "zip",
@@ -7255,16 +7305,17 @@
             "license": [
                 "BSD-3-Clause"
             ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
-                }
-            ],
-            "description": "FinderFacade is a convenience wrapper for Symfony's Finder component.",
-            "homepage": "https://github.com/sebastianbergmann/finder-facade",
-            "time": "2020-01-16T08:08:45+00:00"
+          "authors": [
+            {
+              "name": "Sebastian Bergmann",
+              "email": "sebastian@phpunit.de",
+              "role": "lead"
+            }
+          ],
+          "description": "FinderFacade is a convenience wrapper for Symfony's Finder component.",
+          "homepage": "https://github.com/sebastianbergmann/finder-facade",
+          "abandoned": true,
+          "time": "2020-01-16T08:08:45+00:00"
         },
         {
             "name": "sebastian/global-state",

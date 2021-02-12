@@ -93,10 +93,11 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
 
     /**
      * Search results
-     *
      * @var array
      */
     protected $results;
+
+    protected $htmlpurifier;
 
     /**
      * [StartpageNews] in searches.ini
@@ -106,6 +107,16 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
     public function __construct($feed)
     {
         $this->feed = $feed;
+    }
+
+    /**
+     * Attach HTMLPurifies to sanitize invalid HTML and whitelist tags
+     *
+     * @param \HTMLPurifier $purifier
+     */
+    public function attachHtmlPurifier(\HTMLPurifier $purifier)
+    {
+        $this->htmlpurifier = $purifier;
     }
 
     /**
@@ -175,11 +186,15 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
 
         foreach ($parsedFeed as $value) {
 
+            if (is_object($this->htmlpurifier)) {
+                $clean_html = $this->htmlpurifier->purify($value->getDescription());
+            }
+
             $resultsProcessed[] = [
                 'title' => $value->getTitle(),
                 'link' => $value->getLink(),
                 'enclosure' => $value->getEnclosure()['url'],
-                'description' => $value->getDescription(),
+                'description' => $clean_html,
                 'date' => $value->getDateCreated(),
                 'author' => $value->getAuthor(),
                 'categories' => $value->getCategories()
