@@ -59,7 +59,7 @@ class Factory
      *
      * @param ContainerInterface $container Service manager.
      *
-     * @return WorldCatTerms
+     * @return SearchButtons
      */
     public static function getSearchButtons(ContainerInterface $container)
     {
@@ -74,7 +74,7 @@ class Factory
      *
      * @param ContainerInterface $container Service manager.
      *
-     * @return WorldCatTerms
+     * @return RSSFeedResults
      */
     public static function getRSSFeedResults(ContainerInterface $container)
     {
@@ -89,7 +89,7 @@ class Factory
      *
      * @param ContainerInterface $container Service manager.
      *
-     * @return WorldCatTerms
+     * @return RSSFeedResults
      */
     public static function getStartpageNews(ContainerInterface $container)
     {
