@@ -1,37 +1,40 @@
 <?php $data = $this->recommend->getResults(); if (is_array($data)): ?>
-    <div class="sidegroup rssResults">
-        <div class="suggestionHeader">
-
-            <h4><?= $this->transEsc($data['feedTitle']) ?></h4>
-
-        </div>
-        <div>
-            <ul class="list-group">
-                <?php $i = 0;
-                foreach ($data['worksArray'] as $workKey => $work): ?>
-                    <li class="list-group-item suggestedResult <?php (++$i % 2) ? 'alt ' : '' ?>record<?= $i ?>">
-                        <? //xdebug_var_dump($data)?>
-                        <div class="resultitem clearfix">
-                            <a href="<?= $this->escapeHtmlAttr($work['link']) ?>"
-                               class="external hasicon" target="_blank">
-                                <span><?= $this->escapeHtml($this->truncate($work['title'], 90)) ?></span>
-                            </a>
-                            <?php if (isset($work['description'])): ?>
-                                <?php // TODO: very dangerous, no escaping! ?>
-                                <p><?= $work['description'] ?></p>
-                            <?php endif; ?>
-                        </div>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-            <p class="olSubjectMore">
-                <a href="<?= $this->escapeHtmlAttr($data['sourceLink']) ?>"
-                   title="<?= $this->escapeHtmlAttr($data['feedTitle']) ?>"
-                   target="_blank">
-                    <?= $this->transEsc('more') ?>...
-                </a>
-            </p>
-        </div>
+    <?php if (!empty($data['feedTitle'])): ?>
+        <h4><?= $this->transEsc($data['feedTitle']) ?></h4>
+    <?php endif ?>
+    <div class="panel-group no-padding">
+        <?php if ($this->layout()->userLang === 'de'): ?>
+            <?php $data['worksArray'] = [array_shift($data['worksArray'])] ?>
+        <?php elseif ($this->layout()->userLang === 'en'): ?>
+            <?php $data['worksArray'] = [end($data['worksArray'])] ?>
+        <?php endif ?>
+        <?php foreach ($data['worksArray'] as $workKey => $work): ?>
+            <?php if (in_array('danger', $work['categories'])): ?>
+                <?php $class = 'danger' ?>
+            <?php elseif (in_array('warning', $work['categories'])): ?>
+                <?php $class = 'warning' ?>
+            <?php else: ?>
+                <?php $class = 'default' ?>
+            <?php endif ?>
+            <div class="panel panel-<?= $class ?> ">
+                <div class="panel-heading">
+                    <?php if (isset($work['date'])): ?><?= $this->escapeHtml($work['date']->format('d.m.Y h:m')) ?><?php endif ?>
+                    <strong><?= $this->escapeHtml($this->truncate($work['title'], 120)) ?></strong>
+                </div>
+                <div class="panel-body">
+                    <?php if (isset($work['description'])): ?><?= $work['description'] ?><?php endif; ?>
+                    <?php if (isset($work['link'])): ?>
+                        <p><a href="<?= $this->escapeHtmlAttr($work['link']) ?>"
+                              class="external"
+                              target="_blank"><?= $this->transEsc('More Information')
+                                ?>
+                            </a></p>
+                    <?php endif ?>
+                    <?php if (isset($work['author'])): ?>
+                        <p class="small"><?= implode(', ', $work['author']) ?></p>
+                    <? endif ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
-    <div class="clearfix"></div>
 <?php endif; ?>
