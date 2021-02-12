@@ -37,7 +37,8 @@ use Zend\Feed\Reader\Reader as FeedReader;
  *
  * @category VuFind
  * @package  Recommendations
- * @author   Stefan Winkler <stefan.winkler@bsz-bw.de
+ * @author   Stefan Winkler <stefan.winkler@bsz-bw.de>
+ * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  * @author   Demian Katz <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:recommendation_modules Wiki
@@ -149,7 +150,6 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
      */
     public function init($params, $request)
     {
-        $this->sitePath = 'https://www.bsz-bw.de/index.html';
         $this->targetUrl = 'https://' . $this->baseUrl;
     }
 
@@ -172,18 +172,19 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
         }
         $parsedFeed = FeedReader::import($this->targetUrl);
         $resultsProcessed = [];
+
         foreach ($parsedFeed as $value) {
-            $link = $value->getLink();
-            if (!empty($link)) {
-                $resultsProcessed[] = [
-                    'title' => $value->getTitle(),
-                    'link' => $link,
-                    'enclosure' => $value->getEnclosure()['url'],
-                    'description' => $value->getDescription(),
-                    'date' => $value->getDateCreated(),
-                    'author' => $value->getAuthor()
-                ];
-            }
+
+            $resultsProcessed[] = [
+                'title' => $value->getTitle(),
+                'link' => $value->getLink(),
+                'enclosure' => $value->getEnclosure()['url'],
+                'description' => $value->getDescription(),
+                'date' => $value->getDateCreated(),
+                'author' => $value->getAuthor(),
+                'categories' => $value->getCategories()
+            ];
+
             if (count($resultsProcessed) == $this->limit) {
                 break;
             }

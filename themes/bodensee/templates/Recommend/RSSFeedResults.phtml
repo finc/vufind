@@ -4,7 +4,7 @@
         <?php foreach ($data['worksArray'] as $workKey => $work): ?>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <?=$this->escapeHtml($work['date']->format('d.m.Y h:m'))?>
+                    <?php if (isset($work['date'])): ?><?=$this->escapeHtml($work['date']->format('d.m.Y h:m'))?><?php endif ?>
                     <strong><?=$this->escapeHtml($this->truncate($work['title'], 120))?></strong>
                 </div>
                 <div class="panel-body">
