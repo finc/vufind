@@ -12,29 +12,31 @@
     $this->headTitle($this->translate('EDS') . ': ' . $this->driver->getBreadcrumb());
 
 ?>
-<div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
   <div class="col-xs-12 col-sm-3 pull-right">
-    <? if ($thumb): ?>
-        <img src="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $thumb))?>" class="recordcover" alt="<?=$this->transEsc('Cover Image')?>"/>
-    <? else: ?>
-        <span class="recordcover pt-icon pt-<?=$this->driver->getPubTypeId()?>"></span>
-    <? endif; ?>
-    <? if ($pubType): ?>
-      <p class="text-center"><?=$this->transEsc($pubType)?></p>
-    <? endif; ?>
+      <? if ($thumb): ?>
+          <img src="<?= $this->escapeHtmlAttr(str_replace('http://', 'https://', $thumb)) ?>"
+               class="recordcover" alt="<?= $this->transEsc('Cover Image') ?>"/>
+      <? else: ?>
+          <span class="recordcover pt-icon pt-<?= $this->driver->getPubTypeId() ?>"></span>
+      <? endif; ?>
+      <? if ($pubType): ?>
+          <p class="text-center"><?= $this->transEsc($pubType) ?></p>
+      <? endif; ?>
 
-    <div class="external-links">
-        <? $pLink = $this->driver->getPLink(); if($pLink): ?>
-            <div class="text-center">
-                <a href="<?=$this->escapeHtmlAttr(str_replace('http://', 'https://', $pLink))?>" class="external fulltext hasicon">
-                    <i class="fa fa-file-pdf-o"></i><?=$this->transEsc('Fulltext');?>
-                </a>
-            </div>
-        <? endif; ?>
+      <div class="external-links">
+          <? $pLink = $this->driver->getPLink();
+          if ($pLink && $this->client()->is('show_eds_plink')): ?>
+              <div class="text-center">
+                  <a href="<?= $this->escapeHtmlAttr(str_replace('http://', 'https://', $pLink)) ?>"
+                     class="external fulltext hasicon">
+                      <i class="fa fa-file-pdf-o"></i><?= $this->transEsc('Fulltext'); ?>
+                  </a>
+              </div>
+          <? endif; ?>
 
-        <? if ($this->driver->hasPDFAvailable()):
-          $pdfLink = $this->driver->getPdfLink(); ?>
-          <? if (strlen($pdfLink) > 0): ?>
+          <? if ($this->driver->hasPDFAvailable()):
+              $pdfLink = $this->driver->getPdfLink(); ?>
+              <? if (strlen($pdfLink) > 0): ?>
         <div class="text-center">
           <a href="<?=$pdfLink?>" class="external fulltext hasicon">
               <i class="fa fa-file-pdf-o"></i><?=$this->transEsc('PDF Full Text')?>
