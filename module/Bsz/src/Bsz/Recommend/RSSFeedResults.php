@@ -197,7 +197,8 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
                 'description' => $clean_html,
                 'date' => $value->getDateCreated(),
                 'author' => $value->getAuthor(),
-                'categories' => $value->getCategories()
+                'categories' => $value->getCategories(),
+                'kategories' => $value->getCategories()
             ];
 
             if (count($resultsProcessed) == $this->limit) {
