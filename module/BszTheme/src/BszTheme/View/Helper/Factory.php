@@ -19,11 +19,12 @@
  */
 namespace BszTheme\View\Helper;
 
+use Bsz\Config\Libraries as LibrariesTable;
+use Bsz\Config\Library as LibraryRow;
 use Interop\Container\ContainerInterface;
 
 /**
  * Description of Factory
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class Factory
@@ -57,12 +58,12 @@ class Factory
         $tag = $parts[0] ?? 'swb';
         $library = null;
         $libraries = $container->get('Bsz\Config\Libraries');
-        if ($libraries instanceof  \Bsz\Config\Libraries) {
+        if ($libraries instanceof LibrariesTable) {
             if ($client->isIsilSession() && $client->hasIsilSession()) {
                 $isils = $client->getIsils();
                 $library = $libraries->getFirstActive($isils);
 
-                if ($library instanceof Bsz\Config\Library) {
+                if ($library instanceof LibraryRow) {
                     $website = $library->getHomepage();
                 }
             }
