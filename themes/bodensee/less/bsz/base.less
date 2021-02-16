@@ -235,13 +235,23 @@ table.tablesorter thead tr th .tablesorter-header-inner::after {
 
 .delete-input {
     background-color: white;
+
     i {
         color: @gray-light;
     }
-  &:hover, &:active {
-      background-color: white;
-      i {
-          color: brand-danger;
-      }
-  }
+
+    &:hover, &:active {
+        background-color: white;
+
+        i {
+            color: brand-danger;
+        }
+    }
+}
+
+.no-padding {
+    .panel-body, .panel-heading {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }

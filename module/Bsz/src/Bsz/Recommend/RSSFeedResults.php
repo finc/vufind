@@ -144,7 +144,7 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
         list($url, $limit, $title) = explode(':', $settings);
         $this->baseUrl = $url;
         $this->limit = $limit ?? 5;
-        $this->searchSite = $title ?? 'Latest News';
+        $this->searchSite = $title ?? '';
     }
 
     /**
@@ -189,7 +189,6 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
             if (is_object($this->htmlpurifier)) {
                 $clean_html = $this->htmlpurifier->purify($value->getDescription());
             }
-
             $resultsProcessed[] = [
                 'title' => $value->getTitle(),
                 'link' => $value->getLink(),
@@ -198,7 +197,7 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
                 'date' => $value->getDateCreated(),
                 'author' => $value->getAuthor(),
                 'categories' => $value->getCategories(),
-                'kategories' => $value->getCategories()
+
             ];
 
             if (count($resultsProcessed) == $this->limit) {
