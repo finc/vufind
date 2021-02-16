@@ -132,7 +132,7 @@ class RSSFeedResults implements \VuFind\Recommend\RecommendInterface,
         list($url, $limit, $title) = explode(':', $settings);
         $this->baseUrl = $url;
         $this->limit = $limit ?? 5;
-        $this->searchSite = $title ?? 'Latest News';
+        $this->searchSite = $title ?? '';
     }
 
     /**
