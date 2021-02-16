@@ -22,9 +22,9 @@ namespace BszTheme\View\Helper;
 use Zend\View\Helper\AbstractHelper;
 
 /**
+ * @deprecated this should be removed in near future
  * Description of Libraries
- *
- * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
+ * @author     Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class Libraries extends AbstractHelper
 {
