@@ -236,38 +236,45 @@ trait MarcFormatTrait
 
     /**
      * GEt RDA media code (field 337)
-     *
-     * @return string
+     * @return array
      */
 
-    protected function getRdaMedia() : string
+    protected function getRdaMedia(): array
     {
         $sub = '';
-        $field = $this->getMarcRecord()->getField(337);
-        $retval = '';
-        if (is_object($field)) {
-            $sub = $field->getSubfield('b');
-            $retval = is_object($sub) ? $sub->getData() : '';
+        $fields = $this->getMarcRecord()->getFields(337);
+        $retval = [];
+
+        foreach ($fields as $field) {
+            if (is_object($field)) {
+                $sub = $field->getSubfield('b');
+                $retval[] = is_object($sub) ? strtolower($sub->getData()) : '';
+            }
+
         }
-        return strtolower($retval);
+        return $retval;
     }
 
     /**
      * Get RDA content code (field 338)
      *
-     * @return string
+     * @return array
      */
 
-    protected function getRdaCarrier(): string
+    protected function getRdaCarrier(): array
     {
         $sub = '';
-        $field = $this->getMarcRecord()->getField(338);
-        $retval = '';
-        if (is_object($field)) {
-            $sub = $field->getSubfield('b');
-            $retval = is_object($sub) ? $sub->getData() : '';
+        $fields = $this->getMarcRecord()->getFields(338);
+        $retval = [];
+
+        foreach ($fields as $field) {
+            if (is_object($field)) {
+                $sub = $field->getSubfield('b');
+                $retval[] = is_object($sub) ? strtolower($sub->getData()) : '';
+            }
+
         }
-        return strtolower($retval);
+        return $retval;
     }
 
     /**
