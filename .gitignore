@@ -10,6 +10,7 @@ TAGS
 /solr/vendor
 /vendor
 composer.phar
+composer.lock
 import/solrmarc.log
 import/*
 node_modules
