@@ -122,7 +122,8 @@ class SideFacets extends \VuFind\Recommend\SideFacets
     {
         $allowed = explode(',', $filter);
         foreach ($allowed as $a) {
-            $a = '/^'.$a.'/i';
+            $a = str_replace('/', '\/', $a);
+            $a = '/^'.$a.'\z/i';
             if (preg_match($a, $value)) {
                 return true;
             }
