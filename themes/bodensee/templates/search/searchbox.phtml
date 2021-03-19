@@ -49,26 +49,45 @@
      <?php if (!empty($tabs)): ?></div><?php endif; ?>
   </div>
 <?php else: ?>
-  <form id="searchForm" class="searchForm navbar-form navbar-left flip" method="GET" action="<?=$this->url($basicSearch)?>" name="searchForm" autocomplete="off">
-    <?= $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
-    <?php $placeholder = $this->searchbox()->getPlaceholderText($tabConfig['selected']['id'] ?? null); ?>
-    <div class="input-group">
-        <input <?=$disabled?> id="searchForm_lookfor" class="searchForm_lookfor form-control search-query<?php if ($this->searchbox()->autocompleteEnabled($this->searchClassId)):?> autocomplete searcher:<?=$this->escapeHtmlAttr($this->searchClassId) ?><?=$this->searchbox()->autocompleteAutoSubmit($this->searchClassId) ? ' ac-auto-submit' : '' ?><?php endif ?>" type="text" name="lookfor" value="<?= $this->escapeHtmlAttr($this->searchMemory()->getLastSearchterms()); ?>"<?php if ($placeholder): ?> placeholder="<?=$this->transEsc($placeholder) ?>"<?php endif ?> data-title="<?=$this->transEsc('empty_search')?>" data-content="<?=$this->transEsc('empty_search_text')?>" autocomplete="on"/>
-        <div class="input-group-btn">
-            <button type="button" data-target="#searchForm_lookfor" class="btn delete-input <?=$disabled?>"><i class="fa fa-times text-danger" aria-hidden="true"></i><span class="sr-only"><?=$this->transEsc('Delete')?></span></button>
-        </div>
-        <div class="input-group-btn">
-            <button type="submit" class="btn btn-info <?=$disabled?>"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only"><?=$this->transEsc('Search')?></span></button>
-        </div>
-        <?php if (!isset($frame) && $advSearch && $this->client()->is('advanced_search_button')): ?>
+    <form id="searchForm" class="searchForm navbar-form navbar-left flip"
+          method="GET" action="<?= $this->url($basicSearch) ?>" name="searchForm"
+          autocomplete="off">
+        <?= $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
+        <?php $placeholder = $this->searchbox()->getPlaceholderText($tabConfig['selected']['id'] ?? null); ?>
+        <div class="input-group">
+            <input <?= $disabled ?> id="searchForm_lookfor"
+                                    class="searchForm_lookfor form-control search-query<?php if ($this->searchbox()->autocompleteEnabled($this->searchClassId)): ?> autocomplete searcher:<?= $this->escapeHtmlAttr($this->searchClassId) ?><?= $this->searchbox()->autocompleteAutoSubmit($this->searchClassId) ? ' ac-auto-submit' : '' ?><?php endif ?>"
+                                    type="text" name="lookfor"
+                                    value="<?= $this->escapeHtmlAttr($this->searchMemory()->getLastSearchterms()); ?>"<?php if ($placeholder): ?> placeholder="<?= $this->transEsc($placeholder) ?>"<?php endif ?>
+                                    data-title="<?= $this->transEsc('empty_search') ?>"
+                                    data-content="<?= $this->transEsc('empty_search_text') ?>"
+                                    autocomplete="on"/>
             <div class="input-group-btn">
-                <?php if ($advSearch): ?>
-                    <a href="<?=$this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>" class="btn btn-primary <?=$disabled?>" rel="nofollow"><i class='fa fa-search-plus'></i>
-                        <span class="text hidden-xs"><?=$this->transEsc("Advanced")?></span></a>
-                <?php endif; ?>
+                <button type="button" data-target="#searchForm_lookfor"
+                        class="btn delete-input <?= $disabled ?>"><i
+                            class="fa fa-times text-danger"
+                            aria-hidden="true"></i><span
+                            class="sr-only"><?= $this->transEsc('Delete') ?></span>
+                </button>
             </div>
-        <?php endif; ?>
-    </div>
+            <div class="input-group-btn">
+                <button type="submit" class="btn btn-info <?= $disabled ?>"><i
+                            class="fa fa-search"
+                            aria-hidden="true"></i><?php if ($this->client()->is('show_label_on_search_button')): ?> <?= $this->transEsc('Find') ?><?php endif ?>
+                    <span class="sr-only"><?= $this->transEsc('Find') ?></span>
+                </button>
+            </div>
+            <?php if (!isset($frame) && $advSearch && $this->client()->is('advanced_search_button')): ?>
+                <div class="input-group-btn">
+                    <?php if ($advSearch): ?>
+                        <a href="<?= $this->url($advSearch) . ((isset($this->searchId) && $this->searchId) ? '?edit=' . $this->escapeHtmlAttr($this->searchId) : $hiddenFilterParams) ?>"
+                           class="btn btn-primary <?= $disabled ?>" rel="nofollow"><i
+                                    class='fa fa-search-plus'></i>
+                            <span class="text hidden-xs"><?= $this->transEsc("Advanced") ?></span></a>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
     <input type="hidden" name="type" value="<?php if (array_key_exists(0, $handlers) && array_key_exists('value', $handlers[0])): ?><?=$this->escapeHtmlAttr($handlers[0]['value'])?><?php endif; ?>" />
 
     <?php $shards = $options->getShards(); if ($options->showShardCheckboxes() && !empty($shards)): ?>
