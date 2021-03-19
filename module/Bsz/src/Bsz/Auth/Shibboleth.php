@@ -2,6 +2,7 @@
 namespace Bsz\Auth;
 
 use Bsz\Config\Libraries;
+use Bsz\Config\Library;
 use VuFind\Exception\Auth as AuthException;
 
 /**
@@ -58,7 +59,9 @@ class Shibboleth extends \VuFind\Auth\Shibboleth
     public function logout($url)
     {
         $library = $this->libraries->getFirstActive();
-        $url = $library->getLogoutUrl();
+        if ($library instanceof Library) {
+            $url = $library->getLogoutUrl();
+        }
         return parent::logout($url);
     }
 }
