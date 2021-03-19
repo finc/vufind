@@ -58,7 +58,8 @@ class Shibboleth extends \VuFind\Auth\Shibboleth
 
     public function logout($url)
     {
-        $library = $this->libraries->getFirstActive();
+        $domain = preg_replace('/.+@/', '', $user->username);
+        $library = $this->libraries->getByIdPDomain();
         if ($library instanceof Library) {
             $url = $library->getLogoutUrl();
         }
