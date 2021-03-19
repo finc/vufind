@@ -54,4 +54,11 @@ class Shibboleth extends \VuFind\Auth\Shibboleth
         }
         return $user;
     }
+
+    public function logout($url)
+    {
+        $library = $this->libraries->getFirstActive();
+        $url = $library->getLogoutUrl();
+        return parent::logout($url);
+    }
 }

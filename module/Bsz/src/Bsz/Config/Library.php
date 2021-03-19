@@ -46,6 +46,7 @@ class Library
     protected $openurl;
     protected $opacurl;
     protected $idp;
+    protected $logout;
     protected $regex;
     protected $live;
     protected $boss;
@@ -70,6 +71,7 @@ class Library
         $this->openurl = $data['openurl'] ?? null;
         $this->opacurl = $data['opacurl'] ?? null;
         $this->idp = $data['shibboleth_idp'] ?? null;
+        $this->logout = $data['shibboleth_logout'] ?? null;
         $this->regex = $data['regex'] ?? null;
         $this->lend_copy = isset($data['lend_copy']) ? str_split($data['lend_copy'], 1) : [0b1, 0b1];
     }
@@ -257,7 +259,6 @@ class Library
 
     /**
      * Get Shibboleth IdP
-     *
      * @return string
      */
     public function getIdp()
@@ -266,8 +267,16 @@ class Library
     }
 
     /**
+     * Get the special logout URL for SLO if it's
+     * @return string
+     */
+    public function getLogoutUrl()
+    {
+        return $this->logout;
+    }
+
+    /**
      * Get library-specific regex to trim username
-     *
      * @return string
      */
     public function getRegex()

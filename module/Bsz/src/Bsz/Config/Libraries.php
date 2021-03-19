@@ -121,7 +121,7 @@ class Libraries extends TableGateway
      * @param array $isils
      * @returns Library
      */
-    public function getFirstActive($isils)
+    public function getFirstActive($isils): Library
     {
         $result = $this->getActive($isils);
         return array_shift($result);
