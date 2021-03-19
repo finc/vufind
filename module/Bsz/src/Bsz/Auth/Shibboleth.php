@@ -27,7 +27,7 @@ class Shibboleth extends \VuFind\Auth\Shibboleth
     {
         $this->sessionManager = $sessionManager;
         $this->libraries = $libraries;
-        $this->isil = array_shift($isil);
+        $this->isil = $isil;
     }
 
     /**
