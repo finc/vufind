@@ -13,6 +13,7 @@ use VuFind\Exception\Auth as AuthException;
 class Shibboleth extends \VuFind\Auth\Shibboleth
 {
     protected $libraries;
+    protected $isil;
 
     /**
      * Constructor
@@ -21,10 +22,12 @@ class Shibboleth extends \VuFind\Auth\Shibboleth
      */
     public function __construct(
         \Zend\Session\ManagerInterface $sessionManager,
-        Libraries $libraries)
+        Libraries $libraries,
+        $isil)
     {
         $this->sessionManager = $sessionManager;
         $this->libraries = $libraries;
+        $this->isil = array_shift($isil);
     }
 
     /**
@@ -58,11 +61,11 @@ class Shibboleth extends \VuFind\Auth\Shibboleth
 
     public function logout($url)
     {
-        $domain = preg_replace('/.+@/', '', $user->username);
-        $library = $this->libraries->getByIdPDomain($domain);
+        $library = $this->libraries->getFirstActive($this->isil);
         if ($library instanceof Library) {
             $url = $library->getLogoutUrl();
         }
+
         return parent::logout($url);
     }
 }

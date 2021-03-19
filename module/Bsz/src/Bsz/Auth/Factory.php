@@ -65,9 +65,11 @@ class Factory
      */
     public static function getShibboleth(ContainerInterface $container)
     {
+        $client = $container->get('Bsz\Config\Client');
         return new Shibboleth(
             $container->get('VuFind\SessionManager'),
-            $container->get('Bsz\Config\Libraries')
+            $container->get('Bsz\Config\Libraries'),
+            $client->getIsils()
         );
     }
 }
