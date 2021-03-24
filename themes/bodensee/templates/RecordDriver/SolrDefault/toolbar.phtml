@@ -69,6 +69,14 @@ if (!empty($addThis)) {
                 </a></li>
         <?php endif; ?>
         <?= $this->render('record/cart-buttons.phtml', ['id' => $this->driver->getUniqueId(), 'source' => $this->driver->getSourceIdentifier()]); ?>
+        <?php if ($this->client()->getTag() == 'ireon'): ?>
+            <?php $rand = rand(0, 1000) ?>
+            <li><a class="btn copy-link copy-clipboard-toggle"
+                   id="copy-link-<?= $rand ?>"
+                   data-clipboard-text="<?= $this->serverUrl(true) ?>">
+                    <i class="fa fa-link"></i> <?= $this->transEsc('Copy_Link') ?>
+                </a></li>
+        <?php endif ?>
     </ul>
 
 </div>

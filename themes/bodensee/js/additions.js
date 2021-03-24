@@ -437,8 +437,17 @@ function copyToClipboard() {
     var clipboard = new ClipboardJS('.copy-clipboard-toggle');
     clipboard.on('success', function(e) {
         console.info(e.text + ' copied to clipboard');
-        $('.copy-clipboard-toggle i').removeClass('fa-check text-success').addClass('fa-copy');
-        $('#' + e.trigger.id + ' i').removeClass('fa-copy').addClass('fa-check text-success');
+        if (e.trigger.id.indexOf('-trigger') > 0) {
+            $('.copy-clipboard-toggle i').removeClass('fa-check text-success').addClass('fa-copy');
+            $('#' + e.trigger.id + ' i').removeClass('fa-copy').addClass('fa-check text-success');
+        } else {
+            $('#' + e.trigger.id).addClass('btn-success');
+            setTimeout(function () {
+                $('#' + e.trigger.id).removeClass('btn-success');
+            }, 2000);
+
+
+        }
         e.clearSelection();
     });
 }
