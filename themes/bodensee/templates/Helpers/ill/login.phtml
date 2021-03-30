@@ -64,6 +64,7 @@ if (empty($zdb) && isset($this->driver)) {
 ?>
 <input type="hidden" name="Verbund" value="<?= $this->escapeHtmlAttr($verbund) ?>"/>
 <input type="hidden" name="TitelId" value="<?= $this->escapeHtmlAttr($ppn) ?>"/>
+<input type="hidden" name="Besteller" value="E"/>
 
 <?php if (isset($this->driver)): ?>
     <?php // nicht freies Fernleihformular ?>
