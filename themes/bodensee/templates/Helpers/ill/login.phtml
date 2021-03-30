@@ -65,11 +65,14 @@ if (empty($zdb) && isset($this->driver)) {
 <input type="hidden" name="Verbund" value="<?= $this->escapeHtmlAttr($verbund) ?>"/>
 <input type="hidden" name="TitelId" value="<?= $this->escapeHtmlAttr($ppn) ?>"/>
 <input type="hidden" name="Besteller" value="E"/>
+
 <?php if (isset($this->driver)): ?>
+    <?php // nicht freies Fernleihformular ?>
     <input type="hidden" name="ATEB" value="off"/>
-<?php endif; ?>
-<?php if (!isset($this->driver) || (isset($firstLibrary) && $firstLibrary->getSigel() == '122')): ?>
-    <?php // freies Fernleihformular?>
+<?php else: ?>
+    <?php // freies Fernleihformular ?>
     <input type="hidden" name="ATEB" value="on"/>
-    <input type="hidden" name="SignZustand" value="on"/>
 <?php endif; ?>
+
+<input type="hidden" name="SignZustand" value="off"/>
+
