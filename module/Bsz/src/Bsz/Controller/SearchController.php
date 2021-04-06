@@ -100,7 +100,10 @@ class SearchController extends \VuFind\Controller\SearchController
                 }
             }
         }
-        return $this->filterFacetSet($facetList);
+        $facetList = $this->filterFacetSet($facetList);
+        $facetList = $this->orderFivClassification($facetList);
+
+        return $facetList;
     }
     /**
      * Filter out any unwanted facets
@@ -111,10 +114,15 @@ class SearchController extends \VuFind\Controller\SearchController
         $this->filterFacets = $this->serviceLocator->get('VuFind\Config')->get('facets')->get('Filter_Facets');
         if (isset($this->filterFacets)) {
             foreach ($this->filterFacets as $facet => $filter) {
+                $negate = preg_match('/^-/', $facet);
+                if ($negate) {
+                    $facet = preg_replace('/^-/', '', $facet);
+                }
+
                 if (isset($facetSet[$facet])) {
 
                     foreach ($facetSet[$facet]['list'] as $key => $originalFacet) {
-                        if (!$this->checkFilter($filter, $originalFacet['value'])) {
+                        if (!$this->checkFilter($filter, $originalFacet['value'], $negate)) {
                             //unset facet values we do not want
                             unset($facetSet[$facet]['list'][$key]);
                         }
@@ -132,15 +140,39 @@ class SearchController extends \VuFind\Controller\SearchController
         return $facetSet;
     }
 
-    private function checkFilter($filter, $value)
+    /**
+     * @param $filter
+     * @param $value
+     * @param $negate
+     *
+     * @return bool
+     */
+    private function checkFilter($filter, $value, $negate = false)
     {
-        $allowed = explode(',', $filter);
-        foreach ($allowed as $a) {
-            $a = '/^'.$a.'/i';
-            if (preg_match($a, $value)) {
-                return true;
+        $strings = explode(',', $filter);
+        foreach ($strings as $a) {
+            if (!$negate) {
+                $a = '/^' . $a . '/i';
+                if (preg_match($a, $value)) {
+                    return true;
+                }
+            } else {
+                if ($a == $value) {
+                    return false;
+                }
             }
         }
-        return false;
+        return $negate;
+    }
+
+    private function orderFivClassification(array $facetSet)
+    {
+        $tmp = [];
+        foreach ($facetSet['classification_fiv']['list'] as $entry) {
+            $tmp[$entry['value']] = $entry;
+        }
+        ksort($tmp);
+        $facetSet['classification_fiv']['list'] = $tmp;
+        return $facetSet;
     }
 }
