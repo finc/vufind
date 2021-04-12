@@ -59,13 +59,37 @@ class Shibboleth extends \VuFind\Auth\Shibboleth
         return $user;
     }
 
+    /**
+     * Perform cleanup at logout time.
+     *
+     * @param string $url URL to redirect user to after logging out.
+     *
+     * @return string     Redirect URL (usually same as $url, but modified in
+     * some authentication modules).
+     */
+
     public function logout($url)
     {
         $library = $this->libraries->getFirstActive($this->isil);
+        $config = $this->getConfig();
+
+        // distinguiosh between libraries custom logout url
         if ($library instanceof Library) {
-            $url = $library->getLogoutUrl();
+            $baseUrl = $library->getLogoutUrl();
+        } else {
+            $baseUrl = $config->Shibboleth->logout;
         }
 
-        return parent::logout($url);
+        if (isset($baseUrl)
+            && !empty($baseUrl)
+        ) {
+            $append = (strpos($baseUrl, '?') !== false) ? '&'
+                : '?';
+            $url = $baseUrl . $append . 'return='
+                . urlencode($url);
+        }
+
+        // Send back the redirect URL (possibly modified):
+        return $url;
     }
 }
