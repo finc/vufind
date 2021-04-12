@@ -437,8 +437,16 @@ function copyToClipboard() {
     var clipboard = new ClipboardJS('.copy-clipboard-toggle');
     clipboard.on('success', function(e) {
         console.info(e.text + ' copied to clipboard');
-        $('.copy-clipboard-toggle i').removeClass('fa-check text-success').addClass('fa-copy');
-        $('#' + e.trigger.id + ' i').removeClass('fa-copy').addClass('fa-check text-success');
+
+        var icon = $('#' + e.trigger.id + ' i').attr('class');
+        var icons = icon.split(' ');
+        $('#' + e.trigger.id + ' i').removeClass('fa-check text-success').addClass(icons[1]);
+        $('#' + e.trigger.id + ' i').removeClass(icons[1]).addClass('fa-check text-success');
+
+        setTimeout(function () {
+            $('#' + e.trigger.id + ' i').removeClass('fa-check text-success').addClass(icons[1]);
+        }, 2000)
+
         e.clearSelection();
     });
 }

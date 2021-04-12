@@ -21,11 +21,14 @@
                             // correct order.
                             $sorted = [];
                             foreach ($list['list'] as $i => $value) {
-                                if (!empty($value['displayText'])) {
+                                if ($field != 'classification_fiv' && !empty($value['displayText'])) {
                                     $sorted[$i] = $value['displayText'];
+                                    natcasesort($sorted);
+                                } else {
+                                    $sorted[$i] = $value['displayText'];
+                                    ksort($sorted);
                                 }
                             }
-                            natcasesort($sorted);
                             ?>
                             <?php foreach ($sorted as $i => $display): ?>
                                 <?php $value = $list['list'][$i]; ?>
