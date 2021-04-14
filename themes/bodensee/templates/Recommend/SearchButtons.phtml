@@ -9,7 +9,7 @@ $label = $this->recommend->getLabel();
 ?>
 <?php if (!empty($url)): ?>
     <?php if (!empty($label)): ?>
-        <h4><?= $this->transEsc($label) ?></h4>
+        <div class="searchbuttonLabel h4 col-sm-12 col-md-12"><?= $this->transEsc('SearchButtons::' . $label) ?></div>
     <?php endif; ?>
     <div class="searchbutton col-sm-12 col-md-<?= $colNumber ?> col-xs-<?= $colNumber ?>"
          style="padding-left:2px;padding-right:2px;">
