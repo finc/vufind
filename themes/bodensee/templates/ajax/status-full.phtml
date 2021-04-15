@@ -33,7 +33,7 @@
         <?php if ($this->callnumberHandler): ?>
           <a href="<?=$this->url('alphabrowse-home') ?>?source=<?=$this->escapeHtmlAttr($this->callnumberHandler) ?>&amp;from=<?=$this->escapeHtmlAttr($item['callnumber']) ?>"><?=$this->escapeHtml($item['callnumber'])?></a>
         <?php else: ?>
-          <?=$this->escapeHtml($item['callnumber'])?>
+          <span style="white-space: nowrap;"><?= preg_replace('/^.*\s\|\s/', '', $this->string()->cleanEsc($item['callnumber'])); ?></span>
         <?php endif; ?>
       </td>
       <td class="fullAvailability">
