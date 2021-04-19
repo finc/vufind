@@ -236,10 +236,10 @@
                                             <span property="bookEdition" class="markjs"><?=$this->escapeHtml($edition)?></span>
                                         </div>
                                     <?php endif; ?>
-                                    <?php if (!empty($header[0])): ?>
-                                        <div>
-                                            <strong><?=$this->transEsc('Network')?>:</strong>
-                                            <span property="network"><?=$this->escapeHtml($header[0])?></span>
+                                    <?php if (strlen($this->driver->getConsortium()) > 0): ?>
+                                        <div class="ill-source">
+                                            <strong><?= $this->transEsc('Network') ?>:</strong>
+                                            <span><?= $sub->getConsortium() ?></span>
                                         </div>
                                     <?php endif; ?>
                                     <div class="result-formats">
