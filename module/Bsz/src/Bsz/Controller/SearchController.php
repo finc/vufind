@@ -1,9 +1,11 @@
 <?php
+
 namespace Bsz\Controller;
+
+use VuFind\Search\Solr\HierarchicalFacetHelper;
 
 /**
  * Add flash messages to search Controller
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class SearchController extends \VuFind\Controller\SearchController
@@ -12,7 +14,6 @@ class SearchController extends \VuFind\Controller\SearchController
 
     /**
      * Home action
-     *
      * @return mixed
      */
     public function homeAction()
@@ -50,9 +51,9 @@ class SearchController extends \VuFind\Controller\SearchController
      * Taken from AbstractSolrSearch class
      * Process the facets to be used as limits on the Advanced Search screen.
      *
-     * @param array  $facetList          The advanced facet values
-     * @param object $searchObject       Saved search object (false if none)
-     * @param array  $hierarchicalFacets Hierarchical facet list (if any)
+     * @param array $facetList          The advanced facet values
+     * @param object $searchObject      Saved search object (false if none)
+     * @param array $hierarchicalFacets Hierarchical facet list (if any)
      *
      * @return array               Sorted facets, with selected values flagged.
      */
@@ -65,7 +66,7 @@ class SearchController extends \VuFind\Controller\SearchController
         $facetHelper = null;
         if (!empty($hierarchicalFacets)) {
             $facetHelper = $this->serviceLocator
-                ->get(\VuFind\Search\Solr\HierarchicalFacetHelper::class);
+                ->get(HierarchicalFacetHelper::class);
         }
         foreach ($facetList as $facet => &$list) {
             // Hierarchical facets: format display texts and sort facets
@@ -105,8 +106,10 @@ class SearchController extends \VuFind\Controller\SearchController
 
         return $facetList;
     }
+
     /**
      * Filter out any unwanted facets
+     *
      * @param array $facetSet
      */
     public function filterFacetSet($facetSet)
@@ -120,7 +123,6 @@ class SearchController extends \VuFind\Controller\SearchController
                 }
 
                 if (isset($facetSet[$facet])) {
-
                     foreach ($facetSet[$facet]['list'] as $key => $originalFacet) {
                         if (!$this->checkFilter($filter, $originalFacet['value'], $negate)) {
                             //unset facet values we do not want
@@ -167,12 +169,16 @@ class SearchController extends \VuFind\Controller\SearchController
 
     private function orderFivClassification(array $facetSet)
     {
-        $tmp = [];
-        foreach ($facetSet['classification_fiv']['list'] as $entry) {
-            $tmp[$entry['value']] = $entry;
+        if (isset($facetSet['classification_fiv']['list'])) {
+            $tmp = [];
+
+            foreach ($facetSet['classification_fiv']['list'] as $entry) {
+                $tmp[$entry['value']] = $entry;
+            }
+
+            ksort($tmp);
+            $facetSet['classification_fiv']['list'] = $tmp;
         }
-        ksort($tmp);
-        $facetSet['classification_fiv']['list'] = $tmp;
         return $facetSet;
     }
 }
