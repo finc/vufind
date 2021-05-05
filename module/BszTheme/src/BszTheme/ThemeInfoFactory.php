@@ -1,28 +1,36 @@
 <?php
+
 namespace BszTheme;
 
+use Zend\Http\Request;
 use Zend\ServiceManager\ServiceManager;
 
 /**
  * VuFind creates its ThemeInfo in a dynamic way. We use a factory here
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class ThemeInfoFactory extends \VuFindTheme\ThemeInfoFactory
 {
     /**
      * Create ThemeInfo instance
+     *
      * @param ServiceManager $sm
-     * @return \BszTheme\ThemeInfo
+     *
+     * @return ThemeInfo
      */
     public static function getThemeInfo(ServiceManager $sm)
     {
         $request = $sm->get('Request');
         $tag = 'swb';
-        if ($request instanceof \Zend\Http\Request ) {
+        if ($request instanceof Request) {
             $host = $request->getHeaders()->get('host')->getFieldValue();
-            $parts = explode('.', $host);
-            $tag = $parts[0] ?? 'swb';
+
+            if (preg_match('ireon-portal\.de', $host)) {
+                $tag = 'ireon';
+            } else {
+                $parts = explode('.', $host);
+                $tag = $parts[0] ?? 'swb';
+            }
         }
         return new ThemeInfo(realpath(APPLICATION_PATH . '/themes'), 'bodensee', $tag);
     }
