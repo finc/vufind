@@ -54,8 +54,15 @@ class Factory
         $website = $client->getWebsite();
 
         $host = $container->get('Request')->getHeaders()->get('host')->getFieldValue();
-        $parts = explode('.', $host);
-        $tag = $parts[0] ?? 'swb';
+
+        $tag = 'swb';
+        if (preg_match('/ireon-portal\.de/', $host)) {
+            $tag = 'ireon';
+        } else {
+            $parts = explode('.', $host);
+            $tag = $parts[0] ?? 'swb';
+        }
+
         $library = null;
         $libraries = $container->get('Bsz\Config\Libraries');
         if ($libraries instanceof LibrariesTable) {
