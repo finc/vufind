@@ -22,6 +22,12 @@ class ThemeInfoFactory extends \VuFindTheme\ThemeInfoFactory
         if ($request instanceof \Zend\Http\Request ) {
             $host = $request->getHeaders()->get('host')->getFieldValue();
             $parts = explode('.', $host);
+
+            // spacial case ireon-portal.de
+            if ($parts[0] == 'ireon-portal') {
+                $parts[0] = 'ireon';
+            }
+
             $tag = $parts[0] ?? 'swb';
         }
         return new ThemeInfo(realpath(APPLICATION_PATH . '/themes'), 'bodensee', $tag);
