@@ -76,7 +76,12 @@ JS;
           <?php if (strpos($this->translate('homepage_text'), '<') !== false): ?>
                 <?=$this->translate('homepage_text')?>
           <?php else: ?>
-                <?=$this->transEsc('homepage_text')?>
+              <p><?=$this->transEsc('homepage_text')?></p>
+          <?php endif; ?>
+          <?php if (strpos($this->translate('homepage_text_2'), '<') !== false): ?>
+              <?=$this->translate('homepage_text_2')?>
+          <?php else: ?>
+              <p><?=$this->transEsc('homepage_text_2')?></p>
           <?php endif; ?>
 
           <?php if ($this->client()->isIsilSession()): ?>
