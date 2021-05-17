@@ -25,7 +25,7 @@ class ThemeInfoFactory extends \VuFindTheme\ThemeInfoFactory
         if ($request instanceof Request) {
             $host = $request->getHeaders()->get('host')->getFieldValue();
 
-            if (preg_match('/ireon-portal\.de/', $host)) {
+            if (preg_match('/ireon-portal/', $host)) {
                 $tag = 'ireon';
             } else {
                 $parts = explode('.', $host);

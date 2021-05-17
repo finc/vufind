@@ -56,7 +56,7 @@ class Factory
         $host = $container->get('Request')->getHeaders()->get('host')->getFieldValue();
 
         $tag = 'swb';
-        if (preg_match('/ireon-portal\.de/', $host)) {
+        if (preg_match('/ireon-portal/', $host)) {
             $tag = 'ireon';
         } else {
             $parts = explode('.', $host);
