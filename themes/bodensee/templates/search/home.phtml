@@ -80,7 +80,7 @@ JS;
           <?php endif; ?>
           <?php if (preg_match('/^<.*>$/', $this->translate('homepage_text_2'))): ?>
               <?=$this->translate('homepage_text_2')?>
-          <?php elseif($this->transEsc('homepage_text_2') !== 'homepage_text_2')): ?>
+          <?php elseif($this->transEsc('homepage_text_2') !== 'homepage_text_2'): ?>
               <p><?=$this->transEsc('homepage_text_2')?></p>
           <?php endif; ?>
 
