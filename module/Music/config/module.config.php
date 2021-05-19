@@ -28,7 +28,7 @@ use Music\Controller\Factory;
 $config = [
     'controllers' => [
         'factories' => [
-            'Bsz\Controller\MusicController' => Factory::class,
+            'Music\Controller\MusicController' => Factory::class,
         ],
         'aliases' => [
             'Music' => 'Music\Controller\MusicController',
