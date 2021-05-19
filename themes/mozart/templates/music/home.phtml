@@ -1,0 +1,53 @@
+<?php
+$this->headTitle($this->translate('Orchestration Search'));
+
+// Disable top search box -- this page has a special layout.
+$this->layout()->searchbox = $this->render('search/searchbox.phtml');
+
+// Set default value if necessary:
+if (!isset($this->searchClassId)) {
+    $this->searchClassId = 'Solr';
+}
+
+// Load search actions and settings (if any):
+$options = $this->searchOptions($this->searchClassId);
+$basicSearch = $options->getSearchAction();
+$advSearch = $options->getAdvancedSearchAction();
+
+$this->layout()->breadcrumbs = false;
+
+$library = $this->libraries()->getFirstActive($this->client()->getIsils());
+
+?>
+
+<div class="col-sm-12 musicHomeContent">
+    <div class="row">
+        <div class="col-sm-6">
+            <?=$this->flashmessages()?>
+            <?= $this->render('bsz/' . $this->client()->getTag() . '/' . $this->layout()->userLang . '.phtml')?>
+        </div>
+        <div class="col-sm-6">
+            <h4><?=$this->transEsc('Orchestration Search')?></h4>
+            <?php $headings = ['Zupfinstrumente', 'Blasinstrumente', 'Schlaginstrumente']?>
+            <div class="panel-group accordion" id="acc-musical-cast">
+                <?php foreach ($headings as $heading): ?>
+                    <?php $rand = 'panel-'.rand(0, 10000);?>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <?=$this->transEsc($heading)?>
+                            <a data-toggle="collapse" data-parent="#acc-musical-cast" href="#<?=$rand?>" aria-expanded="false" aria-controls="<?=$rand?>" class="text-white">
+                                <i class="fa fa-angle-down"></i>
+                            </a>
+                        </div>
+                        <div id="<?=$rand?>" class="panel-collapse collapse">
+                            <div class="panel-body">Panel Content</div>
+                        </div>
+                    </div>
+                <? endforeach ?>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+

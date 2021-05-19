@@ -27,6 +27,7 @@ class MusicController extends AbstractBase
 {
     public function homeAction()
     {
-        die();
+        $view = $this->createViewModel();
+        return $view;
     }
 }
