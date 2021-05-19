@@ -458,6 +458,13 @@ function deleteInput() {
     })
 }
 
+function accordion() {
+    $('.accordion .panel-heading').click(function(e) {
+        #$(this).find('a').trigger('click');
+        e.preventDefault();
+    })
+}
+
 
 /*
 * this is executed after site is loaded
@@ -489,4 +496,5 @@ $(document).ready(function() {
     openInPopup();
     copyToClipboard();
     deleteInput();
+    accordion();
 });
