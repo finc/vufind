@@ -34,9 +34,11 @@ $library = $this->libraries()->getFirstActive($this->client()->getIsils());
                     <?php $rand = 'panel-'.rand(0, 10000);?>
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <?=$this->transEsc($heading)?>
-                            <a data-toggle="collapse" data-parent="#acc-musical-cast" href="#<?=$rand?>" aria-expanded="false" aria-controls="<?=$rand?>" class="text-white">
-                                <i class="fa fa-angle-down"></i>
+
+                            <a data-toggle="collapse" data-parent="#acc-musical-cast" href="#<?=$rand?>" aria-expanded="false" aria-controls="<?=$rand?>" class="btn-block">
+                                <?=$this->transEsc($heading)?>
+                                <i class="fa fa-caret-down"></i>
+
                             </a>
                         </div>
                         <div id="<?=$rand?>" class="panel-collapse collapse">

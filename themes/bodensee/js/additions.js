@@ -459,10 +459,19 @@ function deleteInput() {
 }
 
 function accordion() {
-    //$('.accordion .panel-heading').click(function(e) {
-        //$(this).find('a').trigger('click');
-        //e.preventDefault();
-    //})
+    $('.accordion .panel-heading').click(function(e) {
+        var $pc = $(this).parent().parent().find('.panel-collapse');
+        var $fa = $(this).parent().parent().parent().find('.fa');
+
+        // reset all carets
+        $fa.addClass('fa-caret-down').removeClass('fa-caret-up');
+
+        if (!$pc.hasClass('in')) {
+            $(this).find('a .fa').addClass('fa-caret-up').removeClass('fa-caret-down');
+        }
+
+
+    })
 }
 
 
