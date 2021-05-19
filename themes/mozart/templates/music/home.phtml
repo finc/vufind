@@ -28,7 +28,7 @@ $library = $this->libraries()->getFirstActive($this->client()->getIsils());
         </div>
         <div class="col-sm-6">
             <h4><?=$this->transEsc('Orchestration Search')?></h4>
-            <?php $headings = ['Zupfinstrumente', 'Blasinstrumente', 'Schlaginstrumente']?>
+            <?php $headings = ['Tasteninstrumente', 'Streichinstrumente', 'Holzblasinstrumente', 'Blechblasinstrumente', 'Zupfinstrumente', 'Gesang']?>
             <div class="panel-group accordion" id="acc-musical-cast">
                 <?php foreach ($headings as $heading): ?>
                     <?php $rand = 'panel-'.rand(0, 10000);?>
@@ -40,7 +40,18 @@ $library = $this->libraries()->getFirstActive($this->client()->getIsils());
                             </a>
                         </div>
                         <div id="<?=$rand?>" class="panel-collapse collapse">
-                            <div class="panel-body">Panel Content</div>
+                            <div class="panel-body">
+                                <div class="form-group form-group-sm show required">
+                                    <div class="col-sm-9">
+                                        <strong><a href="http://mhtr.localhost/Search/Results?lookfor=Klavier+OR+Cembalo+OR+Klavichord+OR+E-Piano&type=MusicalCast&hiddenFilters[]=~institution_id%3ADE-Trs1">Klavier/Cembalo</a></strong>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-sm show required">
+                                    <div class="col-sm-9">
+                                        <strong><a href="http://mhtr.localhost/Search/Results?lookfor=Orgel OR Harmonium OR E-Orgel&type=MusicalCast&hiddenFilters[]=~institution_id%3ADE-Trs1">Orgel/Harmonium</a></strong>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 <? endforeach ?>
