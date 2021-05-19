@@ -459,10 +459,10 @@ function deleteInput() {
 }
 
 function accordion() {
-    $('.accordion .panel-heading').click(function(e) {
-        #$(this).find('a').trigger('click');
-        e.preventDefault();
-    })
+    //$('.accordion .panel-heading').click(function(e) {
+        //$(this).find('a').trigger('click');
+        //e.preventDefault();
+    //})
 }
 
 
