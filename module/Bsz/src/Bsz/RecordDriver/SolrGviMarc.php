@@ -129,12 +129,12 @@ class SolrGviMarc extends SolrMarc implements Constants
 
         $regexAllow = $this->mainConfig->get('FivClassification')->get('regex_allow');
 
-        foreach ($this->getMarcRecord()->getFields('084') as $field) {
+        foreach ($this->getMarcRecord()->getFields('936') as $field) {
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield('2');
             if ($suba && $sub2) {
                 $sub2data = $field->getSubfield('2')->getData();
-                if (strtolower($sub2data) == 'fiv') {
+                if (strtolower($sub2data) == 'fivrk' || strtolower($sub2data) == 'fivsk') {
                     $data = $suba->getData();
                     if (!empty($regexAllow) && preg_match($regexAllow, $data)) {
                         $classificationList[] = $suba->getData();
