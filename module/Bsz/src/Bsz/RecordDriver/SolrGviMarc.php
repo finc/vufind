@@ -132,7 +132,9 @@ class SolrGviMarc extends SolrMarc implements Constants
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield('2');
-            if ($suba && $sub2) {
+            if ($suba && $sub2 && $field->getIndicator(1) == 'f'
+                && $field->getIndicator(2) == 'i'
+            ) {
                 $sub2data = $field->getSubfield('2')->getData();
                 if (strtolower($sub2data) == 'fivrk' || strtolower($sub2data) == 'fivsk') {
                     $data = $suba->getData();
