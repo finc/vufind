@@ -84,13 +84,27 @@
   <? endif; ?>
   </tr>
   <? endif; ?>
+  <? $fivsubjects = $this->driver->tryMethod('getFIVSubjects');
+  if(!empty($fivsubjects)): ?>
+  <? $contentDisplayed = true; ?>
+  <tr>
+      <th><span class="text-nowrap"><?=$this->transEsc('FIVSubjects')?>:</span></th>
+      <? if(is_array($fivsubjects)): ?>
+      <td>
+          <? foreach ($fivsubjects as $notation): ?>
+              <span class="notationLine markjs"><a href="#" class="searchicon"><?=$this->escapeHtml($notation)?></a></span>
+          <? endforeach; ?>
+      </td>
+  <? endif; ?>
+  </tr>
+  <? endif; ?>
 
   <? $dficlassification = $this->driver->tryMethod('getDFIClassification');
   if(!empty($dficlassification)): ?>
   <? $contentDisplayed = true; ?>
   <tr>
       <th><span class="text-nowrap"><?=$this->transEsc('DFIClassification')?>:</span></th>
-      <? if(is_array($fivclassification)): ?>
+      <? if(is_array($dficlassification)): ?>
       <td>
           <? foreach ($dficlassification as $notation): ?>
             <span class="notationLine markjs">

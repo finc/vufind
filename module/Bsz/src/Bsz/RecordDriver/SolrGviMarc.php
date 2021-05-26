@@ -209,6 +209,25 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
+     * @return array
+     * @throws File_MARC_Exception
+     */
+    public function getFivSubjects()
+    {
+        $notationList = [];
+
+        foreach ($this->getMarcRecord()->getFields('938') as $field) {
+            $suba = $field->getSubField('a');
+            if ($suba && $field->getIndicator(1) == 1
+                && $field->getIndicator(2) == 1
+            ) {
+                $notationList[] = $field->getSubfield('a')->getData();
+            }
+        }
+        return $notationList;
+    }
+
+    /**
      * Get the date coverage for a record which spans a period of time (i.e. a
      * journal).  Use getPublicationDates for publication dates of particular
      * monographic items.
