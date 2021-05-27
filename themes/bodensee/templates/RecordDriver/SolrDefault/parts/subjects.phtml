@@ -68,7 +68,7 @@
   if(!empty($fivclassification) && $this->client()->is('show_fiv')): ?>
   <?php $contentDisplayed = true; ?>
   <tr>
-      <th><span class="text-nowrap"><?=$this->transEsc('FIVClassification')?>:</span></th>
+      <th><span class="text-nowrap"><?=$this->abbrev('FIV')?>-<?=$this->transEsc('Classification')?>:</span></th>
       <?php if(is_array($fivclassification)): ?>
       <td>
           <?php foreach ($fivclassification as $notation): ?>
@@ -86,7 +86,7 @@
   if(!empty($fivsubjects) && $this->client()->is('show_fiv')): ?>
   <?php $contentDisplayed = true; ?>
   <tr>
-      <th><span class="text-nowrap"><?=$this->transEsc('FIVSubjects')?>:</span></th>
+      <th><span class="text-nowrap"><?=$this->abbrev('FIV')?>-<?=$this->transEsc('Subjects')?>:</span></th>
       <?php if(is_array($fivsubjects)): ?>
       <td>
           <?php foreach ($fivsubjects as $notation): ?>
@@ -101,7 +101,7 @@
   if(!empty($dficlassification) && $this->client()->is('show_dfi')): ?>
   <?php $contentDisplayed = true; ?>
   <tr>
-      <th><span class="text-nowrap"><?=$this->transEsc('DFIClassification')?>:</span></th>
+      <th><span class="text-nowrap"><?=$this->abbrev('DFI')?>-<?=$this->transEsc('Classification')?>:</span></th>
       <?php if(is_array($dficlassification)): ?>
       <td>
           <?php foreach ($dficlassification as $notation): ?>
@@ -118,7 +118,7 @@
 <?php $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings');
 if (!empty($subjects) && $this->client()->is('show_rvk')): ?>
   <tr>
-    <th><?=$this->transEsc('RVKSubjects')?>: </th>
+    <th><span class="text-nowrap"><?=$this->abbrev('RVK')?>-<?=$this->transEsc('Subjects')?>:</span></th>
     <td>
       <div class="subjectLine" property="keywords">
       <?php $count = 0; ?>
