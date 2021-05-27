@@ -93,8 +93,8 @@
         <?php $count = 0;?>
       <td>
           <span class="notationLine markjs">
-          <?php foreach ($fivsubjects as $notation): ?>
-              <a href="#" class="searchicon <?php if($count >= 5): ?>fivsubjects-<?=$rand?> collapse-inline collapse multi-collapse<?php endif; ?>"><?=$this->escapeHtml($notation)?></a>
+          <?php foreach ($fivsubjects as $subject): ?>
+              <a href="<?=$this->record($this->driver)->getLink('fivsubject', $subject, $this->searchClassId)?>" class="searchicon <?php if($count >= 5): ?>fivsubjects-<?=$rand?> collapse-inline collapse multi-collapse<?php endif; ?>"><?=$this->escapeHtml($subject)?></a>
               <?php $count++ ?>
           <?php endforeach; ?>
           </span>
