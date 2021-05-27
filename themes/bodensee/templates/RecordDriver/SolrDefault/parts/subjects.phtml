@@ -39,9 +39,8 @@
   <? endif; ?>
 
 
-  <? if ($this->client()->is('show_rvk')): ?>
   <? $notations = $this->driver->tryMethod('getRVKNotations');
-  if(!empty($notations)): ?>
+  if(!empty($notations) && $this->client()->is('show_rvk')): ?>
   <? $contentDisplayed = true; ?>
   <tr>
       <th><span class="text-nowrap"><?=$this->abbrev('RVK')?>-<?=$this->transEsc('Notation')?>:</span></th>
@@ -65,10 +64,9 @@
   <? endif; ?>
   </tr>
   <? endif; ?>
-  <? endif; ?>
 
   <? $fivclassification = $this->driver->tryMethod('getFIVClassification');
-  if(!empty($fivclassification)): ?>
+  if(!empty($fivclassification) && $this->client()->is('show_fiv')): ?>
   <? $contentDisplayed = true; ?>
   <tr>
       <th><span class="text-nowrap"><?=$this->transEsc('FIVClassification')?>:</span></th>
@@ -84,8 +82,9 @@
   <? endif; ?>
   </tr>
   <? endif; ?>
+
   <? $fivsubjects = $this->driver->tryMethod('getFIVSubjects');
-  if(!empty($fivsubjects)): ?>
+  if(!empty($fivsubjects) && $this->client()->is('show_fiv')): ?>
   <? $contentDisplayed = true; ?>
   <tr>
       <th><span class="text-nowrap"><?=$this->transEsc('FIVSubjects')?>:</span></th>
@@ -100,7 +99,7 @@
   <? endif; ?>
 
   <? $dficlassification = $this->driver->tryMethod('getDFIClassification');
-  if(!empty($dficlassification)): ?>
+  if(!empty($dficlassification) && $this->client()->is('show_dfi')): ?>
   <? $contentDisplayed = true; ?>
   <tr>
       <th><span class="text-nowrap"><?=$this->transEsc('DFIClassification')?>:</span></th>
@@ -116,8 +115,9 @@
   </tr>
   <? endif; ?>
 
-<? if ($this->client()->is('show_rvk')): ?>
-<? $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings'); if (!empty($subjects)): ?>
+
+<? $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings');
+if (!empty($subjects) && $this->client()->is('show_rvk')): ?>
   <tr>
     <th><?=$this->transEsc('RVKSubjects')?>: </th>
     <td>
@@ -149,6 +149,5 @@
     </td>
   </tr>
   <? endif; ?>
-<? endif; ?>
 
 
