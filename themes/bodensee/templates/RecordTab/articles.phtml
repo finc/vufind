@@ -34,13 +34,7 @@ $content = $this->tab->getContent();
             <tfoot>
             <tr>
                 <td>
-                    <button class="btn btn-info btn-xs text-toggle"
-                            data-toggle="collapse"
-                            data-target=".showmore-<?= $rand ?>"
-                            aria-expanded="false"
-                            data-alttext="<?= $this->transEsc('Showless') ?>">
-                        <?= $this->transEsc('Showmore') ?>
-                    </button>
+                    <?=$this->showmore('.showmore-'.$rand)?>
                 </td>
             </tr>
             </tfoot>
