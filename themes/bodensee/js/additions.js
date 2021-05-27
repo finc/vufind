@@ -37,6 +37,9 @@ function   performMark() {
     });
 }
 
+/**
+ * Deprecated, don't use this anymore, use bootstrap collapse
+ */
 function showmore() {
     $('.showmore').click(function(e) {
         var id = $(this).attr('id').split('-')[1];
