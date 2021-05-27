@@ -15,17 +15,17 @@
             <?php $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
               <?php $subject = trim($subject . ' ' . $subfield); ?>
-              <a class="markjs searchicon <?php if($count > 5): ?>allsubjects-<?=$rand?> collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>"
+              <a class="markjs searchicon <?php if($count > 5): ?>allsubjects-<?=$rand?>collapse-inline collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>"
                  href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
               <?php $count++ ?>
             <?php endforeach; ?>
           <?php elseif (is_array($field) && count($field) > 1): ?>
                 <?php foreach ($field as $subfield): ?>
-                     <a class="markjssearchicon <?php if($count > 5): ?>allsubjects-<?=$rand?> collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+                     <a class="markjssearchicon <?php if($count > 5): ?>allsubjects-<?=$rand?>collapse-inline  collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
                     <?php $count++ ?>
                 <?php endforeach; ?>
           <?php else: ?>
-             <a class="markjs searchicon <?php if ($count >= 5): ?>allsubjects-<?=$rand?> collapse multi-collapse<?php endif; ?>"
+             <a class="markjs searchicon <?php if ($count >= 5): ?>allsubjects-<?=$rand?> collapse-inline collapse multi-collapse<?php endif; ?>"
                 title="<?= $this->escapeHtmlAttr($field) ?>"
                 href="<?= $this->record($this->driver)->getLink('subject', $field, $this->searchClassId) ?>"><?= trim($this->escapeHtml($field)) ?></a>
              <?php $count++ ?>
@@ -33,7 +33,7 @@
       </span>
       <?php endforeach; ?>
       <?php if($count > 5): ?>
-          <?=$this->showmore('.showmore-'.$rand, false)?>
+          <?=$this->showmore('.allsubjects-'.$rand, false)?>
       <?endif; ?>
     </td>
   </tr>
