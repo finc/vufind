@@ -1,54 +1,53 @@
-<? $subjects = $this->driver->getAllSubjectHeadings();?>
-<? if (!empty($subjects)): ?>
+<?php $subjects = $this->driver->getAllSubjectHeadings();?>
+<?php if (!empty($subjects)): ?>
 
-<? $rand = rand(0, 9999)?>
+<?php $rand = rand(0, 9999)?>
   <tr>
     <th><?=$this->transEsc('Subjects')?>:</th>
     <td id="showmore-items-<?=$rand?>">
-      <? $count = 0 ?>
-      <? foreach ($subjects as $field): ?>
+      <?php $count = 0 ?>
+      <?php foreach ($subjects as $field): ?>
         <span class="subjectLine" property="keywords">
-         <? $subject = ''; ?>
-         <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
-            <? $i = 0; foreach ($field as $subfield): ?>
+         <?php $subject = ''; ?>
+         <?php if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
+            <?php $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
-              <? $subject = trim($subject . ' ' . $subfield); ?>
-              <a class="markjs showmore-item searchicon <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>"
+              <?php $subject = trim($subject . ' ' . $subfield); ?>
+              <a class="markjs showmore-item searchicon <?php if($count > 5): ?>hidden <?php endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>"
                  href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
-              <? $count++ ?>
-            <? endforeach; ?>
-          <? elseif (is_array($field) && count($field) > 1): ?>
-                <? foreach ($field as $subfield): ?>
-                    <a class="markjssearchicon showmore-item <? if($count > 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
-                    <? $count++ ?>
-                <? endforeach; ?>
-          <? else: ?>
-             <a class="markjs searchicon showmore-item <? if ($count >= 5): ?>hidden <? endif; ?>"
+              <?php $count++ ?>
+            <?php endforeach; ?>
+          <?php elseif (is_array($field) && count($field) > 1): ?>
+                <?php foreach ($field as $subfield): ?>
+                    <a class="markjssearchicon showmore-item <?php if($count > 5): ?>hidden <?php endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+                    <?php $count++ ?>
+                <?php endforeach; ?>
+          <?php else: ?>
+             <a class="markjs searchicon showmore-item <?php if ($count >= 5): ?>hidden <?php endif; ?>"
                 title="<?= $this->escapeHtmlAttr($field) ?>"
                 href="<?= $this->record($this->driver)->getLink('subject', $field, $this->searchClassId) ?>"><?= trim($this->escapeHtml($field)) ?></a>
-             <? $count++ ?>
-         <? endif; ?>
+             <?php $count++ ?>
+         <?php endif; ?>
       </span>
-      <? endforeach; ?>
-      <? if($count > 5): ?>
+      <?php endforeach; ?>
+      <?php if($count > 5): ?>
       <a href="#" class="showmore" id="showmore-<?=$rand?>">[<?=$this->transEsc('Showmore')?>...]</a>
       <?endif; ?>
     </td>
   </tr>
-  <? unset($subjects)?>
-  <? endif; ?>
+  <?php unset($subjects)?>
+  <?php endif; ?>
 
 
-  <? $notations = $this->driver->tryMethod('getRVKNotations');
+  <?php $notations = $this->driver->tryMethod('getRVKNotations');
   if(!empty($notations) && $this->client()->is('show_rvk')): ?>
-  <? $contentDisplayed = true; ?>
+  <?php $contentDisplayed = true; ?>
   <tr>
       <th><span class="text-nowrap"><?=$this->abbrev('RVK')?>-<?=$this->transEsc('Notation')?>:</span></th>
-      <? if(is_array($notations)): ?>
+      <?php if(is_array($notations)): ?>
       <td>
-          <? foreach ($notations as $shortcut => $description): ?>
-          <?
-          $descriptionHtml = '<ol>';
+          <?php foreach ($notations as $shortcut => $description): ?>
+          <?php           $descriptionHtml = '<ol>';
           foreach($description as $item) {
             $descriptionHtml .= '<li>'.$item.'</li>';
           }
@@ -59,95 +58,95 @@
           <span class="notationLine markjs">
                 <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('rvknotation', $shortcut, $this->searchClassId)?>" class="searchicon" title="<?=$descriptionHtml?>" ><?=$this->transEsc($shortcut)?></a>
           </span>
-          <? endforeach; ?>
+          <?php endforeach; ?>
       </td>
-  <? endif; ?>
+  <?php endif; ?>
   </tr>
-  <? endif; ?>
+  <?php endif; ?>
 
-  <? $fivclassification = $this->driver->tryMethod('getFIVClassification');
+  <?php $fivclassification = $this->driver->tryMethod('getFIVClassification');
   if(!empty($fivclassification) && $this->client()->is('show_fiv')): ?>
-  <? $contentDisplayed = true; ?>
+  <?php $contentDisplayed = true; ?>
   <tr>
       <th><span class="text-nowrap"><?=$this->transEsc('FIVClassification')?>:</span></th>
-      <? if(is_array($fivclassification)): ?>
+      <?php if(is_array($fivclassification)): ?>
       <td>
-          <? foreach ($fivclassification as $notation): ?>
-            <? $trans = 'FIV::'.preg_replace('/\.|\s.*/', '', strtolower($notation))?>
+          <?php foreach ($fivclassification as $notation): ?>
+            <?php $trans = 'FIV::'.preg_replace('/\.|\s.*/', '', strtolower($notation))?>
                 <span class="notationLine markjs">
                     <a href="<?=$this->record($this->driver)->getLink('fivclassification', $notation, $this->searchClassId)?>" class="searchicon"><?=$this->transEsc($trans)?></a>
                 </span>
-          <? endforeach; ?>
+          <?php endforeach; ?>
       </td>
-  <? endif; ?>
+  <?php endif; ?>
   </tr>
-  <? endif; ?>
+  <?php endif; ?>
 
-  <? $fivsubjects = $this->driver->tryMethod('getFIVSubjects');
+  <?php $fivsubjects = $this->driver->tryMethod('getFIVSubjects');
   if(!empty($fivsubjects) && $this->client()->is('show_fiv')): ?>
-  <? $contentDisplayed = true; ?>
+  <?php $contentDisplayed = true; ?>
   <tr>
       <th><span class="text-nowrap"><?=$this->transEsc('FIVSubjects')?>:</span></th>
-      <? if(is_array($fivsubjects)): ?>
+      <?php if(is_array($fivsubjects)): ?>
       <td>
-          <? foreach ($fivsubjects as $notation): ?>
+          <?php foreach ($fivsubjects as $notation): ?>
               <span class="notationLine markjs"><a href="#" class="searchicon"><?=$this->escapeHtml($notation)?></a></span>
-          <? endforeach; ?>
+          <?php endforeach; ?>
       </td>
-  <? endif; ?>
+  <?php endif; ?>
   </tr>
-  <? endif; ?>
+  <?php endif; ?>
 
-  <? $dficlassification = $this->driver->tryMethod('getDFIClassification');
+  <?php $dficlassification = $this->driver->tryMethod('getDFIClassification');
   if(!empty($dficlassification) && $this->client()->is('show_dfi')): ?>
-  <? $contentDisplayed = true; ?>
+  <?php $contentDisplayed = true; ?>
   <tr>
       <th><span class="text-nowrap"><?=$this->transEsc('DFIClassification')?>:</span></th>
-      <? if(is_array($dficlassification)): ?>
+      <?php if(is_array($dficlassification)): ?>
       <td>
-          <? foreach ($dficlassification as $notation): ?>
+          <?php foreach ($dficlassification as $notation): ?>
             <span class="notationLine markjs">
                 <a data-toggle="tooltip" data-placement="right" data-html="true" href="<?=$this->record($this->driver)->getLink('dficlassification', $notation, $this->searchClassId)?>" class="searchicon" title="<?=$this->transEsc($notation)?>" ><?=$notation?></a>
             </span>
-          <? endforeach; ?>
+          <?php endforeach; ?>
       </td>
-  <? endif; ?>
+  <?php endif; ?>
   </tr>
-  <? endif; ?>
+  <?php endif; ?>
 
 
-<? $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings');
+<?php $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings');
 if (!empty($subjects) && $this->client()->is('show_rvk')): ?>
   <tr>
     <th><?=$this->transEsc('RVKSubjects')?>: </th>
     <td>
       <div class="subjectLine" property="keywords">
-      <? $count = 0; ?>
-      <? foreach ($subjects as $field): ?>
-        <? $subject = ''; ?>
-        <? if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
-            <? $i = 0; foreach ($field as $subfield): ?>
+      <?php $count = 0; ?>
+      <?php foreach ($subjects as $field): ?>
+        <?php $subject = ''; ?>
+        <?php if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
+            <?php $i = 0; foreach ($field as $subfield): ?>
               <?=($i++ == 0) ? '' : ' &gt; '?>
-              <? $subject = trim($subject . ' ' . $subfield); ?>
-              <? //Die Links hatten eine Klasse backlink. Diese führt mit einer
+              <?php $subject = trim($subject . ' ' . $subfield); ?>
+              <?php //Die Links hatten eine Klasse backlink. Diese führt mit einer
               // bestimmten Browsererweiterung (uBlock / AdBlock?) zu komischer
               // Darstellung beim Hovern
               ?>
               <a class="markjs searchicon" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
-            <? endforeach; ?>
-        <? else: ?>
-            <a class="markjs searchicon <? if($count >= 5): ?>hidden <? endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>"
+            <?php endforeach; ?>
+        <?php else: ?>
+            <a class="markjs searchicon <?php if($count >= 5): ?>hidden <?php endif; ?>" title="<?=$this->escapeHtmlAttr($field)?>"
                href="<?=$this->record($this->driver)->getLink('rvkheading', $field, $this->searchClassId)?>">
                 <?=trim($this->escapeHtml($field))?></a>
-        <? endif; ?>
-        <? $count++ ?>
-      <? endforeach; ?>
-      <? if($count > 5):?>
+        <?php endif; ?>
+        <?php $count++ ?>
+      <?php endforeach; ?>
+      <?php if($count > 5):?>
       <a href="#" class="showmore"><?=$this->transEsc('Showmore')?></a>
-      <? endif; ?>
+      <?php endif; ?>
       </div>
     </td>
   </tr>
-  <? endif; ?>
+  <?php endif; ?>
 
 
