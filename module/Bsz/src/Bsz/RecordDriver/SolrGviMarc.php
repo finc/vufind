@@ -220,7 +220,7 @@ class SolrGviMarc extends SolrMarc implements Constants
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield(2);
             if ($suba && $field->getIndicator(1) == 1
-                && $field->getIndicator(2) == 1
+                && $field->getIndicator(2) <= 1
                 && (empty($sub2) || $sub2->getData() != 'gnd')
             ) {
                 $notationList[] = $suba->getData();
