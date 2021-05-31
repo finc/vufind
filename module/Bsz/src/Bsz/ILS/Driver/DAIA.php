@@ -25,6 +25,9 @@
  */
 namespace Bsz\ILS\Driver;
 
+use DateTime;
+use Exception;
+use VuFind\Date\Converter;
 use VuFind\Exception\ILS as ILSException;
 
 /**
@@ -40,7 +43,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
     protected $parsePpn = true;
     protected $holdings = [];
 
-    public function __construct(\VuFind\Date\Converter $converter, $isil, $baseUrl = '')
+    public function __construct(Converter $converter, $isil, $baseUrl = '')
     {
         $this->dateConverter = $converter;
         $this->isil = $isil;
@@ -83,10 +86,12 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         try {
             $result = $this->httpService->get(
                 $this->baseUrl,
-                $params, null, $http_headers
+                $params,
+                null,
+                $http_headers
             );
-        } catch (\Exception $e) {
-            throw new \VuFind\Exception\ILS($e->getMessage());
+        } catch (Exception $e) {
+            throw new ILSException($e->getMessage());
         }
 
         if (!$result->isSuccess()) {
@@ -179,11 +184,11 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
                     $duedateRaw = $unavailable['expected'];
 
                     try {
-                        $dateObject = new \DateTime($duedateRaw);
-                        $dateToday = new \DateTime();
+                        $dateObject = new DateTime($duedateRaw);
+                        $dateToday = new DateTime();
                         $difference = $dateToday->diff($dateObject)->days;
                         $duedate = $dateObject->format('d.m.Y');
-                    } catch (\Exception $ex) {
+                    } catch (Exception $ex) {
                         $this->debug('Date conversion failed: ' . $ex->getMessage());
                         $duedate = null;
                     }
@@ -347,7 +352,7 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
     {
         $link = null;
         if (isset($details['ilslink']) && $details['ilslink'] != '') {
-            $link = str_replace('SOPAC', 'SMOPAC', $details['ilslink']);
+            //$link = str_replace('SOPAC', 'SMOPAC', $details['ilslink']);
             $details['ilslink'] = $link;
         }
         return $details['ilslink'];
