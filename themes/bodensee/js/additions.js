@@ -37,6 +37,9 @@ function   performMark() {
     });
 }
 
+/**
+ * Deprecated, don't use this anymore, use bootstrap collapse
+ */
 function showmore() {
     $('.showmore').click(function(e) {
         var id = $(this).attr('id').split('-')[1];
@@ -370,10 +373,12 @@ function typeaheadLibraries() {
  */
 function textToggle() {
     $(document).on('click', '.text-toggle', function(e) {
-        var oldtext = $(this).text();
+        var oldtext = $(this).find('.text').text();
+        var $icon = $(this).find('.fa').toggleClass('rotate');
         var newtext = $(this).attr('data-alttext');
-        $(this).text(newtext);
+        $(this).find('.text').text(newtext);
         $(this).attr('data-alttext', oldtext);
+        e.preventDefault()
     });
 }
 
@@ -457,7 +462,6 @@ function deleteInput() {
         $(target).val('');
     })
 }
-
 
 /*
 * this is executed after site is loaded

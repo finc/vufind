@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 namespace Bsz\RecordDriver;
 
 use Bsz\Exception;
@@ -26,7 +27,6 @@ use VuFind\RecordDriver\IlsAwareTrait;
 use VuFind\RecordDriver\MarcReaderTrait;
 
 /**
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class SolrGviMarc extends SolrMarc implements Constants
@@ -42,10 +42,24 @@ class SolrGviMarc extends SolrMarc implements Constants
     use MarcFormatTrait;
 
     /**
+     * Get all subject headings associated with this record.  Each heading is
+     * returned as an array of chunks, increasing from least specific to most
+     * specific.
+     * @return array
+     */
+    public function getAllSubjectHeadings($extended = false)
+    {
+        // These are the fields that may contain subject headings:
+        $fields = ['600', '610', '611', '630', '648', '650', '651', '655',
+            '656', '689'];
+        $headings = $this->getSubjectHeadings($fields);
+        return $headings;
+    }
+
+    /**
      * Get subject headings associated with this record.  Each heading is
      * returned as an array of chunks, increasing from least specific to most
      * specific.
-     *
      * @return array
      */
     public function getSubjectHeadings(array $fields)
@@ -71,7 +85,7 @@ class SolrGviMarc extends SolrMarc implements Constants
                         // Numeric subfields are for control purposes and should not
                         // be displayed:
                         if (!is_numeric($subfield->getCode())
-                                && ($subfield->getCode() == "a" || $subfield->getCode() == "x")) {
+                            && ($subfield->getCode() == "a" || $subfield->getCode() == "x")) {
                             array_push($retval, $subfield->getData());
                         }
                     }
@@ -81,22 +95,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
         // Send back everything we collected:
         return array_unique($retval);
-    }
-
-    /**
-     * Get all subject headings associated with this record.  Each heading is
-     * returned as an array of chunks, increasing from least specific to most
-     * specific.
-     *
-     * @return array
-     */
-    public function getAllSubjectHeadings($extended = false)
-    {
-        // These are the fields that may contain subject headings:
-        $fields = ['600', '610', '611', '630', '648', '650', '651', '655',
-            '656', '689'];
-        $headings = $this->getSubjectHeadings($fields);
-        return $headings;
     }
 
     /**
@@ -127,8 +125,6 @@ class SolrGviMarc extends SolrMarc implements Constants
     {
         $classificationList = [];
 
-        $regexAllow = $this->mainConfig->get('FivClassification')->get('regex_allow');
-
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield('2');
@@ -136,11 +132,10 @@ class SolrGviMarc extends SolrMarc implements Constants
                 && $field->getIndicator(2) == 'i'
             ) {
                 $sub2data = $field->getSubfield('2')->getData();
-                if (strtolower($sub2data) == 'fivrk' || strtolower($sub2data) == 'fivsk') {
+                if (preg_match('/^fiv[rs]/', $sub2data)) {
                     $data = $suba->getData();
-                    if (!empty($regexAllow) && preg_match($regexAllow, $data)) {
-                        $classificationList[] = $suba->getData();
-                    }
+                    $data = preg_replace('/!.*!|:/i', '', $data);
+                    $classificationList[] = $data;
                 }
             }
         }
@@ -149,7 +144,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get all subjects associated with this item. They are unique.
-     *
      * @return array
      */
     public function getAllRVKSubjectHeadings()
@@ -209,10 +203,32 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
+     * @return array
+     * @throws File_MARC_Exception
+     */
+    public function getFivSubjects()
+    {
+        $notationList = [];
+
+        foreach ($this->getMarcRecord()->getFields('938') as $field) {
+            $suba = $field->getSubField('a');
+            $sub2 = $field->getSubfield(2);
+            if ($suba && $field->getIndicator(1) == 1
+                && $field->getIndicator(2) <= 1
+                && (empty($sub2) || $sub2->getData() != 'gnd')
+            ) {
+                $data = $suba->getData();
+                $data = preg_replace('/!.*!|:/i', '', $data);
+                $notationList[] = $data;
+            }
+        }
+        return $notationList;
+    }
+
+    /**
      * Get the date coverage for a record which spans a period of time (i.e. a
      * journal).  Use getPublicationDates for publication dates of particular
      * monographic items.
-     *
      * @return array
      */
     public function getDateSpan()
@@ -221,31 +237,10 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
-     * Get the edition of the current record.
-     *
-     * @return string
-     */
-    public function getEdition()
-    {
-        return $this->getFirstFieldValue('250', ['a']);
-    }
-
-    /**
-     * Get the institutions holding the record.
-     *
-     * @return array
-     */
-    public function getInstitutions()
-    {
-        return $this->getFieldArray('924', ['b'], false);
-    }
-
-    /**
      * Get an array of all ISBNs associated with the record (may be empty).
-     *
      * @return array
      */
-    public function getISBNs() : array
+    public function getISBNs(): array
     {
         //isbn = 020az:773z
         $isbn = array_merge(
@@ -257,10 +252,9 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get an array of all ISSNs associated with the record (may be empty).
-     *
      * @return array
      */
-    public function getISSNs() : array
+    public function getISSNs(): array
     {
         // issn = 022a:440x:490x:730x:773x:776x:780x:785x
         $issn = array_merge(
@@ -279,7 +273,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get a LCCN, normalised according to info:lccn
-     *
      * @return string
      */
     public function getLCCN()
@@ -290,7 +283,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get a note about languages and text
-     *
      * @return string
      */
     public function getNote()
@@ -300,7 +292,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get an array of notes "Enthaltene Werke" for the Notes-Tab.
-     *
      * @return array
      */
     public function getNotes()
@@ -316,7 +307,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get an array of notes "Enthaltene Werke" for the Notes-Tab.
-     *
      * @return array
      */
     public function getMusicalCast()
@@ -332,7 +322,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get an array of newer titles for the record.
-     *
      * @return array
      */
     public function getNewerTitles()
@@ -343,7 +332,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get the OCLC number of the record.
-     *
      * @return array
      */
     public function getOCLC()
@@ -360,7 +348,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get an array of physical descriptions of the item.
-     *
      * @return array
      */
     public function getPhysicalDescriptions()
@@ -370,7 +357,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get an array of previous titles for the record.
-     *
      * @return array
      */
     public function getPreviousTitles()
@@ -380,58 +366,7 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
-     * returns all authors from 100 or 700 without life data
-     * @return array
-     */
-    public function getAllAuthorsShort()
-    {
-        $authors = array_merge(
-            $this->getFieldArray('100', ['a', 'b']),
-            $this->getFieldArray('700', ['a', 'b'])
-        );
-        return array_unique($authors);
-    }
-
-    /**
-     * Get the item's place of publication.
-     *
-     * @return array
-     */
-    public function getPlacesOfPublication()
-    {
-        $fields = [
-            260 => 'a',
-            264 => 'a',
-        ];
-
-        $places = [];
-        foreach ($fields as $no => $subfield) {
-            $raw = $this->getFieldArray($no, (array)$subfield, false);
-            if (count($raw) > 0 && !empty($raw[0])) {
-                if (is_array($raw)) {
-                    foreach ($raw as $p) {
-                        $places[] = $p;
-                    }
-                } else {
-                    $places[] = $raw;
-                }
-            }
-        }
-        foreach ($places as $k => $place) {
-            $replace = [' :'];
-            if (is_array($place)) {
-                $place = implode(', ', $place);
-                $places[$k] = str_replace($replace, '', $place);
-            } else {
-                $places[$k] = str_replace($replace, '', $place);
-            }
-        }
-        return $places;
-    }
-
-    /**
      * Get the publication dates of the record.  See also getDateSpan().
-     *
      * @return array
      */
     public function getPublicationDates()
@@ -449,7 +384,7 @@ class SolrGviMarc extends SolrMarc implements Constants
         }
         // if there's still no year, we parse it out of 260'
         if (count($years) == 0) {
-            $fields= [
+            $fields = [
                 260 => 'c',
                 264 => 'c',
             ];
@@ -472,7 +407,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get an array of summary strings for the record.
-     *
      * @return array
      */
     public function getSummary()
@@ -493,7 +427,7 @@ class SolrGviMarc extends SolrMarc implements Constants
      * if no thumbnail can be generated.
      *
      * @param string $size Size of thumbnail (small, medium or large -- small is
-     * default).
+     *                     default).
      *
      * @return string|array|bool
      */
@@ -513,16 +447,24 @@ class SolrGviMarc extends SolrMarc implements Constants
             $arr['isbn'] = $isbn;
             $arr['ean'] = $ean;
             return $arr;
-        }
-        //journals and other media  - almost always have no cover
+        } //journals and other media  - almost always have no cover
         else {
             return false;
         }
     }
 
     /**
+     * return GTIN Code
+     * @return string
+     */
+    public function getGTIN()
+    {
+        $gtin = $this->getFieldArray("024", ['a']);
+        return array_shift($gtin);
+    }
+
+    /**
      * Get the text of the part/section portion of the title.
-     *
      * @return string
      */
     public function getTitleSection()
@@ -533,7 +475,6 @@ class SolrGviMarc extends SolrMarc implements Constants
     /**
      * Get the statement of responsibility that goes with the title (i.e. "by John
      * Smith").
-     *
      * @return string
      */
     public function getTitleStatement()
@@ -543,7 +484,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get an array of lines from the table of contents.
-     *
      * @return array
      */
     public function getTOC()
@@ -554,7 +494,6 @@ class SolrGviMarc extends SolrMarc implements Constants
     /**
      * Return an array of associative URL arrays with one or more of the following
      * keys:
-     *
      * <li>
      *   <ul>desc: URL description text to display (optional)</ul>
      *   <ul>url: fully-formed URL (required if 'route' is absent)</ul>
@@ -562,10 +501,9 @@ class SolrGviMarc extends SolrMarc implements Constants
      *   <ul>routeParams: Parameters for route (optional)</ul>
      *   <ul>queryString: Query params to append after building route (optional)</ul>
      * </li>
-     *
      * @return array
      */
-    public function getURLs() : array
+    public function getURLs(): array
     {
         //url = 856u:555u
 
@@ -667,7 +605,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get a sortable title for the record (i.e. no leading articles).
-     *
      * @return string
      */
     public function getSortTitle()
@@ -677,7 +614,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * Get longitude/latitude text (or false if not available).
-     *
      * @return string|bool
      */
     public function getLongLat()
@@ -686,7 +622,6 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
-     *
      * @return string
      */
     public function getGroupField()
@@ -710,7 +645,6 @@ class SolrGviMarc extends SolrMarc implements Constants
     /**
      * Get an array of information about record holdings, obtained in real-time
      * from the ILS.
-     *
      * @return array
      */
     public function getRealTimeHoldings()
@@ -721,7 +655,7 @@ class SolrGviMarc extends SolrMarc implements Constants
             return $this->hasILS() ? $this->holdLogic->getHoldings(
                 $this->getUniqueID(),
                 $this->getConsortialIDs()
-                    ) : [];
+            ) : [];
         }
         return ['holdings' => []];
     }
@@ -749,108 +683,24 @@ class SolrGviMarc extends SolrMarc implements Constants
         return true;
     }
 
-    protected function getBookOpenUrlParams()
+    public function getNetwork()
     {
-        $params = $this->getDefaultOpenUrlParams();
-        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
-        $params['rft.genre'] = 'book';
-        $params['rft.btitle'] = $this->getTitle();
-        $params['rft.volume'] = $this->getContainerVolume();
-        $series = $this->getSeries();
-        if (count($series) > 0) {
-            // Handle both possible return formats of getSeries:
-            $params['rft.series'] = is_array($series[0]) ?
-                    $series[0]['name'] : $series[0];
-        }
-        $authors = $this->getAllAuthorsShort();
-        $params['rft.au'] = array_shift($authors);
-        $publication = $this->getPublicationDetails();
-        // we drop everything, except first entry
-        $publication = array_shift($publication);
-        if (is_object($publication)) {
-            if ($date = $publication->getDate()) {
-                $params['rft.date'] = preg_replace('/[^0-9]/', '', $date);
-            }
-            if ($place = $publication->getPlace()) {
-                $params['rft.place'] = $place;
-            }
-        }
-        $params['rft.volume'] = $this->getVolume();
-
-        $publishers = $this->getPublishers();
-        if (count($publishers) > 0) {
-            $params['rft.pub'] = $publishers[0];
-        }
-
-        $params['rft.edition'] = $this->getEdition();
-        $params['rft.isbn'] = (string)$this->getCleanISBN();
-        return array_filter($params);
+        return 'NoNetwork';
     }
 
     /**
-     * Get OpenURL parameters for an article.
-     *
-     *
-     *
-     * @return array
+     * General serial items. More exact is:
+     * isJournal(), isNewspaper() isMonographicSerial()
+     * @return boolean
      */
-    protected function getArticleOpenUrlParams()
+    public function isSerial()
     {
-        $params = $this->getDefaultOpenUrlParams();
-        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
-        $params['rft.genre'] = $this->isContainerMonography() ? 'bookitem' : 'article';
-        $params['rft.issn'] = (string)$this->getCleanISSN();
-        // an article may have also an ISBN:
-        $params['rft.isbn'] = (string)$this->getCleanISBN();
-        $params['rft.volume'] = $this->getContainerVolume();
-        $params['rft.issue'] = $this->getContainerIssue();
-        $params['rft.date'] = $this->getContainerYear();
-        if (strpos($this->getContainerPages(), '-') !== false) {
-            $params['rft.pages'] = $this->getContainerPages();
-        } else {
-            $params['rft.spage'] = $this->getContainerPages();
+        $leader = $this->getMarcRecord()->getLeader();
+        $leader_7 = strtoupper($leader{7});
+        if ($leader_7 === 'S') {
+            return true;
         }
-        // unset default title -- we only want jtitle/atitle here:
-        unset($params['rft.title']);
-        $params['rft.jtitle'] = $this->getContainerTitle();
-        $params['rft.atitle'] = $this->getTitle();
-        $authors = $this->getAllAuthorsShort();
-        $params['rft.au'] = array_shift($authors);
-
-        $params['rft.format'] = 'Article';
-        $langs = $this->getLanguages();
-        if (count($langs) > 0) {
-            $params['rft.language'] = $langs[0];
-        }
-        // Fallback: add dirty data from 773g to openurl
-        if (empty($params['rft.pages']) && empty($params['rft.spage'])) {
-            $params['rft.pages'] = $this->getContainerRaw();
-        }
-        return array_filter($params);
-    }
-
-    /**
-     * Get OpenURL parameters for a journal.
-     *
-     * @return array
-     */
-    protected function getJournalOpenURLParams()
-    {
-        $places = $this->getPlacesOfPublication();
-        $params = $this->getDefaultOpenUrlParams();
-        $publishers = $this->getPublishers();
-
-        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
-        $params['rft.issn'] = (string)$this->getCleanISSN();
-        $params['rft.jtitle'] = $this->getTitle();
-        $params['rft.genre'] = 'journal';
-        $params['rft.place'] = array_shift($places);
-        $params['rft.pub'] = array_shift($publishers);
-        // zdbid is allowed in pid zone only - it is moved there
-        // in OpenURL helper
-        $params['pid'] = 'zdbid=' . $this->getZdbId();
-
-        return array_filter($params);
+        return false;
     }
 
     /**
@@ -860,6 +710,15 @@ class SolrGviMarc extends SolrMarc implements Constants
     public function getIsils()
     {
         return $this->getInstitutions();
+    }
+
+    /**
+     * Get the institutions holding the record.
+     * @return array
+     */
+    public function getInstitutions()
+    {
+        return $this->getFieldArray('924', ['b'], false);
     }
 
     /**
@@ -932,15 +791,20 @@ class SolrGviMarc extends SolrMarc implements Constants
             $subfields = $field->getSubfields();
             foreach ($subfields as $subfield) {
                 switch ($subfield->getCode()) {
-                    case 'i': $label = 'description';
+                    case 'i':
+                        $label = 'description';
                         break;
-                    case 't': $label = 'title';
+                    case 't':
+                        $label = 'title';
                         break;
-                    case 'w': $label = 'id';
+                    case 'w':
+                        $label = 'id';
                         break;
-                    case 'a': $label = 'author';
+                    case 'a':
+                        $label = 'author';
                         break;
-                    default: $label = 'unknown_field';
+                    default:
+                        $label = 'unknown_field';
                 }
                 if (!array_key_exists($label, $tmp)) {
                     $tmp[$label] = $subfield->getData();
@@ -961,20 +825,6 @@ class SolrGviMarc extends SolrMarc implements Constants
      * Returns Volume number
      * @return String
      */
-    public function getVolume()
-    {
-        $fields = [
-            830 => ['v'],
-            773 => ['g']
-            ];
-        $volumes = preg_replace("/\/$/", "", $this->getFieldsArray($fields));
-        return array_shift($volumes);
-    }
-
-    /**
-     * Returns Volume number
-     * @return String
-     */
     public function getVolumeNumber()
     {
         $fields = [
@@ -986,23 +836,11 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
-     * return GTIN Code
-     * @return string
-     */
-    public function getGTIN()
-    {
-        $gtin = $this->getFieldArray("024", ['a']);
-        return array_shift($gtin);
-    }
-
-    /**
      * get local Urls from 924|k and the correspondig linklabel 924|l
-     *
      * - $924 is repeatable
      * - |k is repeatable, |l aswell
      * - we can have more than one isil ?is this true? maybe allways the first isil
      * - different Urls from one instition may have different issues (is this true?)
-     *
      * @return array
      */
     public function getLocalUrls()
@@ -1066,31 +904,6 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
-     * Returns url  from 856|u
-     * @return String
-     */
-    public function getPDALink()
-    {
-        $fields = [
-            830 => ['v'],
-            773 => ['g']
-        ];
-        $volumes = preg_replace("/[\/,]$/", "", $this->getFieldsArray($fields));
-        return array_shift($volumes);
-    }
-
-    /**
-     * Has this record holdings in field 924
-     *
-     * @return boolean
-     */
-    public function hasLocalHoldings()
-    {
-        $holdings = $this->getLocalHoldings();
-        return count($holdings) > 0;
-    }
-
-    /**
      * This method supports wildcard operators in ISILs.
      * @return array
      */
@@ -1120,8 +933,31 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
+     * Returns url  from 856|u
+     * @return String
+     */
+    public function getPDALink()
+    {
+        $fields = [
+            830 => ['v'],
+            773 => ['g']
+        ];
+        $volumes = preg_replace("/[\/,]$/", "", $this->getFieldsArray($fields));
+        return array_shift($volumes);
+    }
+
+    /**
+     * Has this record holdings in field 924
+     * @return boolean
+     */
+    public function hasLocalHoldings()
+    {
+        $holdings = $this->getLocalHoldings();
+        return count($holdings) > 0;
+    }
+
+    /**
      * Get an array of remarks for the Details-Tab.
-     *
      * @return array
      */
     public function getRemarks()
@@ -1148,44 +984,7 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
-     * Get ZDB ID if available
-     *
-     * @return string
-     */
-    public function getZdbId()
-    {
-        $zdb = '';
-        $substr = '';
-        $matches = [];
-        $consortial = $this->getConsortialIDs();
-        foreach ($consortial as $id) {
-            $substr = preg_match('/\(DE-\d{3}\)ZDB(.*)/', $id, $matches);
-            if (!empty($matches) && $matches[1] !== '') {
-                $zdb = $matches[1];
-            }
-        }
-
-        // Pull ZDB ID out of recurring field 016
-        foreach ($this->getMarcRecord()->getFields('016') as $field) {
-            $isil = $data = '';
-            foreach ($field->getSubfields() as $subfield) {
-                if ($subfield->getCode() == 'a') {
-                    $data = $subfield ->getData();
-                } elseif ($subfield->getCode() == '2') {
-                    $isil = $subfield->getData();
-                }
-            }
-            if ($isil == 'DE-600') {
-                $zdb = $data;
-            }
-        }
-
-        return $zdb;
-    }
-
-    /**
      * is this a Journal, implies it's a serial
-     *
      * @return boolean
      */
     public function isJournal()
@@ -1207,23 +1006,7 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
-     * General serial items. More exact is:
-     * isJournal(), isNewspaper() isMonographicSerial()
-     * @return boolean
-     */
-    public function isSerial()
-    {
-        $leader = $this->getMarcRecord()->getLeader();
-        $leader_7 = strtoupper($leader{7});
-        if ($leader_7 === 'S') {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * iIs this a Newspaper?
-     *
      * @return boolean
      */
     public function isNewspaper()
@@ -1246,7 +1029,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * get 830|w if it exists with (DE-627)-Prefix
-     *
      * @return array
      */
     public function getSeriesIds()
@@ -1269,7 +1051,6 @@ class SolrGviMarc extends SolrMarc implements Constants
     /**
      * This method is basically a duplicate of getAllRecordLinks but
      * much easier designer and works well with German library links
-     *
      * @return array
      * @throws File_MARC_Exception
      */
@@ -1279,7 +1060,7 @@ class SolrGviMarc extends SolrMarc implements Constants
         foreach ($this->getMarcRecord()->getfields(776) as $field) {
             $tmp = [];
             if ($field->getIndicator(1) == 0) {
-                $tmp['ppn']     = $field->getSubfield('w') ? $field->getSubfield('w')->getData() : null;
+                $tmp['ppn'] = $field->getSubfield('w') ? $field->getSubfield('w')->getData() : null;
 
                 if ($field->getSubfield('i')) {
                     $tmp['prefix'] = $field->getSubfield('i')->getData();
@@ -1298,14 +1079,8 @@ class SolrGviMarc extends SolrMarc implements Constants
         return array_filter($retval);
     }
 
-    public function getNetwork()
-    {
-        return 'NoNetwork';
-    }
-
     /**
      * Get an array of bibliographic relations for the record.
-     *
      * @return array
      */
     public function getBiblioRelations()
@@ -1315,7 +1090,6 @@ class SolrGviMarc extends SolrMarc implements Constants
 
     /**
      * get 787|w if it exists with (DE-627)-Prefix
-     *
      * @return array
      */
     public function getBiblioRelatonsIds()
@@ -1333,5 +1107,212 @@ class SolrGviMarc extends SolrMarc implements Constants
             }
         }
         return $array_clean;
+    }
+
+    protected function getBookOpenUrlParams()
+    {
+        $params = $this->getDefaultOpenUrlParams();
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
+        $params['rft.genre'] = 'book';
+        $params['rft.btitle'] = $this->getTitle();
+        $params['rft.volume'] = $this->getContainerVolume();
+        $series = $this->getSeries();
+        if (count($series) > 0) {
+            // Handle both possible return formats of getSeries:
+            $params['rft.series'] = is_array($series[0]) ?
+                $series[0]['name'] : $series[0];
+        }
+        $authors = $this->getAllAuthorsShort();
+        $params['rft.au'] = array_shift($authors);
+        $publication = $this->getPublicationDetails();
+        // we drop everything, except first entry
+        $publication = array_shift($publication);
+        if (is_object($publication)) {
+            if ($date = $publication->getDate()) {
+                $params['rft.date'] = preg_replace('/[^0-9]/', '', $date);
+            }
+            if ($place = $publication->getPlace()) {
+                $params['rft.place'] = $place;
+            }
+        }
+        $params['rft.volume'] = $this->getVolume();
+
+        $publishers = $this->getPublishers();
+        if (count($publishers) > 0) {
+            $params['rft.pub'] = $publishers[0];
+        }
+
+        $params['rft.edition'] = $this->getEdition();
+        $params['rft.isbn'] = (string)$this->getCleanISBN();
+        return array_filter($params);
+    }
+
+    /**
+     * returns all authors from 100 or 700 without life data
+     * @return array
+     */
+    public function getAllAuthorsShort()
+    {
+        $authors = array_merge(
+            $this->getFieldArray('100', ['a', 'b']),
+            $this->getFieldArray('700', ['a', 'b'])
+        );
+        return array_unique($authors);
+    }
+
+    /**
+     * Returns Volume number
+     * @return String
+     */
+    public function getVolume()
+    {
+        $fields = [
+            830 => ['v'],
+            773 => ['g']
+        ];
+        $volumes = preg_replace("/\/$/", "", $this->getFieldsArray($fields));
+        return array_shift($volumes);
+    }
+
+    /**
+     * Get the edition of the current record.
+     * @return string
+     */
+    public function getEdition()
+    {
+        return $this->getFirstFieldValue('250', ['a']);
+    }
+
+    /**
+     * Get OpenURL parameters for an article.
+     * @return array
+     */
+    protected function getArticleOpenUrlParams()
+    {
+        $params = $this->getDefaultOpenUrlParams();
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+        $params['rft.genre'] = $this->isContainerMonography() ? 'bookitem' : 'article';
+        $params['rft.issn'] = (string)$this->getCleanISSN();
+        // an article may have also an ISBN:
+        $params['rft.isbn'] = (string)$this->getCleanISBN();
+        $params['rft.volume'] = $this->getContainerVolume();
+        $params['rft.issue'] = $this->getContainerIssue();
+        $params['rft.date'] = $this->getContainerYear();
+        if (strpos($this->getContainerPages(), '-') !== false) {
+            $params['rft.pages'] = $this->getContainerPages();
+        } else {
+            $params['rft.spage'] = $this->getContainerPages();
+        }
+        // unset default title -- we only want jtitle/atitle here:
+        unset($params['rft.title']);
+        $params['rft.jtitle'] = $this->getContainerTitle();
+        $params['rft.atitle'] = $this->getTitle();
+        $authors = $this->getAllAuthorsShort();
+        $params['rft.au'] = array_shift($authors);
+
+        $params['rft.format'] = 'Article';
+        $langs = $this->getLanguages();
+        if (count($langs) > 0) {
+            $params['rft.language'] = $langs[0];
+        }
+        // Fallback: add dirty data from 773g to openurl
+        if (empty($params['rft.pages']) && empty($params['rft.spage'])) {
+            $params['rft.pages'] = $this->getContainerRaw();
+        }
+        return array_filter($params);
+    }
+
+    /**
+     * Get OpenURL parameters for a journal.
+     * @return array
+     */
+    protected function getJournalOpenURLParams()
+    {
+        $places = $this->getPlacesOfPublication();
+        $params = $this->getDefaultOpenUrlParams();
+        $publishers = $this->getPublishers();
+
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+        $params['rft.issn'] = (string)$this->getCleanISSN();
+        $params['rft.jtitle'] = $this->getTitle();
+        $params['rft.genre'] = 'journal';
+        $params['rft.place'] = array_shift($places);
+        $params['rft.pub'] = array_shift($publishers);
+        // zdbid is allowed in pid zone only - it is moved there
+        // in OpenURL helper
+        $params['pid'] = 'zdbid=' . $this->getZdbId();
+
+        return array_filter($params);
+    }
+
+    /**
+     * Get the item's place of publication.
+     * @return array
+     */
+    public function getPlacesOfPublication()
+    {
+        $fields = [
+            260 => 'a',
+            264 => 'a',
+        ];
+
+        $places = [];
+        foreach ($fields as $no => $subfield) {
+            $raw = $this->getFieldArray($no, (array)$subfield, false);
+            if (count($raw) > 0 && !empty($raw[0])) {
+                if (is_array($raw)) {
+                    foreach ($raw as $p) {
+                        $places[] = $p;
+                    }
+                } else {
+                    $places[] = $raw;
+                }
+            }
+        }
+        foreach ($places as $k => $place) {
+            $replace = [' :'];
+            if (is_array($place)) {
+                $place = implode(', ', $place);
+                $places[$k] = str_replace($replace, '', $place);
+            } else {
+                $places[$k] = str_replace($replace, '', $place);
+            }
+        }
+        return $places;
+    }
+
+    /**
+     * Get ZDB ID if available
+     * @return string
+     */
+    public function getZdbId()
+    {
+        $zdb = '';
+        $substr = '';
+        $matches = [];
+        $consortial = $this->getConsortialIDs();
+        foreach ($consortial as $id) {
+            $substr = preg_match('/\(DE-\d{3}\)ZDB(.*)/', $id, $matches);
+            if (!empty($matches) && $matches[1] !== '') {
+                $zdb = $matches[1];
+            }
+        }
+
+        // Pull ZDB ID out of recurring field 016
+        foreach ($this->getMarcRecord()->getFields('016') as $field) {
+            $isil = $data = '';
+            foreach ($field->getSubfields() as $subfield) {
+                if ($subfield->getCode() == 'a') {
+                    $data = $subfield->getData();
+                } elseif ($subfield->getCode() == '2') {
+                    $isil = $subfield->getData();
+                }
+            }
+            if ($isil == 'DE-600') {
+                $zdb = $data;
+            }
+        }
+
+        return $zdb;
     }
 }

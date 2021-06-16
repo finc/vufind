@@ -1,0 +1,63 @@
+<?php
+$this->headTitle($this->translate('Orchestration Search'));
+
+// Disable top search box -- this page has a special layout.
+$this->layout()->searchbox = $this->render('search/searchbox.phtml');
+
+// Set default value if necessary:
+if (!isset($this->searchClassId)) {
+    $this->searchClassId = 'Solr';
+}
+
+// Load search actions and settings (if any):
+$options = $this->searchOptions($this->searchClassId);
+$basicSearch = $options->getSearchAction();
+$advSearch = $options->getAdvancedSearchAction();
+
+$this->layout()->breadcrumbs = false;
+
+$library = $this->libraries()->getFirstActive($this->client()->getIsils());
+
+?>
+
+<div class="col-sm-12 musicHomeContent">
+    <div class="row">
+        <div class="col-sm-6">
+            <?=$this->flashmessages()?>
+            <?= $this->render('bsz/' . $this->client()->getTag() . '/' . $this->layout()->userLang . '.phtml')?>
+        </div>
+        <div class="col-sm-6">
+            <h4><?=$this->transEsc('Orchestration Search')?></h4>
+            <?php $headings = ['Tasteninstrumente', 'Streichinstrumente', 'Holzblasinstrumente', 'Blechblasinstrumente', 'Zupfinstrumente', 'Gesang']?>
+            <div class="panel-group accordion" id="acc-musical-cast">
+                <?php foreach ($headings as $heading): ?>
+                    <?php $rand = 'panel-'.rand(0, 10000);?>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+
+                            <a data-toggle="collapse" data-parent="#acc-musical-cast" href="#<?=$rand?>" aria-expanded="false" aria-controls="<?=$rand?>" class="btn-block">
+                                <?=$this->transEsc($heading)?>
+                                <i class="fa fa-caret-down"></i>
+
+                            </a>
+                        </div>
+                        <div id="<?=$rand?>" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                    <div class="col-sm-6">
+                                        <strong><a href='http://mhtr.bosstest.bsz-bw.de/Search/Results?lookfor=Klavier+OR+Cembalo+OR+Klavichord+OR+"E-Piano"&type=MusicalCast&hiddenFilters[]=~institution_id%3ADE-Trs1'  title="Suche: Klavier+OR+Cembalo+OR+Klavichord+OR+'E-Piano'">Klavier/Cembalo</a></strong>
+                                        <strong><a href='http://mhtr.bosstest.bsz-bw.de/Search/Results?lookfor=Orgel OR Harmonium OR "E-Orgel"&type=MusicalCast&hiddenFilters[]=~institution_id%3ADE-Trs1'  title="Suche: Orgel OR Harmonium OR 'E-Orgel'">Orgel/Harmonium</a></strong>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <strong><a href="http://mhtr.bosstest.bsz-bw.de/Search/Results?lookfor=Akkordeon OR Bandoneon&type=MusicalCast&hiddenFilters[]=~institution_id%3ADE-Trs1" title="Suche: Akkordeon OR Bandoneon">Akkordeon</a></strong>
+                                    </div>
+                             </div>
+                         </div>
+                    </div>
+                <? endforeach ?>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+

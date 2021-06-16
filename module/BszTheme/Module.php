@@ -81,6 +81,7 @@ class Module
             'invokables' => [
                 'string' => 'BszTheme\View\Helper\StringHelper',
                 'abbrev' => 'BszTheme\View\Helper\Bodensee\Abbrev',
+                'showmore' => 'BszTheme\View\Helper\Bodensee\Showmore',
                 'clipboard' => 'BszTheme\View\Helper\Bodensee\Clipboard'
             ],
         ];

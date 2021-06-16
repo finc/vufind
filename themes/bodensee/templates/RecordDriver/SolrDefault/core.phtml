@@ -185,13 +185,16 @@
                 <tr>
                     <th><?=$this->transEsc('other_appearance')?>: </th>
                     <td>
+                        <p>
                         <? foreach($parallel as $para): ?>
-                        <? if (isset($para['prefix'])): ?><?=$this->transEsc($para['prefix'])?> <? endif ?>
-                        <? if (isset($para['ppn'], $para['label'])) : ?>
-                        <a class="searchicon" href="<?=$this->recordLink()->getUrl($para['ppn'])?>" ><?=$this->transEsc($para['label'])?></a>
-                        <? endif; ?>
-                        <? if (isset($para['postfix'])): ?> (<?=$this->transEsc($para['postfix'])?>)<? endif ?>
+                            <? if (isset($para['prefix'])): ?><?=$this->transEsc($para['prefix'])?> <? endif ?>
+                            <? if (isset($para['ppn'], $para['label'])) : ?>
+                                <a class="searchicon" href="<?=$this->recordLink()->getUrl($para['ppn'])?>" ><?=$this->transEsc($para['label'])?></a>
+                            <? endif; ?>
+                            <? if (isset($para['postfix'])): ?> (<?=$this->transEsc($para['postfix'])?>)<? endif ?>
+                        <br/>
                         <? endforeach; ?></td>
+                        </p>
                 </tr>
             <? endif; ?>
 
