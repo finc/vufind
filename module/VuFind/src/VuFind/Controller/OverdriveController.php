@@ -28,7 +28,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class OverdriveController extends AbstractBase implements LoggerAwareInterface
 {
     use \VuFind\Log\LoggerAwareTrait {
-        logError as error;
+        LoggerAwareTrait::logError as error;
     }
 
     /**
