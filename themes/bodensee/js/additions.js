@@ -1,4 +1,4 @@
-function   performMark() {
+function   performMark(selector = '.markjs') {
     var lookfor = '';
     var input_simple = $('#searchForm_lookfor').val();
     var input_adv = $('li.adv_lookfor').text();
@@ -25,7 +25,7 @@ function   performMark() {
     }
     lookfor = lookfor.replace(/[\/\[;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
     terms = lookfor.split(' ').filter(function(el) { return el; });
-    $('.markjs').mark(terms, {
+    $(selector).mark(terms, {
         "wildcards": "enabled",
         "accuracy": "partially",
         "synonyms": {
