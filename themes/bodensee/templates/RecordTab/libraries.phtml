@@ -26,7 +26,7 @@ $content = $this->tab->getContent();
         <?php foreach ($content as $result): ?>
             <tr>
                 <td class="hidden-xs">
-                    <?php if (isset($result['isil']) && trim($result['isil']) != ''): ?>
+                    <?php if (is_string($result['isil']) && trim($result['isil']) != ''): ?>
                         <?php if ($result['isil'] !== 'LFER'): ?>
                             <span class="text-nowrap">
                             <?php if (isset($result['homepage'])): ?>
