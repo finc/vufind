@@ -42,15 +42,15 @@
                     <?php endif; ?>
                 <?php elseif ($status == 'unavailable'): ?>
                     <?=$this->transEsc('daia-' . strtolower($row['status']))?>
-                    <?php if (!empty($row['link']) && !$this->client()->is('only_one_holds_button')): ?>
+                    <?php if (!empty($row['ilslink']) && !$this->client()->is('only_one_holds_button')): ?>
                         &ndash;
-                        <a class="open-popup" data-name="KIOSK" href="<?=$row['link']?>"><?=$this->transEsc('Recall This')?></a>
+                        <a class="open-popup" data-name="KIOSK" href="<?=$row['ilslink']?>"><?=$this->transEsc('Recall This')?></a>
                     <?php endif; ?>
                 <?php else: ?>
                     <?=$this->transEsc('daia-' . strtolower($row['status']))?>
-                    <?php if (!empty($row['link']) && !$this->client()->is('only_one_holds_button') && $this->client()->is('always_place_hold') && ($status != 'for reference') || $this->client()->is('show_readingroom_link') && !$isStorageReadingroom) : ?>
+                    <?php if (!empty($row['ilslink']) && !$this->client()->is('only_one_holds_button') && $this->client()->is('always_place_hold') && ($status != 'for reference') || $this->client()->is('show_readingroom_link') && !$isStorageReadingroom) : ?>
                         &ndash;
-                        <a class="open-popup" data-name="KIOSK" href="<?=$row['link']?>"><?=$this->transEsc('Place a Hold')?></a>
+                          <a class="open-popup" data-name="KIOSK" href="<?=$row['ilslink']?>"><?=$this->transEsc('Place a Hold')?></a>
                     <?php endif; ?>
                 <?php endif; ?>
             </dd>
