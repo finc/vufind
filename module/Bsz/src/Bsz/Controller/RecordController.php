@@ -285,7 +285,7 @@ class RecordController extends \VuFind\Controller\RecordController implements Lo
             $authParams = [
                 'sigel' => $params['Sigel'],
                 'auth_typ' => $library->getAuth(),
-                'user' => $params['BenutzerNummer'],
+                'user' => $params['BenutzerNummer'] ?? '',
                 'passwort' => $pw
             ];
 
