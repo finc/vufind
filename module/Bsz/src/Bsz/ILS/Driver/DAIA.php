@@ -350,12 +350,10 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
      */
     public function getHoldLink($id, $details)
     {
-        $link = null;
         if (isset($details['ilslink']) && $details['ilslink'] != '') {
-            //$link = str_replace('SOPAC', 'SMOPAC', $details['ilslink']);
-            $details['ilslink'] = $link;
+            return $details['ilslink'];
         }
-        return $details['ilslink'];
+        return '';
     }
 
     /**
