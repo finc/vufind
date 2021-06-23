@@ -14,3 +14,8 @@ $this->headTitle($this->translate('Staff View') . ': ' . $this->driver->getBread
     </table>
 <?php endif; ?>
 <?= Processor::process('record-marc.xsl', $this->driver->getXML('marc21'))?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        performMark('.tab-content td');
+    })
+</script>
