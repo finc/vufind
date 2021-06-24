@@ -36,7 +36,7 @@
             <dd>
                 <?php if ($status == 'on loan' && !empty($duedate)): ?>
                     <?=$this->transEsc('Due')?> <?=$this->escapeHtml($duedate)?>
-                    <?php if (!empty($row['link']) && !$this->client()->is('only_one_holds_button')): ?>
+                    <?php if (!empty($row['ilslink']) && !$this->client()->is('only_one_holds_button')): ?>
                         &ndash;
                         <a class="open-popup" data-name="KIOSK" href="<?=$row['link']?>"><?=$this->transEsc('Recall This')?></a>
                     <?php endif; ?>
