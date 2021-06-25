@@ -34,7 +34,6 @@
                 </dd>
             <?php endif; ?>
             <dd>
-                <?=var_dump($row)?>
                 <?php if ($status == 'on loan' && !empty($duedate)): ?>
                     <?=$this->transEsc('Due')?> <?=$this->escapeHtml($duedate)?>
                     <?php if (!empty($row['ilslink']) && !$this->client()->is('only_one_holds_button')): ?>
