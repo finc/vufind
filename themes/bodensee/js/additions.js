@@ -476,11 +476,12 @@ function recordCoverAjax() {
                 url: VuFind.path + url,
                 cache: true,
                 success: function (imagedata) {
-                    $container.find('svg').remove();
-                    //var base64 = 'data:image/jpeg,'+imagedata;
-                    //console.log(imagedata);
-                    $container.find('img').attr('src', url).removeClass('hidden');
-
+                    // recognize 1x1 px placeholder gif
+                    if (imagedata.length > 56) {
+                        $container.find('svg').remove();
+                        var base64 = 'data:image/jpeg;base64,'+imagedata;
+                        $container.find('img').attr('src', base64).removeClass('hidden');
+                    }
                 },
             });
         }
