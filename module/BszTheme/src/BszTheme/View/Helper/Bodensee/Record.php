@@ -87,15 +87,12 @@ class Record extends \VuFind\View\Helper\Root\Record
         if (empty($formats)) {
             $formats = $this->driver->getFormats();
         }
-        $retval = 'bsz bsz-unknown ';
+        $retval = 'unknown';
 
         $formatStr = implode('_', $formats);
 
         if (isset($this->iconconfig) && $this->iconconfig->offsetExists($formatStr)) {
             $retval = $this->iconconfig->get($formatStr);
-        }
-        if (in_array('Online', $formats)) {
-            $retval .= ' online';
         }
         return $retval;
 

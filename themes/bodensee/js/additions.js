@@ -463,12 +463,38 @@ function deleteInput() {
     })
 }
 
+function recordCoverAjax() {
+    var $covers = $('.cover-container').each(function() {
+        var $container = $(this);
+        var url = $(this).attr('data-cover');
+        if (url.length > 0) {
+            //console.info('Fetching Cover from ' + url);
+            $.ajax({
+                method: 'GET',
+                accepts: 'image/jpeg',
+                dataType: 'text',
+                url: VuFind.path + url,
+                cache: true,
+                success: function (imagedata) {
+                    $container.find('svg').remove();
+                    //var base64 = 'data:image/jpeg,'+imagedata;
+                    //console.log(imagedata);
+                    $container.find('img').attr('src', url).removeClass('hidden');
+
+                },
+            });
+        }
+    });
+}
+
+
 /*
 * this is executed after site is loaded
 * main loop
 */
 
 $(document).ready(function() {
+    recordCoverAjax();
     manageActiveTab();
     avoidEmptySearch();
     externalLinks();
