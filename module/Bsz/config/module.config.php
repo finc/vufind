@@ -36,6 +36,7 @@ $config = [
             'Bsz\Controller\ShibController' => Factory::class,
             'Bsz\Controller\BszController' => Factory::class,
             'Bsz\Controller\TestController' => Factory::class,
+            'Bsz\Controller\CoverController' => 'Bsz\Controller\Factory::getCoverController',
         ],
         'aliases' => [
             // shortcuts for our own controllers
@@ -47,7 +48,8 @@ $config = [
             'VuFind\Controller\SearchController'    => 'Bsz\Controller\SearchController',
             'VuFind\Controller\RecordController'    => 'Bsz\Controller\RecordController',
             'VuFind\Controller\EdsrecordController'    => 'Bsz\Controller\EdsrecordController',
-            'VuFind\Controller\MyResearchController'   => 'Bsz\Controller\MyResearchController'
+            'VuFind\Controller\MyResearchController'   => 'Bsz\Controller\MyResearchController',
+            'VuFind\Controller\CoverController' => 'Bsz\Controller\CoverController',
         ]
     ],
     'router' => [
