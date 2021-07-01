@@ -15,22 +15,13 @@
             $hiddenFilterString .= '&hiddenFilters[]=' . $this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value);
         }
     }
-?>
-<?php
     $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'medium', $this->recordLink()->getUrl($this->driver));
     $cover = $coverDetails['html'];
-    $thumbnail = false;
-    $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');?>
-    <?php if ($cover): ?>
-    <?php else: ?>
-        <div class="hidden-print recordcover unavailable <?=$this->record($this->driver)->getFormatIcon()?>">
-            <span class=""></span>
-        </div>
-    <?php endif; ?>
+?>
 
 <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
 <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
-<div class="row">
+
     <div class="hidden-print col-sm-2 <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
         <?=$cover ?>
     </div>
@@ -250,6 +241,5 @@
     </div><!--end row -->
     <!-- end subrecords -->
     <?php endif; ?>
-</div> <!-- end media -->
 
 
