@@ -22,12 +22,6 @@
     $thumbnail = false;
     $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');?>
     <?php if ($cover): ?>
-        <?php ob_start(); ?>
-        <div class="hidden-print media-<?=$thumbnailAlignment ?> <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
-            <?=$cover ?>
-        </div>
-        <?php $thumbnail = ob_get_contents(); ?>
-        <?php ob_end_clean(); ?>
     <?php else: ?>
         <div class="hidden-print recordcover unavailable <?=$this->record($this->driver)->getFormatIcon()?>">
             <span class=""></span>
@@ -36,11 +30,11 @@
 
 <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
 <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
-<div class="media">
-    <?php if ($thumbnail && $thumbnailAlignment == 'left'): ?>
-        <?=$thumbnail ?>
-    <?php endif ?>
-    <div class="media-body">
+<div class="row">
+    <div class="hidden-print col-sm-2 <?=$this->escapeHtmlAttr($coverDetails['size'])?>">
+        <?=$cover ?>
+    </div>
+    <div class="col-sm-10">
         <div class="result-body">
             <div>
                 <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull markjs" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
