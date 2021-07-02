@@ -473,7 +473,7 @@ function recordCoverAjax() {
                 method: 'GET',
                 accepts: 'image/jpeg',
                 dataType: 'text',
-                url: VuFind.path + url,
+                url: VuFind.path + url+'&base64=true',
                 cache: true,
                 success: function (imagedata) {
                     // recognize 1x1 px placeholder gif

@@ -25,6 +25,41 @@ class CoverController extends \VuFind\Controller\CoverController
 {
 
     /**
+     * SDistinguish between show image (VuFind standard)
+     * and show base64 encoded image
+     * @return \Zend\Http\Response
+     */
+    public function showAction()
+    {
+        $this->sessionSettings->disableWrite(); // avoid session write timing bug
+
+        // Special case: proxy a full URL:
+        $url = $this->params()->fromQuery('proxy');
+        $base64 = $this->params()->fromQuery('base64');
+
+        if (!empty($url)) {
+            try {
+                $image = $this->proxy->fetch($url);
+                return $this->displayImage(
+                    $image->getHeaders()->get('content-type')->getFieldValue(),
+                    $image->getContent()
+                );
+            } catch (\Exception $e) {
+                // If an exception occurs, drop through to the standard case
+                // to display an image unavailable graphic.
+            }
+        }
+
+        // Default case -- use image loader:
+        $this->loader->loadImage($this->getImageParams());
+        if ($base64) {
+            return $this->getBase64();
+        } else {
+            return $this->displayImage();
+        }
+    }
+
+    /**
      * Support method -- update the view to display the image currently found in the
      * \VuFind\Cover\Loader.
      *
@@ -33,12 +68,13 @@ class CoverController extends \VuFind\Controller\CoverController
      *
      * @return \Zend\Http\Response
      */
-    protected function displayImage($type = null, $image = null)
+    protected function getBase64($type = null, $image = null)
     {
         $response = $this->getResponse();
         $headers = $response->getHeaders();
         $headers->addHeaderLine(
-            'Content-type', 'text/plain'
+            'Content-type',
+            'text/plain'
         );
 
         // Send proper caching headers so that the user's browser
@@ -47,13 +83,16 @@ class CoverController extends \VuFind\Controller\CoverController
 
         $coverImageTtl = (60 * 60 * 24 * 14); // 14 days
         $headers->addHeaderLine(
-            'Cache-Control', "maxage=" . $coverImageTtl
+            'Cache-Control',
+            "maxage=" . $coverImageTtl
         );
         $headers->addHeaderLine(
-            'Pragma', 'public'
+            'Pragma',
+            'public'
         );
         $headers->addHeaderLine(
-            'Expires', gmdate('D, d M Y H:i:s', time() + $coverImageTtl) . ' GMT'
+            'Expires',
+            gmdate('D, d M Y H:i:s', time() + $coverImageTtl) . ' GMT'
         );
         $data = $image ?: $this->loader->getImage();
         $base64 = base64_encode($data);

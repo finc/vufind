@@ -9,29 +9,14 @@
 ?>
 <div class="row" vocab="http://schema.org/" resource="#record">
     <div class="col-xs-4 col-sm-3 col-xs-offset-4 col-sm-offset-0 pull-right-sm" >
-<?
-  $coverDetails = $this->record($this->driver)->getCoverDetails('core', 'medium', '#');
-  $cover = $coverDetails['html'];
-  $thumbnailAlignment = $this->record($this->driver)->getThumbnailAlignment('result');
-  if ($cover): ?>
-    <? if ($coverDetails['html'] !== ''): ?>
-          <?= $cover ?>
-      <? endif; ?>
-  <? else: ?>
-      <div class="recordcover unavailable <?= $this->record($this->driver)->getFormatIcon() ?>">
-          <span class=""></span>
-      </div>
-  <? endif; ?>
+<?php
+?>
+        <a href="#" class="modal-popup cover" data-toggle="modal" data-img-url="<?=$this->record($this->driver)->getThumbnail('large')?>">
+            <?=$this->context($this)->renderInContext('record/cover.phtml', [
+                'cover' => $this->record($this->driver)->getThumbnail('medium'),
 
-        <? /* Display qrcode if appropriate: */ ?>
-        <? $QRCode = $this->record($this->driver)->getQRCode("core"); ?>
-        <? if ($QRCode): ?>
-            <span class="hidden-xs">
-            <br/><img alt="<?= $this->transEsc('QR Code') ?>" class="qrcode"
-                      src="<?= $this->escapeHtmlAttr($QRCode); ?>"/>
-          </span>
-        <? endif; ?>
-        <?= $this->record($this->driver)->getPreviews() ?>
+            ])?>
+        </a>
     </div>
     <div class="col-xs-12 col-sm-9">
         <?php

@@ -15,7 +15,7 @@
             $hiddenFilterString .= '&hiddenFilters[]=' . $this->escapeHtmlAttr($key) . ':' . $this->escapeHtmlAttr($value);
         }
     }
-    $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'small', $this->recordLink()->getUrl($this->driver));
+$coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'small', $this->recordLink()->getUrl($this->driver));
     $cover = $coverDetails['html'];
 ?>
 
@@ -23,7 +23,9 @@
 <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
 
     <div class="col-xs-3 col-sm-2 col-md-2 hidden-print">
-        <?=$cover ?>
+        <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
+            <?=$cover ?>
+        </a>
     </div>
     <div class="col-xs-9 col-sm-10 col-md-10 col-no-left-padding">
         <div class="result-body">
