@@ -163,7 +163,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             }
             $formats[] = $this->getFormatMarc();
             $formats[] = $this->getFormatRda();
-
             $this->formats = $this->simplifyFormats($formats);
         }
         return $this->formats ?? [];
