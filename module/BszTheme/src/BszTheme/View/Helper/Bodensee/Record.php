@@ -87,7 +87,7 @@ class Record extends \VuFind\View\Helper\Root\Record
         if (empty($formats)) {
             $formats = $this->driver->getFormats();
         }
-        $retval = 'unknown';
+        $retval = 'sonstiges';
 
         $formatStr = implode('_', $formats);
 
