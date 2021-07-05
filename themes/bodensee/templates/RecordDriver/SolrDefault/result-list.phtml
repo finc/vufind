@@ -19,8 +19,6 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
     $cover = $coverDetails['html'];
 ?>
 
-<input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
-<input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
 
     <div class="col-xs-3 col-sm-2 col-md-2 hidden-print">
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
@@ -29,14 +27,12 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
     </div>
     <div class="col-xs-9 col-sm-10 col-md-10 col-no-left-padding">
         <div class="result-body">
-            <div>
-                <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull markjs" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
-                    <?=$this->record($this->driver)->getTitleHtml()?>
-                </a>
-                <?php if ($titlesection = $this->driver->getTitleSection()):?>
-                    / <?= $titlesection ?>
-                <?php endif; ?>
-            </div>
+            <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull markjs" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
+                <?=$this->record($this->driver)->getTitleHtml()?>
+            </a>
+            <?php if ($titlesection = $this->driver->getTitleSection()):?>
+                / <?= $titlesection ?>
+            <?php endif; ?>
 
             <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
                                'driver' => $this->driver,
