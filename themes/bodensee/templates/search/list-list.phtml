@@ -6,6 +6,6 @@
     <?php if (isset($this->showCheckboxes) && $this->showCheckboxes): ?>
       <?=$this->record($current)->getCheckbox('', 'search-cart-form', $recordNumber)?>
     <?php endif; ?>
-    <?=$this->record($current)->getSearchResult('list')?>
+    <?=$this->record($current)->getSearchResult('list', $recordNumber)?>
   </div>
 <?php endforeach; ?>

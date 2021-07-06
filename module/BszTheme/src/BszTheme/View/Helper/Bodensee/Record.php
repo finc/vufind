@@ -271,4 +271,22 @@ class Record extends \VuFind\View\Helper\Root\Record
         }
         return $icon;
     }
+
+    /**
+     * Render a search result for the specified view mode.
+     *
+     * @param string $view View mode to use.
+     * @param int    $num  rECORD NUMBER
+     * @return string
+     */
+    public function getSearchResult($view, $num = null)
+    {
+        return $this->renderTemplate(
+            'result-' . $view . '.phtml',
+            [
+                'recordNumber' => $num,
+                'driver' => $this->driver
+            ]
+        );
+    }
 }

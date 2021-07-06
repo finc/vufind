@@ -22,6 +22,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
 
     <div class="col-xs-3 col-sm-2 col-md-2 hidden-print">
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
+        <span class="badge" style="position: absolute; top: 10px; left: 20px;"><?=$this->recordNumber?></span>
             <?=$cover ?>
         </a>
     </div>
