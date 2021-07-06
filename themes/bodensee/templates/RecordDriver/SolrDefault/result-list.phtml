@@ -21,13 +21,13 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
 
 
     <div class="col-xs-3 col-sm-2 col-md-2 hidden-print">
-        <span class="" style="float:left;"><?=$this->recordNumber?></span>
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
             <?=$cover ?>
         </a>
     </div>
     <div class="col-xs-9 col-sm-10 col-md-10 col-no-left-padding">
         <div class="result-body">
+            <span class="" style="float:left;"><?=$this->recordNumber?></span>.
             <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull markjs" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
                 <?=$this->record($this->driver)->getTitleHtml()?>
             </a>
