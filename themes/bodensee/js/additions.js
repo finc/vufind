@@ -65,14 +65,7 @@ function bootstrapTooltip() {
 */
 function modalPopup() {
 
-    // prevent default cover placeholders from being clickable
-    var img = $('.modal-popup.cover').find('img');
-    if (img.innerWidth() === 60 || img.innerHeight() === 60) {
-        img.parent().removeClass('modal-popup');
-        img.parent().css('cursor', 'default');
-    }
-
-    $('.modal-popup.cover').click(function(e) {
+    $('.record').on('click', '.modal-popup.cover', function(e) {
         var imgurl = $(this).attr('data-img-url');
         var $modal = $('#modal .modal-body');
         var imghtml = '<div class="text-center"><img src="'+imgurl+'" class="img-responsive center-block" alt="Large Preview" /></div>';
@@ -481,6 +474,12 @@ function recordCoverAjax() {
                         $container.find('svg').attr('style', 'display: none');
                         var base64 = 'data:image/jpeg;base64,'+imagedata;
                         $container.find('img').attr('src', base64).removeClass('hidden');
+
+                        if ($('body').hasClass('template-dir-record') && $container.parent().hasClass('cover')) {
+                            $container.parent().addClass('modal-popup');
+                            $container.parent().attr('href', '#');
+
+                        }
                     }
                 },
             });
