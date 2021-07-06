@@ -11,10 +11,12 @@
     <div class="col-xs-4 col-sm-3 col-xs-offset-4 col-sm-offset-0 pull-right-sm" >
 <?php
 ?>
-        <?=$this->context($this)->renderInContext('record/cover.phtml', [
-            'cover' => $this->record($this->driver)->getThumbnail('medium'),
-        ])?>
+        <a class="cover" data-toggle="modal" data-img-url="<?=$this->record($this->driver)->getThumbnail('large')?>">
+            <?=$this->context($this)->renderInContext('record/cover.phtml', [
+                'cover' => $this->record($this->driver)->getThumbnail('medium'),
 
+            ])?>
+        </a>
     </div>
     <div class="col-xs-12 col-sm-9">
         <?php
