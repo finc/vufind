@@ -163,6 +163,27 @@ class SolrGviMarc extends SolrMarc implements Constants
         return array_unique($rvkchain);
     }
 
+    /** Get all STandardtheaurus Wirtschaft keywords
+     *
+     * @return array
+     * @throws File_MARC_Exception
+     */
+    public function getSTWSubjectHeadings()
+    {
+        // Disable this output
+        $return = [];
+        foreach ($this->getMarcRecord()->getFields('650') as $field) {
+            $suba = $field->getSubField('a');
+            $sub2 = $field->getSubfield(2);
+            if (is_object($sub2) && $sub2->getData() == 'stw') {
+                $data = $suba->getData();
+                $return[] = $data;
+            }
+        }
+        return array_unique($return);
+    }
+
+
     /**
      * Get an array with RVK shortcut as key and description as value (array)
      * @returns array
@@ -203,19 +224,29 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
+     * @param string $type all, main_topic, partial_aspect
+     *
      * @return array
      * @throws File_MARC_Exception
+     *
      */
-    public function getFivSubjects()
+    public function getFivSubjects($type = 'all')
     {
         $notationList = [];
+
+        $ind2 = null;
+        if ($type === 'main_topics') {
+            $ind2 = 0;
+        } elseif ($type === 'partial_aspects') {
+            $ind2 = 1;
+        }
 
         foreach ($this->getMarcRecord()->getFields('938') as $field) {
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield(2);
             if ($suba && $field->getIndicator(1) == 1
-                && $field->getIndicator(2) <= 1
                 && (empty($sub2) || $sub2->getData() != 'gnd')
+                && ((isset($ind2) && $field->getIndicator(2) == $ind2) || !isset($ind2))
             ) {
                 $data = $suba->getData();
                 $data = preg_replace('/!.*!|:/i', '', $data);

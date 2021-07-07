@@ -1,46 +1,6 @@
 <?php $rand = rand(0, 9999)?>
 
 
-<?php $subjects = $this->driver->getAllSubjectHeadings();?>
-<?php if (!empty($subjects)): ?>
-
-  <tr>
-    <th><?=$this->transEsc('Subjects')?>:</th>
-    <td>
-      <?php $count = 0 ?>
-      <?php foreach ($subjects as $field): ?>
-        <span class="subjectLine" property="keywords">
-         <?php $subject = ''; ?>
-         <?php if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
-            <?php $i = 0; foreach ($field as $subfield): ?>
-              <?=($i++ == 0) ? '' : ' &gt; '?>
-              <?php $subject = trim($subject . ' ' . $subfield); ?>
-              <a class="markjs searchicon <?php if($count > 5): ?>allsubjects-<?=$rand?>collapse-inline collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>"
-                 href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
-              <?php $count++ ?>
-            <?php endforeach; ?>
-          <?php elseif (is_array($field) && count($field) > 1): ?>
-                <?php foreach ($field as $subfield): ?>
-                     <a class="markjssearchicon <?php if($count > 5): ?>allsubjects-<?=$rand?>collapse-inline  collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
-                    <?php $count++ ?>
-                <?php endforeach; ?>
-          <?php else: ?>
-             <a class="markjs searchicon <?php if ($count >= 5): ?>allsubjects-<?=$rand?> collapse-inline collapse multi-collapse<?php endif; ?>"
-                title="<?= $this->escapeHtmlAttr($field) ?>"
-                href="<?= $this->record($this->driver)->getLink('subject', $field, $this->searchClassId) ?>"><?= trim($this->escapeHtml($field)) ?></a>
-             <?php $count++ ?>
-         <?php endif; ?>
-      </span>
-      <?php endforeach; ?>
-      <?php if($count > 5): ?>
-          <?=$this->showmore('.allsubjects-'.$rand, false)?>
-      <?endif; ?>
-    </td>
-  </tr>
-  <?php unset($subjects)?>
-  <?php endif; ?>
-
-
   <?php $notations = $this->driver->tryMethod('getRVKNotations');
   if(!empty($notations) && $this->client()->is('show_rvk')): ?>
   <?php $contentDisplayed = true; ?>
@@ -84,11 +44,11 @@
   </tr>
   <?php endif; ?>
 
-  <?php $fivsubjects = $this->driver->tryMethod('getFIVSubjects');
+  <?php $fivsubjects = $this->driver->tryMethod('getFIVSubjects', ['main_topics']);
   if(!empty($fivsubjects) && $this->client()->is('show_fiv')): ?>
   <?php $contentDisplayed = true; ?>
   <tr>
-      <th><span class="text-nowrap"><?=$this->abbrev('FIV')?>-<?=$this->transEsc('Subjects')?>:</span></th>
+      <th><span class="text-nowrap"><?=$this->abbrev('FIV')?>-<?=$this->transEsc('Main Topics')?>:</span></th>
       <?php if(is_array($fivsubjects)): ?>
         <?php $count = 0;?>
       <td>
@@ -105,6 +65,27 @@
   <?php endif; ?>
   </tr>
   <?php endif; ?>
+<?php $fivsubjects = $this->driver->tryMethod('getFIVSubjects', ['partial_aspects']);
+if(!empty($fivsubjects) && $this->client()->is('show_fiv')): ?>
+    <?php $contentDisplayed = true; ?>
+    <tr>
+        <th><span class="text-nowrap"><?=$this->abbrev('FIV')?>-<?=$this->transEsc('Partial Aspects')?>:</span></th>
+        <?php if(is_array($fivsubjects)): ?>
+            <?php $count = 0;?>
+            <td>
+          <span class="notationLine markjs">
+          <?php foreach ($fivsubjects as $subject): ?>
+              <a href="<?=$this->record($this->driver)->getLink('fivsubject', $subject, $this->searchClassId)?>" class="searchicon <?php if($count >= 5): ?>fivsubjects-<?=$rand?> collapse-inline collapse multi-collapse<?php endif; ?>"><?=$this->escapeHtml($subject)?></a>
+              <?php $count++ ?>
+          <?php endforeach; ?>
+          </span>
+                <?php if($count > 5):?>
+                    <?=$this->showmore('.fivsubjects-'.$rand, false)?>
+                <?php endif; ?>
+            </td>
+        <?php endif; ?>
+    </tr>
+<?php endif; ?>
 
   <?php $dficlassification = $this->driver->tryMethod('getDFIClassification');
   if(!empty($dficlassification) && $this->client()->is('show_dfi')): ?>
@@ -157,5 +138,83 @@ if (!empty($subjects) && $this->client()->is('show_rvk')): ?>
     </td>
   </tr>
   <?php endif; ?>
+<?php $subjects = $this->driver->getSTWSubjectHeadings();?>
+<?php if (!empty($subjects) && $this->client()->is('show_stw')): ?>
+
+    <tr>
+        <th><span class="text-nowrap"><?=$this->abbrev('STW')?>-<?=$this->transEsc('Subjects')?>:</span></th>
+        <td>
+            <?php $count = 0 ?>
+            <?php foreach ($subjects as $field): ?>
+                <span class="subjectLine" property="keywords">
+         <?php $subject = ''; ?>
+                    <?php if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
+                        <?php $i = 0; foreach ($field as $subfield): ?>
+                            <?=($i++ == 0) ? '' : ' &gt; '?>
+                            <?php $subject = trim($subject . ' ' . $subfield); ?>
+                            <a class="markjs searchicon <?php if($count > 5): ?>allsubjects-<?=$rand?>collapse-inline collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>"
+                               href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+                            <?php $count++ ?>
+                        <?php endforeach; ?>
+                    <?php elseif (is_array($field) && count($field) > 1): ?>
+                        <?php foreach ($field as $subfield): ?>
+                            <a class="markjssearchicon <?php if($count > 5): ?>allsubjects-<?=$rand?>collapse-inline  collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+                            <?php $count++ ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <a class="markjs searchicon <?php if ($count >= 5): ?>allsubjects-<?=$rand?> collapse-inline collapse multi-collapse<?php endif; ?>"
+                           title="<?= $this->escapeHtmlAttr($field) ?>"
+                           href="<?= $this->record($this->driver)->getLink('subject', $field, $this->searchClassId) ?>"><?= trim($this->escapeHtml($field)) ?></a>
+                        <?php $count++ ?>
+                    <?php endif; ?>
+      </span>
+            <?php endforeach; ?>
+            <?php if($count > 5): ?>
+                <?=$this->showmore('.allsubjects-'.$rand, false)?>
+            <?endif; ?>
+        </td>
+    </tr>
+    <?php unset($subjects)?>
+<?php endif; ?>
+
+<?php $subjects = $this->driver->getAllSubjectHeadings();?>
+<?php if (!empty($subjects) && $this->client()->is('show_general_keywords')): ?>
+
+    <tr>
+        <th><?=$this->transEsc('Subjects')?>:</th>
+        <td>
+            <?php $count = 0 ?>
+            <?php foreach ($subjects as $field): ?>
+                <span class="subjectLine" property="keywords">
+         <?php $subject = ''; ?>
+                    <?php if( is_array($field) && count($field) == 1): $field = explode('--', $field[0]); ?>
+                        <?php $i = 0; foreach ($field as $subfield): ?>
+                            <?=($i++ == 0) ? '' : ' &gt; '?>
+                            <?php $subject = trim($subject . ' ' . $subfield); ?>
+                            <a class="markjs searchicon <?php if($count > 5): ?>allsubjects-<?=$rand?>collapse-inline collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subject)?>"
+                               href="<?=$this->record($this->driver)->getLink('subject', $subject, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+                            <?php $count++ ?>
+                        <?php endforeach; ?>
+                    <?php elseif (is_array($field) && count($field) > 1): ?>
+                        <?php foreach ($field as $subfield): ?>
+                            <a class="markjssearchicon <?php if($count > 5): ?>allsubjects-<?=$rand?>collapse-inline  collapse multi-collapse<?php endif; ?>" title="<?=$this->escapeHtmlAttr($subfield)?>" href="<?=$this->record($this->driver)->getLink('subject', $subfield, $this->searchClassId)?>"><?=trim($this->escapeHtml($subfield))?></a>
+                            <?php $count++ ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <a class="markjs searchicon <?php if ($count >= 5): ?>allsubjects-<?=$rand?> collapse-inline collapse multi-collapse<?php endif; ?>"
+                           title="<?= $this->escapeHtmlAttr($field) ?>"
+                           href="<?= $this->record($this->driver)->getLink('subject', $field, $this->searchClassId) ?>"><?= trim($this->escapeHtml($field)) ?></a>
+                        <?php $count++ ?>
+                    <?php endif; ?>
+      </span>
+            <?php endforeach; ?>
+            <?php if($count > 5): ?>
+                <?=$this->showmore('.allsubjects-'.$rand, false)?>
+            <?endif; ?>
+        </td>
+    </tr>
+    <?php unset($subjects)?>
+<?php endif; ?>
+
 
 
