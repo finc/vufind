@@ -459,8 +459,9 @@ function deleteInput() {
 function recordCoverAjax() {
     var $covers = $('.cover-container').each(function() {
         var $container = $(this);
-        var url = $(this).attr('data-cover');
-        if (url.length > 0) {
+        var url = $container.attr('data-cover');
+
+        if (url.length > 0 && isScrolledIntoView($container)) {
             //console.info('Fetching Cover from ' + url);
             $.ajax({
                 method: 'GET',
@@ -474,13 +475,15 @@ function recordCoverAjax() {
                         $container.find('svg').attr('style', 'display: none');
                         var base64 = 'data:image/jpeg;base64,'+imagedata;
                         $container.find('img').attr('src', base64).removeClass('hidden');
-
+                        // on detail view set the modal popup
                         if ($('body').hasClass('template-dir-record') && $container.parent().hasClass('cover')) {
                             $container.parent().addClass('modal-popup');
                             $container.parent().attr('href', '#');
 
                         }
                     }
+                   // remove attribute to avoid duplicate loading
+                    $container.attr('data-cover', '');
                 },
             });
         }
@@ -529,4 +532,8 @@ $(document).ready(function() {
     openInPopup();
     copyToClipboard();
     deleteInput();
+
+    $(document).on('scroll', function() {
+        recordCoverAjax();
+    });
 });
