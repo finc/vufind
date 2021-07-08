@@ -461,8 +461,9 @@ function recordCoverAjax() {
         var $container = $(this);
         var url = $container.attr('data-cover');
 
-        if (url.length > 0 && isScrolledIntoView($container)) {
-            //console.info('Fetching Cover from ' + url);
+        if (url.length > 0 && Utils.isScrolledIntoView($container)) {
+           // remove attribute to avoid duplicate loading
+            $container.attr('data-cover', '');
             $.ajax({
                 method: 'GET',
                 accepts: 'image/jpeg',
@@ -482,22 +483,23 @@ function recordCoverAjax() {
 
                         }
                     }
-                   // remove attribute to avoid duplicate loading
-                    $container.attr('data-cover', '');
                 },
             });
         }
     });
 }
-function isScrolledIntoView(elem)
-{
-    var docViewTop = $(window).scrollTop();
-    var docViewBottom = docViewTop + $(window).height();
 
-    var elemTop = $(elem).offset().top;
-    var elemBottom = elemTop + $(elem).height();
 
-    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+class Utils {
+    static isScrolledIntoView(elem) {
+        var docViewTop = $(window).scrollTop();
+        var docViewBottom = docViewTop + $(window).height();
+
+        var elemTop = $(elem).offset().top;
+        var elemBottom = elemTop + $(elem).height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
 }
 
 
@@ -534,6 +536,7 @@ $(document).ready(function() {
     deleteInput();
 
     $(document).on('scroll', function() {
+        console.log('scroll');
         recordCoverAjax();
     });
 });
