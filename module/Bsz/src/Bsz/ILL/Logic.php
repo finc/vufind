@@ -76,6 +76,7 @@ class Logic
     {
         $this->config = $config;
         $this->localIsils = $isils;
+        $this->localIsils[] = 'LFER';
     }
 
     /**
