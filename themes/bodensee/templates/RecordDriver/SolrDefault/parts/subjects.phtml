@@ -138,7 +138,7 @@ if (!empty($subjects) && $this->client()->is('show_rvk')): ?>
     </td>
   </tr>
   <?php endif; ?>
-<?php $subjects = $this->driver->getSTWSubjectHeadings();?>
+<?php $subjects = $this->driver->tryMethod('getSTWSubjectHeadings');?>
 <?php if (!empty($subjects) && $this->client()->is('show_stw')): ?>
 
     <tr>
