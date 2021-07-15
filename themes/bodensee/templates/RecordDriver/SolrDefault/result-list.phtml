@@ -1,11 +1,11 @@
 <?php
-    $hasSubRecords = $this->driver->hasSubRecords();
-    $subRecords = $this->driver->getSubRecords();
+    $hasSubRecords = $this->driver->tryMethod('hasSubRecords');
+    $subRecords = $this->driver->tryMethod('getSubRecords');
     $subRecordsCount = 0;
     if ($subRecords) {
         $subRecordsCount = sizeof($subRecords);
     }
-    $isSubRecord = $this->driver->isSubRecord();
+    $isSubRecord = $this->driver->tryMethod('isSubRecord');
     $uniqueId = $this->driver->getUniqueId();
 
     $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
