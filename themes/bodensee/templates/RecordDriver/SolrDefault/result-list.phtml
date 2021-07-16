@@ -24,97 +24,99 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
             <?=$cover ?>
         </a>
-    </div>
+    </div> <!-- end cover col -->
     <div class="col-xs-10 col-sm-6 col-md-7 col-no-left-padding">
-            <span class="" style="float:left;"><?=$this->recordNumber?></span>.
-            <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull markjs" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
-                <?=$this->record($this->driver)->getTitleHtml()?>
-            </a>
-            <?php if ($titlesection = $this->driver->getTitleSection()):?>
-                / <?= $titlesection ?>
+        <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
+        <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
+        <span class="" style="float:left;"><?=$this->recordNumber?></span>.
+        <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title getFull markjs" data-view="<?=$this->params->getOptions()->getListViewOption() ?>">
+            <?=$this->record($this->driver)->getTitleHtml()?>
+        </a>
+        <?php if ($titlesection = $this->driver->getTitleSection()):?>
+            / <?= $titlesection ?>
+        <?php endif; ?>
+
+        <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
+                           'driver' => $this->driver,
+                           'hiddenFilterString' => $hiddenFilterString])?>
+
+        <?php if (!$this->driver->isCollection()): ?>
+          <?php if ($snippet = $this->driver->getHighlightedSnippet()): ?>
+            <?php if (!empty($snippet['caption'])): ?>
+              <strong><?=$this->transEsc($snippet['caption']) ?>:</strong> ';
             <?php endif; ?>
-
-            <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
-                               'driver' => $this->driver,
-                               'hiddenFilterString' => $hiddenFilterString])?>
-
-            <?php if (!$this->driver->isCollection()): ?>
-              <?php if ($snippet = $this->driver->getHighlightedSnippet()): ?>
-                <?php if (!empty($snippet['caption'])): ?>
-                  <strong><?=$this->transEsc($snippet['caption']) ?>:</strong> ';
-                <?php endif; ?>
-                <?php if (!empty($snippet['snippet'])): ?>
-                  <span class="quotestart">&#8220;</span>...<?=$this->highlight($snippet['snippet']) ?>...<span class="quoteend">&#8221;</span><br/>
-                <?php endif; ?>
-              <?php endif; ?>
+            <?php if (!empty($snippet['snippet'])): ?>
+              <span class="quotestart">&#8220;</span>...<?=$this->highlight($snippet['snippet']) ?>...<span class="quoteend">&#8221;</span><br/>
             <?php endif; ?>
+          <?php endif; ?>
+        <?php endif; ?>
 
-            <?php /* Display information on duplicate records if available */?>
-            <?php if ($dedupData = $this->driver->getDedupData()): ?>
-                <div class="dedupInformation">
-                <?php $i = 0 ?>
-                <?php foreach ($dedupData as $source => $current): ?>
-                    <?php if (++$i == 1):?>
-                    <span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", [], $source)?></a></span>
-                    <?php else: ?>
-                        <?php if ($i == 2): ?>
-                            <span class="otherSources">(<?=$this->transEsc('Other Sources')?>:
-                        <?php else: ?>,
-                        <?php endif; ?>
-                        <a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", [], $source)?></a>
+        <?php /* Display information on duplicate records if available */?>
+        <?php if ($dedupData = $this->driver->getDedupData()): ?>
+            <div class="dedupInformation">
+            <?php $i = 0 ?>
+            <?php foreach ($dedupData as $source => $current): ?>
+                <?php if (++$i == 1):?>
+                <span class="currentSource"><a href="<?=$this->recordLink()->getUrl($this->driver)?>"><?=$this->transEsc("source_$source", [], $source)?></a></span>
+                <?php else: ?>
+                    <?php if ($i == 2): ?>
+                        <span class="otherSources">(<?=$this->transEsc('Other Sources')?>:
+                    <?php else: ?>,
                     <?php endif; ?>
-                <?php endforeach; ?>
-                <?php if ($i > 1): ?>
-                     )</span>
+                    <a href="<?=$this->recordLink()->getUrl($current['id'])?>"><?=$this->transEsc("source_$source", [], $source)?></a>
                 <?php endif; ?>
-                </div>
+            <?php endforeach; ?>
+            <?php if ($i > 1): ?>
+                 )</span>
             <?php endif; ?>
-            <?php $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
-                <div>
-                    <strong><?=$this->transEsc('Edition')?>: </strong>
-                    <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>
-                </div>
-            <?php endif; ?>
-            <?php if ($this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
-                <div class="ill-source">
-                    <strong><?= $this->transEsc('Network') ?>:</strong>
-                    <span><?= $this->driver->getConsortium() ?></span>
-                </div>
-            <?php endif; ?>
-            <?= $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
-                'driver' => $this->driver,
-                'hiddenFilterString' => $hiddenFilterString,
-                'area' => 'results']) ?>
-
-            <?php if ($this->ils()->getDriverClass() !== 'Bsz\ILS\Driver\NoILS'): ?>
-                <div class="callnumAndLocation ajax-availability hidden">
-                    <?php if ($this->driver->supportsAjaxStatus()): ?>
-                        <strong class="hideIfDetailed"><?= $this->transEsc('Call Number') ?>
-                            :</strong>
-                        <span class="callnumber ajax-availability hidden">
-                        <?= $this->transEsc('Loading') ?>...<br/>
-                    </span>
-                        <strong><?= $this->transEsc('Located') ?>:</strong>
-                        <span class="location ajax-availability hidden">
-                        <?=$this->transEsc('Loading')?>...
-                    </span>
-                    <div class="locationDetails"></div>
-                <?php endif; ?>
-                </div>
-            <?php endif; ?>
-
-            <div class="result-formats">
-                <?=$this->record($this->driver)->getFormatList() ?>
-                <?php if (empty($urls) && $this->driver->supportsAjaxStatus()): ?>
-                    <span class="status ajax-availability hidden">
-                        <span class="label label-default"><?=$this->transEsc('Loading')?>...</span>
-                    </span>
-                <?php endif; ?>
             </div>
-            <div class="result-previews">
-                <?=$this->record($this->driver)->getPreviews()?>
+        <?php endif; ?>
+        <?php $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
+            <div>
+                <strong><?=$this->transEsc('Edition')?>: </strong>
+                <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>
             </div>
-    </div> <!-- end result-body -->
+        <?php endif; ?>
+        <?php if ($this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
+            <div class="ill-source">
+                <strong><?= $this->transEsc('Network') ?>:</strong>
+                <span><?= $this->driver->getConsortium() ?></span>
+            </div>
+        <?php endif; ?>
+        <?= $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
+            'driver' => $this->driver,
+            'hiddenFilterString' => $hiddenFilterString,
+            'area' => 'results']) ?>
+
+        <?php if ($this->ils()->getDriverClass() !== 'Bsz\ILS\Driver\NoILS'): ?>
+            <div class="callnumAndLocation ajax-availability hidden">
+                <?php if ($this->driver->supportsAjaxStatus()): ?>
+                    <strong class="hideIfDetailed"><?= $this->transEsc('Call Number') ?>
+                        :</strong>
+                    <span class="callnumber ajax-availability hidden">
+                    <?= $this->transEsc('Loading') ?>...<br/>
+                </span>
+                    <strong><?= $this->transEsc('Located') ?>:</strong>
+                    <span class="location ajax-availability hidden">
+                    <?=$this->transEsc('Loading')?>...
+                </span>
+                <div class="locationDetails"></div>
+            <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="result-formats">
+            <?=$this->record($this->driver)->getFormatList() ?>
+            <?php if (empty($urls) && $this->driver->supportsAjaxStatus()): ?>
+                <span class="status ajax-availability hidden">
+                    <span class="label label-default"><?=$this->transEsc('Loading')?>...</span>
+                </span>
+            <?php endif; ?>
+        </div>
+        <div class="result-previews">
+            <?=$this->record($this->driver)->getPreviews()?>
+        </div>
+    </div> <!-- end content col -->
     <div class="col-xs-12 col-sm-4 col-md-3 hidden-print">
         <ul class="nav nav-pills nav-stacked">
             <?php if ($this->cart()->isActiveInSearch() && $this->params->getOptions()->supportsCart() && $this->cart()->isActive()): ?>
@@ -155,7 +157,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
                 </li>
             <?php endif; ?>
         </ul>
-    </div> <!-- end media-body -->
+    </div> <!-- end buttons col -->
     <!-- Begin subrecords -->
     <?php if ($hasSubRecords): ?>
     <div class="row">
