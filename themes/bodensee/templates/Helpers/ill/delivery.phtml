@@ -51,6 +51,8 @@ $form = '';
                             </label>
                         </div>
                     <? endforeach; ?>
+                <? else: ?>
+                    <span class="help-block"><?=$this->transEsc('ILL::no_places_configured')?></span>
                 <? endif; ?>
                 </div>
             <? endforeach; ?>
