@@ -44,7 +44,7 @@ class SolrDlrMarc extends SolrMarc
      * @return array
      * @throws File_MARC_Exception
      */
-    public function getAllRVKSubjectHeadings()
+    public function getRVKSubjectHeadings()
     {
         $rvkchain = [];
         foreach ($this->getMarcRecord()->getFields('936') as $field) {

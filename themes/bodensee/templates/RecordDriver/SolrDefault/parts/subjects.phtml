@@ -105,7 +105,7 @@ if(!empty($fivsubjects) && $this->client()->is('show_fiv')): ?>
   <?php endif; ?>
 
 
-<?php $subjects = $this->driver->tryMethod('getAllRVKSubjectHeadings');
+<?php $subjects = $this->driver->tryMethod('getRVKSubjectHeadings');
 if (!empty($subjects) && $this->client()->is('show_rvk')): ?>
   <tr>
     <th><span class="text-nowrap"><?=$this->abbrev('RVK')?>-<?=$this->transEsc('Subjects')?>:</span></th>

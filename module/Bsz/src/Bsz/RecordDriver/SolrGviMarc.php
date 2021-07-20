@@ -146,7 +146,7 @@ class SolrGviMarc extends SolrMarc implements Constants
      * Get all subjects associated with this item. They are unique.
      * @return array
      */
-    public function getAllRVKSubjectHeadings()
+    public function getRVKSubjectHeadings()
     {
         // Disable this output
         return [];
