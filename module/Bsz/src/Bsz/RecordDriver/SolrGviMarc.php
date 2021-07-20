@@ -148,8 +148,6 @@ class SolrGviMarc extends SolrMarc implements Constants
      */
     public function getRVKSubjectHeadings()
     {
-        // Disable this output
-        return [];
         $rvkchain = [];
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
             if ($field->getIndicator(1) == 'r'
@@ -161,6 +159,22 @@ class SolrGviMarc extends SolrMarc implements Constants
             }
         }
         return array_unique($rvkchain);
+    }
+
+    /**
+     * Get all subjects associated with this item. They are unique.
+     * @return array
+     */
+    public function getGNDSubjectHeadings()
+    {
+        $gnd = [];
+        foreach ($this->getMarcRecord()->getFields('689') as $field) {
+            $sub2 = $field->getSubfield(2);
+            if (is_object($sub2) && $sub2->getData() == 'gnd') {
+                $gnd[] = $field->getSubfield('a')->getData();
+            }
+        }
+        return array_unique($gnd);
     }
 
     /** Get all STandardtheaurus Wirtschaft keywords
