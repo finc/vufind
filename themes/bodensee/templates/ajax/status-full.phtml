@@ -1,4 +1,5 @@
-<table class="table table-condensed">
+<div class="table-responsive">
+<table class="table table-condensed ">
   <tr>
     <th><?=$this->transEsc('Location')?></th>
     <th><?=$this->transEsc('Call Number')?></th>
@@ -94,3 +95,4 @@
   <tr><td colspan="3"><a href="<?=$this->url('record', ['id' => $this->statusItems[0]['id']])?>"><?=count($this->statusItems) - 5?> <?=$this->transEsc('more')?> ...</a></td></tr>
 <?php endif; ?>
 </table>
+</div>
