@@ -20,12 +20,12 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
 ?>
 
 
-    <div class="col-xs-2 col-sm-2 col-md-2 hidden-print">
+    <div class="col-xs-3 col-sm-2 col-md-2 hidden-print">
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
             <?=$cover ?>
         </a>
     </div> <!-- end cover col -->
-    <div class="col-xs-10 col-sm-6 col-md-7 col-no-left-padding">
+    <div class="col-xs-9 col-sm-6 col-md-7 col-no-left-padding">
         <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
         <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getSourceIdentifier())?>" class="hiddenSource" />
         <span class="" style="float:left;"><?=$this->recordNumber?></span>.
@@ -117,7 +117,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
             <?=$this->record($this->driver)->getPreviews()?>
         </div>
     </div> <!-- end content col -->
-    <div class="col-xs-12 col-sm-4 col-md-3 hidden-print col-xs-offset-2 col-sm-offset-0 col-no-left-padding">
+    <div class="col-xs-12 col-sm-4 col-md-3 hidden-print col-xs-offset-3 col-sm-offset-0 col-no-left-padding">
         <ul class="nav nav-pills">
             <?php if ($this->cart()->isActiveInSearch() && $this->params->getOptions()->supportsCart() && $this->cart()->isActive()): ?>
               <?=$this->render('record/cart-buttons.phtml', ['id' => $this->driver->getUniqueId(), 'source' => $this->driver->getSourceIdentifier()]); ?>
