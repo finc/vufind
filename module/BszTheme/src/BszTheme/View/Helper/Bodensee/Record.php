@@ -87,15 +87,12 @@ class Record extends \VuFind\View\Helper\Root\Record
         if (empty($formats)) {
             $formats = $this->driver->getFormats();
         }
-        $retval = 'bsz bsz-unknown ';
+        $retval = 'sonstiges';
 
         $formatStr = implode('_', $formats);
 
         if (isset($this->iconconfig) && $this->iconconfig->offsetExists($formatStr)) {
             $retval = $this->iconconfig->get($formatStr);
-        }
-        if (in_array('Online', $formats)) {
-            $retval .= ' online';
         }
         return $retval;
 
@@ -273,5 +270,23 @@ class Record extends \VuFind\View\Helper\Root\Record
             default: $icon = 'fa_times text-danger';
         }
         return $icon;
+    }
+
+    /**
+     * Render a search result for the specified view mode.
+     *
+     * @param string $view View mode to use.
+     * @param int    $num  rECORD NUMBER
+     * @return string
+     */
+    public function getSearchResult($view, $num = null)
+    {
+        return $this->renderTemplate(
+            'result-' . $view . '.phtml',
+            [
+                'recordNumber' => $num,
+                'driver' => $this->driver
+            ]
+        );
     }
 }

@@ -1,4 +1,4 @@
-function   performMark() {
+function   performMark(selector = '.markjs') {
     var lookfor = '';
     var input_simple = $('#searchForm_lookfor').val();
     var input_adv = $('li.adv_lookfor').text();
@@ -25,7 +25,7 @@ function   performMark() {
     }
     lookfor = lookfor.replace(/[\/\[;\.,\\\-\–\—\‒_\(\)\{\}\[\]\!'\"=]/g, ' ');
     terms = lookfor.split(' ').filter(function(el) { return el; });
-    $('.markjs').mark(terms, {
+    $(selector).mark(terms, {
         "wildcards": "enabled",
         "accuracy": "partially",
         "synonyms": {
@@ -65,14 +65,7 @@ function bootstrapTooltip() {
 */
 function modalPopup() {
 
-    // prevent default cover placeholders from being clickable
-    var img = $('.modal-popup.cover').find('img');
-    if (img.innerWidth() === 60 || img.innerHeight() === 60) {
-        img.parent().removeClass('modal-popup');
-        img.parent().css('cursor', 'default');
-    }
-
-    $('.modal-popup.cover').click(function(e) {
+    $('.record').on('click', '.modal-popup.cover', function(e) {
         var imgurl = $(this).attr('data-img-url');
         var $modal = $('#modal .modal-body');
         var imghtml = '<div class="text-center"><img src="'+imgurl+'" class="img-responsive center-block" alt="Large Preview" /></div>';
@@ -463,12 +456,60 @@ function deleteInput() {
     })
 }
 
+function recordCoverAjax() {
+    var $covers = $('.cover-container').each(function() {
+        var $container = $(this);
+        var url = $container.attr('data-cover');
+
+        if (url.length > 0 && Utils.isScrolledIntoView($container)) {
+           // remove attribute to avoid duplicate loading
+            $container.attr('data-cover', '');
+            $.ajax({
+                method: 'GET',
+                accepts: 'image/jpeg',
+                dataType: 'text',
+                url: VuFind.path + url+'&base64=true',
+                cache: true,
+                success: function (imagedata) {
+                    // recognize 1x1 px placeholder gif
+                    if (imagedata.length > 56) {
+                        $container.find('svg').attr('style', 'display: none');
+                        var base64 = 'data:image/jpeg;base64,'+imagedata;
+                        $container.find('img').attr('src', base64).removeClass('hidden');
+                        // on detail view set the modal popup
+                        if ($('body').hasClass('template-dir-record') && $container.parent().hasClass('cover')) {
+                            $container.parent().addClass('modal-popup');
+                            $container.parent().attr('href', '#');
+
+                        }
+                    }
+                },
+            });
+        }
+    });
+}
+
+
+class Utils {
+    static isScrolledIntoView(elem) {
+        var docViewTop = $(window).scrollTop();
+        var docViewBottom = docViewTop + $(window).height();
+
+        var elemTop = $(elem).offset().top;
+        var elemBottom = elemTop + $(elem).height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
+}
+
+
 /*
 * this is executed after site is loaded
 * main loop
 */
 
 $(document).ready(function() {
+    recordCoverAjax();
     manageActiveTab();
     avoidEmptySearch();
     externalLinks();
@@ -493,4 +534,9 @@ $(document).ready(function() {
     openInPopup();
     copyToClipboard();
     deleteInput();
+
+    $(document).on('scroll', function() {
+        console.log('scroll');
+        recordCoverAjax();
+    });
 });

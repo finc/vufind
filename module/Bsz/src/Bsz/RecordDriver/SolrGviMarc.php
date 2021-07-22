@@ -146,10 +146,8 @@ class SolrGviMarc extends SolrMarc implements Constants
      * Get all subjects associated with this item. They are unique.
      * @return array
      */
-    public function getAllRVKSubjectHeadings()
+    public function getRVKSubjectHeadings()
     {
-        // Disable this output
-        return [];
         $rvkchain = [];
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
             if ($field->getIndicator(1) == 'r'
@@ -162,6 +160,43 @@ class SolrGviMarc extends SolrMarc implements Constants
         }
         return array_unique($rvkchain);
     }
+
+    /**
+     * Get all subjects associated with this item. They are unique.
+     * @return array
+     */
+    public function getGNDSubjectHeadings()
+    {
+        $gnd = [];
+        foreach ($this->getMarcRecord()->getFields('689') as $field) {
+            $sub2 = $field->getSubfield(2);
+            if (is_object($sub2) && $sub2->getData() == 'gnd') {
+                $gnd[] = $field->getSubfield('a')->getData();
+            }
+        }
+        return array_unique($gnd);
+    }
+
+    /** Get all STandardtheaurus Wirtschaft keywords
+     *
+     * @return array
+     * @throws File_MARC_Exception
+     */
+    public function getSTWSubjectHeadings()
+    {
+        // Disable this output
+        $return = [];
+        foreach ($this->getMarcRecord()->getFields('650') as $field) {
+            $suba = $field->getSubField('a');
+            $sub2 = $field->getSubfield(2);
+            if (is_object($sub2) && $sub2->getData() == 'stw') {
+                $data = $suba->getData();
+                $return[] = $data;
+            }
+        }
+        return array_unique($return);
+    }
+
 
     /**
      * Get an array with RVK shortcut as key and description as value (array)
@@ -203,19 +238,29 @@ class SolrGviMarc extends SolrMarc implements Constants
     }
 
     /**
+     * @param string $type all, main_topic, partial_aspect
+     *
      * @return array
      * @throws File_MARC_Exception
+     *
      */
-    public function getFivSubjects()
+    public function getFivSubjects($type = 'all')
     {
         $notationList = [];
+
+        $ind2 = null;
+        if ($type === 'main_topics') {
+            $ind2 = 0;
+        } elseif ($type === 'partial_aspects') {
+            $ind2 = 1;
+        }
 
         foreach ($this->getMarcRecord()->getFields('938') as $field) {
             $suba = $field->getSubField('a');
             $sub2 = $field->getSubfield(2);
             if ($suba && $field->getIndicator(1) == 1
-                && $field->getIndicator(2) <= 1
                 && (empty($sub2) || $sub2->getData() != 'gnd')
+                && ((isset($ind2) && $field->getIndicator(2) == $ind2) || !isset($ind2))
             ) {
                 $data = $suba->getData();
                 $data = preg_replace('/!.*!|:/i', '', $data);

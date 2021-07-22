@@ -11,7 +11,7 @@ $rand = rand(0, 2000);
   <?php $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->abbrev('PPN')?>:</th>
-      <td>
+      <td class="markjs">
         <?=$this->recordLink()->linkPPN($this->driver) ?>
       </td>
     </tr>
@@ -20,7 +20,7 @@ $rand = rand(0, 2000);
   <?php $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->transEsc('ZDB-ID')?>:</th>
-      <td>
+      <td class="markjs">
           <?php if (isset($zdb)): ?>
               <a id="clipboard-zdb-<?= $rand ?>" class="external"
                  href="https://zdb-katalog.de/list.xhtml?t=<?= $this->escapeHtml($zdb) ?>&key=zdb"><?= $this->escapeHtml($zdb) ?></a>
@@ -35,7 +35,7 @@ $rand = rand(0, 2000);
   ?>
     <tr>
         <th><?=$this->transEsc('Note')?></th>
-        <td><?=$this->escapeHtml($note)?></td>
+        <td class="markjs"><?=$this->escapeHtml($note)?></td>
     </tr>
   <?php endif; ?>
 
@@ -43,7 +43,7 @@ $rand = rand(0, 2000);
     <?php $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->transEsc('Summary')?>: </th>
-      <td>
+      <td class="markjs">
         <?php foreach ($summ as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
         <?php endforeach; ?>
@@ -56,7 +56,7 @@ $rand = rand(0, 2000);
          ?>
          <tr>
              <th><?= $this->abbrev('GTIN') ?>:</th>
-             <td><?= $this->clipboard($ean) ?></td>
+             <td class="markjs"><?= $this->clipboard($ean) ?></td>
          </tr>
      <?php endif; ?>
 
@@ -64,7 +64,7 @@ $rand = rand(0, 2000);
     <?php $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->transEsc('Published')?>: </th>
-      <td>
+      <td class="markjs">
         <?php foreach ($dateSpan as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
         <?php endforeach; ?>
@@ -76,7 +76,7 @@ $rand = rand(0, 2000);
     <?php $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->transEsc('Item Description')?>: </th>
-      <td>
+      <td class="markjs">
         <?php foreach ($notes as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
         <?php endforeach; ?>
@@ -125,7 +125,7 @@ $rand = rand(0, 2000);
     <?php $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->transEsc('Audience')?>: </th>
-      <td>
+      <td class="markjs">
         <?php foreach ($audience as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
         <?php endforeach; ?>
@@ -161,7 +161,7 @@ $rand = rand(0, 2000);
     <?php $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->transEsc('Bibliography')?>: </th>
-      <td>
+      <td class="markjs">
         <?php foreach ($bib as $field): ?>
           <?=$this->escapeHtml($field)?><br/>
         <?php endforeach; ?>
@@ -173,7 +173,7 @@ $rand = rand(0, 2000);
     <?php $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->abbrev('ISBN', 'ISBN_long')?>: </th>
-      <td>
+      <td class="markjs">
         <?php foreach ($isbns as $field): ?>
             <?= $this->clipboard($field) ?><br/>
         <?php endforeach; ?>
@@ -185,7 +185,7 @@ $rand = rand(0, 2000);
     <?php $contentDisplayed = true; ?>
     <tr>
       <th><?=$this->abbrev('ISSN', 'ISSN_long')?>: </th>
-      <td>
+      <td class="markjs">
         <?php foreach ($issns as $field): ?>
             <?= $this->clipboard($field) ?><br/>
         <?php endforeach; ?>
@@ -257,7 +257,7 @@ $rand = rand(0, 2000);
         <?php $contentDisplayed = true; ?>
         <tr>
             <th><?=$this->transEsc('remarks')?>: </th>
-            <td>
+            <td class="markjs">
                 <?php foreach ($remarks as $field): ?>
                     <?=$this->escapeHtml($field)?><br/>
                 <?php endforeach; ?>
@@ -270,7 +270,7 @@ $rand = rand(0, 2000);
         <?php $bibliorelationsids = $this->driver->tryMethod('getBiblioRelationsIds'); ?>
         <tr>
             <th><?=$this->transEsc('Bibliographic Relations')?>: </th>
-            <td>
+            <td class="markjs">
                 <?php foreach ($bibliorelations as $field): ?>
                     <?=$this->escapeHtml($field)?><br/>
                 <?php endforeach; ?>
@@ -281,7 +281,10 @@ $rand = rand(0, 2000);
   <?php if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <?php endif; ?>
-
-
-
 </table>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        performMark('.tab-content .markjs');
+    })
+</script>

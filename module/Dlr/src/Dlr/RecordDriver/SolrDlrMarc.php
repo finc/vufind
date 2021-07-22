@@ -23,6 +23,7 @@ namespace Dlr\RecordDriver;
 
 use Bsz\RecordDriver\ContainerTrait;
 use Bsz\RecordDriver\MarcAuthorTrait;
+use Bsz\RecordDriver\MarcFormatTrait;
 use Bsz\RecordDriver\SolrMarc;
 use File_MARC_Exception;
 use VuFind\RecordDriver\IlsAwareTrait;
@@ -36,13 +37,14 @@ class SolrDlrMarc extends SolrMarc
     use ContainerTrait;
     use IlsAwareTrait;
     use MarcAuthorTrait;
+    use MarcFormatTrait;
 
     /**
      * Get all subjects associated with this item. They are unique.
      * @return array
      * @throws File_MARC_Exception
      */
-    public function getAllRVKSubjectHeadings()
+    public function getRVKSubjectHeadings()
     {
         $rvkchain = [];
         foreach ($this->getMarcRecord()->getFields('936') as $field) {
@@ -80,7 +82,7 @@ class SolrDlrMarc extends SolrMarc
      * get all formats from solr field format
      * @return array
      */
-    public function getFormats()
+    public function getFormats() : array
     {
         $formats = [];
         if (isset($this->fields['format'])) {
