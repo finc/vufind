@@ -14,7 +14,7 @@
 @gray-light:             darken(@gray-lighter, 5%);   // #999
 @gray-lighter:           rgb(237,237,237); // #eee
 
-@brand-primary:         rgb(230,0,30);
+@brand-primary:         #ffdb99;
 @brand-success:         #7cac22;
 @brand-info:            #719DB0;
 @brand-warning:         lighten(#D40032, 15%);
@@ -31,7 +31,7 @@
 @text-color:            #2b3346;
 
 //** Global textual link color.
-@link-color:            @brand-primary;
+@link-color:            #6E6E6E;
 //** Link hover color set via `darken()` function.
 @link-hover-color:      darken(@link-color, 15%);
 //** Link hover decoration.
@@ -148,7 +148,7 @@
 @btn-default-bg:                 @gray-base;
 @btn-default-border:             @btn-default-bg;
 
-@btn-primary-color:              #fff;
+@btn-primary-color:              @text-color;
 @btn-primary-bg:                 @brand-primary;
 @btn-primary-border:             @btn-primary-bg;
 
@@ -357,7 +357,7 @@
 //##
 
 // Basics of a navbar
-@navbar-height:                    160px;
+@navbar-height:                    175px;
 @navbar-margin-bottom:             @line-height-computed;
 @navbar-border-radius:             @border-radius-base;
 @navbar-padding-horizontal:        10px;;
@@ -365,7 +365,7 @@
 @navbar-collapse-max-height:       340px;
 
 @navbar-default-color:             #fff;
-@navbar-default-bg:                rgb(237,237,237);
+@navbar-default-bg:                #FFF5E5;
 @navbar-default-border:            darken(@navbar-default-bg, 6.5%);
 
 // Navbar links

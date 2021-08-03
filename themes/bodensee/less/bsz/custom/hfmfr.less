@@ -1,21 +1,25 @@
 .searchForm {
     .btn-info {
         &:extend(.btn-primary);
+        color: @text-color;
         &:hover {
             &:extend(.btn-primary:hover);
         }
     }
     .btn-primary {
-        &:extend(.btn-default);
+        background-color: #FFF5E5;
+        border: 1px solid #FFF5E5;
+        color: @text-color;
         &:hover {
-            &:extend(.btn-default:hover);
+            background-color: @btn-primary-bg !important;
+            border: 1px solid @btn-primary-bg;
         }
     }
 }
 
 .nav-tabs > li:not(.active) > a {
     background-color: @brand-primary !important;
-    color: white
+    color: @text-color;
 }
 
 .nav-tabs > li:not(.active) > a:hover {
@@ -39,4 +43,30 @@
 
 .navbar-toggle {
     color: @gray-dark;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+    color: @text-color;
+    background-color: white;
+}
+
+.navbar .delete-input {
+    i {
+        color: @text-color;
+    }
+}
+.pagination > li > a, .pagination > li > span {
+    background-color: @brand-primary !important;
+    &:hover {
+        background-color: darken(@brand-primary, 10%) !important;
+        color: @text-color;
+
+    }
+}
+
+body:not(.frame) {
+    /*#gradient.vertical(darken(@brand-primary, 30%); @brand-primary; 15%; 90%);*/
+    background-color: #fffaf3;
 }

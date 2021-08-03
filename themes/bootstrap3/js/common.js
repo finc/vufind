@@ -352,7 +352,7 @@ function setupIeSupport() {
 
 function setupJumpMenus(_container) {
   var container = _container || $('body');
-  container.find('select.jumpMenu').change(function jumpMenu(){ $(this).parent('form').submit(); });
+  container.find('select.jumpMenu').change(function jumpMenu(){ $(this).parent().parent('form').submit(); });
 }
 
 $(document).ready(function commonDocReady() {
