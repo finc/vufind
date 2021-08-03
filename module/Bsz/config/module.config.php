@@ -146,6 +146,8 @@ $config = [
                     'Bsz\RecordDriver\SolrGviMarcDE627' => 'Bsz\RecordDriver\Factory',
                     'Bsz\RecordDriver\SolrGviMarcATOBV' => 'Bsz\RecordDriver\Factory',
                     'Bsz\RecordDriver\EDS'              => 'Bsz\RecordDriver\Factory::getEDS',
+                    'Bsz\RecordDriver\Summon'              => 'Bsz\RecordDriver\Factory::getSummon',
+
                 ],
                 'aliases' => [
                     'SolrGviMarc'      =>  'Bsz\RecordDriver\SolrGviMarc',
@@ -163,6 +165,7 @@ $config = [
                     'SolrGviMarcATOBV' =>  'Bsz\RecordDriver\SolrGviMarcATOBV',
                     'VuFind\RecordDriver\SolrMarc'  => 'Bsz\RecordDriver\SolrMarc',
                     'VuFind\RecordDriver\EDS'       => 'Bsz\RecordDriver\EDS',
+                    'VuFind\RecordDriver\Summon'       => 'Bsz\RecordDriver\Summon',
                 ],
                 'delegators' => [
                     'Bsz\RecordDriver\SolrMarc'        => [\VuFind\RecordDriver\IlsAwareDelegatorFactory::class],
