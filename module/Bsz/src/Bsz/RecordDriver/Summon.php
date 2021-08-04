@@ -21,8 +21,21 @@
 
 namespace Bsz\RecordDriver;
 
-
 class Summon extends \VuFind\RecordDriver\Summon
 {
-
+    /**
+     * Get an array of all the formats associated with the record.
+     *
+     * @return array
+     */
+    public function getFormats()
+    {
+        $sumfor = isset($this->fields['ContentType'])
+            ? $this->fields['ContentType'] : [];
+        $sumfor = array_shift($sumfor);
+        $mappings = [
+            'eBook' => ['Book', 'Online'],
+        ];
+        return array_key_exists($sumfor, $mappings) ? $mappings[$sumfor] : [$sumfor];
+    }
 }
