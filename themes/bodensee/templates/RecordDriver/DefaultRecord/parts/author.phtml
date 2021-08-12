@@ -20,7 +20,7 @@
     <? if (!empty($summAuthors['primary'])): ?>
         <strong><?=$this->transEsc('by')?></strong>
         <? foreach ($summAuthors['primary'] as $name => $info): ?>
-            <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person','hiddenFilterString' => $hiddenFilterString])?>
+            <?=$this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person','hiddenFilterString' => $hiddenFilterString])?>
         <? endforeach; ?>
         <br/>
     <? endif; ?>
@@ -33,7 +33,7 @@
         <? $count = 0?>
         <? foreach ($summAuthors['secondary'] as $name => $info): ?>
             <? if ($count < 3): ?>
-            <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person','hiddenFilterString' => $hiddenFilterString])?>
+            <?=$this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person','hiddenFilterString' => $hiddenFilterString])?>
             <? endif; ?>
             <? $count++ ?>
         <? endforeach; ?>
@@ -54,7 +54,7 @@
         <?php $count = 0 ?>
         <? foreach ($publications as $field): ?>
             <? if($count > 0):?>; <?endif;?>
-            <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/publication.phtml', ['publication' => $field])?>
+            <?=$this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/publication.phtml', ['publication' => $field])?>
             <? $count++ ?>
         <? endforeach; ?>
     </span>

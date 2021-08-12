@@ -16,14 +16,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+
 namespace Bsz\RecordDriver;
 
+use Exception;
 use Interop\Container\ContainerInterface;
+use VuFind\Config\YamlReader;
+use VuFind\Date\Converter;
+use VuFind\ILS\Connection;
+use VuFind\ILS\Logic\Holds;
+use VuFind\ILS\Logic\TitleHolds;
 use VuFind\RecordDriver\SolrDefaultFactory;
 
 /**
  * BSZ RecordDriverFactory
- *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 class Factory extends SolrDefaultFactory
@@ -46,22 +52,22 @@ class Factory extends SolrDefaultFactory
     /**
      * Create an object
      *
-     * @param ContainerInterface $container     Service manager
-     * @param string             $requestedName Service being created
-     * @param null|array         $options       Extra options (optional)
+     * @param ContainerInterface $container Service manager
+     * @param string $requestedName         Service being created
+     * @param null|array $options           Extra options (optional)
      *
      * @return object
-     *
      * @throws ServiceNotFoundException if unable to resolve the service.
      * @throws ServiceNotCreatedException if an exception is raised when
      * creating a service.
      * @throws ContainerException if any other error occurs
      */
     public function __invoke(ContainerInterface $container, $requestedName,
-        array $options = null
-    ) {
+                             array $options = null
+    )
+    {
         if (!empty($options)) {
-            throw new \Exception('Unexpected options sent to factory.');
+            throw new Exception('Unexpected options sent to factory.');
         }
         $requestedName = $requestedName;
 
@@ -71,13 +77,13 @@ class Factory extends SolrDefaultFactory
             $container->get('VuFind\Config')->get('searches')
         );
         $driver->attachILS(
-            $container->get(\VuFind\ILS\Connection::class),
-            $container->get(\VuFind\ILS\Logic\Holds::class),
-            $container->get(\VuFind\ILS\Logic\TitleHolds::class)
+            $container->get(Connection::class),
+            $container->get(Holds::class),
+            $container->get(TitleHolds::class)
         );
 
         if (method_exists($driver, 'attachFormatConfig')) {
-            $yamlReader = $container->get(\VuFind\Config\YamlReader::class);
+            $yamlReader = $container->get(YamlReader::class);
             $formatConfig = $yamlReader->get('MarcFormats.yaml');
             $formatConfigRda = $yamlReader->get('MarcFormatsRDA.yaml');
 
@@ -86,6 +92,28 @@ class Factory extends SolrDefaultFactory
 
         $driver->attachSearchService($container->get('VuFind\Search'));
         $driver->attachSearchRunner($container->get('VuFind\SearchRunner'));
+        return $driver;
+    }
+
+    /**
+     * Create an object
+     *
+     * @param ContainerInterface $container Service manager
+     * @param string $requestedName         Service being created
+     * @param null|array $options           Extra options (optional)
+     *
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     * creating a service.
+     * @throws ContainerException if any other error occurs
+     */
+    public static function getSummon(ContainerInterface $container, $requestedName,
+                              array $options = null
+    )
+    {
+        $driver = new Summon($container, $requestedName, $options);
+        $driver->setDateConverter($container->get(Converter::class));
         return $driver;
     }
 }

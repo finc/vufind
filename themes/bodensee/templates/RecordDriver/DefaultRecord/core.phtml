@@ -1,5 +1,25 @@
 <?
-    $hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
+/*
+ * Copyright 2021 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+$hiddenFilters = $this->searchMemory()->getLastHiddenFilters($this->searchClassId);
     $hiddenFilterString = '';
     foreach ($hiddenFilters as $key => $filter) {
         foreach ($filter as $value) {
@@ -46,7 +66,7 @@
                 </tr>
             <? endif; ?>
 
-            <?=$this->render('RecordDriver/SolrDefault/parts/series.phtml')?>
+            <?=$this->render('RecordDriver/DefaultRecord/parts/series.phtml')?>
 
             <? $volume = $this->driver->tryMethod('getVolume'); ?>
             <? if (!empty($volume)): ?>
@@ -104,7 +124,7 @@
                 <th><?=$this->transEsc('Main Author')?>: </th>
                 <td property="author" class="markjs">
                     <? foreach ($authors['primary'] as $name => $info): ?>
-                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person','hiddenFilterString' => $hiddenFilterString])?>
+                        <?=$this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person','hiddenFilterString' => $hiddenFilterString])?>
                     <? endforeach; ?>
                 </td>
             </tr>
@@ -115,7 +135,7 @@
                 <th><?=$this->transEsc('Corporate Author')?>: </th>
                 <td property="creator" class="markjs">
                 <? foreach ($authors['corporate'] as $name => $info): ?>
-                    <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'corporation', 'hiddenFilterString' => $hiddenFilterString])?>
+                    <?=$this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'corporation', 'hiddenFilterString' => $hiddenFilterString])?>
                     <br/>
                 <? endforeach; ?>
                 </td>
@@ -126,7 +146,7 @@
                 <th><?=$this->transEsc('Other Authors')?>: </th>
                 <td class="markjs">
                     <? foreach ($authors['secondary'] as $name => $info): ?>
-                        <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person', 'hiddenFilterString' => $hiddenFilterString])?>
+                        <?=$this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person', 'hiddenFilterString' => $hiddenFilterString])?>
                         <br/>
                     <? endforeach; ?>
                 </td>
@@ -231,12 +251,12 @@
                     <td>
                         <? if (isset($publicationsOl)): ?>
                             <? foreach ($publicationsOl as $field): ?>
-                                <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/publication.phtml', ['publication' => $field])?>
+                                <?=$this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/publication.phtml', ['publication' => $field])?>
                                 <br/>
                             <? endforeach; ?>
                         <? endif; ?>
                         <? foreach ($publications as $field): ?>
-                            <?=$this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/publication.phtml', ['publication' => $field])?>
+                            <?=$this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/publication.phtml', ['publication' => $field])?>
                             <br/>
                         <? endforeach; ?>
                     </td>
@@ -260,7 +280,7 @@
                 <td><a href="<?=$this->recordLink()->getChildRecordSearchUrl($this->driver)?>"><?=$this->transEsc('child_record_count', array('%%count%%' => $childRecordCount))?></a></td>
             </tr>
             <? endif; ?>
-            <?=$this->render('RecordDriver/SolrDefault/parts/subjects.phtml')?>
+            <?=$this->render('RecordDriver/DefaultRecord/parts/subjects.phtml')?>
 
             <?
                   $openUrl = $this->openUrl($this->driver, 'record');

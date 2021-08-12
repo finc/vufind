@@ -1,5 +1,25 @@
 <?php
-    $hasSubRecords = $this->driver->tryMethod('hasSubRecords');
+/*
+ * Copyright 2021 (C) Bibliotheksservice-Zentrum Baden-
+ * Württemberg, Konstanz, Germany
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+$hasSubRecords = $this->driver->tryMethod('hasSubRecords');
     $subRecords = $this->driver->tryMethod('getSubRecords');
     $subRecordsCount = 0;
     if ($subRecords) {
@@ -36,7 +56,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
             / <?= $titlesection ?>
         <?php endif; ?>
 
-        <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
+        <?=$this->render('RecordDriver/DefaultRecord/parts/author.phtml', [
                            'driver' => $this->driver,
                            'hiddenFilterString' => $hiddenFilterString])?>
 
@@ -77,13 +97,13 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
                 <span property="bookEdition"><?=$this->escapeHtml($edition)?></span>
             </div>
         <?php endif; ?>
-        <?php if ($this->searchTabs()->isILL() && strlen($this->driver->getConsortium()) > 0): ?>
+        <?php if ($this->searchTabs()->isILL() && strlen($this->driver->tryMethod('getConsortium')) > 0): ?>
             <div class="ill-source">
                 <strong><?= $this->transEsc('Network') ?>:</strong>
                 <span><?= $this->driver->getConsortium() ?></span>
             </div>
         <?php endif; ?>
-        <?= $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
+        <?= $this->render('RecordDriver/DefaultRecord/parts/links.phtml', [
             'driver' => $this->driver,
             'hiddenFilterString' => $hiddenFilterString,
             'area' => 'results']) ?>
@@ -199,7 +219,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
                                     <?php if ($titlesection = $sub->getTitleSection()):?>
                                         / <?= $titlesection ?>
                                     <?php endif; ?>
-                                    <?=$this->render('RecordDriver/SolrDefault/parts/author.phtml', [
+                                    <?=$this->render('RecordDriver/DefaultRecord/parts/author.phtml', [
                                             'driver' => $sub,
                                             'hiddenFilterString' => $hiddenFilterString
                                             ])?>
@@ -207,7 +227,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
                                      $openUrl = null;
                                      $openUrlActive = null;
                                      //$openUrlActive = $openUrl->isActive();
-                                     echo $this->render('RecordDriver/SolrDefault/parts/links.phtml', [
+                                     echo $this->render('RecordDriver/DefaultRecord/parts/links.phtml', [
                                        'driver' => $sub,
                                        'openUrl' => $openUrl,
                                        'openUrlActive' => $openUrlActive,
@@ -219,7 +239,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
                                             <span property="bookEdition" class="markjs"><?=$this->escapeHtml($edition)?></span>
                                         </div>
                                     <?php endif; ?>
-                                    <?php if (strlen($this->driver->getConsortium()) > 0): ?>
+                                    <?php if (strlen($this->driver->tryMethod('getConsortium')) > 0): ?>
                                         <div class="ill-source">
                                             <strong><?= $this->transEsc('Network') ?>:</strong>
                                             <span><?= $sub->getConsortium() ?></span>

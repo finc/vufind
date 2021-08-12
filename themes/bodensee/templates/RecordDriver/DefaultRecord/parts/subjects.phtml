@@ -60,7 +60,7 @@ if (!empty($fivsubjects) && $this->client()->is('show_fiv')): ?>
         <?php if (is_array($fivsubjects)): ?>
             <?php $count = 0; ?>
             <td>
-                <?= $this->context($this)->renderInContext('RecordDriver/SolrDefault/parts/singlesubject.phtml', ['subjects' => $fivsubjects, 'type' => 'fivm']) ?>
+                <?= $this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/singlesubject.phtml', ['subjects' => $fivsubjects, 'type' => 'fivm']) ?>
             </td>
         <?php endif; ?>
         <?php unset($fivsubjects) ?>
@@ -77,7 +77,7 @@ if (!empty($fivsubjects) && $this->client()->is('show_fiv')): ?>
             <?php $count = 0; ?>
             <td>
                 <?= $this->context($this)->renderInContext(
-                    'RecordDriver/SolrDefault/parts/singlesubject.phtml', ['subjects' => $fivsubjects, 'type' => 'fivp']) ?>
+                    'RecordDriver/DefaultRecord/parts/singlesubject.phtml', ['subjects' => $fivsubjects, 'type' => 'fivp']) ?>
             </td>
 
         <?php endif; ?>
@@ -157,7 +157,7 @@ if (!empty($subjects) && $this->client()->is('show_rvk')): ?>
         </th>
         <td>
             <?= $this->context($this)->renderInContext(
-                'RecordDriver/SolrDefault/parts/singlesubject.phtml',
+                'RecordDriver/DefaultRecord/parts/singlesubject.phtml',
                 ['subjects' => $subjects, 'type' => 'stw']
             ) ?>
         </td>
@@ -172,7 +172,7 @@ if (!empty($subjects) && $this->client()->is('show_rvk')): ?>
         </th>
         <td>
             <?= $this->context($this)->renderInContext(
-                'RecordDriver/SolrDefault/parts/singlesubject.phtml',
+                'RecordDriver/DefaultRecord/parts/singlesubject.phtml',
                 ['subjects' => $subjects, 'type' => 'gnd']
             ) ?>
         </td>
@@ -186,7 +186,7 @@ if (!empty($subjects) && $this->client()->is('show_rvk')): ?>
         <th><?= $this->transEsc('Subjects') ?>:</th>
         <td>
             <?= $this->context($this)->renderInContext(
-                'RecordDriver/SolrDefault/parts/singlesubject.phtml',
+                'RecordDriver/DefaultRecord/parts/singlesubject.phtml',
                 ['subjects' => $subjects, 'type' => 'all']
             ) ?>
         </td>
