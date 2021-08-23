@@ -49,7 +49,7 @@ JS;
     </div>
   <?php endif; ?>
   <div class="row">
-      <?php if ($this->client()->isIsilSession()): ?>
+      <?php if ($this->client()->is('fernleihe')): ?>
           <div class="col-xs-5 col-sm-4 col-md-3">
               <img class="img-responsive" src="<?=$this->imageLink('logo/bsz.svg')?>" alt="BSZ Logo" />
           </div>
@@ -60,7 +60,7 @@ JS;
               <?php endif; ?>
           </div>
       <?php endif; ?>
-      <?php if ($this->client()->getTag() != 'athen'):?>
+      <?php if ($this->client()->getTag() != 'athen' && $this->client()->getTag() != 'fl-recherche'):?>
       <div class="col-xs-6 col-sm-4 pull-right">
           <?=$this->clientAsset()->getLogoHtml()?>
       </div>
@@ -84,7 +84,7 @@ JS;
               <p><?=$this->transEsc('homepage_text_2')?></p>
           <?php endif; ?>
 
-          <?php if ($this->client()->isIsilSession()): ?>
+          <?php if ($this->client()->is('isil_session')): ?>
               <?=$this->partial('bsz/illselector.phtml')?>
           <?php endif; ?>
           <?php // Set Maintenance hints with SetEnv MAINTENANCE_MODE "..." in httpd-vufind.conf?>
