@@ -1,0 +1,11 @@
+<?php
+$this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('ILL::Resigning') . '</li>';
+
+$this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
+?>
+<div class="col-sm-12">
+    <h3><?=$this->transEsc('ILL::resigning_header')?></h3>
+    <?php foreach($this->params as $param): ?>
+        <?=$this->illform(false, null)->renderInput($param)?>
+    <?php endforeach; ?>
+</div>

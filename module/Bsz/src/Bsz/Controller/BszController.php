@@ -148,4 +148,9 @@ class BszController extends AbstractBase
         $homepage = $library->getHomepage();
         return $this->redirect()->toUrl($homepage);
     }
+
+    public function resigningAction()
+    {
+
+    }
 }
