@@ -319,25 +319,20 @@ class IllForm extends AbstractHelper
     /**
      * Renders a single Input
      *
-     * @param string $label
-     * @param string $name
-     * @param string $value
-     * @param string $placeholder
-     * @param booleanr $required
-     * @param string $error
-     * @param string $type only types that are similar to text inputs
+     * @param $params
+     *
      * @return string
      */
-    public function renderInput($params)
+    public function renderInput($params = [])
     {
         return $this->view->partial('Helpers/ill/form-group', [
-            'label' => $params['label'],
-            'name' => $params['name'],
-            'value' => $params['value'],
+            'label' => $params['label'] ?? '',
+            'name' => $params['name'] ?? '',
+            'value' => $params['value'] ?? '',
             'required' => isset($params['required']) ? (bool)$params['required'] : false,
-            'error' => $params['error'],
-            'placeholder' => $params['placeholder'],
-            'type' => $params['type'],
+            'error' => $params['error'] ?? '',
+            'placeholder' => $params['placeholder'] ?? '',
+            'type' => $params['type'] ?? 'text',
         ]);
     }
 
