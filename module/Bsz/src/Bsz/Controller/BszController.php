@@ -151,6 +151,11 @@ class BszController extends AbstractBase
 
     public function resigningAction()
     {
+        $view = $this->createViewModel();
 
+        $params = [];
+
+        $view->setVariables(['params' => $params]);
+        return $view;
     }
 }
