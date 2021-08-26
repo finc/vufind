@@ -153,7 +153,7 @@ class BszController extends AbstractBase
     {
         $view = $this->createViewModel();
 
-        $params = [];
+        $params = $this->params()->fromQuery();
 
         $view->setVariables(['params' => $params]);
         return $view;

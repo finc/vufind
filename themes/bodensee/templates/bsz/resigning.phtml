@@ -13,62 +13,35 @@ $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
         <input type="hidden" value="AND" name="bool0[]" />
         <input type="hidden" name="hiddenFilters[]" value="-consortium:FL" />
         <input type="hidden" name="hiddenFilters[]" value="consortium:DE-576" />
+        <?=$this->context($this)->renderInContext('bsz/input.phtml', [
+                'title' => 'adv_search_title',
+                'field'  => 'Title',
+                'value'  => $this->params['title'] ?? ''])?>
+        <?=$this->context($this)->renderInContext('bsz/input.phtml', [
+            'title' => 'adv_search_journaltitle',
+            'field'  => 'JournalTitle',
+            'value'  => $this->params['journaltitle'] ?? ''])?>
+        <?=$this->context($this)->renderInContext('bsz/input.phtml', [
+            'title' => 'adv_search_author',
+            'field'  => 'Author',
+            'value'  => $this->params['author'] ?? ''])?>
+        <?=$this->context($this)->renderInContext('bsz/input.phtml', [
+            'title' => 'adv_search_publisher',
+            'field'  => 'publisher',
+            'value'  => $this->params['publisher'] ?? ''])?>
+        <?=$this->context($this)->renderInContext('bsz/input.phtml', [
+            'title' => 'adv_search_isn',
+            'field'  => 'ISN',
+            'value'  => $this->params['isn'] ?? ''])?>
+        <?=$this->context($this)->renderInContext('bsz/input.phtml', [
+            'title' => 'adv_search_zdbid',
+            'field'  => 'ZDB',
+            'value'  => $this->params['zdb'] ?? ''])?>
+        <?=$this->context($this)->renderInContext('bsz/input.phtml', [
+        'title' => 'adv_search_year',
+        'field'  => 'year',
+        'value'  => $this->params['year'] ?? ''])?>
 
-        <div class="form-group form-group-sm">
-            <label class="control-label col-sm-6" for="ill-title"><?=$this->transEsc('adv_search_title')?></label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="ill-title" value="" name="lookfor0[]"/>
-                <input type="hidden" value="Title" name="type0[]" />
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <label class="control-label col-sm-6" for="ill-jtitle"><?=$this->transEsc('adv_search_journaltitle')?></label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="ill-jtitle" value="" name="lookfor0[]"/>
-                <input type="hidden" value="JournalTitle" name="type0[]" />
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <label class="control-label col-sm-6" for="ill-author"><?=$this->transEsc('adv_search_author')?></label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="ill-author" value="" name="lookfor0[]"/>
-                <input type="hidden" value="Author" name="type0[]" />
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <label class="control-label col-sm-6" for="ill-publisher"><?=$this->transEsc('adv_search_publisher')?></label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="ill-publicher" value="" name="lookfor0[]"/>
-                <input type="hidden" value="publisher" name="type0[]" />
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <label class="control-label col-sm-6" for="ill-isn"><?=$this->transEsc('adv_search_isn')?></label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="ill-isn" value="" name="lookfor0[]"/>
-                <input type="hidden" value="ISN" name="type0[]" />
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <label class="control-label col-sm-6" for="ill-zdb"><?=$this->transEsc('adv_search_zdbid')?></label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="ill-zdb" value="" name="lookfor0[]"/>
-                <input type="hidden" value="ZDB" name="type0[]" />
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <label class="control-label col-sm-6" for="ill-year"><?=$this->transEsc('adv_search_year')?></label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="ill-year" value="" name="lookfor0[]"/>
-                <input type="hidden" value="year" name="type0[]" />
-            </div>
-        </div>
         <div class="form-group form-group-sm">
             <div class="col-sm-6 pull-right">
                 <button class="btn clear-btn text-danger" type="reset" name="submit" value="<?=$this->transEsc('Submit')?>">
