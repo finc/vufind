@@ -124,6 +124,46 @@ class SolrGviMarcTest extends TestCase
         $formatmarc = $driver->getFormatMarc();
         $formatrda = $driver->getFormatRda();
         $this->assertEquals($formatmarc, $formatrda);
+    }
+
+    /**
+     * This test should warn if a format lost or deleted
+     */
+    public function testManyFormatMappings()
+    {
+        $drivers = $this->getSolrRecords();
+        $differentFormats = [];
+        foreach ($drivers as $driver) {
+            $yamlReader = new \VuFind\Config\YamlReader();
+            $formatConfig = $yamlReader->get('MarcFormats.yaml');
+            $formatConfigRda = $yamlReader->get('MarcFormatsRDA.yaml');
+            $driver->attachFormatConfig($formatConfig, $formatConfigRda);
+
+            $formats = $driver->getFormats();
+            $differentFormats = array_merge($formats, $differentFormats);
+        }
+        $differentFormats = array_unique($differentFormats);
+        $this->assertEquals(count($differentFormats), 15);
+    }
+
+    /**
+     * Test sorting and the removal of Book if there are
+     * three entries
+     */
+    public function testSimplifyFormats()
+    {
+        $driver = $this->getSolrRecord('repeated007.json');
+        $before = ['Book', 'Foo', 'Bar'];
+        $after = $driver->simplifyFormats($before);
+        $this->assertEquals(['Bar', 'Foo'], $after);
+
+        $before = ['Book', 'Foo', 'Foo'];
+        $after = $driver->simplifyFormats($before);
+        $this->assertEquals(['Book', 'Foo'], $after);
+
+        $before = [];
+        $after = $driver->simplifyFormats($before);
+        $this->assertEquals(['UnknownFormat'], $after);
 
     }
 
@@ -196,7 +236,7 @@ class SolrGviMarcTest extends TestCase
     {
         foreach ($this->getSolrRecords() as $driver) {
             $ids = $driver->getContainerIds();
-            foreach($ids as $id) {
+            foreach ($ids as $id) {
                 $this->assertNotRegExp('/\(DE-576\)/', $id);
                 $this->assertNotRegExp('/\(DE-600\)/', $id);
                 $this->assertRegExp('/\(DE-/', $id);
@@ -211,7 +251,7 @@ class SolrGviMarcTest extends TestCase
     {
         foreach ($this->getSolrRecords() as $driver) {
             $dates = $driver->getPublicationDates();
-            foreach($dates as $date) {
+            foreach ($dates as $date) {
                 $this->assertRegExp('/\d{4}/', $date);
             }
         }
@@ -220,7 +260,6 @@ class SolrGviMarcTest extends TestCase
     public function testOpenUrl()
     {
         foreach ($this->getSolrRecords() as $driver) {
-
             $url = $driver->getOpenUrl();
             $this->assertStringContainsString('rft.genre', $url);
         }
@@ -265,7 +304,7 @@ class SolrGviMarcTest extends TestCase
     {
         foreach ($this->getSolrRecords() as $driver) {
             $f924 = $driver->getField924();
-            foreach($f924 as $field) {
+            foreach ($f924 as $field) {
                 $this->assertRegExp('/^DE-|^AT-|^LFER|^CH-/', $field['isil']);
             }
         }
@@ -295,9 +334,5 @@ class SolrGviMarcTest extends TestCase
         $this->assertEquals(count($localurls), 1);
         $this->assertIsArray($localurls[0]['label']);
         $this->assertEquals(count($localurls[0]['label']), 2);
-
-
-
-
     }
 }

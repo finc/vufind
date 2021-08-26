@@ -361,7 +361,7 @@ trait MarcFormatTrait
      * @return boolean
      */
 
-    public function isArticle()
+    public function isArticle(): bool
     {
 
         // A = Aufsätze aus Monographien
@@ -377,7 +377,7 @@ trait MarcFormatTrait
      * Is this a book serie?
      * @return boolean
      */
-    public function isMonographicSerial()
+    public function isMonographicSerial() : bool
     {
         $f008 = null;
         $f008_21 = '';
@@ -394,7 +394,7 @@ trait MarcFormatTrait
      *
      * @return boolean
      */
-    public function isSerial()
+    public function isSerial() : bool
     {
         $leader = $this->getMarcRecord()->getLeader();
         $leader_7 = $leader{7};
@@ -410,7 +410,7 @@ trait MarcFormatTrait
      *
      * @return boolean
      */
-    public function isEBook()
+    public function isEBook() : bool
     {
         $f007 = $this->get007('/^cr/i');
         $leader = $this->getLeader(7);
@@ -429,7 +429,7 @@ trait MarcFormatTrait
      *
      * @return boolean
      */
-    public function isPhysicalBook()
+    public function isPhysicalBook() : bool
     {
         $f007 = $this->get007('/^t/i');
         $leader = $this->getLeader(7);
@@ -445,7 +445,7 @@ trait MarcFormatTrait
      *
      * @return boolean
      */
-    public function isJournal()
+    public function isJournal() : bool
     {
         $f008 = $this->get008(21);
 
@@ -460,7 +460,7 @@ trait MarcFormatTrait
      *
      * @return boolean
      */
-    public function isNewspaper()
+    public function isNewspaper() : bool
     {
         $f008 = $this->get008(21);
 
@@ -476,7 +476,7 @@ trait MarcFormatTrait
      *
      * @return boolean
      */
-    public function isFree()
+    public function isFree() : bool
     {
         $f856 = $this->getMarcRecord()->getFields(856);
         foreach ($f856 as $field) {
@@ -488,34 +488,6 @@ trait MarcFormatTrait
             }
         }
         return false;
-    }
-
-    protected function getFormatFromConfig($rda = false)
-    {
-        foreach ($this->formatConfig as $format => $settings) {
-
-            $results = [];
-
-            foreach ($settings as $setting) {
-                if (!isset($setting['field'])) {
-                    throw new Exception('Marc format mappings must have a field entry. ');
-                }
-
-                $params = isset($setting['position']) ? [$setting['position']] : [];
-                $method = 'get'.$setting['field'];
-
-                $content = $this->tryMethod($method, $params);
-                $results[] = $this->checkValue($content, $setting['value']);
-
-                // Better performance, stop checking if first test failed
-                if (end($results) == false) {
-                    continue;
-                } elseif (count($results) == count($settings) && !in_array(false, $results)) {
-                    return $format;
-                }
-            }
-        }
-        return '';
     }
 
     /**
