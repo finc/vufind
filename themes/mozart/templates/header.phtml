@@ -1,16 +1,21 @@
-<div class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
+<div class="navbar navbar-fixed-top">
+    <div class="container-fluid navbar-default">
         <div class="row">
             <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 navbar-brand bwms-logo">
-                <img class="image-responsive" src="/themes/mozart/images/logo/bwms_mhka.svg" alt="Logo Bibliothek"/>
+                <img class="img-responsive" src="/themes/mozart/images/logo/bwms_mhka.svg" alt="Logo Bibliothek"/>
             </div>
         </div>
     </div>
-    <div class="container">
-        <?php if ($this->layout()->searchbox !== false && !$this->client()->is('disable_searchbar')): ?>
-            <div class="navbar-left">
-                <?=$this->layout()->searchbox ?>
+    <div class="container-fluid navbar-searchbar">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2">
+                    <?php if ($this->layout()->searchbox !== false && !$this->client()->is('disable_searchbar')): ?>
+                       <?=$this->layout()->searchbox ?>
+                    <?php endif; ?>
+                </div>
             </div>
-        <?php endif; ?>
+        </div>
     </div>
 </div>
+
