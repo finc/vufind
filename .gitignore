@@ -27,3 +27,5 @@ data/
 /nbproject/
 /public/php---info.php
 /local/config/vufind/
+/themes/**/css/
+/themes/**/make/
