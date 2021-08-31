@@ -18,8 +18,23 @@ header .navbar-right {
 .nav-tabs > li.active > a:focus,
 .nav-tabs > li.active > a:hover {
   color: blue;
-  border: 1px solid blue !important;
+  border: 1px solid blue;
 }
+
+.nav-tabs > li > a:hover,
+.nav-tabs > li > a:focus {
+  color: darken(blue, 10%);
+  border: 1px solid darken(blue, 10);
+}
+.navbar-form {
+  padding-bottom: 15px;
+}
+
+.library-logo img {
+  max-height: 90px;
+}
+
+
 .nav-tabs {
   padding: 15px 0;
 }

@@ -2,9 +2,13 @@
     <div class="container-fluid navbar-default">
         <div class="row">
             <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 navbar-brand bwms-logo">
-                <img class="img-responsive" src="/themes/mozart/images/logo/bwms_mhka.svg" alt="Logo Bibliothek"/>
+                <?=$this->clientAsset()->getLogoHtml(true)?>
             </div>
-            <div class="col-sm-9 col-mg-9 col-lg-10">
+            <div class="hidden-xs col-sm-3 col-md-3 col-lg-2 navbar-brand library-logo">
+                <?=$this->clientAsset()->getLogoHtml(false)?>
+
+            </div>
+            <div class="col-xs-8 col-sm-6 col-mg-6 col-lg-8">
                 <?=$this->context($this)->renderInContext('menu.phtml', []); ?>
             </div>
         </div>
