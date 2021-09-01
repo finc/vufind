@@ -95,7 +95,6 @@ class InterlibraryLoan extends AbstractBase
         } elseif($this->library && $this->library->hasCustomUrl()) {
             $customUrl = $this->library->getCustomUrl();
         }
-        xdebug_var_dump($customUrl);
         return [
             'status' => $this->logic->isAvailable(),
             'messages' => $this->logic->getMessages(),

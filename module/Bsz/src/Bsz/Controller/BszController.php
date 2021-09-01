@@ -118,6 +118,9 @@ class BszController extends AbstractBase
         return $view;
     }
 
+    /**
+     * @return \Zend\View\Model\ViewModel
+     */
     public function dedupAction()
     {
         $params = [];
@@ -140,6 +143,9 @@ class BszController extends AbstractBase
         return $view;
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function libraryAction()
     {
         $client = $this->serviceLocator->get(Client::class);
@@ -149,6 +155,9 @@ class BszController extends AbstractBase
         return $this->redirect()->toUrl($homepage);
     }
 
+    /**
+     * @return \Zend\View\Model\ViewModel
+     */
     public function resigningAction()
     {
         $view = $this->createViewModel();

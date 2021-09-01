@@ -16,7 +16,7 @@ $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
                 'title' => 'adv_search_title',
                 'field'  => 'Title',
-                'value'  => $this->params['title'] ?? ''])?>
+                'value'  => $this->params['titel'] ?? ''])?>
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_journaltitle',
             'field'  => 'JournalTitle',
@@ -24,23 +24,23 @@ $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_author',
             'field'  => 'Author',
-            'value'  => $this->params['author'] ?? ''])?>
+            'value'  => $this->params['verfasser'] ?? ''])?>
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_publisher',
             'field'  => 'publisher',
-            'value'  => $this->params['publisher'] ?? ''])?>
+            'value'  => $this->params['verlkag'] ?? ''])?>
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_isn',
             'field'  => 'ISN',
-            'value'  => $this->params['isn'] ?? ''])?>
+            'value'  => $this->params['isbn'] ?? ''])?>
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_zdbid',
             'field'  => 'ZDB',
-            'value'  => $this->params['zdb'] ?? ''])?>
+            'value'  => $this->params['zdb_id'] ?? ''])?>
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
         'title' => 'adv_search_year',
         'field'  => 'year',
-        'value'  => $this->params['year'] ?? ''])?>
+        'value'  => $this->params['erscheinungsjahr'] ?? ''])?>
 
         <div class="form-group form-group-sm">
             <div class="col-sm-6 pull-right">
