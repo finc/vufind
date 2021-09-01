@@ -157,7 +157,7 @@ class Factory
         $libraries = $container->get(\Bsz\Config\Libraries::class);
         $client = $container->get(Client::class);
         $library = $libraries->getFirstActive($client->getIsils());
-
-        return new InterlibraryLoan($container->get(Logic::class), $library, $illmode);
+        $dienst = $client->getTag() === 'fl-dienst';
+        return new InterlibraryLoan($container->get(Logic::class), $library, $illmode, $dienst);
     }
 }
