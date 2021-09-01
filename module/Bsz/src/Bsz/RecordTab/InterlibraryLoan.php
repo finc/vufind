@@ -94,7 +94,13 @@ class InterlibraryLoan extends AbstractBase
                 'verbund' => $this->driver->getNetwork(),
                 'bestellid' => $this->orderid ?? ''
             ]);
-            $customUrl = 'https://fltest.bsz-bw.de/flcgi/fernleihe_boss.pl?'.$query;
+            $url = 'https://%s.bsz-bw.de/flcgi/fernleihe_boss.pl?'.$query;
+            if (getenv('VUFIND_ENV') === 'production') {
+
+                $customUrl = sprintf($url, 'zfl');
+            } else {
+                $customUrl = sprintf($url, 'fltest');
+            }
         } elseif($this->library && $this->library->hasCustomUrl()) {
             $customUrl = $this->library->getCustomUrl();
         }
