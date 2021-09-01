@@ -47,12 +47,14 @@ class InterlibraryLoan extends AbstractBase
     public function __construct(Logic $logic,
                                 Library $library = null,
                                 bool $active = true,
-                                bool $internal = false
+                                bool $internal = false,
+                                string $orderid = ''
     ) {
         $this->logic = $logic;
         $this->library = $library;
         $this->active = $active;
         $this->internalill = $internal;
+        $this->orderid = $orderid;
 
         $this->accessPermission = 'access.InterlibraryLoanTab';
     }
@@ -89,7 +91,8 @@ class InterlibraryLoan extends AbstractBase
         if ($this->internalill) {
             $query = http_build_query([
                 'titelid' => $this->driver->getPPN(),
-                'verbund' => $this->driver->getNetwork()
+                'verbund' => $this->driver->getNetwork(),
+                'bestellid' => $this->orderid ?? ''
             ]);
             $customUrl = 'https://fltest.bsz-bw.de/flcgi/fernleihe_boss.pl?'.$query;
         } elseif($this->library && $this->library->hasCustomUrl()) {

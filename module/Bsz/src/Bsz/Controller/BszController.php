@@ -163,6 +163,17 @@ class BszController extends AbstractBase
         $view = $this->createViewModel();
 
         $params = $this->params()->fromQuery();
+        $params['isn'] = $params['isbn'] ?? '';
+        $params['isn'] .= $params['issn'] ?? '';
+
+        if (isset($params['bestellid'])) {
+
+            $session = new SessionContainer(
+                'fernleihe',
+                $this->serviceLocator->get(SessionManager::class)
+            );
+            $session->offsetSet('bestellid', $params['bestellid']);
+        }
 
         $view->setVariables(['params' => $params]);
         return $view;
