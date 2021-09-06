@@ -2,6 +2,7 @@
 $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('ILL::Resigning') . '</li>';
 
 $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
+$this->headScript()->appendFile("vendor/bootstrap-switch.min.js");
 ?>
 <div class="col-sm-12">
     <h3><?=$this->transEsc('ILL::resigning_header')?></h3>
@@ -13,6 +14,12 @@ $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
         <input type="hidden" value="AND" name="bool0[]" />
         <input type="hidden" name="hiddenFilters[]" value="-consortium:FL" />
         <input type="hidden" name="hiddenFilters[]" value="consortium:DE-576" />
+
+        <input type="radio" name="consortium" data-toggle="switch"/>SWB
+        <input type="radio" name="consortium" data-toggle="switch"/>GBV
+        <input type="radio" name="consortium" data-toggle="switch"/>HEBIS
+        <input type="radio" name="consortium" data-toggle="switch"/>KOBV
+
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
                 'title' => 'adv_search_title',
                 'field'  => 'Title',
