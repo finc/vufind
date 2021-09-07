@@ -166,6 +166,19 @@ class BszController extends AbstractBase
         $params['isn'] = $params['isbn'] ?? '';
         $params['isn'] .= $params['issn'] ?? '';
 
+        $selectedNetworks = [];
+        if (isset($params['verbuende'])) {
+            $selectedNetworks = explode(',', $params['verbuende']);
+        }
+        $allNetworks = [
+            'SWB' => 'DE-576',
+            'GBV' => 'DE-601',
+            'KOBV' => 'DE-602',
+            'HEBIS' => 'DE-603',
+            'BVB' => 'DE-604',
+            'HBZ' => 'DE-605',
+        ];
+
         if (isset($params['bestellid'])) {
 
             $session = new SessionContainer(
@@ -174,8 +187,11 @@ class BszController extends AbstractBase
             );
             $session->offsetSet('bestellid', $params['bestellid']);
         }
-
-        $view->setVariables(['params' => $params]);
+        $view->setVariables([
+            'params' => $params,
+            'allNetworks' => $allNetworks,
+            'selectedNetworks' => $selectedNetworks
+        ]);
         return $view;
     }
 }

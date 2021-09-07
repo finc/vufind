@@ -17,12 +17,9 @@ $this->headLink()->appendStylesheet('bootstrap-switch.css');
         <div class="form-group form-group-sm">
             <label class="control-label col-sm-4" for="network"><?=$this->transEsc('Network')?></label>
             <div class="btn-group col-sm-8" data-toggle="buttons" id="network">
-                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-576" autocomplete="off">SWB</label>
-                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-601" autocomplete="off">GBV</label>
-                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-602" autocomplete="off">KOBV</label>
-                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-603" autocomplete="off">HEBIS</label>
-                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-604" autocomplete="off">BVB</label>
-                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-605" autocomplete="off">HBZ</label>
+                <?php foreach ($this->allNetworks as $name => $isil): ?>
+                    <label class="btn btn-default <?php if(in_array($name, $this->selectedNetworks)):?>active<?php endif; ?>"><input type="checkbox" <?php if(in_array($name, $this->selectedNetworks)):?>checked="checked" <?php endif; ?>name="hiddenFilters[]" value="consortium:<?=$this->escapeHtml($isil)?>" autocomplete="off"><?=$this->escapeHtml($name)?></label>
+                <?php endforeach; ?>
             </div>
         </div>
 
