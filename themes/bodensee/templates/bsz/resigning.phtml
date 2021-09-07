@@ -14,16 +14,15 @@ $this->headLink()->appendStylesheet('bootstrap-switch.css');
         <input type="hidden" value="AND" name="join" />
         <input type="hidden" value="AND" name="bool0[]" />
         <input type="hidden" name="hiddenFilters[]" value="-consortium:FL" />
-        <input type="hidden" name="hiddenFilters[]" value="consortium:DE-576" />
         <div class="form-group form-group-sm">
             <label class="control-label col-sm-4" for="network"><?=$this->transEsc('Network')?></label>
-            <div class="btn-group col-sm-8" role="group">
-                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-576" class="btn btn-default">SWB</button>
-                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-601" class="btn btn-default">GBV</button>
-                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-602" class="btn btn-default">KOBV</button>
-                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-603" class="btn btn-default">HEBIS</button>
-                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-604" class="btn btn-default">BVB</button>
-                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-605" class="btn btn-default">HBZ</button>
+            <div class="btn-group col-sm-8" data-toggle="buttons" id="network">
+                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-576" autocomplete="off">SWB</label>
+                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-601" autocomplete="off">GBV</label>
+                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-602" autocomplete="off">KOBV</label>
+                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-603" autocomplete="off">HEBIS</label>
+                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-604" autocomplete="off">BVB</label>
+                <label class="btn btn-default"><input type="radio" name="hiddenFilters[]" value="consortium:DE-605" autocomplete="off">HBZ</label>
             </div>
         </div>
 
