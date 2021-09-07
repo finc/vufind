@@ -3,22 +3,29 @@ $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('ILL::Re
 
 $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
 $this->headScript()->appendFile("vendor/bootstrap-switch.min.js");
+$this->headLink()->appendStylesheet('bootstrap-switch.css');
 ?>
 <div class="col-sm-12">
     <h3><?=$this->transEsc('ILL::resigning_header')?></h3>
 </div>
-<div class="col-sm-12 col-md-6">
+<div class="col-sm-12 col-md-8">
 
     <form class="form-horizontal" method="GET" action="<?=$this->url('search-results')?>">
         <input type="hidden" value="AND" name="join" />
         <input type="hidden" value="AND" name="bool0[]" />
         <input type="hidden" name="hiddenFilters[]" value="-consortium:FL" />
         <input type="hidden" name="hiddenFilters[]" value="consortium:DE-576" />
-
-        <input type="radio" name="consortium" data-toggle="switch"/>SWB
-        <input type="radio" name="consortium" data-toggle="switch"/>GBV
-        <input type="radio" name="consortium" data-toggle="switch"/>HEBIS
-        <input type="radio" name="consortium" data-toggle="switch"/>KOBV
+        <div class="form-group form-group-sm">
+            <label class="control-label col-sm-4" for="network"><?=$this->transEsc('Network')?></label>
+            <div class="btn-group col-sm-8" role="group">
+                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-576" class="btn btn-default">SWB</button>
+                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-601" class="btn btn-default">GBV</button>
+                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-602" class="btn btn-default">KOBV</button>
+                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-603" class="btn btn-default">HEBIS</button>
+                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-604" class="btn btn-default">BVB</button>
+                <button type="button" data-toggle="switch" data-switch-set="consortium" data-switch-value="DE-605" class="btn btn-default">HBZ</button>
+            </div>
+        </div>
 
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
                 'title' => 'adv_search_title',
@@ -50,7 +57,7 @@ $this->headScript()->appendFile("vendor/bootstrap-switch.min.js");
         'value'  => $this->params['erscheinungsjahr'] ?? ''])?>
 
         <div class="form-group form-group-sm">
-            <div class="col-sm-6 pull-right">
+            <div class="col-sm-8 pull-right">
                 <button class="btn clear-btn text-danger" type="reset" name="submit" value="<?=$this->transEsc('Submit')?>">
                     <i class="fa fa-times"></i>
                     <span class="text"><?=$this->transEsc('Clear')?></span>
@@ -61,6 +68,6 @@ $this->headScript()->appendFile("vendor/bootstrap-switch.min.js");
         </div>
     </form>
 </div>
-<div class="col-sm-.12 col-md-6 ">
+<div class="col-sm-.12 col-md-4 ">
     Platz für Hilfetext
 </div>
