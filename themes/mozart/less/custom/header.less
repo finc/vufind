@@ -41,8 +41,23 @@ header .navbar-right {
     margin-bottom: 15px;
   }
 
-  .delete-input {
-    color: @gray-dark;
-    background-color: transparent;
+}
+.delete-input {
+  color: @gray-dark;
+  background-color: @input-bg;
+}
+.searchForm_lookfor {
+  border: 0;
+}
+
+.btn-fake {
+  cursor: default;
+  i {
+    cursor: default;
   }
+  background-color: @input-bg;
+  color: @gray-base;
+}
+.breadcrumb {
+  border-bottom: 2px solid @brand-primary;
 }

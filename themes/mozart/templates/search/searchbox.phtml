@@ -55,6 +55,11 @@
         <?= $this->context($this)->renderInContext('search/searchTabs', ['searchTabs' => $tabConfig['tabs']]); ?>
         <?php $placeholder = $this->searchbox()->getPlaceholderText($tabConfig['selected']['id'] ?? null); ?>
         <div class="input-group">
+            <div class="input-group-btn">
+                <button class="btn btn-fake">
+                <i class="fa fa-search"></i>
+                </button>
+            </div>
             <input <?= $disabled ?> id="searchForm_lookfor"
                                     class="searchForm_lookfor form-control search-query<?php if ($this->searchbox()->autocompleteEnabled($this->searchClassId)): ?> autocomplete searcher:<?= $this->escapeHtmlAttr($this->searchClassId) ?><?= $this->searchbox()->autocompleteAutoSubmit($this->searchClassId) ? ' ac-auto-submit' : '' ?><?php endif ?>"
                                     type="text" name="lookfor"

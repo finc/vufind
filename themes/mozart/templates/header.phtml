@@ -1,14 +1,14 @@
 <div class="navbar navbar-fixed-top">
     <div class="container-fluid navbar-default">
         <div class="row">
-            <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 navbar-brand bwms-logo">
+            <div class="col-xs-5 col-sm-3 col-md-3 col-lg-2 navbar-brand bwms-logo">
                 <?=$this->clientAsset()->getLogoHtml(true)?>
             </div>
             <div class="hidden-xs col-sm-3 col-md-3 col-lg-2 navbar-brand library-logo">
                 <?=$this->clientAsset()->getLogoHtml(false)?>
 
             </div>
-            <div class="col-xs-8 col-sm-6 col-mg-6 col-lg-8">
+            <div class="col-xs-7 col-sm-6 col-mg-6 col-lg-8">
                 <?=$this->context($this)->renderInContext('menu.phtml', []); ?>
             </div>
         </div>

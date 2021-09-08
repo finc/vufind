@@ -24,25 +24,13 @@ html {
         // This makes body to show below header bar
         padding-top: @navbar-height;
         min-height: 100%;
-        .main > .container,
-        footer > .container,
-        header > .container.searchbox  {
-            background-color: @body-bg;
-        }
-        .main > .container-fluid,
-        footer > .container-fluid,
-        header > .container-fluid.searchbox  {
-            background-color: @body-bg;
-        }
     }
 }
 
 /*Minimaler abstand zw den Zeilen, damit Bilder nicht am Text kleben*/
 .results-container .row.result{
+    border-bottom: 2px solid @brand-primary;
 
-    &:nth-of-type(even) {
-        background-color: @gray-lighter;
-    }
 }
 .row .record, .row .result {
     table.table {
