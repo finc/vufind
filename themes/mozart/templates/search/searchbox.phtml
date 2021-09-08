@@ -71,7 +71,7 @@
                 </button>
             </div>
             <div class="input-group-btn">
-                <button type="submit" class="btn btn-info <?= $disabled ?>"><i
+                <button type="submit" class="btn btn-info hidden <?= $disabled ?>"><i
                             class="fa fa-search"
                             aria-hidden="true"></i><?php if ($this->client()->is('show_label_on_search_button')): ?> <?= $this->transEsc('Find') ?><?php endif ?>
                     <span class="sr-only"><?= $this->transEsc('Find') ?></span>
