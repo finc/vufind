@@ -33,7 +33,7 @@
 //** Global textual link color.
 @link-color:            #707070;
 //** Link hover color set via `darken()` function.
-@link-hover-color:      #E04820;
+@link-hover-color:      darken(@link-color, 10%);
 //** Link hover decoration.
 @link-hover-decoration: none;
 
@@ -371,7 +371,7 @@
 
 // Navbar links
 @navbar-default-link-color:                #222;
-@navbar-default-link-hover-color:          #E04820;
+@navbar-default-link-hover-color:          lighten(@navbar-default-link-color, 10%);
 @navbar-default-link-hover-bg:             darken(@navbar-default-bg, 15%);
 @navbar-default-link-active-color:         #fff;
 @navbar-default-link-active-bg:            darken(@navbar-default-bg, 10%);
@@ -868,3 +868,7 @@
 @dl-horizontal-breakpoint:    500px;
 //** Horizontal line color.
 @hr-border:                   @gray-lighter;
+
+
+@bsz-border-width: 2px;
+@bsz-border-color: @brand-primary;
