@@ -51,7 +51,7 @@ abstract class Base
      *
      * @var string
      */
-    protected $edsApiHost = 'http://eds-api.ebscohost.com/edsapi/rest';
+    protected $edsApiHost = 'https://eds-api.ebscohost.com/edsapi/rest';
 
     /**
      * Auth host
