@@ -2,8 +2,6 @@
 $this->layout()->breadcrumbs .= '<li class="active">' . $this->transEsc('ILL::Resigning') . '</li>';
 
 $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
-$this->headScript()->appendFile("vendor/bootstrap-switch.min.js");
-$this->headLink()->appendStylesheet('bootstrap-switch.css');
 ?>
 <div class="col-sm-12">
     <h3><?=$this->transEsc('ILL::resigning_header')?></h3>
