@@ -28,6 +28,14 @@ header .navbar-right {
 }
 #searchForm {
   padding-bottom: 15px;
+    .input-group :first-child .btn {
+        border-top-left-radius: @bsz-searchbar-border-radius !important;
+        border-bottom-left-radius: @bsz-searchbar-border-radius !important;
+    }
+    .input-group :last-child .btn {
+        border-top-right-radius: @bsz-searchbar-border-radius !important;
+        border-bottom-right-radius: @bsz-searchbar-border-radius !important;
+    }
 }
 
 .library-logo img {
