@@ -15,12 +15,11 @@
         <?php endforeach; ?>
         <?php if ($this->client()->is('advanced_search_in_tabs')):?>
             <li class="">
-                <a href="<?=$this->url('search-advanced')?>" >
+                <a class="text-link" href="<?=$this->url('search-advanced')?>" >
                     <i class='fa fa-search-plus'></i>
                     <span class="text"><?= $this->transEsc("Advanced") ?></span>
                 </a>
             </li>
         <?php endif; ?>
-
     </ul>
 <?php endif; ?>
