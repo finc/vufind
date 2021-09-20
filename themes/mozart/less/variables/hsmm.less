@@ -1,20 +1,15 @@
-// United 3.3.4
-// Variables
-// --------------------------------------------------
-
-
 //== Colors
 //
 //## Gray and brand colors for use across Bootstrap.
 
-@gray-base:              rgb(237,237,237);
+@gray-base:              #000;
 @gray-darker:            lighten(@gray-base, 13.5%); // #222
 @gray-dark:              #333;   // #333
 @gray:                   #777; // #555
 @gray-light:             lighten(@gray-base, 60%);   // #999
 @gray-lighter:           lighten(@gray-base, 93.5%); // #eee
 
-@brand-primary:         rgb(230,0,30);
+@brand-primary:         #7cac22;
 @brand-success:         #7cac22;
 @brand-info:            #719DB0;
 @brand-warning:         lighten(#D40032, 15%);
@@ -144,8 +139,8 @@
 
 @btn-font-weight:                normal;
 
-@btn-default-color:              @text-color;
-@btn-default-bg:                 @gray-base;
+@btn-default-color:              @gray-dark;
+@btn-default-bg:                 @brand-primary;
 @btn-default-border:             @btn-default-bg;
 
 @btn-primary-color:              #fff;
@@ -357,7 +352,7 @@
 //##
 
 // Basics of a navbar
-@navbar-height:                    157px;
+@navbar-height:                    111px;
 @navbar-margin-bottom:             @line-height-computed;
 @navbar-border-radius:             @border-radius-base;
 @navbar-padding-horizontal:        10px;;
@@ -365,12 +360,12 @@
 @navbar-collapse-max-height:       340px;
 
 @navbar-default-color:             #fff;
-@navbar-default-bg:                rgb(237,237,237);
+@navbar-default-bg:                @brand-primary;
 @navbar-default-border:            darken(@navbar-default-bg, 6.5%);
 
 // Navbar links
-@navbar-default-link-color:                @text-color;
-@navbar-default-link-hover-color:          @text-color;
+@navbar-default-link-color:                #fff;
+@navbar-default-link-hover-color:          #fff;
 @navbar-default-link-hover-bg:             darken(@navbar-default-bg, 15%);
 @navbar-default-link-active-color:         #fff;
 @navbar-default-link-active-bg:            darken(@navbar-default-bg, 10%);
@@ -867,3 +862,9 @@
 @dl-horizontal-breakpoint:    500px;
 //** Horizontal line color.
 @hr-border:                   @gray-lighter;
+
+
+@bsz-navbar-searchbar-bg:              #f1f4f9;
+@bsz-border-width: 2px;
+@bsz-border-color: @brand-primary;
+@bsz-searchbar-border-radius: 20px;
