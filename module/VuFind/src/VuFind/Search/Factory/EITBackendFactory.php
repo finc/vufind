@@ -121,7 +121,7 @@ class EITBackendFactory implements FactoryInterface
             ? $this->config->General->prof : null;
         $pwd = isset($this->config->General->pwd)
             ? $this->config->General->pwd : null;
-        $base = "http://eit.ebscohost.com/Services/SearchService.asmx/Search";
+        $base = "https://eit.ebscohost.com/Services/SearchService.asmx/Search";
         $dbs =  isset($this->config->General->dbs)
             ? $this->config->General->dbs : null;
         $client = $this->serviceLocator->get(\VuFindHttp\HttpService::class)

@@ -426,6 +426,11 @@ function tableSorter() {
     }
 }
 
+function bootstrapSwitch() {
+    if ($.fn.bootstrapSwitch) {
+        $('[data-toggle="switch"]').bootstrapSwitch();
+    }
+}
 
 /**
  * Copy text to clipboard
@@ -517,6 +522,7 @@ $(document).ready(function() {
     modalPopup();
     typeaheadLibraries();
     tableSorter();
+    bootstrapSwitch();
     keyboardShortcuts();
     remoteModal();
     duplicates();

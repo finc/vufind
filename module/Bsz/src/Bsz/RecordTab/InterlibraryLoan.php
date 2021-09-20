@@ -42,12 +42,20 @@ class InterlibraryLoan extends AbstractBase
      * @param Logic $logic
      * @param Library $libraries
      * @param bool $active
+     * @param bool $internal Link to Dienstoberfläche
      */
-    public function __construct(Logic $logic, Library $library = null, bool $active = true)
-    {
+    public function __construct(Logic $logic,
+                                Library $library = null,
+                                bool $active = true,
+                                bool $internal = false,
+                                string $orderid = ''
+    ) {
         $this->logic = $logic;
         $this->library = $library;
         $this->active = $active;
+        $this->internalill = $internal;
+        $this->orderid = $orderid;
+
         $this->accessPermission = 'access.InterlibraryLoanTab';
     }
 
@@ -77,13 +85,32 @@ class InterlibraryLoan extends AbstractBase
     public function getContent()
     {
         $this->logic->attachDriver($this->driver);
+
+        $customUrl = false;
+
+        if ($this->internalill) {
+            $query = http_build_query([
+                'titelid' => $this->driver->getPPN(),
+                'verbund' => $this->driver->getNetwork(),
+                'bestellid' => $this->orderid ?? ''
+            ]);
+            $url = 'https://%s.bsz-bw.de/flcgi/fernleihe_boss.pl?'.$query;
+            if (getenv('VUFIND_ENV') === 'production') {
+
+                $customUrl = sprintf($url, 'zfl');
+            } else {
+                $customUrl = sprintf($url, 'fltest');
+            }
+        } elseif($this->library && $this->library->hasCustomUrl()) {
+            $customUrl = $this->library->getCustomUrl();
+        }
         return [
             'status' => $this->logic->isAvailable(),
             'messages' => $this->logic->getMessages(),
             'ppns' => $this->logic->getPPNs(),
             'linklabels' => $this->logic->getLinkLabels(),
             'library' => $this->library,
-            'customUrl' => $this->library ? $this->library->hasCustomUrl() : false
+            'customUrl' => $customUrl
         ];
     }
 }

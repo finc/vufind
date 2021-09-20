@@ -15,8 +15,10 @@ $network = $this->driver->getNetwork();
 $class = '';
 
 $url = $this->recordLink()->getUrl($this->driver) . '/ILLForm';
-if ($content['customUrl']) {
+if ($content['customUrl'] && $this->client()->getTag() !== 'fl-dienst' ) {
     $url = $this->openUrl($this->driver, 'illform')->getUrl();
+} elseif($this->client()->getTag() === 'fl-dienst') {
+    $url = $content['customUrl'];
 }
 ?>
 

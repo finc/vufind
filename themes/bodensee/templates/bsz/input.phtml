@@ -1,8 +1,8 @@
 <?php $rand = 'rs-'.rand(0, 1000)?>
 
 <div class="form-group form-group-sm">
-    <label class="control-label col-sm-6" for="<?=$rand?>"><?=$this->transEsc($this->title)?></label>
-    <div class="col-sm-6">
+    <label class="control-label col-sm-4" for="<?=$rand?>"><?=$this->transEsc($this->title)?></label>
+    <div class="col-sm-8">
         <input type="text" class="form-control" id="<?=$rand?>" value="<?=$this->escapeHtml($this->value)?>" name="lookfor0[]" />
         <input type="hidden" value="<?=$this->transEsc($this->field)?>" name="type0[]" />
     </div>

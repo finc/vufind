@@ -6,17 +6,25 @@ $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
 <div class="col-sm-12">
     <h3><?=$this->transEsc('ILL::resigning_header')?></h3>
 </div>
-<div class="col-sm-12 col-md-6">
+<div class="col-sm-12 col-md-8">
 
     <form class="form-horizontal" method="GET" action="<?=$this->url('search-results')?>">
         <input type="hidden" value="AND" name="join" />
         <input type="hidden" value="AND" name="bool0[]" />
         <input type="hidden" name="hiddenFilters[]" value="-consortium:FL" />
-        <input type="hidden" name="hiddenFilters[]" value="consortium:DE-576" />
+        <div class="form-group form-group-sm">
+            <label class="control-label col-sm-4" for="network"><?=$this->transEsc('Network')?></label>
+            <div class="btn-group col-sm-8" data-toggle="buttons" id="network">
+                <?php foreach ($this->allNetworks as $name => $isil): ?>
+                    <label class="btn btn-default <?php if(in_array($name, $this->selectedNetworks)):?>active<?php endif; ?>"><input type="checkbox" <?php if(in_array($name, $this->selectedNetworks)):?>checked="checked" <?php endif; ?>name="hiddenFilters[]" value="consortium:<?=$this->escapeHtml($isil)?>" autocomplete="off"><?=$this->escapeHtml($name)?></label>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
                 'title' => 'adv_search_title',
                 'field'  => 'Title',
-                'value'  => $this->params['title'] ?? ''])?>
+                'value'  => $this->params['titel'] ?? ''])?>
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_journaltitle',
             'field'  => 'JournalTitle',
@@ -24,11 +32,11 @@ $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_author',
             'field'  => 'Author',
-            'value'  => $this->params['author'] ?? ''])?>
+            'value'  => $this->params['verfasser'] ?? ''])?>
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_publisher',
             'field'  => 'publisher',
-            'value'  => $this->params['publisher'] ?? ''])?>
+            'value'  => $this->params['verlkag'] ?? ''])?>
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_isn',
             'field'  => 'ISN',
@@ -36,14 +44,14 @@ $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
             'title' => 'adv_search_zdbid',
             'field'  => 'ZDB',
-            'value'  => $this->params['zdb'] ?? ''])?>
+            'value'  => $this->params['zdb_id'] ?? ''])?>
         <?=$this->context($this)->renderInContext('bsz/input.phtml', [
         'title' => 'adv_search_year',
         'field'  => 'year',
-        'value'  => $this->params['year'] ?? ''])?>
+        'value'  => $this->params['erscheinungsjahr'] ?? ''])?>
 
         <div class="form-group form-group-sm">
-            <div class="col-sm-6 pull-right">
+            <div class="col-sm-8 pull-right">
                 <button class="btn clear-btn text-danger" type="reset" name="submit" value="<?=$this->transEsc('Submit')?>">
                     <i class="fa fa-times"></i>
                     <span class="text"><?=$this->transEsc('Clear')?></span>
@@ -54,6 +62,6 @@ $this->headTitle()->setPrefix($this->transEsc('ILL::Resigning'));
         </div>
     </form>
 </div>
-<div class="col-sm-.12 col-md-6 ">
+<div class="col-sm-.12 col-md-4 ">
     Platz für Hilfetext
 </div>
