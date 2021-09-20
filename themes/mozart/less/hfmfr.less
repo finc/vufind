@@ -1,0 +1,35 @@
+@variables: 'variables/hfmfr';
+@import 'custom/mixins';
+@import '../../bodensee/less/fonts/ubuntu';
+@import '../../bodensee/less/vendor/vendor';
+@import '../../bodensee/less/bsz/print';
+@import '../../bodensee/less/bsz/mixins';
+@import "../../bodensee/less/vufind";
+@import 'custom/modifications';
+
+html body:not(.frame) {
+  /*#gradient.vertical(darken(@brand-primary, 30%); @brand-primary; 15%; 90%);*/
+  background-color: white;
+  padding-top: 227px;
+}
+
+.specialhome {
+  margin-top: -20px;
+  font-size: 16px;
+}
+footer {
+  .well {
+    @media (max-width: @screen-xs-max) {
+      padding-bottom: 0;
+    }
+    a {
+      text-decoration: underline;
+    }
+    a:hover {
+      color: #E04820 !important;
+    }
+  }
+}
+footer img.pull-right {
+  max-width: 120px
+}
