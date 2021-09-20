@@ -171,7 +171,7 @@ function avoidEmptySearch() {
             href = href.replace('Results', 'Home');
             href = href.replace('/EDS/Search', '/EDS/Home');
         } else {
-            href = href.replace('Home', 'Results')+'&lookfor='+lookfor;
+            href = href.replace('Home', 'Results')+'?lookfor='+lookfor;
         }
         // this is like clicking the manipulated link
         window.location.href = href;
