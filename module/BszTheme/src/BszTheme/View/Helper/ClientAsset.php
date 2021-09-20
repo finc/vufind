@@ -97,7 +97,7 @@ class ClientAsset extends AbstractHelper
         if ($this->library === null && ($this->tag === 'swb' || $this->tag === 'k10plus')) {
             $filename = 'logo/' . $this->tag . '.svg';
         } elseif ($bwms) {
-            $filename = 'logo/bwms_' . $this->tag . '.svg';
+            $filename = 'logo/bwms_' . $this->tag . '_desktop.svg';
         } elseif ($this->library === null) {
             $filename = 'logo/' . $this->tag . '.png';
         } elseif ($this->library instanceof Library) {
