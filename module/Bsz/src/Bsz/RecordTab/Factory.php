@@ -25,6 +25,7 @@ use Bsz\Config\Client;
 use Bsz\ILL\Logic;
 use Interop\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request;
+use Zend\Session\AbstractContainer as SessionContainer;
 use Zend\Session\SessionManager as SessionManager;
 
 /**
@@ -157,7 +158,13 @@ class Factory
         $libraries = $container->get(\Bsz\Config\Libraries::class);
         $client = $container->get(Client::class);
         $library = $libraries->getFirstActive($client->getIsils());
+        $dienst = $client->getTag() === 'fl-dienst';
 
-        return new InterlibraryLoan($container->get(Logic::class), $library, $illmode);
+        $orderid = '';
+        if (isset($_SESSION['fernleihe']['bestellid'])) {
+            $orderid = $_SESSION['fernleihe']['bestellid'];
+        }
+
+        return new InterlibraryLoan($container->get(Logic::class), $library, $illmode, $dienst, $orderid);
     }
 }

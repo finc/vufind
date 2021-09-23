@@ -14,8 +14,8 @@
 @gray-light:             lighten(@gray-base, 60%);   // #999
 @gray-lighter:           lighten(@gray-base, 93.5%); // #eee
 
-@brand-primary:         #00838F;
-@brand-success:         #7cac22;
+@brand-primary:         #dae0ee;
+@brand-success:         #dae0ee;
 @brand-info:            #719DB0;
 @brand-warning:         lighten(#D40032, 15%);
 @brand-danger:          #D40032;
@@ -28,14 +28,14 @@
 //** Background color for `<body>`.
 @body-bg:               #fff;
 //** Global text color on `<body>`.
-@text-color:            @gray-dark;
+@text-color:            #707070;
 
 //** Global textual link color.
-@link-color:            @brand-primary;
+@link-color:            #707070;
 //** Link hover color set via `darken()` function.
-@link-hover-color:      darken(@link-color, 15%);
+@link-hover-color:      darken(@link-color, 10%);
 //** Link hover decoration.
-@link-hover-decoration: underline;
+@link-hover-decoration: none;
 
 
 //== Typography
@@ -148,11 +148,11 @@
 @btn-default-bg:                 @brand-primary;
 @btn-default-border:             @btn-default-bg;
 
-@btn-primary-color:              #fff;
+@btn-primary-color:              #222;
 @btn-primary-bg:                 @brand-primary;
 @btn-primary-border:             @btn-primary-bg;
 
-@btn-success-color:               #fff;
+@btn-success-color:               #222;
 @btn-success-bg:                 @brand-success;
 @btn-success-border:             @btn-success-bg;
 
@@ -243,12 +243,12 @@
 //** Dropdown link text color.
 @dropdown-link-color:            @gray-dark;
 //** Hover color for dropdown links.
-@dropdown-link-hover-color:      #fff;
+@dropdown-link-hover-color:      #222;
 //** Hover background for dropdown links.
 @dropdown-link-hover-bg:         @component-active-bg;
 
 //** Active dropdown menu item text color.
-@dropdown-link-active-color:     #fff;
+@dropdown-link-active-color:     #222;
 //** Active dropdown menu item background color.
 @dropdown-link-active-bg:        @component-active-bg;
 
@@ -357,11 +357,11 @@
 //##
 
 // Basics of a navbar
-@navbar-height:                    190px;
+@navbar-height:                    115px;
 @navbar-margin-bottom:             @line-height-computed;
 @navbar-border-radius:             @border-radius-base;
-@navbar-padding-horizontal:        10px;;
-@navbar-padding-vertical:          15px;
+@navbar-padding-horizontal:        0;
+@navbar-padding-vertical:          10px;
 @navbar-collapse-max-height:       340px;
 
 @navbar-default-color:             #fff;
@@ -369,8 +369,8 @@
 @navbar-default-border:            darken(@navbar-default-bg, 6.5%);
 
 // Navbar links
-@navbar-default-link-color:                #fff;
-@navbar-default-link-hover-color:          #fff;
+@navbar-default-link-color:                #222;
+@navbar-default-link-hover-color:          lighten(@navbar-default-link-color, 10%);
 @navbar-default-link-hover-bg:             darken(@navbar-default-bg, 15%);
 @navbar-default-link-active-color:         #fff;
 @navbar-default-link-active-bg:            darken(@navbar-default-bg, 10%);
@@ -431,7 +431,7 @@
 @nav-tabs-link-hover-border-color:          @gray-lighter;
 
 @nav-tabs-active-link-hover-bg:             darken(@brand-primary, 20%);
-@nav-tabs-active-link-hover-color:          white;
+@nav-tabs-active-link-hover-color:          #E04820;
 @nav-tabs-active-link-hover-border-color:   #ddd;
 
 @nav-tabs-justified-link-border-color:            #ddd;
@@ -790,7 +790,7 @@
 @breadcrumb-padding-vertical:   8px;
 @breadcrumb-padding-horizontal: 15px;
 //** Breadcrumb background color
-@breadcrumb-bg:                 #f5f5f5;
+@breadcrumb-bg:                 #fff;
 //** Breadcrumb text color
 @breadcrumb-color:              #ccc;
 //** Text color of current page in the breadcrumb
@@ -867,3 +867,10 @@
 @dl-horizontal-breakpoint:    500px;
 //** Horizontal line color.
 @hr-border:                   @gray-lighter;
+
+
+@bsz-navbar-searchbar-bg:              #f1f4f9;
+@bsz-border-width: 2px;
+@bsz-border-color: @brand-primary;
+@bsz-searchbar-border-radius: 20px;
+@bsz-footer-line-color: #d6ddec;

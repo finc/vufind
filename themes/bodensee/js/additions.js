@@ -171,7 +171,7 @@ function avoidEmptySearch() {
             href = href.replace('Results', 'Home');
             href = href.replace('/EDS/Search', '/EDS/Home');
         } else {
-            href = href.replace('Home', 'Results')+'&lookfor='+lookfor;
+            href = href.replace('Home', 'Results')+'?lookfor='+lookfor;
         }
         // this is like clicking the manipulated link
         window.location.href = href;
@@ -426,6 +426,11 @@ function tableSorter() {
     }
 }
 
+function bootstrapSwitch() {
+    if ($.fn.bootstrapSwitch) {
+        $('[data-toggle="switch"]').bootstrapSwitch();
+    }
+}
 
 /**
  * Copy text to clipboard
@@ -517,6 +522,7 @@ $(document).ready(function() {
     modalPopup();
     typeaheadLibraries();
     tableSorter();
+    bootstrapSwitch();
     keyboardShortcuts();
     remoteModal();
     duplicates();

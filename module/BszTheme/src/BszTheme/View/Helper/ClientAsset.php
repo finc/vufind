@@ -87,14 +87,17 @@ class ClientAsset extends AbstractHelper
     }
 
     /**
+     * @param bool $bwms BW Music Search
      *
      * @return string
      */
-    public function getLogo()
+    public function getLogo($bwms = false)
     {
         $filename = '';
         if ($this->library === null && ($this->tag === 'swb' || $this->tag === 'k10plus')) {
             $filename = 'logo/' . $this->tag . '.svg';
+        } elseif ($bwms) {
+            $filename = 'logo/bwms_' . $this->tag . '_desktop.svg';
         } elseif ($this->library === null) {
             $filename = 'logo/' . $this->tag . '.png';
         } elseif ($this->library instanceof Library) {
@@ -105,13 +108,16 @@ class ClientAsset extends AbstractHelper
 
 
     /**
+     * @param bool $bwms BW Music Search Logo
+     *
      * @return string
      */
-    public function getLogoHtml()
+    public function getLogoHtml($bwms = false): string
     {
         return $this->getView()->render('bsz/logo.phtml', [
             'website' => $this->website,
-            'imglink' => $this->getLogo()
+            'imglink' => $this->getLogo($bwms),
+            'alt' => $bwms ? 'Logo BW Music Search' : 'Logo Bibliothek'
         ]);
     }
 

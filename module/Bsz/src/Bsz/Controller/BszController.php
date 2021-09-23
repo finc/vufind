@@ -118,6 +118,9 @@ class BszController extends AbstractBase
         return $view;
     }
 
+    /**
+     * @return \Zend\View\Model\ViewModel
+     */
     public function dedupAction()
     {
         $params = [];
@@ -140,6 +143,9 @@ class BszController extends AbstractBase
         return $view;
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function libraryAction()
     {
         $client = $this->serviceLocator->get(Client::class);
@@ -149,13 +155,43 @@ class BszController extends AbstractBase
         return $this->redirect()->toUrl($homepage);
     }
 
+    /**
+     * @return \Zend\View\Model\ViewModel
+     */
     public function resigningAction()
     {
         $view = $this->createViewModel();
 
         $params = $this->params()->fromQuery();
+        $params['isn'] = $params['isbn'] ?? '';
+        $params['isn'] .= $params['issn'] ?? '';
 
-        $view->setVariables(['params' => $params]);
+        $selectedNetworks = [];
+        if (isset($params['verbuende'])) {
+            $selectedNetworks = explode(',', $params['verbuende']);
+        }
+        $allNetworks = [
+            'SWB' => 'DE-576',
+            'GBV' => 'DE-601',
+            'KOBV' => 'DE-602',
+            'HEBIS' => 'DE-603',
+            'BVB' => 'DE-604',
+            'HBZ' => 'DE-605',
+        ];
+
+        if (isset($params['bestellid'])) {
+
+            $session = new SessionContainer(
+                'fernleihe',
+                $this->serviceLocator->get(SessionManager::class)
+            );
+            $session->offsetSet('bestellid', $params['bestellid']);
+        }
+        $view->setVariables([
+            'params' => $params,
+            'allNetworks' => $allNetworks,
+            'selectedNetworks' => $selectedNetworks
+        ]);
         return $view;
     }
 }

@@ -1,0 +1,36 @@
+@variables: 'variables/mhka';
+@import 'custom/mixins';
+@import '../../bodensee/less/fonts/ubuntu';
+@import '../../bodensee/less/vendor/vendor';
+@import '../../bodensee/less/bsz/print';
+@import '../../bodensee/less/bsz/mixins';
+@import "../../bodensee/less/vufind";
+@import 'custom/modifications';
+
+.specialhome {
+  margin-top: -20px;
+  font-size: 16px;
+}
+footer {
+  .well {
+    @media (max-width: @screen-xs-max) {
+      padding-bottom: 0;
+    }
+    a {
+      text-decoration: underline;
+    }
+    a:hover {
+      color: #E04820 !important;
+    }
+  }
+}
+footer img.pull-right {
+  max-width: 120px
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+    color: darken(@brand-primary, 40%) !important;
+    border: 1px solid darken(@brand-primary, 40%) !important;
+}

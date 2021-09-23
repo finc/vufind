@@ -1,7 +1,6 @@
 /**
 Very basic styles
 **/
-
 .nofloat {
     float: none;
     clear: both;
@@ -21,28 +20,16 @@ Hintergrundfarbverlauf beim Body
 html {
     min-height: 100%;
     body:not(.frame) {
-        // This makes body to show below header bar
-        padding-top: @navbar-height;
+        padding-top: 228px;
+        background-color: white;
         min-height: 100%;
-        .main > .container,
-        footer > .container,
-        header > .container.searchbox  {
-            background-color: @body-bg;
-        }
-        .main > .container-fluid,
-        footer > .container-fluid,
-        header > .container-fluid.searchbox  {
-            background-color: @body-bg;
-        }
     }
 }
 
 /*Minimaler abstand zw den Zeilen, damit Bilder nicht am Text kleben*/
 .results-container .row.result{
+    .bsz-border-bottom;
 
-    &:nth-of-type(even) {
-        background-color: @gray-lighter;
-    }
 }
 .row .record, .row .result {
     table.table {
@@ -249,4 +236,15 @@ table.tablesorter thead tr th .tablesorter-header-inner::after {
 .rotate {
     transform: rotate(180deg);
     margin-right: 5px;
+}
+.main {
+    padding-bottom: 15px;
+}
+
+.record-tabs {
+    .bsz-border-top;
+}
+
+.table-striped tr {
+    background-color: white !important;
 }

@@ -14,8 +14,8 @@
 @gray-light:             lighten(@gray-base, 60%);   // #999
 @gray-lighter:           lighten(@gray-base, 93.5%); // #eee
 
-@brand-primary:         #dae0ee;
-@brand-success:         #dae0ee;
+@brand-primary:         #00838F;
+@brand-success:         #7cac22;
 @brand-info:            #719DB0;
 @brand-warning:         lighten(#D40032, 15%);
 @brand-danger:          #D40032;
@@ -28,14 +28,14 @@
 //** Background color for `<body>`.
 @body-bg:               #fff;
 //** Global text color on `<body>`.
-@text-color:            #222222;
+@text-color:            @gray-dark;
 
 //** Global textual link color.
-@link-color:            #222222;
+@link-color:            @brand-primary;
 //** Link hover color set via `darken()` function.
-@link-hover-color:      #E04820;
+@link-hover-color:      darken(@link-color, 15%);
 //** Link hover decoration.
-@link-hover-decoration: none;
+@link-hover-decoration: underline;
 
 
 //== Typography
@@ -148,11 +148,11 @@
 @btn-default-bg:                 @brand-primary;
 @btn-default-border:             @btn-default-bg;
 
-@btn-primary-color:              #222;
+@btn-primary-color:              #fff;
 @btn-primary-bg:                 @brand-primary;
 @btn-primary-border:             @btn-primary-bg;
 
-@btn-success-color:               #222;
+@btn-success-color:               #fff;
 @btn-success-bg:                 @brand-success;
 @btn-success-border:             @btn-success-bg;
 
@@ -243,12 +243,12 @@
 //** Dropdown link text color.
 @dropdown-link-color:            @gray-dark;
 //** Hover color for dropdown links.
-@dropdown-link-hover-color:      #222;
+@dropdown-link-hover-color:      #fff;
 //** Hover background for dropdown links.
 @dropdown-link-hover-bg:         @component-active-bg;
 
 //** Active dropdown menu item text color.
-@dropdown-link-active-color:     #222;
+@dropdown-link-active-color:     #fff;
 //** Active dropdown menu item background color.
 @dropdown-link-active-bg:        @component-active-bg;
 
@@ -357,7 +357,7 @@
 //##
 
 // Basics of a navbar
-@navbar-height:                    220px;
+@navbar-height:                    115px;
 @navbar-margin-bottom:             @line-height-computed;
 @navbar-border-radius:             @border-radius-base;
 @navbar-padding-horizontal:        10px;;
@@ -367,10 +367,11 @@
 @navbar-default-color:             #fff;
 @navbar-default-bg:                @brand-primary;
 @navbar-default-border:            darken(@navbar-default-bg, 6.5%);
+@navbar-searchbar-bg:              #f1f4f9;
 
 // Navbar links
-@navbar-default-link-color:                #222;
-@navbar-default-link-hover-color:          #E04820;
+@navbar-default-link-color:                #fff;
+@navbar-default-link-hover-color:          #fff;
 @navbar-default-link-hover-bg:             darken(@navbar-default-bg, 15%);
 @navbar-default-link-active-color:         #fff;
 @navbar-default-link-active-bg:            darken(@navbar-default-bg, 10%);
@@ -431,7 +432,7 @@
 @nav-tabs-link-hover-border-color:          @gray-lighter;
 
 @nav-tabs-active-link-hover-bg:             darken(@brand-primary, 20%);
-@nav-tabs-active-link-hover-color:          #E04820;
+@nav-tabs-active-link-hover-color:          white;
 @nav-tabs-active-link-hover-border-color:   #ddd;
 
 @nav-tabs-justified-link-border-color:            #ddd;
@@ -867,3 +868,9 @@
 @dl-horizontal-breakpoint:    500px;
 //** Horizontal line color.
 @hr-border:                   @gray-lighter;
+
+@bsz-navbar-searchbar-bg:              #bdd6d8;
+@bsz-border-width: 2px;
+@bsz-border-color: @brand-primary;
+@bsz-searchbar-border-radius: 20px;
+@bsz-footer-line-color: #498b92;
