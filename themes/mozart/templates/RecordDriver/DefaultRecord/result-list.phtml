@@ -102,7 +102,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
             'driver' => $this->driver,
             'hiddenFilterString' => $hiddenFilterString,
             'area' => 'results']) ?>
-
+        </dl>
         <?php if ($this->ils()->getDriverClass() !== 'Bsz\ILS\Driver\NoILS'): ?>
             <div class="callnumAndLocation ajax-availability hidden">
                 <?php if ($this->driver->supportsAjaxStatus()): ?>
@@ -131,7 +131,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
         <div class="result-previews">
             <?=$this->record($this->driver)->getPreviews()?>
         </div>
-        </dl>
+
     </div> <!-- end content col -->
     <div class="col-xs-9 col-sm-4 col-md-3 hidden-print col-xs-offset-3 col-sm-offset-0 col-no-left-padding">
         <ul class="nav nav-pills">

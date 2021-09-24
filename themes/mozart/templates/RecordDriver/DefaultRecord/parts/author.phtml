@@ -21,7 +21,7 @@
 
 <? if (!empty($summAuthors)) ?>
     <? if (!empty($summAuthors['primary'])): ?>
-        <dt><?=$this->transEsc('by')?></dt>
+        <dt><?=$this->transEsc('Author')?></dt>
         <dd>
         <? foreach ($summAuthors['primary'] as $name => $info): ?>
             <?=$this->context($this)->renderInContext('RecordDriver/DefaultRecord/parts/singleauthor.phtml', ['name' => $name, 'info' => $info, 'type' => 'person','hiddenFilterString' => $hiddenFilterString])?>
@@ -30,9 +30,9 @@
     <? endif; ?>
     <? if (!empty($summAuthors['secondary'])): ?>
         <? if (!empty($summAuthors['primary'])):?>
-            <dt><?=$this->transEsc('and')?></dt>
+            <dt><?=$this->transEsc('Contributors')?></dt>
         <? else: ?>
-            <dt><?=$this->transEsc('by')?></dt>
+            <dt><?=$this->transEsc('Author')?></dt>
         <?endif?>
         <? $count = 0?>
         <dd>
