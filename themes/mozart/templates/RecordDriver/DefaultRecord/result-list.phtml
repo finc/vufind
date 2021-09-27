@@ -216,6 +216,7 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
                                     <?php if ($titlesection = $sub->getTitleSection()):?>
                                         / <?= $titlesection ?>
                                     <?php endif; ?>
+                                    <dl class="dl-horizontal">
                                     <?=$this->render('RecordDriver/DefaultRecord/parts/author.phtml', [
                                             'driver' => $sub,
                                             'hiddenFilterString' => $hiddenFilterString
@@ -231,20 +232,20 @@ $coverDetails = $this->record($this->driver)->getCoverDetails('result-list', 'sm
                                        'hiddenFilterString' => $hiddenFilterString
                                      ])?>
                                     <?php if (!empty($edition)): ?>
-                                        <div>
-                                        <strong><?=$this->transEsc('Edition')?>: </strong>
-                                            <span property="bookEdition" class="markjs"><?=$this->escapeHtml($edition)?></span>
-                                        </div>
-                                    <?php endif; ?>
+                                        <dt><?=$this->transEsc('Edition')?></dt>
+                                        <dd><span property="bookEdition" class="markjs"><?=$this->escapeHtml($edition)?></span></dd>
+                                        <?php endif; ?>
                                     <?php if (strlen($this->driver->tryMethod('getConsortium')) > 0): ?>
                                         <div class="ill-source">
-                                            <strong><?= $this->transEsc('Network') ?>:</strong>
-                                            <span><?= $sub->getConsortium() ?></span>
+                                            <dt><?= $this->transEsc('Network') ?></dt>
+                                            <dd><?= $sub->getConsortium() ?></dd>
                                         </div>
                                     <?php endif; ?>
                                     <div class="result-formats">
                                         <?=$this->record($sub)->getFormatList() ?>
                                     </div>
+
+                                    </dl>
                                 </div> <!-- end of "content" column -->
                             </div> <!-- end row -->
                         </div> <!-- end panel-body -->
