@@ -28,19 +28,20 @@ use Zend\View\Helper\HeadScript;
 ?>
 
 <?php if (isset($this->scrollData) && ($this->scrollData['previousRecord'] || $this->scrollData['nextRecord'])): ?>
-<div class="col-sm-2 col-sm-offset-5">
-    <a class="backtosearch text-link text-center"
+<div class="col-sm-2 col-sm-offset-5 text-center">
+    <a class="backtosearch text-link"
        title="<?= $this->transEsc('Back to Search') ?>"
        href="<?= $this->searchMemory()->getLastSearchUrl('', '', '', false) ?>">
-       &lt; <?=$this->transEsc('Back to Search')?>
+       <i class="fa fa-caret-left"></i> <?=$this->transEsc('Back to Search')?>
     </a>
 </div>
+<div class="col-sm-4 col-sm-offset-4">
     <ul class="pager hidden-print">
 
         <?php if ($this->scrollData['previousRecord']): ?>
             <?php if ($this->scrollData['firstRecord']): ?>
                 <li>
-                    <a class="btn btn-primary"
+                    <a class="btn btn-default"
                        href="<?= $this->recordLink()->getUrl($this->scrollData['firstRecord']) ?>"
                        title="<?= $this->transEsc('First Search Result') ?>"
                        rel="nofollow"><i class="fa fa-caret-left"></i><i
@@ -48,18 +49,18 @@ use Zend\View\Helper\HeadScript;
                 </li>
             <?php endif; ?>
             <li>
-                <a class="previous btn btn-primary"
+                <a class="previous btn btn-default"
                    href="<?= $this->recordLink()->getUrl($this->scrollData['previousRecord']) ?>"
                    title="<?= $this->transEsc('Previous Search Result') ?>"
                    rel="nofollow"><i class="fa fa-caret-left"></i></a>
             </li>
         <?php else: ?>
             <?php if ($this->scrollData['firstRecord']): ?>
-                <li class="disabled"><a href="#" class="btn btn-primary disabled"><i
+                <li class="disabled"><a href="#" class="btn btn-default disabled"><i
                                 class="fa fa-caret-left"></i><i
                                 class="fa fa-caret-left"></i></a></li>
             <?php endif; ?>
-            <li class="disabled"><a class="btn btn-primary disabled" href="#"><i
+            <li class="disabled"><a class="btn btn-default disabled" href="#"><i
                             class="fa fa-caret-left"></i></a></li>
         <?php endif; ?>
         <?= $this->transEsc('of_num_results', [
@@ -68,14 +69,14 @@ use Zend\View\Helper\HeadScript;
         ]) ?>
         <?php if ($this->scrollData['nextRecord']): ?>
             <li>
-                <a class="next btn btn-primary" class="next"
+                <a class="next btn btn-default" class="next"
                    href="<?= $this->recordLink()->getUrl($this->scrollData['nextRecord']) ?>"
                    title="<?= $this->transEsc('Next Search Result') ?>"
                    rel="nofollow"><i class="fa fa-caret-right"></i></a>
             </li>
             <?php if ($this->scrollData['lastRecord']): ?>
                 <li>
-                    <a class="btn btn-primary"
+                    <a class="btn btn-default"
                        href="<?= $this->recordLink()->getUrl($this->scrollData['lastRecord']) ?>"
                        title="<?= $this->transEsc('Last Search Result') ?>"
                        rel="nofollow"><i class="fa fa-caret-right"></i><i
@@ -83,15 +84,16 @@ use Zend\View\Helper\HeadScript;
                 </li>
             <?php endif; ?>
         <?php else: ?>
-            <li class="disabled"><a class="btn btn-primary disabled" href="#"><i
+            <li class="disabled"><a class="btn btn-default disabled" href="#"><i
                             class="fa fa-caret-right"></i></a></li>
             <?php if ($this->scrollData['lastRecord']): ?>
-                <li class="disabled"><a class="btn btn-primary disabled" href="#"><i
+                <li class="disabled"><a class="btn btn-default disabled" href="#"><i
                                 class="fa fa-caret-right"></i><i
                                 class="fa fa-caret-right"></i></a></li>
             <?php endif; ?>
         <?php endif; ?>
     </ul>
+</div>
 
 <?php endif; ?>
 
