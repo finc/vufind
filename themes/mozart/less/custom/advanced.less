@@ -11,3 +11,23 @@ legend {
 .clear-btn {
     margin-left: 5px;
 }
+#advSearchForm {
+    .nav-tabs .text-link {
+        background-color: white;
+        border: 0;
+        text-decoration: underline;
+        &:hover {
+            border: 0;
+            background-color: white;
+
+        }
+    }
+
+    input[type=text], .adv-group select{
+        border-top-right-radius: @bsz-searchbar-border-radius;
+        border-bottom-right-radius: @bsz-searchbar-border-radius;
+        border-top-left-radius: @bsz-searchbar-border-radius;
+        border-bottom-left-radius: @bsz-searchbar-border-radius;
+    }
+
+}
