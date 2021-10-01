@@ -76,7 +76,7 @@
                     </form>
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img
                             src="<?= $this->imageLink('flags/' . $this->layout()->userLang . '.png') ?>"
-                            alt="Language Flag"/> <i class="fa fa-caret-down"></i></a>
+                            alt="Language Flag"/> <i class="fa fa-chevron-down"></i></a>
                     <ul class="dropdown-menu">
                         <?php foreach ($this->layout()->allLangs as $langCode => $langName): ?>
                             <li <?= $this->layout()->userLang == $langCode ? ' class="active"' : '' ?>>
