@@ -741,6 +741,11 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $names = $this->getPublishers();
         $dates = $this->getHumanReadablePublicationDates();
 
+        // special case one publisher with multiple places
+        if (count($names) == 1 && count($dates) == 1 && count($places) > 1) {
+            $places = [implode(', ', $places)];
+        }
+
         $i = 0;
         $retval = [];
         while (isset($places[$i]) || isset($names[$i]) || isset($dates[$i])) {
