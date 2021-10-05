@@ -178,7 +178,7 @@ function copyLend() {
         var format = $('#form-ill').attr('data-format');
         if ($.inArray(format, ['book']) > -1) {
             $('#ill-lend').prop('checked', true);
-        } else if ($.inArray(format, ['journal', 'article-book', 'article']) > -1){
+        } else if ($.inArray(format, ['journal', 'article-book', 'article', 'ebook']) > -1){
             $('#ill-copy').prop('checked', true);
         }
 
