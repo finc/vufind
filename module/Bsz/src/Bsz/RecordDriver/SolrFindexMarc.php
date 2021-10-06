@@ -26,6 +26,7 @@ class SolrFindexMarc extends SolrMarc implements Constants
     use SubrecordTrait;
     use HelperTrait;
     use ContainerTrait;
+    use MarcFormatTrait;
 
     /**
      * Returns consortium
@@ -152,5 +153,7 @@ class SolrFindexMarc extends SolrMarc implements Constants
         }
         return $urls;
     }
+
+
 
 }
