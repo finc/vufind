@@ -27,6 +27,7 @@
  */
 namespace VuFind\RecordDriver;
 
+use BszGrouping\RecordDriver\SubrecordTrait;
 use VuFind\View\Helper\Root\RecordLinker;
 use VuFindCode\ISBN;
 
@@ -43,6 +44,8 @@ use VuFindCode\ISBN;
  */
 class DefaultRecord extends AbstractBase
 {
+    use SubrecordTrait;
+
     /**
      * Should we highlight fields in search results?
      *
