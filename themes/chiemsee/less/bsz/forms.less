@@ -89,6 +89,17 @@ input[type=text].form-control, select.form-control, .delete-input {
     background-color: rgba(255,255,255, 0.6);
     border: 0;
 }
-.delete-input {
-    border-radius: 0;
+#searchForm {
+    .btn {
+        border-radius: 0;
+    }
+    .input-group :first-child .btn {
+        border-top-left-radius: @border-radius-base;
+        border-bottom-left-radius: @border-radius-base;
+    }
+    .input-group :last-child .btn {
+        border-top-right-radius: @border-radius-base;
+        border-bottom-right-radius: @border-radius-base;
+    }
+
 }
