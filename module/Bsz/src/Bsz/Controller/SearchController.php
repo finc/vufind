@@ -37,7 +37,7 @@ class SearchController extends \VuFind\Controller\SearchController
 
     public function resultsAction()
     {
-        $dedup = $this->serviceLocator->get('Bsz\Config\Dedup');
+        $dedup = $this->serviceLocator->get('BszGrouping\Config\Dedup');
         $isils = $this->params()->fromQuery('isil');
         if ($isils) {
             return $this->processIsil();

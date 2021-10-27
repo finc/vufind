@@ -124,7 +124,7 @@ class BszController extends AbstractBase
     public function dedupAction()
     {
         $params = [];
-        $dedup = $this->serviceLocator->get('Bsz\Config\Dedup');
+        $dedup = $this->serviceLocator->get('BszGrouping\Config\Dedup');
 
         $post = $this->params()->fromPost();
 
