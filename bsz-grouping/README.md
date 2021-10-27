@@ -40,6 +40,43 @@ as matchkey, with
 ### Enable this module
 Enable this module in your `httpd-vufind.conf` & restart Apache.
 
+### Enable this module with composer
+
+Add the following line to you `composer.json`:
+
+    "finc/bsz-grouping": "@dev"
+
+Update your composer packages:
+
+    $ composer update
+
+Add the module to your `application.config.php`:
+
+~~~php
+$modules = [
+    'Laminas\Cache', 'Laminas\Form', 'Laminas\Router', 'LmcRbacMvc', 'Laminas\I18n',
+    'Laminas\Mvc\I18n', 'SlmLocale', 'VuFindTheme', 'VuFindSearch', 'VuFind',
+    'VuFindAdmin', 'VuFindApi', 'BszGrouping'
+];
+~~~
+
+#### Enabling the BszGrouping module along custom code modules
+
+The BszGrouping module extends several VuFind classes. Therefore, if
+you have added a module with custom code to your VuFind installation which
+customizes any of the following classes you need to list the BszGrouping module
+in the `application.config.php` prior to your custom module and alter the
+inheritance references to the BszGrouping module accordingly.
+
+VuFind classes extended in BszGrouping module:
+
+    \VuFind\AjaxHandler\AbstractBase
+    \VuFind\Controller\SearchController
+    \VuFind\Search\Factory\AbstractSolrBackendFactory
+    \VuFind\Search\Solr\Params
+    \VuFindSearch\Backend\Solr\Backend
+    \VuFindSearch\Backend\Solr\Response\Json\RecordCollection
+
 ### Use trait
 In your record driver, use the `SubrecordTrait` by adding
 ~~~php
@@ -104,7 +141,7 @@ $(document).ready(function() {
 ~~~
 
 ### HTML / Templates
-Put the following hTML snippet where you want the checkbox 
+Put the following HTML snippet where you want the checkbox 
 the enable / disable grouping, for example in`search/results.phtml`
 
 ~~~php
