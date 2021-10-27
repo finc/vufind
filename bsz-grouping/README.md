@@ -42,7 +42,7 @@ Enable this module in your `httpd-vufind.conf` & restart Apache.
 
 ### Enable this module with composer
 
-Add the following line to you `composer.json`:
+Add the following line to your `composer.json`:
 
     "finc/bsz-grouping": "@dev"
 
