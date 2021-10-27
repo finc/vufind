@@ -83,7 +83,7 @@
         "wikimedia/composer-merge-plugin": "2.0.1",
         "wikimedia/less.php": "3.1.0",
         "yajra/laravel-pdo-via-oci8": "2.2.0 || 3.0.0",
-        "finc/bsz-grouping": "@dev"
+        "finc/vufind-results-grouping": "@dev"
     },
     "require-dev": {
         "behat/mink": "1.8.1",
@@ -127,7 +127,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "bsz-grouping"
+            "url": "vufind-results-grouping"
         }
     ]
 }
