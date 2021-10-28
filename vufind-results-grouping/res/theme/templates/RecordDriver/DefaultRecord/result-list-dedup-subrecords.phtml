@@ -19,18 +19,15 @@ if ($subRecords) {
                     $date = array_shift($dates);
                     $edition = current((array)$sub->getEdition());
                     $header = [
-                        //$this->escapeHtml($this->driver->tryMethod('$sub->getNetwork()')),
-                        //$this->escapeHtml($date),
-                        //$this->escapeHtml($edition),
                         $this->escapeHtml($sub->tryMethod('getTitle')),
                     ];
                     ?>
-                    <?php if (count($header) > 0 /*&& $this->client()->is('show_dup_panel_headings')*/): ?>
+                    <?php if (count($header) > 0 ): ?>
                         <div class="panel-heading" data-toggle="collapse" data-parent="" href="#<?=$pid . $count?>">
                             <strong><?=implode(' &ndash; ', array_filter($header))?></strong>
                         </div>
                     <?php endif; ?>
-                    <div id="<?=$pid . $count?>" class="panel-collapse collapse <?php /*if (!$this->client()->is('show_dup_panel_headings')):?>in <?php endif; */?>">
+                    <div id="<?=$pid . $count?>" class="panel-collapse collapse">
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-xs-4 col-sm-2">
@@ -56,12 +53,6 @@ if ($subRecords) {
                                             <span property="bookEdition" class="markjs"><?=$this->escapeHtml($edition)?></span>
                                         </div>
                                     <?php endif; ?>
-                                    <?php /*if (!empty($header[0])): ?>
-                                                <div>
-                                                    <strong><?=$this->transEsc('Network')?>:</strong>
-                                                    <span property="network"><?=$this->escapeHtml($header[0])?></span>
-                                                </div>
-                                            <?php endif; */?>
                                     <div class="result-formats">
                                         <?=$this->record($sub)->getFormatList() ?>
                                     </div>
