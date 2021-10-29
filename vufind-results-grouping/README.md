@@ -107,66 +107,33 @@ duplicates.
 ## User interface
 
 ### JavaScript
-Add the following JS code to your custom JS file to avoid conflicts
-with VuFinds JS. 
-
-~~~javascript
-function duplicates() {
-    // handle collapse of the duplicate records in result-list
-    $('.duplicates-toggle').click(function(e){
-       $(this).parent().toggleClass('active');
-       $(this).children('i').toggleClass('fa-arrow-down');
-       $(this).children('i').toggleClass('fa-arrow-up');
-    });
-    
-    // handle checkbox to enable/disable grouping
-    $('#dedup-checkbox').change(function(e) {
-        var status = this.checked;
-        $.ajax({
-           dataType: 'json',
-           method: 'POST',
-           url: VuFind.path + '/AJAX/JSON?method=dedupCheckbox',
-           data: { 'status': status },
-           success: function() {
-               // reload the page
-               window.location.reload(true);
-           }
-        });
-    });
-}
-$(document).ready(function() {    
-    // other custom code goes here
-    duplicates();
-});
-~~~
+Add `js/dedup.js` to your theme configuration.  
 
 ### HTML / Templates
-Put the following HTML snippet where you want the checkbox 
-the enable / disable grouping, for example in`search/results.phtml`
 
-~~~php
-<form class="form-inline search-dedup" action="<?= $this->currentPath() ?>"
-   method="POST" id="dedup">
-   <div class="form-group">
-       <label for="dedup-checkbox"><?=$this->transEsc('group hits') ?></label>
-       <input type="checkbox" name="dedup-enabled" value=""
-              id="dedup-checkbox"
-              <?php if ($this->dedup): ?>checked<?php endif; ?>/>
-   </div>
-   <noscript><p>Please enable JavaScript</p></noscript>
-</form>
-~~~
+We use Bootstraps collapse function to implement this. It might require 'bootstrapizing'
+VuFind's `result-list.phtml` because Bootstrap often conflicts with the Flexboxes used in
+default VuFind.
 
+#### Checkbox 
+Put the HTML from `search/controls/dedup.phtml` where you want the checkbox 
+the enable / disable grouping, for example in`search/results.phtml`.
 
-### Collapse subrecords
+#### Button
+We need a button to open/close the collapsible `div`. It can be found in 
+`RecordDriver/DefaultRecord/result-list-dedup-button.phtml` and should be put under the existing
+buttons "Add to favorites" and "Add to book bag". 
 
-still to do
+Notice the two random strings `pid` (panel id) and `pgid` (panel group id), that controls the 
+link between a button and a collapse. It must be unique for each record. 
 
-## Troubleshooting
+#### Collapsible records
 
-Test if the backend code in this module is being executed. The simplest way to 
-find out is to put a `die(__CLASS__),` in the `search()` function. If this does not
-pop up when searching, the module is not being loaded correctly.
+The subrecords itself can be found in `RecordDriver/DefaultRecord/result-list-subrecords.phtml`. 
+This code should be put to `result-list.phtml`, too. We placed it at the end of a record. 
+
+#### Limitations
+Be aware that we do not provide templates for `result-grid` based layouts. 
 
 ## External Sources
 * [German presentation by Stefan Winkler](https://www.vufind.de/wp-content/uploads/2018/09/2-1-Grouping-Deduplizierung-mit-Matchkeys-in-BOSS3-VuFind-AWT-2018.pdf) 
