@@ -27,9 +27,9 @@
  */
 namespace VuFind\RecordDriver;
 
-use VuFindResultsGrouping\RecordDriver\SubrecordTrait;
 use VuFind\View\Helper\Root\RecordLinker;
 use VuFindCode\ISBN;
+use VuFindResultsGrouping\RecordDriver\SubrecordTrait;
 
 /**
  * Default model for records
