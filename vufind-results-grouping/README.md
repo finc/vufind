@@ -13,6 +13,8 @@ being saved as cookie. This makes it easy to compare and evaluate deduplication.
 This README describes the steps to get it working and provides some
 troubleshooting hints. 
 
+![example](img/dedup.png "Example of Result Gruping")
+
 ## Quick steps
 
 ### Indexing
