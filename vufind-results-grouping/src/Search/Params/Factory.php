@@ -23,7 +23,7 @@ use VuFindResultsGrouping\Search\Solr\Params;
 use Interop\Container\ContainerInterface;
 
 /**
- * BSz Search params Factory
+ * Search params Factory
  *
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */

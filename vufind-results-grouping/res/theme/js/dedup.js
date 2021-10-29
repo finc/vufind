@@ -1,7 +1,3 @@
-// BOSS dedup stuff
-/*
-* Duplicatea button
-*/
 $(document).ready(function duplicates() {
     $('.duplicates-toggle').click(function(e){
         $(this).parent().toggleClass('active');

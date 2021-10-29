@@ -7,7 +7,7 @@ if ($subRecords) {
 }
 ?>
 <?php if ($hasSubRecords): ?>
-    <!-- BOSS dedup button -->
+    <!-- dedup button -->
     <?php
     $rand = rand(1, 10000);
     // beware that pgid and pid must be forwarded to be used in result-list-dedup-subrecords.phtml
@@ -21,5 +21,5 @@ if ($subRecords) {
             <span class="badge pull-right"><?=$subRecordsCount?></span>
         </a>
     </div>
-    <!-- BOSS dedup button - END -->
+    <!-- dedup button - END -->
 <?php endif; ?>
