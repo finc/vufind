@@ -40,9 +40,6 @@ as matchkey, with
 
 
 ### Enable this module
-Enable this module in your `httpd-vufind.conf` & restart Apache.
-
-### Enable this module with composer
 
 Add the following line to your `composer.json`:
 
@@ -61,6 +58,9 @@ $modules = [
     'VuFindAdmin', 'VuFindApi', 'VuFindResultsGrouping'
 ];
 ~~~
+
+For advanced users, it's also possible to copy the into `modules` and enable it in `httpd-vufind.conf`. 
+But then you need to care about updates yourself. 
 
 #### Enabling the VuFindResultsGrouping module along custom code modules
 
@@ -101,11 +101,6 @@ group.field = "enter the name of your matchkey here"
 group.limit = 10
 ~~~
 
-### Template work
-Take a look in our example template to see how it's working. We are using 
-Bootstraps collapsible classes to show a button that opens all the 
-duplicates.
-
 ## User interface
 
 ### JavaScript
@@ -114,7 +109,7 @@ Add `js/dedup.js` to your theme configuration.
 ### HTML / Templates
 
 We use Bootstraps collapse function to implement this. It might require 'bootstrapizing'
-VuFind's `result-list.phtml` because Bootstrap often conflicts with the Flexboxes used in
+VuFind's `result-list.phtml` because Bootstrap sometimes conflicts with the Flexboxes used in
 default VuFind.
 
 #### Checkbox 
