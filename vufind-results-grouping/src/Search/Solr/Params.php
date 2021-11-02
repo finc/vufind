@@ -21,7 +21,7 @@
 
 namespace VuFindResultsGrouping\Search\Solr;
 
-use VuFindResultsGrouping\Config\Dedup;
+use VuFindResultsGrouping\Config\Grouping;
 use VuFind\Config\PluginManager;
 use VuFindSearch\ParamBag;
 
@@ -32,7 +32,7 @@ use VuFindSearch\ParamBag;
  */
 class Params extends \VuFind\Search\Solr\Params
 {
-    protected $dedup;
+    protected $grouping;
     protected $limit = 10;
 
     /**
@@ -41,16 +41,16 @@ class Params extends \VuFind\Search\Solr\Params
      * @param $options
      * @param PluginManager $configLoader
      * @param HierarchicalFacetHelper|null $facetHelper
-     * @param Dedup|null $dedup
+     * @param Grouping|null $grouping
      */
     public function __construct(
         $options,
         PluginManager $configLoader,
         HierarchicalFacetHelper $facetHelper = null,
-        Dedup $dedup = null
+        Grouping $grouping = null
     ) {
         parent::__construct($options, $configLoader);
-        $this->dedup = $dedup;
+        $this->grouping = $grouping;
     }
 
     /**
@@ -113,15 +113,15 @@ class Params extends \VuFind\Search\Solr\Params
 
         $this->restoreFromCookie();
 
-        // Fetch group params for deduplication
+        // Fetch group params for grouping
         $config = $this->configLoader->get('config');
         $index = $config->get('Index');
         $group = false;
 
-        $dedupParams = $this->dedup->getCurrentSettings();
+        $groupingParams = $this->grouping->getCurrentSettings();
 
-        if (isset($dedupParams['group'])) {
-            $group = $dedupParams['group'];
+        if (isset($groupingParams['group'])) {
+            $group = $groupingParams['group'];
         } elseif ($index->get('group') !== null) {
             $group = $index->get('group');
         }
@@ -132,15 +132,15 @@ class Params extends \VuFind\Search\Solr\Params
             $group_field = '';
             $group_limit = 0;
 
-            if (isset($dedupParams['group_field'])) {
-                $group_field = $dedupParams['group_field'];
+            if (isset($groupingParams['group_field'])) {
+                $group_field = $groupingParams['group_field'];
             } elseif ($index->get('group.field') !== null) {
                 $group_field = $index->get('group.field');
             }
             $backendParams->add('group.field', $group_field);
 
-            if (isset($dedupParams['group_limit'])) {
-                $group_limit = $dedupParams['group_limit'];
+            if (isset($groupingParams['group_limit'])) {
+                $group_limit = $groupingParams['group_limit'];
             } elseif ($index->get('group.limit') !== null) {
                 $group_limit = $index->get('group.limit');
             }

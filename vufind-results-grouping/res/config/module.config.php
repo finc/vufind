@@ -4,7 +4,7 @@ namespace VuFindResultsGrouping\Module\Configuration;
 $config = [
     'service_manager' => [
         'factories' => [
-            'VuFindResultsGrouping\Config\Dedup'  => 'VuFindResultsGrouping\Config\Factory::getDedup',
+            'VuFindResultsGrouping\Config\Grouping'  => 'VuFindResultsGrouping\Config\Factory::getGrouping',
         ],
     ],
     'controllers' => [
@@ -19,11 +19,11 @@ $config = [
         'plugin_managers' => [
             'ajaxhandler' => [
                 'factories' => [
-                    'VuFindResultsGrouping\AjaxHandler\DedupCheckbox' =>
-                        'VuFindResultsGrouping\AjaxHandler\DedupCheckboxFactory',
+                    'VuFindResultsGrouping\AjaxHandler\GroupingCheckbox' =>
+                        'VuFindResultsGrouping\AjaxHandler\GroupingCheckboxFactory',
                 ],
                 'aliases' => [
-                    'dedupCheckbox' => 'VuFindResultsGrouping\AjaxHandler\DedupCheckbox',
+                    'groupingCheckbox' => 'VuFindResultsGrouping\AjaxHandler\GroupingCheckbox',
                 ]
             ],
             'search_backend' => [

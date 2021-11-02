@@ -32,15 +32,15 @@ use Laminas\Session\Container;
  */
 class Factory
 {
-    public static function getDedup(ContainerInterface $container)
+    public static function getGrouping(ContainerInterface $container)
     {
         $config = $container->get('VuFind\Config')->get('config')->get('Index');
         $sesscontainer = new Container(
-            'dedup',
+            'grouping',
             $container->get('VuFind\SessionManager')
         );
         $response = $container->get('Response');
         $cookie = $container->get('Request')->getCookie();
-        return new Dedup($config, $sesscontainer, $response, $cookie);
+        return new Grouping($config, $sesscontainer, $response, $cookie);
     }
 }

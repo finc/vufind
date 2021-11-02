@@ -35,10 +35,10 @@ class SearchController extends \VuFind\Controller\SearchController
      */
     public function resultsAction()
     {
-        $dedup = $this->serviceLocator->get('VuFindResultsGrouping\Config\Dedup');
+        $grouping = $this->serviceLocator->get('VuFindResultsGrouping\Config\Grouping');
 
         $view = Parent::resultsAction();
-        $view->dedup = $dedup->isActive();
+        $view->grouping = $grouping->isActive();
         return $view;
     }
 

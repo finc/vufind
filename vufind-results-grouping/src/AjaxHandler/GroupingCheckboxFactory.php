@@ -24,21 +24,21 @@ namespace VuFindResultsGrouping\AjaxHandler;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class DedupCheckboxFactory
+ * Class GroupingCheckboxFactory
  * @package  VuFindResultsGrouping\AjaxHandler
  * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class DedupCheckboxFactory
+class GroupingCheckboxFactory
 {
     /**
      *
      * @param ContainerInterface $container
-     * @return \VuFindResultsGrouping\AjaxHandler\Dedupcheckbox
+     * @return \VuFindResultsGrouping\AjaxHandler\GroupingCheckbox
      */
     public static function __invoke(ContainerInterface $container)
     {
-        return new DedupCheckbox(
-            $container->get('VuFindResultsGrouping\Config\Dedup')
+        return new GroupingCheckbox(
+            $container->get('VuFindResultsGrouping\Config\Grouping')
         );
     }
 }

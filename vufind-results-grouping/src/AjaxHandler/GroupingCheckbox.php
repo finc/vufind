@@ -21,33 +21,33 @@
 
 namespace VuFindResultsGrouping\AjaxHandler;
 
-use VuFindResultsGrouping\Config\Dedup;
+use VuFindResultsGrouping\Config\Grouping;
 use VuFind\I18n\Translator\TranslatorAwareInterface;
 use Laminas\Mvc\Controller\Plugin\Params;
 
 /**
- * Class DedupCheckbox
+ * Class GroupingCheckbox
  * @package  VuFindResultsGrouping\AjaxHandler
  * @author   Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class DedupCheckbox extends \VuFind\AjaxHandler\AbstractBase implements TranslatorAwareInterface
+class GroupingCheckbox extends \VuFind\AjaxHandler\AbstractBase implements TranslatorAwareInterface
 {
     use \VuFind\I18n\Translator\TranslatorAwareTrait;
 
     /**
      *
-     * @var Dedup
+     * @var Grouping
      */
-    protected $dedup;
+    protected $grouping;
 
     /**
      * Constructor
      *
-     * @param Dedup  $dedup
+     * @param Grouping $grouping
      */
-    public function __construct(Dedup $dedup)
+    public function __construct(Grouping $grouping)
     {
-        $this->dedup = $dedup;
+        $this->grouping = $grouping;
     }
 
     /**
@@ -61,7 +61,7 @@ class DedupCheckbox extends \VuFind\AjaxHandler\AbstractBase implements Translat
     {
         $status = $params->fromPost('status');
         $status = $status == 'true' ? true : false;
-        $this->dedup->store(['group' => $status]);
+        $this->grouping->store(['group' => $status]);
         return $this->formatResponse([], 200);
     }
 }

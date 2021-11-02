@@ -1,4 +1,4 @@
 <?php
 return [
-    'js' => ['bsz-dedup.js'],
+    'js' => ['resultGrouping.js'],
 ];

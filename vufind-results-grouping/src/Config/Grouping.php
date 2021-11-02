@@ -25,14 +25,14 @@ use Laminas\Http\Header\SetCookie;
 use Laminas\Session\Container as SessionContainer;
 
 /**
- * Class for storing deduplication options
+ * Class for storing grouping options
  * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
-class Dedup
+class Grouping
 {
     protected $config;
     /**
-     * @var Container
+     * @var SessionContainer
      */
     protected $container;
     protected $response;
