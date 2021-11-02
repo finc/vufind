@@ -1,19 +1,19 @@
 # VuFindResultsGrouping module for VuFind
 
-This module offers a simple and performant but not perfect way to recognize 
-duplicate records. It uses [Apache Solr's grouping feature](https://solr.apache.org/guide/8_1/result-grouping.html). 
+This module offers a simple and performant but not perfect way to recognize and group
+seemingly duplicate records. It uses [Apache Solr's grouping feature](https://solr.apache.org/guide/8_1/result-grouping.html). 
 
 Solr groups all records with the same matchkey, when called with the grouping 
-params below. The first of this similar records in each group is called "master
+params below. The first of this similar records in each group is called "head
 record" the others are referred as "subrecords". 
 
-Deduplication can optionally be turned on or off by end-users. The last state is 
-being saved as cookie. This makes it easy to compare and evaluate deduplication. 
+Grouping can optionally be turned on or off by end-users. The last state is 
+being saved as cookie. This makes it easy to compare and evaluate grouping. 
 
 This README describes the steps to get it working and provides some
 troubleshooting hints. 
 
-![example](img/dedup.png "Example of Result Gruping")
+![example](img/grouping.png "Example of Result Grouping")
 
 ## Quick steps
 
@@ -104,7 +104,7 @@ group.limit = 10
 ## User interface
 
 ### JavaScript
-Add `js/dedup.js` to your theme configuration.  
+Add `js/resultGrouping.js` to your theme configuration.  
 
 ### HTML / Templates
 
@@ -113,12 +113,12 @@ VuFind's `result-list.phtml` because Bootstrap sometimes conflicts with the Flex
 default VuFind.
 
 #### Checkbox 
-Put the HTML from `search/controls/dedup.phtml` where you want the checkbox 
+Put the HTML from `search/controls/group.phtml` where you want the checkbox 
 the enable / disable grouping, for example in`search/results.phtml`.
 
 #### Button
 We need a button to open/close the collapsible `div`. It can be found in 
-`RecordDriver/DefaultRecord/result-list-dedup-button.phtml` and should be put under the existing
+`RecordDriver/DefaultRecord/result-list-grouping-button.phtml` and should be put under the existing
 buttons "Add to favorites" and "Add to book bag". 
 
 Notice the two random strings `pid` (panel id) and `pgid` (panel group id), that controls the 
