@@ -215,11 +215,11 @@
       <?php endif; ?>
 
       <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="' . $this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()) . '"></span>':''?>
-      <?=$this->render('RecordDriver/DefaultRecord/result-list-dedup-button')?>
+      <?=$this->render('RecordDriver/DefaultRecord/result-list-grouping-button')?>
     </div>
   </div>
   <?php if ($thumbnail && $thumbnailAlignment == 'right'): ?>
     <?=$thumbnail ?>
   <?php endif ?>
-  <?=$this->render('RecordDriver/DefaultRecord/result-list-dedup-subrecords')?>
+  <?=$this->render('RecordDriver/DefaultRecord/result-list-grouped-subrecords')?>
 </div>
