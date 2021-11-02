@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 namespace VuFindResultsGrouping\AjaxHandler;
 
 use VuFindResultsGrouping\Config\Dedup;

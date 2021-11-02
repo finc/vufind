@@ -22,17 +22,27 @@
 namespace VuFindResultsGrouping\RecordDriver;
 
 /**
- * @author Cornelius Amzar|cornelius.amzar@bsz-bw.de>
+ * This trait adds some accessor methods to your RecordDriver
+ *
+ * Trait SubrecordTrait
+ * @package VuFindResultsGrouping\RecordDriver
+ * @author Cornelius Amzar <cornelius.amzar@bsz-bw.de>
  */
 trait SubrecordTrait
 {
-    public function isSubRecord(): bool
+    /**
+     * @return bool
+     */
+    public function isSubRecord() : bool
     {
         return isset($this->fields['_isSubRecord']) ?
             $this->fields['_isSubRecord'] : false;
     }
 
-    public function hasSubRecords(): bool
+    /**
+     * @return bool
+     */
+    public function hasSubRecords() : bool
     {
         if (null !== ($collection = $this->getSubRecords())) {
             return 0 < $collection->count();
