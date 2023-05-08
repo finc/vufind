@@ -29,6 +29,7 @@
 
 namespace VuFind\View\Helper\Root;
 
+use Laminas\View\Helper\ViewModel;
 use VuFind\Cover\Router as CoverRouter;
 
 /**
@@ -57,6 +58,13 @@ class Record extends \Laminas\View\Helper\AbstractHelper
      * @var CoverRouter
      */
     protected $coverRouter = null;
+
+    /**
+     * ViewModel helper
+     *
+     * @var ViewModel
+     */
+    protected $viewModel = null;
 
     /**
      * Record driver
@@ -92,6 +100,18 @@ class Record extends \Laminas\View\Helper\AbstractHelper
     public function setCoverRouter($router)
     {
         $this->coverRouter = $router;
+    }
+
+    /**
+     * Inject the layout helper
+     *
+     * @param ViewModel $viewModel layout view helper
+     *
+     * @return void
+     */
+    public function setViewModelHelper(ViewModel $viewModel)
+    {
+        $this->viewModel = $viewModel;
     }
 
     /**
@@ -415,8 +435,7 @@ class Record extends \Laminas\View\Helper\AbstractHelper
      */
     public function getCheckbox($idPrefix = '', $formAttr = false, $number = null)
     {
-        $id = $this->driver->getSourceIdentifier() . '|'
-            . $this->driver->getUniqueId();
+        $id = $this->getUniqueHtmlElementId($idPrefix);
         $context
             = ['id' => $id, 'number' => $number, 'prefix' => $idPrefix];
         if ($formAttr) {
@@ -706,5 +725,48 @@ class Record extends \Laminas\View\Helper\AbstractHelper
     protected function deduplicateLinks($links)
     {
         return array_values(array_unique($links, SORT_REGULAR));
+    }
+
+    /**
+     * Get the source identifier + unique id of the record without spaces
+     *
+     * @param string $idPrefix Prefix for HTML ids
+     *
+     * @return string
+     */
+    public function getUniqueHtmlElementId($idPrefix = "")
+    {
+        if (empty($idPrefix)) {
+            if ($this->viewModel->getCurrent()->getTemplate()) {
+                $idPrefix .= str_replace(
+                    DIRECTORY_SEPARATOR,
+                    '-',
+                    $this->viewModel->getCurrent()->getTemplate()
+                );
+            }
+        }
+
+        if ($this->viewModel->getRoot()->getTemplate() === 'layout/lightbox') {
+            $idPrefix = 'modal-' . $idPrefix;
+        }
+
+        return preg_replace(
+            "/\s+/",
+            "_",
+            ($idPrefix ? $idPrefix . '-' : '') . $this->getUniqueIdWithSourcePrefix()
+        );
+    }
+
+    /**
+     * Get the source identifier + unique id of the record
+     *
+     * @return string
+     */
+    public function getUniqueIdWithSourcePrefix()
+    {
+        if ($this->driver) {
+            return "{$this->driver->tryMethod('getSourceIdentifier')}"
+                . "|{$this->driver->tryMethod('getUniqueId')}";
+        }
     }
 }
